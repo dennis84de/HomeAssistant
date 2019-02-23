@@ -240,11 +240,10 @@ homeassistant:
       friendly_name: Arbeitszimmer
     device_tracker.pibalcony:
       icon: mdi:raspberrypi   
-      friendly_name: Balkon         
-      
-    device_tracker.pitts:
+      friendly_name: Balkon               
+    device_tracker.pimultimedia:
       icon: mdi:speaker-wireless       
-      friendly_name: Raspberry TTS    
+      friendly_name: Multimedia 
       
     device_tracker.tabletprestigio:
       hidden: true

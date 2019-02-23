@@ -286,7 +286,7 @@ script:
       - service: switch.turn_on      
         entity_id: switch.badezimmer_radio, switch.wohnzimmer_radio, switch.kuche_radio, switch.flur_radio
       - service: switch.turn_on
-        entity_id: switch.computer, switch.benachrichtigungen   
+        entity_id: switch.computer, switch.multimedia   
         
 homeassistant:
   customize:

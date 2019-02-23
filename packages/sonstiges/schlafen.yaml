@@ -100,7 +100,7 @@ script:
       - service: switch.turn_on
         entity_id: switch.watchtv_schlafzimmer
       - service: switch.turn_off
-        entity_id: switch.benachrichtigungen, switch.wohnzimmer_radio, switch.balkon_radio, switch.flur_radio, switch.kuche_radio, switch.schlafzimmer_radio, switch.arbeitszimmer_radio      
+        entity_id: switch.multimedia, switch.wohnzimmer_radio, switch.balkon_radio, switch.flur_radio, switch.kuche_radio, switch.schlafzimmer_radio, switch.arbeitszimmer_radio      
       - service: switch.turn_off
         entity_id: switch.watchtv_wohnzimmer, switch.monitor
       - service: input_boolean.turn_on

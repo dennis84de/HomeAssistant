@@ -18,8 +18,7 @@ cards:
     entities:
       - entity: sensor.telefon_status
       - entity: sensor.handy_status  
-      - entity: sensor.ungelesene_mails   
-      - entity: input_boolean.nicht_stoeren
+      - entity: sensor.ungelesene_mails         
       
   - type: entities
     title: Wecker
@@ -67,23 +66,7 @@ cards:
       - entity: sensor.bvb_spiel
       - entity: sensor.bvb_datum
       - entity: sensor.bvb_uhrzeit
-      - entity: sensor.bvb_ort
-    
-  - type: entities
-    title: Schlafen
-    show_header_toggle: false
-    entities:
-      - entity: script.goto_bed    
-      - entity: binary_sensor.schlafen_aktiv
-      - entity: sensor.schlafen_letzte_uhrzeit
-    
-  - type: entities
-    title: Radios
-    show_header_toggle: false
-    entities:      
-      - entity: switch.alle_radios
-      - entity: switch.alle_radios_wiedergabe_aktiv           
-      - entity: script.sync_radios          
+      - entity: sensor.bvb_ort     
 
   - type: custom:popup-card
     entity: switch.alle_radios_wiedergabe_aktiv
@@ -214,14 +197,3 @@ cards:
       - entity: binary_sensor.fenster_kueche
       - entity: binary_sensor.fenster_arbeitszimmer
       - entity: binary_sensor.fenster_sportzimmer
-    
-  - type: entities
-    title: Keller
-    show_header_toggle: false
-    entities:     
-      - entity: switch.waschmaschine
-      - entity: sensor.waschmaschine_status
-      - entity: sensor.waschmaschine_verbrauch
-      - entity: switch.trockner
-      - entity: sensor.trockner_status
-      - entity: sensor.trockner_verbrauch     

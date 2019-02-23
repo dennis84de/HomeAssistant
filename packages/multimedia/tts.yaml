@@ -24,8 +24,8 @@ switch:
   - platform: brematic
     host: 192.168.2.57        
     switches:
-      benachrichtigungen:
-        friendly_name: Benachrichtigungen
+      multimedia:
+        friendly_name: Multimedia
         system_code: "00000"
         unit_code: "10000"
 
@@ -43,7 +43,7 @@ script:
             state: 'on'   
           - condition: state
             entity_id: binary_sensor.schlafen_aktiv 
-            state: 'off'              
+            state: 'off'            
       - service: media_player.alexa_tts
         data_template:
           entity_id: >-
@@ -61,21 +61,7 @@ script:
               media_player.echo_wohnzimmer
             {% endif %}
           message: >-
-            {{ message }}
-          
-  tts_wohnzimmer_squeezebox:
-    alias: "Benachrichtigung Squeezebox Wohnzimmer"
-    sequence:      
-      - condition: state
-        entity_id: device_tracker.pitts
-        state: 'home'    
-      - condition: state
-        entity_id: input_boolean.sprachausgabe
-        state: 'on'      
-      - service: tts.google_say
-        entity_id: media_player.tts
-        data_template:          
-          message: '{{ message }}'          
+            {{ message }}     
           
 automation:           
   - alias: "Lautstärke Sprachausgabe ändern"
@@ -85,12 +71,12 @@ automation:
         entity_id: input_number.sprache_lautstaerke
     condition:
       - condition: state
-        entity_id: device_tracker.pitts
+        entity_id: device_tracker.pimultimedia
         state: 'home'         
     action:
       - service: media_player.volume_set
         data_template:
-          entity_id: media_player.tts
+          entity_id: media_player.multimedia
           volume_level: >-
             {{ states.input_number.sprache_lautstaerke.state | int / 100 }}     
             
@@ -101,14 +87,14 @@ automation:
         event: start         
     condition:
       - condition: state
-        entity_id: device_tracker.pitts
+        entity_id: device_tracker.pimultimedia
         state: 'home'        
     action:
       - service: input_number.set_value
         data_template:
           entity_id: input_number.sprache_lautstaerke
           value: >-
-            {{ states.media_player.tts.attributes.volume_level * 100 | int }}
+            {{ states.media_player.multimedia.attributes.volume_level * 100 | int }}
            
   - alias: 'Zu Hause - Sprachausgabe einschalten'
     initial_state: true
@@ -122,7 +108,7 @@ automation:
         state: 'on'
     action:
       - service: switch.turn_on
-        entity_id: switch.benachrichtigungen
+        entity_id: switch.multimedia
 
   - alias: "Uhr - Glocke starten"
     initial_state: true
@@ -136,7 +122,7 @@ automation:
         after: '08:00'
         before: '23:00'     
       - condition: state
-        entity_id: device_tracker.pitts
+        entity_id: device_tracker.pimultimedia
         state: 'home'        
       - condition: state
         entity_id: input_boolean.uhr_einschalten
@@ -147,7 +133,7 @@ automation:
       - service: media_player.play_media
         data_template:
           entity_id:
-            - media_player.tts
+            - media_player.multimedia
           media_content_id: >-
             {% if now().strftime("%M")|int == 30 %}
               http://192.168.2.70:8123/local/uhr/GrandFatherChime_half.mp3
@@ -164,7 +150,7 @@ automation:
       to: 'off'
     condition:
       - condition: state
-        entity_id: media_player.tts
+        entity_id: media_player.multimedia
         state: 'playing'   
     action:
       - service: media_player.media_pause
@@ -194,5 +180,5 @@ automation:
           
 homeassistant:
   customize:
-    switch.benachrichtigungen:
+    switch.multimedia:
       icon: mdi:alarm-bell

@@ -40,15 +40,6 @@ cards:
       - entity: switch.wohnzimmer_radio    
       - entity: input_boolean.computer_ausschalten    
       - entity: switch.gaste_wlan       
-      
-  - type: entities
-    title: Sprache
-    show_header_toggle: false
-    entities:
-      - entity: input_boolean.sprachausgabe
-      - entity: switch.benachrichtigungen    
-      - entity: input_boolean.uhr_einschalten
-      - entity: input_number.sprache_lautstaerke
     
   - type: glance
     title: Heizung

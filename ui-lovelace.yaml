@@ -1,6 +1,7 @@
 title: Home Assistant
 views:
   - !include lovelace/information.yaml  
+  - !include lovelace/system.yaml  
   - !include lovelace/wohnzimmer.yaml
   - !include lovelace/schlafzimmer.yaml
   - !include lovelace/kueche.yaml
@@ -8,10 +9,10 @@ views:
   - !include lovelace/flur.yaml
   - !include lovelace/arbeitszimmer.yaml
   - !include lovelace/sportzimmer.yaml
-  - !include lovelace/wetter.yaml
-  - !include lovelace/system.yaml
+  - !include lovelace/wetter.yaml  
   - !include lovelace/heimnetz.yaml
   - !include lovelace/geraete.yaml
+  - !include lovelace/batterien.yaml
   
 resources:
   - url: /local/lovelace/vertical-stack-in-card.js?v=v0.1.1

@@ -17,7 +17,7 @@ cards:
     entities: 
       - entity: device_tracker.soundbar    
       - entity: device_tracker.dreamscreen
-      - entity: device_tracker.pitts
+      - entity: device_tracker.pimultimedia
       
   - type: entities
     title: Haushalt
