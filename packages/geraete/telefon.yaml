@@ -120,7 +120,10 @@ automation:
     condition: 
       - condition: state
         entity_id: media_player.kodi_wohnzimmer
-        state: 'playing'    
+        state: 'playing'
+      - condition: state
+        entity_id: input_boolean.nicht_stoeren
+        state: 'off'        
     action:
       - service: input_boolean.turn_on
         entity_id: input_boolean.kodi_pausiert
@@ -187,6 +190,9 @@ automation:
       - condition: state
         entity_id: switch.alle_radios_wiedergabe_aktiv
         state: 'on'
+      - condition: state
+        entity_id: input_boolean.nicht_stoeren
+        state: 'off'          
     action:
       - service: input_boolean.turn_on
         entity_id: input_boolean.musik_pausiert    
@@ -244,7 +250,11 @@ automation:
     trigger:
       - platform: state
         entity_id: sensor.telefon
-        to: 'ringing'   
+        to: 'ringing'
+    condition: 
+      - condition: state
+        entity_id: input_boolean.nicht_stoeren
+        state: 'off'        
     action: 
       service: !secret tts_service
       data_template:           

@@ -1,3 +1,8 @@
+input_boolean:
+  nicht_stoeren:
+    name: Nicht stören
+    initial: off
+
 sensor:
   - platform: template
     sensors:
@@ -62,7 +67,10 @@ automation:
     condition: 
       - condition: state
         entity_id: media_player.kodi_wohnzimmer
-        state: 'playing'      
+        state: 'playing'
+      - condition: state
+        entity_id: input_boolean.nicht_stoeren
+        state: 'off'        
     action:
       - service: input_boolean.turn_on
         entity_id: input_boolean.kodi_pausiert    
@@ -122,7 +130,10 @@ automation:
     condition:
       - condition: state
         entity_id: switch.alle_radios_wiedergabe_aktiv
-        state: 'on' 
+        state: 'on'
+      - condition: state
+        entity_id: input_boolean.nicht_stoeren
+        state: 'off'          
     action:
       - service: input_boolean.turn_on
         entity_id: input_boolean.musik_pausiert
@@ -157,7 +168,11 @@ automation:
     trigger:
       - platform: state
         entity_id: sensor.tasker_handystatus
-        to: 'incoming'     
+        to: 'incoming'    
+    condition: 
+      - condition: state
+        entity_id: input_boolean.nicht_stoeren
+        state: 'off'        
     action: 
       service: !secret tts_service
       data_template:           
@@ -169,7 +184,11 @@ automation:
     trigger:
       - platform: state
         entity_id: sensor.tasker_handystatus
-        to: 'sms'     
+        to: 'sms'
+    condition:
+      - condition: state
+        entity_id: input_boolean.nicht_stoeren
+        state: 'off'        
     action: 
       service: !secret tts_service
       data_template:
@@ -190,7 +209,10 @@ automation:
     condition: 
       - condition: state
         entity_id: media_player.kodi_wohnzimmer
-        state: 'playing'      
+        state: 'playing'
+      - condition: state
+        entity_id: input_boolean.nicht_stoeren
+        state: 'off'        
     action:
       - service: notify.kodi_wohnzimmer
         data:
@@ -268,3 +290,6 @@ homeassistant:
     sensor.tasker_handystatus:      
       friendly_name: Handy Status
       hidden: true      
+      
+    input_boolean.nicht_stoeren:
+      icon: mdi:do-not-disturb

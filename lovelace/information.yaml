@@ -18,7 +18,8 @@ cards:
     entities:
       - entity: sensor.telefon_status
       - entity: sensor.handy_status  
-      - entity: sensor.ungelesene_mails       
+      - entity: sensor.ungelesene_mails   
+      - entity: input_boolean.nicht_stoeren
       
   - type: entities
     title: Wecker
