@@ -1,0 +1,11 @@
+alexa_media:
+  accounts:
+    - email: !secret amazon_email
+      password: !secret amazon_password
+      url: amazon.de
+      exclude_devices:
+        - "Echo Simon"
+        - "FireTablet Badezimmer"
+        - "FireTV Schlafzimmer"
+        - "FireTV Badezimmer"
+        - "FireTV Sportzimmer"

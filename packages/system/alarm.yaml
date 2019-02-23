@@ -1,0 +1,355 @@
+input_boolean:        
+  alles_auschalten_aktiv:
+    name: "Alles ausschalten aktiv"
+
+timer:
+  alles_auschalten:
+    name: "Alles ausschalten"    
+    duration: 15  
+
+alarm_control_panel:
+  - platform: manual
+    name: Alarm
+    pending_time: 60
+    delay_time: 60
+    trigger_time: 10
+    disarmed:
+      trigger_time: 0
+    armed_home:
+      pending_time: 0
+      delay_time: 0   
+    armed_away:
+      pending_time: 0
+
+automation:
+  - alias: "Alles ausschalten aktivieren"
+    initial_state: true
+    trigger:
+      - platform: event
+        event_type: xiaomi_aqara.click
+        event_data:
+          entity_id: binary_sensor.switch_158d0001c30867
+          click_type: long_click_press
+    condition:
+      - condition: state
+        entity_id: automation.alles_ausschalten
+        state: 'off'
+    action:
+      - service: script.radios_pausieren  
+      - service: !secret tts_service
+        data_template:    
+          echo: "flur"
+          message: "Alle Geräte können jetzt ausgeschaltet werden."
+      - delay: '00:00:02'
+      - service: timer.start
+        entity_id: timer.alles_auschalten        
+      - service: media_player.play_media
+        data_template:
+          entity_id:
+            - media_player.tts
+          media_content_id: >-
+            http://192.168.2.70:8123/local/countdown/countdown_10.mp3
+          media_content_type: music
+      - service: automation.turn_on
+        entity_id: automation.alles_ausschalten
+      - service: automation.turn_off
+        entity_id: automation.alles_ausschalten_aktivieren
+      
+  - alias: "Alles ausschalten"
+    initial_state: false
+    trigger:
+      - platform: event
+        event_type: xiaomi_aqara.click
+        event_data:
+          entity_id: binary_sensor.switch_158d0001c30867
+          click_type: single
+    condition:
+      - condition: state
+        entity_id: timer.alles_auschalten
+        state: 'active'      
+    action:    
+      - service: media_player.media_pause
+        data_template:
+          entity_id:
+            - media_player.tts      
+      - service: !secret tts_service
+        data_template:    
+          echo: "flur"
+          message: "Alle Geräte werden ausgeschaltet. Auf Wiedersehen."
+      - service: timer.cancel
+        entity_id: timer.alles_auschalten
+      - service: automation.turn_off
+        entity_id: automation.alles_ausschalten
+      - service: automation.turn_on
+        entity_id: automation.alles_ausschalten_aktivieren
+      - service: script.alles_ausschalten 
+      - service: media_player.clear_playlist
+        entity_id: media_player.tts     
+        
+  - alias: "Alles ausschalten deaktivieren"
+    initial_state: true
+    trigger:
+      platform: event
+      event_type: timer.finished
+      event_data:
+        entity_id: timer.alles_auschalten
+    action:      
+      - service: !secret tts_service
+        data_template:
+          echo: "flur"
+          message: "Der Vorgang wurde abgebrochen."      
+      - service: automation.turn_off
+        entity_id: automation.alles_ausschalten
+      - service: automation.turn_on
+        entity_id: automation.alles_ausschalten_aktivieren  
+      - service: script.radios_starten
+      
+  - alias: "Alarm ausgelöst"
+    initial_state: true
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.zigate_229b_onoff
+        to: 'on'
+    condition:
+      - condition: state
+        entity_id: alarm_control_panel.alarm
+        state: armed_away
+      - condition: state
+        entity_id: binary_sensor.zu_hause
+        state: 'off'    
+    action:
+      service: alarm_control_panel.alarm_trigger
+      entity_id: alarm_control_panel.alarm
+
+  - alias: "Alarm Nachricht"
+    initial_state: true
+    trigger:
+      - platform: state
+        entity_id: alarm_control_panel.alarm
+        to: 'triggered'
+    action:
+      service: notify.telegram
+      data_template:
+        title: "Alarm"
+        message: "Der Alarm in der Wohnung wurde ausgelöst."
+
+  - alias: "Alarm aktiviert"
+    initial_state: true
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.zu_hause
+        to: 'off'       
+        for:
+          minutes: 1           
+    action:
+      - service: alarm_control_panel.alarm_arm_away
+        entity_id: alarm_control_panel.alarm     
+
+  - alias: "Alarm deaktiviert"
+    initial_state: true
+    trigger:   
+      - platform: state
+        entity_id: binary_sensor.zu_hause
+        to: 'on'     
+    action:
+      - service: alarm_control_panel.alarm_disarm
+        entity_id: alarm_control_panel.alarm
+
+  - alias: "Alarm - Bewegung"
+    initial_state: true
+    trigger:
+      - platform: state
+        entity_id: sensor.fibaro_badezimmer_burglar
+        to: '8'
+      - platform: state
+        entity_id: sensor.aeotec_wohnzimmer_burglar
+        to: '8'
+      - platform: state
+        entity_id: binary_sensor.zigate_7904_presence
+        to: 'on'
+      - platform: state
+        entity_id: binary_sensor.zigate_eac1_presence
+        to: 'on'
+      - platform: state
+        entity_id: binary_sensor.zigate_be83_presence
+        to: 'on'
+      - platform: state
+        entity_id: binary_sensor.zigate_a230_presence
+        to: 'on'         
+    condition:
+      - condition: state
+        entity_id: binary_sensor.zu_hause
+        state: 'off'
+      - condition: state
+        entity_id: 'vacuum.xiaomi_vacuum_cleaner'
+        state: 'docked'        
+    action:
+      service: notify.telegram
+      data_template:
+        title: "Bewegung erkannt"
+        message: >-
+          {% if trigger.entity_id == "sensor.fibaro_badezimmer_burglar" %}
+             Im Badezimmer wurde eine Bewegung erkannt.
+          {% elif trigger.entity_id == "sensor.aeotec_wohnzimmer_burglar" %}
+            Im Wohnzimmer wurde eine Bewegung erkannt.
+          {% elif trigger.entity_id == "binary_sensor.zigate_7904_presence" %}
+            Im Flur wurde eine Bewegung erkannt.
+          {% elif trigger.entity_id == "binary_sensor.zigate_eac1_presence" %}
+            Im Arbeitszimmer wurde eine Bewegung erkannt.
+          {% elif trigger.entity_id == "binary_sensor.zigate_be83_presence" %}
+            Im Schlafzimmer wurde eine Bewegung erkannt.
+          {% elif trigger.entity_id == "binary_sensor.zigate_a230_presence" %}
+            In der Küche wurde eine Bewegung erkannt.            
+          {% else %}
+            Eine sonstige Bewegung wurde erkannt.
+          {% endif %}                 
+
+  - alias: "Alarm - Fenster"
+    initial_state: true
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.zigate_6e71_onoff
+        to: 'on'
+      - platform: state
+        entity_id: binary_sensor.zigate_bd4c_onoff
+        to: 'on'      
+      - platform: state
+        entity_id: binary_sensor.zigate_9619_onoff
+        to: 'on'  
+      - platform: state
+        entity_id: binary_sensor.zigate_3415_onoff
+        to: 'on'  
+      - platform: state
+        entity_id: binary_sensor.zigate_2d17_onoff
+        to: 'on'          
+    condition:
+      - condition: state
+        entity_id: binary_sensor.zu_hause
+        state: 'off'
+    action:
+      service: notify.telegram
+      data_template:
+        title: "Fenster geöffnet"
+        message: >-          
+          {% if trigger.entity_id == "binary_sensor.zigate_6e71_onoff" %}
+            Das Fenster im Wohnzimmer wurde geöffnet.
+          {% elif trigger.entity_id == "binary_sensor.zigate_bd4c_onoff" %}
+            Das Fenster im Schlafzimmer wurde geöffnet.
+          {% elif trigger.entity_id == "binary_sensor.zigate_9619_onoff" %}
+            Das Fenster in der Küche wurde geöffnet.
+          {% elif trigger.entity_id == "binary_sensor.zigate_3415_onoff" %}
+            Das Fenster im Arbeitszimmer wurde geöffnet.
+          {% elif trigger.entity_id == "binary_sensor.zigate_2d17_onoff" %}
+            Das Fenster im Sportzimmer wurde geöffnet.
+          {% endif %}     
+           
+  - alias: "Zu Hause - Geräte einschalten"
+    initial_state: true
+    trigger:   
+      - platform: state
+        entity_id: binary_sensor.zu_hause
+        to: 'on'
+    condition:
+      - condition: time
+        after: '08:00'
+        before: '20:00'
+    action:   
+      - service: script.zu_hause
+      
+  - alias: "Zu Hause - Geräte einschalten abends"
+    initial_state: true
+    trigger:   
+      - platform: state
+        entity_id: binary_sensor.zu_hause
+        to: 'on'
+    condition:
+      - condition: time
+        after: '20:00'
+        before: '23:30'
+    action:   
+      - service: script.zu_hause_abends     
+              
+  - alias: 'Unterwegs - Geräte eingeschaltet'
+    initial_state: true
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.zu_hause
+        to: 'off'
+        for:
+          minutes: 60
+    condition:
+      - condition: state
+        entity_id: group.alles_ausschalten
+        state: 'on'               
+    action:
+      - service: notify.telegram
+        data_template:
+          title: "Es sind noch Geräte eingeschaltet"
+          message: >-
+            {%- set comma = joiner(",") -%}
+            {%- set deviceFound = false -%}
+            
+            {% for entity_id in states.group.alles_ausschalten.attributes.entity_id -%}
+              {%- set domain, device = entity_id.split('.') -%}
+              {%- if states[domain][device].state == 'on' -%}
+                {%- set deviceFound = true -%}
+                {{ comma() }} {{ states[domain][device].attributes.friendly_name }}
+              {%- endif -%}
+            {%- endfor -%} 
+            
+            {%- if deviceFound == true -%}
+              Alle Geräte sind ausgeschaltet.
+            {%- endif -%}              
+          data:
+            inline_keyboard:              
+              - 'Alles Ausschalten:/alles_ausschalten'    
+              
+script:         
+  zu_hause:
+    alias: "Zu Hause"
+    sequence:
+      - service: switch.turn_on
+        entity_id: switch.badezimmer_radio, switch.wohnzimmer_radio, switch.flur_radio, switch.kuche_radio, switch.computer, switch.watchtv_wohnzimmer
+      - wait_template: "{{ is_state('media_player.wohnzimmer', 'playing') }}"
+      - service: script.sync_radios        
+      - condition: state
+        entity_id: binary_sensor.sonne_tagsueber
+        state: 'off'
+      - service: light.turn_on
+        entity_id: light.couch, light.strahler
+          
+  zu_hause_abends:
+    alias: "Zu Hause - abends"
+    sequence:
+      - service: light.turn_on
+        entity_id: light.couch, light.strahler      
+      - service: switch.turn_on
+        entity_id: switch.badezimmer_radio, switch.computer, switch.watchtv_wohnzimmer
+      - wait_template: "{{ is_state('media_player.badezimmer', 'playing') }}"
+      - service: media_player.media_pause
+        entity_id: media_player.badezimmer            
+      
+  alles_ausschalten:
+    alias: "Alles ausschalten"
+    sequence:
+      - service: switch.turn_off
+        entity_id: switch.alle_radios, switch.monitor, switch.schlafzimmer_fernseher, switch.benachrichtigungen, switch.watchtv_wohnzimmer, switch.watchtv_schlafzimmer       
+      - service: light.turn_off      
+        entity_id: light.couch, light.strahler, light.vitrine, light.sideboard, light.schrank, light.badezimmerschrank, light.bett, light.regal, light.schreibtisch, light.balkon, light.arbeitszimmer_lampe
+      - condition: state
+        entity_id: input_boolean.computer_ausschalten
+        state: 'on'       
+      - service: switch.turn_off
+        entity_id: switch.pc
+
+homeassistant:
+  customize:
+    script.zu_hause:
+      hidden: true
+    script.zu_hause_abends:
+      hidden: true      
+      
+    input_boolean.alles_auschalten_aktiv:
+      hidden: true
+    timer.alles_auschalten:
+      hidden: true

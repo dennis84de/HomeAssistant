@@ -1,0 +1,29 @@
+logger:
+  default: error
+  logs:
+#    homeassistant.components.media_player.squeezebox: fatal
+#    custom_components.media_player.squeezebox: fatal
+    homeassistant.components.sensor.openhardwaremonitor: fatal
+    zigate: fatal
+    
+recorder:
+  purge_interval: 1
+  purge_keep_days: 14
+  db_url: !secret mariadb_url
+  
+system_log:
+  max_entries: 100
+  
+logbook:
+  include:
+    domains:
+      - switch
+      - light
+      - automation
+      
+history:
+  include:
+    domains:
+      - switch
+      - media_player
+      - lights

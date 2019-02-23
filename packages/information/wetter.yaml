@@ -1,0 +1,530 @@
+sun:
+  monitored_conditions:
+    - elevation
+    - max_elevation
+    - next_dusk
+    - next_dawn
+    
+weather:
+  - platform: openweathermap
+    api_key: !secret openweathermap_key
+    name: Aktuelles Wetter
+    
+openuv:
+  api_key: !secret openuv_key
+  binary_sensors:
+    monitored_conditions:
+      - uv_protection_window
+  sensors:
+    monitored_conditions:
+      - current_uv_index
+      - max_uv_index
+      - safe_exposure_time_type_3    
+
+camera:
+  - platform: generic
+    still_image_url: http://api.sat24.com/mostrecent/DE/visual5hdcomplete
+    name: Wetter
+
+  - platform: generic
+    still_image_url: http://www.grueninger.com/webcam/current.jpg
+    name: Dortmund  
+
+binary_sensor:
+  - platform: iss
+  
+  - platform: template
+    sensors:
+      schlechtes_wetter:
+        friendly_name: "Schlechtes Wetter"
+        icon_template: mdi:weather-snowy-rainy
+        value_template: >-
+          {{ is_state('sensor.wetterlage', 'Klar') == False }}
+    
+      regen_erwartet:
+        friendly_name: "Regen erwartet"
+        value_template: >-
+          {{ states.sensor.darksky_nearest_storm_distance.state | float < 9 and states.sensor.darksky_precip_probability.state | float > 80 }}
+
+      sonne_tagsueber:
+        friendly_name: "Sonne tagsüber"
+        value_template: >-
+          {% if states.sensor.helligkeit.state == None %}
+            False
+          {% else %}
+            {{ states.sensor.helligkeit.state | float > 20 }}
+          {% endif %}
+
+sensor:
+  - platform: moon
+  
+  - platform: wunderground
+    api_key: !secret wunderground_key
+    lang: DL
+    monitored_conditions:
+      - weather_1d_metric
+      - weather_1n_metric
+      - weather_2d_metric
+      - weather_2n_metric
+      - weather_3d_metric
+      - weather_3n_metric
+      - weather_4d_metric
+      - weather_4n_metric
+            
+  - platform: darksky
+    api_key: !secret darksky_key
+    name: Darksky
+    language: de
+    forecast:
+      - 0    
+    monitored_conditions:  
+      - precip_type
+      - precip_intensity
+      - precip_probability
+      - temperature
+      - apparent_temperature
+      - wind_speed
+      - wind_bearing
+      - cloud_cover
+      - humidity
+      - pressure
+      - ozone
+      - hourly_summary
+      - temperature_high
+      - temperature_low
+      - dew_point
+      - icon
+      - nearest_storm_distance
+      - summary
+      
+  - platform: co2signal
+    token: !secret co2signal_key
+    scan_interval: 900
+    
+  - platform: mold_indicator
+    name: Schimmelindikator
+    indoor_temp_sensor: sensor.aeotec_wohnzimmer_temperature
+    indoor_humidity_sensor: sensor.aeotec_wohnzimmer_relative_humidity
+    outdoor_temp_sensor: sensor.zigate_6ec3_temperature
+    calibration_factor: 1.16
+    
+  - platform: rest
+    scan_interval: 43200   
+    resource: https://opendata.dwd.de/climate_environment/health/alerts/s31fg.json
+    name: Pollen Gräser
+    value_template: '{% for region in value_json.content -%}{%- if region.partregion_id == 41 %}{{region.Pollen.Graeser}}{% endif -%}{%- endfor %}'
+  
+  - platform: rest
+    scan_interval: 43200 
+    resource: https://opendata.dwd.de/climate_environment/health/alerts/s31fg.json
+    name: Pollen Birke
+    value_template: '{% for region in value_json.content -%}{%- if region.partregion_id == 41 %}{{region.Pollen.Birke}}{% endif -%}{%- endfor %}'
+  
+  - platform: rest
+    scan_interval: 43200  
+    resource: https://opendata.dwd.de/climate_environment/health/alerts/s31fg.json
+    name: Pollen Roggen
+    value_template: '{% for region in value_json.content -%}{%- if region.partregion_id == 41 %}{{region.Pollen.Roggen}}{% endif -%}{%- endfor %}'    
+
+  - platform: rest
+    name: SpaceX
+    json_attributes:
+      - mission_name
+      - launch_site
+      - rocket
+    value_template: '{{ value_json["launch_date_unix"] }}'
+    resource: 'https://api.spacexdata.com/v2/launches/next'    
+    
+  - platform: rest
+    name: Strommix
+    resource: !secret strommix_url
+    unit_of_measurement: '%'
+    value_template: '{{ value_json[0].eevalue }}'
+
+  - platform: template
+    sensors:
+      wetterlage:
+        friendly_name: 'Wetterlage'
+        icon_template: mdi:weather-windy-variant
+        value_template: >
+          {% if is_state('sensor.darksky_precip' , 'snow') %} Schnee
+          {% elif ((states('sensor.darksky_overnight_low_temperature') | int < 4) and (states('sensor.darksky_dew_point') | int < 6)
+            and (states('sensor.darksky_wind_speed') | int < 12) and (states('sensor.darksky_cloud_coverage') | int < 20)
+            and (states('sensor.darksky_humidity') | int > 50)) %} Frost
+          {% elif (states('sensor.darksky_precip_intensity') | int > 7) %} Regen
+          {% else %} Klar {% endif %}
+                   
+      helligkeit:
+        friendly_name: 'Helligkeit'
+        entity_id:
+          - sun.sun
+          - sensor.darksky_cloud_coverage
+        value_template: >-
+          {%- set elevation = state_attr('sun.sun','elevation') | float %}
+          {%- set cloud_coverage = states('sensor.darksky_cloud_coverage') | float %}
+          {%- set cloud_factor = (1 - (0.75 * ( cloud_coverage / 100) ** 3 )) %}
+          {%- set min_elevation = -6 %}
+          {%- set max_elevation = 45 %}
+          {%- set adjusted_elevation = elevation - min_elevation %}
+          {%- set adjusted_elevation = [adjusted_elevation,0] | max %}
+          {%- set adjusted_elevation = [adjusted_elevation,max_elevation - min_elevation] | min %}
+          {%- set adjusted_elevation = adjusted_elevation / (max_elevation - min_elevation) %}
+          {%- set adjusted_elevation = adjusted_elevation %}
+          {%- set adjusted_elevation = adjusted_elevation * 100 %}
+          {%- set brightness = adjusted_elevation * cloud_factor %}
+          {{ brightness | round }}
+        unit_of_measurement: '%'
+        device_class: 'illuminance'
+      
+      pollen_graeser_today:
+        friendly_name: 'Gräser'
+        entity_id:
+          - sensor.pollen_graser
+        value_template: >
+          {{ states('sensor.pollen_graser')
+               |regex_findall_index("'today': '[-0-9]+'")
+               |regex_findall_index("[-0-9]+") }}   
+        icon_template: mdi:weather-windy-variant
+        
+      pollen_birke_today:
+        friendly_name: 'Birke'
+        entity_id:
+          - sensor.pollen_birke        
+        value_template: >
+          {{ states('sensor.pollen_birke')
+               |regex_findall_index("'today': '[-0-9]+'")
+               |regex_findall_index("[-0-9]+") }} 
+        icon_template: mdi:weather-windy-variant
+        
+      pollen_roggen_today:
+        friendly_name: 'Roggen'
+        entity_id:
+          - sensor.pollen_roggen
+        value_template: >
+          {{ states('sensor.pollen_roggen')
+               |regex_findall_index("'today': '[-0-9]+'")
+               |regex_findall_index("[-0-9]+") }}    
+        icon_template: mdi:weather-windy-variant
+          
+      tageszeit:
+        friendly_name: Tageszeit
+        entity_id:
+          - sun.sun
+        value_template: >-
+          {% if (as_timestamp(states.sun.sun.attributes.next_dusk)) - (as_timestamp(states.sun.sun.attributes.next_setting)) < 0 %}
+            Abenddämmerung
+          {% elif (as_timestamp(states.sun.sun.attributes.next_rising)) - (as_timestamp(states.sun.sun.attributes.next_dawn)) < 0 %}
+            Morgendämmerung
+          {% elif (states.sun.sun.attributes.elevation) < - 4 %}
+            Nacht
+          {% else %}
+            Tag
+          {% endif %}
+        entity_picture_template: >-
+          {% if (as_timestamp(states.sun.sun.attributes.next_dusk)) - (as_timestamp(states.sun.sun.attributes.next_setting)) < 0 %}
+            /local/sonne/Dawn.png
+          {% elif (as_timestamp(states.sun.sun.attributes.next_rising)) - (as_timestamp(states.sun.sun.attributes.next_dawn)) < 0 %}
+            /local/sonne/Dusk.png
+          {% elif (states.sun.sun.attributes.elevation) < - 4 %}
+            /local/sonne/Night.png
+          {% else %}
+            /local/sonne/Day.png
+          {% endif %} 
+
+      sonnenaufgang:
+        friendly_name: 'Nächster Sonnenaufgang'
+        entity_id:
+          - sun.sun
+        value_template: "{{ as_timestamp(states.sun.sun.attributes.next_rising) | timestamp_custom('%d.%m.%Y %H:%M') }}"
+        icon_template: mdi:weather-sunset-up
+        
+      sonnenuntergang:
+        friendly_name: 'Nächster Sonnenuntergang'
+        entity_id:
+          - sun.sun  
+        value_template: "{{ as_timestamp(states.sun.sun.attributes.next_setting) | timestamp_custom('%d.%m.%Y %H:%M') }}"
+        icon_template: mdi:weather-sunset-down
+        
+      mondphasen:        
+        friendly_name: Mondphase
+        entity_id:
+          - sensor.moon        
+        value_template: >-
+          {% if is_state('sensor.moon', 'new_moon') %}
+            Neumond
+          {% elif is_state('sensor.moon', 'waxing_crescent') %}
+            Zunehmender Sichelmond
+          {% elif is_state('sensor.moon', 'first_quarter') %}
+            Zunehmender Halbmond
+          {% elif is_state('sensor.moon', 'waxing_gibbous') %}
+            Zunehmender Dreiviertelmond
+          {% elif is_state('sensor.moon', 'full_moon') %}
+            Vollmond
+          {% elif is_state('sensor.moon', 'waning_gibbous') %}
+            Abnehmender Dreiviertelmond
+          {% elif is_state('sensor.moon', 'last_quarter') %}
+            Abnehmender Halbmond
+          {% elif is_state('sensor.moon', 'waning_crescent') %}
+            Abnehmender Sichelmond
+          {% endif %}
+        entity_picture_template: >-
+          {% if is_state('sensor.moon', 'new_moon') %}
+            /local/mond/NewMoon.jpg
+          {% elif is_state('sensor.moon', 'waxing_crescent') %}
+            /local/mond/WaxingCrescent.jpg
+          {% elif is_state('sensor.moon', 'first_quarter') %}
+            /local/mond/FirstQuarter.jpg
+          {% elif is_state('sensor.moon', 'waxing_gibbous') %}
+            /local/mond/WaxingGibbous.jpg
+          {% elif is_state('sensor.moon', 'full_moon') %}
+            /local/mond/FullMoon.jpg
+          {% elif is_state('sensor.moon', 'waning_gibbous') %}
+            /local/mond/WaningGibbous.jpg
+          {% elif is_state('sensor.moon', 'last_quarter') %}
+            /local/mond/LastQuarter.jpg
+          {% elif is_state('sensor.moon', 'waning_crescent') %}
+            /local/mond/WaningCrescent.jpg
+          {% endif %}        
+
+      spacex_next_launch_day:
+        friendly_name: 'Nächstes Startdatum'
+        entity_id:
+          - sensor.spacex
+        value_template: '{{ states.sensor.spacex.state | int | timestamp_custom("%d.%m.%Y")}}'
+        
+      spacex_next_launch_time:
+        friendly_name: 'Startzeit'
+        entity_id:
+          - sensor.spacex
+        value_template: '{{ states.sensor.spacex.state | int | timestamp_custom("%H:%M")}}'
+        unit_of_measurement: 'Uhr'
+        
+      spacex_next_rocket:
+        friendly_name: 'Nächste Rakete'
+        entity_id:
+          - sensor.spacex        
+        value_template: '{{ states.sensor.spacex.attributes["rocket"]["rocket_name"] }}'
+        
+      spacex_next_launch_site:
+        friendly_name: 'Abflugsort'
+        value_template: '{{ states.sensor.spacex.attributes["launch_site"]["site_name_long"] }}'
+        
+      spacex_next_mission_name:
+        friendly_name: 'Mission'
+        entity_id:
+          - sensor.spacex        
+        value_template: '{{ states.sensor.spacex.attributes["mission_name"] }}'
+
+      uv_index_current:
+        friendly_name: 'UV Index'
+        unit_of_measurement: 'UV'
+        entity_id:
+          - sensor.current_uv_index        
+        value_template: '{{ states.sensor.current_uv_index.state | float | round(2) }}'
+        icon_template: '{{ states.sensor.current_uv_index.attributes.icon }}'
+        
+      uv_index_max:
+        friendly_name: 'Maximaler UV Index'
+        unit_of_measurement: 'UV'
+        entity_id:
+          - sensor.max_uv_index        
+        value_template: '{{ states.sensor.max_uv_index.state | float | round(2) }}'
+        icon_template: '{{ states.sensor.max_uv_index.attributes.icon }}'
+        
+      zeit_sonne:
+        friendly_name: 'Zeit in der Sonne'
+        entity_id:
+          - sensor.skin_type_3_safe_exposure_time           
+        value_template: >-
+          {% if is_state('sensor.skin_type_3_safe_exposure_time', 'unknown') %}
+            0
+          {% else %}
+            {{ states.sensor.skin_type_3_safe_exposure_time.state | int }}
+          {% endif %}          
+        icon_template: '{{ states.sensor.skin_type_3_safe_exposure_time.attributes.icon }}'
+        unit_of_measurement: 'Minuten'
+
+      windrichtung:
+        friendly_name: 'Windrichtung'
+        icon_template: mdi:compass
+        entity_id:
+          - sensor.darksky_wind_bearing        
+        value_template: >-
+          {% set wind_dir = states.sensor.darksky_wind_bearing.state %}
+          
+          {% if wind_dir | float <= 23 %} Nord
+          {% elif wind_dir | float > 338 %} Nord
+          {% elif 23 < (wind_dir|float) <= 68 %} NO
+          {% elif 68 < (wind_dir|float) <= 113 %} Ost
+          {% elif 113 < (wind_dir|float) <= 158 %} SO
+          {% elif 158 < (wind_dir|float) <= 203 %} Süd
+          {% elif 203 < (wind_dir|float) <= 248 %} SW
+          {% elif 248 < (wind_dir|float) <= 293 %} West
+          {% elif 293 < (wind_dir|float) <= 338 %} NW
+          {%- endif %}
+        entity_picture_template: >-   
+          {% set wind_dir = states.sensor.darksky_wind_bearing.state %}
+          
+          {% if wind_dir | float <= 23 %} /local/wind/0.png
+          {% elif wind_dir | float > 338 %} /local/wind/0.png
+          {% elif 23 < (wind_dir|float) <= 68 %} /local/wind/45.png
+          {% elif 68 < (wind_dir|float) <= 113 %} /local/wind/90.png
+          {% elif 113 < (wind_dir|float) <= 158 %} /local/wind/135.png
+          {% elif 158 < (wind_dir|float) <= 203 %} /local/wind/180.png
+          {% elif 203 < (wind_dir|float) <= 248 %} /local/wind/225.png
+          {% elif 248 < (wind_dir|float) <= 293 %} /local/wind/270.png
+          {% elif 293 < (wind_dir|float) <= 338 %} /local/wind/315.png
+          {%- endif %}        
+        
+  - platform: dwd_weather_warnings
+    region_name: Stadt Dortmund
+    name: Wetterwarnungen
+  
+  - platform: opensky
+    name: Flugzeuge
+    radius: 10         
+
+automation:
+  - alias: 'Balkontür schließen'
+    initial_state: true
+    trigger:
+      platform: template
+      value_template: '{{ states.sensor.zigate_6ec3_temperature.state | float > states.sensor.aeotec_wohnzimmer_temperature.state | float + 2 }}'
+    condition:
+      - condition: numeric_state
+        entity_id: sensor.zigate_6ec3_temperature
+        above: 23
+      - condition: state
+        entity_id: binary_sensor.zigate_6e71_onoff
+        state: 'on'
+      - condition: state
+        entity_id: binary_sensor.zu_hause
+        state: 'on'
+      - condition: numeric_state
+        entity_id: sensor.laufzeit_minuten
+        above: 5   
+    action:
+      - service: notify.telegram
+        data:
+          title: "Balkontür schließen"
+          message: >-
+            {% set difference = (states.sensor.zigate_6ec3_temperature.state | float - states.sensor.aeotec_wohnzimmer_temperature.state | float) | round(2) %}            
+            Auf dem Balkon ist es {{ difference }}°C wärmer als im Wohnzimmer.
+            
+homeassistant:
+  customize:
+    sun.sun:
+      friendly_name: Sonnenstand
+      hidden: true
+    sensor.moon:
+      friendly_name: Mondstand
+      hidden: true      
+      
+    sensor.pws_weather:
+      friendly_name: Aktuelles Wetter
+
+    sensor.darksky_precip_type:
+      friendly_name: Heutige Niederschlagsart
+      hidden: true
+    sensor.darksky_precip_probability:
+      friendly_name: Heutige Regenwahrscheinlichkeit
+    sensor.darksky_precip_intensity:
+      friendly_name: Heutige Regenmenge
+    sensor.darksky_temperature:
+      friendly_name: Temperatur
+    sensor.darksky_apparent_temperature:
+      friendly_name: Gefühlte Temperatur
+    sensor.darksky_wind_speed:
+      friendly_name: Windgeschwindigkeit      
+    sensor.darksky_wind_bearing:
+      hidden: true
+      friendly_name: Windrichtung
+    sensor.darksky_cloud_coverage:
+      friendly_name: Wolkendecke
+    sensor.darksky_humidity:
+      friendly_name: Luftfeuchtigkeit
+    sensor.darksky_pressure:
+      friendly_name: Luftdruck
+    sensor.darksky_ozone:
+      friendly_name: Ozon
+    sensor.darksky_hourly_summary:
+      friendly_name: Zusammenfassung
+    sensor.darksky_daytime_high_temperature_0:
+      friendly_name: Heutige Höchsttemperatur
+      hidden: false
+    sensor.darksky_overnight_low_temperature_0:
+      friendly_name: Heutige Tiefsttemperatur
+      hidden: false
+    sensor.darksky_dew_point:
+      friendly_name: Taupunkt
+      hidden: true
+    sensor.darksky_nearest_storm_distance:
+      friendly_name: Nächster Sturm
+    sensor.darksky_summary:
+      friendly_name: Aktuelles Wetter
+      
+    sensor.wetterwarnungen_current_warning_level:
+      friendly_name: Wetterwarnungen
+      icon: mdi:weather-hurricane
+    sensor.wetterwarnungen_advance_warning_level:
+      hidden: true
+      
+    sensor.schimmelindikator:
+      icon: mdi:biohazard
+      
+    sensor.luftqualitat_pm10:
+      icon: mdi:weather-windy
+    sensor.luftqualitat_pm25:
+      icon: mdi:weather-windy-variant
+      
+    binary_sensor.iss:
+      icon: mdi:earth
+      
+    sensor.pollen_birke:
+      hidden: true
+    sensor.pollen_graser:
+      hidden: true
+    sensor.pollen_roggen:
+      hidden: true      
+      
+    sensor.spacex:
+      hidden: true
+    sensor.spacex_next_rocket:
+      icon: mdi:rocket
+    sensor.spacex_next_launch_day:
+      icon: mdi:calendar
+    sensor.spacex_next_launch_time:
+      icon: mdi:clock-outline
+    sensor.spacex_next_launch_site:
+      icon: mdi:map-marker-radius
+    sensor.spacex_next_mission_name:
+      icon: mdi:information-outline      
+      
+    binary_sensor.protection_window:
+      friendly_name: Sonnenschutz
+      
+    sensor.skin_type_3_safe_exposure_time:
+      hidden: true    
+    sensor.current_uv_index:
+      hidden: true
+    sensor.max_uv_index:
+      hidden: true
+      
+    sensor.helligkeit:
+      icon: mdi:theme-light-dark
+      
+    sensor.strommix:
+      icon: mdi:solar-power
+    
+    sensor.darksky_icon:
+      hidden: true
+    sensor.darksky_precip:
+      hidden: true
+    
+    binary_sensor.regen_erwartet:
+      hidden: true
+    binary_sensor.sonne_tagsueber:
+      hidden: true
+      
+    sensor.co2_intensity_51_49_7_36:
+      friendly_name: CO2 Belastung

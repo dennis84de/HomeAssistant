@@ -1,0 +1,28 @@
+light:
+  - platform: flux_led
+    devices:
+      192.168.2.48:
+        name: Badezimmerschrank
+        mode: "grb"
+                        
+input_boolean:     
+  bewegungsmelder_badezimmer_deaktiviert:
+    name: Bewegungsmelder deaktiviert
+    initial: off 
+    icon: mdi:sync-off
+
+lightingsm:
+  bewegung_badezimmer:
+    friendly_name: "Bewegung Badezimmer"
+    sensor: binary_sensor.bewegungsmelder_badezimmer
+    entity: light.badezimmerschrank
+    sensor_type_duration: True
+    delay: 120     
+    overrides:
+      - binary_sensor.sonne_tagsueber
+      - input_boolean.bewegungsmelder_badezimmer_deaktiviert    
+      
+homeassistant:
+  customize:
+    light.badezimmerschrank:      
+      icon: mdi:led-strip

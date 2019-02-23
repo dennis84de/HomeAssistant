@@ -1,0 +1,86 @@
+speedtestdotnet:
+
+sensor:
+  - platform: synologydsm    
+    host: !secret synology_host
+    port: 5000
+    ssl: false
+    username: !secret synology_username
+    password: !secret synology_password
+    monitored_conditions:
+      - cpu_total_load
+      - memory_real_usage
+      - network_up
+      - network_down
+      - volume_status
+      - volume_percentage_used  
+
+#  - platform: haveibeenpwned
+#    email: 
+#      - !secret pwned_mail
+          
+  - platform: pi_hole
+    host: 192.168.2.70
+    monitored_conditions:
+      - ads_blocked_today
+      - ads_percentage_today
+      - unique_clients
+      - clients_ever_seen
+      
+switch:
+  - platform: command_line
+    switches:
+      pi_hole:        
+        command_on: "curl -X GET 'http://192.168.2.70/admin/api.php?enable&auth=f7e48f5d33ae1d2adf8f75b6a6a9b94cafd74890d86fe0df5a5d1ab78deaeb68'"
+        command_off: "curl -X GET 'http://192.168.2.70/admin/api.php?disable=3600&auth=f7e48f5d33ae1d2adf8f75b6a6a9b94cafd74890d86fe0df5a5d1ab78deaeb68'"
+        command_state: "curl -X GET 'http://192.168.2.70/admin/api.php?status&auth=f7e48f5d33ae1d2adf8f75b6a6a9b94cafd74890d86fe0df5a5d1ab78deaeb68'"
+        value_template: "{{ value_json.status == 'enabled' }}"
+        
+automation:
+  - alias: Haveibeenpwned
+    initial_state: 'on'
+    trigger:
+      - platform: numeric_state
+        entity_id: !secret pwned_sensor
+        above: 0
+    action:
+      service: notify.telegram
+      data_template:
+        title: "Haveibeenpwned"
+        message: "Warnung - HaveIbeenPwned hat die E-Mail-Adresse {{trigger.to_state.attributes.friendly_name}} gefunden."    
+        
+homeassistant:
+  customize:
+    sensor.cpu_load_total:
+      friendly_name: CPU Leistung
+    sensor.memory_usage_real:
+      friendly_name: Auslastung Arbeitsspeicher
+    sensor.network_up:
+      friendly_name: Netzwerk Upload
+    sensor.network_down:
+      friendly_name: Netzwerk Download
+    sensor.status_volume_1:
+      friendly_name: Volume Status
+    sensor.volume_used_volume_1:
+      friendly_name: Belegter Speicherplatz    
+      
+    sensor.speedtest_download:
+      icon: mdi:download-network
+    sensor.speedtest_upload:
+      icon: mdi:upload-network     
+      
+    !secret pwned_sensor:
+      icon: mdi:email-check
+      friendly_name: !secret pwned_mail  
+      
+    switch.pi_hole:
+      friendly_name: Pi-hole
+      icon: mdi:cancel
+    sensor.pi_hole_ads_blocked_today:
+      friendly_name: Anfragen blockiert
+    sensor.pi_hole_ads_percentage_blocked_today:
+      friendly_name: Prozent blockiert
+    sensor.pi_hole_dns_unique_clients:
+      friendly_name: Geräte heute
+    sensor.pi_hole_seen_clients:
+      friendly_name: Geräte insgesamt

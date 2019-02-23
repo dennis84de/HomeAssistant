@@ -1,0 +1,68 @@
+title: Schlafzimmer
+path: schlafzimmer
+cards:
+  - type: entities
+    title: Multimedia
+    show_header_toggle: false
+    entities:  
+      - entity: switch.watchtv_schlafzimmer
+      - entity: switch.kodi_schlafzimmer
+      - entity: cover.fernseher_schlafzimmer_lautstaerke
+      - type: custom:mini-media-player
+        entity: media_player.kodi_schlafzimmer
+        hide:
+          source: true
+          volume: true      
+          progress: true        
+      - type: custom:mini-media-player
+        entity: media_player.fire_tv_schlafzimmer
+        hide:
+          source: true
+          controls: true      
+          progress: true      
+    
+  - type: entities
+    title: Sleeptimer
+    show_header_toggle: false
+    entities:  
+      - entity: sensor.timer_schlafzimmer_zeit
+      - entity: input_boolean.timer_schlafzimmer_aktiv
+      - entity: input_select.timer_schlafzimmer_dauer      
+    
+  - type: entities
+    title: Licht
+    show_header_toggle: false
+    entities:  
+      - entity: light.bett
+      - entity: light.fernseher_schlafzimmer
+    
+  - type: entities
+    title: Geräte
+    show_header_toggle: false
+    entities:  
+      - entity: switch.schlafzimmer_fernseher
+      - entity: switch.schlafzimmer_radio
+    
+  - type: entities
+    title: Heizung
+    show_header_toggle: false
+    entities:  
+      - entity: binary_sensor.zigate_bd4c_onoff    
+  
+  - type: glance
+    title: Thermometer
+    show_header_toggle: false
+    entities:  
+      - entity: sensor.zigate_7c8f_temperature
+      - entity: sensor.zigate_7c8f_humidity
+      - entity: sensor.zigate_7c8f_pressure        
+    
+  - type: glance
+    title: Sensoren
+    show_header_toggle: false
+    entities:  
+      - entity: binary_sensor.zigate_be83_presence
+      - entity: sensor.zigate_be83_luminosity
+      - entity: sensor.xiaomi_vibration_schlafzimmer_status  
+    
+     

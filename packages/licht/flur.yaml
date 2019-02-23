@@ -1,0 +1,35 @@
+light:
+  - platform: flux_led
+    devices:
+      192.168.2.54:
+        name: Sideboard
+        mode: "grb"
+        
+  - platform: flux_led
+    devices:
+      192.168.2.71:
+        name: Schrank
+        mode: "grb"        
+        
+input_boolean:     
+  bewegungsmelder_flur_deaktiviert:
+    name: Bewegungsmelder deaktiviert
+    initial: off 
+    icon: mdi:sync-off
+
+lightingsm:
+  bewegung_flur_vorne:
+    friendly_name: "Bewegung Flur vorne"
+    sensor: binary_sensor.zigate_7904_presence
+    entity: light.sideboard
+    delay: 120     
+    overrides:
+      - binary_sensor.sonne_tagsueber
+      - input_boolean.bewegungsmelder_flur_deaktiviert     
+
+homeassistant:
+  customize:
+    light.sideboard:      
+      icon: mdi:led-strip   
+    light.schrank:      
+      icon: mdi:led-strip         

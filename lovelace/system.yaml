@@ -1,0 +1,142 @@
+title: System
+path: system
+cards:
+  - type: entities
+    title: Home Assistant
+    show_header_toggle: false
+    entities:
+      - entity: sensor.database_size
+      - entity: sensor.laufzeit
+      - entity: sensor.hass_installed_version
+      - entity: sensor.hass_current_version         
+      - entity: script.restart_homeassistant
+      - entity: script.upgrade_homeassistant    
+    
+  - type: entities
+    title: Batterien Geräte
+    show_header_toggle: false
+    entities: 
+      - entity: sensor.handy_batterie
+      - entity: sensor.tablet_wohnzimmer_batterie
+      - entity: sensor.tablet_kueche_batterie
+      - entity: sensor.tablet_badezimmer_batterie
+      - entity: sensor.tablet_schlafzimmer_batterie        
+
+  - type: entities
+    title: Batterien Sensoren
+    show_header_toggle: false
+    entities:   
+      - entity: sensor.xiaomi_tuerklingel_flur_batterie
+      - entity: sensor.xiaomi_tuersensor_flur_batterie    
+      - entity: sensor.xiaomi_schalter_wohnzimmer_batterie
+      - entity: sensor.xiaomi_schalter_flur_batterie
+      - entity: sensor.xiaomi_schalter_schlafzimmer_batterie    
+      - entity: sensor.xiaomi_cube_batterie
+      - entity: sensor.xiaomi_vibration_wohnzimmer_batterie
+      - entity: sensor.xiaomi_vibration_schlafzimmer_batterie     
+  
+  - type: entities
+    title: Batterien Thermometer
+    show_header_toggle: false
+    entities:
+      - entity: sensor.xiaomi_thermometer_balkon_batterie
+      - entity: sensor.xiaomi_thermometer_parkplatz_batterie 
+      - entity: sensor.xiaomi_thermometer_schlafzimmer_batterie 
+      - entity: sensor.xiaomi_thermometer_arbeitszimmer_batterie 
+      - entity: sensor.xiaomi_thermometer_kueche_batterie 
+      - entity: sensor.xiaomi_thermometer_flur_batterie 
+      - entity: sensor.xiaomi_thermometer_sportzimmer_batterie
+      - entity: sensor.xiaomi_thermometer_kuehlschrank_batterie 
+      - entity: sensor.xiaomi_thermometer_gefrierschrank_batterie    
+        
+  - type: entities
+    title: Batterien Fenster
+    show_header_toggle: false
+    entities:      
+      - entity: sensor.xiaomi_fenster_wohnzimmer_batterie
+      - entity: sensor.xiaomi_fenster_schlafzimmer_batterie
+      - entity: sensor.xiaomi_fenster_kueche_batterie
+      - entity: sensor.xiaomi_fenster_arbeitszimmer_batterie
+      - entity: sensor.xiaomi_fenster_sportzimmer_batterie
+
+  - type: entities
+    title: Batterien Bewegungsmelder
+    show_header_toggle: false
+    entities:        
+      - entity: sensor.fibaro_bewegungsmelder_badezimmer_batterie
+      - entity: sensor.xiaomi_bewegungsmelder_flur_batterie
+      - entity: sensor.xiaomi_bewegungsmelder_arbeitszimmer_batterie
+      - entity: sensor.xiaomi_bewegungsmelder_schlafzimmer_batterie
+      - entity: sensor.xiaomi_bewegungsmelder_kueche_batterie
+      - entity: sensor.xiaomi_bewegungsmelder_balkon_batterie
+    
+  - type: entities
+    title: Batterien Heizung
+    show_header_toggle: false
+    entities:
+      - entity: binary_sensor.heizung_arbeitszimmer_batterie
+      - entity: binary_sensor.heizung_badezimmer_batterie
+      - entity: binary_sensor.heizung_kueche_batterie
+      - entity: binary_sensor.heizung_wohnzimmer_batterie        
+    
+  - type: glance
+    title: Nextcloud
+    show_header_toggle: false
+    entities:
+      - entity: binary_sensor.nextcloud
+      - entity: sensor.nextcloud_zertifikat 
+       
+  - type: entities
+    title: Pi-hole
+    show_header_toggle: false
+    entities:
+      - entity: switch.pi_hole
+      - entity: sensor.pi_hole_ads_blocked_today
+      - entity: sensor.pi_hole_ads_percentage_blocked_today
+      - entity: sensor.pi_hole_dns_unique_clients
+      - entity: sensor.pi_hole_seen_clients
+      
+  - type: entities
+    title: Bewegungsmelder deaktivieren
+    show_header_toggle: false
+    entities:
+      - entity: input_boolean.bewegungsmelder_wohnzimmer_deaktiviert
+        name: Wohnzimmer
+        icon: mdi:lightbulb-on-outline
+      - entity: input_boolean.bewegungsmelder_schlafzimmer_deaktiviert
+        name: Schlafzimmer
+        icon: mdi:lightbulb-on-outline        
+      - entity: input_boolean.bewegungsmelder_kueche_deaktiviert
+        name: Küche
+        icon: mdi:lightbulb-on-outline
+      - entity: input_boolean.bewegungsmelder_badezimmer_deaktiviert
+        name: Badezimmer
+        icon: mdi:lightbulb-on-outline      
+      - entity: input_boolean.bewegungsmelder_flur_deaktiviert
+        name: Flur
+        icon: mdi:lightbulb-on-outline          
+      - entity: input_boolean.bewegungsmelder_arbeitszimmer_deaktiviert
+        name: Arbeitszimmer
+        icon: mdi:lightbulb-on-outline         
+      
+  - type: custom:vertical-stack-in-card
+    title: Internetgeschwindigkeit
+    cards:
+      - type: horizontal-stack
+        title: Network Status
+        cards:        
+          - type: sensor
+            entity: sensor.speedtest_download
+            name: Download
+            hours_to_show: 24
+            graph: line
+            detail: 1
+          - type: sensor
+            entity: sensor.speedtest_upload
+            name: Upload
+            hours_to_show: 24
+            graph: line
+            detail: 1   
+      - type: entities
+        entities:
+          - entity: sensor.speedtest_ping           

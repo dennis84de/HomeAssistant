@@ -1,0 +1,63 @@
+zwave:
+  usb_path: /dev/ttyACM0
+       
+homeassistant:
+  customize:
+    zwave.aeotec_zw090_zstick_gen5_eu:
+      friendly_name: Z-Wave Stick
+
+    sensor.aeotec_wohnzimmer_burglar:
+      friendly_name: Bewegungsmelder      
+      hidden: true
+    sensor.aeotec_wohnzimmer_luminance:
+      friendly_name: Helligkeit
+      device_class: illuminance
+    sensor.aeotec_wohnzimmer_relative_humidity:
+      friendly_name: Luftfeuchtigkeit  
+      device_class: humidity
+    sensor.aeotec_wohnzimmer_temperature:
+      friendly_name: Temperatur
+    sensor.aeotec_wohnzimmer_ultraviolet: 
+      friendly_name: UV-Licht
+      icon: mdi:flash-circle
+      hidden: true
+    sensor.aeotec_wohnzimmer_alarm_level:
+      friendly_name: Alarmlevel
+      hidden: true  
+    sensor.aeotec_wohnzimmer_alarm_type:
+      friendly_name: Alarmtyp
+      hidden: true
+    binary_sensor.aeotec_wohnzimmer_sensor:
+      friendly_name: Alarm
+      hidden: true
+    sensor.aeotec_wohnzimmer_sourcenodeid:
+      friendly_name: Aeotec Wohnzimmer ID
+      hidden: true
+
+    sensor.fibaro_badezimmer_alarm_level:
+      friendly_name: Alarmlevel
+      hidden: true  
+    sensor.fibaro_badezimmer_alarm_type:
+      friendly_name: Alarmtyp
+      hidden: true
+    binary_sensor.fibaro_badezimmer_sensor:
+      friendly_name: Alarm
+      hidden: true  
+    sensor.fibaro_badezimmer_sourcenodeid:
+      friendly_name: Fibaro Badezimmer ID 
+      hidden: true
+    sensor.fibaro_badezimmer_general:
+      friendly_name: Fibaro General
+      hidden: true
+    sensor.fibaro_badezimmer_burglar:
+      friendly_name: Bewegungsmelder
+      hidden: true
+    sensor.fibaro_badezimmer_luminance:
+      friendly_name: Helligkeit
+      device_class: illuminance
+    sensor.fibaro_badezimmer_seismic_intensity:
+      friendly_name: Erdbeben  
+      icon: mdi:earth
+      hidden: true
+    sensor.fibaro_badezimmer_temperature:
+      friendly_name: Temperatur      

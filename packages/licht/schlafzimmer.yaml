@@ -1,0 +1,60 @@
+light:
+  - platform: flux_led
+    devices:
+      192.168.2.61:
+        name: Bett
+        mode: "rgb"        
+
+  - platform: switch
+    name: Fernseher Schlafzimmer
+    entity_id: switch.licht_fernseher_schlafzimmer
+    
+input_boolean:     
+  bewegungsmelder_schlafzimmer_deaktiviert:
+    name: Bewegungsmelder deaktiviert
+    initial: off 
+    icon: mdi:sync-off
+
+lightingsm:
+  bewegung_schlafzimmer:
+    friendly_name: "Bewegung Schlafzimmer"
+    sensor: binary_sensor.zigate_be83_presence
+    entity: light.bett
+    delay: 60  
+    overrides:
+      - binary_sensor.sonne_tagsueber      
+      - input_boolean.bewegungsmelder_schlafzimmer_deaktiviert               
+
+automation:     
+  - alias: "Licht Schlafzimmer - ausschalten"
+    initial_state: true
+    trigger:
+      - platform: event
+        event_type: xiaomi_aqara.click
+        event_data:
+          entity_id: binary_sensor.switch_158d0002134568
+          click_type: single
+    condition: 
+      - condition: or
+        conditions:          
+        - condition: state
+          entity_id: media_player.kodi_schlafzimmer
+          state: 'idle'
+        - condition: state
+          entity_id: media_player.kodi_schlafzimmer
+          state: 'off'        
+    action: 
+      - service: light.turn_off
+        entity_id: light.bett, light.sideboard, light.schrank, light.badezimmerschrank, light.schreibtisch, light.regal, light.arbeitszimmer_lampe
+        
+homeassistant:
+  customize:
+    light.bett:      
+      icon: mdi:led-strip   
+    light.fernseher_schlafzimmer:
+      icon: mdi:television-classic
+      friendly_name: Fernseher
+      
+    switch.licht_fernseher_schlafzimmer:      
+      hidden: true
+      assumed_state: false

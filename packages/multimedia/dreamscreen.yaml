@@ -1,0 +1,107 @@
+dreamscreen:
+         
+input_select:
+  dreamscreen_modus:
+    name: 'Dreamscreen'
+    options:
+      - 'Video'
+      - 'Musik'
+      - 'Ambiente'
+      - 'Aus'
+    icon: 'mdi:video-input-hdmi'   
+    
+  dreamscreen_ambiente:
+    name: 'Ambiente'
+    options:
+      - 'Random Colors'
+      - 'Fireside'
+      - 'Twinkle'
+      - 'Ocean'
+      - 'Pride'
+      - 'July 4th'
+      - 'Holiday'
+      - 'Pop'
+      - 'Enchanted Forest'
+      - 'Aus'
+    icon: 'mdi:filmstrip'
+      
+automation:                
+  - alias: "Dreamscreen - Modus ändern"
+    initial_state: true
+    trigger:
+      - platform: state
+        entity_id: input_select.dreamscreen_modus    
+    action:
+      - service: dreamscreen.set_mode
+        data_template:
+          entity_id: dreamscreen.fernseher
+          mode: >-
+            {% if is_state("input_select.dreamscreen_modus", "Video") %}
+              1
+            {% elif is_state("input_select.dreamscreen_modus", "Musik") %}
+              2
+            {% elif is_state("input_select.dreamscreen_modus", "Ambiente") %}
+              3
+            {% elif is_state("input_select.dreamscreen_modus", "Aus") %}
+              0
+            {% endif %}
+      - service: input_select.select_option
+        data_template:
+          entity_id: input_select.dreamscreen_ambiente
+          option: >-
+            {% if is_state("input_select.dreamscreen_modus", "Ambiente") %}
+              {% set scene = states.dreamscreen.fernseher.attributes.ambient_scene %}
+              {% set ambient = {
+                0:'Random Colors',
+                1:'Fireside',
+                2:'Twinkle',
+                3:'Ocean',
+                4:'Pride',
+                5:'July 4th',
+                6:'Holiday',
+                7:'Pop',
+                8:'Enchanted Forest'} 
+              %}
+
+              {{ ambient[scene] }}   
+            {% else %}
+              Aus
+            {% endif %}
+      
+  - alias: "Dreamscreen - Ambiente ändern"
+    initial_state: true
+    trigger:
+      - platform: state
+        entity_id: input_select.dreamscreen_ambiente
+    condition:
+      - condition: template
+        value_template: "{{ is_state('input_select.dreamscreen_ambiente', 'Aus') == False }}"
+    action:
+      - service: input_select.select_option
+        data_template:
+          entity_id: input_select.dreamscreen_modus
+          option: Ambiente
+      - service: dreamscreen.set_ambient_scene
+        data_template:
+          entity_id: dreamscreen.fernseher
+          scene: >-
+            {% set state = states.input_select.dreamscreen_ambiente.state %}
+            {% set ambient = {
+              'Random Colors':0,
+              'Fireside':1,
+              'Twinkle':2,
+              'Ocean':3,
+              'Pride':4,
+              'July 4th':5,
+              'Holiday':6,
+              'Pop':7,
+              'Enchanted Forest':8} 
+            %}
+
+            {{ ambient[state] | int }}
+                                    
+homeassistant:
+  customize:
+    dreamscreen.fernseher:
+      friendly_name: Dreamscreen
+      hidden: true

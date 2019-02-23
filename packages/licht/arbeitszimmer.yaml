@@ -1,0 +1,55 @@
+light:
+  - platform: flux_led
+    devices:
+      192.168.2.63:
+        name: Schreibtisch
+        mode: "rgb"  
+            
+  - platform: switch
+    name: Arbeitszimmer Lampe
+    entity_id: switch.arbeitszimmer_lampe
+    
+input_boolean:     
+  bewegungsmelder_arbeitszimmer_deaktiviert:
+    name: Bewegungsmelder deaktiviert
+    initial: off 
+    icon: mdi:sync-off
+
+lightingsm:
+  bewegung_arbeitszimmer:
+    friendly_name: "Bewegung Arbeitszimmer"
+    sensor: binary_sensor.zigate_eac1_presence
+    entities: 
+      - light.schreibtisch
+      - light.arbeitszimmer_lampe
+    delay: 120     
+    overrides:
+      - binary_sensor.sonne_tagsueber
+      - input_boolean.bewegungsmelder_arbeitszimmer_deaktiviert     
+            
+switch:
+  - platform: brematic
+    host: 192.168.2.57        
+    switches:
+      arbeitszimmer_lampe:
+        friendly_name: Lampe
+        system_code: "10000"
+        unit_code: "00100"
+                 
+#  - platform: command_line
+#    scan_interval: 5
+#    switches:
+#      arbeitszimmer_lampe:
+#        friendly_name: Lampe
+#        command_on: 'curl -s -X POST "http://192.168.2.70/connair/index.php?type=device&id=15&action=on"'
+#        command_off: 'curl -s -X POST "http://192.168.2.70/connair/index.php?type=device&id=15&action=off"'
+#        command_state: 'curl -s -X GET "http://192.168.2.70/connair/index.php?type=device&id=15&action=status"'
+#        value_template: '{{ value_json.state == "ON" }}'           
+   
+homeassistant:
+  customize:      
+    switch.arbeitszimmer_lampe:
+      hidden: true
+    light.arbeitszimmer_lampe:      
+      friendly_name: Lampe
+      icon: mdi:lamp

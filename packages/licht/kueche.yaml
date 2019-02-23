@@ -1,0 +1,32 @@
+light:
+  - platform: flux_led
+    devices:
+      192.168.2.46:
+        name: Regal
+        mode: "rgb"
+#      192.168.2.68:
+#        name: Küchenschränke
+#        mode: "w"        
+    
+input_boolean:     
+  bewegungsmelder_kueche_deaktiviert:
+    name: Bewegungsmelder deaktiviert
+    initial: off 
+    icon: mdi:sync-off
+
+lightingsm:
+  bewegung_kueche:
+    friendly_name: "Bewegung Küche"
+    sensor: binary_sensor.zigate_a230_presence
+    entity: light.regal
+    delay: 120     
+    overrides:
+      - binary_sensor.sonne_tagsueber
+      - input_boolean.bewegungsmelder_kueche_deaktiviert             
+       
+homeassistant:
+  customize:
+    light.kueche:      
+      icon: mdi:led-strip
+    timer.licht_kueche:
+      hidden: true  

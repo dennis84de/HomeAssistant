@@ -1,0 +1,35 @@
+media_player:        
+  - platform: firetv
+    host: 192.168.2.35
+    name: Fire TV Schlafzimmer
+    adbkey: '/home/homeassistant/.homeassistant/adbkey'
+    
+switch:      
+  - platform: template
+    switches:  
+      kodi_schlafzimmer:
+        friendly_name: Kodi
+        entity_id:
+          - media_player.fire_tv_schlafzimmer
+        icon_template: >-
+          mdi:kodi
+        value_template: >-
+          {% if states.media_player.fire_tv_schlafzimmer.state == None %}
+            False
+          {% elif is_state("media_player.fire_tv_schlafzimmer", "unknown") %}
+            False
+          {% elif states.media_player.fire_tv_schlafzimmer.attributes.source == "org.xbmc.kodi" %}
+            True
+          {% else %}
+            False
+          {% endif %}        
+        turn_on:
+          service: media_player.select_source
+          data:
+            entity_id: media_player.fire_tv_schlafzimmer
+            source: "org.xbmc.kodi"
+        turn_off:
+          service: media_player.select_source
+          data:
+            entity_id: media_player.fire_tv_schlafzimmer
+            source: "com.amazon.tv.launcher"

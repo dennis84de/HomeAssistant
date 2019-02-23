@@ -1,0 +1,235 @@
+permit_join:
+  description: Allow pairing new device.
+
+refresh_device:
+  description: >
+    Refresh a device by sending many requests to it.
+    Be aware that devices running on battery need to be woken up to answer,
+    typically by pushing the pairing button.
+    You should provide the entity_id OR the addr OR the ieee.
+    If no parameter is provided, every devices will be refreshed.
+  fields:
+    entity_id:
+      description: The device entity_id to refresh
+      example: 'zigate.0123456789abcdef'
+    addr:
+      description: ZiGate address of the device.
+      example: 'af7d'
+    ieee:
+      description: IEEE address of the device.
+      example: '0123456789abcdef'
+
+discover_device:
+  description: >
+    Discover a device by sending many requests to it.
+    Be aware that devices running on battery need to be woken up to answer,
+    typically by pushing the pairing button.
+    You should provide the entity_id OR the addr OR the ieee.
+    If no parameter is provided, every devices will be discovered.
+  fields:
+    entity_id:
+      description: The device entity_id to refresh
+      example: 'zigate.0123456789abcdef'
+    addr:
+      description: ZiGate address of the device.
+      example: 'af7d'
+    ieee:
+      description: IEEE address of the device.
+      example: '0123456789abcdef'
+      
+remove_device:
+  description: >
+    Remove a device.
+    You should provide the entity_id OR the addr OR the ieee.
+  fields:
+    entity_id:
+      description: The device entity_id to remove
+      example: 'zigate.0123456789abcdef'
+    addr:
+      description: ZiGate address of the device.
+      example: 'af7d'
+    ieee:
+      description: IEEE address of the device.
+      example: '0123456789abcdef'
+      
+identify_device:
+  description: >
+    Automatically identify a device's destination endpoint.
+    Be aware that devices running on battery need to be woken up to answer,
+    typically by pushing the pairing button.
+    You should provide the entity_id OR the addr OR the ieee.
+  fields:
+    entity_id:
+      description: The device entity_id to identify
+      example: 'zigate.0123456789abcdef'
+    addr:
+      description: ZiGate address of the device.
+      example: 'af7d'
+    ieee:
+      description: IEEE address of the device.
+      example: '0123456789abcdef'
+
+raw_command:
+  description: Send a raw command to zigate.
+  fields:
+    cmd:
+      description: Command code
+      example: '0x0092'
+    data:
+      description: Payload in hex format.
+      example: '02af7d010101'
+     
+read_attribute:
+  description: >
+    Read attribute from device
+    You should provide the entity_id OR the addr OR the ieee.
+  fields:
+    entity_id:
+      description: The device entity_id to identify
+      example: 'zigate.0123456789abcdef'
+    addr:
+      description: ZiGate address of the device.
+      example: 'af7d'
+    ieee:
+      description: IEEE address of the device.
+      example: '0123456789abcdef'
+    endpoint:
+      description: Device endpoint.
+      example: '1'
+    cluster:
+      description: Device endpoint cluster.
+      example: '0'
+    attribute_id:
+      description: Attribute ID to read.
+      example: '0xFF0D'
+    manufacturer_code:
+      description: Optionnal Manufacturer Code.
+      example: '0x115F'
+      
+write_attribute:
+  description: >
+    Read attribute from device
+    You should provide the entity_id OR the addr OR the ieee.
+  fields:
+    entity_id:
+      description: The device entity_id to identify
+      example: 'zigate.0123456789abcdef'
+    addr:
+      description: ZiGate address of the device.
+      example: 'af7d'
+    ieee:
+      description: IEEE address of the device.
+      example: '0123456789abcdef'
+    endpoint:
+      description: Device endpoint.
+      example: '1'
+    cluster:
+      description: Device endpoint cluster.
+      example: '0'
+    attribute_id:
+      description: Attribute ID to write.
+      example: '0xFF0D'
+    value:
+       description: Value to write
+       example: '0x01'
+    attribute_type:
+      description: Attribute type to write.
+      example: '0x20'
+    manufacturer_code:
+      description: Optionnal Manufacturer Code.
+      example: '0x115F'
+
+add_group:
+  description: >
+    Add group to device
+   
+  fields:
+    entity_id:
+      description: The device entity_id to identify
+      example: 'zigate.0123456789abcdef'
+    addr:
+      description: ZiGate address of the device.
+      example: 'af7d'
+    ieee:
+      description: IEEE address of the device.
+      example: '0123456789abcdef'
+    endpoint:
+      description: Device endpoint.
+      example: '1'
+    group_addr:
+      description: Optionnal Group addr, if not specified, generate a random addr.
+      example: '0ab9'    
+
+remove_group:
+  description: >
+    Remove group from device
+    You should provide the entity_id OR the addr OR the ieee.
+    if group_addr not specified, remove all groups
+  fields:
+    entity_id:
+      description: The device entity_id to identify
+      example: 'zigate.0123456789abcdef'
+    addr:
+      description: ZiGate address of the device.
+      example: 'af7d'
+    ieee:
+      description: IEEE address of the device.
+      example: '0123456789abcdef'
+    endpoint:
+      description: Device endpoint.
+      example: '1'
+    group_addr:
+      description: Optionnal Group addr, if not specified remove all groups.
+      example: '0ab9'  
+
+get_group_membership:
+  description: >
+    Get device groups
+    You should provide the entity_id OR the addr OR the ieee.
+  fields:
+    entity_id:
+      description: The device entity_id to identify
+      example: 'zigate.0123456789abcdef'
+    addr:
+      description: ZiGate address of the device.
+      example: 'af7d'
+    ieee:
+      description: IEEE address of the device.
+      example: '0123456789abcdef'
+    endpoint:
+      description: Device endpoint.
+      example: '1'
+
+action_onoff:
+  description: >
+    Execute action ON/OFF
+    Note that timed onoff and effect are mutually exclusive
+    You should provide the entity_id OR the addr OR the ieee.
+  fields:
+    entity_id:
+      description: The device entity_id to identify
+      example: 'zigate.0123456789abcdef'
+    addr:
+      description: ZiGate address of the device or the group
+      example: 'af7d'
+    ieee:
+      description: IEEE address of the device.
+      example: '0123456789abcdef'    
+    onoff:
+      description: 0=Off 1=On 2=Toggle
+      example: '1'
+    endpoint:
+      description: Device endpoint (Optionnal for group addr).
+      example: '1'
+    on_time:
+      description: timed on in sec
+      example: '0'
+    off_time:
+      description: timed off in sec
+      example: '0'
+    effect:
+      description: effect id
+      example: '0'
+    gradient:
+      description: effect gradient
+      example: '0'

@@ -1,0 +1,208 @@
+tts:
+  - platform: google
+    language: 'de'
+ 
+input_number:
+  sprache_lautstaerke:
+    name: Lautstärke   
+    min: 0
+    max: 100
+    step: 5
+    icon: mdi:volume-high
+    
+input_boolean:        
+  sprachausgabe:
+    name: Sprachausgabe
+    icon: mdi:message-bulleted
+    initial: true
+    
+  uhr_einschalten:
+    name: Uhr einschalten
+    icon: mdi:alarm-multiple
+     
+switch:   
+  - platform: brematic
+    host: 192.168.2.57        
+    switches:
+      benachrichtigungen:
+        friendly_name: Benachrichtigungen
+        system_code: "00000"
+        unit_code: "10000"
+        
+#  - platform: command_line
+#    scan_interval: 5
+#    switches:   
+#      benachrichtigungen:
+#        friendly_name: Benachrichtigungen        
+#        command_on: 'curl -s -X POST "http://192.168.2.70/connair/index.php?type=device&id=7&action=on"'
+#        command_off: 'curl -s -X POST "http://192.168.2.70/connair/index.php?type=device&id=7&action=off"'
+#        command_state: 'curl -s -X GET "http://192.168.2.70/connair/index.php?type=device&id=7&action=status"'
+#        value_template: '{{ value_json.state == "ON" }}'      
+   
+script:
+  tts_alexa:
+    alias: "Benachrichtigung Alexa"
+    sequence:
+      - condition: and
+        conditions:
+          - condition: state
+            entity_id: binary_sensor.zu_hause
+            state: 'on'
+          - condition: state
+            entity_id: input_boolean.sprachausgabe 
+            state: 'on'   
+          - condition: state
+            entity_id: binary_sensor.schlafen_aktiv 
+            state: 'off'              
+      - service: media_player.alexa_tts
+        data_template:
+          entity_id: >-
+            {% set letzteBewegung = states.sensor.letzte_bewegung.state %}
+
+            {% if echo is defined and echo|length %}
+              media_player.echo_{{ echo }}
+            {% elif letzteBewegung == None %}
+              media_player.echo_wohnzimmer
+            {% elif letzteBewegung == 'Flur' or letzteBewegung == 'Badezimmer' %}
+              media_player.echo_flur
+            {% elif letzteBewegung == 'Küche' %}
+              media_player.echo_kuche
+            {% else %}
+              media_player.echo_wohnzimmer
+            {% endif %}
+          message: >-
+            {{ message }}
+          
+  tts_wohnzimmer_squeezebox:
+    alias: "Benachrichtigung Squeezebox Wohnzimmer"
+    sequence:      
+      - condition: state
+        entity_id: device_tracker.pitts
+        state: 'home'    
+      - condition: state
+        entity_id: input_boolean.sprachausgabe
+        state: 'on'      
+      - service: tts.google_say
+        entity_id: media_player.tts
+        data_template:          
+          message: '{{ message }}'          
+          
+automation:           
+  - alias: "Lautstärke Sprachausgabe ändern"
+    initial_state: on
+    trigger:
+      - platform: state
+        entity_id: input_number.sprache_lautstaerke
+    condition:
+      - condition: state
+        entity_id: device_tracker.pitts
+        state: 'home'         
+    action:
+      - service: media_player.volume_set
+        data_template:
+          entity_id: media_player.tts
+          volume_level: >-
+            {{ states.input_number.sprache_lautstaerke.state | int / 100 }}     
+            
+  - alias: "Lautstärke Sprachausgabe einstellen"
+    initial_state: on
+    trigger:
+      - platform: homeassistant
+        event: start         
+    condition:
+      - condition: state
+        entity_id: device_tracker.pitts
+        state: 'home'        
+    action:
+      - service: input_number.set_value
+        data_template:
+          entity_id: input_number.sprache_lautstaerke
+          value: >-
+            {{ states.media_player.tts.attributes.volume_level * 100 | int }}
+           
+  - alias: 'Zu Hause - Sprachausgabe einschalten'
+    initial_state: true
+    trigger:
+      platform: state
+      entity_id: binary_sensor.zu_hause
+      to: 'on'
+    condition:    
+      - condition: state
+        entity_id: input_boolean.sprachausgabe
+        state: 'on'
+    action:
+      - service: switch.turn_on
+        entity_id: switch.benachrichtigungen
+
+  - alias: "Uhr - Glocke starten"
+    initial_state: true
+    trigger:
+      - platform: time_pattern
+        minutes: 30
+      - platform: time_pattern
+        minutes: 00       
+    condition:
+      - condition: time
+        after: '08:00'
+        before: '23:00'     
+      - condition: state
+        entity_id: device_tracker.pitts
+        state: 'home'        
+      - condition: state
+        entity_id: input_boolean.uhr_einschalten
+        state: 'on'        
+      - condition: template
+        value_template: '{{ is_state("media_player.kodi_wohnzimmer", "playing") == False }}'         
+    action:
+      - service: media_player.play_media
+        data_template:
+          entity_id:
+            - media_player.tts
+          media_content_id: >-
+            {% if now().strftime("%M")|int == 30 %}
+              http://192.168.2.70:8123/local/uhr/GrandFatherChime_half.mp3
+            {% else %}            
+              http://192.168.2.70:8123/local/uhr/GrandFatherChime_{{now().strftime("%I")}}.mp3
+            {% endif %}
+          media_content_type: music        
+        
+  - alias: 'Uhr - Glocke abbrechen'
+    initial_state: true
+    trigger:
+      platform: state
+      entity_id: input_boolean.uhr_einschalten
+      to: 'off'
+    condition:
+      - condition: state
+        entity_id: media_player.tts
+        state: 'playing'   
+    action:
+      - service: media_player.media_pause
+        entity_id:
+          - media_player.tts     
+        
+  - alias: "BVB - Torhymne"
+    initial_state: true
+    trigger:
+      - platform: event
+        event_type: xiaomi_aqara.cube_action
+        event_data:
+          entity_id: binary_sensor.cube_158d0001100d7a
+          action_type: free_fall
+    condition:
+      - condition: state
+        entity_id: calendar.borussia_dortmund
+        state: 'on'             
+    action:
+      - service: media_player.play_media
+        data_template:
+          entity_id:
+            - media_player.tts
+          media_content_id: >-
+            http://192.168.2.70:8123/local/bvb/torhymne.mp3
+          media_content_type: music  
+          
+homeassistant:
+  customize:
+    switch.benachrichtigungen:
+      icon: mdi:alarm-bell

@@ -1,0 +1,142 @@
+emulated_hue:  
+  host_ip: 192.168.2.70
+  exposed_domains:
+    - switch
+    - input_boolean
+    - light
+    - vacuum
+    
+  entities:
+    switch.wohnzimmer_radio:
+      name: Raspberry Wohnzimmer
+    switch.balkon_radio:
+      name: Raspberry Balkon      
+    switch.flur_radio:
+      name: Raspberry Flur
+    switch.badezimmer_radio:
+      name: Raspberry Badezimmer
+    switch.kuche_radio:
+      name: Raspberry Küche
+    switch.schlafzimmer_radio:
+      name: Raspberry Schlafzimmer
+    switch.arbeitszimmer_radio:
+      name: Raspberry Arbeitszimmer         
+      
+    switch.watchtv_wohnzimmer:
+      name: Fernsehen Wohnzimmer
+    switch.play_wohnzimmer:
+      name: Wiedergabe TV    
+ 
+    switch.sportzimmer_crosstrainer:
+      name: Crosstrainer
+    switch.watchtv_schlafzimmer:
+      name: Fernsehen Schlafzimmer
+      
+    vacuum.xiaomi_vacuum_cleaner:
+      name: Staubsauger
+
+    light.bett:
+      name: Licht Schlafzimmer           
+    light.arbeitszimmer_lampe:
+      name: Lampe      
+    light.sideboard:
+      name: Licht Sideboard
+    light.schrank:
+      name: Licht Schrank      
+    light.balkon_licht:
+      name: Balkon
+    light.fernseher_schlafzimmer:
+      name: Licht Fernseher           
+           
+    light.gateway_light_7811dcaf15a8:
+      hidden: true           
+    switch.sportzimmer_fernseher:
+      hidden: true      
+    switch.wohnzimmer_fernseher:
+      hidden: true 
+    switch.pc:
+      hidden: true      
+    switch.fernseher_schlafzimmer_remote:
+      hidden: true
+    switch.schlafzimmer_fernseher:
+      hidden: true
+    switch.couch:
+      hidden: true         
+    switch.strahler:
+      hidden: true  
+    switch.vitrine:
+      hidden: true  
+    switch.arbeitszimmer_lampe:
+      hidden: true      
+    switch.licht_fernseher_schlafzimmer:
+      hidden: true
+    switch.kodi_schlafzimmer:
+      hidden: true
+    input_boolean.kodi_pausiert:
+      hidden: true
+    input_boolean.musik_pausiert:
+      hidden: true  
+    input_boolean.timer_schlafzimmer_aktiv:
+      hidden: true
+    input_boolean.sleeptimer_turn_off_tv:
+      hidden: true
+    input_boolean.alarmstatus:
+      hidden: true      
+    input_boolean.alarmworkday:
+      hidden: true     
+    input_boolean.bewegung_licht_flur:
+      hidden: true
+    input_boolean.bewegung_licht_schlafzimmer:
+      hidden: true
+    input_boolean.bewegung_licht_badezimmer:
+      hidden: true         
+    input_boolean.bewegung_licht_arbeitszimmer:
+      hidden: true            
+    input_boolean.bewegung_licht_kueche:
+      hidden: true           
+    input_boolean.xiaomi_vacuum_automatische_reinigung:
+      hidden: true
+    input_boolean.xiaomi_vacuum_heute_gereinigt:
+      hidden: true      
+    switch.benachrichtigungen:
+      hidden: true
+    input_boolean.sprachausgabe:
+      hidden: true   
+    input_boolean.uhr_einschalten:
+      hidden: true        
+    switch.alle_radios_wiedergabe_aktiv:
+      hidden: true     
+    input_boolean.computer_ausschalten:
+      hidden: true
+    input_boolean.alarmauto:
+      hidden: true      
+    input_boolean.heizung_ausgeschaltet_wohnzimmer:
+      hidden: true
+    input_boolean.heizung_ausgeschaltet_kueche:
+      hidden: true    
+    input_boolean.heizung_ausgeschaltet_arbeitszimmer:
+      hidden: true       
+    input_boolean.alles_auschalten_aktiv:
+      hidden: true
+    input_boolean.musik_ausschalten:
+      hidden: true        
+    switch.zigate_55a3_3:
+      hidden: true
+    switch.pi_hole:
+      hidden: true      
+    input_boolean.bewegungsmelder_arbeitszimmer_deaktiviert:
+      hidden: true
+    input_boolean.bewegungsmelder_badezimmer_deaktiviert:
+      hidden: true
+    input_boolean.bewegungsmelder_balkon_deaktiviert:
+      hidden: true
+    input_boolean.bewegungsmelder_flur_deaktiviert:
+      hidden: true
+    input_boolean.bewegungsmelder_kueche_deaktiviert:
+      hidden: true
+    input_boolean.bewegungsmelder_schlafzimmer_deaktiviert:
+      hidden: true
+    input_boolean.bewegungsmelder_wohnzimmer_deaktiviert:
+      hidden: true
+    input_boolean.radio_aktiv_balkon:
+      hidden: true

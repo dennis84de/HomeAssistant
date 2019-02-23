@@ -1,0 +1,284 @@
+discovery: 
+  ignore:
+    - songpal
+    - google_cast
+    
+config:
+http:
+  trusted_networks:
+    - 192.168.2.0/24
+    
+websocket_api:    
+frontend:
+lovelace:
+  mode: yaml
+
+wake_on_lan:
+system_health:
+
+custom_updater:  
+  hide_sensor: True
+  track:
+    - components
+#    - python_scripts
+    - cards
+  component_urls:    
+    - https://raw.githubusercontent.com/danobot/appdaemon-motion-lights/master/tracker.json
+  card_urls:
+    - https://raw.githubusercontent.com/kalkih/mini-media-player/master/tracker.json  
+    - https://raw.githubusercontent.com/kalkih/mini-graph-card/master/tracker.json    
+
+python_script:
+map:
+zone:
+  - name: Home
+    latitude: !secret home_latitude
+    longitude: !secret home_longitude
+    radius: 50
+    icon: mdi:home-account
+  
+sensor:
+  - platform: sql
+    db_url: !secret mariadb_url
+    queries:
+      - name: database_size
+        query: 'SELECT table_schema "database", Round(Sum(data_length + index_length) / 1024 / 1024, 1) "value" FROM information_schema.tables WHERE table_schema="homeassistant" GROUP BY table_schema;'
+        column: 'value'
+        unit_of_measurement: MB  
+
+  - platform: uptime
+    name: Laufzeit
+    unit_of_measurement: Stunden
+    
+  - platform: uptime
+    name: Laufzeit Minuten
+    unit_of_measurement: Minuten    
+
+  - platform: rest
+    name: HASS Current Version
+    resource: https://pypi.python.org/pypi/homeassistant/json
+    value_template: '{{ value_json.info.version }}'
+    scan_interval: 3600
+
+  - platform: command_line
+    name: HASS Installed Version
+    command: "head -5 /home/homeassistant/.homeassistant/.HA_VERSION"
+    scan_interval: 3600
+
+  - platform: command_line
+    name: CPU Temperatur
+    command: "cat /sys/class/thermal/thermal_zone0/temp"
+    unit_of_measurement: "°C"
+    value_template: '{{ value | multiply(0.001) | round(1) }}'    
+
+  - platform: command_line
+    name: GPU Temperatur
+    command: vcgencmd measure_temp | sed "s/temp=//;s/'C//"
+    unit_of_measurement: "°C"    
+
+  - platform: rpi_power
+      
+  - platform: systemmonitor
+    resources:
+      - type: disk_use_percent
+        arg: /
+      - type: memory_use_percent   
+      - type: processor_use
+      - type: last_boot  
+
+  - platform: openhardwaremonitor
+    host: !secret computer_host
+    port: 8580
+  
+  - platform: template
+    sensors:
+      letzter_neustart:
+        friendly_name: "Letzter Neustart"
+        entity_id:
+          - sensor.last_boot      
+        icon_template: >-
+          mdi:av-timer
+        value_template: >-
+          {{ as_timestamp(states.sensor.last_boot.state) | timestamp_custom("%d.%m.%Y") | string }}      
+
+shell_command:
+  upgrade_homeassistant: /home/homeassistant/.homeassistant/bash_scripts/upgrade-hass.sh
+  
+script:
+  restart_homeassistant:
+    alias: Home Assistant neustarten
+    sequence:
+      - service: !secret tts_service
+        data_template:   
+          echo: "wohnzimmer"
+          message: "Home Assistant wird neugestartet." 
+      - service: homeassistant.restart      
+      
+  upgrade_homeassistant:
+    alias: Home Assistant aktualisieren
+    sequence:
+      - condition: template
+        value_template: >-
+          {% if states.sensor.hass_current_version.state == None or states.sensor.hass_installed_version.state == None %}
+            False
+          {% else %}
+            {{ states.sensor.hass_current_version.state != states.sensor.hass_installed_version.state }}          
+          {% endif %}        
+      - service: !secret tts_service
+        data_template:
+          echo: "wohnzimmer"
+          message: "Home Assistant wird aktualisiert."       
+      - service: shell_command.upgrade_homeassistant       
+      
+automation:          
+  - alias: "Update verfügbar"
+    initial_state: true
+    trigger:
+      - platform: state
+        entity_id: sensor.hass_current_version
+    condition:     
+      - condition: template
+        value_template: >-
+          {% if states.sensor.hass_current_version.state == None or states.sensor.hass_installed_version.state == None %}
+            False
+          {% elif is_state("sensor.hass_current_version", "unavailable") == True %}
+            False
+          {% else %}
+            {{ states.sensor.hass_current_version.state != states.sensor.hass_installed_version.state }}          
+          {% endif %}    
+    action:
+      service: notify.telegram
+      data_template: 
+        title: 'Neue Version'
+        message: "Home Assistant {{ states.sensor.hass_current_version.state }} ist jetzt verfügbar."
+        
+  - alias: "Home Assistant - Fehler Neustart"
+    initial_state: true
+    trigger:
+      - platform: state
+        entity_id: persistent_notification.homeassistant_check_config
+        to: 'notifying'
+    action:
+      - service: !secret tts_service
+        data_template: 
+          echo: "wohnzimmer"
+          message: "Während des Neustarts ist ein Fehler aufgetreten."          
+  
+  - alias: "Home Assistant neugestartet - Handy"
+    initial_state: true
+    trigger:
+      - platform: homeassistant
+        event: start      
+    condition:
+      - condition: state
+        entity_id: binary_sensor.zu_hause
+        state: 'off'        
+    action:
+      - service: notify.telegram
+        data_template: 
+          title: 'Home Assistant gestartet'
+          message: "Home Assistant wurde neugestartet."
+  
+  - alias: "Home Assistant neugestartet - TTS"
+    initial_state: true
+    trigger:
+      - platform: homeassistant
+        event: start          
+    action:
+      - service: !secret tts_service
+        data_template:
+          echo: "wohnzimmer"
+          message: "Home Assistant wurde neugestartet."  
+
+homeassistant:
+  customize:
+    script.restart_homeassistant:
+      icon: mdi:home-assistant
+      
+    sensor.disk_use_percent:
+      friendly_name: Belegter Speicherplatz
+    sensor.memory_use_percent:
+      friendly_name: Benutzter Arbeitsspeicher 
+      icon: mdi:database-plus
+    sensor.processor_use:
+      friendly_name: CPU-Auslastung
+      icon: mdi:creation
+    sensor.last_boot:
+      hidden: true
+
+    sensor.database_size:
+      friendly_name: Größe Datenbank
+      icon: mdi:database
+    sensor.hass_installed_version:
+      friendly_name: Installierte Version
+      icon: mdi:shield-check      
+    sensor.hass_current_version:
+      friendly_name: Neuste Version
+      icon: mdi:update
+      
+    script.upgrade_homeassistant:
+      icon: mdi:update
+      can_cancel: false
+      
+    sensor.laufzeit_minuten:
+      hidden: true
+      
+    sensor.rpi_power_status:
+      friendly_name: Power Status
+      icon: mdi:power-plug
+  
+    sensor.matrix_intel_core_i5_4590_temperatures_cpu_package:
+      hidden: false
+      friendly_name: CPU Temperatur    
+    sensor.matrix_intel_core_i5_4590_load_cpu_total:
+      hidden: false
+      friendly_name: CPU Auslastung
+      icon: mdi:progress-check      
+    sensor.matrix_intel_core_i5_4590_clocks_cpu_core_1:
+      hidden: false
+      friendly_name: CPU Geschwindigkeit
+      icon: mdi:speedometer
+
+    sensor.matrix_asus_r7_250x_series_temperatures_gpu_core:
+      hidden: false
+      friendly_name: GPU Temperatur
+    sensor.matrix_asus_r7_250x_series_load_gpu_core:
+      hidden: false
+      friendly_name: GPU Auslastung
+      icon: mdi:progress-check
+    sensor.matrix_asus_r7_250x_series_clocks_gpu_core:
+      hidden: false
+      friendly_name: GPU Geschwindigkeit
+      icon: mdi:speedometer    
+    sensor.matrix_asus_r7_250x_series_fans_gpu_fan:
+      hidden: false
+      friendly_name: GPU Lüfter
+      icon: mdi:fan
+      
+    sensor.matrix_gigabyte_h97_hd3_ite_it8620e_temperatures_temperature_1:
+      hidden: false
+      friendly_name: Mainboard Temperatur
+    sensor.matrix_gigabyte_h97_hd3_ite_it8620e_fans_fan_1:
+      hidden: false
+      friendly_name: Mainboard Lüfter
+      icon: mdi:fan
+      
+    sensor.matrix_generic_memory_load_memory:
+      hidden: false
+      friendly_name: RAM Auslastung      
+
+    sensor.matrix_samsung_ssd_840_series_load_used_space:
+      hidden: false
+      friendly_name: SSD Speicherplatz
+      icon: mdi:nas
+    sensor.matrix_samsung_ssd_840_series_temperatures_temperature:
+      hidden: false
+      friendly_name: SSD Temperatur
+      
+    sensor.matrix_wdc_wd20ears_00mvwb0_load_used_space:
+      hidden: false
+      icon: mdi:nas
+      friendly_name: HDD Speicherplatz      
+    sensor.matrix_wdc_wd20ears_00mvwb0_temperatures_temperature:
+      hidden: false
+      friendly_name: HDD Temperatur
