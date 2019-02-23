@@ -140,6 +140,9 @@ homeassistant:
     device_tracker.tplinkschlafzimmerfernseher:
       icon: mdi:power-socket-eu       
       friendly_name: Schlafzimmer Fernseher
+    device_tracker.tplinkrepeater:
+      icon: mdi:wifi
+      friendly_name: Repeater
       
     device_tracker.computer:
       icon: mdi:desktop-classic
@@ -153,8 +156,6 @@ homeassistant:
       icon: mdi:server-network
     device_tracker.netzwerkdj:
       icon: mdi:router-wireless
-    device_tracker.fritzrepeater:
-      icon: mdi:wifi
     device_tracker.epsondrucker:
       icon: mdi:printer
     device_tracker.brematicgateway:

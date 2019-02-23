@@ -1,6 +1,6 @@
 switch:
   - platform: tplink
-    host: 192.168.2.47
+    host: 192.168.2.73
     name: "Waschmaschine"
     
   - platform: tplink
