@@ -36,7 +36,7 @@ zone:
     longitude: !secret home_longitude
     radius: 50
     icon: mdi:home-account
-  
+
 sensor:
   - platform: sql
     db_url: !secret mariadb_url

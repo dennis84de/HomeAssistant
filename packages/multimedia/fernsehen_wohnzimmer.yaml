@@ -175,7 +175,7 @@ script:
       data:
         entity_id: input_select.dreamscreen_modus
         option: "Aus"          
-      
+
 automation:          
   - alias: "Kodi - Musik ausschalten"
     initial_state: true

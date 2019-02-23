@@ -22,6 +22,8 @@ resources:
   - url: /local/lovelace/popup-card.js
     type: js     
   - url: /local/lovelace/layout-card.js
+    type: js
+  - url: /local/lovelace/todoist-list.js
     type: js         
   - url: /local/lovelace/mini-media-player-bundle.js?v=1.0.1
     type: module    

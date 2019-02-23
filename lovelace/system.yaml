@@ -38,6 +38,76 @@ cards:
       - entity: switch.alle_radios_wiedergabe_aktiv           
       - entity: script.sync_radios     
          
+  - type: custom:popup-card
+    entity: switch.alle_radios_wiedergabe_aktiv
+    title: Radios
+    card:
+      type: entities
+      entities:
+        - type: custom:mini-media-player
+          entity: media_player.wohnzimmer
+          group: true
+          hide:
+            source: true    
+            progress: true     
+            controls: true
+        - type: custom:mini-media-player
+          entity: media_player.flur
+          group: true
+          hide:
+            source: true    
+            progress: true     
+            controls: true
+        - type: custom:mini-media-player
+          entity: media_player.badezimmer
+          group: true
+          hide:
+            source: true    
+            progress: true     
+            controls: true
+        - type: custom:mini-media-player
+          entity: media_player.kuche
+          group: true
+          hide:
+            source: true    
+            progress: true     
+            controls: true
+        - type: custom:mini-media-player
+          entity: media_player.schlafzimmer
+          group: true
+          hide:
+            source: true    
+            progress: true     
+            controls: true          
+        - type: custom:mini-media-player
+          entity: media_player.arbeitszimmer
+          group: true
+          hide:
+            source: true    
+            progress: true     
+            controls: true
+        - type: custom:mini-media-player
+          entity: media_player.balkon
+          group: true
+          hide:
+            source: true    
+            progress: true     
+            controls: true         
+
+  - type: custom:popup-card
+    entity: switch.alle_radios
+    title: Radios
+    card:
+      type: entities
+      entities:
+        - entity: switch.wohnzimmer_radio
+        - entity: switch.flur_radio
+        - entity: switch.badezimmer_radio
+        - entity: switch.kuche_radio
+        - entity: switch.schlafzimmer_radio   
+        - entity: switch.arbeitszimmer_radio
+        - entity: switch.balkon_radio
+        
   - type: entities
     title: Keller
     show_header_toggle: false
