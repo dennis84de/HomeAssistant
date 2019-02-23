@@ -48,28 +48,6 @@ switch:
         system_code: "11111"
         unit_code: "00010"
 
-#  - platform: command_line
-#    scan_interval: 5
-#    switches:    
-#      couch:
-#        friendly_name: Couch
-#        command_on: 'curl -s -X POST "http://192.168.2.70/connair/index.php?type=device&id=1&action=on"'
-#        command_off: 'curl -s -X POST "http://192.168.2.70/connair/index.php?type=device&id=1&action=off"'
-#        command_state: 'curl -s -X GET "http://192.168.2.70/connair/index.php?type=device&id=1&action=status"'
-#        value_template: '{{ value_json.state == "ON" }}'
-#      strahler:
-#        friendly_name: Strahler
-#        command_on: 'curl -s -X POST "http://192.168.2.70/connair/index.php?type=device&id=2&action=on"'
-#        command_off: 'curl -s -X POST "http://192.168.2.70/connair/index.php?type=device&id=2&action=off"'
-#        command_state: 'curl -s -X GET "http://192.168.2.70/connair/index.php?type=device&id=2&action=status"'
-#        value_template: '{{ value_json.state == "ON" }}'
-#      vitrine:
-#        friendly_name: Vitrine
-#        command_on: 'curl -s -X POST "http://192.168.2.70/connair/index.php?type=device&id=3&action=on"'
-#        command_off: 'curl -s -X POST "http://192.168.2.70/connair/index.php?type=device&id=3&action=off"'
-#        command_state: 'curl -s -X GET "http://192.168.2.70/connair/index.php?type=device&id=3&action=status"'
-#        value_template: '{{ value_json.state == "ON" }}'        
-    
 automation:       
   - alias: Licht Abends
     initial_state: true
