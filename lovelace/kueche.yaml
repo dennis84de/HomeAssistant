@@ -49,6 +49,8 @@ cards:
     show_header_toggle: false
     entities:  
       - entity: binary_sensor.zigate_9619_onoff
+        name: Fenster
       - entity: climate.kuche
+        name: Heizung
     
       

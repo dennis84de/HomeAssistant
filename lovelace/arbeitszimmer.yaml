@@ -35,7 +35,9 @@ cards:
     show_header_toggle: false
     entities:  
       - entity: binary_sensor.zigate_3415_onoff   
+        name: Fenster
       - entity: climate.arbeitszimmer
+        name: Heizung
       
   - type: entities
     title: Staubsauger

@@ -55,7 +55,9 @@ cards:
     show_header_toggle: false
     entities:
       - entity: binary_sensor.zigate_6e71_onoff
+        name: Fenster
       - entity: climate.wohnzimmer
+        name: Heizung
 
   - type: glance
     title: Thermometer

@@ -41,4 +41,5 @@ cards:
     title: Heizung
     show_header_toggle: false
     entities:  
-      - entity: climate.badezimmer      
+      - entity: climate.badezimmer     
+        name: Heizung

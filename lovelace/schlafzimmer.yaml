@@ -48,6 +48,7 @@ cards:
     show_header_toggle: false
     entities:  
       - entity: binary_sensor.zigate_bd4c_onoff    
+        name: Fenster
   
   - type: glance
     title: Thermometer
