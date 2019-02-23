@@ -1,12 +1,12 @@
-media_player:        
+media_player:
   - platform: firetv
     host: 192.168.2.35
     name: Fire TV Schlafzimmer
     adbkey: '/home/homeassistant/.homeassistant/adbkey'
-    
-switch:      
+
+switch:
   - platform: template
-    switches:  
+    switches:
       kodi_schlafzimmer:
         friendly_name: Kodi
         entity_id:
@@ -22,7 +22,7 @@ switch:
             True
           {% else %}
             False
-          {% endif %}        
+          {% endif %}
         turn_on:
           service: media_player.select_source
           data:

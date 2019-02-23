@@ -8,36 +8,36 @@ cards:
       - entity: sensor.database_size
       - entity: sensor.laufzeit
       - entity: sensor.hass_installed_version
-      - entity: sensor.hass_current_version         
+      - entity: sensor.hass_current_version
       - entity: script.restart_homeassistant
-      - entity: script.upgrade_homeassistant       
-      
+      - entity: script.upgrade_homeassistant
+
   - type: entities
     title: Benachrichtigungen
     show_header_toggle: false
     entities:
-      - entity: input_boolean.sprachausgabe            
+      - entity: input_boolean.sprachausgabe
       - entity: switch.multimedia
       - entity: input_number.sprache_lautstaerke
       - entity: input_boolean.uhr_einschalten
-      - entity: input_boolean.nicht_stoeren      
-    
+      - entity: input_boolean.nicht_stoeren
+
   - type: entities
     title: Schlafen
     show_header_toggle: false
     entities:
-      - entity: script.goto_bed    
+      - entity: script.goto_bed
       - entity: binary_sensor.schlafen_aktiv
       - entity: sensor.schlafen_letzte_uhrzeit
-    
+
   - type: entities
     title: Radios
     show_header_toggle: false
-    entities:      
+    entities:
       - entity: switch.alle_radios
-      - entity: switch.alle_radios_wiedergabe_aktiv           
-      - entity: script.sync_radios     
-         
+      - entity: switch.alle_radios_wiedergabe_aktiv
+      - entity: script.sync_radios
+
   - type: custom:popup-card
     entity: switch.alle_radios_wiedergabe_aktiv
     title: Radios
@@ -48,51 +48,51 @@ cards:
           entity: media_player.wohnzimmer
           group: true
           hide:
-            source: true    
-            progress: true     
+            source: true
+            progress: true
             controls: true
         - type: custom:mini-media-player
           entity: media_player.flur
           group: true
           hide:
-            source: true    
-            progress: true     
+            source: true
+            progress: true
             controls: true
         - type: custom:mini-media-player
           entity: media_player.badezimmer
           group: true
           hide:
-            source: true    
-            progress: true     
+            source: true
+            progress: true
             controls: true
         - type: custom:mini-media-player
           entity: media_player.kuche
           group: true
           hide:
-            source: true    
-            progress: true     
+            source: true
+            progress: true
             controls: true
         - type: custom:mini-media-player
           entity: media_player.schlafzimmer
           group: true
           hide:
-            source: true    
-            progress: true     
-            controls: true          
+            source: true
+            progress: true
+            controls: true
         - type: custom:mini-media-player
           entity: media_player.arbeitszimmer
           group: true
           hide:
-            source: true    
-            progress: true     
+            source: true
+            progress: true
             controls: true
         - type: custom:mini-media-player
           entity: media_player.balkon
           group: true
           hide:
-            source: true    
-            progress: true     
-            controls: true         
+            source: true
+            progress: true
+            controls: true
 
   - type: custom:popup-card
     entity: switch.alle_radios
@@ -104,28 +104,28 @@ cards:
         - entity: switch.flur_radio
         - entity: switch.badezimmer_radio
         - entity: switch.kuche_radio
-        - entity: switch.schlafzimmer_radio   
+        - entity: switch.schlafzimmer_radio
         - entity: switch.arbeitszimmer_radio
         - entity: switch.balkon_radio
-        
+
   - type: entities
     title: Keller
     show_header_toggle: false
-    entities:     
+    entities:
       - entity: switch.waschmaschine
       - entity: sensor.waschmaschine_status
       - entity: sensor.waschmaschine_verbrauch
       - entity: switch.trockner
       - entity: sensor.trockner_status
-      - entity: sensor.trockner_verbrauch     
-      
+      - entity: sensor.trockner_verbrauch
+
   - type: glance
     title: Nextcloud
     show_header_toggle: false
     entities:
       - entity: binary_sensor.nextcloud
-      - entity: sensor.nextcloud_zertifikat 
-       
+      - entity: sensor.nextcloud_zertifikat
+
   - type: entities
     title: Pi-hole
     show_header_toggle: false
@@ -135,7 +135,7 @@ cards:
       - entity: sensor.pi_hole_ads_percentage_blocked_today
       - entity: sensor.pi_hole_dns_unique_clients
       - entity: sensor.pi_hole_seen_clients
-      
+
   - type: entities
     title: Bewegungsmelder deaktivieren
     show_header_toggle: false
@@ -145,26 +145,26 @@ cards:
         icon: mdi:lightbulb-on-outline
       - entity: input_boolean.bewegungsmelder_schlafzimmer_deaktiviert
         name: Schlafzimmer
-        icon: mdi:lightbulb-on-outline        
+        icon: mdi:lightbulb-on-outline
       - entity: input_boolean.bewegungsmelder_kueche_deaktiviert
         name: Küche
         icon: mdi:lightbulb-on-outline
       - entity: input_boolean.bewegungsmelder_badezimmer_deaktiviert
         name: Badezimmer
-        icon: mdi:lightbulb-on-outline      
+        icon: mdi:lightbulb-on-outline
       - entity: input_boolean.bewegungsmelder_flur_deaktiviert
         name: Flur
-        icon: mdi:lightbulb-on-outline          
+        icon: mdi:lightbulb-on-outline
       - entity: input_boolean.bewegungsmelder_arbeitszimmer_deaktiviert
         name: Arbeitszimmer
-        icon: mdi:lightbulb-on-outline         
-      
+        icon: mdi:lightbulb-on-outline
+
   - type: custom:vertical-stack-in-card
     title: Internetgeschwindigkeit
     cards:
       - type: horizontal-stack
         title: Network Status
-        cards:        
+        cards:
           - type: sensor
             entity: sensor.speedtest_download
             name: Download
@@ -176,7 +176,7 @@ cards:
             name: Upload
             hours_to_show: 24
             graph: line
-            detail: 1   
+            detail: 1
       - type: entities
         entities:
-          - entity: sensor.speedtest_ping           
+          - entity: sensor.speedtest_ping

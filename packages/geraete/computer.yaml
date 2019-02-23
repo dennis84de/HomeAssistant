@@ -1,23 +1,23 @@
 shell_command:
-  computer_hibernate: curl http://192.168.2.21:7760/hibernate 
-  
+  computer_hibernate: curl http://192.168.2.21:7760/hibernate
+
 input_boolean:
   computer_ausschalten:
     name: Computer ausschalten
     initial: on
     icon: mdi:desktop-classic
-    
+
 switch:
   - platform: tplink
     host: 192.168.2.50
     name: Monitor
-    
+
   - platform: template
     switches:
       pc:
         friendly_name: PC
         entity_id:
-          - device_tracker.computer    
+          - device_tracker.computer
         value_template: "{{ is_state('device_tracker.computer', 'home') }}"
         turn_on:
           service: wake_on_lan.send_magic_packet
@@ -29,7 +29,7 @@ switch:
       computer:
         friendly_name: Computer
         entity_id:
-          - device_tracker.computer            
+          - device_tracker.computer
         value_template: "{{ is_state('device_tracker.computer', 'home') }}"
         turn_on:
           service: switch.turn_on
@@ -37,7 +37,7 @@ switch:
         turn_off:
           service: switch.turn_off
           entity_id: switch.monitor, switch.pc
-          
+
 automation:
   - alias: 'Unterwegs - Computer ausschalten'
     initial_state: true
@@ -50,27 +50,27 @@ automation:
     condition:
       - condition: state
         entity_id: switch.computer
-        state: 'on'     
+        state: 'on'
       - condition: state
         entity_id: input_boolean.computer_ausschalten
-        state: 'on'             
+        state: 'on'
     action:
       - service: switch.turn_off
         entity_id: switch.computer
       - service: notify.telegram
         data_template:
           title: "Computer eingeschaltet"
-          message: "Der Computer war noch eingeschaltet und wird jetzt heruntergefahren."         
-        
+          message: "Der Computer war noch eingeschaltet und wird jetzt heruntergefahren."
+
 homeassistant:
   customize:
     switch.computer:
-      icon: mdi:desktop-classic  
+      icon: mdi:desktop-classic
     switch.pc:
       friendly_name: PC
-      icon: mdi:desktop-tower  
+      icon: mdi:desktop-tower
     switch.monitor:
-      icon: mdi:monitor      
-      
+      icon: mdi:monitor
+
     media_player.soundbar:
       icon: mdi:music

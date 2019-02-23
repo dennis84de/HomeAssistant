@@ -15,26 +15,26 @@ device_tracker:
     token: !secret phonetracker_token
     devices:
       - HandyGPS
-      
+
 fritzbox:
   devices:
     - host: !secret fritzbox_host
       username: !secret fritzbox_username
       password: !secret fritzbox_password
-      
+
 sensor:
   - platform: fritzbox_callmonitor
     name: Telefon
     phonebook: 0
     username: !secret fritzbox_username
-    password: !secret fritzbox_password    
+    password: !secret fritzbox_password
 
 #  - platform: fritzbox_netmonitor
-#    name: Netmonitor  
+#    name: Netmonitor
 #    host: !secret fritzbox_host
 #    username: !secret fritzbox_username
-#    password: !secret fritzbox_password   
-    
+#    password: !secret fritzbox_password
+
   - platform: places
     name: Aufenthaltsort Handy
     devicetracker_id: device_tracker.handygps
@@ -42,7 +42,7 @@ sensor:
     api_key: !secret openstreetmap_email
     display_zone: hide
     scan_interval: 60
-  
+
 binary_sensor:
   - platform: template
     sensors:
@@ -50,25 +50,25 @@ binary_sensor:
         friendly_name: "zu Hause"
         device_class: occupancy
         value_template: >-
-          {% if is_state('device_tracker.handy', 'home') 
-            or is_state('device_tracker.handygps', 'home')            
+          {% if is_state('device_tracker.handy', 'home')
+            or is_state('device_tracker.handygps', 'home')
           %}
-            true            
+            true
           {% else %}
             false
-          {% endif %}            
-    
+          {% endif %}
+
 proximity:
   home:
     devices:
       - device_tracker.handy
       - device_tracker.handygps
     tolerance: 50
-  
+
 shell_command:
   send_position: "curl -X POST '{{ url }}?lat={{ states.device_tracker.netzwerkdj.attributes.latitude }}&lon={{ states.device_tracker.netzwerkdj.attributes.longitude }}&timestamp={{ as_timestamp(now()) | int }}'"
-  
-automation:     
+
+automation:
   - alias: "Zu Hause - Standort aktualisieren"
     initial_state: true
     trigger:
@@ -78,37 +78,37 @@ automation:
     action:
       - service: shell_command.send_position
         data:
-          url: !secret phonetracker_send_position_url      
+          url: !secret phonetracker_send_position_url
       - service: device_tracker.see
         data_template:
           dev_id: handygps
           location_name: 'home'
           gps: ["{{ states.device_tracker.netzwerkdj.attributes.latitude }}", "{{ states.device_tracker.netzwerkdj.attributes.longitude }}"]
-  
+
 switch:
   - platform: fritzbox_guestwifi
     name: "Gäste Wlan"
-    host: !secret fritzbox_host    
+    host: !secret fritzbox_host
     username: !secret fritzbox_username
-    password: !secret fritzbox_password  
+    password: !secret fritzbox_password
     interface: 2
-    
+
 homeassistant:
   customize:
     sensor.netmonitor:
       friendly_name: Fritzbox
-      icon: mdi:router-wireless          
+      icon: mdi:router-wireless
     switch.gaste_wlan:
       icon: mdi:wifi
     binary_sensor.zu_hause:
       hidden: true
-      
+
     sensor.aufenthaltsort_handy:
       friendly_name: Aufenthaltsort
-      icon: mdi:google-maps  
+      icon: mdi:google-maps
     proximity.home:
       friendly_name: Entfernung
-      
+
     device_tracker.edimaxwohnzimmerradio:
       icon: mdi:power-socket-eu
       friendly_name: Wohnzimmer Radio
@@ -118,10 +118,10 @@ homeassistant:
 
     device_tracker.tplinkarbeitszimmerradio:
       icon: mdi:power-socket-eu
-      friendly_name: Arbeitszimmer Radio     
+      friendly_name: Arbeitszimmer Radio
     device_tracker.tplinkkuecheradio:
       icon: mdi:power-socket-eu
-      friendly_name: Küche Radio        
+      friendly_name: Küche Radio
     device_tracker.tplinkbadezimmerradio:
       icon: mdi:power-socket-eu
       friendly_name: Badezimmer Radio
@@ -132,24 +132,24 @@ homeassistant:
       icon: mdi:power-socket-eu
       friendly_name: Flur Radio
     device_tracker.tplinkwaschmaschine:
-      icon: mdi:power-socket-eu 
+      icon: mdi:power-socket-eu
       friendly_name: Waschmaschine
     device_tracker.tplinktrockner:
-      icon: mdi:power-socket-eu 
-      friendly_name: Trockner      
+      icon: mdi:power-socket-eu
+      friendly_name: Trockner
     device_tracker.tplinkschlafzimmerfernseher:
-      icon: mdi:power-socket-eu       
+      icon: mdi:power-socket-eu
       friendly_name: Schlafzimmer Fernseher
     device_tracker.tplinkrepeater:
       icon: mdi:wifi
       friendly_name: Repeater
-      
+
     device_tracker.computer:
       icon: mdi:desktop-classic
     device_tracker.pihomeassistant:
       icon: mdi:home-assistant
     device_tracker.broadlinkwohnzimmer:
-      icon: mdi:remote  
+      icon: mdi:remote
     device_tracker.broadlinkschlafzimmer:
       icon: mdi:remote
     device_tracker.diskstation:
@@ -163,8 +163,8 @@ homeassistant:
     device_tracker.maxheizung:
       icon: mdi:radiator
     device_tracker.xiaomivacuum:
-      icon: mdi:robot-vacuum-variant 
-      
+      icon: mdi:robot-vacuum-variant
+
     device_tracker.echokueche:
       icon: mdi:amazon-alexa
     device_tracker.echowohnzimmer:
@@ -172,8 +172,8 @@ homeassistant:
     device_tracker.echoschlafzimmer:
       icon: mdi:amazon-alexa
     device_tracker.echoflur:
-      icon: mdi:amazon-alexa      
-      
+      icon: mdi:amazon-alexa
+
     device_tracker.tabletwohnzimmer:
       icon: mdi:tablet-android
     device_tracker.tabletbadezimmer:
@@ -182,45 +182,45 @@ homeassistant:
       icon: mdi:tablet-android
     device_tracker.tabletkueche:
       icon: mdi:tablet-android
-      
+
     device_tracker.firetvschlafzimmer:
       icon: mdi:fire
     device_tracker.firetvbadezimmer:
       icon: mdi:fire
     device_tracker.firetvsportzimmer:
-      icon: mdi:fire      
-      
+      icon: mdi:fire
+
     device_tracker.handy:
       icon: mdi:cellphone
     device_tracker.handygps:
       icon: mdi:cellphone
-      hidden: true      
+      hidden: true
     device_tracker.handyurlaub:
-      hidden: true      
-      
+      hidden: true
+
     device_tracker.magichomeflurvorne:
       icon: mdi:lightbulb-on-outline
     device_tracker.magichomeflurhinten:
-      icon: mdi:lightbulb-on-outline      
+      icon: mdi:lightbulb-on-outline
     device_tracker.magichomebadezimmer:
-      icon: mdi:lightbulb-on-outline    
+      icon: mdi:lightbulb-on-outline
     device_tracker.magichomeschlafzimmer:
       icon: mdi:lightbulb-on-outline
     device_tracker.magichomekueche:
-      icon: mdi:lightbulb-on-outline     
+      icon: mdi:lightbulb-on-outline
     device_tracker.magichomekuechenschraenke:
-      icon: mdi:lightbulb-on-outline      
+      icon: mdi:lightbulb-on-outline
       hidden: true
     device_tracker.magichomearbeitszimmer:
       icon: mdi:lightbulb-on-outline
     device_tracker.magichomebalkon:
-      icon: mdi:lightbulb-on-outline      
-      
+      icon: mdi:lightbulb-on-outline
+
     device_tracker.soundbar:
       icon: mdi:music-note
     device_tracker.dreamscreen:
-      icon: mdi:track-light      
-      
+      icon: mdi:track-light
+
     device_tracker.piliving:
       icon: mdi:raspberrypi
       friendly_name: Wohnzimmer
@@ -237,15 +237,15 @@ homeassistant:
       icon: mdi:raspberrypi
       friendly_name: Flur
     device_tracker.piworking:
-      icon: mdi:raspberrypi   
+      icon: mdi:raspberrypi
       friendly_name: Arbeitszimmer
     device_tracker.pibalcony:
-      icon: mdi:raspberrypi   
-      friendly_name: Balkon               
+      icon: mdi:raspberrypi
+      friendly_name: Balkon
     device_tracker.pimultimedia:
-      icon: mdi:speaker-wireless       
-      friendly_name: Multimedia 
-      
+      icon: mdi:speaker-wireless
+      friendly_name: Multimedia
+
     device_tracker.tabletprestigio:
       hidden: true
     device_tracker.laptopdj:

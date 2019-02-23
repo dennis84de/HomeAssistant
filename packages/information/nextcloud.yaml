@@ -5,12 +5,12 @@ binary_sensor:
 sensor:
   - platform: cert_expiry
     host: !secret nextcloud_url
-    name: Nextcloud Zertifikat    
-    
+    name: Nextcloud Zertifikat
+
 homeassistant:
   customize:
     binary_sensor.nextcloud:
       friendly_name: Status
-    
+
     sensor.nextcloud_zertifikat:
       friendly_name: Laufzeit Zertifikat

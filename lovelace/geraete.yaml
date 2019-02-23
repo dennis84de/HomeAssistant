@@ -8,22 +8,22 @@ cards:
       - entity: sensor.cpu_temperatur
       - entity: sensor.gpu_temperatur
       - entity: sensor.disk_use_percent
-      - entity: sensor.memory_use_percent   
-      - entity: sensor.processor_use    
+      - entity: sensor.memory_use_percent
+      - entity: sensor.processor_use
       - entity: sensor.rpi_power_status
-      - entity: sensor.letzter_neustart   
-    
+      - entity: sensor.letzter_neustart
+
   - type: entities
     title: Synology Diskstation
     show_header_toggle: false
-    entities:       
+    entities:
       - entity: sensor.cpu_load_total
       - entity: sensor.memory_usage_real
       - entity: sensor.volume_used_volume_1
-      - entity: sensor.status_volume_1    
+      - entity: sensor.status_volume_1
       - entity: sensor.network_up
-      - entity: sensor.network_down    
-    
+      - entity: sensor.network_down
+
   - type: entities
     title: Computer
     show_header_toggle: false
@@ -42,15 +42,15 @@ cards:
       - entity: sensor.matrix_samsung_ssd_840_series_temperatures_temperature
       - entity: sensor.matrix_wdc_wd20ears_00mvwb0_load_used_space
       - entity: sensor.matrix_wdc_wd20ears_00mvwb0_temperatures_temperature
-       
+
   - type: entities
     title: Z-Wave
     show_header_toggle: false
     entities:
       - entity: zwave.aeotec_zwave_stick
-      - entity: zwave.aeotec_wohnzimmer  
-      - entity: zwave.fibaro_badezimmer        
-   
+      - entity: zwave.aeotec_wohnzimmer
+      - entity: zwave.fibaro_badezimmer
+
   - type: entities
     title: Bewegungsmelder
     show_header_toggle: false
@@ -58,9 +58,9 @@ cards:
       - entity: zigate.eac1
       - entity: zigate.7904
       - entity: zigate.be83
-      - entity: zigate.a230    
+      - entity: zigate.a230
       - entity: zigate.0b57
-   
+
   - type: entities
     title: Fenster
     show_header_toggle: false
@@ -70,21 +70,21 @@ cards:
       - entity: zigate.9619
       - entity: zigate.3415
       - entity: zigate.2d17
-    
+
   - type: entities
     title: Thermometer
     show_header_toggle: false
     entities:
-      - entity: zigate.6ec3 
+      - entity: zigate.6ec3
       - entity: zigate.f874
       - entity: zigate.e15d
       - entity: zigate.6440
       - entity: zigate.7c8f
       - entity: zigate.d44e
       - entity: zigate.eff1
-      - entity: zigate.c4ed    
+      - entity: zigate.c4ed
       - entity: zigate.bdde
-    
+
   - type: entities
     title: Sensoren
     show_header_toggle: false
@@ -93,4 +93,3 @@ cards:
       - entity: zigate.9bc8
       - entity: zigate.cda0
       - entity: zigate.55a3
-    

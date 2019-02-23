@@ -3,33 +3,33 @@ light:
     devices:
       192.168.2.63:
         name: Schreibtisch
-        mode: "rgb"  
-            
+        mode: "rgb"
+
   - platform: switch
     name: Arbeitszimmer Lampe
     entity_id: switch.arbeitszimmer_lampe
-    
-input_boolean:     
+
+input_boolean:
   bewegungsmelder_arbeitszimmer_deaktiviert:
     name: Bewegungsmelder deaktiviert
-    initial: off 
+    initial: off
     icon: mdi:sync-off
 
 lightingsm:
   bewegung_arbeitszimmer:
     friendly_name: "Bewegung Arbeitszimmer"
     sensor: binary_sensor.zigate_eac1_presence
-    entities: 
+    entities:
       - light.schreibtisch
       - light.arbeitszimmer_lampe
-    delay: 120     
+    delay: 120
     overrides:
       - binary_sensor.sonne_tagsueber
-      - input_boolean.bewegungsmelder_arbeitszimmer_deaktiviert     
-            
+      - input_boolean.bewegungsmelder_arbeitszimmer_deaktiviert
+
 switch:
   - platform: brematic
-    host: 192.168.2.57        
+    host: 192.168.2.57
     switches:
       arbeitszimmer_lampe:
         friendly_name: Lampe
@@ -37,9 +37,9 @@ switch:
         unit_code: "00100"
 
 homeassistant:
-  customize:      
+  customize:
     switch.arbeitszimmer_lampe:
       hidden: true
-    light.arbeitszimmer_lampe:      
+    light.arbeitszimmer_lampe:
       friendly_name: Lampe
       icon: mdi:lamp

@@ -1,4 +1,4 @@
-shell_command:  
+shell_command:
   rufnummer_suchen: "python3 /home/homeassistant/.homeassistant/python_scripts/werbeanrufe.py {{ rufnummer }}"
   werbeanruf_zuruecksetzen: "python3 /home/homeassistant/.homeassistant/python_scripts/werbeanrufe.py"
 
@@ -9,8 +9,8 @@ input_boolean:
 
   musik_pausiert:
     name: Musik pausiert
-    initial: off    
-    
+    initial: off
+
 sensor:
   - platform: template
     sensors:
@@ -25,14 +25,14 @@ sensor:
             {% if is_state('sensor.telefon', 'ringing') %}
               Eingehender Anruf
             {% elif is_state('sensor.telefon', 'dialing') %}
-              Ausgehender Anruf     
+              Ausgehender Anruf
             {% elif is_state('sensor.telefon', 'talking') %}
               Aktiver Anruf
             {% else %}
               Ruhezustand
-            {% endif %}            
+            {% endif %}
           {% endif %}
-        icon_template: > 
+        icon_template: >
           {% if states.sensor.tasker_handystatus == None %}
             mdi:phone
           {% else %}
@@ -44,9 +44,9 @@ sensor:
               mdi:phone-in-talk
             {% else %}
               mdi:phone
-            {% endif %}            
+            {% endif %}
           {% endif %}
-          
+
 automation:
   - alias: 'Telefon aktiv - Rufnummer suchen'
     initial_state: true
@@ -56,38 +56,38 @@ automation:
         to: 'ringing'
     condition:
       - condition: template
-        value_template: '{{ state_attr("sensor.telefon", "from_name") == "unknown" and state_attr("sensor.telefon", "from") != None and state_attr("sensor.telefon", "from") != "" }}'        
+        value_template: '{{ state_attr("sensor.telefon", "from_name") == "unknown" and state_attr("sensor.telefon", "from") != None and state_attr("sensor.telefon", "from") != "" }}'
     action:
       - service: shell_command.rufnummer_suchen
         data_template:
           rufnummer: '{{ states.sensor.telefon.attributes.from }}'
-        
+
   - alias: 'Werbeanruf - Nachricht an Handy'
     initial_state: true
     trigger:
       - platform: state
         entity_id: binary_sensor.werbeanruf
         to: 'on'
-    condition: 
+    condition:
       - condition: state
         entity_id: binary_sensor.zu_hause
-        state: 'off'  
+        state: 'off'
     action:
       - service: notify.telegram
         data_template:
           title: Werbeanruf Festnetz
           message: >
             Anrufer: {{ state_attr('binary_sensor.werbeanruf', 'name') }}
-            
+
             Rufnummer: {{ state_attr('binary_sensor.werbeanruf', 'number') }}
-            
+
             Anruftyp: {{ state_attr('binary_sensor.werbeanruf', 'type') }}
-            
-            Bewertung: {{ state_attr('binary_sensor.werbeanruf', 'score') }}     
+
+            Bewertung: {{ state_attr('binary_sensor.werbeanruf', 'score') }}
           data:
             inline_keyboard:
-              - 'Gelesen:/gelesen'            
-        
+              - 'Gelesen:/gelesen'
+
   - alias: 'Werbeanruf - Zurücksetzen'
     initial_state: true
     trigger:
@@ -101,13 +101,13 @@ automation:
         data_template:
           message_id: '{{ trigger.event.data.message.message_id }}'
           chat_id: '{{ trigger.event.data.user_id }}'
-          inline_keyboard: []  
+          inline_keyboard: []
       - service: telegram_bot.send_message
         data_template:
-          target: '{{ trigger.event.data.chat_id }}'          
+          target: '{{ trigger.event.data.chat_id }}'
           message: >-
             Werbeanruf wurde entfernt.
-        
+
   - alias: 'Telefon aktiv - Kodi pausieren'
     initial_state: true
     trigger:
@@ -117,13 +117,13 @@ automation:
       - platform: state
         entity_id: sensor.telefon
         to: 'dialing'
-    condition: 
+    condition:
       - condition: state
         entity_id: media_player.kodi_wohnzimmer
         state: 'playing'
       - condition: state
         entity_id: input_boolean.nicht_stoeren
-        state: 'off'        
+        state: 'off'
     action:
       - service: input_boolean.turn_on
         entity_id: input_boolean.kodi_pausiert
@@ -154,7 +154,7 @@ automation:
       platform: state
       entity_id: sensor.telefon
       to: 'idle'
-    condition: 
+    condition:
       - condition: state
         entity_id: media_player.kodi_wohnzimmer
         state: 'paused'
@@ -163,10 +163,10 @@ automation:
         state: 'on'
       - condition: state
         entity_id: sensor.handy_status
-        state: 'Ruhezustand'             
+        state: 'Ruhezustand'
     action:
       - service: input_boolean.turn_off
-        entity_id: input_boolean.kodi_pausiert    
+        entity_id: input_boolean.kodi_pausiert
       - service: media_player.media_play
         entity_id: media_player.kodi_wohnzimmer
       - service: notify.kodi_wohnzimmer
@@ -185,53 +185,53 @@ automation:
         to: 'ringing'
       - platform: state
         entity_id: sensor.telefon
-        to: 'dialing'   
+        to: 'dialing'
     condition:
       - condition: state
         entity_id: switch.alle_radios_wiedergabe_aktiv
         state: 'on'
       - condition: state
         entity_id: input_boolean.nicht_stoeren
-        state: 'off'          
+        state: 'off'
     action:
       - service: input_boolean.turn_on
-        entity_id: input_boolean.musik_pausiert    
+        entity_id: input_boolean.musik_pausiert
       - service: media_player.volume_mute
-        data:  
+        data:
           entity_id: media_player.kuche, media_player.badezimmer, media_player.wohnzimmer, media_player.schlafzimmer, media_player.arbeitszimmer, media_player.flur
           is_volume_muted: true
-            
+
   - alias: 'Telefon inaktiv - Musik wiedergeben'
     initial_state: true
     trigger:
       platform: state
       entity_id: sensor.telefon
       to: 'idle'
-    condition: 
+    condition:
       - condition: state
         entity_id: input_boolean.musik_pausiert
-        state: 'on' 
+        state: 'on'
       - condition: state
         entity_id: sensor.handy_status
-        state: 'Ruhezustand'          
+        state: 'Ruhezustand'
     action:
       - service: input_boolean.turn_off
-        entity_id: input_boolean.musik_pausiert    
+        entity_id: input_boolean.musik_pausiert
       - service: media_player.volume_mute
-        data:  
+        data:
           entity_id: media_player.kuche, media_player.badezimmer, media_player.wohnzimmer, media_player.schlafzimmer, media_player.arbeitszimmer, media_player.flur
           is_volume_muted: false
-          
+
   - alias: 'Telefon aktiv - Nachricht an Handy'
     initial_state: true
     trigger:
       - platform: state
         entity_id: sensor.telefon
         to: 'ringing'
-    condition: 
+    condition:
       - condition: state
         entity_id: binary_sensor.zu_hause
-        state: 'off'      
+        state: 'off'
     action:
       - service: notify.telegram
         data_template:
@@ -240,24 +240,24 @@ automation:
             {% if state_attr('sensor.telefon', 'from') == None or state_attr('sensor.telefon', 'from') == '' %}
               Ein Anruf ohne Rufnummer.
             {% elif state_attr('sensor.telefon', 'from_name') == None or state_attr('sensor.telefon', 'from_name') == 'unknown' %}
-              Ein Anruf von einer unbekannten Rufnummer ({{ states.sensor.telefon.attributes.from }}).          
+              Ein Anruf von einer unbekannten Rufnummer ({{ states.sensor.telefon.attributes.from }}).
             {% else %}
               Anruf von {{ state_attr('sensor.telefon', 'from_name') }} ({{ state_attr('sensor.telefon', 'from') }}).
-            {% endif %} 
-          
+            {% endif %}
+
   - alias: "Telefon aktiv - TTS"
     initial_state: true
     trigger:
       - platform: state
         entity_id: sensor.telefon
         to: 'ringing'
-    condition: 
+    condition:
       - condition: state
         entity_id: input_boolean.nicht_stoeren
-        state: 'off'        
-    action: 
+        state: 'off'
+    action:
       service: !secret tts_service
-      data_template:           
+      data_template:
         message: >-
           {% if state_attr('sensor.telefon', 'from') == None or state_attr('sensor.telefon', 'from') == '' %}
             Ein eingehender Anruf ohne Rufnummer.
@@ -265,13 +265,13 @@ automation:
             Ein eingehender Anruf von einer unbekannten Rufnummer.
           {% else %}
             Ein eingehender Anruf von {{ state_attr('sensor.telefon', 'from_name') }}.
-          {% endif %}          
-                          
+          {% endif %}
+
 homeassistant:
   customize:
     sensor.telefon:
-      icon: mdi:phone-classic      
+      icon: mdi:phone-classic
       hidden: true
     binary_sensor.werbeanruf:
       icon: mdi:phone-log
-      hidden: true      
+      hidden: true

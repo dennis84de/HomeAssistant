@@ -1,22 +1,22 @@
-input_boolean:     
+input_boolean:
   bewegungsmelder_wohnzimmer_deaktiviert:
     name: Bewegungsmelder deaktiviert
-    initial: off 
+    initial: off
     icon: mdi:sync-off
 
 light:
   - platform: switch
     name: Couch
     entity_id: switch.couch
-    
+
   - platform: switch
     name: Strahler
-    entity_id: switch.strahler    
-   
+    entity_id: switch.strahler
+
   - platform: switch
     name: Vitrine
-    entity_id: switch.vitrine  
-    
+    entity_id: switch.vitrine
+
 lightingsm:
   bewegung_wohnzimmer:
     friendly_name: "Bewegung Wohnzimmer"
@@ -24,16 +24,16 @@ lightingsm:
     entities:
       - light.couch
       - light.strahler
-    delay: 60     
+    delay: 60
     overrides:
       - binary_sensor.sonne_tagsueber
       - input_boolean.bewegungsmelder_wohnzimmer_deaktiviert
       - switch.computer
       - switch.watchtv_wohnzimmer
-      
+
 switch:
   - platform: brematic
-    host: 192.168.2.57        
+    host: 192.168.2.57
     switches:
       couch:
         friendly_name: Couch
@@ -48,7 +48,7 @@ switch:
         system_code: "11111"
         unit_code: "00010"
 
-automation:       
+automation:
   - alias: Licht Abends
     initial_state: true
     trigger:
@@ -58,11 +58,11 @@ automation:
     condition:
       - condition: state
         entity_id: binary_sensor.zu_hause
-        state: 'on'     
+        state: 'on'
     action:
       - service: light.turn_on
         entity_id: light.couch, light.strahler
-        
+
   - alias: Licht Couch
     initial_state: true
     trigger:
@@ -70,11 +70,11 @@ automation:
         event_type: xiaomi_aqara.cube_action
         event_data:
           entity_id: binary_sensor.cube_158d0001100d7a
-          action_type: tap_twice        
+          action_type: tap_twice
     action:
       - service: light.toggle
         entity_id: light.couch
-        
+
 homeassistant:
   customize:
     switch.couch:
@@ -83,10 +83,10 @@ homeassistant:
       hidden: true
     switch.vitrine:
       hidden: true
-      
+
     light.couch:
       icon: mdi:sofa
     light.strahler:
       icon: mdi:spotlight
     light.vitrine:
-      icon: mdi:lightbulb-on-outline     
+      icon: mdi:lightbulb-on-outline

@@ -2,11 +2,11 @@ switch:
   - platform: tplink
     host: 192.168.2.73
     name: "Waschmaschine"
-    
+
   - platform: tplink
     host: 192.168.2.34
     name: "Trockner"
-    
+
 input_select:
   status_waschmaschine:
     name: Status Waschmaschine
@@ -23,7 +23,7 @@ input_select:
       - Stillstand
       - Trocknen
     icon: mdi:tumble-dryer
-    
+
 sensor:
   - platform: template
     sensors:
@@ -36,17 +36,17 @@ sensor:
             {{ 0.00 | float }}
           {% else %}
             {{ states.switch.waschmaschine.attributes.current_power_w | float }}
-          {% endif %}            
+          {% endif %}
         unit_of_measurement: 'W'
         icon_template: 'mdi:power-cycle'
-        
+
       waschmaschine_status:
         friendly_name: Status Waschmaschine
         entity_id:
           - input_select.status_waschmaschine
         value_template: '{{ states.input_select.status_waschmaschine.state }}'
         icon_template: 'mdi:washing-machine'
-        
+
       trockner_verbrauch:
         friendly_name: Verbrauch Trockner
         entity_id:
@@ -56,17 +56,17 @@ sensor:
             {{ 0.00 | float }}
           {% else %}
             {{ states.switch.trockner.attributes.current_power_w | float }}
-          {% endif %}            
+          {% endif %}
         unit_of_measurement: 'W'
         icon_template: 'mdi:power-cycle'
-        
+
       trockner_status:
         friendly_name: Status Trockner
         entity_id:
           - input_select.status_trockner
         value_template: '{{ states.input_select.status_trockner.state }}'
         icon_template: 'mdi:tumble-dryer'
-        
+
 automation:
   - alias: 'Waschmaschine - Ausgeschaltet'
     initial_state: true
@@ -91,7 +91,7 @@ automation:
       - platform: state
         entity_id: switch.waschmaschine
         from: 'off'
-        to: 'on'        
+        to: 'on'
     condition:
       - condition: state
         entity_id: switch.waschmaschine
@@ -107,7 +107,7 @@ automation:
     trigger:
       - platform: numeric_state
         entity_id: sensor.waschmaschine_verbrauch
-        above: 20        
+        above: 20
         for: '00:01:00'
     condition:
       - condition: state
@@ -128,7 +128,7 @@ automation:
       - platform: state
         entity_id: switch.trockner
         from: 'on'
-        to: 'off'     
+        to: 'off'
     action:
       - service: input_select.select_option
         data:
@@ -175,7 +175,7 @@ automation:
         data:
           entity_id: input_select.status_trockner
           option: 'Trocknen'
-        
+
   - alias: 'Waschmaschine gestartet'
     initial_state: true
     trigger:
@@ -187,13 +187,13 @@ automation:
       - condition: state
         entity_id: binary_sensor.zu_hause
         state: 'off'
-    action: 
+    action:
       - service: notify.telegram
         data_template:
           title: "Waschmaschine gestartet"
           message: >-
             Die Waschmaschine wurde gestartet.
-          
+
   - alias: 'Waschmaschine fertig - TTS'
     initial_state: true
     trigger:
@@ -201,12 +201,12 @@ automation:
         entity_id: input_select.status_waschmaschine
         from: 'Waschen'
         to: 'Stillstand'
-    action: 
+    action:
       - service: !secret tts_service
-        data_template:           
+        data_template:
           message: >-
             Die Waschmaschine ist fertig.
-     
+
   - alias: 'Waschmaschine fertig - Telegram'
     initial_state: true
     trigger:
@@ -217,14 +217,14 @@ automation:
     condition:
       - condition: state
         entity_id: binary_sensor.zu_hause
-        state: 'off'        
-    action: 
+        state: 'off'
+    action:
       - service: notify.telegram
         data_template:
           title: "Waschmaschine fertig"
           message: >-
             Die Waschmaschine ist fertig.
-            
+
   - alias: 'Trockner gestartet'
     initial_state: true
     trigger:
@@ -235,14 +235,14 @@ automation:
     condition:
       - condition: state
         entity_id: binary_sensor.zu_hause
-        state: 'off'          
-    action: 
+        state: 'off'
+    action:
       - service: notify.telegram
         data_template:
           title: "Trockner gestartet"
           message: >-
             Der Trockner wurde gestartet.
-            
+
   - alias: 'Trockner fertig - TTS'
     initial_state: true
     trigger:
@@ -250,12 +250,12 @@ automation:
         entity_id: input_select.status_trockner
         from: 'Trocknen'
         to: 'Stillstand'
-    action: 
+    action:
       - service: !secret tts_service
-        data_template:           
+        data_template:
           message: >-
-            Der Trockner ist fertig.        
-        
+            Der Trockner ist fertig.
+
   - alias: 'Trockner fertig - Telegram'
     initial_state: true
     trigger:
@@ -266,22 +266,22 @@ automation:
     condition:
       - condition: state
         entity_id: binary_sensor.zu_hause
-        state: 'off'         
-    action: 
+        state: 'off'
+    action:
       - service: notify.telegram
         data_template:
           title: "Trockner fertig"
           message: >-
             Der Trockner ist fertig.
-            
+
 homeassistant:
   customize:
     switch.waschmaschine:
       icon: mdi:washing-machine
     switch.trockner:
       icon: mdi:tumble-dryer
-      
+
     input_select.status_waschmaschine:
       hidden: true
     input_select.status_trockner:
-      hidden: true      
+      hidden: true

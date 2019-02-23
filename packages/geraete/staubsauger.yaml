@@ -7,7 +7,7 @@ input_boolean:
   xiaomi_vacuum_heute_gereinigt:
     name: Heute gereinigt
   xiaomi_vacuum_automatische_reinigung:
-    name: Automatische Reinigung   
+    name: Automatische Reinigung
     icon: mdi:flash-auto
     initial: on
 
@@ -16,13 +16,13 @@ sensor:
     sensors:
       letzte_reinigung:
         friendly_name: Letzte Reinigung
-        unit_of_measurement: 'Uhr'   
+        unit_of_measurement: 'Uhr'
         entity_id:
           - vacuum.xiaomi_vacuum_cleaner
         value_template: >-
-          {% set lastClean = state_attr("vacuum.xiaomi_vacuum_cleaner", "clean_stop") %}         
+          {% set lastClean = state_attr("vacuum.xiaomi_vacuum_cleaner", "clean_stop") %}
           {{ as_timestamp(lastClean) | timestamp_custom("%d.%m.%Y %H:%M", True) | string }}
-          
+
       xiaomi_vacuum_batterie:
         friendly_name: Batterie
         device_class: battery
@@ -32,9 +32,9 @@ sensor:
           {% if is_state('vacuum.xiaomi_vacuum_cleaner', 'unknown') %}
             0
           {% else %}
-            {{ state_attr("vacuum.xiaomi_vacuum_cleaner","battery_level") | float }}            
+            {{ state_attr("vacuum.xiaomi_vacuum_cleaner","battery_level") | float }}
           {% endif %}
-        unit_of_measurement: '%'  
+        unit_of_measurement: '%'
 
 automation:
   - alias: "Automatische Reinigung"
@@ -49,35 +49,35 @@ automation:
         at: '7:00:00'
     condition:
       condition: and
-      conditions:    
+      conditions:
       - condition: time
         after: '06:00'
         before: '22:00'
       - condition: state
         entity_id: vacuum.xiaomi_vacuum_cleaner
-        state: 'docked'             
+        state: 'docked'
       - condition: state
         entity_id: input_boolean.xiaomi_vacuum_automatische_reinigung
-        state: 'on'     
+        state: 'on'
       - condition: state
         entity_id: input_boolean.xiaomi_vacuum_heute_gereinigt
-        state: 'off'       
+        state: 'off'
       - condition: state
         entity_id: binary_sensor.zu_hause
         state: 'off'
       - condition: template
-        value_template: '{{ now().isoweekday() != 7 }}'          
+        value_template: '{{ now().isoweekday() != 7 }}'
       - condition: or
         conditions:
           - condition: template
-            value_template: '{{ now().isoweekday() == 1 or now().isoweekday() == 4 }}'  
+            value_template: '{{ now().isoweekday() == 1 or now().isoweekday() == 4 }}'
           - condition: template
-            value_template: >-                          
+            value_template: >-
               {% set letzte_reinigung = as_timestamp(state_attr("vacuum.xiaomi_vacuum_cleaner", "clean_stop")) | timestamp_custom("%s", True) | int  %}
               {% set now = now().strftime("%s") | int %}
               {% set abstand_tage = ((now - letzte_reinigung | timestamp_custom("%s") | int) / 86400) | int %}
 
-              {{ True if abstand_tage >= 3 else False }}                     
+              {{ True if abstand_tage >= 3 else False }}
     action:
       - service: vacuum.start
         entity_id: vacuum.xiaomi_vacuum_cleaner
@@ -85,7 +85,7 @@ automation:
         data_template:
           title: 'Staubsaugen gestartet'
           message: 'Das Saugen der Wohnung wurde gestartet.'
-    
+
   - alias: "Heutige Reinigung zurücksetzen"
     initial_state: true
     trigger:
@@ -109,22 +109,22 @@ automation:
         data_template:
           title: 'Staubsaugen beendet'
           message: 'Die Wohnung wurde vollständig gesaugt.'
-           
+
   - alias: "Staubsaugen Fehler"
     initial_state: true
     trigger:
       - platform: state
-        entity_id: vacuum.xiaomi_vacuum_cleaner        
+        entity_id: vacuum.xiaomi_vacuum_cleaner
         to: 'error'
     action:
       - service: notify.telegram
         data_template:
           title: 'Fehler beim Staubsaugen'
           message: 'Während des Staubsaugens ist ein Fehler aufgetreten.'
-          
+
 homeassistant:
-  customize:          
+  customize:
     vacuum.xiaomi_vacuum_cleaner:
-      friendly_name: Xiaomi Robot      
+      friendly_name: Xiaomi Robot
     sensor.letzte_reinigung:
       icon: mdi:clock-end

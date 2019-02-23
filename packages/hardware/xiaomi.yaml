@@ -1,38 +1,38 @@
 xiaomi_aqara:
   discovery_retry: 5
-  gateways:   
+  gateways:
     - mac: !secret xiaomi_mac
-      key: !secret xiaomi_password        
-  
+      key: !secret xiaomi_password
+
 sensor:
   - platform: template
-    sensors:       
+    sensors:
       xiaomi_tuersensor_flur_batterie:
         friendly_name: Türsensor Flur
         entity_id:
-          - binary_sensor.zigate_229b_onoff 
+          - binary_sensor.zigate_229b_onoff
         value_template: >-
           {% if is_state('binary_sensor.zigate_229b_onoff', 'unknown') %}
             0
           {% else %}
             {{ states.binary_sensor.zigate_229b_onoff.attributes["battery_level"] | float}}
-          {% endif %}                  
-        unit_of_measurement: '%'  
+          {% endif %}
+        unit_of_measurement: '%'
         device_class: battery
-        
+
       xiaomi_tuerklingel_flur_batterie:
         friendly_name: Türklingel
         entity_id:
-          - binary_sensor.zigate_9bc8_onoff 
+          - binary_sensor.zigate_9bc8_onoff
         value_template: >-
           {% if is_state('binary_sensor.zigate_9bc8_onoff', 'unknown') %}
             0
           {% else %}
             {{ states.binary_sensor.zigate_9bc8_onoff.attributes["battery_level"] | float}}
-          {% endif %}                  
-        unit_of_measurement: '%'  
+          {% endif %}
+        unit_of_measurement: '%'
         device_class: battery
-              
+
       xiaomi_schalter_wohnzimmer_batterie:
         friendly_name: Schalter Wohnzimmer
         entity_id:
@@ -42,10 +42,10 @@ sensor:
             0
           {% else %}
             {{ states.binary_sensor.switch_158d0002c8c48b.attributes["battery_level"] | float}}
-          {% endif %}          
-        unit_of_measurement: '%' 
+          {% endif %}
+        unit_of_measurement: '%'
         device_class: battery
-        
+
       xiaomi_schalter_schlafzimmer_batterie:
         friendly_name: Schalter Schlafzimmer
         entity_id:
@@ -55,23 +55,23 @@ sensor:
             0
           {% else %}
             {{ states.binary_sensor.switch_158d0002134568.attributes["battery_level"] | float}}
-          {% endif %}          
-        unit_of_measurement: '%' 
+          {% endif %}
+        unit_of_measurement: '%'
         device_class: battery
-        
+
       xiaomi_schalter_flur_batterie:
         friendly_name: Schalter Flur
         entity_id:
-          - binary_sensor.switch_158d0001c30867         
+          - binary_sensor.switch_158d0001c30867
         value_template: >-
           {% if is_state('binary_sensor.switch_158d0001c30867', 'unknown') %}
             0
           {% else %}
             {{ states.binary_sensor.switch_158d0001c30867.attributes["battery_level"] | float}}
-          {% endif %}                
+          {% endif %}
         unit_of_measurement: '%'
-        device_class: battery        
-        
+        device_class: battery
+
       xiaomi_vibration_wohnzimmer_batterie:
         friendly_name: Vibration Wohnzimmer
         entity_id:
@@ -81,10 +81,10 @@ sensor:
             0
           {% else %}
             {{ states.binary_sensor.vibration_158d0002a48dc8.attributes["battery_level"] | float}}
-          {% endif %}                
+          {% endif %}
         unit_of_measurement: '%'
         device_class: battery
-               
+
       xiaomi_vibration_schlafzimmer_batterie:
         friendly_name: Vibration Schlafzimmer
         entity_id:
@@ -94,10 +94,10 @@ sensor:
             0
           {% else %}
             {{ states.binary_sensor.vibration_158d0002a222a1.attributes["battery_level"] | float}}
-          {% endif %}            
-        unit_of_measurement: '%'  
+          {% endif %}
+        unit_of_measurement: '%'
         device_class: battery
-        
+
       xiaomi_cube_batterie:
         friendly_name: Cube Wohnzimmer
         entity_id:
@@ -107,17 +107,17 @@ sensor:
             0
           {% else %}
             {{ states.binary_sensor.cube_158d0001100d7a.attributes["battery_level"] | float}}
-          {% endif %}                 
+          {% endif %}
         unit_of_measurement: '%'
-        device_class: battery       
-        
+        device_class: battery
+
       xiaomi_cube_status:
         friendly_name: Xiaomi Cube
         entity_id:
-          - binary_sensor.cube_158d0001100d7a        
+          - binary_sensor.cube_158d0001100d7a
         value_template: >
           {% set lastState = states.binary_sensor.cube_158d0001100d7a.attributes.last_action %}
-        
+
           {% if lastState == None %}
             Unbekannt
           {% elif lastState == 'flip90' %}
@@ -133,19 +133,19 @@ sensor:
           {% elif lastState == 'alert' %}
             Alarm
           {% elif lastState == 'wakeup' %}
-            Aufgewacht              
+            Aufgewacht
           {% elif lastState == 'free_fall' %}
-            Freier Fall 
+            Freier Fall
           {% elif lastState == 'rotate' %}
             Rotieren
           {% elif lastState == 'tap_twice' %}
-            Klopfen              
+            Klopfen
           {% else %}
             Unbekannt
-          {% endif %} 
-        icon_template: > 
-            mdi:cube-outline    
-            
+          {% endif %}
+        icon_template: >
+            mdi:cube-outline
+
       xiaomi_vibration_wohnzimmer_status:
         friendly_name: Vibration Status
         value_template: >
@@ -153,7 +153,7 @@ sensor:
             Unbekannt
           {% else %}
             {% set lastState = states.binary_sensor.vibration_158d0002a48dc8.attributes["last_action"] %}
-            
+
             {% if lastState == 'vibrate' %}
               Vibration
             {% elif lastState == 'tilt' %}
@@ -162,11 +162,11 @@ sensor:
               Freier Fall
             {% else %}
               Unbekannt
-            {% endif %}            
+            {% endif %}
           {% endif %}
-        icon_template: > 
-            mdi:vibrate    
-            
+        icon_template: >
+            mdi:vibrate
+
       xiaomi_vibration_schlafzimmer_status:
         friendly_name: Vibration Status
         value_template: >
@@ -174,7 +174,7 @@ sensor:
             Unbekannt
           {% else %}
             {% set lastState = states.binary_sensor.vibration_158d0002a222a1.attributes["last_action"] %}
-            
+
             {% if lastState == 'vibrate' %}
               Vibration
             {% elif lastState == 'tilt' %}
@@ -183,42 +183,42 @@ sensor:
               Freier Fall
             {% else %}
               Unbekannt
-            {% endif %}            
+            {% endif %}
           {% endif %}
-        icon_template: > 
-            mdi:vibrate               
-         
+        icon_template: >
+            mdi:vibrate
+
 homeassistant:
-  customize:     
+  customize:
     device_tracker.xiaomigateway:
       icon: mdi:cube
 
     vacuum.xiaomi_vacuum_cleaner:
-      friendly_name: Xiaomi Robot        
-      
+      friendly_name: Xiaomi Robot
+
     sensor.illumination_7811dcaf15a8:
       friendly_name: Xioami Helligkeit
       hidden: true
     light.gateway_light_7811dcaf15a8:
       friendly_name: Xiaomi Licht
       hidden: true
-      
+
     binary_sensor.switch_158d0001c30867:
       friendly_name: Schalter Flur
-      hidden: true      
+      hidden: true
     binary_sensor.switch_158d0002134568:
       friendly_name: Schalter Schlafzimmer
       hidden: true
     binary_sensor.switch_158d0002c8c48b:
       friendly_name: Schalter Wohnzimmer
       hidden: true
-    binary_sensor.switch_158d0002c762ce:      
-      hidden: true      
-      
+    binary_sensor.switch_158d0002c762ce:
+      hidden: true
+
     binary_sensor.cube_158d0001100d7a:
       friendly_name: Cube Schlafzimmer
       hidden: true
-        
+
     binary_sensor.vibration_158d0002a48dc8:
       friendly_name: Vibration Wohnzimmer
       hidden: true
@@ -231,7 +231,7 @@ homeassistant:
     sensor.tilt_angle_158d0002a48dc8:
       friendly_name: Winkel Wohnzimmer
       hidden: true
-      
+
     binary_sensor.vibration_158d0002a222a1:
       friendly_name: Vibration Schlafzimmer
       hidden: true
@@ -243,4 +243,4 @@ homeassistant:
       hidden: true
     sensor.tilt_angle_158d0002a222a1:
       friendly_name: Winkel Schlafzimmer
-      hidden: true      
+      hidden: true

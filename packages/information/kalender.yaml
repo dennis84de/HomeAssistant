@@ -3,129 +3,129 @@ calendar:
     url: !secret nextcloud_calendar_url
     username: !secret nextcloud_username
     password: !secret nextcloud_password
-    
+
   - platform: todoist
     token: !secret todoist_token
-      
+
 google:
   client_id: !secret google_clientid
   client_secret: !secret google_apikey
 
-sensor:     
+sensor:
   - platform: template
     sensors:
       edg_restmuell:
         friendly_name: Restmüll
         entity_id:
-          - calendar.edg_restmuell       
+          - calendar.edg_restmuell
         value_template: >
-          {% if states.calendar.edg_restmuell.attributes.start_time %}            
+          {% if states.calendar.edg_restmuell.attributes.start_time %}
             {% set weekday = as_timestamp(states.calendar.edg_restmuell.attributes.start_time) | timestamp_custom("%w", True) | int %}
 
             {{ ['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'][weekday-1] }}, {{ as_timestamp(states.calendar.edg_restmuell.attributes.start_time) | timestamp_custom("%d.%m.%Y", True) | string }}
           {% else %}
             -
-          {% endif %}  
-        icon_template: mdi:trash-can   
-        
+          {% endif %}
+        icon_template: mdi:trash-can
+
       edg_wertstoff:
         friendly_name: Wertstoff
         entity_id:
-          - calendar.edg_wertstoff           
+          - calendar.edg_wertstoff
         value_template: >
           {% if states.calendar.edg_wertstoff.attributes.start_time %}
             {% set weekday = as_timestamp(states.calendar.edg_wertstoff.attributes.start_time) | timestamp_custom("%w", True) | int %}
-            
+
             {{ ['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'][weekday-1] }}, {{ as_timestamp(states.calendar.edg_wertstoff.attributes.start_time) | timestamp_custom("%d.%m.%Y", True) | string }}
           {% else %}
             -
-          {% endif %}  
+          {% endif %}
         icon_template: mdi:recycle
-        
+
       edg_papier:
         friendly_name: Papier
         entity_id:
-          - calendar.edg_papier           
+          - calendar.edg_papier
         value_template: >
           {% if states.calendar.edg_papier.attributes.start_time %}
             {% set weekday = as_timestamp(states.calendar.edg_papier.attributes.start_time) | timestamp_custom("%w", True) | int %}
-            
+
             {{ ['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'][weekday-1] }}, {{ as_timestamp(states.calendar.edg_papier.attributes.start_time) | timestamp_custom("%d.%m.%Y", True) | string }}
           {% else %}
             -
-          {% endif %}  
+          {% endif %}
         icon_template: mdi:newspaper
-     
+
       bvb_spiel:
         friendly_name: Nächstes Spiel
         entity_id:
-          - calendar.borussia_dortmund        
+          - calendar.borussia_dortmund
         value_template: >
-          {% if states.calendar.borussia_dortmund.attributes.message %}            
+          {% if states.calendar.borussia_dortmund.attributes.message %}
             {{ states.calendar.borussia_dortmund.attributes.message }}
           {% else %}
             -
-          {% endif %}  
+          {% endif %}
         icon_template: mdi:soccer
-        
+
       bvb_datum:
         friendly_name: Datum
         entity_id:
-          - calendar.borussia_dortmund        
+          - calendar.borussia_dortmund
         value_template: >
-          {% if states.calendar.borussia_dortmund.attributes.start_time %}            
+          {% if states.calendar.borussia_dortmund.attributes.start_time %}
             {% set weekday = as_timestamp(states.calendar.borussia_dortmund.attributes.start_time) | timestamp_custom("%w", True) | int %}
 
             {{ ['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'][weekday-1] }}, {{ as_timestamp(states.calendar.borussia_dortmund.attributes.start_time) | timestamp_custom("%d.%m.%Y", True) | string }}
           {% else %}
             -
-          {% endif %}  
+          {% endif %}
         icon_template: mdi:calendar-alert
-        
+
       bvb_uhrzeit:
         friendly_name: Uhrzeit
         entity_id:
-          - calendar.borussia_dortmund        
+          - calendar.borussia_dortmund
         value_template: >
-          {% if states.calendar.borussia_dortmund.attributes.start_time %}            
+          {% if states.calendar.borussia_dortmund.attributes.start_time %}
             {{ as_timestamp(states.calendar.borussia_dortmund.attributes.start_time) | timestamp_custom("%H:%M Uhr", True) | string }}
           {% else %}
             -
-          {% endif %}  
+          {% endif %}
         icon_template: mdi:clock-outline
-        
+
       bvb_ort:
         friendly_name: Ort
         entity_id:
-          - calendar.borussia_dortmund        
+          - calendar.borussia_dortmund
         value_template: >
-          {% if states.calendar.borussia_dortmund.attributes.location %}            
+          {% if states.calendar.borussia_dortmund.attributes.location %}
             {{ states.calendar.borussia_dortmund.attributes.location }}
           {% else %}
             -
-          {% endif %}  
-        icon_template: mdi:city        
-        
+          {% endif %}
+        icon_template: mdi:city
+
       naechster_urlaub:
         friendly_name: Nächster Urlaub
         entity_id:
-          - calendar.urlaub       
+          - calendar.urlaub
         value_template: >
-          {% if states.calendar.urlaub.attributes.start_time %}            
+          {% if states.calendar.urlaub.attributes.start_time %}
             {% set weekday = as_timestamp(states.calendar.urlaub.attributes.start_time) | timestamp_custom("%w", True) | int %}
 
             {{ ['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'][weekday-1] }}, {{ as_timestamp(states.calendar.urlaub.attributes.start_time) | timestamp_custom("%d.%m.%Y", True) | string }}
           {% else %}
             -
-          {% endif %}  
+          {% endif %}
         friendly_name_template: >-
           {{ states.calendar.urlaub.attributes.message }}
         icon_template: mdi:sunglasses
-        
+
 homeassistant:
   customize:
     calendar.bvb:
-      hidden: true    
+      hidden: true
     calendar.edg_restmuell:
       hidden: true
     calendar.edg_wertstoff:

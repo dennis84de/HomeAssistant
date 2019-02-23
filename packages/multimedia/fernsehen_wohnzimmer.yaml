@@ -2,27 +2,27 @@ media_player:
   - platform: songpal
     name: Soundbar
     endpoint: http://192.168.2.20:10000/sony
-  
+
 input_number:
   soundbar_volume:
-    name: Lautstärke   
+    name: Lautstärke
     min: 0
     max: 50
     step: 1
     icon: mdi:volume-high
 
-input_boolean:        
+input_boolean:
   musik_ausschalten:
     name: Musik ausschalten
     icon: mdi:music-off
   kodi_pausiert:
-    name: Kodi pausiert        
-  
+    name: Kodi pausiert
+
 sensor:
   - platform: template
     sensors:
       soundbar_volume:
-        entity_id: 
+        entity_id:
           - media_player.soundbar
         value_template: >-
             {% if states.media_player.soundbar.state == "off" %}
@@ -32,14 +32,14 @@ sensor:
             {% else %}
               {% set volume = states.media_player.soundbar.attributes.volume_level %}
               {% set new_volume = volume * 50 %}
-              {{ new_volume | int }}   
+              {{ new_volume | int }}
             {% endif %}
 
 binary_sensor:
   - platform: template
     sensors:
       soundbar_volume_changed:
-        entity_id: 
+        entity_id:
           - input_number.soundbar_volume
           - sensor.soundbar_volume
           - media_player.soundbar
@@ -53,28 +53,28 @@ binary_sensor:
 
 cover:
   - platform: template
-    covers:      
+    covers:
       fernseher_eingang:
         friendly_name: "Fernseher Eingang"
         position_template: 50
         open_cover:
           service: switch.broadlink_send_packet_192_168_2_45
           data:
-            packet:            
+            packet:
               - "JgCMAJWUETgTNxE5ERMSExITERQRFBE4EjgRORETEhMSExEUERQRFBE4EhMRFBE5EhITEhITEjgRFBI3EjgRFBE4EzcROBIABgOTlRE5ETgSOBEUERQSEhITEhMSOBI3EjgRFBEUERMSExEUERQROBMSEhMROREUERMSExI4ERQSNxI4ERQROBI4EjgSAA0FAAAAAAAAAAAAAAAA"
         close_cover:
           service: switch.broadlink_send_packet_192_168_2_45
           data:
-            packet:             
+            packet:
               - "JgCMAJWTEjgSOBI3EhMSExEUERQRFBE4EjgROBMSEhMRFBEUERQRExITEhMSExE5ERMSExITETkSNxI4EjgRExI4ETkROBIABgKUlRI3EjgSOBISEhMTEhEUERQSNxM3EjgRFBETEhMRFBEUERQSExETEhMSOBITERMSExI4ETkROBI4ERQSNxI4ETgSAA0FAAAAAAAAAAAAAAAA"
         stop_cover:
           service: switch.broadlink_send_packet_192_168_2_45
           data:
-            packet: 
+            packet:
               - "JgCMAJSVETgSOBE5ERQSEhMSEhMRFBE5ETgROREUERMSExITEhMRORETEhMSExITERQRFBETEhMSOBI4ETgSOBI4EjcSOBEABgOUlBI4ETkROBITEhMRFBEUERQROBI4ETgSExITERQSExEUETgSExITERQRFBEUERMTEhITEjgROBI4ETkROBI4ETkSAA0FAAAAAAAAAAAAAAAA"
         icon_template: >-
-          mdi:television-guide       
-   
+          mdi:television-guide
+
       kodi_untertitel:
         friendly_name: "Untertitel"
         position_template: 50
@@ -83,31 +83,31 @@ cover:
           data:
             entity_id: media_player.kodi_wohnzimmer
             method: Input.ExecuteAction
-            action: subtitledelayplus          
+            action: subtitledelayplus
         close_cover:
           service: media_player.kodi_call_method
           data:
             entity_id: media_player.kodi_wohnzimmer
             method: Input.ExecuteAction
             action: subtitledelayminus
-        stop_cover:          
+        stop_cover:
           service: media_player.kodi_call_method
           data:
             entity_id: media_player.kodi_wohnzimmer
             method: Input.ExecuteAction
-            action: showsubtitles  
+            action: showsubtitles
         icon_template: >-
           mdi:message-bulleted
-      
-switch:   
+
+switch:
   - platform: broadlink
     host: 192.168.2.45
     mac: '34:EA:34:C7:C0:28'
     type: rm
     friendly_name: "Broadlink Wohnzimmer"
-        
+
   - platform: template
-    switches:    
+    switches:
       wohnzimmer_fernseher:
         friendly_name: "Wohnzimmer Fernseher"
         value_template: "{{ is_state('switch.zigate_55a3_3', 'on') }}"
@@ -117,7 +117,7 @@ switch:
         turn_off:
           service: switch.turn_off
           entity_id: switch.zigate_55a3_3
-          
+
       watchtv_wohnzimmer:
         friendly_name: "Fernsehen"
         value_template: "{{ is_state('switch.wohnzimmer_fernseher', 'on') }}"
@@ -125,7 +125,7 @@ switch:
           service: script.watchtv_wohnzimmer_on
         turn_off:
           service: script.watchtv_wohnzimmer_off
-          
+
       play_wohnzimmer:
         friendly_name: "Wiedergabe Kodi"
         value_template: "{{ is_state('media_player.kodi_wohnzimmer', 'playing') }}"
@@ -134,8 +134,8 @@ switch:
           entity_id: media_player.kodi_wohnzimmer
         turn_off:
           service: media_player.media_pause
-          entity_id: media_player.kodi_wohnzimmer  
-          
+          entity_id: media_player.kodi_wohnzimmer
+
       wohnzimmer_soundbar:
         friendly_name: "Soundbar"
         value_template: "{{ is_state('media_player.soundbar', 'on') }}"
@@ -143,12 +143,12 @@ switch:
           mdi:surround-sound
         turn_on:
           - service: media_player.turn_on
-            entity_id: media_player.soundbar     
+            entity_id: media_player.soundbar
         turn_off:
           - service: media_player.turn_off
-            entity_id: media_player.soundbar  
-                
-script:          
+            entity_id: media_player.soundbar
+
+script:
   watchtv_wohnzimmer_on:
     alias: "Fernsehen Wohnzimmer einschalten"
     sequence:
@@ -158,35 +158,35 @@ script:
       - service: media_player.select_source
         entity_id: media_player.soundbar
         data:
-          source: TV        
-          
+          source: TV
+
   watchtv_wohnzimmer_off:
     alias: "Fernsehen Wohnzimmer ausschalten"
     sequence:
     - service: media_player.media_stop
-      entity_id: media_player.kodi_wohnzimmer      
-    - wait_template: "{{is_state('media_player.kodi_wohnzimmer', 'idle')}}" 
+      entity_id: media_player.kodi_wohnzimmer
+    - wait_template: "{{is_state('media_player.kodi_wohnzimmer', 'idle')}}"
     - service: media_player.turn_off
       entity_id: media_player.kodi_wohnzimmer, media_player.soundbar
-    - wait_template: "{{is_state('media_player.kodi_wohnzimmer', 'off')}}"      
+    - wait_template: "{{is_state('media_player.kodi_wohnzimmer', 'off')}}"
     - service: switch.turn_off
       entity_id: switch.wohnzimmer_fernseher
     - service: input_select.select_option
       data:
         entity_id: input_select.dreamscreen_modus
-        option: "Aus"          
+        option: "Aus"
 
-automation:          
+automation:
   - alias: "Kodi - Musik ausschalten"
     initial_state: true
     trigger:
       platform: state
       entity_id: media_player.kodi_wohnzimmer
       from: 'off'
-      to: 'idle' 
+      to: 'idle'
     condition:
       condition: and
-      conditions:        
+      conditions:
         - condition: state
           state: 'on'
           entity_id: switch.alle_radios
@@ -194,10 +194,10 @@ automation:
           state: 'on'
           entity_id: input_boolean.musik_ausschalten
     action:
-      - service: script.radios_pausieren 
+      - service: script.radios_pausieren
       - service: switch.turn_off
         entity_id: switch.wohnzimmer_radio, switch.balkon_radio, switch.flur_radio, switch.kuche_radio, switch.schlafzimmer_radio, switch.arbeitszimmer_radio
-        
+
   - alias: "Kodi - Wiedergabe Cube"
     initial_state: true
     trigger:
@@ -206,19 +206,19 @@ automation:
         event_data:
           entity_id: binary_sensor.cube_158d0001100d7a
           action_type: flip90
-    condition: 
+    condition:
       - condition: or
-        conditions:          
+        conditions:
         - condition: state
           entity_id: media_player.kodi_wohnzimmer
           state: 'playing'
         - condition: state
           entity_id: media_player.kodi_wohnzimmer
-          state: 'paused'           
+          state: 'paused'
     action:
       - service: switch.toggle
         entity_id: switch.play_wohnzimmer
-        
+
   - alias: "Kodi - Widergabe Schalter"
     initial_state: true
     trigger:
@@ -227,19 +227,19 @@ automation:
         event_data:
           entity_id: binary_sensor.switch_158d0002c8c48b
           click_type: single
-    condition: 
+    condition:
       - condition: or
-        conditions:          
+        conditions:
         - condition: state
           entity_id: media_player.kodi_wohnzimmer
           state: 'playing'
         - condition: state
           entity_id: media_player.kodi_wohnzimmer
-          state: 'paused'      
+          state: 'paused'
     action:
       - service: switch.toggle
-        entity_id: switch.play_wohnzimmer     
-        
+        entity_id: switch.play_wohnzimmer
+
   - alias: "Kodi - Wiedergabe pausieren - Bewegung Flur / Balkon"
     initial_state: true
     trigger:
@@ -248,7 +248,7 @@ automation:
         to: 'on'
       - platform: state
         entity_id: binary_sensor.zigate_0b57_presence
-        to: 'on'        
+        to: 'on'
     condition:
       - condition: state
         entity_id: media_player.kodi_wohnzimmer
@@ -263,12 +263,12 @@ automation:
         entity_id: switch.play_wohnzimmer
       - service: input_boolean.turn_on
         entity_id: input_boolean.kodi_pausiert
-        
+
   - alias: "Kodi - Wiedergabe starten - Bewegung Wohnzimmer"
     initial_state: true
     trigger:
       platform: state
-      entity_id: binary_sensor.bewegungsmelder_wohnzimmer 
+      entity_id: binary_sensor.bewegungsmelder_wohnzimmer
       to: 'on'
     condition:
       - condition: state
@@ -287,7 +287,7 @@ automation:
         entity_id: switch.play_wohnzimmer
       - service: input_boolean.turn_off
         entity_id: input_boolean.kodi_pausiert
-        
+
   - alias: "Kodi - Nächster Titel"
     initial_state: true
     trigger:
@@ -296,28 +296,28 @@ automation:
         event_data:
           entity_id: binary_sensor.cube_158d0001100d7a
           action_type: free_fall
-    condition:      
+    condition:
       - condition: template
         value_template: '{{ is_state("media_player.kodi_wohnzimmer", "off") == False }}'
     action:
       - service: media_player.media_next_track
         entity_id: media_player.kodi_wohnzimmer
-        
+
   - alias: "Kodi - Wiedergabe gestartet - Licht und Musik ausschalten"
     initial_state: true
     trigger:
       platform: state
       entity_id: media_player.kodi_wohnzimmer
-      to: 'playing'         
+      to: 'playing'
     action:
       - service: light.turn_off
         entity_id: light.sideboard, light.schrank, light.badezimmerschrank, light.schreibtisch, light.regal, light.arbeitszimmer_lampe
       - condition: state
         entity_id: media_player.badezimmer
-        state: 'playing'    
+        state: 'playing'
       - service: media_player.media_pause
-        entity_id: media_player.badezimmer      
-        
+        entity_id: media_player.badezimmer
+
   - alias: "Soundbar Lautstärke - Soundbar"
     initial_state: on
     trigger:
@@ -327,10 +327,10 @@ automation:
         for:
           seconds: 1
       - platform: homeassistant
-        event: start      
+        event: start
       - platform: state
         entity_id: media_player.soundbar
-        to: 'on'        
+        to: 'on'
     action:
       - service: input_number.set_value
         data_template:
@@ -339,9 +339,9 @@ automation:
             {% if states.media_player.soundbar.state == "off" %}
               0
             {% else %}
-              {{states.sensor.soundbar_volume.state }}    
+              {{states.sensor.soundbar_volume.state }}
             {% endif %}
-        
+
   - alias: "Soundbar Lautstärke - Slider"
     initial_state: on
     trigger:
@@ -351,29 +351,29 @@ automation:
       condition: and
       conditions:
         - condition: template
-          value_template: >-            
+          value_template: >-
             {% if is_state('media_player.soundbar', 'off') %}
               {% set soundbar_volume = 0 %}
             {% elif state_attr("media_player.soundbar", "volume_level") == None %}
               {% set soundbar_volume = 0 %}
-            {% else %}              
+            {% else %}
               {% set soundbar_volume = states.media_player.soundbar.attributes.volume_level * 50 %}
-            {% endif %}              
-          
+            {% endif %}
+
             {% set input_number = states.input_number.soundbar_volume.state %}
-            
+
             {% if input_number != soundbar_volume %}
               true
             {%else%}
               false
-            {% endif %}  
+            {% endif %}
     action:
       - service: media_player.volume_set
         data_template:
           entity_id: media_player.soundbar
           volume_level: >-
-            {{ states.input_number.soundbar_volume.state | int / 50 }}            
-          
+            {{ states.input_number.soundbar_volume.state | int / 50 }}
+
   - alias: "Soundbar Lautstärke - Cube"
     initial_state: true
     trigger:
@@ -385,7 +385,7 @@ automation:
     condition:
       condition: state
       entity_id: media_player.soundbar
-      state: 'on'      
+      state: 'on'
     action:
       - service: media_player.volume_set
         data_template:
@@ -397,14 +397,14 @@ automation:
               {% set oldState = 0 %}
             {% else %}
               {% set oldState = states.media_player.soundbar.attributes.volume_level -%}
-            {% endif %}                        
-            
+            {% endif %}
+
             {% if trigger.event.data.action_value | float > 0 %}
                {% set newState = oldState + 0.05 -%}
             {% else %}
                {% set newState = oldState - 0.05 -%}
-            {% endif %}    
-            
+            {% endif %}
+
             {{ newState }}
       - service: input_number.set_value
         data_template:
@@ -413,9 +413,9 @@ automation:
             {% if states.media_player.soundbar.state == "off" %}
               0
             {% else %}
-              {{states.sensor.soundbar_volume.state }}    
-            {% endif %}            
-       
+              {{states.sensor.soundbar_volume.state }}
+            {% endif %}
+
 homeassistant:
   customize:
     switch.watchtv_wohnzimmer:
@@ -424,13 +424,12 @@ homeassistant:
       icon: mdi:play-pause
     switch.wohnzimmer_fernseher:
       icon: mdi:television
-      friendly_name: Fernseher  
-      
+      friendly_name: Fernseher
+
     sensor.soundbar_volume:
       hidden: true
     binary_sensor.soundbar_volume_changed:
-      hidden: true           
-      
+      hidden: true
+
     input_boolean.kodi_pausiert:
       hidden: true
-      

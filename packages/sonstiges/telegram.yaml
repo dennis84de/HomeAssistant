@@ -1,15 +1,15 @@
-telegram_bot: 
+telegram_bot:
   - platform: polling
     api_key: !secret telegram_apikey
     parse_mode: html
     allowed_chat_ids:
-      - !secret telegram_chatid  
+      - !secret telegram_chatid
 
 notify:
   - platform: telegram
     name: Telegram
-    chat_id: !secret telegram_chatid  
-    
+    chat_id: !secret telegram_chatid
+
 automation:
   - alias: 'Telegram - Status'
     initial_state: true
@@ -29,11 +29,11 @@ automation:
             {% endif %}
       - condition: state
         entity_id: group.alles_ausschalten
-        state: 'on'        
+        state: 'on'
       - service: notify.telegram
         data_template:
-          message: >-            
-            Es sind noch Geräte eingeschaltet. 
+          message: >-
+            Es sind noch Geräte eingeschaltet.
           data:
             inline_keyboard:
               - 'Geräte anzeigen:/geraete'
@@ -50,46 +50,46 @@ automation:
         data_template:
           message_id: '{{ trigger.event.data.message.message_id }}'
           chat_id: '{{ trigger.event.data.user_id }}'
-          inline_keyboard: []  
+          inline_keyboard: []
       - service: telegram_bot.send_message
         data_template:
-          target: '{{ trigger.event.data.chat_id }}'          
+          target: '{{ trigger.event.data.chat_id }}'
           message: >-
             {%- set comma = joiner(",") -%}
             {%- set deviceFound = false -%}
-            
+
             {% for entity_id in states.group.alles_ausschalten.attributes.entity_id -%}
               {%- set domain, device = entity_id.split('.') -%}
               {%- if states[domain][device].state == 'on' -%}
                 {%- set deviceFound = true -%}
                 {{ comma() }} {{ states[domain][device].attributes.friendly_name }}
               {%- endif -%}
-            {%- endfor -%} 
-            
+            {%- endfor -%}
+
             {%- if deviceFound == true -%}
               Alle Geräte sind ausgeschaltet.
             {%- endif -%}
           inline_keyboard:
-            - 'Alles Ausschalten:/alles_ausschalten'         
-          
+            - 'Alles Ausschalten:/alles_ausschalten'
+
   - alias: 'Telegram - Alles ausschalten'
     initial_state: true
     trigger:
       - platform: event
         event_type: telegram_callback
         event_data:
-          data: '/alles_ausschalten'      
+          data: '/alles_ausschalten'
     action:
       - service: script.alles_ausschalten
       - service: telegram_bot.edit_replymarkup
         data_template:
           message_id: '{{ trigger.event.data.message.message_id }}'
           chat_id: '{{ trigger.event.data.user_id }}'
-          inline_keyboard: []          
+          inline_keyboard: []
       - service: telegram_bot.send_message
         data_template:
           target: '{{ trigger.event.data.chat_id }}'
-          message: "Alle Geräte werden ausgeschaltet."      
+          message: "Alle Geräte werden ausgeschaltet."
 
   - alias: 'Telegram - Tanken'
     initial_state: true
@@ -104,8 +104,8 @@ automation:
           title: "Aktuelle Benzinpreise"
           message: >
             Real: {% if states.sensor.tankstelle_real.state != 'unknown' %}{{ states.sensor.tankstelle_real.state }}€{% else %}{%if states.binary_sensor.tankstelle_real_status.state == 'off' %}geschlossen{% else %}-{% endif %}{% endif %}
-            
-            Jet: {% if states.sensor.tankstelle_jet.state != 'unknown' %}{{ states.sensor.tankstelle_jet.state }}€{% else %}{%if states.binary_sensor.tankstelle_jet_status.state == 'off' %}geschlossen{% else %}-{% endif %}{% endif %}            
+
+            Jet: {% if states.sensor.tankstelle_jet.state != 'unknown' %}{{ states.sensor.tankstelle_jet.state }}€{% else %}{%if states.binary_sensor.tankstelle_jet_status.state == 'off' %}geschlossen{% else %}-{% endif %}{% endif %}
 
   - alias: 'Telegram - Fahrzeit nach Hause'
     initial_state: true
@@ -118,16 +118,16 @@ automation:
       - service: notify.telegram
         data_template:
           title: "Fahrzeit nach Hause"
-          message: "Die Fahrzeit nach Hause beträgt aktuell {{ states.sensor.fahrzeit_nach_hause.state }} Minuten." 
-          
+          message: "Die Fahrzeit nach Hause beträgt aktuell {{ states.sensor.fahrzeit_nach_hause.state }} Minuten."
+
   - alias: 'Telegram - Aufenthaltsort'
     initial_state: true
     trigger:
       - platform: event
         event_type: telegram_command
         event_data:
-          command: '/ort'          
-    action: 
+          command: '/ort'
+    action:
       - service: notify.telegram
         data_template:
           title: "Aufenthaltsort"

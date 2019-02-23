@@ -1,15 +1,10 @@
 sun:
-  monitored_conditions:
-    - elevation
-    - max_elevation
-    - next_dusk
-    - next_dawn
-    
+
 weather:
   - platform: openweathermap
     api_key: !secret openweathermap_key
     name: Aktuelles Wetter
-    
+
 openuv:
   api_key: !secret openuv_key
   binary_sensors:
@@ -19,7 +14,7 @@ openuv:
     monitored_conditions:
       - current_uv_index
       - max_uv_index
-      - safe_exposure_time_type_3    
+      - safe_exposure_time_type_3
 
 camera:
   - platform: generic
@@ -28,11 +23,11 @@ camera:
 
   - platform: generic
     still_image_url: http://www.grueninger.com/webcam/current.jpg
-    name: Dortmund  
+    name: Dortmund
 
 binary_sensor:
   - platform: iss
-  
+
   - platform: template
     sensors:
       schlechtes_wetter:
@@ -40,7 +35,7 @@ binary_sensor:
         icon_template: mdi:weather-snowy-rainy
         value_template: >-
           {{ is_state('sensor.wetterlage', 'Klar') == False }}
-    
+
       regen_erwartet:
         friendly_name: "Regen erwartet"
         value_template: >-
@@ -57,7 +52,7 @@ binary_sensor:
 
 sensor:
   - platform: moon
-  
+
   - platform: wunderground
     api_key: !secret wunderground_key
     lang: DL
@@ -70,14 +65,14 @@ sensor:
       - weather_3n_metric
       - weather_4d_metric
       - weather_4n_metric
-            
+
   - platform: darksky
     api_key: !secret darksky_key
     name: Darksky
     language: de
     forecast:
-      - 0    
-    monitored_conditions:  
+      - 0
+    monitored_conditions:
       - precip_type
       - precip_intensity
       - precip_probability
@@ -96,35 +91,35 @@ sensor:
       - icon
       - nearest_storm_distance
       - summary
-      
+
   - platform: co2signal
     token: !secret co2signal_key
     scan_interval: 900
-    
+
   - platform: mold_indicator
     name: Schimmelindikator
     indoor_temp_sensor: sensor.aeotec_wohnzimmer_temperature
     indoor_humidity_sensor: sensor.aeotec_wohnzimmer_relative_humidity
     outdoor_temp_sensor: sensor.zigate_6ec3_temperature
     calibration_factor: 1.16
-    
+
   - platform: rest
-    scan_interval: 43200   
+    scan_interval: 43200
     resource: https://opendata.dwd.de/climate_environment/health/alerts/s31fg.json
     name: Pollen Gräser
     value_template: '{% for region in value_json.content -%}{%- if region.partregion_id == 41 %}{{region.Pollen.Graeser}}{% endif -%}{%- endfor %}'
-  
+
   - platform: rest
-    scan_interval: 43200 
+    scan_interval: 43200
     resource: https://opendata.dwd.de/climate_environment/health/alerts/s31fg.json
     name: Pollen Birke
     value_template: '{% for region in value_json.content -%}{%- if region.partregion_id == 41 %}{{region.Pollen.Birke}}{% endif -%}{%- endfor %}'
-  
+
   - platform: rest
-    scan_interval: 43200  
+    scan_interval: 43200
     resource: https://opendata.dwd.de/climate_environment/health/alerts/s31fg.json
     name: Pollen Roggen
-    value_template: '{% for region in value_json.content -%}{%- if region.partregion_id == 41 %}{{region.Pollen.Roggen}}{% endif -%}{%- endfor %}'    
+    value_template: '{% for region in value_json.content -%}{%- if region.partregion_id == 41 %}{{region.Pollen.Roggen}}{% endif -%}{%- endfor %}'
 
   - platform: rest
     name: SpaceX
@@ -133,8 +128,8 @@ sensor:
       - launch_site
       - rocket
     value_template: '{{ value_json["launch_date_unix"] }}'
-    resource: 'https://api.spacexdata.com/v2/launches/next'    
-    
+    resource: 'https://api.spacexdata.com/v2/launches/next'
+
   - platform: rest
     name: Strommix
     resource: !secret strommix_url
@@ -153,7 +148,7 @@ sensor:
             and (states('sensor.darksky_humidity') | int > 50)) %} Frost
           {% elif (states('sensor.darksky_precip_intensity') | int > 7) %} Regen
           {% else %} Klar {% endif %}
-                   
+
       helligkeit:
         friendly_name: 'Helligkeit'
         entity_id:
@@ -175,7 +170,7 @@ sensor:
           {{ brightness | round }}
         unit_of_measurement: '%'
         device_class: 'illuminance'
-      
+
       pollen_graeser_today:
         friendly_name: 'Gräser'
         entity_id:
@@ -183,19 +178,19 @@ sensor:
         value_template: >
           {{ states('sensor.pollen_graser')
                |regex_findall_index("'today': '[-0-9]+'")
-               |regex_findall_index("[-0-9]+") }}   
+               |regex_findall_index("[-0-9]+") }}
         icon_template: mdi:weather-windy-variant
-        
+
       pollen_birke_today:
         friendly_name: 'Birke'
         entity_id:
-          - sensor.pollen_birke        
+          - sensor.pollen_birke
         value_template: >
           {{ states('sensor.pollen_birke')
                |regex_findall_index("'today': '[-0-9]+'")
-               |regex_findall_index("[-0-9]+") }} 
+               |regex_findall_index("[-0-9]+") }}
         icon_template: mdi:weather-windy-variant
-        
+
       pollen_roggen_today:
         friendly_name: 'Roggen'
         entity_id:
@@ -203,9 +198,9 @@ sensor:
         value_template: >
           {{ states('sensor.pollen_roggen')
                |regex_findall_index("'today': '[-0-9]+'")
-               |regex_findall_index("[-0-9]+") }}    
+               |regex_findall_index("[-0-9]+") }}
         icon_template: mdi:weather-windy-variant
-          
+
       tageszeit:
         friendly_name: Tageszeit
         entity_id:
@@ -229,7 +224,7 @@ sensor:
             /local/sonne/Night.png
           {% else %}
             /local/sonne/Day.png
-          {% endif %} 
+          {% endif %}
 
       sonnenaufgang:
         friendly_name: 'Nächster Sonnenaufgang'
@@ -237,18 +232,18 @@ sensor:
           - sun.sun
         value_template: "{{ as_timestamp(states.sun.sun.attributes.next_rising) | timestamp_custom('%d.%m.%Y %H:%M') }}"
         icon_template: mdi:weather-sunset-up
-        
+
       sonnenuntergang:
         friendly_name: 'Nächster Sonnenuntergang'
         entity_id:
-          - sun.sun  
+          - sun.sun
         value_template: "{{ as_timestamp(states.sun.sun.attributes.next_setting) | timestamp_custom('%d.%m.%Y %H:%M') }}"
         icon_template: mdi:weather-sunset-down
-        
-      mondphasen:        
+
+      mondphasen:
         friendly_name: Mondphase
         entity_id:
-          - sensor.moon        
+          - sensor.moon
         value_template: >-
           {% if is_state('sensor.moon', 'new_moon') %}
             Neumond
@@ -284,63 +279,63 @@ sensor:
             /local/mond/LastQuarter.jpg
           {% elif is_state('sensor.moon', 'waning_crescent') %}
             /local/mond/WaningCrescent.jpg
-          {% endif %}        
+          {% endif %}
 
       spacex_next_launch_day:
         friendly_name: 'Nächstes Startdatum'
         entity_id:
           - sensor.spacex
         value_template: '{{ states.sensor.spacex.state | int | timestamp_custom("%d.%m.%Y")}}'
-        
+
       spacex_next_launch_time:
         friendly_name: 'Startzeit'
         entity_id:
           - sensor.spacex
         value_template: '{{ states.sensor.spacex.state | int | timestamp_custom("%H:%M")}}'
         unit_of_measurement: 'Uhr'
-        
+
       spacex_next_rocket:
         friendly_name: 'Nächste Rakete'
         entity_id:
-          - sensor.spacex        
+          - sensor.spacex
         value_template: '{{ states.sensor.spacex.attributes["rocket"]["rocket_name"] }}'
-        
+
       spacex_next_launch_site:
         friendly_name: 'Abflugsort'
         value_template: '{{ states.sensor.spacex.attributes["launch_site"]["site_name_long"] }}'
-        
+
       spacex_next_mission_name:
         friendly_name: 'Mission'
         entity_id:
-          - sensor.spacex        
+          - sensor.spacex
         value_template: '{{ states.sensor.spacex.attributes["mission_name"] }}'
 
       uv_index_current:
         friendly_name: 'UV Index'
         unit_of_measurement: 'UV'
         entity_id:
-          - sensor.current_uv_index        
+          - sensor.current_uv_index
         value_template: '{{ states.sensor.current_uv_index.state | float | round(2) }}'
         icon_template: '{{ states.sensor.current_uv_index.attributes.icon }}'
-        
+
       uv_index_max:
         friendly_name: 'Maximaler UV Index'
         unit_of_measurement: 'UV'
         entity_id:
-          - sensor.max_uv_index        
+          - sensor.max_uv_index
         value_template: '{{ states.sensor.max_uv_index.state | float | round(2) }}'
         icon_template: '{{ states.sensor.max_uv_index.attributes.icon }}'
-        
+
       zeit_sonne:
         friendly_name: 'Zeit in der Sonne'
         entity_id:
-          - sensor.skin_type_3_safe_exposure_time           
+          - sensor.skin_type_3_safe_exposure_time
         value_template: >-
           {% if is_state('sensor.skin_type_3_safe_exposure_time', 'unknown') %}
             0
           {% else %}
             {{ states.sensor.skin_type_3_safe_exposure_time.state | int }}
-          {% endif %}          
+          {% endif %}
         icon_template: '{{ states.sensor.skin_type_3_safe_exposure_time.attributes.icon }}'
         unit_of_measurement: 'Minuten'
 
@@ -348,10 +343,10 @@ sensor:
         friendly_name: 'Windrichtung'
         icon_template: mdi:compass
         entity_id:
-          - sensor.darksky_wind_bearing        
+          - sensor.darksky_wind_bearing
         value_template: >-
           {% set wind_dir = states.sensor.darksky_wind_bearing.state %}
-          
+
           {% if wind_dir | float <= 23 %} Nord
           {% elif wind_dir | float > 338 %} Nord
           {% elif 23 < (wind_dir|float) <= 68 %} NO
@@ -362,9 +357,9 @@ sensor:
           {% elif 248 < (wind_dir|float) <= 293 %} West
           {% elif 293 < (wind_dir|float) <= 338 %} NW
           {%- endif %}
-        entity_picture_template: >-   
+        entity_picture_template: >-
           {% set wind_dir = states.sensor.darksky_wind_bearing.state %}
-          
+
           {% if wind_dir | float <= 23 %} /local/wind/0.png
           {% elif wind_dir | float > 338 %} /local/wind/0.png
           {% elif 23 < (wind_dir|float) <= 68 %} /local/wind/45.png
@@ -374,15 +369,15 @@ sensor:
           {% elif 203 < (wind_dir|float) <= 248 %} /local/wind/225.png
           {% elif 248 < (wind_dir|float) <= 293 %} /local/wind/270.png
           {% elif 293 < (wind_dir|float) <= 338 %} /local/wind/315.png
-          {%- endif %}        
-        
+          {%- endif %}
+
   - platform: dwd_weather_warnings
     region_name: Stadt Dortmund
     name: Wetterwarnungen
-  
+
   - platform: opensky
     name: Flugzeuge
-    radius: 10         
+    radius: 10
 
 automation:
   - alias: 'Balkontür schließen'
@@ -402,15 +397,15 @@ automation:
         state: 'on'
       - condition: numeric_state
         entity_id: sensor.laufzeit_minuten
-        above: 5   
+        above: 5
     action:
       - service: notify.telegram
         data:
           title: "Balkontür schließen"
           message: >-
-            {% set difference = (states.sensor.zigate_6ec3_temperature.state | float - states.sensor.aeotec_wohnzimmer_temperature.state | float) | round(2) %}            
+            {% set difference = (states.sensor.zigate_6ec3_temperature.state | float - states.sensor.aeotec_wohnzimmer_temperature.state | float) | round(2) %}
             Auf dem Balkon ist es {{ difference }}°C wärmer als im Wohnzimmer.
-            
+
 homeassistant:
   customize:
     sun.sun:
@@ -418,8 +413,8 @@ homeassistant:
       hidden: true
     sensor.moon:
       friendly_name: Mondstand
-      hidden: true      
-      
+      hidden: true
+
     sensor.pws_weather:
       friendly_name: Aktuelles Wetter
 
@@ -435,7 +430,7 @@ homeassistant:
     sensor.darksky_apparent_temperature:
       friendly_name: Gefühlte Temperatur
     sensor.darksky_wind_speed:
-      friendly_name: Windgeschwindigkeit      
+      friendly_name: Windgeschwindigkeit
     sensor.darksky_wind_bearing:
       hidden: true
       friendly_name: Windrichtung
@@ -462,31 +457,31 @@ homeassistant:
       friendly_name: Nächster Sturm
     sensor.darksky_summary:
       friendly_name: Aktuelles Wetter
-      
+
     sensor.wetterwarnungen_current_warning_level:
       friendly_name: Wetterwarnungen
       icon: mdi:weather-hurricane
     sensor.wetterwarnungen_advance_warning_level:
       hidden: true
-      
+
     sensor.schimmelindikator:
       icon: mdi:biohazard
-      
+
     sensor.luftqualitat_pm10:
       icon: mdi:weather-windy
     sensor.luftqualitat_pm25:
       icon: mdi:weather-windy-variant
-      
+
     binary_sensor.iss:
       icon: mdi:earth
-      
+
     sensor.pollen_birke:
       hidden: true
     sensor.pollen_graser:
       hidden: true
     sensor.pollen_roggen:
-      hidden: true      
-      
+      hidden: true
+
     sensor.spacex:
       hidden: true
     sensor.spacex_next_rocket:
@@ -498,33 +493,33 @@ homeassistant:
     sensor.spacex_next_launch_site:
       icon: mdi:map-marker-radius
     sensor.spacex_next_mission_name:
-      icon: mdi:information-outline      
-      
+      icon: mdi:information-outline
+
     binary_sensor.protection_window:
       friendly_name: Sonnenschutz
-      
+
     sensor.skin_type_3_safe_exposure_time:
-      hidden: true    
+      hidden: true
     sensor.current_uv_index:
       hidden: true
     sensor.max_uv_index:
       hidden: true
-      
+
     sensor.helligkeit:
       icon: mdi:theme-light-dark
-      
+
     sensor.strommix:
       icon: mdi:solar-power
-    
+
     sensor.darksky_icon:
       hidden: true
     sensor.darksky_precip:
       hidden: true
-    
+
     binary_sensor.regen_erwartet:
       hidden: true
     binary_sensor.sonne_tagsueber:
       hidden: true
-      
+
     sensor.co2_intensity_51_49_7_36:
       friendly_name: CO2 Belastung

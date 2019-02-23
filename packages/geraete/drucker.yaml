@@ -8,8 +8,8 @@ sensor:
             {{ value | int }}
         {% else %}
             -
-        {%- endif %}    
-    
+        {%- endif %}
+
   - platform: command_line
     name: Patrone Magenta
     command: curl -k -X GET https://192.168.2.23/PRESENTATION/HTML/TOP/PRTINFO.HTML | awk -F"'" '/Ink_M.PNG/ && $6+0 == $6 { printf "%.0f\n", $6 / 50 * 100 }'
@@ -19,8 +19,8 @@ sensor:
             {{ value | int }}
         {% else %}
             -
-        {%- endif %} 
-        
+        {%- endif %}
+
   - platform: command_line
     name: Patrone Gelb
     command: curl -k -X GET https://192.168.2.23/PRESENTATION/HTML/TOP/PRTINFO.HTML | awk -F"'" '/Ink_Y.PNG/ && $6+0 == $6 { printf "%.0f\n", $6 / 50 * 100 }'
@@ -30,7 +30,7 @@ sensor:
             {{ value | int }}
         {% else %}
             -
-        {%- endif %}     
+        {%- endif %}
 
   - platform: command_line
     name: Patrone Cyan
@@ -41,7 +41,7 @@ sensor:
             {{ value | int }}
         {% else %}
             -
-        {%- endif %}     
+        {%- endif %}
 
   - platform: command_line
     name: Patrone Abfall
@@ -52,10 +52,10 @@ sensor:
             {{ value | int }}
         {% else %}
             -
-        {%- endif %}       
-        
+        {%- endif %}
+
 homeassistant:
-  customize:     
+  customize:
     sensor.patrone_schwarz:
       friendly_name: Schwarz
       entity_picture: /local/drucker/icon_ink_schwarz.png
@@ -70,4 +70,4 @@ homeassistant:
       entity_picture: /local/drucker/icon_ink_cyan.png
     sensor.patrone_abfall:
       friendly_name: Abfall
-      entity_picture: /local/drucker/icon_ink_abfall.png          
+      entity_picture: /local/drucker/icon_ink_abfall.png

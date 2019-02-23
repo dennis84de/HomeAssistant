@@ -10,7 +10,7 @@ sensor:
     name: Fahrzeit nach Hause
     origin: !secret googlemaps_work
     destination: !secret googlemaps_home
-    
+
   - platform: template
     sensors:
       abfahrzeit:
@@ -31,8 +31,8 @@ sensor:
           {% set minuten_abfahrt = (minuten_minus_fahrzeit - stunde_abfahrt * 60) | int %}
           {% set abfahrt = "%0.02d:%0.02d" | format(stunde_abfahrt, minuten_abfahrt ) %}
 
-          {{ abfahrt }}       
-      
+          {{ abfahrt }}
+
 input_select:
   arbeit_stunden:
     name: Stunde
@@ -45,7 +45,7 @@ input_select:
       - 20
     initial: 6
     icon: mdi:av-timer
-    
+
   arbeit_minuten:
     name: Minute
     options:
@@ -54,39 +54,39 @@ input_select:
       - 20
       - 30
       - 40
-      - 50 
+      - 50
     initial: 50
-    icon: mdi:timer    
-    
+    icon: mdi:timer
+
   arbeit_puffer:
     name: Puffer
-    options:  
+    options:
       - 0
       - 10
       - 20
       - 30
     initial: 10
-    icon: mdi:timelapse        
-    
+    icon: mdi:timelapse
+
 automation:
   - alias: 'Benachrichtigung Arbeit'
     initial_state: true
     trigger:
       - platform: template
-        value_template: '{{ states.sensor.time.state == states.sensor.abfahrzeit.state }}'    
+        value_template: '{{ states.sensor.time.state == states.sensor.abfahrzeit.state }}'
     condition:
       - condition: state
         entity_id: binary_sensor.arbeitstag
         state: 'on'
     action:
       - service: !secret tts_service
-        data_template:          
+        data_template:
           message: >-
             "Es ist Zeit zur Arbeit zu fahren. Die aktuelle Fahrzeit beträgt {{ states.sensor.fahrzeit_zur_arbeit.state }} Minuten.{% if is_state('binary_sensor.schlechtes_wetter', 'on') %} Aktuell ist mit {{ states.sensor.wetterlage.state }} zu rechnen.{% endif %}"
-    
+
 homeassistant:
   customize:
     sensor.fahrzeit_zur_arbeit:
       icon: mdi:car-estate
     sensor.fahrzeit_nach_hause:
-      icon: mdi:car-sports        
+      icon: mdi:car-sports

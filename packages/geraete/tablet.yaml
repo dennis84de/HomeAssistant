@@ -4,7 +4,7 @@ sensor:
       tablet_wohnzimmer_batterie:
         friendly_name: Tablet Wohnzimmer
         entity_id:
-          - sensor.tasker_tablet_wohnzimmer   
+          - sensor.tasker_tablet_wohnzimmer
         value_template: >
           {% if states.sensor.tasker_tablet_wohnzimmer == None %}
             0
@@ -13,11 +13,11 @@ sensor:
           {% endif %}
         device_class: battery
         unit_of_measurement: '%'
-        
+
       tablet_schlafzimmer_batterie:
         friendly_name: Tablet Schlafzimmer
         entity_id:
-          - sensor.tasker_tablet_schlafzimmer        
+          - sensor.tasker_tablet_schlafzimmer
         value_template: >
           {% if states.sensor.tasker_tablet_schlafzimmer == None %}
             0
@@ -26,11 +26,11 @@ sensor:
           {% endif %}
         device_class: battery
         unit_of_measurement: '%'
-        
+
       tablet_badezimmer_batterie:
         friendly_name: Tablet Badezimmer
         entity_id:
-          - sensor.tasker_tablet_badezimmer           
+          - sensor.tasker_tablet_badezimmer
         value_template: >
           {% if states.sensor.tasker_tablet_badezimmer == None %}
             0
@@ -38,12 +38,12 @@ sensor:
             {{ states.sensor.tasker_tablet_badezimmer.state | float}}
           {% endif %}
         device_class: battery
-        unit_of_measurement: '%'  
-        
+        unit_of_measurement: '%'
+
       tablet_kueche_batterie:
         friendly_name: Tablet Küche
         entity_id:
-          - sensor.tasker_tablet_kueche           
+          - sensor.tasker_tablet_kueche
         value_template: >
           {% if states.sensor.tasker_tablet_kueche == None %}
             0
@@ -51,8 +51,8 @@ sensor:
             {{ states.sensor.tasker_tablet_kueche.state | float}}
           {% endif %}
         device_class: battery
-        unit_of_measurement: '%'        
-          
+        unit_of_measurement: '%'
+
 automation:
   - alias: "Tablet Wohnzimmer - Batteriestand niedrig"
     initial_state: true
@@ -61,19 +61,19 @@ automation:
         entity_id: sensor.tasker_tablet_wohnzimmer
       - platform: state
         entity_id: binary_sensor.zu_hause
-        to: 'on'       
+        to: 'on'
         for:
-          minutes: 5  
+          minutes: 5
     condition:
       - condition: numeric_state
         entity_id: sensor.tasker_tablet_wohnzimmer
-        below: 16      
-      - condition: template        
+        below: 16
+      - condition: template
         value_template: '{{ state_attr("sensor.tasker_tablet_wohnzimmer", "is_charging") == False }}'
-    action: 
+    action:
       - service: !secret tts_service
-        data_template:          
-          message: "Das Tablet im Wohnzimmer muss aufgeladen werden. Der Batteriestand beträgt {{ states.sensor.tasker_tablet_wohnzimmer.state | int }} Prozent."    
+        data_template:
+          message: "Das Tablet im Wohnzimmer muss aufgeladen werden. Der Batteriestand beträgt {{ states.sensor.tasker_tablet_wohnzimmer.state | int }} Prozent."
 
   - alias: "Tablet Schlafzimmer - Batteriestand niedrig"
     initial_state: true
@@ -82,20 +82,20 @@ automation:
         entity_id: sensor.tasker_tablet_schlafzimmer
       - platform: state
         entity_id: binary_sensor.zu_hause
-        to: 'on'       
+        to: 'on'
         for:
-          minutes: 10      
+          minutes: 10
     condition:
       - condition: numeric_state
         entity_id: sensor.tasker_tablet_schlafzimmer
-        below: 16      
+        below: 16
       - condition: template
-        value_template: '{{ state_attr("sensor.tasker_tablet_schlafzimmer", "is_charging") == False }}'                          
-    action: 
+        value_template: '{{ state_attr("sensor.tasker_tablet_schlafzimmer", "is_charging") == False }}'
+    action:
       - service: !secret tts_service
-        data_template:          
-          message: "Das Tablet im Schlafzimmer muss aufgeladen werden. Der Batteriestand beträgt {{ states.sensor.tasker_tablet_schlafzimmer.state | int }} Prozent."    
-            
+        data_template:
+          message: "Das Tablet im Schlafzimmer muss aufgeladen werden. Der Batteriestand beträgt {{ states.sensor.tasker_tablet_schlafzimmer.state | int }} Prozent."
+
   - alias: "Tablet Badezimmer - Batteriestand niedrig"
     initial_state: true
     trigger:
@@ -103,20 +103,20 @@ automation:
         entity_id: sensor.tasker_tablet_badezimmer
       - platform: state
         entity_id: binary_sensor.zu_hause
-        to: 'on'       
+        to: 'on'
         for:
-          minutes: 15    
+          minutes: 15
     condition:
       - condition: numeric_state
         entity_id: sensor.tasker_tablet_badezimmer
-        below: 16      
+        below: 16
       - condition: template
-        value_template: '{{ state_attr("sensor.tasker_tablet_badezimmer", "is_charging") == False }}'                               
-    action: 
+        value_template: '{{ state_attr("sensor.tasker_tablet_badezimmer", "is_charging") == False }}'
+    action:
       - service: !secret tts_service
-        data_template:          
-          message: "Das Tablet im Badezimmer muss aufgeladen werden. Der Batteriestand beträgt {{ states.sensor.tasker_tablet_badezimmer.state | int }} Prozent."    
-            
+        data_template:
+          message: "Das Tablet im Badezimmer muss aufgeladen werden. Der Batteriestand beträgt {{ states.sensor.tasker_tablet_badezimmer.state | int }} Prozent."
+
   - alias: "Tablet Küche - Batteriestand niedrig"
     initial_state: true
     trigger:
@@ -124,84 +124,84 @@ automation:
         entity_id: sensor.tasker_tablet_kueche
       - platform: state
         entity_id: binary_sensor.zu_hause
-        to: 'on'       
+        to: 'on'
         for:
-          minutes: 20       
+          minutes: 20
     condition:
       - condition: numeric_state
         entity_id: sensor.tasker_tablet_kueche
-        below: 16      
+        below: 16
       - condition: template
-        value_template: '{{ state_attr("sensor.tasker_tablet_kueche", "is_charging") == False }}'        
-    action: 
+        value_template: '{{ state_attr("sensor.tasker_tablet_kueche", "is_charging") == False }}'
+    action:
       - service: !secret tts_service
-        data_template:          
-          message: "Das Tablet in der Küche muss aufgeladen werden. Der Batteriestand beträgt {{ states.sensor.tasker_tablet_kueche.state | int }} Prozent."    
-           
+        data_template:
+          message: "Das Tablet in der Küche muss aufgeladen werden. Der Batteriestand beträgt {{ states.sensor.tasker_tablet_kueche.state | int }} Prozent."
+
   - alias: "Tablet Wohnzimmer - Aufgeladen"
     initial_state: true
     trigger:
       - platform: state
-        entity_id: sensor.tasker_tablet_wohnzimmer        
-    condition:   
+        entity_id: sensor.tasker_tablet_wohnzimmer
+    condition:
       - condition: numeric_state
         entity_id: sensor.tasker_tablet_wohnzimmer
-        above: 99     
+        above: 99
       - condition: template
-        value_template: '{{ state_attr("sensor.tasker_tablet_wohnzimmer", "is_charging") == True }}'          
-    action: 
+        value_template: '{{ state_attr("sensor.tasker_tablet_wohnzimmer", "is_charging") == True }}'
+    action:
       - service: !secret tts_service
-        data_template:          
-          message: "Das Tablet im Wohnzimmer wurde vollständig aufgeladen." 
-          
+        data_template:
+          message: "Das Tablet im Wohnzimmer wurde vollständig aufgeladen."
+
   - alias: "Tablet Schlafzimmer - Aufgeladen"
     initial_state: true
     trigger:
       - platform: state
-        entity_id: sensor.tasker_tablet_schlafzimmer        
-    condition:       
+        entity_id: sensor.tasker_tablet_schlafzimmer
+    condition:
       - condition: numeric_state
         entity_id: sensor.tasker_tablet_schlafzimmer
         above: 99
       - condition: template
-        value_template: '{{ state_attr("sensor.tasker_tablet_schlafzimmer", "is_charging") == True }}'                 
-    action: 
+        value_template: '{{ state_attr("sensor.tasker_tablet_schlafzimmer", "is_charging") == True }}'
+    action:
       - service: !secret tts_service
-        data_template:          
-          message: "Das Tablet im Schlafzimmer wurde vollständig aufgeladen." 
-          
+        data_template:
+          message: "Das Tablet im Schlafzimmer wurde vollständig aufgeladen."
+
   - alias: "Tablet Badezimmer - Aufgeladen"
     initial_state: true
     trigger:
       - platform: state
-        entity_id: sensor.tasker_tablet_badezimmer        
-    condition:    
+        entity_id: sensor.tasker_tablet_badezimmer
+    condition:
       - condition: numeric_state
         entity_id: sensor.tasker_tablet_badezimmer
         above: 99
       - condition: template
         value_template: '{{ state_attr("sensor.tasker_tablet_badezimmer", "is_charging") == True }}'
-    action: 
+    action:
       - service: !secret tts_service
-        data_template:          
-          message: "Das Tablet im Badezimmer wurde vollständig aufgeladen." 
-          
+        data_template:
+          message: "Das Tablet im Badezimmer wurde vollständig aufgeladen."
+
   - alias: "Tablet Küche - Aufgeladen"
     initial_state: true
     trigger:
       - platform: state
-        entity_id: sensor.tasker_tablet_kueche        
-    condition:      
+        entity_id: sensor.tasker_tablet_kueche
+    condition:
       - condition: numeric_state
         entity_id: sensor.tasker_tablet_kueche
         above: 99
       - condition: template
         value_template: '{{ state_attr("sensor.tasker_tablet_kueche", "is_charging") == True }}'
-    action: 
+    action:
       - service: !secret tts_service
-        data_template:          
-          message: "Das Tablet in der Küche wurde vollständig aufgeladen."                
-        
+        data_template:
+          message: "Das Tablet in der Küche wurde vollständig aufgeladen."
+
 homeassistant:
   customize:
     sensor.tasker_tablet_wohnzimmer:
@@ -211,12 +211,12 @@ homeassistant:
     sensor.tasker_tablet_schlafzimmer:
       icon: mdi:battery
       friendly_name: Tablet Schlafzimmer
-      hidden: true      
+      hidden: true
     sensor.tasker_tablet_badezimmer:
       icon: mdi:battery
       friendly_name: Tablet Badezimmer
-      hidden: true      
+      hidden: true
     sensor.tasker_tablet_kueche:
       icon: mdi:battery
       friendly_name: Tablet Küche
-      hidden: true            
+      hidden: true

@@ -1,28 +1,28 @@
 tts:
   - platform: google
     language: 'de'
- 
+
 input_number:
   sprache_lautstaerke:
-    name: Lautstärke   
+    name: Lautstärke
     min: 0
     max: 100
     step: 5
     icon: mdi:volume-high
-    
-input_boolean:        
+
+input_boolean:
   sprachausgabe:
     name: Sprachausgabe
     icon: mdi:message-bulleted
     initial: true
-    
+
   uhr_einschalten:
     name: Uhr einschalten
     icon: mdi:alarm-multiple
-     
-switch:   
+
+switch:
   - platform: brematic
-    host: 192.168.2.57        
+    host: 192.168.2.57
     switches:
       multimedia:
         friendly_name: Multimedia
@@ -39,11 +39,11 @@ script:
             entity_id: binary_sensor.zu_hause
             state: 'on'
           - condition: state
-            entity_id: input_boolean.sprachausgabe 
-            state: 'on'   
+            entity_id: input_boolean.sprachausgabe
+            state: 'on'
           - condition: state
-            entity_id: binary_sensor.schlafen_aktiv 
-            state: 'off'            
+            entity_id: binary_sensor.schlafen_aktiv
+            state: 'off'
       - service: media_player.alexa_tts
         data_template:
           entity_id: >-
@@ -61,9 +61,9 @@ script:
               media_player.echo_wohnzimmer
             {% endif %}
           message: >-
-            {{ message }}     
-          
-automation:           
+            {{ message }}
+
+automation:
   - alias: "Lautstärke Sprachausgabe ändern"
     initial_state: on
     trigger:
@@ -72,37 +72,37 @@ automation:
     condition:
       - condition: state
         entity_id: device_tracker.pimultimedia
-        state: 'home'         
+        state: 'home'
     action:
       - service: media_player.volume_set
         data_template:
           entity_id: media_player.multimedia
           volume_level: >-
-            {{ states.input_number.sprache_lautstaerke.state | int / 100 }}     
-            
+            {{ states.input_number.sprache_lautstaerke.state | int / 100 }}
+
   - alias: "Lautstärke Sprachausgabe einstellen"
     initial_state: on
     trigger:
       - platform: homeassistant
-        event: start         
+        event: start
     condition:
       - condition: state
         entity_id: device_tracker.pimultimedia
-        state: 'home'        
+        state: 'home'
     action:
       - service: input_number.set_value
         data_template:
           entity_id: input_number.sprache_lautstaerke
           value: >-
             {{ states.media_player.multimedia.attributes.volume_level * 100 | int }}
-           
+
   - alias: 'Zu Hause - Sprachausgabe einschalten'
     initial_state: true
     trigger:
       platform: state
       entity_id: binary_sensor.zu_hause
       to: 'on'
-    condition:    
+    condition:
       - condition: state
         entity_id: input_boolean.sprachausgabe
         state: 'on'
@@ -116,19 +116,19 @@ automation:
       - platform: time_pattern
         minutes: 30
       - platform: time_pattern
-        minutes: 00       
+        minutes: 00
     condition:
       - condition: time
         after: '08:00'
-        before: '23:00'     
+        before: '23:00'
       - condition: state
         entity_id: device_tracker.pimultimedia
-        state: 'home'        
+        state: 'home'
       - condition: state
         entity_id: input_boolean.uhr_einschalten
-        state: 'on'        
+        state: 'on'
       - condition: template
-        value_template: '{{ is_state("media_player.kodi_wohnzimmer", "playing") == False }}'         
+        value_template: '{{ is_state("media_player.kodi_wohnzimmer", "playing") == False }}'
     action:
       - service: media_player.play_media
         data_template:
@@ -137,11 +137,11 @@ automation:
           media_content_id: >-
             {% if now().strftime("%M")|int == 30 %}
               http://192.168.2.70:8123/local/uhr/GrandFatherChime_half.mp3
-            {% else %}            
+            {% else %}
               http://192.168.2.70:8123/local/uhr/GrandFatherChime_{{now().strftime("%I")}}.mp3
             {% endif %}
-          media_content_type: music        
-        
+          media_content_type: music
+
   - alias: 'Uhr - Glocke abbrechen'
     initial_state: true
     trigger:
@@ -151,12 +151,12 @@ automation:
     condition:
       - condition: state
         entity_id: media_player.multimedia
-        state: 'playing'   
+        state: 'playing'
     action:
       - service: media_player.media_pause
         entity_id:
-          - media_player.tts     
-        
+          - media_player.tts
+
   - alias: "BVB - Torhymne"
     initial_state: true
     trigger:
@@ -168,7 +168,7 @@ automation:
     condition:
       - condition: state
         entity_id: calendar.borussia_dortmund
-        state: 'on'             
+        state: 'on'
     action:
       - service: media_player.play_media
         data_template:
@@ -176,8 +176,8 @@ automation:
             - media_player.tts
           media_content_id: >-
             http://192.168.2.70:8123/local/bvb/torhymne.mp3
-          media_content_type: music  
-          
+          media_content_type: music
+
 homeassistant:
   customize:
     switch.multimedia:

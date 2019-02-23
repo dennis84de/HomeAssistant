@@ -4,42 +4,42 @@ cards:
   - type: entities
     title: Geräte
     show_header_toggle: false
-    entities:  
+    entities:
       - entity: switch.badezimmer_radio
 
   - type: entities
     title: Multimedia
     show_header_toggle: false
-    entities:  
+    entities:
       - type: custom:mini-media-player
         entity: media_player.kodi_badezimmer
         hide:
-          source: true   
-          progress: true          
+          source: true
+          progress: true
           volume: true
 
   - type: entities
     title: Licht
     show_header_toggle: false
-    entities:  
+    entities:
       - entity: light.badezimmerschrank
-    
+
   - type: glance
     title: Sensoren
     show_header_toggle: false
-    entities:  
-      - entity: binary_sensor.bewegungsmelder_badezimmer    
-      - entity: sensor.fibaro_badezimmer_luminance     
+    entities:
+      - entity: binary_sensor.bewegungsmelder_badezimmer
+      - entity: sensor.fibaro_badezimmer_luminance
 
   - type: entities
     title: Thermometer
     show_header_toggle: false
-    entities:        
+    entities:
       - entity: sensor.fibaro_badezimmer_temperature
-       
+
   - type: entities
     title: Heizung
     show_header_toggle: false
-    entities:  
-      - entity: climate.badezimmer     
+    entities:
+      - entity: climate.badezimmer
         name: Heizung

@@ -1,12 +1,12 @@
 sensor:
   - platform: template
-    sensors:        
+    sensors:
       letzte_bewegung:
         friendly_name: 'Letzte Bewegung'
-        icon_template: mdi:run 
+        icon_template: mdi:run
         entity_id:
           - sensor.time
-          - binary_sensor.bewegungsmelder_schlafzimmer     
+          - binary_sensor.bewegungsmelder_schlafzimmer
           - binary_sensor.bewegungsmelder_flur
           - binary_sensor.bewegungsmelder_arbeitszimmer
           - binary_sensor.bewegungsmelder_kueche
@@ -15,25 +15,25 @@ sensor:
           - binary_sensor.bewegungsmelder_badezimmer_template
         value_template: >
           {%- set pirs = [
-            states.binary_sensor.bewegungsmelder_schlafzimmer, 
-            states.binary_sensor.bewegungsmelder_flur, 
-            states.binary_sensor.bewegungsmelder_arbeitszimmer, 
-            states.binary_sensor.bewegungsmelder_kueche, 
-            states.binary_sensor.bewegungsmelder_balkon, 
-            states.binary_sensor.bewegungsmelder_wohnzimmer_template, 
+            states.binary_sensor.bewegungsmelder_schlafzimmer,
+            states.binary_sensor.bewegungsmelder_flur,
+            states.binary_sensor.bewegungsmelder_arbeitszimmer,
+            states.binary_sensor.bewegungsmelder_kueche,
+            states.binary_sensor.bewegungsmelder_balkon,
+            states.binary_sensor.bewegungsmelder_wohnzimmer_template,
             states.binary_sensor.bewegungsmelder_badezimmer_template
             ] | reject('none') | list %}
-            
+
           {% if pirs|length > 0 %}
             {% for pir in pirs %}
               {% if as_timestamp(pir.last_changed) == as_timestamp(pirs | map(attribute='last_changed') | max) %}
                 {{ pir.name }}
               {% endif %}
-            {% endfor %}          
+            {% endfor %}
           {% else %}
             Unbekannt
-          {% endif %}        
-        
+          {% endif %}
+
       xiaomi_bewegungsmelder_flur_batterie:
         friendly_name: Bewegungsmelder Flur
         entity_id:
@@ -43,10 +43,10 @@ sensor:
             0
           {% else %}
             {{ states.binary_sensor.zigate_7904_presence.attributes["battery_level"] | float}}
-          {% endif %}            
+          {% endif %}
         unit_of_measurement: '%'
         device_class: battery
-        
+
       xiaomi_bewegungsmelder_arbeitszimmer_batterie:
         friendly_name: Bewegungsmelder Arbeitszimmer
         entity_id:
@@ -59,11 +59,11 @@ sensor:
           {% endif %}
         unit_of_measurement: '%'
         device_class: battery
-                
+
       xiaomi_bewegungsmelder_schlafzimmer_batterie:
         friendly_name: Bewegungsmelder Schlafzimmer
         entity_id:
-          - binary_sensor.zigate_be83_presence        
+          - binary_sensor.zigate_be83_presence
         value_template: >
           {% if is_state('binary_sensor.zigate_be83_presence', 'unknown') %}
             0
@@ -72,11 +72,11 @@ sensor:
           {% endif %}
         unit_of_measurement: '%'
         device_class: battery
-        
+
       xiaomi_bewegungsmelder_kueche_batterie:
         friendly_name: Bewegungsmelder Küche
         entity_id:
-          - binary_sensor.zigate_a230_presence        
+          - binary_sensor.zigate_a230_presence
         value_template: >
           {% if is_state('binary_sensor.zigate_a230_presence', 'unknown') %}
             0
@@ -85,11 +85,11 @@ sensor:
           {% endif %}
         unit_of_measurement: '%'
         device_class: battery
-        
+
       xiaomi_bewegungsmelder_balkon_batterie:
         friendly_name: Bewegungsmelder Balkon
         entity_id:
-          - binary_sensor.zigate_0b57_presence   
+          - binary_sensor.zigate_0b57_presence
         value_template: >
           {% if is_state('binary_sensor.zigate_0b57_presence', 'unknown') %}
             0
@@ -98,84 +98,84 @@ sensor:
           {% endif %}
         unit_of_measurement: '%'
         device_class: battery
-        
+
       fibaro_bewegungsmelder_badezimmer_batterie:
         friendly_name: Bewegungsmelder Badezimmer
         entity_id:
-          - zwave.fibaro_badezimmer          
+          - zwave.fibaro_badezimmer
         value_template: >
-          {% if states.zwave.fibaro_badezimmer and states.zwave.fibaro_badezimmer.attributes['battery_level'] %}            
+          {% if states.zwave.fibaro_badezimmer and states.zwave.fibaro_badezimmer.attributes['battery_level'] %}
             {{ states.zwave.fibaro_badezimmer.attributes['battery_level'] | float}}
           {% else %}
             0
-          {% endif %}  
+          {% endif %}
         unit_of_measurement: '%'
-        device_class: battery          
-        
+        device_class: battery
+
 binary_sensor:
   - platform: template
     sensors:
       bewegungsmelder_flur:
         friendly_name: Flur
         entity_id:
-          - binary_sensor.zigate_7904_presence           
+          - binary_sensor.zigate_7904_presence
         device_class: motion
         value_template: "{{ is_state('binary_sensor.zigate_7904_presence', 'on') }}"
-      
+
       bewegungsmelder_arbeitszimmer:
         friendly_name: Arbeitszimmer
         entity_id:
-          - binary_sensor.zigate_eac1_presence           
+          - binary_sensor.zigate_eac1_presence
         device_class: motion
         value_template: "{{ is_state('binary_sensor.zigate_eac1_presence', 'on') }}"
-        
+
       bewegungsmelder_schlafzimmer:
         friendly_name: Schlafzimmer
         entity_id:
-          - binary_sensor.zigate_be83_presence           
+          - binary_sensor.zigate_be83_presence
         device_class: motion
-        value_template: "{{ is_state('binary_sensor.zigate_be83_presence', 'on') }}"     
-        
+        value_template: "{{ is_state('binary_sensor.zigate_be83_presence', 'on') }}"
+
       bewegungsmelder_kueche:
         friendly_name: Küche
         entity_id:
-          - binary_sensor.zigate_a230_presence        
+          - binary_sensor.zigate_a230_presence
         device_class: motion
-        value_template: "{{ is_state('binary_sensor.zigate_a230_presence', 'on') }}"   
-        
+        value_template: "{{ is_state('binary_sensor.zigate_a230_presence', 'on') }}"
+
       bewegungsmelder_balkon:
         friendly_name: Balkon
         entity_id:
-          - binary_sensor.zigate_0b57_presence    
+          - binary_sensor.zigate_0b57_presence
         device_class: motion
-        value_template: "{{ is_state('binary_sensor.zigate_0b57_presence', 'on') }}"   
-        
+        value_template: "{{ is_state('binary_sensor.zigate_0b57_presence', 'on') }}"
+
       bewegungsmelder_wohnzimmer:
         friendly_name: Bewegungsmelder
         entity_id:
-          - sensor.aeotec_wohnzimmer_burglar        
+          - sensor.aeotec_wohnzimmer_burglar
         device_class: motion
-        value_template: "{{ is_state('sensor.aeotec_wohnzimmer_burglar', '8') }}"    
+        value_template: "{{ is_state('sensor.aeotec_wohnzimmer_burglar', '8') }}"
       bewegungsmelder_wohnzimmer_template:
         friendly_name: Wohnzimmer
         entity_id:
-          - sensor.aeotec_wohnzimmer_burglar    
+          - sensor.aeotec_wohnzimmer_burglar
         device_class: motion
-        value_template: "{{ is_state('sensor.aeotec_wohnzimmer_burglar', '8') }}"   
-        
+        value_template: "{{ is_state('sensor.aeotec_wohnzimmer_burglar', '8') }}"
+
       bewegungsmelder_badezimmer:
         friendly_name: Bewegungsmelder
         entity_id:
-          - sensor.fibaro_badezimmer_burglar        
+          - sensor.fibaro_badezimmer_burglar
         device_class: motion
-        value_template: "{{ is_state('sensor.fibaro_badezimmer_burglar', '8') }}"    
+        value_template: "{{ is_state('sensor.fibaro_badezimmer_burglar', '8') }}"
       bewegungsmelder_badezimmer_template:
         friendly_name: Badezimmer
         entity_id:
-          - sensor.fibaro_badezimmer_burglar    
+          - sensor.fibaro_badezimmer_burglar
         device_class: motion
-        value_template: "{{ is_state('sensor.fibaro_badezimmer_burglar', '8') }}"     
-        
+        value_template: "{{ is_state('sensor.fibaro_badezimmer_burglar', '8') }}"
+
 homeassistant:
   customize:
     binary_sensor.bewegungsmelder_flur:
@@ -185,11 +185,11 @@ homeassistant:
     binary_sensor.bewegungsmelder_schlafzimmer:
       hidden: true
     binary_sensor.bewegungsmelder_kueche:
-      hidden: true            
+      hidden: true
     binary_sensor.bewegungsmelder_balkon:
-      hidden: true           
-      
+      hidden: true
+
     binary_sensor.bewegungsmelder_badezimmer_template:
       hidden: true
     binary_sensor.bewegungsmelder_wohnzimmer_template:
-      hidden: true      
+      hidden: true

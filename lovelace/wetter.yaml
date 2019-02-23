@@ -8,10 +8,10 @@ cards:
       - entity: sensor.darksky_summary
       - entity: sensor.darksky_hourly_summary
       - entity: sensor.darksky_temperature
-      - entity: sensor.darksky_apparent_temperature    
+      - entity: sensor.darksky_apparent_temperature
       - entity: sensor.darksky_daytime_high_temperature_0
       - entity: sensor.darksky_overnight_low_temperature_0
-      - entity: sensor.wetterwarnungen_current_warning_level       
+      - entity: sensor.wetterwarnungen_current_warning_level
       - entity: sensor.wetterlage
 
   - type: entities
@@ -23,8 +23,8 @@ cards:
       - entity: sensor.zigate_f874_pressure
       - entity: sensor.zigate_6ec3_temperature
       - entity: sensor.zigate_6ec3_humidity
-      - entity: sensor.zigate_6ec3_pressure      
-  
+      - entity: sensor.zigate_6ec3_pressure
+
   - type: entities
     title: Wettervorhersage
     show_header_toggle: false
@@ -36,7 +36,7 @@ cards:
       - entity: sensor.pws_weather_3d_metric
       - entity: sensor.pws_weather_3n_metric
       - entity: sensor.pws_weather_4d_metric
-      - entity: sensor.pws_weather_4n_metric    
+      - entity: sensor.pws_weather_4n_metric
 
   - type: history-graph
     title: Temperatur
@@ -56,18 +56,18 @@ cards:
       - entity: sensor.sonnenaufgang
       - entity: sensor.sonnenuntergang
       - entity: sensor.tageszeit
-      - entity: sensor.mondphasen      
-          
+      - entity: sensor.mondphasen
+
   - type: entities
     title: Regen und Wind
     show_header_toggle: false
-    entities: 
+    entities:
       - entity: sensor.darksky_precip_intensity
       - entity: sensor.darksky_precip_probability
       - entity: sensor.darksky_cloud_coverage
       - entity: sensor.darksky_wind_speed
       - entity: sensor.darksky_nearest_storm_distance
-      - entity: sensor.windrichtung    
+      - entity: sensor.windrichtung
 
   - type: entities
     title: Luft
@@ -75,9 +75,9 @@ cards:
     entities:
       - entity: sensor.darksky_humidity
       - entity: sensor.darksky_pressure
-      - entity: sensor.darksky_ozone   
+      - entity: sensor.darksky_ozone
       - entity: sensor.co2_intensity_51_49_7_36
-   
+
   - type: entities
     title: Sonne
     show_header_toggle: false
@@ -86,25 +86,25 @@ cards:
       - entity: sensor.uv_index_current
       - entity: sensor.uv_index_max
       - entity: sensor.zeit_sonne
-      - entity: binary_sensor.protection_window     
-      
+      - entity: binary_sensor.protection_window
+
   - type: entities
     title: Sonstiges
     show_header_toggle: false
     entities:
-      - entity: sensor.flugzeuge 
+      - entity: sensor.flugzeuge
       - entity: binary_sensor.iss
       - entity: sensor.strommix
       - entity: sensor.schimmelindikator
-   
+
   - type: entities
     title: Pollen
     show_header_toggle: false
-    entities:  
+    entities:
       - entity: sensor.pollen_graeser_today
       - entity: sensor.pollen_birke_today
       - entity: sensor.pollen_roggen_today
-    
+
   - type: entities
     title: SpaceX
     show_header_toggle: false
@@ -114,7 +114,7 @@ cards:
       - entity: sensor.spacex_next_launch_day
       - entity: sensor.spacex_next_launch_time
       - entity: sensor.spacex_next_launch_site
-  
+
   - type: picture-glance
     title: Wetter
     entities: []

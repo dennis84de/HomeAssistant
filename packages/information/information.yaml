@@ -1,7 +1,7 @@
 wunderlist:
   client_id: !secret wunderlist_client_id
   access_token: !secret wunderlist_token
-  
+
 sensor:
   - platform: imap
     server: mail.manitu.de
@@ -9,19 +9,19 @@ sensor:
     name: Ungelesene Mails
     username: !secret email_username
     password: !secret email_password
-    
+
   - platform: rest
     resource: !secret tankerkoenig_url_real
     name: Tankstelle Real
     unit_of_measurement: '€'
     value_template: >-
       {% if value_json.prices is defined == False %}
-        -    
+        -
       {% elif value_json.prices["51d4b714-a095-1aa0-e100-80009459e03a"] is defined == False or value_json.prices["51d4b714-a095-1aa0-e100-80009459e03a"].e10 is defined == False %}
         -
       {% else %}
         {{ value_json.prices["51d4b714-a095-1aa0-e100-80009459e03a"].e10 }}
-      {% endif %}    
+      {% endif %}
     scan_interval: 1800
     json_attributes:
       - prices
@@ -37,11 +37,11 @@ sensor:
         -
       {% else %}
         {{ value_json.prices["51d4b5ae-a095-1aa0-e100-80009459e03a"].e10 }}
-      {% endif %}    
+      {% endif %}
     scan_interval: 1800
     json_attributes:
       - prices
-      
+
   - platform: date_countdown
     name: Countdown Neuhaus
     date: "10-08-2019 22:00"
@@ -49,32 +49,32 @@ sensor:
   - platform: time_date
     display_options:
       - 'time'
-      
-#  - platform: aftership 
+
+#  - platform: aftership
 #    name: Kommende Pakete
 #    api_key: !secret aftership_apikey
 
-  - platform: seventeentrack    
+  - platform: seventeentrack
     username: !secret 17track_name
     password: !secret 17track_password
-        
+
   - platform: template
-    sensors:          
+    sensors:
       kommende_pakete:
         friendly_name: 'Kommende Pakete'
         entity_id:
           - sensor.packages_in_transit
         value_template: >-
           {% set pakete = states.sensor.packages_in_transit.state | int %}
-          
+
           {% if pakete == 0 %}
             -
           {% else %}
             {{ pakete }}
-          {% endif %}          
+          {% endif %}
         icon_template: >-
           mdi:truck-delivery
-      
+
 binary_sensor:
   - platform: template
     sensors:
@@ -85,7 +85,7 @@ binary_sensor:
           - sensor.tankstelle_real
         value_template: >-
           {{ states.sensor.tankstelle_real.attributes['prices']['51d4b714-a095-1aa0-e100-80009459e03a']['status'] == 'open' }}
-      
+
   - platform: template
     sensors:
       tankstelle_jet_status:
@@ -95,7 +95,7 @@ binary_sensor:
           - sensor.tankstelle_jet
         value_template: >-
           {{ states.sensor.tankstelle_jet.attributes['prices']['51d4b5ae-a095-1aa0-e100-80009459e03a']['status'] == 'open' }}
-          
+
 automation:
   - alias: 'Neue E-Mail - Kodi'
     initial_state: true
@@ -103,7 +103,7 @@ automation:
       - platform: numeric_state
         entity_id: sensor.ungelesene_mails
         above: 0
-    condition: 
+    condition:
       - condition: state
         entity_id: media_player.kodi_wohnzimmer
         state: 'playing'
@@ -113,7 +113,7 @@ automation:
           title: 'E-Mail'
           message: >-
             {% set mailCount = states.sensor.ungelesene_mails.state | default(0) | int %}
-            
+
             {% if mailCount > 1 %}
               Es sind {{ mailCount }} ungelesene Mails vorhanden.
             {% else %}
@@ -121,45 +121,45 @@ automation:
             {% endif %}
           data:
             displaytime: 5000
-            icon: "info"           
-      
+            icon: "info"
+
   - alias: "Neue E-Mail - TTS"
     initial_state: true
     trigger:
       - platform: numeric_state
         entity_id: sensor.ungelesene_mails
-        above: 0   
-    action: 
+        above: 0
+    action:
       service: !secret tts_service
-      data_template:          
+      data_template:
         message: >-
           {% set mailCount = states.sensor.ungelesene_mails.state | int %}
 
           {% if mailCount == 1 %}
             Eine neue E-Mail ist eingegangen.
           {% else %}
-            Es sind {{ mailCount }} neue E-Mails eingegangen.            
-          {% endif %}            
-            
+            Es sind {{ mailCount }} neue E-Mails eingegangen.
+          {% endif %}
+
 panel_iframe:
   infoscreen:
     title: Infoscreen
     icon: mdi:information
-    url: http://192.168.2.70/infoscreen/  
+    url: http://192.168.2.70/infoscreen/
 
 homeassistant:
   customize:
     sensor.time:
       friendly_name: Uhrzeit
       hidden: true
-      
+
     sensor.tankstelle_real:
       icon: mdi:gas-station
     sensor.tankstelle_jet:
       icon: mdi:gas-station
-    
+
     sensor.packages_in_transit:
-      hidden: true            
+      hidden: true
     sensor.packages_delivered:
       hidden: true
     sensor.packages_expired:

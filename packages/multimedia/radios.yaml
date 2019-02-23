@@ -1,114 +1,114 @@
 media_player:
   - platform: squeezebox
     host: 192.168.2.100
-    port: 9002  
-            
+    port: 9002
+
 switch:
   - platform: edimax
-    host: 192.168.2.36    
+    host: 192.168.2.36
     name: Wohnzimmer Radio
-    
+
   - platform: edimax
-    host: 192.168.2.30    
+    host: 192.168.2.30
     name: Schlafzimmer Radio
-    
+
   - platform: tplink
     host: 192.168.2.44
     name: Badezimmer Radio
-    
+
   - platform: tplink
     host: 192.168.2.51
     name: Flur Radio
-    
+
   - platform: tplink
     host: 192.168.2.41
-    name: Küche Radio    
+    name: Küche Radio
 
   - platform: tplink
     host: 192.168.2.69
-    name: Arbeitszimmer Radio  
-    
+    name: Arbeitszimmer Radio
+
   - platform: brematic
-    host: 192.168.2.57        
+    host: 192.168.2.57
     switches:
       balkon_radio:
         friendly_name: Balkon Radio
         system_code: "11100"
-        unit_code: "01000"         
-    
+        unit_code: "01000"
+
   - platform: template
-    switches:      
+    switches:
       alle_radios_wiedergabe_aktiv:
         friendly_name: Wiedergabe aktiv
         value_template: >-
-          {% if is_state('media_player.kuche', 'playing') 
-            or is_state('media_player.badezimmer', 'playing') 
-            or is_state('media_player.wohnzimmer', 'playing') 
-            or is_state('media_player.schlafzimmer', 'playing') 
-            or is_state('media_player.arbeitszimmer', 'playing') 
+          {% if is_state('media_player.kuche', 'playing')
+            or is_state('media_player.badezimmer', 'playing')
+            or is_state('media_player.wohnzimmer', 'playing')
+            or is_state('media_player.schlafzimmer', 'playing')
+            or is_state('media_player.arbeitszimmer', 'playing')
             or is_state('media_player.flur', 'playing')
             or is_state('media_player.balkon', 'playing')
           %}
             true
           {% else %}
             false
-          {% endif %}     
+          {% endif %}
         icon_template: >-
-          {% if is_state('media_player.kuche', 'playing') 
-            or is_state('media_player.badezimmer', 'playing') 
-            or is_state('media_player.wohnzimmer', 'playing') 
-            or is_state('media_player.schlafzimmer', 'playing') 
-            or is_state('media_player.arbeitszimmer', 'playing') 
+          {% if is_state('media_player.kuche', 'playing')
+            or is_state('media_player.badezimmer', 'playing')
+            or is_state('media_player.wohnzimmer', 'playing')
+            or is_state('media_player.schlafzimmer', 'playing')
+            or is_state('media_player.arbeitszimmer', 'playing')
             or is_state('media_player.flur', 'playing')
             or is_state('media_player.balkon', 'playing')
           %}
             mdi:play-circle-outline
           {% else %}
             mdi:pause-circle-outline
-          {% endif %}           
+          {% endif %}
         turn_on:
           service: script.radios_starten
         turn_off:
-          service: script.radios_pausieren 
-          
+          service: script.radios_pausieren
+
       alle_radios:
         friendly_name: Alle Radios
         value_template: >-
-          {% if is_state('switch.wohnzimmer_radio', 'on') 
-            or is_state('switch.balkon_radio', 'on') 
-            or is_state('switch.schlafzimmer_radio', 'on') 
-            or is_state('switch.flur_radio', 'on') 
-            or is_state('switch.badezimmer_radio', 'on') 
+          {% if is_state('switch.wohnzimmer_radio', 'on')
+            or is_state('switch.balkon_radio', 'on')
+            or is_state('switch.schlafzimmer_radio', 'on')
+            or is_state('switch.flur_radio', 'on')
+            or is_state('switch.badezimmer_radio', 'on')
             or is_state('switch.arbeitszimmer_radio', 'on')
             or is_state('switch.kuche_radio', 'on')
           %}
             true
           {% else %}
             false
-          {% endif %}        
+          {% endif %}
         turn_on:
           service: script.radios_einschalten
         turn_off:
-          service: script.radios_ausschalten           
-    
+          service: script.radios_ausschalten
+
 input_boolean:
   radio_aktiv_balkon:
-    name: Radio Balkon aktiv    
-    
+    name: Radio Balkon aktiv
+
 binary_sensor:
   - platform: template
     sensors:
       radio_badezimmer_inaktiv:
-        friendly_name: Radio Badezimmer inaktiv        
+        friendly_name: Radio Badezimmer inaktiv
         device_class: motion
         value_template: >-
           {% if is_state('lightingsm.radio_badezimmer_bewegung', 'active_timer') %}
             false
           {% elif is_state('media_player.badezimmer', 'playing') %}
             true
-          {% elif is_state('switch.wohnzimmer_radio', 'on') 
-            or is_state('switch.balkon_radio', 'on') 
-            or is_state('switch.schlafzimmer_radio', 'on') 
+          {% elif is_state('switch.wohnzimmer_radio', 'on')
+            or is_state('switch.balkon_radio', 'on')
+            or is_state('switch.schlafzimmer_radio', 'on')
             or is_state('switch.flur_radio', 'on')
             or is_state('switch.arbeitszimmer_radio', 'on')
             or is_state('switch.kuche_radio', 'on')
@@ -116,8 +116,8 @@ binary_sensor:
             true
           {% else %}
             false
-          {% endif %}          
-  
+          {% endif %}
+
 lightingsm:
   radio_badezimmer:
     friendly_name: "Radio Badezimmer - Bewegung"
@@ -126,21 +126,21 @@ lightingsm:
     entity: media_player.badezimmer
     entity_on: script.radio_badezimmer_einschalten
     entity_off: script.radio_badezimmer_ausschalten
-    delay: 120     
-    overrides:      
+    delay: 120
+    overrides:
       - binary_sensor.radio_badezimmer_inaktiv
-      
-automation:       
+
+automation:
   - alias: 'Radio Balkon - Bewegung erkannt'
     initial_state: true
     trigger:
       - platform: state
         entity_id: binary_sensor.zigate_0b57_presence
-        to: 'on'        
+        to: 'on'
     condition:
       - condition: time
         after: '08:00'
-        before: '22:00'             
+        before: '22:00'
       - condition: state
         entity_id: 'switch.alle_radios_wiedergabe_aktiv'
         state: 'on'
@@ -149,11 +149,11 @@ automation:
         state: 'off'
     action:
       - service: input_boolean.turn_on
-        entity_id: input_boolean.radio_aktiv_balkon      
+        entity_id: input_boolean.radio_aktiv_balkon
       - service: media_player.turn_on
-        data:  
+        data:
           entity_id: media_player.balkon
-      
+
   - alias: 'Radio Balkon - Keine Bewegung'
     initial_state: true
     trigger:
@@ -163,19 +163,19 @@ automation:
     condition:
       - condition: state
         entity_id: input_boolean.radio_aktiv_balkon
-        state: 'on'             
+        state: 'on'
     action:
       - service: input_boolean.turn_off
-        entity_id: input_boolean.radio_aktiv_balkon      
+        entity_id: input_boolean.radio_aktiv_balkon
       - service: media_player.turn_off
-        data:  
+        data:
           entity_id: media_player.balkon
-     
+
   - alias: 'Radios pausieren - Tür geöffnet'
     initial_state: true
     trigger:
       - platform: state
-        entity_id: binary_sensor.zigate_229b_onoff   
+        entity_id: binary_sensor.zigate_229b_onoff
         to: 'on'
     condition:
       - condition: state
@@ -187,18 +187,18 @@ automation:
           {% set last = as_timestamp(states.automation.alles_ausschalten.attributes.last_triggered) | int %}
           {% set diff = ((now - last) / 60) | int %}
 
-          {{ diff >= 10 }}     
+          {{ diff >= 10 }}
     action:
       - service: switch.turn_off
-        entity_id: switch.alle_radios_wiedergabe_aktiv  
+        entity_id: switch.alle_radios_wiedergabe_aktiv
       - service: automation.turn_on
         entity_id: automation.radios_starten_tur_geschlossen
-        
+
   - alias: 'Radios starten - Tür geschlossen'
     initial_state: false
     trigger:
       - platform: state
-        entity_id: binary_sensor.zigate_229b_onoff   
+        entity_id: binary_sensor.zigate_229b_onoff
         to: 'off'
     condition:
       - condition: state
@@ -206,36 +206,36 @@ automation:
         state: 'off'
     action:
       - service: switch.turn_on
-        entity_id: switch.alle_radios_wiedergabe_aktiv  
+        entity_id: switch.alle_radios_wiedergabe_aktiv
       - service: automation.turn_off
-        entity_id: automation.radios_starten_tur_geschlossen    
-      
+        entity_id: automation.radios_starten_tur_geschlossen
+
 script:
   radio_badezimmer_einschalten:
     alias: Radio Badezimmer starten
     sequence:
       - service: media_player.media_play
-        data:  
-          entity_id: media_player.badezimmer  
-          
+        data:
+          entity_id: media_player.badezimmer
+
   radio_badezimmer_ausschalten:
     alias: Radio Badezimmer stoppen
     sequence:
       - service: media_player.media_pause
-        data:  
-          entity_id: media_player.badezimmer  
-          
+        data:
+          entity_id: media_player.badezimmer
+
   sync_radios:
     alias: Radios synchronisieren
     sequence:
       - condition: state
         entity_id: media_player.wohnzimmer
-        state: 'playing'      
+        state: 'playing'
       - service: media_player.turn_off
         entity_id: media_player.wohnzimmer
       - delay: '00:00:02'
       - service: media_player.turn_on
-        entity_id: media_player.wohnzimmer   
+        entity_id: media_player.wohnzimmer
 
   radios_einschalten:
     alias: Radios einschalten
@@ -243,20 +243,20 @@ script:
       - service: switch.turn_on
         entity_id: switch.wohnzimmer_radio, switch.balkon_radio, switch.flur_radio, switch.badezimmer_radio, switch.kuche_radio, switch.schlafzimmer_radio, switch.arbeitszimmer_radio
       - wait_template: >-
-          {% if is_state('media_player.kuche', 'playing') 
-            and is_state('media_player.badezimmer', 'playing') 
-            and is_state('media_player.wohnzimmer', 'playing') 
-            and is_state('media_player.schlafzimmer', 'playing') 
-            and is_state('media_player.arbeitszimmer', 'playing') 
+          {% if is_state('media_player.kuche', 'playing')
+            and is_state('media_player.badezimmer', 'playing')
+            and is_state('media_player.wohnzimmer', 'playing')
+            and is_state('media_player.schlafzimmer', 'playing')
+            and is_state('media_player.arbeitszimmer', 'playing')
             and is_state('media_player.flur', 'playing')
           %}
             true
           {% else %}
             false
-          {% endif %}      
-  
+          {% endif %}
+
       - service: script.sync_radio
-    
+
   radios_ausschalten:
     alias: Radios ausschalten
     sequence:
@@ -265,32 +265,32 @@ script:
       - service: switch.turn_off
         entity_id: switch.alle_radios, switch.alle_radios_wiedergabe_aktiv,switch.wohnzimmer_radio,switch.flur_radio, switch.badezimmer_radio,switch.kuche_radio, switch.schlafzimmer_radio ,switch.arbeitszimmer_radio,switch.balkon_radio,script.sync_radios
 
-        
+
   radios_starten:
     alias: Radios abspielen
     sequence:
       - service: media_player.media_play
-        entity_id: media_player.kuche, media_player.badezimmer, media_player.wohnzimmer, media_player.schlafzimmer, media_player.arbeitszimmer, media_player.flur     
-        
+        entity_id: media_player.kuche, media_player.badezimmer, media_player.wohnzimmer, media_player.schlafzimmer, media_player.arbeitszimmer, media_player.flur
+
   radios_pausieren:
       alias: Radios pausieren
       sequence:
         - service: media_player.media_pause
           entity_id: media_player.kuche, media_player.badezimmer, media_player.wohnzimmer, media_player.schlafzimmer, media_player.arbeitszimmer, media_player.flur
-    
+
 homeassistant:
   customize:
     script.sync_radios:
       can_cancel: false
-      icon: mdi:sync    
-    switch.alle_radios:      
-      icon: mdi:cast-off    
-      
+      icon: mdi:sync
+    switch.alle_radios:
+      icon: mdi:cast-off
+
     input_boolean.radio_aktiv_balkon:
       hidden: true
     binary_sensor.radio_badezimmer_inaktiv:
       hidden: true
-      
+
     switch.badezimmer_radio:
       icon: mdi:radio
     switch.kuche_radio:
@@ -300,12 +300,12 @@ homeassistant:
     switch.arbeitszimmer_radio:
       icon: mdi:radio
     switch.wohnzimmer_radio:
-      icon: mdi:radio 
+      icon: mdi:radio
     switch.schlafzimmer_radio:
       icon: mdi:radio
     switch.balkon_radio:
       icon: mdi:radio
-      
+
     media_player.badezimmer:
       friendly_name: Radio Badezimmer
     media_player.arbeitszimmer:
@@ -317,6 +317,6 @@ homeassistant:
     media_player.schlafzimmer:
       friendly_name: Radio Schlafzimmer
     media_player.wohnzimmer:
-      friendly_name: Radio Wohnzimmer      
+      friendly_name: Radio Wohnzimmer
     media_player.balkon:
       friendly_name: Radio Balkon

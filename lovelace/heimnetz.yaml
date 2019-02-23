@@ -7,81 +7,81 @@ cards:
     entities:
       - entity: device_tracker.computer
       - entity: device_tracker.pihomeassistant
-      - entity: device_tracker.diskstation   
-      - entity: device_tracker.netzwerkdj      
+      - entity: device_tracker.diskstation
+      - entity: device_tracker.netzwerkdj
       - entity: device_tracker.tplinkrepeater
-      
+
   - type: entities
     title: Multimedia
     show_header_toggle: false
-    entities: 
-      - entity: device_tracker.soundbar    
+    entities:
+      - entity: device_tracker.soundbar
       - entity: device_tracker.dreamscreen
       - entity: device_tracker.pimultimedia
-      
+
   - type: entities
     title: Haushalt
     show_header_toggle: false
-    entities:     
-      - entity: device_tracker.xiaomivacuum    
-     
+    entities:
+      - entity: device_tracker.xiaomivacuum
+
   - type: entities
     title: Gateways
     show_header_toggle: false
-    entities:  
+    entities:
       - entity: device_tracker.brematicgateway
       - entity: device_tracker.xiaomigateway
-      
+
   - type: entities
     title: Radios
     show_header_toggle: false
-    entities:  
+    entities:
       - entity: device_tracker.piliving
       - entity: device_tracker.picorridor
-      - entity: device_tracker.pibath    
+      - entity: device_tracker.pibath
       - entity: device_tracker.pikitchen
       - entity: device_tracker.pisleeping
-      - entity: device_tracker.piworking  
+      - entity: device_tracker.piworking
       - entity: device_tracker.pibalcony
-      
+
   - type: entities
     title: Steckdosen
     show_header_toggle: false
     entities:
       - entity: device_tracker.tplinkwohnzimmermonitor
-      - entity: device_tracker.edimaxwohnzimmerradio    
-      - entity: device_tracker.tplinkarbeitszimmerradio   
+      - entity: device_tracker.edimaxwohnzimmerradio
+      - entity: device_tracker.tplinkarbeitszimmerradio
       - entity: device_tracker.edimaxschlafzimmerradio
-      - entity: device_tracker.tplinkflurradio      
+      - entity: device_tracker.tplinkflurradio
       - entity: device_tracker.tplinkbadezimmerradio
       - entity: device_tracker.tplinkkuecheradio
-      - entity: device_tracker.tplinkschlafzimmerfernseher    
+      - entity: device_tracker.tplinkschlafzimmerfernseher
       - entity: device_tracker.tplinkwaschmaschine
       - entity: device_tracker.tplinktrockner
 
   - type: entities
     title: Amazon Echo
     show_header_toggle: false
-    entities:  
+    entities:
       - entity: device_tracker.echoflur
       - entity: device_tracker.echokueche
       - entity: device_tracker.echowohnzimmer
-      - entity: device_tracker.echoschlafzimmer       
-    
+      - entity: device_tracker.echoschlafzimmer
+
   - type: entities
     title: Fire TV
     show_header_toggle: false
     entities:
       - entity: device_tracker.firetvschlafzimmer
-      - entity: device_tracker.firetvbadezimmer        
-      - entity: device_tracker.firetvsportzimmer      
-    
+      - entity: device_tracker.firetvbadezimmer
+      - entity: device_tracker.firetvsportzimmer
+
   - type: entities
     title: Tablets
     show_header_toggle: false
     entities:
       - entity: device_tracker.tabletbadezimmer
-      - entity: device_tracker.tabletwohnzimmer    
+      - entity: device_tracker.tabletwohnzimmer
       - entity: device_tracker.tabletschlafzimmer
       - entity: device_tracker.tabletkueche
 
@@ -94,13 +94,13 @@ cards:
       - entity: device_tracker.magichomekueche
       - entity: device_tracker.magichomekuechenschraenke
       - entity: device_tracker.magichomebadezimmer
-      - entity: device_tracker.magichomeschlafzimmer    
+      - entity: device_tracker.magichomeschlafzimmer
       - entity: device_tracker.magichomearbeitszimmer
       - entity: device_tracker.magichomebalkon
-    
+
   - type: entities
     title: Broadlink
     show_header_toggle: false
     entities:
       - entity: device_tracker.broadlinkwohnzimmer
-      - entity: device_tracker.broadlinkschlafzimmer   
+      - entity: device_tracker.broadlinkschlafzimmer

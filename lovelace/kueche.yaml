@@ -1,56 +1,56 @@
+
 title: Küche
 path: kueche
 cards:
   - type: entities
     title: Geräte
     show_header_toggle: false
-    entities:  
+    entities:
       - entity: switch.kuche_radio
-         
+
   - type: entities
     title: Licht
     show_header_toggle: false
-    entities:  
+    entities:
       - entity: light.regal
-        
+
   - type: glance
     title: Thermometer
     show_header_toggle: false
-    entities:  
+    entities:
       - entity: sensor.zigate_eff1_temperature
       - entity: sensor.zigate_eff1_humidity
-      - entity: sensor.zigate_eff1_pressure   
-      
+      - entity: sensor.zigate_eff1_pressure
+
   - type: glance
     title: Kühlschrank
     show_header_toggle: false
-    entities:      
+    entities:
       - entity: sensor.zigate_e15d_temperature
       - entity: sensor.zigate_e15d_humidity
-      - entity: sensor.zigate_e15d_pressure   
-    
+      - entity: sensor.zigate_e15d_pressure
+
   - type: glance
     title: Gefrierschrank
     show_header_toggle: false
-    entities:  
+    entities:
       - entity: sensor.zigate_6440_temperature
       - entity: sensor.zigate_6440_humidity
-      - entity: sensor.zigate_6440_pressure    
-    
+      - entity: sensor.zigate_6440_pressure
+
   - type: glance
     title: Sensoren
     show_header_toggle: false
-    entities:       
+    entities:
       - entity: binary_sensor.zigate_a230_presence
-      - entity: sensor.zigate_a230_luminosity 
-    
+      - entity: sensor.zigate_a230_luminosity
+
   - type: glance
     title: Heizung
     show_header_toggle: false
-    entities:  
+    entities:
       - entity: binary_sensor.zigate_9619_onoff
         name: Fenster
       - entity: climate.kuche
         name: Heizung
-    
-      
+

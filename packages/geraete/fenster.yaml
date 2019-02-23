@@ -2,7 +2,7 @@ sensor:
   - platform: template
     sensors:
       xiaomi_fenster_wohnzimmer_batterie:
-        friendly_name: Fenster Wohnzimmer       
+        friendly_name: Fenster Wohnzimmer
         entity_id:
           - binary_sensor.zigate_6e71_onoff
         value_template: >-
@@ -10,62 +10,62 @@ sensor:
             0
           {% else %}
             {{ states.binary_sensor.zigate_6e71_onoff.attributes["battery_level"] | float}}
-          {% endif %}            
+          {% endif %}
         unit_of_measurement: '%'
         device_class: battery
-        
+
       xiaomi_fenster_schlafzimmer_batterie:
-        friendly_name: Fenster Schlafzimmer  
+        friendly_name: Fenster Schlafzimmer
         entity_id:
-          - binary_sensor.zigate_bd4c_onoff        
+          - binary_sensor.zigate_bd4c_onoff
         value_template: >-
           {% if is_state('binary_sensor.zigate_bd4c_onoff', 'unknown') %}
             0
           {% else %}
             {{ states.binary_sensor.zigate_bd4c_onoff.attributes["battery_level"] | float}}
-          {% endif %}            
+          {% endif %}
         unit_of_measurement: '%'
         device_class: battery
-        
+
       xiaomi_fenster_kueche_batterie:
         friendly_name: Fenster Küche
         entity_id:
-          - binary_sensor.zigate_9619_onoff        
+          - binary_sensor.zigate_9619_onoff
         value_template: >-
           {% if is_state('binary_sensor.zigate_9619_onoff', 'unknown') %}
             0
           {% else %}
             {{ states.binary_sensor.zigate_9619_onoff.attributes["battery_level"] | float}}
-          {% endif %}            
+          {% endif %}
         unit_of_measurement: '%'
         device_class: battery
-        
+
       xiaomi_fenster_arbeitszimmer_batterie:
-        friendly_name: Fenster Arbeitszimmer     
+        friendly_name: Fenster Arbeitszimmer
         entity_id:
-          - binary_sensor.zigate_3415_onoff        
+          - binary_sensor.zigate_3415_onoff
         value_template: >-
           {% if is_state('binary_sensor.zigate_3415_onoff', 'unknown') %}
             0
           {% else %}
             {{ states.binary_sensor.zigate_3415_onoff.attributes["battery_level"] | float}}
-          {% endif %}            
+          {% endif %}
         unit_of_measurement: '%'
         device_class: battery
-        
+
       xiaomi_fenster_sportzimmer_batterie:
-        friendly_name: Fenster Sportzimmer    
+        friendly_name: Fenster Sportzimmer
         entity_id:
-          - binary_sensor.zigate_2d17_onoff        
+          - binary_sensor.zigate_2d17_onoff
         value_template: >-
           {% if is_state('binary_sensor.zigate_2d17_onoff', 'unknown') %}
             0
           {% else %}
             {{ states.binary_sensor.zigate_2d17_onoff.attributes["battery_level"] | float}}
-          {% endif %}            
+          {% endif %}
         unit_of_measurement: '%'
-        device_class: battery        
-        
+        device_class: battery
+
 binary_sensor:
   - platform: template
     sensors:
@@ -73,59 +73,59 @@ binary_sensor:
         friendly_name: Wohnzimmer
         device_class: window
         entity_id:
-          - binary_sensor.zigate_6e71_onoff               
-        value_template: "{{ is_state('binary_sensor.zigate_6e71_onoff', 'on') }}"       
+          - binary_sensor.zigate_6e71_onoff
+        value_template: "{{ is_state('binary_sensor.zigate_6e71_onoff', 'on') }}"
 
       fenster_schlafzimmer:
         friendly_name: Schlafzimmer
         device_class: window
         entity_id:
-          - binary_sensor.zigate_bd4c_onoff             
-        value_template: "{{ is_state('binary_sensor.zigate_bd4c_onoff', 'on') }}"       
-        
+          - binary_sensor.zigate_bd4c_onoff
+        value_template: "{{ is_state('binary_sensor.zigate_bd4c_onoff', 'on') }}"
+
       fenster_kueche:
         friendly_name: Küche
         device_class: window
         entity_id:
-          - binary_sensor.zigate_9619_onoff             
-        value_template: "{{ is_state('binary_sensor.zigate_9619_onoff', 'on') }}"       
-        
+          - binary_sensor.zigate_9619_onoff
+        value_template: "{{ is_state('binary_sensor.zigate_9619_onoff', 'on') }}"
+
       fenster_arbeitszimmer:
         friendly_name: Arbeitszimmer
         device_class: window
         entity_id:
-          - binary_sensor.zigate_3415_onoff          
-        value_template: "{{ is_state('binary_sensor.zigate_3415_onoff', 'on') }}"       
-        
+          - binary_sensor.zigate_3415_onoff
+        value_template: "{{ is_state('binary_sensor.zigate_3415_onoff', 'on') }}"
+
       fenster_sportzimmer:
         friendly_name: Sportzimmer
         device_class: window
         entity_id:
-          - binary_sensor.zigate_2d17_onoff             
-        value_template: "{{ is_state('binary_sensor.zigate_2d17_onoff', 'on') }}"       
-        
-automation:         
+          - binary_sensor.zigate_2d17_onoff
+        value_template: "{{ is_state('binary_sensor.zigate_2d17_onoff', 'on') }}"
+
+automation:
   - alias: "Benachrichtigung Fenster"
     initial_state: true
     trigger:
       - platform: state
-        entity_id: binary_sensor.zigate_6e71_onoff        
+        entity_id: binary_sensor.zigate_6e71_onoff
       - platform: state
-        entity_id: binary_sensor.zigate_bd4c_onoff   
-      - platform: state        
-        entity_id: binary_sensor.zigate_9619_onoff        
+        entity_id: binary_sensor.zigate_bd4c_onoff
       - platform: state
-        entity_id: binary_sensor.zigate_3415_onoff        
+        entity_id: binary_sensor.zigate_9619_onoff
       - platform: state
-        entity_id: binary_sensor.zigate_2d17_onoff                  
-    condition: 
+        entity_id: binary_sensor.zigate_3415_onoff
+      - platform: state
+        entity_id: binary_sensor.zigate_2d17_onoff
+    condition:
       - condition: state
         entity_id: 'media_player.kodi_wohnzimmer'
         state: 'playing'
       - condition: numeric_state
         entity_id: sensor.laufzeit_minuten
         above: 1
-    action:      
+    action:
       service: notify.kodi_wohnzimmer
       data_template:
         title: "Fenster"
@@ -133,7 +133,7 @@ automation:
           {% if trigger.to_state.state == 'on' %}
             {% set status = "geöffnet" %}
           {% else %}
-            {% set status = "geschlossen" %}             
+            {% set status = "geschlossen" %}
           {% endif %}
 
           {% if trigger.entity_id == "binary_sensor.zigate_6e71_onoff" %}
@@ -146,8 +146,8 @@ automation:
             {% set zimmer = "im Arbeitszimmer" %}
           {% elif trigger.entity_id == "binary_sensor.zigate_2d17_onoff" %}
             {% set zimmer = "im Sportzimmer" %}
-          {% endif %} 
-          
+          {% endif %}
+
           Das Fenster {{ zimmer }} wurde {{ status }}.
         data:
-          displaytime: 5000          
+          displaytime: 5000

@@ -2,9 +2,9 @@ input_boolean:
   heizung_ausgeschaltet_wohnzimmer:
     name: Heizung ausgeschaltet - Wohnzimmer
   heizung_ausgeschaltet_kueche:
-    name: Heizung ausgeschaltet - Küche    
+    name: Heizung ausgeschaltet - Küche
   heizung_ausgeschaltet_arbeitszimmer:
-    name: Heizung ausgeschaltet - Arbeitszimmer        
+    name: Heizung ausgeschaltet - Arbeitszimmer
 
 binary_sensor:
   - platform: template
@@ -29,22 +29,22 @@ binary_sensor:
         entity_id:
           - climate.kuche
         value_template: >
-          {{ states.climate.kuche.attributes.battery_low }}              
+          {{ states.climate.kuche.attributes.battery_low }}
       heizung_wohnzimmer_batterie:
         friendly_name: Wohnzimmer
         device_class: battery
         entity_id:
           - climate.wohnzimmer
         value_template: >
-          {{ states.climate.wohnzimmer.attributes.battery_low }}      
-          
-automation: 
+          {{ states.climate.wohnzimmer.attributes.battery_low }}
+
+automation:
   - alias: "Heizung Wohnzimmer - Fenster geöffnet"
     initial_state: true
     trigger:
       - platform: state
         entity_id: binary_sensor.zigate_6e71_onoff
-        to: 'on'   
+        to: 'on'
         for:
           seconds: 30
     condition:
@@ -54,7 +54,7 @@ automation:
     action:
       - service: climate.set_operation_mode
         data:
-          entity_id: climate.wohnzimmer           
+          entity_id: climate.wohnzimmer
           operation_mode: 'eco'
       - service: input_boolean.turn_on
         entity_id: input_boolean.heizung_ausgeschaltet_wohnzimmer
@@ -72,17 +72,17 @@ automation:
     action:
       - service: climate.set_operation_mode
         data:
-          entity_id: climate.wohnzimmer        
+          entity_id: climate.wohnzimmer
           operation_mode: 'heat'
       - service: input_boolean.turn_off
-        entity_id: input_boolean.heizung_ausgeschaltet_wohnzimmer          
-        
+        entity_id: input_boolean.heizung_ausgeschaltet_wohnzimmer
+
   - alias: "Heizung Wohnzimmer - Heizung eingeschaltet"
     initial_state: true
     trigger:
       - platform: state
         entity_id: climate.wohnzimmer
-        to: 'heat'   
+        to: 'heat'
     condition:
       - condition: state
         entity_id: binary_sensor.zigate_6e71_onoff
@@ -90,19 +90,19 @@ automation:
     action:
       - service: climate.set_operation_mode
         data:
-          entity_id: climate.wohnzimmer           
+          entity_id: climate.wohnzimmer
           operation_mode: 'eco'
       - service: input_boolean.turn_on
-        entity_id: input_boolean.heizung_ausgeschaltet_wohnzimmer          
-        
+        entity_id: input_boolean.heizung_ausgeschaltet_wohnzimmer
+
   - alias: "Heizung Küche - Fenster geöffnet"
     initial_state: true
     trigger:
       - platform: state
         entity_id: binary_sensor.zigate_9619_onoff
-        to: 'on'   
+        to: 'on'
         for:
-          seconds: 30        
+          seconds: 30
     condition:
       - condition: state
         entity_id: climate.kuche
@@ -110,7 +110,7 @@ automation:
     action:
       - service: climate.set_operation_mode
         data:
-          entity_id: climate.kuche           
+          entity_id: climate.kuche
           operation_mode: 'eco'
       - service: input_boolean.turn_on
         entity_id: input_boolean.heizung_ausgeschaltet_kueche
@@ -128,17 +128,17 @@ automation:
     action:
       - service: climate.set_operation_mode
         data:
-          entity_id: climate.kuche        
+          entity_id: climate.kuche
           operation_mode: 'heat'
       - service: input_boolean.turn_off
-        entity_id: input_boolean.heizung_ausgeschaltet_kueche      
-        
+        entity_id: input_boolean.heizung_ausgeschaltet_kueche
+
   - alias: "Heizung Küche - Heizung eingeschaltet"
     initial_state: true
     trigger:
       - platform: state
         entity_id: climate.kuche
-        to: 'heat'   
+        to: 'heat'
     condition:
       - condition: state
         entity_id: binary_sensor.zigate_9619_onoff
@@ -146,19 +146,19 @@ automation:
     action:
       - service: climate.set_operation_mode
         data:
-          entity_id: climate.kuche           
+          entity_id: climate.kuche
           operation_mode: 'eco'
       - service: input_boolean.turn_on
         entity_id: input_boolean.heizung_ausgeschaltet_kueche
-         
+
   - alias: "Heizung Arbeitszimmer - Fenster geöffnet"
     initial_state: true
     trigger:
       - platform: state
         entity_id: binary_sensor.zigate_3415_onoff
-        to: 'on'   
+        to: 'on'
         for:
-          seconds: 30        
+          seconds: 30
     condition:
       - condition: state
         entity_id: climate.arbeitszimmer
@@ -166,7 +166,7 @@ automation:
     action:
       - service: climate.set_operation_mode
         data:
-          entity_id: climate.arbeitszimmer           
+          entity_id: climate.arbeitszimmer
           operation_mode: 'eco'
       - service: input_boolean.turn_on
         entity_id: input_boolean.heizung_ausgeschaltet_arbeitszimmer
@@ -184,17 +184,17 @@ automation:
     action:
       - service: climate.set_operation_mode
         data:
-          entity_id: climate.arbeitszimmer        
+          entity_id: climate.arbeitszimmer
           operation_mode: 'heat'
       - service: input_boolean.turn_off
-        entity_id: input_boolean.heizung_ausgeschaltet_arbeitszimmer          
+        entity_id: input_boolean.heizung_ausgeschaltet_arbeitszimmer
 
   - alias: "Heizung Arbeitszimmer - Heizung eingeschaltet"
     initial_state: true
     trigger:
       - platform: state
         entity_id: climate.wohnzimmer
-        to: 'heat'   
+        to: 'heat'
     condition:
       - condition: state
         entity_id: binary_sensor.zigate_3415_onoff
@@ -202,17 +202,16 @@ automation:
     action:
       - service: climate.set_operation_mode
         data:
-          entity_id: climate.wohnzimmer           
+          entity_id: climate.wohnzimmer
           operation_mode: 'eco'
       - service: input_boolean.turn_on
-        entity_id: input_boolean.heizung_ausgeschaltet_arbeitszimmer          
+        entity_id: input_boolean.heizung_ausgeschaltet_arbeitszimmer
 
 homeassistant:
   customize:
     input_boolean.heizung_ausgeschaltet_wohnzimmer:
       hidden: true
     input_boolean.heizung_ausgeschaltet_kueche:
-      hidden: true      
+      hidden: true
     input_boolean.heizung_ausgeschaltet_arbeitszimmer:
-      hidden: true           
-              
+      hidden: true

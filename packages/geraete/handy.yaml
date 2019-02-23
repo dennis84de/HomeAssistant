@@ -17,14 +17,14 @@ sensor:
             {% if is_state('sensor.tasker_handystatus', 'incoming') %}
               Eingehender Anruf
             {% elif is_state('sensor.tasker_handystatus', 'outgoing') %}
-              Ausgehender Anruf     
+              Ausgehender Anruf
             {% elif is_state('sensor.tasker_handystatus', 'sms') %}
-              Ungelesene SMS            
+              Ungelesene SMS
             {% else %}
               Ruhezustand
-            {% endif %}            
+            {% endif %}
           {% endif %}
-        icon_template: > 
+        icon_template: >
           {% if states.sensor.tasker_handystatus == None %}
             mdi:phone
           {% else %}
@@ -36,15 +36,15 @@ sensor:
               mdi:message-alert
             {% else %}
               mdi:phone
-            {% endif %}            
+            {% endif %}
           {% endif %}
-        
+
   - platform: template
     sensors:
       handy_batterie:
         friendly_name: Handy
         entity_id:
-          - sensor.tasker_handy        
+          - sensor.tasker_handy
         value_template: >
           {% if states.sensor.tasker_handy == None %}
             0
@@ -53,8 +53,8 @@ sensor:
           {% endif %}
         device_class: battery
         unit_of_measurement: '%'
-        
-automation:     
+
+automation:
   - alias: 'Handy aktiv - Kodi pausieren'
     initial_state: true
     trigger:
@@ -63,17 +63,17 @@ automation:
         to: 'incoming'
       - platform: state
         entity_id: sensor.tasker_handystatus
-        to: 'outgoing' 
-    condition: 
+        to: 'outgoing'
+    condition:
       - condition: state
         entity_id: media_player.kodi_wohnzimmer
         state: 'playing'
       - condition: state
         entity_id: input_boolean.nicht_stoeren
-        state: 'off'        
+        state: 'off'
     action:
       - service: input_boolean.turn_on
-        entity_id: input_boolean.kodi_pausiert    
+        entity_id: input_boolean.kodi_pausiert
       - service: media_player.media_pause
         entity_id: media_player.kodi_wohnzimmer
       - service: notify.kodi_wohnzimmer
@@ -83,7 +83,7 @@ automation:
             {% if is_state("sensor.tasker_handystatus", "outgoing") %}
               {{ states.sensor.tasker_handystatus.attributes.name }} ({{ states.sensor.tasker_handystatus.attributes.number }}) wird angerufen.
             {% elif is_state("sensor.tasker_handystatus", "incoming") %}
-              Eingehender Anruf von {{ states.sensor.tasker_handystatus.attributes.name }} ({{ states.sensor.tasker_handystatus.attributes.number }}).                        
+              Eingehender Anruf von {{ states.sensor.tasker_handystatus.attributes.name }} ({{ states.sensor.tasker_handystatus.attributes.number }}).
             {% endif %}
           data:
             displaytime: 5000
@@ -94,8 +94,8 @@ automation:
     trigger:
       - platform: state
         entity_id: sensor.tasker_handystatus
-        to: 'idle'    
-    condition: 
+        to: 'idle'
+    condition:
       - condition: state
         entity_id: media_player.kodi_wohnzimmer
         state: 'paused'
@@ -104,7 +104,7 @@ automation:
         state: 'on'
       - condition: state
         entity_id: sensor.telefon
-        state: 'idle'    
+        state: 'idle'
     action:
       - service: input_boolean.turn_off
         entity_id: input_boolean.kodi_pausiert
@@ -117,7 +117,7 @@ automation:
           data:
             displaytime: 2000
             icon: "info"
-            
+
   - alias: 'Handy aktiv - Musik pausieren'
     initial_state: true
     trigger:
@@ -133,12 +133,12 @@ automation:
         state: 'on'
       - condition: state
         entity_id: input_boolean.nicht_stoeren
-        state: 'off'          
+        state: 'off'
     action:
       - service: input_boolean.turn_on
         entity_id: input_boolean.musik_pausiert
       - service: media_player.volume_mute
-        data:  
+        data:
           entity_id: media_player.kuche, media_player.badezimmer, media_player.wohnzimmer, media_player.schlafzimmer, media_player.arbeitszimmer, media_player.flur
           is_volume_muted: true
 
@@ -148,7 +148,7 @@ automation:
       - platform: state
         entity_id: sensor.tasker_handystatus
         to: 'idle'
-    condition: 
+    condition:
       - condition: state
         entity_id: input_boolean.musik_pausiert
         state: 'on'
@@ -159,26 +159,26 @@ automation:
       - service: input_boolean.turn_off
         entity_id: input_boolean.musik_pausiert
       - service: media_player.volume_mute
-        data:  
+        data:
           entity_id: media_player.kuche, media_player.badezimmer, media_player.wohnzimmer, media_player.schlafzimmer, media_player.arbeitszimmer, media_player.flur
-          is_volume_muted: false  
-          
+          is_volume_muted: false
+
   - alias: "Handy - Eingehender Anruf - TTS"
     initial_state: true
     trigger:
       - platform: state
         entity_id: sensor.tasker_handystatus
-        to: 'incoming'    
-    condition: 
+        to: 'incoming'
+    condition:
       - condition: state
         entity_id: input_boolean.nicht_stoeren
-        state: 'off'        
-    action: 
+        state: 'off'
+    action:
       service: !secret tts_service
-      data_template:           
+      data_template:
         message: >-
           Ein eingehender Anruf von {% if states.sensor.tasker_handystatus.attributes.name != '-' and states.sensor.tasker_handystatus.attributes.name.startswith('+') == False %}{{ states.sensor.tasker_handystatus.attributes.name }}{% else %}einer unbekannten Nummer{% endif %}.
-                    
+
   - alias: "Handy - Neue SMS - TTS"
     initial_state: true
     trigger:
@@ -188,43 +188,43 @@ automation:
     condition:
       - condition: state
         entity_id: input_boolean.nicht_stoeren
-        state: 'off'        
-    action: 
+        state: 'off'
+    action:
       service: !secret tts_service
       data_template:
 #        message: >-
 #          Eine neue SMS von {% if states.sensor.tasker_handystatus.attributes.name != '-' and states.sensor.tasker_handystatus.attributes.name.startswith('+') == False and states.sensor.tasker_handystatus.attributes.name.startswith('0') == False %} {{ states.sensor.tasker_handystatus.attributes.name }}{% else %}einer unbekannten Nummer{% endif %} ist eingegangen.
-#        message: >-          
+#        message: >-
 #          Eine neue SMS{% if states.sensor.tasker_handystatus.attributes.name != '-' or states.sensor.tasker_handystatus.attributes.name.startswith('+') or states.sensor.tasker_handystatus.attributes.name.startswith('0')%} von {{ states.sensor.tasker_handystatus.attributes.name }}{% endif %} ist eingegangen.
-#          {% if states.sensor.tasker_handystatus.attributes.text != '-'%}{{ states.sensor.tasker_handystatus.attributes.text }}{% endif %}        
+#          {% if states.sensor.tasker_handystatus.attributes.text != '-'%}{{ states.sensor.tasker_handystatus.attributes.text }}{% endif %}
         message: >-
           Eine neue SMS ist eingegangen.
-                      
+
   - alias: 'Handy - Neue SMS - Kodi'
     initial_state: true
     trigger:
       - platform: state
         entity_id: sensor.tasker_handystatus
         to: 'sms'
-    condition: 
+    condition:
       - condition: state
         entity_id: media_player.kodi_wohnzimmer
         state: 'playing'
       - condition: state
         entity_id: input_boolean.nicht_stoeren
-        state: 'off'        
+        state: 'off'
     action:
       - service: notify.kodi_wohnzimmer
         data:
           title: 'Handy'
-#          message: >-            
+#          message: >-
 #            {% set name = states.sensor.tasker_handystatus.attributes.name | string %}
 #
 #            {% if name.startswith('+') or name.startswith('0') or name == '-' %}
 #              Eine neue SMS ist eingegangen.
 #            {% else %}
-#              Eine neue SMS von {{ name }} ist eingegangen.    
-#            {% endif %}          
+#              Eine neue SMS von {{ name }} ist eingegangen.
+#            {% endif %}
           message: >-
             Eine neue SMS ist eingegangen.
           data:
@@ -238,7 +238,7 @@ automation:
 #            False
 #          {% else %}
 #            True
-#          {% endif %}        
+#          {% endif %}
 #      - delay: '00:00:03'
 #      - service: notify.kodi_wohnzimmer
 #        data:
@@ -247,49 +247,49 @@ automation:
 #            {{ states.sensor.tasker_handystatus.attributes.text }}
 #          data:
 #            displaytime: 6000
-#            icon: "info"            
-            
+#            icon: "info"
+
   - alias: "Handy - Batteriestand niedrig"
     initial_state: true
     trigger:
       - platform: state
-        entity_id: sensor.tasker_handy        
+        entity_id: sensor.tasker_handy
     condition:
       - condition: numeric_state
         entity_id: sensor.tasker_handy
         below: 16
       - condition: template
         value_template: '{{ state_attr("sensor.tasker_handy", "is_charging") == False }}'
-    action: 
+    action:
       - service: !secret tts_service
-        data_template:          
-          message: "Das Handy muss aufgeladen werden. Der Batteriestand beträgt {{ states.sensor.tasker_handy.state | int }} Prozent."  
+        data_template:
+          message: "Das Handy muss aufgeladen werden. Der Batteriestand beträgt {{ states.sensor.tasker_handy.state | int }} Prozent."
 
   - alias: "Handy - Aufgeladen"
     initial_state: true
     trigger:
       - platform: state
-        entity_id: sensor.tasker_handy        
+        entity_id: sensor.tasker_handy
     condition:
       - condition: numeric_state
         entity_id: sensor.tasker_handy
-        above: 99      
+        above: 99
       - condition: template
-        value_template: '{{ state_attr("sensor.tasker_handy", "is_charging") == True }}'          
-    action: 
+        value_template: '{{ state_attr("sensor.tasker_handy", "is_charging") == True }}'
+    action:
       - service: !secret tts_service
-        data_template:          
+        data_template:
           message: "Das Handy wurde vollständig aufgeladen."
-             
+
 homeassistant:
   customize:
-    sensor.tasker_handy:      
+    sensor.tasker_handy:
       friendly_name: Handy Tasker
       hidden: true
-      
-    sensor.tasker_handystatus:      
+
+    sensor.tasker_handystatus:
       friendly_name: Handy Status
-      hidden: true      
-      
+      hidden: true
+
     input_boolean.nicht_stoeren:
       icon: mdi:do-not-disturb

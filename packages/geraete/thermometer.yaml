@@ -4,42 +4,42 @@ sensor:
       xiaomi_thermometer_balkon_batterie:
         friendly_name: Thermometer Balkon
         entity_id:
-          - sensor.zigate_6ec3_temperature       
+          - sensor.zigate_6ec3_temperature
         value_template: >-
           {% if is_state('sensor.zigate_6ec3_temperature', 'unknown') %}
             0
           {% else %}
             {{ states.sensor.zigate_6ec3_temperature.attributes["battery_level"] | float}}
-          {% endif %}                 
+          {% endif %}
         unit_of_measurement: '%'
         device_class: battery
-        
+
       xiaomi_thermometer_sportzimmer_batterie:
         friendly_name: Thermometer Sportzimmer
         entity_id:
-          - sensor.zigate_bdde_temperature   
+          - sensor.zigate_bdde_temperature
         value_template: >-
           {% if is_state('sensor.zigate_bdde_temperature', 'unknown') %}
             0
           {% else %}
             {{ states.sensor.zigate_bdde_temperature.attributes["battery_level"] | float}}
-          {% endif %}            
+          {% endif %}
         unit_of_measurement: '%'
         device_class: battery
-        
+
       xiaomi_thermometer_kuehlschrank_batterie:
         friendly_name: Thermometer Kühlschrank
         entity_id:
-          - sensor.zigate_e15d_temperature   
+          - sensor.zigate_e15d_temperature
         value_template: >-
           {% if is_state('sensor.zigate_e15d_temperature', 'unknown') %}
             0
           {% else %}
             {{ states.sensor.zigate_e15d_temperature.attributes["battery_level"] | float}}
-          {% endif %}            
+          {% endif %}
         unit_of_measurement: '%'
         device_class: battery
-        
+
       xiaomi_thermometer_gefrierschrank_batterie:
         friendly_name: Thermometer Gefrierschrank
         entity_id:
@@ -49,79 +49,79 @@ sensor:
             0
           {% else %}
             {{ states.sensor.zigate_6440_temperature.attributes["battery_level"] | float}}
-          {% endif %}            
+          {% endif %}
         unit_of_measurement: '%'
         device_class: battery
-        
+
       xiaomi_thermometer_schlafzimmer_batterie:
         friendly_name: Thermometer Schlafzimmer
         entity_id:
-          - sensor.zigate_7c8f_temperature   
+          - sensor.zigate_7c8f_temperature
         value_template: >-
           {% if is_state('sensor.zigate_7c8f_temperature', 'unknown') %}
             0
           {% else %}
             {{ states.sensor.zigate_7c8f_temperature.attributes["battery_level"] | float}}
-          {% endif %}            
+          {% endif %}
         unit_of_measurement: '%'
-        device_class: battery        
-        
+        device_class: battery
+
       xiaomi_thermometer_arbeitszimmer_batterie:
         friendly_name: Thermometer Arbeitszimmer
         entity_id:
-          - sensor.zigate_d44e_temperature   
+          - sensor.zigate_d44e_temperature
         value_template: >-
           {% if is_state('sensor.zigate_d44e_temperature', 'unknown') %}
             0
           {% else %}
             {{ states.sensor.zigate_d44e_temperature.attributes["battery_level"] | float}}
-          {% endif %}            
+          {% endif %}
         unit_of_measurement: '%'
-        device_class: battery  
-        
+        device_class: battery
+
       xiaomi_thermometer_kueche_batterie:
         friendly_name: Thermometer Küche
         entity_id:
-          - sensor.zigate_eff1_temperature   
+          - sensor.zigate_eff1_temperature
         value_template: >-
           {% if is_state('sensor.zigate_eff1_temperature', 'unknown') %}
             0
           {% else %}
             {{ states.sensor.zigate_eff1_temperature.attributes["battery_level"] | float}}
-          {% endif %}            
+          {% endif %}
         unit_of_measurement: '%'
-        device_class: battery  
-        
+        device_class: battery
+
       xiaomi_thermometer_flur_batterie:
         friendly_name: Thermometer Flur
         entity_id:
-          - sensor.zigate_c4ed_temperature   
+          - sensor.zigate_c4ed_temperature
         value_template: >-
           {% if is_state('sensor.zigate_c4ed_temperature', 'unknown') %}
             0
           {% else %}
             {{ states.sensor.zigate_c4ed_temperature.attributes["battery_level"] | float}}
-          {% endif %}            
+          {% endif %}
         unit_of_measurement: '%'
-        device_class: battery  
-               
+        device_class: battery
+
       xiaomi_thermometer_parkplatz_batterie:
         friendly_name: Thermometer Parkplatz
         entity_id:
-          - sensor.zigate_f874_temperature   
+          - sensor.zigate_f874_temperature
         value_template: >-
           {% if is_state('sensor.zigate_f874_temperature', 'unknown') %}
             0
           {% else %}
             {{ states.sensor.zigate_f874_temperature.attributes["battery_level"] | float}}
-          {% endif %}            
+          {% endif %}
         unit_of_measurement: '%'
-        device_class: battery  
-        
+        device_class: battery
+
       thermometer_wohnzimmer:
         friendly_name: Wohnzimmer
         entity_id:
-          - sensor.aeotec_wohnzimmer_temperature          
+          - sensor.aeotec_wohnzimmer_temperature
         device_class: temperature
         unit_of_measurement: "°C"
         value_template: >-
@@ -130,11 +130,11 @@ sensor:
           {% else %}
             {{ states.sensor.aeotec_wohnzimmer_temperature.state }}
           {% endif %}
-        
+
       thermometer_schlafzimmer:
         friendly_name: Schlafzimmer
         entity_id:
-          - sensor.zigate_7c8f_temperature     
+          - sensor.zigate_7c8f_temperature
         device_class: temperature
         unit_of_measurement: "°C"
         value_template: >-
@@ -143,7 +143,7 @@ sensor:
           {% else %}
             {{ states.sensor.zigate_7c8f_temperature.state }}
           {% endif %}
-        
+
       thermometer_kueche:
         friendly_name: Küche
         entity_id:
@@ -156,11 +156,11 @@ sensor:
           {% else %}
             {{ states.sensor.zigate_eff1_temperature.state }}
           {% endif %}
-        
+
       thermometer_badezimmer:
         friendly_name: Badezimmer
         entity_id:
-          - sensor.fibaro_badezimmer_temperature       
+          - sensor.fibaro_badezimmer_temperature
         device_class: temperature
         unit_of_measurement: "°C"
         value_template: >-
@@ -169,7 +169,7 @@ sensor:
           {% else %}
             {{ states.sensor.fibaro_badezimmer_temperature.state }}
           {% endif %}
-        
+
       thermometer_flur:
         friendly_name: Flur
         entity_id:
@@ -182,11 +182,11 @@ sensor:
           {% else %}
             {{ states.sensor.zigate_c4ed_temperature.state }}
           {% endif %}
-        
+
       thermometer_arbeitszimmer:
         friendly_name: Arbeitszimmer
         entity_id:
-          - sensor.zigate_d44e_temperature     
+          - sensor.zigate_d44e_temperature
         device_class: temperature
         unit_of_measurement: "°C"
         value_template: >-
@@ -194,8 +194,8 @@ sensor:
             0
           {% else %}
             {{ states.sensor.zigate_d44e_temperature.state }}
-          {% endif %}  
-        
+          {% endif %}
+
       thermometer_sportzimmer:
         friendly_name: Sportzimmer
         entity_id:
@@ -207,4 +207,4 @@ sensor:
             0
           {% else %}
             {{ states.sensor.zigate_bdde_temperature.state }}
-          {% endif %}      
+          {% endif %}

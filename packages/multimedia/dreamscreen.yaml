@@ -1,5 +1,5 @@
 dreamscreen:
-         
+
 input_select:
   dreamscreen_modus:
     name: 'Dreamscreen'
@@ -8,8 +8,8 @@ input_select:
       - 'Musik'
       - 'Ambiente'
       - 'Aus'
-    icon: 'mdi:video-input-hdmi'   
-    
+    icon: 'mdi:video-input-hdmi'
+
   dreamscreen_ambiente:
     name: 'Ambiente'
     options:
@@ -24,13 +24,13 @@ input_select:
       - 'Enchanted Forest'
       - 'Aus'
     icon: 'mdi:filmstrip'
-      
-automation:                
+
+automation:
   - alias: "Dreamscreen - Modus ändern"
     initial_state: true
     trigger:
       - platform: state
-        entity_id: input_select.dreamscreen_modus    
+        entity_id: input_select.dreamscreen_modus
     action:
       - service: dreamscreen.set_mode
         data_template:
@@ -60,14 +60,14 @@ automation:
                 5:'July 4th',
                 6:'Holiday',
                 7:'Pop',
-                8:'Enchanted Forest'} 
+                8:'Enchanted Forest'}
               %}
 
-              {{ ambient[scene] }}   
+              {{ ambient[scene] }}
             {% else %}
               Aus
             {% endif %}
-      
+
   - alias: "Dreamscreen - Ambiente ändern"
     initial_state: true
     trigger:
@@ -95,11 +95,11 @@ automation:
               'July 4th':5,
               'Holiday':6,
               'Pop':7,
-              'Enchanted Forest':8} 
+              'Enchanted Forest':8}
             %}
 
             {{ ambient[state] | int }}
-                                    
+
 homeassistant:
   customize:
     dreamscreen.fernseher:

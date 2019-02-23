@@ -1,6 +1,6 @@
 switch:
   - platform: brematic
-    host: 192.168.2.57        
+    host: 192.168.2.57
     switches:
       sportzimmer_fernseher:
         friendly_name: Sportzimmer Fernseher
@@ -10,11 +10,11 @@ switch:
         friendly_name: Crosstrainer
         system_code: "00100"
         unit_code: "01000"
-        
+
 homeassistant:
   customize:
     switch.sportzimmer_fernseher:
       icon: mdi:television
       friendly_name: Fernseher
     switch.sportzimmer_crosstrainer:
-      icon: mdi:run-fast    
+      icon: mdi:run-fast

@@ -4,11 +4,11 @@ light:
       192.168.2.48:
         name: Badezimmerschrank
         mode: "grb"
-                        
-input_boolean:     
+
+input_boolean:
   bewegungsmelder_badezimmer_deaktiviert:
     name: Bewegungsmelder deaktiviert
-    initial: off 
+    initial: off
     icon: mdi:sync-off
 
 lightingsm:
@@ -17,12 +17,12 @@ lightingsm:
     sensor: binary_sensor.bewegungsmelder_badezimmer
     entity: light.badezimmerschrank
     sensor_type_duration: True
-    delay: 120     
+    delay: 120
     overrides:
       - binary_sensor.sonne_tagsueber
-      - input_boolean.bewegungsmelder_badezimmer_deaktiviert    
-      
+      - input_boolean.bewegungsmelder_badezimmer_deaktiviert
+
 homeassistant:
   customize:
-    light.badezimmerschrank:      
+    light.badezimmerschrank:
       icon: mdi:led-strip

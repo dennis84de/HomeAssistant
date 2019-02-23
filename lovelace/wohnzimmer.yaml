@@ -7,28 +7,28 @@ cards:
     entities:
       - entity: light.couch
       - entity: light.strahler
-      - entity: light.vitrine      
+      - entity: light.vitrine
       - entity: input_select.dreamscreen_modus
       - entity: input_select.dreamscreen_ambiente
-      
+
   - type: entities
     title: Multimedia
     show_header_toggle: false
     entities:
-      - entity: switch.play_wohnzimmer           
-      - entity: cover.kodi_untertitel 
+      - entity: switch.play_wohnzimmer
+      - entity: cover.kodi_untertitel
       - entity: switch.computer
       - entity: switch.watchtv_wohnzimmer
-      - entity: input_boolean.musik_ausschalten    
+      - entity: input_boolean.musik_ausschalten
       - entity: cover.fernseher_eingang
-      - entity: input_number.soundbar_volume 
+      - entity: input_number.soundbar_volume
       - type: custom:mini-media-player
         entity: media_player.kodi_wohnzimmer
         hide:
-          source: true  
+          source: true
           progress: true
           volume: true
-          
+
   - type: entities
     title: Geräte
     show_header_toggle: false
@@ -37,10 +37,10 @@ cards:
       - entity: switch.monitor
       - entity: switch.wohnzimmer_fernseher
       - entity: switch.wohnzimmer_soundbar
-      - entity: switch.wohnzimmer_radio    
-      - entity: input_boolean.computer_ausschalten    
-      - entity: switch.gaste_wlan       
-    
+      - entity: switch.wohnzimmer_radio
+      - entity: input_boolean.computer_ausschalten
+      - entity: switch.gaste_wlan
+
   - type: glance
     title: Heizung
     show_header_toggle: false
@@ -57,21 +57,21 @@ cards:
       - entity: sensor.aeotec_wohnzimmer_temperature
       - entity: sensor.aeotec_wohnzimmer_relative_humidity
       - entity: sensor.aeotec_wohnzimmer_luminance
-    
+
   - type: glance
     title: Sensoren
     show_header_toggle: false
     entities:
       - entity: binary_sensor.bewegungsmelder_wohnzimmer
       - entity: sensor.xiaomi_cube_status
-      - entity: sensor.xiaomi_vibration_wohnzimmer_status  
-    
+      - entity: sensor.xiaomi_vibration_wohnzimmer_status
+
   - type: entities
     title: Balkon
     show_header_toggle: false
     entities:
       - entity: binary_sensor.zigate_0b57_presence
-      - entity: sensor.zigate_0b57_luminosity    
-      - entity: switch.balkon_radio    
+      - entity: sensor.zigate_0b57_luminosity
+      - entity: switch.balkon_radio
       - entity: light.balkon_licht
-      - entity: input_boolean.bewegungsmelder_balkon_deaktiviert    
+      - entity: input_boolean.bewegungsmelder_balkon_deaktiviert

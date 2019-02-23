@@ -6,17 +6,17 @@ homeassistant:
       hidden: true
     binary_sensor.zigate_386c_onoff:
       hidden: true
-    
+
     zigate.30a6:
       hidden: true
     binary_sensor.zigate_30a6_onoff:
-      hidden: true    
-    
+      hidden: true
+
     zigate.cca5:
       hidden: true
     binary_sensor.zigate_cca5_onoff:
-      hidden: true   
-      
+      hidden: true
+
     zigate.eac1:
       friendly_name: 'Bewegungsmelder Arbeitszimmer'
     zigate.7904:
@@ -26,8 +26,8 @@ homeassistant:
     zigate.a230:
       friendly_name: 'Bewegungsmelder Küche'
     zigate.0b57:
-      friendly_name: 'Bewegungsmelder Balkon' 
-      
+      friendly_name: 'Bewegungsmelder Balkon'
+
     zigate.6e71:
       friendly_name: 'Fenster Wohnzimmer'
     zigate.bd4c:
@@ -38,26 +38,26 @@ homeassistant:
       friendly_name: 'Fenster Arbeitszimmer'
     zigate.2d17:
       friendly_name: 'Fenster Sportzimmer'
-      
+
     zigate.6ec3:
       friendly_name: 'Thermometer Balkon'
     zigate.bdde:
-      friendly_name: 'Thermometer Sportzimmer'   
+      friendly_name: 'Thermometer Sportzimmer'
     zigate.e15d:
-      friendly_name: 'Thermometer Kühlschrank' 
+      friendly_name: 'Thermometer Kühlschrank'
     zigate.6440:
       friendly_name: 'Thermometer Gefrierschrank'
     zigate.7c8f:
       friendly_name: 'Thermometer Schlafzimmer'
     zigate.d44e:
-      friendly_name: 'Thermometer Arbeitszimmer'      
+      friendly_name: 'Thermometer Arbeitszimmer'
     zigate.eff1:
       friendly_name: 'Thermometer Küche'
     zigate.c4ed:
-      friendly_name: 'Thermometer Flur'          
+      friendly_name: 'Thermometer Flur'
     zigate.f874:
-      friendly_name: 'Thermometer Parkplatz'    
-  
+      friendly_name: 'Thermometer Parkplatz'
+
     zigate.229b:
       friendly_name: 'Türsensor Flur'
     zigate.9bc8:
@@ -66,11 +66,11 @@ homeassistant:
       friendly_name: 'Ladegerät'
     zigate.55a3:
       friendly_name: 'Fernseher Wohnzimmer'
-      
+
     switch.zigate_55a3_3:
       friendly_name: Fernseher Wohnzimmer
       hidden: true
-      
+
     sensor.zigate_6ec3_temperature:
       friendly_name: Temperatur Balkon
     sensor.zigate_6ec3_humidity:
@@ -78,11 +78,11 @@ homeassistant:
       icon: mdi:water-percent
     sensor.zigate_6ec3_pressure:
       friendly_name: Luftdruck Balkon
-      icon: mdi:weather-windy      
+      icon: mdi:weather-windy
     sensor.zigate_6ec3_pressure2:
       friendly_name: Luftdruck Balkon
       hidden: true
-      
+
     sensor.zigate_bdde_temperature:
       friendly_name: Temperatur
     sensor.zigate_bdde_humidity:
@@ -90,23 +90,23 @@ homeassistant:
       icon: mdi:water-percent
     sensor.zigate_bdde_pressure:
       friendly_name: Luftdruck
-      icon: mdi:weather-windy         
+      icon: mdi:weather-windy
     sensor.zigate_bdde_pressure2:
       friendly_name: Luftdruck
-      hidden: true   
-      
+      hidden: true
+
     sensor.zigate_e15d_temperature:
-      friendly_name: Temperatur 
+      friendly_name: Temperatur
     sensor.zigate_e15d_humidity:
       friendly_name: Luftfeuchtigkeit
       icon: mdi:water-percent
     sensor.zigate_e15d_pressure:
-      friendly_name: Luftdruck 
-      icon: mdi:weather-windy         
+      friendly_name: Luftdruck
+      icon: mdi:weather-windy
     sensor.zigate_e15d_pressure2:
       friendly_name: Luftdruck Kühlschrank
-      hidden: true 
-      
+      hidden: true
+
     sensor.zigate_6440_temperature:
       friendly_name: Temperatur
     sensor.zigate_6440_humidity:
@@ -114,11 +114,11 @@ homeassistant:
       icon: mdi:water-percent
     sensor.zigate_6440_pressure:
       friendly_name: Luftdruck
-      icon: mdi:weather-windy         
+      icon: mdi:weather-windy
     sensor.zigate_6440_pressure2:
       friendly_name: Luftdruck Gefrierschrank
-      hidden: true 
-      
+      hidden: true
+
     sensor.zigate_7c8f_temperature:
       friendly_name: Temperatur
     sensor.zigate_7c8f_humidity:
@@ -126,47 +126,47 @@ homeassistant:
       icon: mdi:water-percent
     sensor.zigate_7c8f_pressure:
       friendly_name: Luftdruck
-      icon: mdi:weather-windy         
+      icon: mdi:weather-windy
     sensor.zigate_7c8f_pressure2:
       friendly_name: Luftdruck Schlafzimmer
-      hidden: true 
-      
+      hidden: true
+
     sensor.zigate_d44e_temperature:
-      friendly_name: Temperatur 
+      friendly_name: Temperatur
     sensor.zigate_d44e_humidity:
       friendly_name: Luftfeuchtigkeit
       icon: mdi:water-percent
     sensor.zigate_d44e_pressure:
       friendly_name: Luftdruck
-      icon: mdi:weather-windy         
+      icon: mdi:weather-windy
     sensor.zigate_d44e_pressure2:
       friendly_name: Luftdruck Arbeitszimmer
-      hidden: true 
-      
+      hidden: true
+
     sensor.zigate_eff1_temperature:
-      friendly_name: Temperatur 
+      friendly_name: Temperatur
     sensor.zigate_eff1_humidity:
       friendly_name: Luftfeuchtigkeit
       icon: mdi:water-percent
     sensor.zigate_eff1_pressure:
       friendly_name: Luftdruck
-      icon: mdi:weather-windy         
+      icon: mdi:weather-windy
     sensor.zigate_eff1_pressure2:
       friendly_name: Luftdruck Küche
-      hidden: true 
-      
+      hidden: true
+
     sensor.zigate_c4ed_temperature:
-      friendly_name: Temperatur 
+      friendly_name: Temperatur
     sensor.zigate_c4ed_humidity:
       friendly_name: Luftfeuchtigkeit
       icon: mdi:water-percent
     sensor.zigate_c4ed_pressure:
       friendly_name: Luftdruck
-      icon: mdi:weather-windy         
+      icon: mdi:weather-windy
     sensor.zigate_c4ed_pressure2:
       friendly_name: Luftdruck Flur
-      hidden: true       
-      
+      hidden: true
+
     sensor.zigate_f874_temperature:
       friendly_name: Temperatur Parkplatz
     sensor.zigate_f874_humidity:
@@ -174,11 +174,11 @@ homeassistant:
       icon: mdi:water-percent
     sensor.zigate_f874_pressure:
       friendly_name: Luftdruck Parkplatz
-      icon: mdi:weather-windy         
+      icon: mdi:weather-windy
     sensor.zigate_f874_pressure2:
       friendly_name: Luftdruck Parkplatz
-      hidden: true     
-      
+      hidden: true
+
     binary_sensor.zigate_eac1_presence:
       friendly_name: 'Bewegungsmelder'
     binary_sensor.zigate_7904_presence:
@@ -188,27 +188,27 @@ homeassistant:
     binary_sensor.zigate_a230_presence:
       friendly_name: 'Bewegungsmelder'
     binary_sensor.zigate_0b57_presence:
-      friendly_name: 'Bewegungsmelder'                
-                     
+      friendly_name: 'Bewegungsmelder'
+
     binary_sensor.zigate_229b_onoff:
       friendly_name: 'Türsensor'
       device_class: door
     binary_sensor.zigate_9bc8_onoff:
       friendly_name: 'Türklingel'
-      device_class: sound      
+      device_class: sound
 
     sensor.zigate_eac1_luminosity:
       device_class: illuminance
       friendly_name: 'Helligkeit'
     sensor.zigate_be83_luminosity:
       device_class: illuminance
-      friendly_name: 'Helligkeit'      
+      friendly_name: 'Helligkeit'
     sensor.zigate_a230_luminosity:
       device_class: illuminance
-      friendly_name: 'Helligkeit' 
+      friendly_name: 'Helligkeit'
     sensor.zigate_0b57_luminosity:
       device_class: illuminance
-      friendly_name: 'Helligkeit'      
+      friendly_name: 'Helligkeit'
 
     binary_sensor.zigate_6e71_onoff:
       friendly_name: 'Fenster Wohnzimmer'
@@ -224,8 +224,8 @@ homeassistant:
       device_class: window
     binary_sensor.zigate_2d17_onoff:
       friendly_name: 'Fenster Sportzimmer'
-      device_class: window      
-      
+      device_class: window
+
     switch.zigate_cda0_3:
       friendly_name: Ladegerät
-      icon: mdi:battery-charging-60  
+      icon: mdi:battery-charging-60

@@ -2,15 +2,15 @@ input_boolean:
   timer_schlafzimmer_aktiv:
     name: Sleeptimer aktiv
     initial: off
-    icon: mdi:timer-off  
+    icon: mdi:timer-off
 
   schlafen_einschalten_aktiv:
     name: "Schlafen einschalten aktiv"
-    
+
   schlafen_aktiv:
     name: Schlafen
-    initial: off    
-    
+    initial: off
+
 input_select:
   timer_schlafzimmer_dauer:
     name: Timer Schlafzimmer
@@ -23,17 +23,17 @@ input_select:
       - 120
     initial: 70
     icon: mdi:clock-end
- 
+
 timer:
   sleeptimer:
     name: Sleeptimer
     icon: mdi:filmstrip-off
-    duration: 4200  
+    duration: 4200
 
   schlafen_einschalten:
-    name: "Schlafen einschalten"    
+    name: "Schlafen einschalten"
     duration: 7
-    
+
 binary_sensor:
   - platform: template
     sensors:
@@ -43,20 +43,20 @@ binary_sensor:
           - input_boolean.schlafen_aktiv
         value_template: >
           {{ is_state('input_boolean.schlafen_aktiv', 'on') }}
-          
+
 sensor:
   - platform: template
     sensors:
       timer_schlafzimmer_zeit:
         friendly_name: Fernseher ausschalten
         icon_template: mdi:filmstrip-off
-        entity_id: 
+        entity_id:
           - automation.sleeptimer_starten
           - input_boolean.timer_schlafzimmer_aktiv
           - input_select.timer_schlafzimmer_dauer
           - sensor.time
         unit_of_measurement: 'Minuten'
-        value_template: >-     
+        value_template: >-
             {%- if is_state('input_boolean.timer_schlafzimmer_aktiv', 'on') %}
               {% set now = as_timestamp(now()) | int %}
               {% set last = as_timestamp(states.automation.sleeptimer_starten.attributes.last_triggered) | int %}
@@ -70,22 +70,22 @@ sensor:
               {% endif %}
             {% else %}
                 -
-            {%- endif %}     
-            
+            {%- endif %}
+
       schlafen_letzte_uhrzeit:
         friendly_name: Letzte Uhrzeit
-        entity_id: 
-          - script.goto_bed  
+        entity_id:
+          - script.goto_bed
         value_template: >
           {% if states.script.goto_bed.attributes.last_triggered == None %}
             -
           {% else %}
-            {{ as_timestamp(states.script.goto_bed.attributes.last_triggered) | timestamp_custom('%H:%M') }}   
+            {{ as_timestamp(states.script.goto_bed.attributes.last_triggered) | timestamp_custom('%H:%M') }}
           {% endif %}
-        icon_template: > 
+        icon_template: >
           mdi:av-timer
         unit_of_measurement: 'Uhr'
-      
+
 script:
   goto_bed:
     alias: Schlafen gehen
@@ -94,13 +94,13 @@ script:
         data_template:
           message: "Alle Geräte werden ausgeschaltet. Gute Nacht."
       - service: input_boolean.turn_on
-        entity_id: input_boolean.schlafen_aktiv          
+        entity_id: input_boolean.schlafen_aktiv
       - service: light.turn_on
         entity_id: light.bett
       - service: switch.turn_on
         entity_id: switch.watchtv_schlafzimmer
       - service: switch.turn_off
-        entity_id: switch.multimedia, switch.wohnzimmer_radio, switch.balkon_radio, switch.flur_radio, switch.kuche_radio, switch.schlafzimmer_radio, switch.arbeitszimmer_radio      
+        entity_id: switch.multimedia, switch.wohnzimmer_radio, switch.balkon_radio, switch.flur_radio, switch.kuche_radio, switch.schlafzimmer_radio, switch.arbeitszimmer_radio
       - service: switch.turn_off
         entity_id: switch.watchtv_wohnzimmer, switch.monitor
       - service: input_boolean.turn_on
@@ -115,18 +115,18 @@ script:
         entity_id: light.sideboard, light.schrank
       - condition: state
         entity_id: input_boolean.computer_ausschalten
-        state: 'on'       
+        state: 'on'
       - service: switch.turn_off
-        entity_id: switch.pc   
-        
+        entity_id: switch.pc
+
   sleeptimer_turn_off_tv:
     alias: Sleeptimer aktivieren
     sequence:
       - condition: state
         entity_id: input_boolean.timer_schlafzimmer_aktiv
         state: 'on'
-      - service: script.watchtv_schlafzimmer_off    
-    
+      - service: script.watchtv_schlafzimmer_off
+
 automation:
   - alias: "Schlafen gehen - Countdown starten"
     initial_state: true
@@ -136,21 +136,21 @@ automation:
         event_data:
           entity_id: binary_sensor.switch_158d0002c8c48b
           click_type: long_click_press
-    condition: 
+    condition:
       - condition: state
         entity_id: binary_sensor.schlafen_aktiv
-        state: 'off'  
+        state: 'off'
       - condition: state
-        entity_id: timer.schlafen_einschalten   
-        state: 'idle'          
-    action:   
+        entity_id: timer.schlafen_einschalten
+        state: 'idle'
+    action:
       - service: !secret tts_service
-        data_template:    
+        data_template:
           echo: "wohnzimmer"
           message: "Alle Geräte werden gleich ausgeschaltet."
       - delay: '00:00:02'
       - service: timer.start
-        entity_id: timer.schlafen_einschalten        
+        entity_id: timer.schlafen_einschalten
       - service: media_player.play_media
         data_template:
           entity_id:
@@ -158,7 +158,7 @@ automation:
           media_content_id: >-
             http://192.168.2.70:8123/local/countdown/countdown_5.mp3
           media_content_type: music
-        
+
   - alias: "Schlafen gehen - Countdown abbrechen"
     initial_state: true
     trigger:
@@ -169,24 +169,24 @@ automation:
           click_type: single
     condition:
       - condition: state
-        entity_id: timer.schlafen_einschalten   
-        state: 'active'      
-    action:    
+        entity_id: timer.schlafen_einschalten
+        state: 'active'
+    action:
       - service: media_player.media_pause
-        entity_id: media_player.tts      
+        entity_id: media_player.tts
       - service: !secret tts_service
-        data_template:    
+        data_template:
           echo: "wohnzimmer"
           message: "Der Vorgang wurde abgebrochen."
       - service: timer.cancel
         entity_id: timer.schlafen_einschalten
       - service: media_player.clear_playlist
-        entity_id: media_player.tts           
-      
+        entity_id: media_player.tts
+
   - alias: "Schlafen gehen - Einschalten"
     initial_state: true
-    trigger:      
-      - platform: event        
+    trigger:
+      - platform: event
         event_type: timer.finished
         event_data:
           entity_id: timer.schlafen_einschalten
@@ -194,9 +194,9 @@ automation:
       - service: !secret tts_service
         data_template:
           echo: "wohnzimmer"
-          message: "Alle Geräte werden jetzt ausgeschaltet. Gute Nacht."        
+          message: "Alle Geräte werden jetzt ausgeschaltet. Gute Nacht."
       - service: script.goto_bed
-      
+
   - alias: 'Sleeptimer starten'
     initial_state: true
     trigger:
@@ -206,7 +206,7 @@ automation:
     action:
       - service: timer.start
         entity_id: timer.sleeptimer
-        data_template: 
+        data_template:
           duration: >
             {{ states.input_select.timer_schlafzimmer_dauer.state  | int * 60 | int }}
 
@@ -216,7 +216,7 @@ automation:
       - platform: numeric_state
         entity_id: sensor.timer_schlafzimmer_zeit
         below: 6
-    condition: 
+    condition:
       - condition: state
         entity_id: media_player.kodi_schlafzimmer
         state: 'playing'
@@ -226,7 +226,7 @@ automation:
           title: 'Sleeptimer'
           message: >-
             {% set restzeit = states.sensor.timer_schlafzimmer_zeit.state | default(0) | int %}
-            
+
             {% if restzeit > 1 %}
               Der Sleeptimer endet in {{ restzeit }} Minuten.
             {% else %}
@@ -244,12 +244,12 @@ automation:
     action:
       - service: timer.start
         entity_id: timer.sleeptimer
-        data_template: 
+        data_template:
           duration: >
-            {{ states.input_select.timer_schlafzimmer_dauer.state  | int * 60 | int }} 
+            {{ states.input_select.timer_schlafzimmer_dauer.state  | int * 60 | int }}
       - service: input_boolean.turn_on
         entity_id: input_boolean.timer_schlafzimmer_aktiv
-        
+
   - alias: 'Sleeptimer aktiviert'
     initial_state: true
     trigger:
@@ -271,49 +271,49 @@ automation:
     action:
       - service: timer.cancel
         entity_id: timer.sleeptimer
-                
+
   - alias: "Schlafzimmer - Kodi gestartet"
     initial_state: true
     trigger:
       platform: state
       entity_id: media_player.kodi_schlafzimmer
-      to: 'playing'      
+      to: 'playing'
     condition:
       - condition: state
         entity_id: timer.sleeptimer
-        state: 'active'      
+        state: 'active'
     action:
       - service: light.turn_off
-        entity_id: light.bett, light.sideboard, light.badezimmerschrank, light.schreibtisch, light.regal, light.arbeitszimmer_lampe 
-        
+        entity_id: light.bett, light.sideboard, light.badezimmerschrank, light.schreibtisch, light.regal, light.arbeitszimmer_lampe
+
   - alias: "Schlafzimmer - Kodi pausiert"
     initial_state: true
     trigger:
       platform: state
       entity_id: binary_sensor.zigate_be83_presence
       to: 'on'
-    condition: 
+    condition:
       condition: and
       conditions:
         - condition: state
           entity_id: media_player.kodi_schlafzimmer
-          state: 'playing'    
+          state: 'playing'
         - condition: state
           entity_id: timer.sleeptimer
           state: 'active'
     action:
       - service: media_player.media_pause
-        entity_id: media_player.kodi_schlafzimmer                
-        
+        entity_id: media_player.kodi_schlafzimmer
+
 homeassistant:
   customize:
     script.goto_bed:
       icon: mdi:hotel
       can_cancel: false
-      
+
     timer.sleeptimer:
       hidden: true
     input_boolean.schlafen_aktiv:
-      hidden: true    
+      hidden: true
     binary_sensor.schlafen_aktiv:
       icon: mdi:sleep

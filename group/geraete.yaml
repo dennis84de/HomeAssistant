@@ -8,12 +8,12 @@ alles_ausschalten:
     - switch.flur_radio
     - switch.badezimmer_radio
     - switch.kuche_radio
-    - switch.schlafzimmer_radio   
-    - switch.arbeitszimmer_radio    
+    - switch.schlafzimmer_radio
+    - switch.arbeitszimmer_radio
     - switch.multimedia
     - switch.computer
     - switch.watchtv_wohnzimmer
-    - switch.watchtv_schlafzimmer 
+    - switch.watchtv_schlafzimmer
     - light.couch
     - light.strahler
     - light.vitrine
@@ -22,6 +22,6 @@ alles_ausschalten:
     - light.sideboard
     - light.schrank
     - light.badezimmerschrank
-    - light.bett 
+    - light.bett
     - light.regal
     - light.balkon
