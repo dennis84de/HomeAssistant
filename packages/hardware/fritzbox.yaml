@@ -112,7 +112,7 @@ automation:
       data_template:
         echo: "wohnzimmer"
         message: >-
-          Das Gäste-Wlan wurde eingeschaltet. Der Name lautet "{{ state_attr('switch.gaste_wlan', 'SSID') }}". Das Passwort ist "{{ state_attr('switch.gaste_wlan', 'Password') }}".
+          Der Gastzugang wurde eingeschaltet. Der Name lautet "{{ state_attr('switch.gaste_wlan', 'SSID') }}". Das Passwort ist "{{ state_attr('switch.gaste_wlan', 'Password') }}".
 
   - alias: "Gäste-Wlan ausgeschaltet - TTS"
     initial_state: true
@@ -125,7 +125,7 @@ automation:
       data_template:
         echo: "wohnzimmer"
         message: >-
-          Das Gäste-Wlan wurde ausgeschaltet.
+          Der Gastzugang wurde ausgeschaltet.
 
 
   - alias: "Zu Hause - Standort aktualisieren"
