@@ -191,7 +191,7 @@ homeassistant:
     device_tracker.tplinkschlafzimmerfernseher:
       icon: mdi:power-socket-eu
       friendly_name: Schlafzimmer Fernseher
-    device_tracker.tplinkrepeater:
+    device_tracker.fritzrepeater:
       icon: mdi:wifi
       friendly_name: Repeater
 

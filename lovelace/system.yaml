@@ -113,6 +113,8 @@ cards:
     show_header_toggle: false
     entities:
       - entity: switch.waschmaschine
+        tap_action:
+           action: toggle
       - entity: sensor.waschmaschine_status
         name: Status
       - entity: sensor.waschmaschine_verbrauch
@@ -123,6 +125,8 @@ cards:
     show_header_toggle: false
     entities:
       - entity: switch.trockner
+        tap_action:
+           action: toggle
       - entity: sensor.trockner_status
         name: Status
       - entity: sensor.trockner_verbrauch

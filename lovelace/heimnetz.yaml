@@ -9,7 +9,7 @@ cards:
       - entity: device_tracker.pihomeassistant
       - entity: device_tracker.diskstation
       - entity: device_tracker.netzwerkdj
-      - entity: device_tracker.tplinkrepeater
+      - entity: device_tracker.fritzrepeater
 
   - type: entities
     title: Multimedia
