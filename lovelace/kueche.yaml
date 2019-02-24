@@ -13,6 +13,7 @@ cards:
     show_header_toggle: false
     entities:
       - entity: light.regal
+      - entity: light.kuchenschrank
 
   - type: glance
     title: Thermometer

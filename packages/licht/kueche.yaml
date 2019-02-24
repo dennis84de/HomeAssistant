@@ -8,11 +8,24 @@ light:
 #        name: Küchenschränke
 #        mode: "w"
 
+  - platform: switch
+    name: Küchenschrank
+    entity_id: switch.kuechenschrank
+
 input_boolean:
   bewegungsmelder_kueche_deaktiviert:
     name: Bewegungsmelder deaktiviert
     initial: off
     icon: mdi:sync-off
+
+switch:
+  - platform: brematic
+    host: 192.168.2.57
+    switches:
+      kuechenschrank:
+        friendly_name: Küchenschrank
+        system_code: "11000"
+        unit_code: "10000"
 
 lightingsm:
   bewegung_kueche:
