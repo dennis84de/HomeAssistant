@@ -68,7 +68,43 @@ proximity:
 shell_command:
   send_position: "curl -X POST '{{ url }}?lat={{ states.device_tracker.netzwerkdj.attributes.latitude }}&lon={{ states.device_tracker.netzwerkdj.attributes.longitude }}&timestamp={{ as_timestamp(now()) | int }}'"
 
+switch:
+  - platform: fritzbox_guestwifi
+    name: "Gäste Wlan"
+    wlan_password: !secret fritzbox_guest_password
+    host: !secret fritzbox_host
+    username: !secret fritzbox_username
+    password: !secret fritzbox_password
+    interface: 2
+
 automation:
+  - alias: "Gäste-Wlan eingeschaltet - TTS"
+    initial_state: true
+    trigger:
+      - platform: state
+        entity_id: switch.gaste_wlan
+        to: 'on'
+    action:
+      service: !secret tts_service
+      data_template:
+        echo: "wohnzimmer"
+        message: >-
+          Das Gäste-Wlan wurde eingeschaltet. Der Name lautet "{{ state_attr('switch.gaste_wlan', 'SSID') }}". Das Passwort ist "{{ state_attr('switch.gaste_wlan', 'Password') }}".
+
+  - alias: "Gäste-Wlan ausgeschaltet - TTS"
+    initial_state: true
+    trigger:
+      - platform: state
+        entity_id: switch.gaste_wlan
+        to: 'off'
+    action:
+      service: !secret tts_service
+      data_template:
+        echo: "wohnzimmer"
+        message: >-
+          Das Gäste-Wlan wurde ausgeschaltet.
+
+
   - alias: "Zu Hause - Standort aktualisieren"
     initial_state: true
     trigger:
@@ -84,14 +120,6 @@ automation:
           dev_id: handygps
           location_name: 'home'
           gps: ["{{ states.device_tracker.netzwerkdj.attributes.latitude }}", "{{ states.device_tracker.netzwerkdj.attributes.longitude }}"]
-
-switch:
-  - platform: fritzbox_guestwifi
-    name: "Gäste Wlan"
-    host: !secret fritzbox_host
-    username: !secret fritzbox_username
-    password: !secret fritzbox_password
-    interface: 2
 
 homeassistant:
   customize:

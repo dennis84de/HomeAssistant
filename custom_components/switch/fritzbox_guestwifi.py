@@ -19,6 +19,8 @@ REQUIREMENTS = ['fritzconnection==0.6.5']
 
 _LOGGER = logging.getLogger(__name__)
 
+CONF_WLAN_PASSWORD = 'wlan_password'
+
 DEFAULT_NAME = 'Guest Wifi'
 DEFAULT_HOST = '169.254.1.1'
 DEFAULT_PORT = 49000
@@ -29,6 +31,7 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
     vol.Optional(CONF_HOST, default=DEFAULT_HOST): cv.string,
     vol.Optional(CONF_PORT, default=DEFAULT_PORT): cv.positive_int,
     vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
+    vol.Optional(CONF_WLAN_PASSWORD): cv.string,
     vol.Optional(CONF_USERNAME): cv.string,
     vol.Required(CONF_PASSWORD): cv.string,
     vol.Optional('interface', DEFAULT_INTERFACE): cv.positive_int
@@ -43,6 +46,7 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
     name = config.get(CONF_NAME)
     username = config.get(CONF_USERNAME)
     password = config.get(CONF_PASSWORD)
+    wlan_password = config.get(CONF_WLAN_PASSWORD)
     interface = config.get('interface')
 
     conn = fc.FritzConnection(
@@ -51,16 +55,17 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
         user=username,
         password=password
     )
-    add_entities([FritzBoxWifiSwitch(conn, name, interface)], True)
+    add_entities([FritzBoxWifiSwitch(conn, name, interface, wlan_password)], True)
 
 
 class FritzBoxWifiSwitch(SwitchDevice):
     """The switch class for Fritzbox WiFi switches."""
 
-    def __init__(self, conn, name, interface):
+    def __init__(self, conn, name, interface, wlan_password):
         """Init individual Fritzbox WiFi switches."""
         self._conn = conn
         self._name = name
+        self._wlanPassword = wlan_password
         self._interface = interface
         self._state = None
         self._available = True
@@ -74,7 +79,7 @@ class FritzBoxWifiSwitch(SwitchDevice):
     @property
     def device_state_attributes(self):
         """Return the state attributes of the device."""
-        return {'SSID': self._info.get('NewSSID')}        
+        return {'SSID': self._info.get('NewSSID'), 'Password': self._wlanPassword}        
 
     @property
     def is_on(self):
