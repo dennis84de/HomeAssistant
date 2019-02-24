@@ -181,6 +181,9 @@ automation:
         entity_id: binary_sensor.zu_hause
         state: 'off'
       - condition: state
+        entity_id: alarm_control_panel.alarm
+        state: 'armed_away'
+      - condition: state
         entity_id: 'vacuum.xiaomi_vacuum_cleaner'
         state: 'docked'
     action:
@@ -226,6 +229,9 @@ automation:
       - condition: state
         entity_id: binary_sensor.zu_hause
         state: 'off'
+      - condition: state
+        entity_id: alarm_control_panel.alarm
+        state: 'armed_away'
     action:
       service: notify.telegram
       data_template:
