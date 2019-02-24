@@ -30,8 +30,8 @@ switch:
         unit_code: "10000"
 
 script:
-  tts_alexa:
-    alias: "Benachrichtigung Alexa"
+  alexa_tts:
+    alias: "Alexa TTS"
     sequence:
       - condition: and
         conditions:
@@ -64,7 +64,7 @@ script:
             {{ message }}
 
 automation:
-  - alias: "Lautstärke Sprachausgabe ändern"
+  - alias: "Lautstärke Multimedia ändern"
     initial_state: on
     trigger:
       - platform: state
@@ -80,7 +80,7 @@ automation:
           volume_level: >-
             {{ states.input_number.sprache_lautstaerke.state | int / 100 }}
 
-  - alias: "Lautstärke Sprachausgabe einstellen"
+  - alias: "Lautstärke Multimedia einstellen"
     initial_state: on
     trigger:
       - platform: homeassistant
@@ -96,7 +96,7 @@ automation:
           value: >-
             {{ states.media_player.multimedia.attributes.volume_level * 100 | int }}
 
-  - alias: 'Zu Hause - Sprachausgabe einschalten'
+  - alias: 'Zu Hause - Multimedia einschalten'
     initial_state: true
     trigger:
       platform: state
