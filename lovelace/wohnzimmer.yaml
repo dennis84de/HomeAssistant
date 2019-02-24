@@ -39,7 +39,6 @@ cards:
       - entity: switch.wohnzimmer_soundbar
       - entity: switch.wohnzimmer_radio
       - entity: input_boolean.computer_ausschalten
-      - entity: switch.gaste_wlan
 
   - type: glance
     title: Heizung

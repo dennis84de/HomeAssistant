@@ -108,16 +108,25 @@ cards:
         - entity: switch.arbeitszimmer_radio
         - entity: switch.balkon_radio
 
-  - type: entities
-    title: Keller
+  - type: glance
+    title: Waschmaschine
     show_header_toggle: false
     entities:
       - entity: switch.waschmaschine
       - entity: sensor.waschmaschine_status
+        name: Status
       - entity: sensor.waschmaschine_verbrauch
+        name: Verbrauch
+
+  - type: glance
+    title: Trockner
+    show_header_toggle: false
+    entities:
       - entity: switch.trockner
       - entity: sensor.trockner_status
+        name: Status
       - entity: sensor.trockner_verbrauch
+        name: Verbrauch
 
   - type: glance
     title: Nextcloud
@@ -125,6 +134,18 @@ cards:
     entities:
       - entity: binary_sensor.nextcloud
       - entity: sensor.nextcloud_zertifikat
+
+  - type: glance
+    title: Gäste Wlan
+    show_header_toggle: false
+    entities:
+      - entity: switch.gaste_wlan
+        tap_action:
+           action: toggle
+      - entity: sensor.gaeste_wlan_ssid
+        name: SSID
+      - entity: sensor.gaeste_wlan_password
+        name: Passwort
 
   - type: entities
     title: Pi-hole

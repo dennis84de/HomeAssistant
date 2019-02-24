@@ -118,12 +118,6 @@ cards:
       - entity: sensor.thermometer_arbeitszimmer
 #      - entity: sensor.thermometer_sportzimmer
 
-  - type: entities
-    title: Fensterkontakte
-    show_header_toggle: false
-    entities:
-      - entity: binary_sensor.fenster_wohnzimmer
-
 #  - type: custom:todoist-list
 #    title: Einkaufsliste
 #    show_header_toggle: false

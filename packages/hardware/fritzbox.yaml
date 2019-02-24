@@ -43,6 +43,29 @@ sensor:
     display_zone: hide
     scan_interval: 60
 
+  - platform: template
+    sensors:
+      gaeste_wlan_ssid:
+        friendly_name: "Gäste-Wlan SSID"
+        value_template: >-
+          {{ state_attr('switch.gaste_wlan', 'SSID')}}
+        icon_template: >-
+            {% if is_state('switch.gaste_wlan', 'on') == True %}
+              mdi:wifi
+            {% else %}
+              mdi:wifi-off
+            {% endif %}
+      gaeste_wlan_password:
+        friendly_name: "Gäste-Wlan Passwort"
+        value_template: >-
+          {{ state_attr('switch.gaste_wlan', 'Password')}}
+        icon_template: >-
+            {% if is_state('switch.gaste_wlan', 'on') == True %}
+              mdi:wifi-strength-4-lock
+            {% else %}
+              mdi:wifi-strength-lock-outline
+            {% endif %}
+
 binary_sensor:
   - platform: template
     sensors:
