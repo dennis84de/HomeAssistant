@@ -166,9 +166,13 @@ script:
     - service: media_player.media_stop
       entity_id: media_player.kodi_wohnzimmer
     - wait_template: "{{is_state('media_player.kodi_wohnzimmer', 'idle')}}"
+      timeout: '00:00:05'
+      continue_on_timeout: 'true'
     - service: media_player.turn_off
       entity_id: media_player.kodi_wohnzimmer, media_player.soundbar
     - wait_template: "{{is_state('media_player.kodi_wohnzimmer', 'off')}}"
+      timeout: '00:00:05'
+      continue_on_timeout: 'true'
     - service: switch.turn_off
       entity_id: switch.wohnzimmer_fernseher
     - service: input_select.select_option
