@@ -7,10 +7,12 @@ cards:
     entities:
       - entity: sensor.darksky_summary
       - entity: sensor.darksky_hourly_summary
-      - entity: sensor.darksky_temperature
-      - entity: sensor.darksky_apparent_temperature
-      - entity: sensor.darksky_daytime_high_temperature_0
-      - entity: sensor.darksky_overnight_low_temperature_0
+      - type: custom:fold-entity-row
+        head: sensor.darksky_temperature
+        items:
+          - sensor.darksky_apparent_temperature
+          - sensor.darksky_daytime_high_temperature_0
+          - sensor.darksky_overnight_low_temperature_0
       - entity: sensor.wetterwarnungen_current_warning_level
       - entity: sensor.wetterlage
 
