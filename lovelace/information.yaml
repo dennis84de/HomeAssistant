@@ -118,6 +118,21 @@ cards:
       - entity: sensor.thermometer_arbeitszimmer
 #      - entity: sensor.thermometer_sportzimmer
 
+  - type: entities
+    title: Serien
+    show_header_toggle: false
+    entities:
+      - entity: sensor.serien_episode_0
+      - entity: sensor.serien_episode_1
+      - entity: sensor.serien_episode_2
+      - entity: sensor.serien_episode_3
+      - entity: sensor.serien_episode_4
+      - entity: sensor.serien_episode_5
+      - entity: sensor.serien_episode_6
+      - entity: sensor.serien_episode_7
+      - entity: sensor.serien_episode_8
+      - entity: sensor.serien_episode_9
+
 #  - type: custom:todoist-list
 #    title: Einkaufsliste
 #    show_header_toggle: false

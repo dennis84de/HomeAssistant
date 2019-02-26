@@ -12,6 +12,11 @@ google:
   client_secret: !secret google_apikey
 
 sensor:
+  - platform: myepisodes
+    name: "Serien"
+    username: !secret myepisodes_username
+    password: !secret myepisodes_password
+
   - platform: template
     sensors:
       edg_restmuell:
