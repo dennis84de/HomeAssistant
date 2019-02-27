@@ -6,7 +6,7 @@ device_tracker:
     username: !secret fritzbox_username
     password: !secret fritzbox_password
     interval_seconds: 5
-    consider_home: 120
+    consider_home: 60
     new_device_defaults:
       track_new_devices: false
 
