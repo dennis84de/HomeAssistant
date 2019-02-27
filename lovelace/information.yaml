@@ -132,18 +132,15 @@ cards:
     title: Serien
     show_header_toggle: false
     entities:
-      - entity: sensor.serien_episode_0
-      - entity: sensor.serien_episode_1
-      - entity: sensor.serien_episode_2
-      - entity: sensor.serien_episode_3
-      - entity: sensor.serien_episode_4
-      - entity: sensor.serien_episode_5
-      - entity: sensor.serien_episode_6
-      - entity: sensor.serien_episode_7
-      - entity: sensor.serien_episode_8
-      - entity: sensor.serien_episode_9
-
-#  - type: custom:todoist-list
-#    title: Einkaufsliste
-#    show_header_toggle: false
-#    entity: calendar.einkaufen
+      - type: custom:fold-entity-row
+        head: sensor.serien_episode_0
+        items:
+          - sensor.serien_episode_1
+          - sensor.serien_episode_2
+          - sensor.serien_episode_3
+          - sensor.serien_episode_4
+          - sensor.serien_episode_5
+          - sensor.serien_episode_6
+          - sensor.serien_episode_7
+          - sensor.serien_episode_8
+          - sensor.serien_episode_9
