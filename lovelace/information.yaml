@@ -103,6 +103,16 @@ cards:
       - entity: sensor.tankstelle_jet
       - entity: binary_sensor.tankstelle_jet_status
 
+  - type: entities
+    title: Anrufliste
+    show_header_toggle: false
+    entities:
+      - entity: sensor.anrufliste_call_0
+      - entity: sensor.anrufliste_call_1
+      - entity: sensor.anrufliste_call_2
+      - entity: sensor.anrufliste_call_3
+      - entity: sensor.anrufliste_call_4
+
   - type: custom:mini-graph-card
     name: Thermometer
     show:
