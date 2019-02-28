@@ -16,6 +16,13 @@ device_tracker:
     devices:
       - HandyGPS
 
+#  - platform: composite
+#    name: Dennis
+#    time_as: local
+#    entity_id:
+#      - device_tracker.handy
+#      - device_tracker.handygps
+
 fritzbox:
   devices:
     - host: !secret fritzbox_host
