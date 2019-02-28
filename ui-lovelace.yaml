@@ -31,3 +31,5 @@ resources:
     type: module
   - url: /local/lovelace/mini-graph-card-bundle.js?v=0.3.0
     type: module
+  - url: /local/lovelace/tracker-card.js?track=true
+    type: module
