@@ -17,7 +17,7 @@ input_boolean:
     initial: off
     icon: mdi:sync-off
 
-lightingsm:
+entity_controller:
   bewegung_flur_vorne:
     friendly_name: "Bewegung Flur vorne"
     sensor: binary_sensor.zigate_7904_presence

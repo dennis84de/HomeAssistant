@@ -11,7 +11,7 @@ input_boolean:
     initial: off
     icon: mdi:sync-off
 
-lightingsm:
+entity_controller:
   bewegung_balkon:
     friendly_name: "Bewegung Balkon"
     sensor: binary_sensor.zigate_0b57_presence
@@ -30,11 +30,11 @@ automation:
         to: 'on'
     condition:
       - condition: state
-        entity_id: lightingsm.bewegung_balkon
+        entity_id: entity_controller.bewegung_balkon
         state: 'active_timer'
       - condition: template
         value_template: >-
-          {% set letzte_bewegung = as_timestamp(state_attr("lightingsm.bewegung_balkon", "last_triggered_at")) | timestamp_custom("%s", True) | int  %}
+          {% set letzte_bewegung = as_timestamp(state_attr("entity_controller.bewegung_balkon", "last_triggered_at")) | timestamp_custom("%s", True) | int  %}
           {% set now = now().strftime("%s") | int %}
           {% set abstand_sekunden = ((now - letzte_bewegung | timestamp_custom("%s") | int)) | int %}
 

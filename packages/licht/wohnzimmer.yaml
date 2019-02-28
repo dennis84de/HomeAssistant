@@ -17,7 +17,7 @@ light:
     name: Vitrine
     entity_id: switch.vitrine
 
-lightingsm:
+entity_controller:
   bewegung_wohnzimmer:
     friendly_name: "Bewegung Wohnzimmer"
     sensor: binary_sensor.bewegungsmelder_wohnzimmer

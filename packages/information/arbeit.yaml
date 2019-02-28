@@ -78,6 +78,9 @@ automation:
       - condition: state
         entity_id: binary_sensor.arbeitstag
         state: 'on'
+      - condition: state
+        entity_id: calendar.urlaub
+        state: 'off'
     action:
       - service: !secret tts_service
         data_template:

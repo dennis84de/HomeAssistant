@@ -102,7 +102,7 @@ binary_sensor:
         friendly_name: Radio Badezimmer inaktiv
         device_class: motion
         value_template: >-
-          {% if is_state('lightingsm.radio_badezimmer_bewegung', 'active_timer') %}
+          {% if is_state('entity_controller.radio_badezimmer_bewegung', 'active_timer') %}
             false
           {% elif is_state('media_player.badezimmer', 'playing') %}
             true
@@ -118,7 +118,7 @@ binary_sensor:
             false
           {% endif %}
 
-lightingsm:
+entity_controller:
   radio_badezimmer:
     friendly_name: "Radio Badezimmer - Bewegung"
     sensor: binary_sensor.bewegungsmelder_badezimmer_template

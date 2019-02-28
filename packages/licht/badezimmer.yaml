@@ -11,7 +11,7 @@ input_boolean:
     initial: off
     icon: mdi:sync-off
 
-lightingsm:
+entity_controller:
   bewegung_badezimmer:
     friendly_name: "Bewegung Badezimmer"
     sensor: binary_sensor.bewegungsmelder_badezimmer

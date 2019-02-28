@@ -27,7 +27,7 @@ switch:
         system_code: "11000"
         unit_code: "10000"
 
-lightingsm:
+entity_controller:
   bewegung_kueche:
     friendly_name: "Bewegung Küche"
     sensor: binary_sensor.zigate_a230_presence

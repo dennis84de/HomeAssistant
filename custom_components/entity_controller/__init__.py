@@ -1,12 +1,11 @@
 """
-Entity timer component for Home Assistant
+Entity controller component for Home Assistant.
 Maintainer:       Daniel Mason
-Version:          v2.4.10
-Documentation:    https://github.com/danobot/appdaemon-motion-lights
-Issues Tracker:   Report issues on Github. Include:
-                      * component version
-                      * YAML configuration (for misbehaving entity only)
-                      * log entries
+Version:          v3.1.1
+Documentation:    https://github.com/danobot/entity-controller
+Issues Tracker:   Report issues on Github. Ensure you have the latest version. Include:
+                    * YAML configuration (for the misbehaving entity)
+                    * log entries at time of error and at time of initialisation
 """
 import logging
 import voluptuous as vol
@@ -29,11 +28,11 @@ DEPENDENCIES = ['light', 'sensor', 'binary_sensor', 'cover', 'fan',
                 'media_player']
 REQUIREMENTS = ['transitions==0.6.9']
 
-DOMAIN = 'lightingsm'
+DOMAIN = 'entity_controller'
 CONSTRAIN_START = 1
 CONSTRAIN_END = 2
 
-VERSION = '2.4.10'
+VERSION = '3.1.1'
 SENSOR_TYPE_DURATION = 'duration'
 SENSOR_TYPE_EVENT = 'event'
 MODE_DAY = 'day'
@@ -67,7 +66,8 @@ async def async_setup(hass, config):
 
     myconfig = config[DOMAIN]
 
-    _LOGGER.info("Component Configuration: " + str(myconfig))
+    _LOGGER.info("If you have ANY issues with EntityController, please enable DEBUG logging under the logger component and kindly report the issue on Github. https://github.com/danobot/entity-controller/issues")
+    _LOGGER.info("Domain Configuration: " + str(myconfig))
 
     machine = Machine(states=STATES,
                       initial='idle',
@@ -116,6 +116,8 @@ async def async_setup(hass, config):
     machine.add_transition(trigger='timer_expires', source='active_timer',
                            dest='idle',
                            conditions=['is_duration_sensor', 'is_sensor_off'])
+    machine.add_transition(trigger='block_timer_expires', source='blocked',
+                           dest='idle')
     machine.add_transition(trigger='control', source='active_timer',
                            dest='idle', conditions=['is_state_entities_off'])
 
@@ -131,7 +133,7 @@ async def async_setup(hass, config):
         _LOGGER.info("Config Item %s: %s", str(key), str(config))
         config["name"] = key
         m = None
-        m = LightingSM(hass, config, machine)
+        m = EntityController(hass, config, machine)
         # machine.add_model(m.model)
         # m.model.after_model(config)
         devices.append(m)
@@ -143,7 +145,7 @@ async def async_setup(hass, config):
     return True
 
 
-class LightingSM(entity.Entity):
+class EntityController(entity.Entity):
 
     def __init__(self, hass, config, machine):
         self.attributes = {}
@@ -245,6 +247,7 @@ class Model():
         self.sensorEntities = []
         self.offEntities = []
         self.timer_handle = None
+        self.block_timer_handle = None
         self.sensor_type = None
         self.night_mode = None
         self.backoff = False
@@ -260,10 +263,10 @@ class Model():
         self.log = logging.getLogger(__name__ + '.' + config.get('name'))
         self.log.setLevel(logging.DEBUG)
         self.log.debug(
-            "Initialising LightingSM entity with this configuration: " + str(
+            "Initialising EntityController entity with this configuration: " + str(
                 config))
-        self.name = config.get('name', 'Unnamed Motion Light')
-        self.log.debug("Entity name: " + str(self.name))
+        self.name = config.get('name', 'Unnamed Entity Controller')
+        self.log.debug("Controller name: " + str(self.name))
 
         machine.add_model(
             self)  # add here because machine generated methods are being used in methods below.
@@ -391,6 +394,11 @@ class Model():
         else:
             self.timer_expires()
 
+    def block_timer_expire(self):
+        self.log.debug("Blocked Timer expired - Turn off all control entities.")
+        self.turn_off_control_entities()
+        self.block_timer_expires()
+
     # =====================================================
     # S T A T E   M A C H I N E   C O N D I T I O N S
     # =====================================================
@@ -506,22 +514,20 @@ class Model():
         self._cancel_timer()  # cancel previous timer
         self.update(delay=self.lightParams.get(
             'delay'))  # no need to update immediately
-        if len(self.offEntities) > 0:
-            self.log.info(
-                "Turning on special off_entities that were defined, "
-                "instead of turning off the regular control_entities")
-            for e in self.offEntities:
-                self.log.debug("Turning on %s", e)
-                self.call_service(e, 'turn_on')
-        else:
-            for e in self.controlEntities:
-                self.log.debug("Turning off %s", e)
-                self.call_service(e, 'turn_off')
+        self.turn_off_control_entities()
 
     def on_enter_blocked(self):
         self.update(blocked_at=datetime.now())
         self.update(blocked_by=self._state_entity_state())
 
+        if self.block_timeout:
+            self.block_timer_handle = Timer(self.block_timeout, self.block_timer_expire)
+            self.block_timer_handle.start()
+            self.update(block_timeout=self.block_timeout)
+
+    def on_exit_blocked(self):
+        if self.block_timer_handle.is_alive():
+            self.block_timer_handle.cancel()
     # =====================================================
     #    C O N F I G U R A T I O N  &  V A L I D A T I O N
     # =====================================================
@@ -707,6 +713,7 @@ class Model():
         if "entity_off" in config:
             self.entityOff = config.get("entity_off", None)
 
+        self.block_timeout = config.get("block_timeout", None)
         self.image_prefix = config.get('image_prefix', '/fsm_diagram_')
         self.image_path = config.get('image_path', '/conf/temp')
         self.backoff = config.get('backoff', False)
@@ -784,6 +791,18 @@ class Model():
     # =====================================================
     #    H E L P E R   F U N C T I O N S        ( N E W )
     # =====================================================
+    def turn_off_control_entities(self):
+        if len(self.offEntities) > 0:
+            self.log.info(
+                "Turning on special off_entities that were defined, "
+                "instead of turning off the regular control_entities")
+            for e in self.offEntities:
+                self.log.debug("Turning on %s", e)
+                self.call_service(e, 'turn_on')
+        else:
+            for e in self.controlEntities:
+                self.log.debug("Turning off %s", e)
+                self.call_service(e, 'turn_off')
 
     def now_is_between(self, start_time_str, end_time_str, name=None):
         start_time = (self._parse_time(start_time_str, name))["datetime"]

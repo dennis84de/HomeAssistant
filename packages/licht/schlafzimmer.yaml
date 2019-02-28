@@ -15,7 +15,7 @@ input_boolean:
     initial: off
     icon: mdi:sync-off
 
-lightingsm:
+entity_controller:
   bewegung_schlafzimmer:
     friendly_name: "Bewegung Schlafzimmer"
     sensor: binary_sensor.zigate_be83_presence

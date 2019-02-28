@@ -15,7 +15,7 @@ input_boolean:
     initial: off
     icon: mdi:sync-off
 
-lightingsm:
+entity_controller:
   bewegung_arbeitszimmer:
     friendly_name: "Bewegung Arbeitszimmer"
     sensor: binary_sensor.zigate_eac1_presence
