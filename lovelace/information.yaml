@@ -1,5 +1,28 @@
 title: Infomation
 path: information
+popup_cards:
+  sensor.abfahrzeit:
+    title: Ankunftszeit
+    card:
+      type: entities
+      entities:
+        - entity: input_select.arbeit_stunden
+        - entity: input_select.arbeit_minuten
+        - entity: input_select.arbeit_puffer
+
+  sensor.wecker_startzeit:
+    title: Einstellungen
+    card:
+      type: entities
+      entities:
+        - entity: sensor.tablet_weckzeit
+        - entity: input_boolean.alarmauto
+        - entity: input_boolean.alarmworkday
+        - entity: input_number.alarmhour
+        - entity: input_number.alarmminutes
+        - entity: input_number.alarmadvance
+        - entity: input_number.alarmdelay
+
 cards:
   - type: entities
     title: Infos
@@ -29,20 +52,6 @@ cards:
       - entity: binary_sensor.alarm_aktiv
       - entity: binary_sensor.arbeitstag
       - entity: binary_sensor.tablet_wecker_ueberspringen
-
-  - type: custom:popup-card
-    entity: sensor.wecker_startzeit
-    title: Weckereinstellungen
-    card:
-      type: entities
-      entities:
-        - entity: sensor.tablet_weckzeit
-        - entity: input_boolean.alarmauto
-        - entity: input_boolean.alarmworkday
-        - entity: input_number.alarmhour
-        - entity: input_number.alarmminutes
-        - entity: input_number.alarmadvance
-        - entity: input_number.alarmdelay
 
   - type: entities
     title: Kalender
@@ -76,16 +85,6 @@ cards:
       - entity: sensor.fahrzeit_nach_hause
       - entity: binary_sensor.schlechtes_wetter
       - entity: sensor.abfahrzeit
-
-  - type: custom:popup-card
-    entity: sensor.abfahrzeit
-    title: Ankunftszeit
-    card:
-      type: entities
-      entities:
-        - entity: input_select.arbeit_stunden
-        - entity: input_select.arbeit_minuten
-        - entity: input_select.arbeit_puffer
 
   - type: history-graph
     title: Fahrzeit

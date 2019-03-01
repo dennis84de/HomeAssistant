@@ -19,7 +19,7 @@ resources:
     type: js
   - url: /local/lovelace/card-tools.js?v=0.4
     type: js
-  - url: /local/lovelace/popup-card.js
+  - url: /local/lovelace/popup-card.js?track=true
     type: js
   - url: /local/lovelace/layout-card.js
     type: js
