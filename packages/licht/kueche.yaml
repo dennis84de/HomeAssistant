@@ -19,9 +19,6 @@ entity_controller:
     friendly_name: "Bewegung Küche"
     sensor: binary_sensor.zigate_a230_presence
     entity: light.regal
-    entities:
-      - light.regal
-      - light.kuechenschrank
     delay: 120
     overrides:
       - binary_sensor.sonne_tagsueber
