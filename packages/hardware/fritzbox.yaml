@@ -1,5 +1,3 @@
-person:
-
 device_tracker:
   - platform: fritz
     host: !secret fritzbox_host
@@ -15,13 +13,6 @@ device_tracker:
     token: !secret phonetracker_token
     devices:
       - HandyGPS
-
-  - platform: composite
-    name: Dennis
-    time_as: local
-    entity_id:
-      - device_tracker.handy
-      - device_tracker.handygps
 
 fritzbox:
   devices:
