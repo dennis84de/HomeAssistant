@@ -106,11 +106,11 @@ cards:
     title: Anrufliste
     show_header_toggle: false
     entities:
-      - entity: sensor.anrufliste_call_0
-      - entity: sensor.anrufliste_call_1
-      - entity: sensor.anrufliste_call_2
-      - entity: sensor.anrufliste_call_3
-      - entity: sensor.anrufliste_call_4
+      - entity: sensor.anrufliste_0
+      - entity: sensor.anrufliste_1
+      - entity: sensor.anrufliste_2
+      - entity: sensor.anrufliste_3
+      - entity: sensor.anrufliste_4
 
   - type: custom:mini-graph-card
     name: Thermometer

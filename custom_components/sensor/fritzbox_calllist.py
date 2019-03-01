@@ -77,10 +77,13 @@ def callparser(callData):
         elif (call['Type'] == 3):
           callType = "outgoing"
           
+        number = call['Called'] if call['Type'] == 3 else call['Caller']
+        name = number if call['Name'] == None else call['Name']
+        
         call_dict = {
             'calltype': callType,
-            'name': call['Name'],
-            'number': call['Caller'] if call['Type'] == 1 else call['Called'],
+            'name': name,
+            'number': number,
             'date': call['Date'].strftime("%d.%m.%Y %H:%M"),
             'duration': call['Duration'].seconds // 60 % 60
         }
@@ -105,7 +108,7 @@ class CallDataSensor(Entity):
         self._hass = hass
         self.data_object = data_object
         self.entity_id = ENTITY_ID_FORMAT.format(sensor_name.lower() + '_call_' + str(callnumber))        
-        self._name = sensor_name + '_call_' + str(callnumber)
+        self._name = sensor_name + '_' + str(callnumber)
         self._callType = None
         self._call_attributes = {}
         self.update()
