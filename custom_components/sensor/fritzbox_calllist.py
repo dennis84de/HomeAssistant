@@ -108,7 +108,7 @@ class CallDataSensor(Entity):
         self._hass = hass
         self.data_object = data_object
         self.entity_id = ENTITY_ID_FORMAT.format(sensor_name.lower() + '_call_' + str(callnumber))        
-        self._name = sensor_name + '_' + str(callnumber)
+        self._name = sensor_name + '_call_' + str(callnumber)
         self._callType = None
         self._call_attributes = {}
         self.update()
