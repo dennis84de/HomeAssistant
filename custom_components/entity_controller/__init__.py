@@ -526,7 +526,7 @@ class Model():
             self.update(block_timeout=self.block_timeout)
 
     def on_exit_blocked(self):
-        if self.block_timer_handle.is_alive():
+        if self.block_timer_handle and self.block_timer_handle.is_alive():
             self.block_timer_handle.cancel()
     # =====================================================
     #    C O N F I G U R A T I O N  &  V A L I D A T I O N
