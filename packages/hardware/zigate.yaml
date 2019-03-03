@@ -12,11 +12,6 @@ homeassistant:
     binary_sensor.zigate_30a6_onoff:
       hidden: true
 
-    zigate.cca5:
-      hidden: true
-    binary_sensor.zigate_cca5_onoff:
-      hidden: true
-
     zigate.eac1:
       friendly_name: 'Bewegungsmelder Arbeitszimmer'
     zigate.7904:
@@ -41,8 +36,6 @@ homeassistant:
 
     zigate.6ec3:
       friendly_name: 'Thermometer Balkon'
-    zigate.bdde:
-      friendly_name: 'Thermometer Sportzimmer'
     zigate.e15d:
       friendly_name: 'Thermometer Kühlschrank'
     zigate.6440:
@@ -54,7 +47,7 @@ homeassistant:
     zigate.eff1:
       friendly_name: 'Thermometer Küche'
     zigate.c4ed:
-      friendly_name: 'Thermometer Flur'
+      friendly_name: 'Thermometer Sportzimmer'
     zigate.f874:
       friendly_name: 'Thermometer Parkplatz'
 
@@ -81,18 +74,6 @@ homeassistant:
       icon: mdi:weather-windy
     sensor.zigate_6ec3_pressure2:
       friendly_name: Luftdruck Balkon
-      hidden: true
-
-    sensor.zigate_bdde_temperature:
-      friendly_name: Temperatur
-    sensor.zigate_bdde_humidity:
-      friendly_name: Luftfeuchtigkeit
-      icon: mdi:water-percent
-    sensor.zigate_bdde_pressure:
-      friendly_name: Luftdruck
-      icon: mdi:weather-windy
-    sensor.zigate_bdde_pressure2:
-      friendly_name: Luftdruck
       hidden: true
 
     sensor.zigate_e15d_temperature:

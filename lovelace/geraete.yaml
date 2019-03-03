@@ -81,9 +81,8 @@ cards:
       - entity: zigate.6440
       - entity: zigate.7c8f
       - entity: zigate.d44e
-      - entity: zigate.eff1
       - entity: zigate.c4ed
-      - entity: zigate.bdde
+      - entity: zigate.eff1
 
   - type: entities
     title: Sensoren

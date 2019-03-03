@@ -72,6 +72,19 @@ sensor:
         unit_of_measurement: '%'
         device_class: battery
 
+      xiaomi_schalter_kueche_batterie:
+        friendly_name: Schalter Küche
+        entity_id:
+          - binary_sensor.switch_158d0002c762ce
+        value_template: >-
+          {% if is_state('binary_sensor.switch_158d0002c762ce', 'unknown') %}
+            0
+          {% else %}
+            {{ states.binary_sensor.switch_158d0002c762ce.attributes["battery_level"] | float}}
+          {% endif %}
+        unit_of_measurement: '%'
+        device_class: battery
+
       xiaomi_vibration_wohnzimmer_batterie:
         friendly_name: Vibration Wohnzimmer
         entity_id:
@@ -213,6 +226,7 @@ homeassistant:
       friendly_name: Schalter Wohnzimmer
       hidden: true
     binary_sensor.switch_158d0002c762ce:
+      friendly_name: Schalter Küche
       hidden: true
 
     binary_sensor.cube_158d0001100d7a:

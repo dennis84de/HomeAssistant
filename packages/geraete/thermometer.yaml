@@ -14,19 +14,6 @@ sensor:
         unit_of_measurement: '%'
         device_class: battery
 
-      xiaomi_thermometer_sportzimmer_batterie:
-        friendly_name: Thermometer Sportzimmer
-        entity_id:
-          - sensor.zigate_bdde_temperature
-        value_template: >-
-          {% if is_state('sensor.zigate_bdde_temperature', 'unknown') %}
-            0
-          {% else %}
-            {{ states.sensor.zigate_bdde_temperature.attributes["battery_level"] | float}}
-          {% endif %}
-        unit_of_measurement: '%'
-        device_class: battery
-
       xiaomi_thermometer_kuehlschrank_batterie:
         friendly_name: Thermometer Kühlschrank
         entity_id:
@@ -92,8 +79,8 @@ sensor:
         unit_of_measurement: '%'
         device_class: battery
 
-      xiaomi_thermometer_flur_batterie:
-        friendly_name: Thermometer Flur
+      xiaomi_thermometer_sportzimmer_batterie:
+        friendly_name: Thermometer Sportzimmer
         entity_id:
           - sensor.zigate_c4ed_temperature
         value_template: >-
@@ -168,19 +155,6 @@ sensor:
             0
           {% else %}
             {{ states.sensor.fibaro_badezimmer_temperature.state }}
-          {% endif %}
-
-      thermometer_flur:
-        friendly_name: Flur
-        entity_id:
-          - sensor.zigate_c4ed_temperature
-        device_class: temperature
-        unit_of_measurement: "°C"
-        value_template: >-
-          {% if is_state('sensor.zigate_c4ed_temperature', 'unknown') %}
-            0
-          {% else %}
-            {{ states.sensor.zigate_c4ed_temperature.state }}
           {% endif %}
 
       thermometer_arbeitszimmer:

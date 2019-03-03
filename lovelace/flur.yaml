@@ -15,14 +15,6 @@ cards:
       - entity: light.schrank
 
   - type: glance
-    title: Thermometer
-    show_header_toggle: false
-    entities:
-      - entity: sensor.zigate_c4ed_temperature
-      - entity: sensor.zigate_c4ed_humidity
-      - entity: sensor.zigate_c4ed_pressure
-
-  - type: glance
     title: Sensoren
     show_header_toggle: false
     entities:

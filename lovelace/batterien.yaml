@@ -19,6 +19,7 @@ cards:
       - entity: sensor.xiaomi_tuersensor_flur_batterie
       - entity: sensor.xiaomi_schalter_wohnzimmer_batterie
       - entity: sensor.xiaomi_schalter_flur_batterie
+      - entity: sensor.xiaomi_schalter_kueche_batterie
       - entity: sensor.xiaomi_schalter_schlafzimmer_batterie
       - entity: sensor.xiaomi_cube_batterie
       - entity: sensor.xiaomi_vibration_wohnzimmer_batterie
@@ -33,7 +34,6 @@ cards:
       - entity: sensor.xiaomi_thermometer_schlafzimmer_batterie
       - entity: sensor.xiaomi_thermometer_arbeitszimmer_batterie
       - entity: sensor.xiaomi_thermometer_kueche_batterie
-      - entity: sensor.xiaomi_thermometer_flur_batterie
       - entity: sensor.xiaomi_thermometer_sportzimmer_batterie
       - entity: sensor.xiaomi_thermometer_kuehlschrank_batterie
       - entity: sensor.xiaomi_thermometer_gefrierschrank_batterie
