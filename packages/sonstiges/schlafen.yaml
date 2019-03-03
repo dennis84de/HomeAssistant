@@ -45,6 +45,15 @@ binary_sensor:
           {{ is_state('input_boolean.schlafen_aktiv', 'on') }}
 
 sensor:
+  - platform: history_stats
+    name: Schlafdauer
+    entity_id: binary_sensor.schlafen_aktiv
+    state: 'on'
+    type: 'ratio'
+    end: '{{ now() }}'
+    duration:
+      days: 7
+
   - platform: template
     sensors:
       timer_schlafzimmer_zeit:
@@ -85,6 +94,21 @@ sensor:
         icon_template: >
           mdi:av-timer
         unit_of_measurement: 'Uhr'
+
+      schlafen_dauer_durchschnitt:
+        friendly_name: Durchschnittliche Dauer
+        entity_id:
+          - sensor.schlafdauer
+        value_template: >
+          {% if states.sensor.schlafdauer == None %}
+            0
+          {% else %}
+            {% set stunden = states.sensor.schlafdauer.state | float * 24 / 100 | float %}
+            {{'%0.2f' % stunden | float }}
+          {% endif %}
+        icon_template: >
+          mdi:bell-sleep-outline
+        unit_of_measurement: 'Stunden'
 
 script:
   goto_bed:
@@ -317,3 +341,5 @@ homeassistant:
       hidden: true
     binary_sensor.schlafen_aktiv:
       icon: mdi:sleep
+    sensor.schlafdauer:
+      hidden: true

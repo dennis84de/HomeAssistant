@@ -98,6 +98,7 @@ cards:
       - entity: script.goto_bed
       - entity: binary_sensor.schlafen_aktiv
       - entity: sensor.schlafen_letzte_uhrzeit
+      - entity: sensor.schlafen_dauer_durchschnitt
 
   - type: entities
     title: Radios
