@@ -25,8 +25,6 @@ resources:
     type: js
   - url: /local/lovelace/fold-entity-row.js
     type: js
-  - url: /local/lovelace/todoist-list.js
-    type: js
   - url: /local/lovelace/mini-media-player-bundle.js?v=1.0.1
     type: module
   - url: /local/lovelace/mini-graph-card-bundle.js?v=0.3.0
