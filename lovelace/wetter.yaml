@@ -32,16 +32,16 @@ cards:
       - entity: sensor.zigate_6ec3_humidity
       - entity: sensor.zigate_6ec3_pressure
 
+  - type: weather-forecast
+    title: Aktuelles Wetter
+    entity: weather.aktuelles_wetter
+
   - type: history-graph
     title: Temperatur
     hours_to_show: 168
     entities:
       - entity: sensor.zigate_f874_temperature
       - entity: sensor.zigate_6ec3_temperature
-
-  - type: weather-forecast
-    title: Aktuelles Wetter
-    entity: weather.aktuelles_wetter
 
   - type: entities
     title: Sonne und Mond
