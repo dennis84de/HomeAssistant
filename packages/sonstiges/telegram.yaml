@@ -24,7 +24,7 @@ automation:
           title: "Status Home Assistant"
           message: >-
             Das System ist seit {{ states.sensor.laufzeit.state }} Stunden online.
-            {%- if is_state('group.alles_ausschalten.state', 'off') %}
+            {%- if is_state('group.alles_ausschalten', 'off') %}
             Alle Geräte sind ausgeschaltet.
             {% endif %}
       - condition: state
@@ -37,6 +37,21 @@ automation:
           data:
             inline_keyboard:
               - 'Geräte anzeigen:/geraete'
+
+  - alias: 'Telegram - Unterwegs einschalten'
+    initial_state: true
+    trigger:
+      - platform: event
+        event_type: telegram_callback
+        event_data:
+          data: '/unterwegs'
+    action:
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.zu_hause
+      - service: telegram_bot.send_message
+        data_template:
+          target: '{{ trigger.event.data.chat_id }}'
+          message: "Der Status wird aktualisiert."
 
   - alias: 'Telegram - Eingeschaltete Geräte'
     initial_state: true
