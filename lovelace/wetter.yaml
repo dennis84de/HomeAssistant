@@ -32,19 +32,6 @@ cards:
       - entity: sensor.zigate_6ec3_humidity
       - entity: sensor.zigate_6ec3_pressure
 
-  - type: entities
-    title: Wettervorhersage
-    show_header_toggle: false
-    entities:
-      - entity: sensor.pws_weather_1d_metric
-      - entity: sensor.pws_weather_1n_metric
-      - entity: sensor.pws_weather_2d_metric
-      - entity: sensor.pws_weather_2n_metric
-      - entity: sensor.pws_weather_3d_metric
-      - entity: sensor.pws_weather_3n_metric
-      - entity: sensor.pws_weather_4d_metric
-      - entity: sensor.pws_weather_4n_metric
-
   - type: history-graph
     title: Temperatur
     hours_to_show: 168
