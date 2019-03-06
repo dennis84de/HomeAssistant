@@ -73,4 +73,3 @@ cards:
       - entity: sensor.zigate_0b57_luminosity
       - entity: switch.balkon_radio
       - entity: light.balkon_licht
-      - entity: input_boolean.bewegungsmelder_balkon_deaktiviert

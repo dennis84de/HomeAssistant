@@ -163,22 +163,25 @@ cards:
     entities:
       - entity: input_boolean.bewegungsmelder_wohnzimmer_deaktiviert
         name: Wohnzimmer
-        icon: mdi:lightbulb-on-outline
+        icon: mdi:sync-off
       - entity: input_boolean.bewegungsmelder_schlafzimmer_deaktiviert
         name: Schlafzimmer
-        icon: mdi:lightbulb-on-outline
+        icon: mdi:sync-off
       - entity: input_boolean.bewegungsmelder_kueche_deaktiviert
         name: Küche
-        icon: mdi:lightbulb-on-outline
+        icon: mdi:sync-off
       - entity: input_boolean.bewegungsmelder_badezimmer_deaktiviert
         name: Badezimmer
-        icon: mdi:lightbulb-on-outline
+        icon: mdi:sync-off
       - entity: input_boolean.bewegungsmelder_flur_deaktiviert
         name: Flur
-        icon: mdi:lightbulb-on-outline
+        icon: mdi:sync-off
       - entity: input_boolean.bewegungsmelder_arbeitszimmer_deaktiviert
         name: Arbeitszimmer
-        icon: mdi:lightbulb-on-outline
+        icon: mdi:sync-off
+      - entity: input_boolean.bewegungsmelder_balkon_deaktiviert
+        name: Balkon
+        icon: mdi:sync-off
 
   - type: custom:vertical-stack-in-card
     title: Internetgeschwindigkeit
