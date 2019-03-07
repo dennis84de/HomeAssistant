@@ -7,10 +7,12 @@ homeassistant:
   time_zone: Europe/Berlin
   packages: !include_dir_named packages
   customize: !include_dir_merge_named customize
-  customize_glob: !include_dir_merge_named customize_glob 
+  customize_glob: !include_dir_merge_named customize_glob
   auth_providers:
     - type: trusted_networks
+      trusted_networks:
+        - 192.168.2.0/24
   whitelist_external_dirs:
      - /home/homeassistant/.homeassistant/
-     
+
 group: !include_dir_merge_named group

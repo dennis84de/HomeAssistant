@@ -1,17 +1,14 @@
-discovery:
-  ignore:
-    - songpal
-    - google_cast
-
-config:
 http:
-  trusted_networks:
-    - 192.168.2.0/24
-
+config:
 websocket_api:
 frontend:
 lovelace:
   mode: yaml
+
+discovery:
+  ignore:
+    - songpal
+    - google_cast
 
 wake_on_lan:
 system_health:
