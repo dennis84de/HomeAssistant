@@ -12,22 +12,6 @@ switch:
     host: 192.168.2.30
     name: Schlafzimmer Radio
 
-  - platform: tplink
-    host: 192.168.2.44
-    name: Badezimmer Radio
-
-  - platform: tplink
-    host: 192.168.2.51
-    name: Flur Radio
-
-  - platform: tplink
-    host: 192.168.2.41
-    name: Küche Radio
-
-  - platform: tplink
-    host: 192.168.2.69
-    name: Arbeitszimmer Radio
-
   - platform: brematic
     host: 192.168.2.57
     switches:
@@ -291,19 +275,9 @@ homeassistant:
     binary_sensor.radio_badezimmer_inaktiv:
       hidden: true
 
-    switch.badezimmer_radio:
-      icon: mdi:radio
-    switch.kuche_radio:
-      icon: mdi:radio
-    switch.flur_radio:
-      icon: mdi:radio
-    switch.arbeitszimmer_radio:
-      icon: mdi:radio
     switch.wohnzimmer_radio:
       icon: mdi:radio
     switch.schlafzimmer_radio:
-      icon: mdi:radio
-    switch.balkon_radio:
       icon: mdi:radio
 
     media_player.badezimmer:

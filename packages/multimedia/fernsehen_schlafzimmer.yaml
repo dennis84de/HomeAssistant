@@ -1,8 +1,4 @@
 switch:
-  - platform: tplink
-    host: 192.168.2.60
-    name: Schlafzimmer Fernseher
-
   - platform: broadlink
     host: 192.168.2.28
     mac: 'B4:43:0D:F9:2F:E5'

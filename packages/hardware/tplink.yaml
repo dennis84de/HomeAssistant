@@ -1,0 +1,32 @@
+tplink:
+  discovery: false
+  switch:
+    - host: 192.168.2.50
+    - host: 192.168.2.56
+    - host: 192.168.2.73
+    - host: 192.168.2.60
+    - host: 192.168.2.44
+    - host: 192.168.2.51
+    - host: 192.168.2.41
+    - host: 192.168.2.69
+
+homeassistant:
+  customize:
+    switch.monitor:
+      icon: mdi:monitor
+
+    switch.waschmaschine:
+      icon: mdi:washing-machine
+    switch.trockner:
+      icon: mdi:tumble-dryer
+
+    switch.badezimmer_radio:
+      icon: mdi:radio
+    switch.kuche_radio:
+      icon: mdi:radio
+    switch.flur_radio:
+      icon: mdi:radio
+    switch.arbeitszimmer_radio:
+      icon: mdi:radio
+    switch.balkon_radio:
+      icon: mdi:radio

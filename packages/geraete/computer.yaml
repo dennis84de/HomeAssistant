@@ -8,10 +8,6 @@ input_boolean:
     icon: mdi:desktop-classic
 
 switch:
-  - platform: tplink
-    host: 192.168.2.50
-    name: Monitor
-
   - platform: template
     switches:
       pc:
@@ -69,8 +65,6 @@ homeassistant:
     switch.pc:
       friendly_name: PC
       icon: mdi:desktop-tower
-    switch.monitor:
-      icon: mdi:monitor
 
     media_player.soundbar:
       icon: mdi:music
