@@ -1,8 +1,6 @@
 logger:
   default: error
   logs:
-#    homeassistant.components.media_player.squeezebox: fatal
-#    custom_components.media_player.squeezebox: fatal
     homeassistant.components.sensor.openhardwaremonitor: fatal
     zigate: fatal
 
