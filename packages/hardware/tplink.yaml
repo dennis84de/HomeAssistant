@@ -1,14 +1,47 @@
-tplink:
-  discovery: false
-  switch:
-    - host: 192.168.2.50
-    - host: 192.168.2.56
-    - host: 192.168.2.73
-    - host: 192.168.2.60
-    - host: 192.168.2.44
-    - host: 192.168.2.51
-    - host: 192.168.2.41
-    - host: 192.168.2.69
+#tplink:
+#  discovery: false
+#  switch:
+#    - host: 192.168.2.50
+#    - host: 192.168.2.56
+#    - host: 192.168.2.73
+#    - host: 192.168.2.60
+#    - host: 192.168.2.44
+#    - host: 192.168.2.51
+#    - host: 192.168.2.41
+#    - host: 192.168.2.69
+
+switch:
+  - platform: tplink
+    host: 192.168.2.50
+    name: Monitor
+
+  - platform: tplink
+    host: 192.168.2.56
+    name: "Waschmaschine"
+
+  - platform: tplink
+    host: 192.168.2.73
+    name: "Trockner"
+
+  - platform: tplink
+    host: 192.168.2.60
+    name: Schlafzimmer Fernseher
+
+  - platform: tplink
+    host: 192.168.2.44
+    name: Badezimmer Radio
+
+  - platform: tplink
+    host: 192.168.2.51
+    name: Flur Radio
+
+  - platform: tplink
+    host: 192.168.2.41
+    name: Küche Radio
+
+  - platform: tplink
+    host: 192.168.2.69
+    name: Arbeitszimmer Radio
 
 homeassistant:
   customize:
