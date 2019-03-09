@@ -139,7 +139,7 @@ automation:
         entity_id: input_boolean.musik_pausiert
       - service: media_player.volume_mute
         data:
-          entity_id: media_player.kuche, media_player.badezimmer, media_player.wohnzimmer, media_player.schlafzimmer, media_player.arbeitszimmer, media_player.flur
+          entity_id: media_player.kuche, media_player.badezimmer, media_player.wohnzimmer, media_player.schlafzimmer, media_player.arbeitszimmer, media_player.flur, media_player.balkon
           is_volume_muted: true
 
   - alias: 'Handy inaktiv - Musik wiedergeben'
@@ -160,7 +160,7 @@ automation:
         entity_id: input_boolean.musik_pausiert
       - service: media_player.volume_mute
         data:
-          entity_id: media_player.kuche, media_player.badezimmer, media_player.wohnzimmer, media_player.schlafzimmer, media_player.arbeitszimmer, media_player.flur
+          entity_id: media_player.kuche, media_player.badezimmer, media_player.wohnzimmer, media_player.schlafzimmer, media_player.arbeitszimmer, media_player.flur, media_player.balkon
           is_volume_muted: false
 
   - alias: "Handy - Eingehender Anruf - TTS"

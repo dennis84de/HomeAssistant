@@ -1,5 +1,5 @@
 shell_command:
-  rufnummer_suchen: "python3 /home/homeassistant/.homeassistant/python_scripts/werbeanrufe.py {{ rufnummer }}"
+  werbeanruf_suchen: "python3 /home/homeassistant/.homeassistant/python_scripts/werbeanrufe.py {{ rufnummer }}"
   werbeanruf_zuruecksetzen: "python3 /home/homeassistant/.homeassistant/python_scripts/werbeanrufe.py"
 
 input_boolean:
@@ -58,7 +58,7 @@ automation:
       - condition: template
         value_template: '{{ state_attr("sensor.telefon", "from_name") == "unknown" and state_attr("sensor.telefon", "from") != None and state_attr("sensor.telefon", "from") != "" }}'
     action:
-      - service: shell_command.rufnummer_suchen
+      - service: shell_command.werbeanruf_suchen
         data_template:
           rufnummer: '{{ states.sensor.telefon.attributes.from }}'
 
