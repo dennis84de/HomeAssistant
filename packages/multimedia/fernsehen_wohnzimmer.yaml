@@ -16,7 +16,11 @@ input_boolean:
     name: Musik ausschalten
     icon: mdi:music-off
   kodi_pausiert:
-    name: Kodi pausiert
+    name: Wiedergabe pausiert
+  kodi_pausieren:
+    name: Wiedergabe pausieren
+    initial: on
+    icon: mdi:sync-off
 
 sensor:
   - platform: template
@@ -257,6 +261,9 @@ automation:
       - condition: state
         entity_id: media_player.kodi_wohnzimmer
         state: 'playing'
+      - condition: state
+        entity_id: input_boolean.kodi_pausieren
+        state: 'on'
       - condition: state
         entity_id: sensor.telefon
         state: 'idle'
