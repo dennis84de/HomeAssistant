@@ -86,9 +86,24 @@ cards:
       - entity: binary_sensor.schlechtes_wetter
       - entity: sensor.abfahrzeit
 
-  - type: history-graph
-    title: Fahrzeit
+#  - type: history-graph
+#    title: Fahrzeit
+#    hours_to_show: 168
+#    entities:
+#      - entity: sensor.fahrzeit_zur_arbeit
+#      - entity: sensor.fahrzeit_nach_hause
+
+  - type: custom:mini-graph-card
+    name: Fahrzeit
+    line_width: 2
+    animate: true
     hours_to_show: 168
+    points_per_hour: 5
+    hour24: true
+    show:
+      fill: false
+      icon: false
+      points: false
     entities:
       - entity: sensor.fahrzeit_zur_arbeit
       - entity: sensor.fahrzeit_nach_hause
@@ -114,6 +129,8 @@ cards:
 
   - type: custom:mini-graph-card
     name: Thermometer
+    line_width: 3
+    animate: true
     show:
       fill: false
       icon: false
