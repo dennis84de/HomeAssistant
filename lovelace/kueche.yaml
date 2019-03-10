@@ -55,3 +55,11 @@ cards:
       - entity: climate.kuche
         name: Heizung
 
+  - type: entities
+    title: Multimedia
+    show_header_toggle: false
+    entities:
+      - type: custom:mini-media-player
+        entity: media_player.kuche
+        hide:
+          controls: true

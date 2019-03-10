@@ -21,3 +21,12 @@ cards:
       - entity: binary_sensor.zigate_7904_presence
       - entity: binary_sensor.zigate_229b_onoff
       - entity: binary_sensor.zigate_9bc8_onoff
+
+  - type: entities
+    title: Multimedia
+    show_header_toggle: false
+    entities:
+      - type: custom:mini-media-player
+        entity: media_player.flur
+        hide:
+          controls: true

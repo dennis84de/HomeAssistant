@@ -49,6 +49,15 @@ cards:
       - entity: sensor.letzte_reinigung
 
   - type: entities
+    title: Multimedia
+    show_header_toggle: false
+    entities:
+      - type: custom:mini-media-player
+        entity: media_player.arbeitszimmer
+        hide:
+          controls: true
+
+  - type: entities
     title: Drucker
     show_header_toggle: false
     entities:

@@ -29,7 +29,11 @@ cards:
           source: true
           progress: true
           volume: true
-
+      - type: custom:mini-media-player
+        entity: media_player.schlafzimmer
+        hide:
+          controls: true
+          
   - type: entities
     title: Geräte
     show_header_toggle: false

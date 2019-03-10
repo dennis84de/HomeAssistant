@@ -12,6 +12,10 @@ cards:
     show_header_toggle: false
     entities:
       - type: custom:mini-media-player
+        entity: media_player.badezimmer
+        hide:
+          controls: true
+      - type: custom:mini-media-player
         entity: media_player.kodi_badezimmer
         hide:
           source: true
