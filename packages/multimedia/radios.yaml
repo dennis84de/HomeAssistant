@@ -22,6 +22,25 @@ switch:
 
   - platform: template
     switches:
+      wiedergabe_badezimmer:
+        friendly_name: Wiedergabe Badezimmer
+        value_template: >-
+          {% if is_state('media_player.badezimmer', 'playing') %}
+            true
+          {% else %}
+            false
+          {% endif %}
+        icon_template: >-
+          {% if is_state('media_player.badezimmer', 'playing') %}
+            mdi:play-circle-outline
+          {% else %}
+            mdi:pause-circle-outline
+          {% endif %}
+        turn_on:
+          service: script.radio_badezimmer_einschalten
+        turn_off:
+          service: script.radio_badezimmer_ausschalten
+
       alle_radios_wiedergabe_aktiv:
         friendly_name: Wiedergabe aktiv
         value_template: >-
@@ -107,9 +126,7 @@ entity_controller:
     friendly_name: "Radio Badezimmer - Bewegung"
     sensor: binary_sensor.bewegungsmelder_badezimmer_template
     sensor_type_duration: True
-    entity: media_player.badezimmer
-    entity_on: script.radio_badezimmer_einschalten
-    entity_off: script.radio_badezimmer_ausschalten
+    entity: switch.wiedergabe_badezimmer
     delay: 120
     overrides:
       - binary_sensor.radio_badezimmer_inaktiv
