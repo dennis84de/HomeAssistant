@@ -157,7 +157,7 @@ automation:
       - service: !secret tts_service
         data_template:
           echo: "flur"
-          message: "Willkommen zu Hause"
+          message: "Hallo Dennis. Willkommen zu Hause"
 
   - alias: "Alarm - Bewegung"
     initial_state: true
