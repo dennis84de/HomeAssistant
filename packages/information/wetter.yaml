@@ -1,10 +1,5 @@
 sun:
 
-weather:
-  - platform: openweathermap
-    api_key: !secret openweathermap_key
-    name: Aktuelles Wetter
-
 openuv:
   api_key: !secret openuv_key
   binary_sensors:
@@ -59,25 +54,40 @@ sensor:
     language: de
     forecast:
       - 0
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+    scan_interval:
+      minutes: 5
     monitored_conditions:
-      - precip_type
-      - precip_intensity
-      - precip_probability
-      - temperature
-      - apparent_temperature
-      - wind_speed
-      - wind_bearing
-      - cloud_cover
+      - icon
+      - summary
+      - nearest_storm_distance
+      - nearest_storm_bearing
       - humidity
-      - pressure
-      - ozone
-      - hourly_summary
+      - temperature
       - temperature_high
       - temperature_low
+      - apparent_temperature
+      - apparent_temperature_high
+      - apparent_temperature_low
+      - wind_speed
+      - wind_bearing
+      - precip_type
+      - precip_probability
+      - precip_accumulation
+      - precip_intensity
+      - precip_intensity_max
+      - uv_index
+      - daily_summary
+      - pressure
+      - visibility
+      - cloud_cover
+      - ozone
+      - hourly_summary
       - dew_point
-      - icon
-      - nearest_storm_distance
-      - summary
 
   - platform: co2signal
     token: !secret co2signal_key
@@ -125,6 +135,24 @@ sensor:
 
   - platform: template
     sensors:
+      wetter_text:
+        friendly_name: 'Wetter'
+        value_template:  >
+          {% if is_state("sensor.darksky_icon","clear-day") %} Klar
+          {% elif is_state("sensor.darksky_icon","clear-night") %} Klar
+          {% elif is_state("sensor.darksky_icon","rain") %} Regen
+          {% elif is_state("sensor.darksky_icon","snow") %} Schnee
+          {% elif is_state("sensor.darksky_icon","fog") %} Nebel
+          {% elif is_state("sensor.darksky_icon","sleet") %} Schneeregen
+          {% elif is_state("sensor.darksky_icon","wind") %} Wind
+          {% elif is_state("sensor.darksky_icon","cloudy") %} Wolkig
+          {% elif is_state("sensor.darksky_icon","partly-cloudy-day") %} Teilweise wolkig
+          {% elif is_state("sensor.darksky_icon","partly-cloudy-night") %} Teilweise wolkig
+          {% elif is_state("sensor.darksky_icon","hail") %} Hagel
+          {% elif is_state("sensor.darksky_icon","lightning") %} Gewitter
+          {% elif is_state("sensor.darksky_icon","thunderstorm") %} Sturm
+          {% endif %}
+
       wetterlage:
         friendly_name: 'Wetterlage'
         icon_template: mdi:weather-windy-variant

@@ -31,3 +31,5 @@ resources:
     type: module
   - url: /local/lovelace/tracker-card.js?track=true
     type: module
+  - url: /local/lovelace/dark-sky-weather-card.js?v=7.1
+    type: module

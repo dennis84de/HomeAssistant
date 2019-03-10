@@ -11,18 +11,52 @@ popup_cards:
         - entity: sensor.darksky_overnight_low_temperature_0
 
 cards:
-  - type: entities
-    title: Wetter
-    show_header_toggle: false
-    entities:
-      - entity: sensor.darksky_summary
-      - entity: sensor.darksky_hourly_summary
-      - entity: sensor.darksky_temperature
-      - entity: sensor.wetterwarnungen_current_warning_level
-      - entity: sensor.wetterlage
+  - type: 'custom:dark-sky-weather-card'
+    locale: de
+    static_icons: true
+    tooltips: true
+    entity_current_conditions: sensor.darksky_icon
+    entity_temperature: sensor.darksky_temperature
+    entity_forecast_high_temp_1: sensor.darksky_daytime_high_temperature_1
+    entity_forecast_high_temp_2: sensor.darksky_daytime_high_temperature_2
+    entity_forecast_high_temp_3: sensor.darksky_daytime_high_temperature_3
+    entity_forecast_high_temp_4: sensor.darksky_daytime_high_temperature_4
+    entity_forecast_high_temp_5: sensor.darksky_daytime_high_temperature_5
+    entity_forecast_icon_1: sensor.darksky_icon_1
+    entity_forecast_icon_2: sensor.darksky_icon_2
+    entity_forecast_icon_3: sensor.darksky_icon_3
+    entity_forecast_icon_4: sensor.darksky_icon_4
+    entity_forecast_icon_5: sensor.darksky_icon_5
+    entity_forecast_low_temp_1: sensor.darksky_overnight_low_temperature_0
+    entity_forecast_low_temp_2: sensor.darksky_overnight_low_temperature_1
+    entity_forecast_low_temp_3: sensor.darksky_overnight_low_temperature_2
+    entity_forecast_low_temp_4: sensor.darksky_overnight_low_temperature_3
+    entity_forecast_low_temp_5: sensor.darksky_overnight_low_temperature_4
+    entity_summary_1: sensor.darksky_summary_1
+    entity_summary_2: sensor.darksky_summary_2
+    entity_summary_3: sensor.darksky_summary_3
+    entity_summary_4: sensor.darksky_summary_4
+    entity_summary_5: sensor.darksky_summary_5
+    entity_sun: sun.sun
+    entity_visibility: sensor.darksky_visibility
+    entity_daytime_high: sensor.darksky_daytime_high_temperature_0
+    entity_wind_bearing: sensor.darksky_wind_bearing
+    entity_wind_speed: sensor.darksky_wind_speed
+    entity_humidity: sensor.darksky_humidity
+    entity_pressure: sensor.darksky_pressure
+    entity_apparent_temp: sensor.darksky_apparent_temperature
+    entity_daily_summary: sensor.darksky_daily_summary
+    entity_pop: sensor.darksky_precip_probability
+    entity_pop_intensity: sensor.darksky_precip_intensity
+    entity_pop_1: sensor.darksky_precip_probability_1
+    entity_pop_2: sensor.darksky_precip_probability_2
+    entity_pop_3: sensor.darksky_precip_probability_3
+    entity_pop_4: sensor.darksky_precip_probability_4
+    entity_pop_5: sensor.darksky_precip_probability_5
+    entity_current_text: sensor.wetter_text
 
   - type: entities
-    title: Temperatur
+    title: Thermometer
     show_header_toggle: false
     entities:
       - entity: sensor.zigate_f874_temperature
@@ -32,13 +66,25 @@ cards:
       - entity: sensor.zigate_6ec3_humidity
       - entity: sensor.zigate_6ec3_pressure
 
-  - type: weather-forecast
-    title: Aktuelles Wetter
-    entity: weather.aktuelles_wetter
-
-  - type: history-graph
-    title: Temperatur
+  - type: entities
+    title: Wetter
+    show_header_toggle: false
+    entities:
+      - entity: sensor.darksky_temperature
+      - entity: sensor.wetterwarnungen_current_warning_level
+      - entity: sensor.wetterlage
+      
+  - type: custom:mini-graph-card
+    name: Temperatur
+    line_width: 2
+    animate: true
     hours_to_show: 168
+    points_per_hour: 5
+    hour24: true
+    show:
+      fill: false
+      icon: false
+      points: false
     entities:
       - entity: sensor.zigate_f874_temperature
       - entity: sensor.zigate_6ec3_temperature
