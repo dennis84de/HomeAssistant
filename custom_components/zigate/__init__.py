@@ -22,7 +22,7 @@ import homeassistant.helpers.config_validation as cv
 
 _LOGGER = logging.getLogger(__name__)
 
-REQUIREMENTS = ['zigate==0.28.1']
+REQUIREMENTS = ['zigate==0.29.0']
 DEPENDENCIES = ['persistent_notification']
 
 DOMAIN = 'zigate'
@@ -40,7 +40,8 @@ CONFIG_SCHEMA = vol.Schema({
     DOMAIN: vol.Schema({
         vol.Optional(CONF_PORT): cv.string,
         vol.Optional(CONF_HOST): cv.string,
-        vol.Optional('channel'): cv.positive_int
+        vol.Optional('channel'): cv.positive_int,
+        vol.Optional('gpio'): cv.boolean
     })
 }, extra=vol.ALLOW_EXTRA)
 
@@ -138,13 +139,15 @@ def setup(hass, config):
 
     port = config[DOMAIN].get(CONF_PORT)
     host = config[DOMAIN].get(CONF_HOST)
+    gpio = config[DOMAIN].get('gpio', False)
     channel = config[DOMAIN].get('channel')
     persistent_file = os.path.join(hass.config.config_dir,
                                    'zigate.json')
 
     myzigate = zigate.connect(port=port, host=host,
                               path=persistent_file,
-                              auto_start=False
+                              auto_start=False,
+                              gpio=gpio
                               )
 
     hass.data[DOMAIN] = myzigate
@@ -152,6 +155,9 @@ def setup(hass, config):
     hass.data[DATA_ZIGATE_ATTRS] = {}
 
     component = EntityComponent(_LOGGER, DOMAIN, hass)
+    entity = ZiGateComponentEntity(myzigate)
+    hass.data[DATA_ZIGATE_DEVICES]['zigate'] = entity
+    component.add_entities([entity])
 
     def device_added(**kwargs):
         device = kwargs['device']
@@ -410,6 +416,13 @@ def setup(hass, config):
         gradient = _to_int(service.data.get('gradient', '0'))
         myzigate.action_onoff(addr, endpoint, onoff, ontime, offtime, effect, gradient)
 
+    def build_network_table(service):
+        table = myzigate.build_neighbours_table()
+        _LOGGER.debug('Neighbours table {}'.format(table))
+        entity = hass.data[DATA_ZIGATE_DEVICES].get('zigate')
+        if entity:
+            entity.network_table = table
+
     def build_network_map(service):
         myzigate.build_network_map(hass.config.config_dir)
 
@@ -453,12 +466,58 @@ def setup(hass, config):
                            schema=REMOVE_GROUP_SCHEMA)
     hass.services.register(DOMAIN, 'action_onoff', action_onoff,
                            schema=ACTION_ONOFF_SCHEMA)
+    hass.services.register(DOMAIN, 'build_network_table', build_network_table)
     hass.services.register(DOMAIN, 'build_network_map', build_network_map)
 
     track_time_change(hass, refresh_devices_list,
                       hour=0, minute=0, second=0)
 
     return True
+
+
+class ZiGateComponentEntity(Entity):
+    '''Representation of ZiGate Key'''
+    def __init__(self, myzigate):
+        """Initialize the sensor."""
+        self._device = myzigate
+        self.entity_id = '{}.{}'.format(DOMAIN, 'zigate')
+        self.network_table = []
+
+    @property
+    def should_poll(self):
+        """No polling."""
+        return True
+
+    @property
+    def name(self):
+        """Return the name of the sensor."""
+        return 'ZiGate'
+
+    @property
+    def state(self):
+        """Return the state of the sensor."""
+        if self._device.connection:
+            if self._device.connection.is_connected():
+                return 'connected'
+        return 'disconnected'
+
+    @property
+    def unique_id(self) -> str:
+        return self._device.ieee
+
+    @property
+    def device_state_attributes(self):
+        """Return the device specific state attributes."""
+        attrs = {'addr': self._device.addr,
+                 'ieee': self._device.ieee,
+                 'groups': self._device.groups,
+                 'network_table': self.network_table
+                 }
+        return attrs
+
+    @property
+    def icon(self):
+        return 'mdi:zigbee'
 
 
 class ZiGateDeviceEntity(Entity):

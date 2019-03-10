@@ -36,7 +36,7 @@ discover_device:
     ieee:
       description: IEEE address of the device.
       example: '0123456789abcdef'
-      
+
 remove_device:
   description: >
     Remove a device.
@@ -51,7 +51,7 @@ remove_device:
     ieee:
       description: IEEE address of the device.
       example: '0123456789abcdef'
-      
+
 identify_device:
   description: >
     Automatically identify a device's destination endpoint.
@@ -78,7 +78,7 @@ raw_command:
     data:
       description: Payload in hex format.
       example: '02af7d010101'
-     
+
 read_attribute:
   description: >
     Read attribute from device
@@ -105,7 +105,7 @@ read_attribute:
     manufacturer_code:
       description: Optionnal Manufacturer Code.
       example: '0x115F'
-      
+
 write_attribute:
   description: >
     Read attribute from device
@@ -142,7 +142,7 @@ write_attribute:
 add_group:
   description: >
     Add group to device
-   
+
   fields:
     entity_id:
       description: The device entity_id to identify
@@ -158,7 +158,7 @@ add_group:
       example: '1'
     group_addr:
       description: Optionnal Group addr, if not specified, generate a random addr.
-      example: '0ab9'    
+      example: '0ab9'
 
 remove_group:
   description: >
@@ -180,7 +180,7 @@ remove_group:
       example: '1'
     group_addr:
       description: Optionnal Group addr, if not specified remove all groups.
-      example: '0ab9'  
+      example: '0ab9'
 
 get_group_membership:
   description: >
@@ -214,7 +214,7 @@ action_onoff:
       example: 'af7d'
     ieee:
       description: IEEE address of the device.
-      example: '0123456789abcdef'    
+      example: '0123456789abcdef'
     onoff:
       description: 0=Off 1=On 2=Toggle
       example: '1'
