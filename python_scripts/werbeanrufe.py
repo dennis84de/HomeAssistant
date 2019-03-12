@@ -2,7 +2,7 @@
 
 import sys
 import json 
-from requests import get, post
+from requests import post
 
 def main():      
     url = 'http://192.168.2.70:8123/api/states/binary_sensor.werbeanruf'

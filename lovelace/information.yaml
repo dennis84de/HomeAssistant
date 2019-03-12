@@ -139,9 +139,9 @@ cards:
       - entity: sensor.thermometer_wohnzimmer
       - entity: sensor.thermometer_schlafzimmer
       - entity: sensor.thermometer_kueche
-      - entity: sensor.thermometer_badezimmer
+#      - entity: sensor.thermometer_badezimmer
       - entity: sensor.thermometer_arbeitszimmer
-#      - entity: sensor.thermometer_sportzimmer
+      - entity: sensor.thermometer_sportzimmer
 
   - type: entities
     title: Serien

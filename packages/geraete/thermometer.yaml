@@ -173,12 +173,12 @@ sensor:
       thermometer_sportzimmer:
         friendly_name: Sportzimmer
         entity_id:
-          - sensor.zigate_bdde_temperature
+          - sensor.zigate_c4ed_temperature
         device_class: temperature
         unit_of_measurement: "°C"
         value_template: >-
-          {% if is_state('sensor.zigate_bdde_temperature', 'unknown') %}
+          {% if is_state('sensor.zigate_c4ed_temperature', 'unknown') %}
             0
           {% else %}
-            {{ states.sensor.zigate_bdde_temperature.state }}
+            {{ states.sensor.zigate_c4ed_temperature.state }}
           {% endif %}
