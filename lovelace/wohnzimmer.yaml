@@ -30,10 +30,10 @@ cards:
           progress: true
           volume: true
       - type: custom:mini-media-player
-        entity: media_player.schlafzimmer
+        entity: media_player.wohnzimmer
         hide:
           controls: true
-          
+
   - type: entities
     title: Geräte
     show_header_toggle: false

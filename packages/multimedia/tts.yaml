@@ -2,6 +2,10 @@ tts:
   - platform: google
     language: 'de'
 
+notify:
+  - platform: alexa_media
+    name: Alexa
+
 input_number:
   sprache_lautstaerke:
     name: Lautstärke
@@ -44,9 +48,11 @@ script:
           - condition: state
             entity_id: binary_sensor.schlafen_aktiv
             state: 'off'
-      - service: media_player.alexa_tts
+      - service: notify.alexa
         data_template:
-          entity_id: >-
+          data:
+            type: tts
+          target: >-
             {% set letzteBewegung = states.sensor.letzte_bewegung.state %}
 
             {% if echo is defined and echo|length %}
