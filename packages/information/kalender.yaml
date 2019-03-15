@@ -111,6 +111,65 @@ sensor:
           {% endif %}
         icon_template: mdi:city
 
+      formel1_rennen:
+        friendly_name: Nächstes Rennen
+        entity_id:
+          - calendar.formel1_rennen
+        value_template: >
+          {% if states.calendar.formel1_rennen.attributes.location %}
+            {{ states.calendar.formel1_rennen.attributes.location }}
+          {% else %}
+            -
+          {% endif %}
+        icon_template: mdi:car-sports
+
+      formel1_qualifikation:
+        friendly_name: Qualifikation
+        entity_id:
+          - calendar.formel1_qualifikation
+        value_template: >
+          {% set qualifikation = as_timestamp(states.calendar.formel1_qualifikation.attributes.start_time) %}
+          {% set rennen = as_timestamp(states.calendar.formel1_rennen.attributes.start_time) %}
+
+          {% if qualifikation > rennen %}
+            -
+          {% else %}
+            {% if states.calendar.formel1_qualifikation.attributes.start_time %}
+              {% set weekday = as_timestamp(states.calendar.formel1_qualifikation.attributes.start_time) | timestamp_custom("%w", True) | int %}
+
+              {{ ['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'][weekday-1] }}, {{ as_timestamp(states.calendar.formel1_qualifikation.attributes.start_time) | timestamp_custom("%H:%M", True) | string }} Uhr
+            {% else %}
+              -
+            {% endif %}
+          {% endif %}
+        icon_template: mdi:car-sports
+
+      formel1_datum:
+        friendly_name: Datum
+        entity_id:
+          - calendar.formel1_rennen
+        value_template: >
+          {% if states.calendar.formel1_rennen.attributes.start_time %}
+            {% set weekday = as_timestamp(states.calendar.formel1_rennen.attributes.start_time) | timestamp_custom("%w", True) | int %}
+
+            {{ ['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'][weekday-1] }}, {{ as_timestamp(states.calendar.formel1_rennen.attributes.start_time) | timestamp_custom("%d.%m.%Y", True) | string }}
+          {% else %}
+            -
+          {% endif %}
+        icon_template: mdi:calendar-alert
+
+      formel1_uhrzeit:
+        friendly_name: Uhrzeit
+        entity_id:
+          - calendar.formel1_rennen
+        value_template: >
+          {% if states.calendar.formel1_rennen.attributes.start_time %}
+            {{ as_timestamp(states.calendar.formel1_rennen.attributes.start_time) | timestamp_custom("%H:%M Uhr", True) | string }}
+          {% else %}
+            -
+          {% endif %}
+        icon_template: mdi:clock-outline
+        
       naechster_urlaub:
         friendly_name: Nächster Urlaub
         entity_id:

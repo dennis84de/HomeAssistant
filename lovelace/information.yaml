@@ -118,6 +118,15 @@ cards:
       - entity: binary_sensor.tankstelle_jet_status
 
   - type: entities
+    title: Formel 1
+    show_header_toggle: false
+    entities:
+      - entity: sensor.formel1_rennen
+      - entity: sensor.formel1_datum
+      - entity: sensor.formel1_uhrzeit
+      - entity: sensor.formel1_qualifikation
+
+  - type: entities
     title: Anrufliste
     show_header_toggle: false
     entities:
@@ -139,7 +148,7 @@ cards:
       - entity: sensor.thermometer_wohnzimmer
       - entity: sensor.thermometer_schlafzimmer
       - entity: sensor.thermometer_kueche
-#      - entity: sensor.thermometer_badezimmer
+      - entity: sensor.thermometer_badezimmer
       - entity: sensor.thermometer_arbeitszimmer
       - entity: sensor.thermometer_sportzimmer
 
