@@ -52,6 +52,12 @@ cards:
       - entity: zwave.fibaro_badezimmer
 
   - type: entities
+    title: Zigbee
+    show_header_toggle: false
+    entities:
+      - entity: zigate.zigate
+
+  - type: entities
     title: Bewegungsmelder
     show_header_toggle: false
     entities:
