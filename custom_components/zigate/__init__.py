@@ -22,7 +22,8 @@ import homeassistant.helpers.config_validation as cv
 
 _LOGGER = logging.getLogger(__name__)
 
-REQUIREMENTS = ['zigate==0.29.0']
+REQUIREMENTS = ['zigate==0.29.3']
+# REQUIREMENTS = ['https://github.com/doudz/zigate/archive/dev.zip#1.0.0']
 DEPENDENCIES = ['persistent_notification']
 
 DOMAIN = 'zigate'
@@ -41,7 +42,8 @@ CONFIG_SCHEMA = vol.Schema({
         vol.Optional(CONF_PORT): cv.string,
         vol.Optional(CONF_HOST): cv.string,
         vol.Optional('channel'): cv.positive_int,
-        vol.Optional('gpio'): cv.boolean
+        vol.Optional('gpio'): cv.boolean,
+        vol.Optional('enable_led'): cv.boolean
     })
 }, extra=vol.ALLOW_EXTRA)
 
@@ -132,6 +134,18 @@ ACTION_ONOFF_SCHEMA = vol.Schema({
     vol.Optional('gradient'): cv.string,
 })
 
+OTA_LOAD_IMAGE_SCHEMA = vol.Schema({
+    vol.Required('imagepath'): cv.string,
+})
+
+OTA_IMAGE_NOTIFY_SCHEMA = vol.Schema({
+    vol.Optional(ADDR): cv.string,
+    vol.Optional(IEEE): cv.string,
+    vol.Optional(ATTR_ENTITY_ID): cv.entity_id,
+    vol.Optional('destination_enpoint'): cv.string,
+    vol.Optional('payload_type'): cv.string,
+})
+
 
 def setup(hass, config):
     """Setup zigate platform."""
@@ -140,6 +154,7 @@ def setup(hass, config):
     port = config[DOMAIN].get(CONF_PORT)
     host = config[DOMAIN].get(CONF_HOST)
     gpio = config[DOMAIN].get('gpio', False)
+    enable_led = config[DOMAIN].get('enable_led', True)
     channel = config[DOMAIN].get('channel')
     persistent_file = os.path.join(hass.config.config_dir,
                                    'zigate.json')
@@ -164,7 +179,7 @@ def setup(hass, config):
         _LOGGER.debug('Add device {}'.format(device))
         ieee = device.ieee or device.addr  # compatibility
         if ieee not in hass.data[DATA_ZIGATE_DEVICES]:
-            entity = ZiGateDeviceEntity(device)
+            entity = ZiGateDeviceEntity(hass, device)
             hass.data[DATA_ZIGATE_DEVICES][ieee] = entity
             component.add_entities([entity])
             if 'signal' in kwargs:
@@ -207,36 +222,7 @@ def setup(hass, config):
         attribute = kwargs['attribute']
         _LOGGER.debug('Update attribute for device {} {}'.format(device,
                                                                  attribute))
-        key = '{}-{}-{}-{}'.format(ieee,
-                                   attribute['endpoint'],
-                                   attribute['cluster'],
-                                   attribute['attribute'],
-                                   )
-        entity = hass.data[DATA_ZIGATE_ATTRS].get(key)
-        if entity:
-            if entity.hass:
-                entity.schedule_update_ha_state()
-        key = '{}-{}-{}'.format(ieee,
-                                'switch',
-                                attribute['endpoint'],
-                                )
-        entity = hass.data[DATA_ZIGATE_ATTRS].get(key)
-        if entity:
-            if entity.hass:
-                entity.schedule_update_ha_state()
-        key = '{}-{}-{}'.format(ieee,
-                                'light',
-                                attribute['endpoint'],
-                                )
-        entity = hass.data[DATA_ZIGATE_ATTRS].get(key)
-        if entity:
-            if entity.hass:
-                entity.schedule_update_ha_state()
         entity = hass.data[DATA_ZIGATE_DEVICES].get(ieee)
-        if entity:
-            if entity.hass:
-                entity.schedule_update_ha_state()
-
         event_data = attribute.copy()
         if type(event_data.get('type')) == type:
             event_data['type'] = event_data['type'].__name__
@@ -255,12 +241,16 @@ def setup(hass, config):
         _LOGGER.debug('Update device {}'.format(device))
         ieee = device.ieee or device.addr  # compatibility
         entity = hass.data[DATA_ZIGATE_DEVICES].get(ieee)
-        if entity:
-            if entity.hass:
-                entity.schedule_update_ha_state()
-        else:
+        if not entity:
             _LOGGER.debug('Device not found {}, adding it'.format(device))
             device_added(device=device)
+        event_data = {}
+        event_data['ieee'] = device.ieee
+        event_data['addr'] = device.addr
+        event_data['device_type'] = device.get_property_value('type')
+        if entity:
+            event_data['entity_id'] = entity.entity_id
+        hass.bus.fire('zigate.device_updated', event_data)
 
     zigate.dispatcher.connect(device_updated,
                               zigate.ZIGATE_DEVICE_UPDATED, weak=False)
@@ -284,11 +274,12 @@ def setup(hass, config):
     def start_zigate(service_event=None):
         myzigate.autoStart(channel)
         myzigate.start_auto_save()
+        myzigate.set_led(enable_led)
         version = myzigate.get_version_text()
-        if version < '3.0d':
+        if version < '3.0f':
             hass.components.persistent_notification.create(
                 ('Your zigate firmware is outdated, '
-                 'Please upgrade to 3.0d or later !'),
+                 'Please upgrade to 3.0f or later !'),
                 title='ZiGate')
         # first load
         for device in myzigate.devices:
@@ -423,8 +414,18 @@ def setup(hass, config):
         if entity:
             entity.network_table = table
 
-    def build_network_map(service):
-        myzigate.build_network_map(hass.config.config_dir)
+    def ota_load_image(service):
+        ota_image_path = service.data.get('imagepath')
+        myzigate.ota_load_image(ota_image_path)
+
+    def ota_image_notify(service):
+        addr = _get_addr_from_service_request(service)
+        destination_endpoint = _to_int(service.data.get('destination_endpoint', '1'))
+        payload_type = _to_int(service.data.get('payload_type', '0'))
+        myzigate.ota_image_notify(addr, destination_endpoint, payload_type)
+
+    def get_ota_status(service):
+        myzigate.get_ota_status()
 
     hass.bus.listen_once(EVENT_HOMEASSISTANT_START, start_zigate)
     hass.bus.listen_once(EVENT_HOMEASSISTANT_STOP, stop_zigate)
@@ -467,7 +468,12 @@ def setup(hass, config):
     hass.services.register(DOMAIN, 'action_onoff', action_onoff,
                            schema=ACTION_ONOFF_SCHEMA)
     hass.services.register(DOMAIN, 'build_network_table', build_network_table)
-    hass.services.register(DOMAIN, 'build_network_map', build_network_map)
+
+    hass.services.register(DOMAIN, 'ota_load_image', ota_load_image,
+                           schema=OTA_LOAD_IMAGE_SCHEMA)
+    hass.services.register(DOMAIN, 'ota_image_notify', ota_image_notify,
+                           schema=OTA_IMAGE_NOTIFY_SCHEMA)
+    hass.services.register(DOMAIN, 'ota_get_status', get_ota_status)
 
     track_time_change(hass, refresh_devices_list,
                       hour=0, minute=0, second=0)
@@ -523,11 +529,17 @@ class ZiGateComponentEntity(Entity):
 class ZiGateDeviceEntity(Entity):
     '''Representation of ZiGate device'''
 
-    def __init__(self, device):
+    def __init__(self, hass, device):
         """Initialize the sensor."""
         self._device = device
         ieee = device.ieee or device.addr
         self.entity_id = '{}.{}'.format(DOMAIN, ieee)
+        hass.bus.listen('zigate.attribute_updated', self._handle_event)
+        hass.bus.listen('zigate.device_updated', self._handle_event)
+
+    def _handle_event(self, call):
+        if self._device.ieee == call.data['ieee']:
+            self.schedule_update_ha_state()
 
     @property
     def should_poll(self):
