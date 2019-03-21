@@ -123,7 +123,6 @@ cards:
     entities:
       - entity: sensor.formel1_rennen
       - entity: sensor.formel1_datum
-      - entity: sensor.formel1_uhrzeit
       - entity: sensor.formel1_qualifikation
 
   - type: entities
