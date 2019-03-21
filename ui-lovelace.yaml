@@ -15,9 +15,9 @@ views:
   - !include lovelace/batterien.yaml
 
 resources:
-  - url: /local/lovelace/vertical-stack-in-card.js?v=v0.1.1
+  - url: /local/lovelace/vertical-stack-in-card.js?v=v0.1.2
     type: js
-  - url: /local/lovelace/card-tools.js?v=0.4
+  - url: /local/lovelace/card-tools.js?track=true
     type: js
   - url: /local/lovelace/popup-card.js?track=true
     type: js
@@ -25,9 +25,9 @@ resources:
     type: js
   - url: /local/lovelace/fold-entity-row.js
     type: js
-  - url: /local/lovelace/mini-media-player-bundle.js?v=1.0.1
+  - url: /local/lovelace/mini-media-player-bundle.js?v=1.0.3
     type: module
-  - url: /local/lovelace/mini-graph-card-bundle.js?v=0.3.0
+  - url: /local/lovelace/mini-graph-card-bundle.js?v=0.3.1
     type: module
   - url: /local/lovelace/tracker-card.js?track=true
     type: module
