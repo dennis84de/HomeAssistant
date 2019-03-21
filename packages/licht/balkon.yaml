@@ -11,16 +11,6 @@ input_boolean:
     initial: off
     icon: mdi:sync-off
 
-entity_controller:
-  bewegung_balkon:
-    friendly_name: "Bewegung Balkon"
-    sensor: binary_sensor.zigate_0b57_presence
-    entity: light.balkon_licht
-    delay: 600
-    overrides:
-      - binary_sensor.sonne_tagsueber
-      - input_boolean.bewegungsmelder_balkon_deaktiviert
-
 automation:
   - alias: "Licht Balkon - ausschalten"
     initial_state: true

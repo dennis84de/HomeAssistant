@@ -11,17 +11,6 @@ input_boolean:
     initial: off
     icon: mdi:sync-off
 
-entity_controller:
-  bewegung_badezimmer:
-    friendly_name: "Bewegung Badezimmer"
-    sensor: binary_sensor.bewegungsmelder_badezimmer
-    entity: light.badezimmerschrank
-    sensor_type_duration: True
-    delay: 120
-    overrides:
-      - binary_sensor.sonne_tagsueber
-      - input_boolean.bewegungsmelder_badezimmer_deaktiviert
-
 homeassistant:
   customize:
     light.badezimmerschrank:

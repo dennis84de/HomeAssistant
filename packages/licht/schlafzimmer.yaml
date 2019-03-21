@@ -15,16 +15,6 @@ input_boolean:
     initial: off
     icon: mdi:sync-off
 
-entity_controller:
-  bewegung_schlafzimmer:
-    friendly_name: "Bewegung Schlafzimmer"
-    sensor: binary_sensor.zigate_be83_presence
-    entity: light.bett
-    delay: 60
-    overrides:
-      - binary_sensor.sonne_tagsueber
-      - input_boolean.bewegungsmelder_schlafzimmer_deaktiviert
-
 automation:
   - alias: "Licht Schlafzimmer - ausschalten"
     initial_state: true

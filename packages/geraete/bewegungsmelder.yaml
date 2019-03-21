@@ -176,6 +176,86 @@ binary_sensor:
         device_class: motion
         value_template: "{{ is_state('sensor.fibaro_badezimmer_burglar', '8') }}"
 
+entity_controller:
+  radio_badezimmer:
+    friendly_name: "Radio Badezimmer - Bewegung"
+    sensor: binary_sensor.bewegungsmelder_badezimmer
+    sensor_type_duration: True
+    entity: switch.wiedergabe_badezimmer
+    delay: 120
+    overrides:
+      - binary_sensor.radio_badezimmer_inaktiv
+
+  bewegung_arbeitszimmer:
+    friendly_name: "Bewegung Arbeitszimmer"
+    sensor: binary_sensor.zigate_eac1_presence
+    entities:
+      - light.schreibtisch
+      - light.arbeitszimmer_lampe
+    delay: 120
+    overrides:
+      - binary_sensor.sonne_tagsueber
+      - input_boolean.bewegungsmelder_arbeitszimmer_deaktiviert
+
+  bewegung_badezimmer:
+    friendly_name: "Bewegung Badezimmer"
+    sensor: binary_sensor.bewegungsmelder_badezimmer
+    entity: light.badezimmerschrank
+    sensor_type_duration: True
+    delay: 120
+    overrides:
+      - binary_sensor.sonne_tagsueber
+      - input_boolean.bewegungsmelder_badezimmer_deaktiviert
+
+  bewegung_balkon:
+    friendly_name: "Bewegung Balkon"
+    sensor: binary_sensor.zigate_0b57_presence
+    entity: light.balkon_licht
+    delay: 600
+    overrides:
+      - binary_sensor.sonne_tagsueber
+      - input_boolean.bewegungsmelder_balkon_deaktiviert
+
+  bewegung_flur_vorne:
+    friendly_name: "Bewegung Flur vorne"
+    sensor: binary_sensor.zigate_7904_presence
+    entity: light.sideboard
+    delay: 120
+    overrides:
+      - binary_sensor.sonne_tagsueber
+      - input_boolean.bewegungsmelder_flur_deaktiviert
+
+  bewegung_kueche:
+    friendly_name: "Bewegung Küche"
+    sensor: binary_sensor.zigate_a230_presence
+    entity: light.regal
+    delay: 120
+    overrides:
+      - binary_sensor.sonne_tagsueber
+      - input_boolean.bewegungsmelder_kueche_deaktiviert
+
+  bewegung_schlafzimmer:
+    friendly_name: "Bewegung Schlafzimmer"
+    sensor: binary_sensor.zigate_be83_presence
+    entity: light.bett
+    delay: 60
+    overrides:
+      - binary_sensor.sonne_tagsueber
+      - input_boolean.bewegungsmelder_schlafzimmer_deaktiviert
+
+  bewegung_wohnzimmer:
+    friendly_name: "Bewegung Wohnzimmer"
+    sensor: binary_sensor.bewegungsmelder_wohnzimmer
+    entities:
+      - light.couch
+      - light.strahler
+    delay: 60
+    overrides:
+      - binary_sensor.sonne_tagsueber
+      - input_boolean.bewegungsmelder_wohnzimmer_deaktiviert
+      - switch.computer
+      - switch.watchtv_wohnzimmer
+
 homeassistant:
   customize:
     binary_sensor.bewegungsmelder_flur:

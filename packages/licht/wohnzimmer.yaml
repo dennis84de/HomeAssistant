@@ -17,20 +17,6 @@ light:
     name: Vitrine
     entity_id: switch.vitrine
 
-entity_controller:
-  bewegung_wohnzimmer:
-    friendly_name: "Bewegung Wohnzimmer"
-    sensor: binary_sensor.bewegungsmelder_wohnzimmer
-    entities:
-      - light.couch
-      - light.strahler
-    delay: 60
-    overrides:
-      - binary_sensor.sonne_tagsueber
-      - input_boolean.bewegungsmelder_wohnzimmer_deaktiviert
-      - switch.computer
-      - switch.watchtv_wohnzimmer
-
 switch:
   - platform: brematic
     host: 192.168.2.57

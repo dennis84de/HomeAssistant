@@ -17,16 +17,6 @@ input_boolean:
     initial: off
     icon: mdi:sync-off
 
-entity_controller:
-  bewegung_flur_vorne:
-    friendly_name: "Bewegung Flur vorne"
-    sensor: binary_sensor.zigate_7904_presence
-    entity: light.sideboard
-    delay: 120
-    overrides:
-      - binary_sensor.sonne_tagsueber
-      - input_boolean.bewegungsmelder_flur_deaktiviert
-
 homeassistant:
   customize:
     light.sideboard:

@@ -26,9 +26,9 @@ from .const import (
 
 # from .config_flow import configured_instances
 
-REQUIREMENTS = ['alexapy==0.3.0']
+REQUIREMENTS = ['alexapy==0.4.2']
 
-__version__ = '1.2.0'
+__version__ = '1.2.3'
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -309,14 +309,17 @@ def setup_alexa(hass, config, login_obj):
         # Process last_called data to fire events
         update_last_called(login_obj)
 
-    def update_last_called(login_obj):
+    def update_last_called(login_obj, last_called=None):
         """Update the last called device for the login_obj.
 
         This will store the last_called in hass.data and also fire an event
         to notify listeners.
         """
         from alexapy import AlexaAPI
-        last_called = AlexaAPI.get_last_device_serial(login_obj)
+        if last_called:
+            last_called = last_called
+        else:
+            last_called = AlexaAPI.get_last_device_serial(login_obj)
         _LOGGER.debug("%s: Updated last_called: %s",
                       hide_email(email),
                       hide_serial(last_called))
@@ -353,10 +356,93 @@ def setup_alexa(hass, config, login_obj):
             login_obj = account_dict['login_obj']
             update_last_called(login_obj)
 
+    def ws_connect():
+        """Open WebSocket connection.
+
+        This will only attempt one login before failing.
+        """
+        from alexapy import WebsocketEchoClient
+        try:
+            websocket = WebsocketEchoClient(login_obj,
+                                            ws_handler,
+                                            ws_close_handler,
+                                            ws_error_handler)
+            _LOGGER.debug("%s: Websocket created: %s", hide_email(email),
+                          websocket)
+        except BaseException as exception_:
+            _LOGGER.debug("%s: Websocket failed: %s falling back to polling",
+                          hide_email(email),
+                          exception_)
+            websocket = None
+        return websocket
+
+    def ws_handler(message_obj):
+        """Handle websocket messages.
+
+        This allows push notifications from Alexa to update last_called
+        and media state.
+        """
+        command = (message_obj.json_payload['command']
+                   if isinstance(message_obj.json_payload, dict) and
+                   'command' in message_obj.json_payload
+                   else None)
+        json_payload = (message_obj.json_payload['payload']
+                        if isinstance(message_obj.json_payload, dict) and
+                        'payload' in message_obj.json_payload
+                        else None)
+        if command and json_payload:
+            _LOGGER.debug("%s: Received websocket command: %s : %s",
+                          hide_email(email),
+                          command, json_payload)
+            if command == 'PUSH_ACTIVITY':
+                #  Last_Alexa Updated
+                last_called = {
+                    'serialNumber': (json_payload
+                                     ['key']
+                                     ['entryId']).split('#')[2],
+                    'timestamp': json_payload['timestamp']
+                    }
+                update_last_called(login_obj, last_called)
+            elif command == 'PUSH_AUDIO_PLAYER_STATE':
+                # Player update
+                _LOGGER.debug("Updating media_player: %s", json_payload)
+                hass.bus.fire(('{}_{}'.format(DOMAIN,
+                                              hide_email(email)))[0:32],
+                              {'player_state': json_payload})
+            elif command == 'PUSH_VOLUME_CHANGE':
+                # Player volume update
+                _LOGGER.debug("Updating media_player volume: %s", json_payload)
+                hass.bus.fire(('{}_{}'.format(DOMAIN,
+                                              hide_email(email)))[0:32],
+                              {'player_state': json_payload})
+
+    def ws_close_handler():
+        """Handle websocket close.
+
+        This should attempt to reconnect.
+        """
+        email = login_obj.email
+        _LOGGER.debug("%s: Received websocket close; attempting reconnect",
+                      hide_email(email))
+        (hass.data[DOMAIN]['accounts'][email]['websocket']) = ws_connect()
+
+    def ws_error_handler(message):
+        """Handle websocket error.
+
+        This currently logs the error.  In the future, this should invalidate
+        the websocket and determine if a reconnect should be done. By
+        specification, websockets will issue a close after every error.
+        """
+        email = login_obj.email
+        _LOGGER.debug("%s: Received websocket error %s",
+                      hide_email(email),
+                      message)
+        (hass.data[DOMAIN]['accounts'][email]['websocket']) = None
     include = config.get(CONF_INCLUDE_DEVICES)
     exclude = config.get(CONF_EXCLUDE_DEVICES)
     scan_interval = config.get(CONF_SCAN_INTERVAL)
     email = login_obj.email
+    (hass.data[DOMAIN]['accounts'][email]['websocket']) = ws_connect()
     (hass.data[DOMAIN]['accounts'][email]['login_obj']) = login_obj
     (hass.data[DOMAIN]['accounts'][email]['devices']) = {'media_player': {}}
     (hass.data[DOMAIN]['accounts'][email]['entities']) = {'media_player': {}}

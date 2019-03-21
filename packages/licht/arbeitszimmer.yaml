@@ -14,19 +14,7 @@ input_boolean:
     name: Bewegungsmelder deaktiviert
     initial: off
     icon: mdi:sync-off
-
-entity_controller:
-  bewegung_arbeitszimmer:
-    friendly_name: "Bewegung Arbeitszimmer"
-    sensor: binary_sensor.zigate_eac1_presence
-    entities:
-      - light.schreibtisch
-      - light.arbeitszimmer_lampe
-    delay: 120
-    overrides:
-      - binary_sensor.sonne_tagsueber
-      - input_boolean.bewegungsmelder_arbeitszimmer_deaktiviert
-
+    
 switch:
   - platform: brematic
     host: 192.168.2.57

@@ -121,16 +121,6 @@ binary_sensor:
             false
           {% endif %}
 
-entity_controller:
-  radio_badezimmer:
-    friendly_name: "Radio Badezimmer - Bewegung"
-    sensor: binary_sensor.bewegungsmelder_badezimmer_template
-    sensor_type_duration: True
-    entity: switch.wiedergabe_badezimmer
-    delay: 120
-    overrides:
-      - binary_sensor.radio_badezimmer_inaktiv
-
 automation:
   - alias: 'Radio Balkon - Bewegung erkannt'
     initial_state: true
