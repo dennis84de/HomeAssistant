@@ -126,6 +126,15 @@ cards:
       - entity: sensor.formel1_qualifikation
 
   - type: entities
+    title: Waage
+    show_header_toggle: false
+    entities:
+      - entity: sensor.gewicht
+      - entity: sensor.bmi
+      - entity: sensor.wasser
+      - entity: sensor.fett
+
+  - type: entities
     title: Anrufliste
     show_header_toggle: false
     entities:
