@@ -144,12 +144,12 @@ cards:
       icon: false
       points: false
     entities:
-      - entity: sensor.thermometer_wohnzimmer
-      - entity: sensor.thermometer_schlafzimmer
-      - entity: sensor.thermometer_kueche
-      - entity: sensor.thermometer_badezimmer
-      - entity: sensor.thermometer_arbeitszimmer
-      - entity: sensor.thermometer_sportzimmer
+      - entity: sensor.thermometer_real_wohnzimmer
+      - entity: sensor.thermometer_real_schlafzimmer
+      - entity: sensor.thermometer_real_kueche
+      - entity: sensor.thermometer_real_badezimmer
+      - entity: sensor.thermometer_real_arbeitszimmer
+      - entity: sensor.thermometer_real_sportzimmer
 
   - type: entities
     title: Serien

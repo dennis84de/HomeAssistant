@@ -11,6 +11,11 @@ input_boolean:
     name: Schlafen
     initial: off
 
+  schlafen_fernseher_einschalten:
+    name: Fernseher einschalten
+    initial: on
+    icon: mdi:television
+
 input_select:
   timer_schlafzimmer_dauer:
     name: Timer Schlafzimmer
@@ -86,10 +91,10 @@ sensor:
         entity_id:
           - script.goto_bed
         value_template: >
-          {% if states.script.goto_bed.attributes.last_triggered == None %}
+          {% if states.script.schlafen_gehen.attributes.last_triggered == None %}
             -
           {% else %}
-            {{ as_timestamp(states.script.goto_bed.attributes.last_triggered) | timestamp_custom('%H:%M') }}
+            {{ as_timestamp(states.script.schlafen_gehen.attributes.last_triggered) | timestamp_custom('%H:%M') }}
           {% endif %}
         icon_template: >
           mdi:av-timer
@@ -111,7 +116,7 @@ sensor:
         unit_of_measurement: 'Stunden'
 
 script:
-  goto_bed:
+  schlafen_gehen:
     alias: Schlafen gehen
     sequence:
       - service: !secret tts_service
@@ -121,8 +126,6 @@ script:
         entity_id: input_boolean.schlafen_aktiv
       - service: light.turn_on
         entity_id: light.bett
-      - service: switch.turn_on
-        entity_id: switch.watchtv_schlafzimmer
       - service: switch.turn_off
         entity_id: switch.multimedia, switch.wohnzimmer_radio, switch.balkon_radio, switch.flur_radio, switch.kuche_radio, switch.schlafzimmer_radio, switch.arbeitszimmer_radio
       - service: switch.turn_off
@@ -142,6 +145,12 @@ script:
         state: 'on'
       - service: switch.turn_off
         entity_id: switch.pc
+
+  schlafen_gehen_fernseher:
+    alias: Schlafen gehen - Fernseher einschalten
+    sequence:
+      - service: switch.turn_on
+        entity_id: switch.watchtv_schlafzimmer
 
   sleeptimer_turn_off_tv:
     alias: Sleeptimer aktivieren
@@ -207,7 +216,7 @@ automation:
       - service: media_player.clear_playlist
         entity_id: media_player.tts
 
-  - alias: "Schlafen gehen - Einschalten"
+  - alias: "Schlafen gehen - Starten"
     initial_state: true
     trigger:
       - platform: event
@@ -219,7 +228,21 @@ automation:
         data_template:
           echo: "wohnzimmer"
           message: "Alle Geräte werden jetzt ausgeschaltet. Gute Nacht."
-      - service: script.goto_bed
+      - service: script.schlafen_gehen
+
+  - alias: "Schlafen gehen - Fernseher einschalten"
+    initial_state: true
+    trigger:
+      - platform: event
+        event_type: timer.finished
+        event_data:
+          entity_id: timer.schlafen_einschalten
+    condition:
+      - condition: state
+        entity_id: input_boolean.schlafen_fernseher_einschalten
+        state: 'on'
+    action:
+      - service: script.schlafen_gehen_fernseher
 
   - alias: 'Sleeptimer starten'
     initial_state: true
@@ -331,7 +354,7 @@ automation:
 
 homeassistant:
   customize:
-    script.goto_bed:
+    script.schlafen_gehen:
       icon: mdi:hotel
       can_cancel: false
 

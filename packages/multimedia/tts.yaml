@@ -82,7 +82,7 @@ automation:
     action:
       - service: media_player.volume_set
         data_template:
-          entity_id: media_player.multimedia
+          entity_id: media_player.tts
           volume_level: >-
             {{ states.input_number.sprache_lautstaerke.state | int / 100 }}
 
@@ -100,7 +100,7 @@ automation:
         data_template:
           entity_id: input_number.sprache_lautstaerke
           value: >-
-            {{ states.media_player.multimedia.attributes.volume_level * 100 | int }}
+            {{ states.media_player.tts.attributes.volume_level * 100 | int }}
 
   - alias: 'Zu Hause - Multimedia einschalten'
     initial_state: true
@@ -139,7 +139,7 @@ automation:
       - service: media_player.play_media
         data_template:
           entity_id:
-            - media_player.multimedia
+            - media_player.tts
           media_content_id: >-
             {% if now().strftime("%M")|int == 30 %}
               http://192.168.2.70:8123/local/uhr/GrandFatherChime_half.mp3
@@ -156,7 +156,7 @@ automation:
       to: 'off'
     condition:
       - condition: state
-        entity_id: media_player.multimedia
+        entity_id: media_player.tts
         state: 'playing'
     action:
       - service: media_player.media_pause

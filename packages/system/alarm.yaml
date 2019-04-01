@@ -337,11 +337,6 @@ script:
         entity_id: switch.computer, switch.watchtv_wohnzimmer
       - service: switch.turn_on
         entity_id: switch.badezimmer_radio
-      - wait_template: "{{ is_state('media_player.badezimmer', 'playing') }}"
-        timeout: '00:01:00'
-        continue_on_timeout: 'true'
-      - service: media_player.media_pause
-        entity_id: media_player.badezimmer
 
   alles_ausschalten:
     alias: "Alles ausschalten"
