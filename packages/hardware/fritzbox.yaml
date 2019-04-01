@@ -8,11 +8,22 @@ device_tracker:
     new_device_defaults:
       track_new_devices: false
 
+  - platform: fritz
+    host: !secret repeater_host
+    username: !secret fritzbox_username
+    password: !secret fritzbox_password
+    interval_seconds: 5
+    consider_home: 60
+    new_device_defaults:
+      track_new_devices: false
+
   - platform: phonetracker
     url: !secret phonetracker_url
     token: !secret phonetracker_token
     devices:
       - HandyGPS
+
+  - platform: bluetooth_tracker
 
 fritzbox:
   devices:
@@ -157,6 +168,8 @@ automation:
         entity_id: device_tracker.handygps
         to: 'home'
     action:
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.zu_hause
       - service: shell_command.send_position
         data:
           url: !secret phonetracker_send_position_url
@@ -165,8 +178,6 @@ automation:
           dev_id: handygps
           location_name: 'home'
           gps: ["{{ states.device_tracker.netzwerkdj.attributes.latitude }}", "{{ states.device_tracker.netzwerkdj.attributes.longitude }}"]
-      - service: input_boolean.turn_on
-        entity_id: input_boolean.zu_hause
 
   - alias: "Zu Hause - Manuell geschaltet"
     initial_state: false
@@ -231,7 +242,7 @@ homeassistant:
     device_tracker.tplinkschlafzimmerfernseher:
       icon: mdi:power-socket-eu
       friendly_name: Schlafzimmer Fernseher
-    device_tracker.fritzrepeater:
+    device_tracker.fritz_repeater:
       icon: mdi:wifi
       friendly_name: Repeater
 
