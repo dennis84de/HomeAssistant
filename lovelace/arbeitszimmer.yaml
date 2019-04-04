@@ -47,6 +47,11 @@ cards:
       - entity: input_boolean.xiaomi_vacuum_automatische_reinigung
       - entity: sensor.xiaomi_vacuum_batterie
       - entity: sensor.letzte_reinigung
+      - type: divider
+      - entity: sensor.reinigung_filter
+      - entity: sensor.reinigung_buerste
+      - entity: sensor.reinigung_seitenbuerste
+      - entity: sensor.reinigung_behaelter
 
   - type: entities
     title: Multimedia

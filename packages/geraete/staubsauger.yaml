@@ -4,8 +4,6 @@ vacuum:
     token: !secret xiaomi_vacuum_token
 
 input_boolean:
-  xiaomi_vacuum_heute_gereinigt:
-    name: Heute gereinigt
   xiaomi_vacuum_automatische_reinigung:
     name: Automatische Reinigung
     icon: mdi:flash-auto
@@ -19,9 +17,46 @@ sensor:
         unit_of_measurement: 'Uhr'
         entity_id:
           - vacuum.xiaomi_vacuum_cleaner
+        icon_template: mdi:clock-end
         value_template: >-
           {% set lastClean = state_attr("vacuum.xiaomi_vacuum_cleaner", "clean_stop") %}
           {{ as_timestamp(lastClean) | timestamp_custom("%d.%m.%Y %H:%M", True) | string }}
+          
+      reinigung_filter:
+        friendly_name: Reinigung Filter
+        unit_of_measurement: 'Stunden'
+        entity_id:
+          - vacuum.xiaomi_vacuum_cleaner
+        icon_template: mdi:progress-clock
+        value_template: >-
+          {{ state_attr("vacuum.xiaomi_vacuum_cleaner", "filter_left") }}
+
+      reinigung_buerste:
+        friendly_name: Reinigung Bürste
+        unit_of_measurement: 'Stunden'
+        entity_id:
+          - vacuum.xiaomi_vacuum_cleaner
+        icon_template: mdi:progress-clock
+        value_template: >-
+          {{ state_attr("vacuum.xiaomi_vacuum_cleaner", "main_brush_left") }}
+
+      reinigung_seitenbuerste:
+        friendly_name: Reinigung Seitenbürste
+        unit_of_measurement: 'Stunden'
+        entity_id:
+          - vacuum.xiaomi_vacuum_cleaner
+        icon_template: mdi:progress-clock
+        value_template: >-
+          {{ state_attr("vacuum.xiaomi_vacuum_cleaner", "side_brush_left") }}
+
+      reinigung_behaelter:
+        friendly_name: Reinigung Behälter
+        unit_of_measurement: 'Stunden'
+        entity_id:
+          - vacuum.xiaomi_vacuum_cleaner
+        icon_template: mdi:progress-clock
+        value_template: >-
+          {{ state_attr("vacuum.xiaomi_vacuum_cleaner", "sensor_dirty_left") }}
 
       xiaomi_vacuum_batterie:
         friendly_name: Batterie
@@ -50,34 +85,38 @@ automation:
     condition:
       condition: and
       conditions:
-      - condition: time
-        after: '06:00'
-        before: '22:00'
-      - condition: state
-        entity_id: vacuum.xiaomi_vacuum_cleaner
-        state: 'docked'
-      - condition: state
-        entity_id: input_boolean.xiaomi_vacuum_automatische_reinigung
-        state: 'on'
-      - condition: state
-        entity_id: input_boolean.xiaomi_vacuum_heute_gereinigt
-        state: 'off'
-      - condition: state
-        entity_id: binary_sensor.zu_hause
-        state: 'off'
-      - condition: template
-        value_template: '{{ now().isoweekday() != 7 }}'
-      - condition: or
-        conditions:
-          - condition: template
-            value_template: '{{ now().isoweekday() == 1 or now().isoweekday() == 4 }}'
-          - condition: template
-            value_template: >-
-              {% set letzte_reinigung = as_timestamp(state_attr("vacuum.xiaomi_vacuum_cleaner", "clean_stop")) | timestamp_custom("%s", True) | int  %}
-              {% set now = now().strftime("%s") | int %}
-              {% set abstand_tage = ((now - letzte_reinigung | timestamp_custom("%s") | int) / 86400) | int %}
+        - condition: time
+          after: '06:00'
+          before: '22:00'
+        - condition: state
+          entity_id: vacuum.xiaomi_vacuum_cleaner
+          state: 'docked'
+        - condition: state
+          entity_id: input_boolean.xiaomi_vacuum_automatische_reinigung
+          state: 'on'
+        - condition: state
+          entity_id: binary_sensor.zu_hause
+          state: 'off'
+        - condition: template
+          value_template: '{{ now().isoweekday() != 7 }}'
+        - condition: template
+          value_template: >-
+            {% set letzte_reinigung = as_timestamp(state_attr("vacuum.xiaomi_vacuum_cleaner", "clean_stop")) | timestamp_custom("%s", True) | int  %}
+            {% set now = now().strftime("%s") | int %}
+            {% set abstand_stunden = ((now - letzte_reinigung | timestamp_custom("%s") | int) / 3600) | int %}
 
-              {{ True if abstand_tage >= 3 else False }}
+            {{ True if abstand_stunden >= 24 else False }}
+        - condition: or
+          conditions:
+            - condition: template
+              value_template: '{{ now().isoweekday() == 1 or now().isoweekday() == 4 }}'
+            - condition: template
+              value_template: >-
+                {% set letzte_reinigung = as_timestamp(state_attr("vacuum.xiaomi_vacuum_cleaner", "clean_stop")) | timestamp_custom("%s", True) | int  %}
+                {% set now = now().strftime("%s") | int %}
+                {% set abstand_tage = ((now - letzte_reinigung | timestamp_custom("%s") | int) / 86400) | int %}
+
+                {{ True if abstand_tage >= 3 else False }}
     action:
       - service: vacuum.start
         entity_id: vacuum.xiaomi_vacuum_cleaner
@@ -85,15 +124,6 @@ automation:
         data_template:
           title: 'Staubsaugen gestartet'
           message: 'Das Saugen der Wohnung wurde gestartet.'
-
-  - alias: "Heutige Reinigung zurücksetzen"
-    initial_state: true
-    trigger:
-      - platform: time
-        at: '0:00:00'
-    action:
-      - service: input_boolean.turn_off
-        entity_id: input_boolean.xiaomi_vacuum_heute_gereinigt
 
   - alias: "Staubsaugen beendet"
     initial_state: true
@@ -103,8 +133,6 @@ automation:
         from: 'returning'
         to: 'docked'
     action:
-      - service: input_boolean.turn_on
-        entity_id: input_boolean.xiaomi_vacuum_heute_gereinigt
       - service: notify.telegram
         data_template:
           title: 'Staubsaugen beendet'
@@ -126,5 +154,3 @@ homeassistant:
   customize:
     vacuum.xiaomi_vacuum_cleaner:
       friendly_name: Xiaomi Robot
-    sensor.letzte_reinigung:
-      icon: mdi:clock-end

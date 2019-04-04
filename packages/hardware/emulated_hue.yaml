@@ -96,8 +96,6 @@ emulated_hue:
       hidden: true
     input_boolean.xiaomi_vacuum_automatische_reinigung:
       hidden: true
-    input_boolean.xiaomi_vacuum_heute_gereinigt:
-      hidden: true
     switch.multimedia:
       hidden: true
     input_boolean.sprachausgabe:
