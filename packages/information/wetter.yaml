@@ -459,10 +459,10 @@ homeassistant:
       friendly_name: Ozon
     sensor.darksky_hourly_summary:
       friendly_name: Zusammenfassung
-    sensor.darksky_daytime_high_temperature_0:
+    sensor.darksky_daytime_high_temperature_d0:
       friendly_name: Heutige Höchsttemperatur
       hidden: false
-    sensor.darksky_overnight_low_temperature_0:
+    sensor.darksky_overnight_low_temperature_d0:
       friendly_name: Heutige Tiefsttemperatur
       hidden: false
     sensor.darksky_dew_point:

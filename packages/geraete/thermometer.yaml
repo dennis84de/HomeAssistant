@@ -118,19 +118,6 @@ sensor:
             {{ states.sensor.aeotec_wohnzimmer_temperature.state }}
           {% endif %}
 
-      thermometer_real_wohnzimmer:
-        friendly_name: Wohnzimmer
-        entity_id:
-          - sensor.aeotec_wohnzimmer_temperature
-          - sensor.aeotec_wohnzimmer_relative_humidity
-        device_class: temperature
-        unit_of_measurement: "°C"
-        value_template: >-
-          {% set temp = states('sensor.aeotec_wohnzimmer_temperature') | float %}
-          {% set humidity = states('sensor.aeotec_wohnzimmer_relative_humidity') | float %}
-
-          {{(0.567 * temp + 0.393 * (humidity / 100 * 6.105 * e ** (17.27 * temp / (237.7 + temp ) )) + 3.94) | round(2) }}
-
       thermometer_schlafzimmer:
         friendly_name: Schlafzimmer
         entity_id:
@@ -143,19 +130,6 @@ sensor:
           {% else %}
             {{ states.sensor.zigate_7c8f_temperature.state }}
           {% endif %}
-
-      thermometer_real_schlafzimmer:
-        friendly_name: Schlafzimmer
-        entity_id:
-          - sensor.zigate_7c8f_temperature
-          - sensor.zigate_7c8f_humidity
-        device_class: temperature
-        unit_of_measurement: "°C"
-        value_template: >-
-          {% set temp = states('sensor.zigate_7c8f_temperature') | float %}
-          {% set humidity = states('sensor.zigate_7c8f_humidity') | float %}
-
-          {{(0.567 * temp + 0.393 * (humidity / 100 * 6.105 * e ** (17.27 * temp / (237.7 + temp ) )) + 3.94) | round(2) }}
 
       thermometer_kueche:
         friendly_name: Küche
@@ -170,33 +144,7 @@ sensor:
             {{ states.sensor.zigate_eff1_temperature.state }}
           {% endif %}
 
-      thermometer_real_kueche:
-        friendly_name: Küche
-        entity_id:
-          - sensor.zigate_eff1_temperature
-          - sensor.zigate_eff1_humidity
-        device_class: temperature
-        unit_of_measurement: "°C"
-        value_template: >-
-          {% set temp = states('sensor.zigate_eff1_temperature') | float %}
-          {% set humidity = states('sensor.zigate_eff1_humidity') | float %}
-
-          {{(0.567 * temp + 0.393 * (humidity / 100 * 6.105 * e ** (17.27 * temp / (237.7 + temp ) )) + 3.94) | round(2) }}
-
       thermometer_badezimmer:
-        friendly_name: Badezimmer
-        entity_id:
-          - sensor.fibaro_badezimmer_temperature
-        device_class: temperature
-        unit_of_measurement: "°C"
-        value_template: >-
-          {% if is_state('sensor.fibaro_badezimmer_temperature', 'unknown') %}
-            0
-          {% else %}
-            {{ states.sensor.fibaro_badezimmer_temperature.state }}
-          {% endif %}
-
-      thermometer_real_badezimmer:
         friendly_name: Badezimmer
         entity_id:
           - sensor.fibaro_badezimmer_temperature
@@ -222,19 +170,6 @@ sensor:
             {{ states.sensor.zigate_d44e_temperature.state }}
           {% endif %}
 
-      thermometer_real_arbeitszimmer:
-        friendly_name: Arbeitszimmer
-        entity_id:
-          - sensor.zigate_d44e_temperature
-          - sensor.zigate_d44e_humidity
-        device_class: temperature
-        unit_of_measurement: "°C"
-        value_template: >-
-          {% set temp = states('sensor.zigate_d44e_temperature') | float %}
-          {% set humidity = states('sensor.zigate_d44e_humidity') | float %}
-
-          {{(0.567 * temp + 0.393 * (humidity / 100 * 6.105 * e ** (17.27 * temp / (237.7 + temp ) )) + 3.94) | round(2) }}
-
       thermometer_sportzimmer:
         friendly_name: Sportzimmer
         entity_id:
@@ -247,16 +182,3 @@ sensor:
           {% else %}
             {{ states.sensor.zigate_c4ed_temperature.state }}
           {% endif %}
-
-      thermometer_real_sportzimmer:
-        friendly_name: Sportzimmer
-        entity_id:
-          - sensor.zigate_c4ed_temperature
-          - sensor.zigate_c4ed_humidity
-        device_class: temperature
-        unit_of_measurement: "°C"
-        value_template: >-
-          {% set temp = states('sensor.zigate_c4ed_temperature') | float %}
-          {% set humidity = states('sensor.zigate_c4ed_humidity') | float %}
-
-          {{(0.567 * temp + 0.393 * (humidity / 100 * 6.105 * e ** (17.27 * temp / (237.7 + temp ) )) + 3.94) | round(2) }}
