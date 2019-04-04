@@ -58,6 +58,12 @@ cards:
       - entity: zigate.zigate
 
   - type: entities
+    title: MQTT
+    show_header_toggle: false
+    entities:
+      - entity: binary_sensor.bluetooth_gateway
+
+  - type: entities
     title: Bewegungsmelder
     show_header_toggle: false
     entities:

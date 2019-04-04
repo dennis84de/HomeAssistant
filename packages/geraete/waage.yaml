@@ -2,7 +2,6 @@ sensor:
   - platform: mqtt
     name: "Gewicht"
     state_topic: "scale/weight/kg"
-    force_update: true
     value_template: "{{ value }}"
     unit_of_measurement: "kg"
     icon: mdi:weight-kilogram
@@ -13,26 +12,43 @@ sensor:
         entity_id: sensor.gewicht
         value_template: >
           {% set gewicht = states("sensor.gewicht") | float %}
-          {{ (gewicht / (1.78 * 1.78)) | round(1) }}
+
+          {% if gewicht == None or gewicht == 0 %}
+            -
+          {% else %}
+            {{ (gewicht / (1.78 * 1.78)) | round(1) }}
+          {% endif %}
         friendly_name: BMI
         icon_template: mdi:human-pregnant
         unit_of_measurement: "kg/m²"
+
       wasser:
         entity_id:
           - sensor.gewicht
         value_template: >
           {% set gewicht = states("sensor.gewicht") | float %}
-          {{ (0.72 * (-1.976 + 0.907 * gewicht)) | round(1) }}
+
+          {% if gewicht == None or gewicht == 0 %}
+            -
+          {% else %}
+            {{ (0.72 * (-1.976 + 0.907 * gewicht)) | round(1) }}
+          {% endif %}
         friendly_name: Wasser
         icon_template: mdi:water
         unit_of_measurement: "kg"
+
       fett:
         entity_id:
           - sensor.gewicht
           - sensor.bmi
         value_template: >
           {% set bmi = states("sensor.bmi") | float %}
-          {{ ((1.281 * bmi) - 10.13) | round(1) }}
+
+          {% if bmi == None or bmi == 0 %}
+            -
+          {% else %}
+            {{ ((1.281 * bmi) - 10.13) | round(1) }}
+          {% endif %}
         friendly_name: Fett
         icon_template: mdi:human-pregnant
         unit_of_measurement: "kg"

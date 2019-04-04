@@ -1,0 +1,18 @@
+mqtt:
+  broker: 192.168.2.70
+  client_id: !secret mqtt_clientid
+  username: !secret mqtt_username
+  password: !secret mqtt_password
+
+binary_sensor:
+  - platform: mqtt
+    name: "Bluetooth Gateway"
+    state_topic: "lwt_topic"
+    payload_on: "online"
+    payload_off: "offline"
+    device_class: connectivity
+
+homeassistant:
+  customize:
+    binary_sensor.bluetooth_gateway:
+      icon: mdi:access-point-network

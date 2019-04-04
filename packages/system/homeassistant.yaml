@@ -13,12 +13,6 @@ discovery:
 wake_on_lan:
 system_health:
 
-mqtt:
-  broker: 192.168.2.70
-  client_id: !secret mqtt_clientid
-  username: !secret mqtt_username
-  password: !secret mqtt_password
-
 #binary_sensor:
 #  - platform: mqtt
 #    name: Türklingel
