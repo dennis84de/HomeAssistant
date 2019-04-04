@@ -27,7 +27,7 @@ resources:
     type: js
   - url: /local/lovelace/mini-media-player-bundle.js?v=1.0.3
     type: module
-  - url: /local/lovelace/mini-graph-card-bundle.js?v=0.3.1
+  - url: /local/lovelace/mini-graph-card-bundle.js?v=0.3.2
     type: module
   - url: /local/lovelace/tracker-card.js?track=true
     type: module
