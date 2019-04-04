@@ -89,7 +89,7 @@ sensor:
       schlafen_letzte_uhrzeit:
         friendly_name: Letzte Uhrzeit
         entity_id:
-          - script.goto_bed
+          - script.schlafen_gehen
         value_template: >
           {% if states.script.schlafen_gehen.attributes.last_triggered == None %}
             -
