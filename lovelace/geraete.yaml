@@ -102,5 +102,10 @@ cards:
     entities:
       - entity: zigate.229b
       - entity: zigate.9bc8
+
+  - type: entities
+    title: Steckdosen
+    show_header_toggle: false
+    entities:
       - entity: zigate.cda0
       - entity: zigate.55a3

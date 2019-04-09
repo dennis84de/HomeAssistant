@@ -24,4 +24,4 @@ alles_ausschalten:
     - light.badezimmerschrank
     - light.bett
     - light.regal
-    - light.balkon
+    - light.balkon_licht

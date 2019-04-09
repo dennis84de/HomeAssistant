@@ -1,0 +1,103 @@
+<dom-module id='ha-panel-zigate'>
+  <template>
+    <app-header-layout has-scrolling-region>
+      <app-header slot="header" fixed>
+        <app-toolbar>
+          <ha-menu-button narrow='[[narrow]]' show-menu='[[showMenu]]'></ha-menu-button>
+          <div main-title>ZiGate Graph</div>
+        </app-toolbar>
+      </app-header>
+
+      <div class="content" style="height:calc(100% - 64px)">
+        <svg id="svg" style="width:100%; height:100%"></svg>
+      </div>
+    </app-header-layout>
+
+  </template>
+
+</dom-module>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vivagraphjs/0.10.1/vivagraph.min.js"></script>
+<script>
+class HaPanelZiGate extends Polymer.Element {
+  static get is() { return 'ha-panel-zigate'; }
+
+  static get properties() {
+    return {
+      // Home Assistant object
+      hass: Object,
+      // If should render in narrow mode
+      narrow: {
+        type: Boolean,
+        value: false,
+      },
+      // If sidebar is currently shown
+      showMenu: {
+        type: Boolean,
+        value: false,
+      },
+      // Home Assistant panel info99
+      // panel.config contains config passed to register_panel serverside
+      panel: Object,
+    };
+  }
+
+
+  ready() {
+    super.ready();
+    var graph = Viva.Graph.graph();
+    var nodeSize = 24;
+    var graphics = Viva.Graph.View.svgGraphics();
+    graphics.node(function(node) {
+              // This time it's a group of elements: http://www.w3.org/TR/SVG/struct.html#Groups
+              var text = node.data.entity_id;
+              if ('friendly_name' in node.data.attributes){
+                var text = node.data.attributes.friendly_name;
+              }
+              var ui = Viva.Graph.svg('g'),
+                  // Create SVG text element with user id as content
+                  svgText = Viva.Graph.svg('text').attr('y', '-4px').text(text),
+                  rect =  Viva.Graph.svg('rect')
+                      .attr('stroke-width', 2)
+                      .attr('stroke', 'blue')
+                      .attr('fill', 'white')
+                      .attr('width', 24)
+                      .attr('height', 24);
+              ui.append(svgText);
+              ui.append(rect);
+              return ui;
+            }).placeNode(function(nodeUI, pos) {
+                // 'g' element doesn't have convenient (x,y) attributes, instead
+                // we have to deal with transforms: http://www.w3.org/TR/SVG/coords.html#SVGGlobalTransformAttribute
+                nodeUI.attr('transform',
+                            'translate(' +
+                                  (pos.x - nodeSize/2) + ',' + (pos.y - nodeSize/2) +
+                            ')');
+            });
+
+    let states=new Array();
+    for (let state in this.hass.states)
+    {
+      states.push(this.hass.states[state]);
+    }
+    let zigates = states.filter((s) => {return s.entity_id.indexOf("zigate.") ==0});
+    zigates.forEach(function(entity){
+        graph.addNode(entity.attributes.addr, entity);
+    });
+    
+    var myzigate = this.hass.states['zigate.zigate'];
+    myzigate.attributes.network_table.forEach(function(link){
+        graph.addLink(link[0], link[1]);
+    });
+    
+
+    var renderer = Viva.Graph.View.renderer(graph, {
+      container: this.$.svg,
+      graphics: graphics
+    });
+    renderer.run();
+
+  }
+
+}
+customElements.define(HaPanelZiGate.is, HaPanelZiGate);
+</script>

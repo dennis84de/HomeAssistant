@@ -344,7 +344,7 @@ script:
       - service: switch.turn_off
         entity_id: switch.alle_radios, switch.monitor, switch.schlafzimmer_fernseher, switch.multimedia, switch.watchtv_wohnzimmer, switch.watchtv_schlafzimmer
       - service: light.turn_off
-        entity_id: light.couch, light.strahler, light.vitrine, light.sideboard, light.schrank, light.badezimmerschrank, light.bett, light.regal, light.schreibtisch, light.balkon, light.arbeitszimmer_lampe
+        entity_id: light.couch, light.strahler, light.vitrine, light.sideboard, light.schrank, light.badezimmerschrank, light.bett, light.regal, light.schreibtisch, light.balkon_licht, light.arbeitszimmer_lampe
       - condition: state
         entity_id: input_boolean.computer_ausschalten
         state: 'on'

@@ -1,4 +1,12 @@
 zigate:
+#  port: /dev/ttyUSB0
+  channel: 24
+  enable_led : false
+
+#panel_custom:
+#  - name: zigate
+#    sidebar_title: ZiGate
+#    sidebar_icon: mdi:zigbee
 
 homeassistant:
   customize:
@@ -52,9 +60,10 @@ homeassistant:
       friendly_name: 'Thermometer Parkplatz'
 
     zigate.229b:
-      friendly_name: 'Türsensor Flur'
+      friendly_name: 'Türsensor'
     zigate.9bc8:
       friendly_name: 'Türklingel'
+
     zigate.cda0:
       friendly_name: 'Ladegerät'
     zigate.55a3:

@@ -7,8 +7,8 @@ xiaomi_aqara:
 sensor:
   - platform: template
     sensors:
-      xiaomi_tuersensor_flur_batterie:
-        friendly_name: Türsensor Flur
+      xiaomi_tuersensor_batterie:
+        friendly_name: Türsensor
         entity_id:
           - binary_sensor.zigate_229b_onoff
         value_template: >-
@@ -20,7 +20,7 @@ sensor:
         unit_of_measurement: '%'
         device_class: battery
 
-      xiaomi_tuerklingel_flur_batterie:
+      xiaomi_tuerklingel_batterie:
         friendly_name: Türklingel
         entity_id:
           - binary_sensor.zigate_9bc8_onoff

@@ -2,7 +2,13 @@ sensor:
   - platform: mqtt
     name: "Gewicht"
     state_topic: "scale/weight/kg"
-    value_template: "{{ value }}"
+    value_template: >-
+      {% if value == None %}
+        -
+      {% else %}
+        {{ value }}
+      {% endif %}
+
     unit_of_measurement: "kg"
     icon: mdi:weight-kilogram
 
@@ -13,7 +19,7 @@ sensor:
         value_template: >
           {% set gewicht = states("sensor.gewicht") | float %}
 
-          {% if gewicht == None or gewicht == 0 %}
+          {% if gewicht == None or gewicht == 0 or gewicht == '-' %}
             -
           {% else %}
             {{ (gewicht / (1.78 * 1.78)) | round(1) }}
@@ -28,7 +34,7 @@ sensor:
         value_template: >
           {% set gewicht = states("sensor.gewicht") | float %}
 
-          {% if gewicht == None or gewicht == 0 %}
+          {% if gewicht == None or gewicht == 0 or gewicht == '-' %}
             -
           {% else %}
             {{ (0.72 * (-1.976 + 0.907 * gewicht)) | round(1) }}
@@ -44,7 +50,7 @@ sensor:
         value_template: >
           {% set bmi = states("sensor.bmi") | float %}
 
-          {% if bmi == None or bmi == 0 %}
+          {% if bmi == None or bmi == 0 or bmi == '-' %}
             -
           {% else %}
             {{ ((1.281 * bmi) - 10.13) | round(1) }}
