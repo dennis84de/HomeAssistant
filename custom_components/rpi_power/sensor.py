@@ -8,7 +8,7 @@ from homeassistant.helpers.entity import Entity
 import homeassistant.helpers.config_validation as cv
 from homeassistant.components.sensor import (PLATFORM_SCHEMA)
 
-__version__ = '0.0.8'
+__version__ = '0.0.10'
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -42,7 +42,7 @@ class RaspberryChargerSensor(Entity):
         """The update method"""
         _throttled = open(SYSFILE, 'r').read()[:-1]
         if _throttled == '0':
-            self._description = 'No throttling detected'
+            self._description = 'Working as intended'
         elif _throttled == '1000':
             self._description = 'An under-voltage has occurred.'
         elif _throttled == '2000':
@@ -77,7 +77,7 @@ class RaspberryChargerSensor(Entity):
     @property
     def icon(self):
         """Return the icon of the sensor"""
-        return 'mdi:raspberrypi'
+        return 'mdi:raspberry-pi'
 
     @property
     def device_state_attributes(self):
