@@ -136,6 +136,7 @@ cards:
       - entity: binary_sensor.iss
       - entity: sensor.strommix
       - entity: sensor.schimmelindikator
+      - entity: binary_sensor.auto_waschen
 
   - type: entities
     title: Pollen

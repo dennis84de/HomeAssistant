@@ -20,7 +20,17 @@ camera:
     still_image_url: http://www.grueninger.com/webcam/current.jpg
     name: Dortmund
 
+weather:
+  - platform: darksky
+    name: Wetter
+    api_key: !secret darksky_key
+
 binary_sensor:
+  - platform: car_wash
+    name: Auto waschen
+    days: 5
+    weather: weather.wetter
+
   - platform: iss
 
   - platform: template
