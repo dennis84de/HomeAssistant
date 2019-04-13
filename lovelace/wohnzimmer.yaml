@@ -78,3 +78,9 @@ cards:
       - entity: sensor.zigate_0b57_luminosity
       - entity: switch.balkon_radio
       - entity: light.balkon_licht
+
+#  - type: custom:upcoming-media-card
+#    entity: sensor.kodi_recently_added_tv
+#    date: ddmm
+#    clock: 24
+#    all_shadows: false

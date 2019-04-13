@@ -32,3 +32,16 @@ notify:
   - platform: kodi
     name: Kodi Schlafzimmer
     host: 192.168.2.35
+
+#sensor:
+#  - platform: kodi_recently_added
+#    host: 192.168.2.21
+#    username: !secret kodi_username
+#    password: !secret kodi_password
+
+#homeassistant:
+#  customize:
+#    sensor.kodi_recently_added_tv:
+#      friendly_name: Neue Serien
+#    sensor.kodi_recently_added_movies:
+#      friendly_name: Neue Filme
