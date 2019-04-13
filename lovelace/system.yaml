@@ -78,6 +78,7 @@ cards:
       - entity: sensor.laufzeit
       - entity: sensor.hass_installed_version
       - entity: sensor.hass_current_version
+      - entity: sensor.wichtige_anderungen
       - entity: script.restart_homeassistant
       - entity: script.upgrade_homeassistant
 
@@ -206,9 +207,9 @@ cards:
         entities:
           - entity: sensor.speedtest_ping
 
-  - type: custom:tracker-card
-    title: Updates
-    current_text: Aktuell
-    available_text: Verfügbar
-    check_text: Überprüfen
-    update_all_text: Aktualisieren
+      - type: custom:tracker-card
+        title: Updates
+        current_text: Aktuell
+        available_text: Verfügbar
+        check_text: Überprüfen
+        update_all_text: Aktualisieren

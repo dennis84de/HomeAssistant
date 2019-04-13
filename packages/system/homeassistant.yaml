@@ -33,6 +33,9 @@ custom_updater:
     - https://raw.githubusercontent.com/kalkih/mini-media-player/master/tracker.json
     - https://raw.githubusercontent.com/kalkih/mini-graph-card/master/tracker.json
 
+breaking_changes:
+  name: Wichtige Änderungen
+
 python_script:
 map:
 zone:
