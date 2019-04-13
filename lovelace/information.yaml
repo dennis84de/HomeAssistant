@@ -23,6 +23,26 @@ popup_cards:
         - entity: input_number.alarmadvance
         - entity: input_number.alarmdelay
 
+  sensor.gewicht:
+    title: Gewicht
+    card:
+      type: entities
+      entities:
+        - type: custom:mini-graph-card
+          name: Gewicht
+          line_width: 2
+          animate: true
+          hours_to_show: 168
+          hour24: true
+          show:
+            icon: false
+            state: false
+            name: false
+            extrema: false
+          entities:
+            - entity: sensor.gewicht
+              show_state: false
+
 cards:
   - type: entities
     title: Infos
@@ -104,6 +124,7 @@ cards:
       fill: false
       icon: false
       points: false
+      state: false
     entities:
       - entity: sensor.fahrzeit_zur_arbeit
       - entity: sensor.fahrzeit_nach_hause
