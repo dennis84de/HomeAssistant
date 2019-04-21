@@ -1,8 +1,9 @@
 logger:
   default: error
   logs:
-    homeassistant.components.sensor.openhardwaremonitor: fatal
-    zigate: fatal
+    homeassistant.components.openhardwaremonitor.sensor: fatal
+#    zigate: debug
+#    custom_components.zigate: debug
 
 recorder:
   purge_interval: 1
