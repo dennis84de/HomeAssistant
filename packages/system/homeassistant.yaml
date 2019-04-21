@@ -36,6 +36,10 @@ custom_updater:
 breaking_changes:
   name: Wichtige Änderungen
 
+rest_command:
+  healthcheck:
+    url: !secret healthcheck_url
+
 python_script:
 map:
 zone:
@@ -197,6 +201,16 @@ automation:
         data_template:
           echo: "wohnzimmer"
           message: "Home Assistant wurde neugestartet."
+
+  - alias: "Home Assistant - Healthcheck"
+    initial_state: true
+    trigger:
+      - platform: homeassistant
+        event: start
+      - platform: time_pattern
+        minutes: '/5'
+    action:
+      - service: rest_command.healthcheck
 
 homeassistant:
   customize:
