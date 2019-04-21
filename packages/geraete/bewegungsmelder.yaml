@@ -115,6 +115,13 @@ sensor:
 binary_sensor:
   - platform: template
     sensors:
+      bewegungsmelder_inaktiv_unterwegs:
+        friendly_name: Unterwegs
+        entity_id:
+          - binary_sensor.zu_hause
+        device_class: occupancy
+        value_template: "{{ is_state('binary_sensor.zu_hause', 'off') }}"
+
       bewegungsmelder_flur:
         friendly_name: Flur
         entity_id:
@@ -194,6 +201,7 @@ entity_controller:
       - light.arbeitszimmer_lampe
     delay: 120
     overrides:
+      - binary_sensor.bewegungsmelder_inaktiv_unterwegs
       - binary_sensor.sonne_tagsueber
       - input_boolean.bewegungsmelder_arbeitszimmer_deaktiviert
 
@@ -204,6 +212,7 @@ entity_controller:
     sensor_type_duration: True
     delay: 120
     overrides:
+      - binary_sensor.bewegungsmelder_inaktiv_unterwegs
       - binary_sensor.sonne_tagsueber
       - input_boolean.bewegungsmelder_badezimmer_deaktiviert
 
@@ -213,6 +222,7 @@ entity_controller:
     entity: light.balkon_licht
     delay: 600
     overrides:
+      - binary_sensor.bewegungsmelder_inaktiv_unterwegs
       - binary_sensor.sonne_tagsueber
       - input_boolean.bewegungsmelder_balkon_deaktiviert
 
@@ -222,6 +232,7 @@ entity_controller:
     entity: light.sideboard
     delay: 120
     overrides:
+      - binary_sensor.bewegungsmelder_inaktiv_unterwegs
       - binary_sensor.sonne_tagsueber
       - input_boolean.bewegungsmelder_flur_deaktiviert
 
@@ -231,6 +242,7 @@ entity_controller:
     entity: light.regal
     delay: 120
     overrides:
+      - binary_sensor.bewegungsmelder_inaktiv_unterwegs
       - binary_sensor.sonne_tagsueber
       - input_boolean.bewegungsmelder_kueche_deaktiviert
 
@@ -240,6 +252,7 @@ entity_controller:
     entity: light.bett
     delay: 60
     overrides:
+      - binary_sensor.bewegungsmelder_inaktiv_unterwegs
       - binary_sensor.sonne_tagsueber
       - input_boolean.bewegungsmelder_schlafzimmer_deaktiviert
 
@@ -251,10 +264,10 @@ entity_controller:
       - light.strahler
     delay: 60
     overrides:
+      - binary_sensor.bewegungsmelder_inaktiv_unterwegs
       - binary_sensor.sonne_tagsueber
       - input_boolean.bewegungsmelder_wohnzimmer_deaktiviert
       - switch.computer
-      - switch.watchtv_wohnzimmer
 
 homeassistant:
   customize:

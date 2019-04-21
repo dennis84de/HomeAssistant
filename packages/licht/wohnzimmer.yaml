@@ -39,12 +39,18 @@ automation:
     initial_state: true
     trigger:
       platform: state
-      entity_id: sensor.tageszeit
-      to: 'Abenddämmerung'
+      entity_id: binary_sensor.sonne_tagsueber
+      to: 'off'
     condition:
       - condition: state
         entity_id: binary_sensor.zu_hause
         state: 'on'
+      - condition: state
+        entity_id: light.couch
+        state: 'off'
+      - condition: state
+        entity_id: light.strahler
+        state: 'off'
     action:
       - service: light.turn_on
         entity_id: light.couch, light.strahler
