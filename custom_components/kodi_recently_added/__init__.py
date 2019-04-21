@@ -1,0 +1,1 @@
+"""The kodi_recently_added component."""

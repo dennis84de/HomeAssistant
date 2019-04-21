@@ -1,0 +1,1 @@
+"""The fritzbox_guestwifi component."""

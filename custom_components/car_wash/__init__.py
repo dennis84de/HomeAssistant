@@ -1,0 +1,1 @@
+"""The car_wash component."""

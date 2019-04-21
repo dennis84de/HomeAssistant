@@ -15,32 +15,35 @@ from datetime import datetime
 import voluptuous as vol
 from homeassistant.components.binary_sensor import BinarySensorDevice
 from homeassistant.components.weather import (
-    PLATFORM_SCHEMA, ATTR_FORECAST_PRECIPITATION, ATTR_FORECAST_TIME, ATTR_FORECAST_TEMP, ATTR_FORECAST_TEMP_LOW)
+    ATTR_FORECAST_PRECIPITATION, ATTR_FORECAST_TIME, ATTR_FORECAST_TEMP, ATTR_FORECAST_TEMP_LOW,
+    ATTR_FORECAST_CONDITION, ATTR_WEATHER_TEMPERATURE, ATTR_FORECAST)
 from homeassistant.const import (
-    CONF_NAME, EVENT_HOMEASSISTANT_START, CONF_ICON)
+    CONF_NAME, EVENT_HOMEASSISTANT_START, TEMP_CELSIUS)
 from homeassistant.core import callback
+from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers import config_validation as cv
 from homeassistant.helpers.event import async_track_state_change
+from homeassistant.util.temperature import convert as convert_temperature
 
 REQUIREMENTS = []
 
-VERSION = '1.0.0'
-
-DEFAULT_NAME = 'Car Wash'
-DEFAULT_ICON = 'mdi:car-wash'
-DEFAULT_DAYS = 2
+VERSION = '1.2.4'
 
 _LOGGER = logging.getLogger(__name__)
 
 CONF_WEATHER = 'weather'
 CONF_DAYS = 'days'
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+DEFAULT_NAME = 'Car Wash'
+DEFAULT_DAYS = 2
+
+BAD_CONDITIONS = ["lightning-rainy", "rainy", "pouring", "snowy", "snowy-rainy"]
+
+PLATFORM_SCHEMA = vol.Schema({
     vol.Required(CONF_WEATHER): cv.entity_id,
     vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
-    vol.Optional(CONF_ICON, default=DEFAULT_ICON): cv.icon,
     vol.Optional(CONF_DAYS, default=DEFAULT_DAYS): vol.Coerce(int),
-})
+}, extra=vol.ALLOW_EXTRA)
 
 
 async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
@@ -51,21 +54,19 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
 
     name = config.get(CONF_NAME)
     weather = config.get(CONF_WEATHER)
-    icon = config.get(CONF_ICON)
     days = config.get(CONF_DAYS)
 
-    async_add_entities([CarWashBinarySensor(hass, name, weather, icon, days)])
+    async_add_entities([CarWashBinarySensor(hass, name, weather, days)])
 
 
 class CarWashBinarySensor(BinarySensorDevice):
     """Implementation of an Car Wash binary sensor."""
 
-    def __init__(self, hass, friendly_name, weather_entity, icon, days):
+    def __init__(self, hass, friendly_name, weather_entity, days):
         """Initialize the sensor."""
         self._hass = hass
         self._name = friendly_name
         self._weather_entity = weather_entity
-        self._icon = icon
         self._days = days
         self._state = None
 
@@ -98,45 +99,93 @@ class CarWashBinarySensor(BinarySensorDevice):
 
     @property
     def is_on(self):
-        """Return True is sensor is on."""
+        """Return True if sensor is on."""
         return self._state
 
     @property
     def icon(self):
         """Return the icon to use in the frontend, if any."""
-        return self._icon
+        return 'mdi:car-wash'
+
+    @staticmethod
+    def _temp2c(temperature: float, temperature_unit: str) -> float:
+        """Convert weather temperature to Celsius degree."""
+        if temperature is not None and temperature_unit != TEMP_CELSIUS:
+            temperature = convert_temperature(
+                temperature, temperature_unit, TEMP_CELSIUS)
+
+        return temperature
 
     async def async_update(self):
-        """Update the state from the template."""
-        wd = self._hass.states.get(self._weather_entity).attributes
-        t = wd.get('temperature')
-        forecast = wd.get('forecast')
+        """Update the sensor state."""
+        wd = self._hass.states.get(self._weather_entity)
+
+        if wd is None:
+            raise HomeAssistantError(
+                'Unable to find an entity called {}'.format(self._weather_entity))
+
+        tu = self._hass.config.units.temperature_unit
+        t = wd.attributes.get(ATTR_WEATHER_TEMPERATURE)
+        cond = wd.state
+        forecast = wd.attributes.get(ATTR_FORECAST)
+
+        _LOGGER.debug('Current temperature %s, condition \'%s\'', t, cond)
+
+        t = self._temp2c(t, tu)
 
         if forecast is None:
-            _LOGGER.error('Can\'t get forecast data from weather provider!')
-            return
+            raise HomeAssistantError(
+                'Can\'t get forecast data! Are you sure it\'s the weather provider?')
 
+        cur_date = datetime.now().strftime('%F')
         stop_date = datetime.fromtimestamp(
             datetime.now().timestamp() + 86400 * (self._days + 1)
         ).strftime('%F')
         _LOGGER.debug('Inspect weather forecast from now till %s', stop_date)
 
-        for fc in forecast:
-            if fc.get(ATTR_FORECAST_TIME)[:10] == stop_date:
-                break
+        if cond in BAD_CONDITIONS:
+            _LOGGER.debug('Detected bad weather condition')
+            self._state = False
+            return
 
-            if fc.get(ATTR_FORECAST_PRECIPITATION):
+        for fc in forecast:
+            fc_date = fc.get(ATTR_FORECAST_TIME)[:10]
+            if fc_date < cur_date:
+                continue
+            if fc_date == stop_date:
+                break
+            _LOGGER.debug('Inspect weather forecast for %s', fc_date)
+
+            prec = fc.get(ATTR_FORECAST_PRECIPITATION)
+            cond = fc.get(ATTR_FORECAST_CONDITION)
+            tmin = fc.get(ATTR_FORECAST_TEMP_LOW)
+            tmax = fc.get(ATTR_FORECAST_TEMP)
+            _LOGGER.debug('Precipitation %s, Condition \'%s\', Min temperature: %s, Max temperature %s', prec, cond,
+                          tmin,
+                          tmax)
+
+            if prec:
+                _LOGGER.debug('Precipitation detected')
                 self._state = False
                 return
-            if t < 0 and fc.get(ATTR_FORECAST_TEMP_LOW) is not None:
-                t = fc.get(ATTR_FORECAST_TEMP_LOW)
-                if t >= 0:
+            if cond in BAD_CONDITIONS:
+                _LOGGER.debug('Detected bad weather condition')
+                self._state = False
+                return
+            if tmin is not None and fc_date != cur_date:
+                tmin = self._temp2c(tmin, tu)
+                if t < 0 <= tmin:
+                    _LOGGER.debug('Detected passage of temperature through melting point')
                     self._state = False
                     return
-            if t < 0 and fc.get(ATTR_FORECAST_TEMP) is not None:
-                t = fc.get(ATTR_FORECAST_TEMP)
-                if t >= 0:
+                t = tmin
+            if tmax is not None:
+                tmax = self._temp2c(tmax, tu)
+                if t < 0 <= tmax:
+                    _LOGGER.debug('Detected passage of temperature through melting point')
                     self._state = False
                     return
+                t = tmax
 
+        _LOGGER.debug('Inspection done. No bad forecast detected')
         self._state = True
