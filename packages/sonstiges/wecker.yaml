@@ -171,9 +171,14 @@ automation:
                 - condition: state
                   entity_id: input_boolean.alarmworkday
                   state: 'on'
-                - condition: state
-                  entity_id: binary_sensor.arbeitstag
-                  state: 'on'
+                - condition: and
+                  conditions:
+                    - condition: state
+                      entity_id: binary_sensor.arbeitstag
+                      state: 'on'
+                    - condition: state
+                      entity_id: calendar.urlaub
+                      state: 'off'
             - condition: state
               entity_id: input_boolean.alarmworkday
               state: 'off'
