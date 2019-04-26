@@ -417,19 +417,19 @@ automation:
       - condition: state
         entity_id: binary_sensor.zigate_6e71_onoff
         state: 'on'
-      - condition: state
-        entity_id: binary_sensor.zu_hause
-        state: 'on'
       - condition: numeric_state
         entity_id: sensor.laufzeit_minuten
         above: 5
     action:
-      - service: notify.telegram
-        data:
-          title: "Balkontür schließen"
+      - service: !secret tts_service
+        data_template:
           message: >-
-            {% set difference = (states.sensor.zigate_6ec3_temperature.state | float - states.sensor.aeotec_wohnzimmer_temperature.state | float) | round(2) %}
-            Auf dem Balkon ist es {{ difference }}°C wärmer als im Wohnzimmer.
+            {% set temperaturBalkon = states.sensor.zigate_6ec3_temperature.state | float %}
+            {% set temperaturWohnzimmer = states.sensor.aeotec_wohnzimmer_temperature.state | float %}
+
+            {% set difference = (temperaturBalkon - temperaturWohnzimmer) | round() %}
+
+            Die Balkontür sollte geschlossen werden. Auf dem Balkon ist es {{ temperaturBalkon | round() }} Grad warm und damit {{ difference }} Grad wärmer als im Wohnzimmer.
 
 homeassistant:
   customize:
