@@ -1,5 +1,5 @@
 tts:
-  - platform: google
+  - platform: google_translate
     language: 'de'
 
 notify:
@@ -48,7 +48,7 @@ script:
           - condition: state
             entity_id: binary_sensor.schlafen_aktiv
             state: 'off'
-      - service: notify.alexa
+      - service: notify.alexa_media
         data_template:
           data:
             type: tts

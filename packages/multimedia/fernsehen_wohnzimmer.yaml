@@ -62,18 +62,21 @@ cover:
         friendly_name: "Fernseher Eingang"
         position_template: 50
         open_cover:
-          service: switch.broadlink_send_packet_192_168_2_45
+          service: broadlink.send
           data:
+            host: 192.168.2.45
             packet:
               - "JgCMAJWUETgTNxE5ERMSExITERQRFBE4EjgRORETEhMSExEUERQRFBE4EhMRFBE5EhITEhITEjgRFBI3EjgRFBE4EzcROBIABgOTlRE5ETgSOBEUERQSEhITEhMSOBI3EjgRFBEUERMSExEUERQROBMSEhMROREUERMSExI4ERQSNxI4ERQROBI4EjgSAA0FAAAAAAAAAAAAAAAA"
         close_cover:
-          service: switch.broadlink_send_packet_192_168_2_45
+          service: broadlink.send
           data:
+            host: 192.168.2.45
             packet:
               - "JgCMAJWTEjgSOBI3EhMSExEUERQRFBE4EjgROBMSEhMRFBEUERQRExITEhMSExE5ERMSExITETkSNxI4EjgRExI4ETkROBIABgKUlRI3EjgSOBISEhMTEhEUERQSNxM3EjgRFBETEhMRFBEUERQSExETEhMSOBITERMSExI4ETkROBI4ERQSNxI4ETgSAA0FAAAAAAAAAAAAAAAA"
         stop_cover:
-          service: switch.broadlink_send_packet_192_168_2_45
+          service: broadlink.send
           data:
+            host: 192.168.2.45
             packet:
               - "JgCMAJSVETgSOBE5ERQSEhMSEhMRFBE5ETgROREUERMSExITEhMRORETEhMSExITERQRFBETEhMSOBI4ETgSOBI4EjcSOBEABgOUlBI4ETkROBITEhMRFBEUERQROBI4ETgSExITERQSExEUETgSExITERQRFBEUERMTEhITEjgROBI4ETkROBI4ETkSAA0FAAAAAAAAAAAAAAAA"
         icon_template: >-
@@ -322,7 +325,7 @@ automation:
       to: 'playing'
     action:
       - service: light.turn_off
-        entity_id: light.sideboard, light.schrank, light.badezimmerschrank, light.schreibtisch, light.regal, light.arbeitszimmer_lampe
+        entity_id: light.sideboard, light.schrank, light.badezimmerschrank, light.schreibtisch, light.regal, light.arbeitszimmer_lampe, light.balkon_licht
       - condition: state
         entity_id: media_player.badezimmer
         state: 'playing'

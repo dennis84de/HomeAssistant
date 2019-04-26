@@ -3,13 +3,15 @@ light:
     devices:
       192.168.2.54:
         name: Sideboard
-        mode: "grb"
+        mode: "rgb"
+#        mode: "grb"
 
   - platform: flux_led
     devices:
       192.168.2.71:
         name: Schrank
-        mode: "grb"
+        mode: "rgb"
+#        mode: "grb"
 
 input_boolean:
   bewegungsmelder_flur_deaktiviert:

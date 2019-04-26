@@ -3,7 +3,8 @@ light:
     devices:
       192.168.2.48:
         name: Badezimmerschrank
-        mode: "grb"
+        mode: "rgb"
+#        mode: "grb"
 
 input_boolean:
   bewegungsmelder_badezimmer_deaktiviert:
