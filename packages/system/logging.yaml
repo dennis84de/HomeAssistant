@@ -19,6 +19,9 @@ logbook:
       - switch
       - light
       - automation
+  exclude:
+    entities:
+      - automation.home_assistant_healthcheck
 
 history:
   include:
