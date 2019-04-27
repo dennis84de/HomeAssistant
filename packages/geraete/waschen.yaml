@@ -185,6 +185,21 @@ automation:
           message: >-
             Die Waschmaschine wurde gestartet.
 
+  - alias: 'Waschmaschine fertig - Trocken einschalten'
+    initial_state: true
+    trigger:
+      - platform: state
+        entity_id: input_select.status_waschmaschine
+        from: 'Waschen'
+        to: 'Stillstand'
+    condition:
+      - condition: state
+        entity_id: switch.trockner
+        state: 'off'
+    action:
+      - service: switch.turn_on
+        entity_id: switch.trockner
+
   - alias: 'Waschmaschine fertig - TTS'
     initial_state: true
     trigger:
