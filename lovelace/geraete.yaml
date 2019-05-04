@@ -100,7 +100,7 @@ cards:
     title: Sensoren
     show_header_toggle: false
     entities:
-      - entity: zigate.229b
+      - entity: zigate.30a6
       - entity: zigate.9bc8
 
   - type: entities

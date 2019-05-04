@@ -108,7 +108,7 @@ automation:
     initial_state: true
     trigger:
       - platform: state
-        entity_id: binary_sensor.zigate_229b_onoff
+        entity_id: binary_sensor.zigate_30a6_onoff
         to: 'on'
     condition:
       - condition: state
@@ -285,7 +285,7 @@ automation:
         before: '23:30'
       - condition: numeric_state
         entity_id: sensor.laufzeit_minuten
-        above: 5 
+        above: 5
     action:
       - service: script.zu_hause_abends
 

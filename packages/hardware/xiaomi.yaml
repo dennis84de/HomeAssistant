@@ -10,12 +10,12 @@ sensor:
       xiaomi_tuersensor_batterie:
         friendly_name: Türsensor
         entity_id:
-          - binary_sensor.zigate_229b_onoff
+          - binary_sensor.zigate_30a6_onoff
         value_template: >-
-          {% if is_state('binary_sensor.zigate_229b_onoff', 'unknown') %}
+          {% if is_state('binary_sensor.zigate_30a6_onoff', 'unknown') %}
             0
           {% else %}
-            {{ states.binary_sensor.zigate_229b_onoff.attributes["battery_level"] | float}}
+            {{ states.binary_sensor.zigate_30a6_onoff.attributes["battery_level"] | float}}
           {% endif %}
         unit_of_measurement: '%'
         device_class: battery
@@ -72,8 +72,8 @@ sensor:
         unit_of_measurement: '%'
         device_class: battery
 
-      xiaomi_schalter_kueche_batterie:
-        friendly_name: Schalter Küche
+      xiaomi_schalter_balkon_batterie:
+        friendly_name: Schalter Balkon
         entity_id:
           - binary_sensor.switch_158d0002c762ce
         value_template: >-
@@ -226,7 +226,7 @@ homeassistant:
       friendly_name: Schalter Wohnzimmer
       hidden: true
     binary_sensor.switch_158d0002c762ce:
-      friendly_name: Schalter Küche
+      friendly_name: Schalter Balkon
       hidden: true
 
     binary_sensor.cube_158d0001100d7a:

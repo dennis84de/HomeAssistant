@@ -19,7 +19,7 @@ cards:
     show_header_toggle: false
     entities:
       - entity: binary_sensor.zigate_7904_presence
-      - entity: binary_sensor.zigate_229b_onoff
+      - entity: binary_sensor.zigate_30a6_onoff
       - entity: binary_sensor.zigate_9bc8_onoff
 
   - type: entities

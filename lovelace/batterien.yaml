@@ -27,7 +27,7 @@ cards:
     entities:
       - entity: sensor.xiaomi_schalter_wohnzimmer_batterie
       - entity: sensor.xiaomi_schalter_flur_batterie
-      - entity: sensor.xiaomi_schalter_kueche_batterie
+      - entity: sensor.xiaomi_schalter_balkon_batterie
       - entity: sensor.xiaomi_schalter_schlafzimmer_batterie
 
   - type: entities
