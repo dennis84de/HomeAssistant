@@ -60,11 +60,17 @@ cards:
     show_header_toggle: false
     entities:
       - entity: sensor.parkplatz_temperatur
+        name: Temperatur Parkplatz
       - entity: sensor.parkplatz_luftfeuchtigkeit
+        name: Luftfeuchtigkeit Parkplatz
       - entity: sensor.parkplatz_luftdruck
+        name: Luftdruck Parkplatz
       - entity: sensor.balkon_temperatur
+        name: Temperatur Balkon
       - entity: sensor.balkon_luftfeuchtigkeit
+        name: Luftfeuchtigkeit Balkon
       - entity: sensor.balkon_luftdruck
+        name: Luftdruck Balkon
 
   - type: entities
     title: Wetter

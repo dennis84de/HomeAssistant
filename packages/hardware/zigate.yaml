@@ -1,5 +1,5 @@
 zigate:
-  port: /dev/ttyUSB1
+  port: /dev/ttyUSB0
   channel: 24
   enable_led : false
 
