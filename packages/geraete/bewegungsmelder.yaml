@@ -12,8 +12,8 @@ sensor:
           - binary_sensor.bewegungsmelder_arbeitszimmer
           - binary_sensor.bewegungsmelder_kueche
           - binary_sensor.bewegungsmelder_balkon
-          - binary_sensor.bewegungsmelder_wohnzimmer_template
-          - binary_sensor.bewegungsmelder_badezimmer_template
+          - binary_sensor.bewegungsmelder_wohnzimmer
+          - binary_sensor.bewegungsmelder_badezimmer
         value_template: >
           {%- set pirs = [
             states.binary_sensor.bewegungsmelder_schlafzimmer,
@@ -22,8 +22,8 @@ sensor:
             states.binary_sensor.bewegungsmelder_arbeitszimmer,
             states.binary_sensor.bewegungsmelder_kueche,
             states.binary_sensor.bewegungsmelder_balkon,
-            states.binary_sensor.bewegungsmelder_wohnzimmer_template,
-            states.binary_sensor.bewegungsmelder_badezimmer_template
+            states.binary_sensor.bewegungsmelder_wohnzimmer,
+            states.binary_sensor.bewegungsmelder_badezimmer
             ] | reject('none') | list %}
 
           {% if pirs|length > 0 %}

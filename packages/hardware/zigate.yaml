@@ -5,17 +5,6 @@ zigate:
 
 homeassistant:
   customize:
-    zigate.6e71:
-      friendly_name: 'Fenster Wohnzimmer'
-    zigate.bd4c:
-      friendly_name: 'Fenster Schlafzimmer'
-    zigate.9619:
-      friendly_name: 'Fenster Küche'
-    zigate.3415:
-      friendly_name: 'Fenster Arbeitszimmer'
-    zigate.2d17:
-      friendly_name: 'Fenster Sportzimmer'
-
     binary_sensor.fenster_wohnzimmer:
       device_class: window
     binary_sensor.fenster_schlafzimmer:

@@ -78,11 +78,11 @@ cards:
     title: Fenster
     show_header_toggle: false
     entities:
-      - entity: zigate.6e71
-      - entity: zigate.bd4c
-      - entity: zigate.9619
-      - entity: zigate.3415
-      - entity: zigate.2d17
+      - entity: zigate.fenster_wohnzimmer
+      - entity: zigate.fenster_schlafzimmer
+      - entity: zigate.fenster_kueche
+      - entity: zigate.fenster_arbeitszimmer
+      - entity: zigate.fenster_sportzimmer
 
   - type: entities
     title: Thermometer
