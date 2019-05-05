@@ -24,15 +24,6 @@ input_boolean:
     name: Uhr einschalten
     icon: mdi:alarm-multiple
 
-switch:
-  - platform: brematic
-    host: 192.168.2.57
-    switches:
-      multimedia:
-        friendly_name: Multimedia
-        system_code: "00000"
-        unit_code: "10000"
-
 script:
   alexa_tts:
     alias: "Alexa TTS"
@@ -75,14 +66,10 @@ automation:
     trigger:
       - platform: state
         entity_id: input_number.sprache_lautstaerke
-    condition:
-      - condition: state
-        entity_id: device_tracker.pimultimedia
-        state: 'home'
     action:
       - service: media_player.volume_set
         data_template:
-          entity_id: media_player.tts
+          entity_id: media_player.smarthome
           volume_level: >-
             {{ states.input_number.sprache_lautstaerke.state | int / 100 }}
 
@@ -91,30 +78,12 @@ automation:
     trigger:
       - platform: homeassistant
         event: start
-    condition:
-      - condition: state
-        entity_id: device_tracker.pimultimedia
-        state: 'home'
     action:
       - service: input_number.set_value
         data_template:
           entity_id: input_number.sprache_lautstaerke
           value: >-
-            {{ states.media_player.tts.attributes.volume_level * 100 | int }}
-
-  - alias: 'Zu Hause - Multimedia einschalten'
-    initial_state: true
-    trigger:
-      platform: state
-      entity_id: binary_sensor.zu_hause
-      to: 'on'
-    condition:
-      - condition: state
-        entity_id: input_boolean.sprachausgabe
-        state: 'on'
-    action:
-      - service: switch.turn_on
-        entity_id: switch.multimedia
+            {{ states.media_player.smarthome.attributes.volume_level * 100 | int }}
 
   - alias: "Uhr - Glocke starten"
     initial_state: true
@@ -128,18 +97,18 @@ automation:
         after: '08:00'
         before: '23:00'
       - condition: state
-        entity_id: device_tracker.pimultimedia
-        state: 'home'
-      - condition: state
         entity_id: input_boolean.uhr_einschalten
         state: 'on'
+      - condition: state
+        entity_id: calendar.borussia_dortmund
+        state: 'off'
       - condition: template
         value_template: '{{ is_state("media_player.kodi_wohnzimmer", "playing") == False }}'
     action:
       - service: media_player.play_media
         data_template:
           entity_id:
-            - media_player.tts
+            - media_player.smarthome
           media_content_id: >-
             {% if now().strftime("%M")|int == 30 %}
               http://192.168.2.70:8123/local/uhr/GrandFatherChime_half.mp3
@@ -156,12 +125,12 @@ automation:
       to: 'off'
     condition:
       - condition: state
-        entity_id: media_player.tts
+        entity_id: media_player.smarthome
         state: 'playing'
     action:
       - service: media_player.media_pause
         entity_id:
-          - media_player.tts
+          - media_player.smarthome
 
   - alias: "BVB - Torhymne"
     initial_state: true
@@ -179,12 +148,50 @@ automation:
       - service: media_player.play_media
         data_template:
           entity_id:
-            - media_player.tts
+            - media_player.smarthome
           media_content_id: >-
             http://192.168.2.70:8123/local/bvb/torhymne.mp3
           media_content_type: music
 
-homeassistant:
-  customize:
-    switch.multimedia:
-      icon: mdi:alarm-bell
+  - alias: "BVB - Musik starten"
+    initial_state: true
+    trigger:
+      - platform: event
+        event_type: xiaomi_aqara.cube_action
+        event_data:
+          entity_id: binary_sensor.cube_158d0001100d7a
+          action_type: tap_twice
+    condition:
+      - condition: state
+        entity_id: calendar.borussia_dortmund
+        state: 'on'
+      - condition: state
+        entity_id: media_player.smarthome
+        state: 'idle'
+    action:
+      - service: media_player.play_media
+        data_template:
+          entity_id:
+            - media_player.smarthome
+          media_content_id: >-
+            http://192.168.2.70:8123/local/bvb/heja_bvb.mp3
+          media_content_type: music
+
+  - alias: "BVB - Musik stoppen"
+    initial_state: true
+    trigger:
+      - platform: event
+        event_type: xiaomi_aqara.cube_action
+        event_data:
+          entity_id: binary_sensor.cube_158d0001100d7a
+          action_type: tap_twice
+    condition:
+      - condition: state
+        entity_id: calendar.borussia_dortmund
+        state: 'on'
+      - condition: state
+        entity_id: media_player.smarthome
+        state: 'playing'
+    action:
+      - service: media_player.media_pause
+        entity_id: media_player.smarthome

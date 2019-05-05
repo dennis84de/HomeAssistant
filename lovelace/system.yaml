@@ -87,7 +87,6 @@ cards:
     show_header_toggle: false
     entities:
       - entity: input_boolean.sprachausgabe
-      - entity: switch.multimedia
       - entity: input_number.sprache_lautstaerke
       - entity: input_boolean.uhr_einschalten
       - entity: input_boolean.nicht_stoeren

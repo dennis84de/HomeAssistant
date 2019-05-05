@@ -344,10 +344,6 @@ homeassistant:
     device_tracker.pibalcony:
       icon: mdi:raspberry-pi
       friendly_name: Balkon
-      
-    device_tracker.pimultimedia:
-      icon: mdi:speaker-wireless
-      friendly_name: Multimedia
 
     device_tracker.tabletprestigio:
       hidden: true

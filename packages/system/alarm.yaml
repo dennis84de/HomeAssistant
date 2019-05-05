@@ -46,7 +46,7 @@ automation:
       - service: media_player.play_media
         data_template:
           entity_id:
-            - media_player.tts
+            - media_player.smarthome
           media_content_id: >-
             http://192.168.2.70:8123/local/countdown/countdown_10.mp3
           media_content_type: music
@@ -71,7 +71,7 @@ automation:
       - service: media_player.media_pause
         data_template:
           entity_id:
-            - media_player.tts
+            - media_player.smarthome
       - service: !secret tts_service
         data_template:
           echo: "flur"
@@ -84,7 +84,7 @@ automation:
         entity_id: automation.alles_ausschalten_aktivieren
       - service: script.alles_ausschalten
       - service: media_player.clear_playlist
-        entity_id: media_player.tts
+        entity_id: media_player.smarthome
 
   - alias: "Alles ausschalten deaktivieren"
     initial_state: true
@@ -108,7 +108,7 @@ automation:
     initial_state: true
     trigger:
       - platform: state
-        entity_id: binary_sensor.zigate_30a6_onoff
+        entity_id: binary_sensor.tuersensor
         to: 'on'
     condition:
       - condition: state
@@ -167,22 +167,22 @@ automation:
     initial_state: true
     trigger:
       - platform: state
-        entity_id: sensor.fibaro_badezimmer_burglar
+        entity_id: binary_sensor.bewegungsmelder_badezimmer
         to: '8'
       - platform: state
-        entity_id: sensor.aeotec_wohnzimmer_burglar
-        to: '8'
-      - platform: state
-        entity_id: binary_sensor.zigate_7904_presence
+        entity_id: binary_sensor.bewegungsmelder_wohnzimmer
         to: 'on'
       - platform: state
-        entity_id: binary_sensor.zigate_eac1_presence
+        entity_id: binary_sensor.bewegungsmelder_flur_vorne
         to: 'on'
       - platform: state
-        entity_id: binary_sensor.zigate_be83_presence
+        entity_id: binary_sensor.bewegungsmelder_arbeitszimmer
         to: 'on'
       - platform: state
-        entity_id: binary_sensor.zigate_a230_presence
+        entity_id: binary_sensor.bewegungsmelder_schlafzimmer
+        to: 'on'
+      - platform: state
+        entity_id: binary_sensor.bewegungsmelder_kueche
         to: 'on'
     condition:
       - condition: state
@@ -199,17 +199,17 @@ automation:
       data_template:
         title: "Bewegung erkannt"
         message: >-
-          {% if trigger.entity_id == "sensor.fibaro_badezimmer_burglar" %}
+          {% if trigger.entity_id == "binary_sensor.bewegungsmelder_badezimmer" %}
              Im Badezimmer wurde eine Bewegung erkannt.
-          {% elif trigger.entity_id == "sensor.aeotec_wohnzimmer_burglar" %}
+          {% elif trigger.entity_id == "binary_sensor.bewegungsmelder_wohnzimmer" %}
             Im Wohnzimmer wurde eine Bewegung erkannt.
-          {% elif trigger.entity_id == "binary_sensor.zigate_7904_presence" %}
+          {% elif trigger.entity_id == "binary_sensor.bewegungsmelder_flur_vorne" %}
             Im Flur wurde eine Bewegung erkannt.
-          {% elif trigger.entity_id == "binary_sensor.zigate_eac1_presence" %}
+          {% elif trigger.entity_id == "binary_sensor.bewegungsmelder_arbeitszimmer" %}
             Im Arbeitszimmer wurde eine Bewegung erkannt.
-          {% elif trigger.entity_id == "binary_sensor.zigate_be83_presence" %}
+          {% elif trigger.entity_id == "binary_sensor.bewegungsmelder_schlafzimmer" %}
             Im Schlafzimmer wurde eine Bewegung erkannt.
-          {% elif trigger.entity_id == "binary_sensor.zigate_a230_presence" %}
+          {% elif trigger.entity_id == "binary_sensor.bewegungsmelder_kueche" %}
             In der Küche wurde eine Bewegung erkannt.
           {% else %}
             Eine sonstige Bewegung wurde erkannt.
@@ -352,7 +352,7 @@ script:
     alias: "Alles ausschalten"
     sequence:
       - service: switch.turn_off
-        entity_id: switch.alle_radios, switch.monitor, switch.schlafzimmer_fernseher, switch.multimedia, switch.watchtv_wohnzimmer, switch.watchtv_schlafzimmer
+        entity_id: switch.alle_radios, switch.monitor, switch.schlafzimmer_fernseher, switch.watchtv_wohnzimmer, switch.watchtv_schlafzimmer
       - service: light.turn_off
         entity_id: light.couch, light.strahler, light.vitrine, light.sideboard, light.schrank, light.badezimmerschrank, light.bett, light.regal, light.schreibtisch, light.balkon_licht, light.arbeitszimmer_lampe
       - condition: state

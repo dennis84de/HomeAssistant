@@ -96,8 +96,6 @@ emulated_hue:
       hidden: true
     input_boolean.xiaomi_vacuum_automatische_reinigung:
       hidden: true
-    switch.multimedia:
-      hidden: true
     input_boolean.sprachausgabe:
       hidden: true
     input_boolean.uhr_einschalten:
@@ -118,7 +116,7 @@ emulated_hue:
       hidden: true
     input_boolean.musik_ausschalten:
       hidden: true
-    switch.zigate_55a3_3:
+    switch.fernseher_wohnzimmer:
       hidden: true
     switch.pi_hole:
       hidden: true
