@@ -15,19 +15,21 @@ cards:
     title: Batterien Sensoren
     show_header_toggle: false
     entities:
-      - entity: sensor.xiaomi_tuersensor_batterie
-      - entity: sensor.xiaomi_cube_batterie
-      - entity: sensor.xiaomi_vibration_wohnzimmer_batterie
-      - entity: sensor.xiaomi_vibration_schlafzimmer_batterie
+      - entity: sensor.tuersensor_batterie
+      - entity: sensor.tuerklingel_batterie
+      - entity: sensor.briefkasten_batterie
+      - entity: sensor.cube_batterie
+      - entity: sensor.vibration_wohnzimmer_batterie
+      - entity: sensor.vibration_schlafzimmer_batterie
 
   - type: entities
     title: Batterien Schalter
     show_header_toggle: false
     entities:
-      - entity: sensor.xiaomi_schalter_wohnzimmer_batterie
-      - entity: sensor.xiaomi_schalter_flur_batterie
-      - entity: sensor.xiaomi_schalter_balkon_batterie
-      - entity: sensor.xiaomi_schalter_schlafzimmer_batterie
+      - entity: sensor.schalter_wohnzimmer_batterie
+      - entity: sensor.schalter_flur_batterie
+      - entity: sensor.schalter_balkon_batterie
+      - entity: sensor.schalter_schlafzimmer_batterie
 
   - type: entities
     title: Batterien Thermometer

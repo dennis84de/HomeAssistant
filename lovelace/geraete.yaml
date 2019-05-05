@@ -103,6 +103,8 @@ cards:
     show_header_toggle: false
     entities:
       - entity: zha.tuersensor
+      - entity: zha.tuerklingel
+      - entity: zha.briefkasten
       - entity: zha.vibration_wohnzimmer
 
   - type: entities

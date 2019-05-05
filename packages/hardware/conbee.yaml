@@ -10,6 +10,10 @@ homeassistant:
 
     binary_sensor.tuersensor:
       device_class: door
+    binary_sensor.tuerklingel:
+      device_class: sound
+    binary_sensor.briefkasten:
+      device_class: opening
 
     binary_sensor.bewegungsmelder_flur_vorne:
       device_class: motion
