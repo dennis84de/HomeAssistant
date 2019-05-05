@@ -67,11 +67,12 @@ cards:
     title: Bewegungsmelder
     show_header_toggle: false
     entities:
-      - entity: zigate.eac1
-      - entity: zigate.7904
-      - entity: zigate.be83
-      - entity: zigate.a230
-      - entity: zigate.0b57
+      - entity: zha.bewegungsmelder_flur_vorne
+      - entity: zha.bewegungsmelder_flur_hinten
+      - entity: zha.bewegungsmelder_arbeitszimmer
+      - entity: zha.bewegungsmelder_schlafzimmer
+      - entity: zha.bewegungsmelder_kueche
+      - entity: zha.bewegungsmelder_balkon
 
   - type: entities
     title: Fenster
@@ -87,25 +88,26 @@ cards:
     title: Thermometer
     show_header_toggle: false
     entities:
-      - entity: zigate.6ec3
-      - entity: zigate.f874
-      - entity: zigate.e15d
-      - entity: zigate.6440
-      - entity: zigate.7c8f
-      - entity: zigate.d44e
-      - entity: zigate.c4ed
-      - entity: zigate.eff1
+      - entity: zha.thermometer_balkon
+      - entity: zha.thermometer_parkplatz
+      - entity: zha.thermometer_kuehlschrank
+      - entity: zha.thermometer_gefrierschrank
+      - entity: zha.thermometer_flur
+      - entity: zha.thermometer_schlafzimmer
+      - entity: zha.thermometer_arbeitszimmer
+      - entity: zha.thermometer_sportzimmer
+      - entity: zha.thermometer_kueche
 
   - type: entities
     title: Sensoren
     show_header_toggle: false
     entities:
-      - entity: zigate.30a6
-      - entity: zigate.9bc8
+      - entity: zha.tuersensor
+      - entity: zha.vibration_wohnzimmer
 
   - type: entities
     title: Steckdosen
     show_header_toggle: false
     entities:
-      - entity: zigate.cda0
-      - entity: zigate.55a3
+      - entity: zha.ladegeraet
+      - entity: zha.fernseher_wohnzimmer

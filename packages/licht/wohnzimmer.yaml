@@ -63,6 +63,10 @@ automation:
         event_data:
           entity_id: binary_sensor.cube_158d0001100d7a
           action_type: tap_twice
+    condition:
+      - condition: state
+        entity_id: calendar.borussia_dortmund
+        state: 'off'
     action:
       - service: light.toggle
         entity_id: light.couch

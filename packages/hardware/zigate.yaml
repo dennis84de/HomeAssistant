@@ -1,31 +1,10 @@
 zigate:
-#  port: /dev/ttyUSB0
+  port: /dev/ttyUSB1
   channel: 24
   enable_led : false
 
 homeassistant:
   customize:
-    zigate.386c:
-      hidden: true
-    binary_sensor.zigate_386c_onoff:
-      hidden: true
-
-    zigate.229b:
-      hidden: true
-    binary_sensor.zigate_229b_onoff:
-      hidden: true
-
-    zigate.eac1:
-      friendly_name: 'Bewegungsmelder Arbeitszimmer'
-    zigate.7904:
-      friendly_name: 'Bewegungsmelder Flur'
-    zigate.be83:
-      friendly_name: 'Bewegungsmelder Schlafzimmer'
-    zigate.a230:
-      friendly_name: 'Bewegungsmelder Küche'
-    zigate.0b57:
-      friendly_name: 'Bewegungsmelder Balkon'
-
     zigate.6e71:
       friendly_name: 'Fenster Wohnzimmer'
     zigate.bd4c:
@@ -37,182 +16,13 @@ homeassistant:
     zigate.2d17:
       friendly_name: 'Fenster Sportzimmer'
 
-    zigate.6ec3:
-      friendly_name: 'Thermometer Balkon'
-    zigate.e15d:
-      friendly_name: 'Thermometer Kühlschrank'
-    zigate.6440:
-      friendly_name: 'Thermometer Gefrierschrank'
-    zigate.7c8f:
-      friendly_name: 'Thermometer Schlafzimmer'
-    zigate.d44e:
-      friendly_name: 'Thermometer Arbeitszimmer'
-    zigate.eff1:
-      friendly_name: 'Thermometer Küche'
-    zigate.c4ed:
-      friendly_name: 'Thermometer Sportzimmer'
-    zigate.f874:
-      friendly_name: 'Thermometer Parkplatz'
-
-    zigate.30a6:
-#    zigate.229b:
-      friendly_name: 'Türsensor'
-    zigate.9bc8:
-      friendly_name: 'Türklingel'
-
-    zigate.cda0:
-      friendly_name: 'Ladegerät'
-    zigate.55a3:
-      friendly_name: 'Fernseher Wohnzimmer'
-
-    switch.zigate_55a3_3:
-      friendly_name: Fernseher Wohnzimmer
-      hidden: true
-
-    sensor.zigate_6ec3_temperature:
-      friendly_name: Temperatur Balkon
-    sensor.zigate_6ec3_humidity:
-      friendly_name: Luftfeuchtigkeit Balkon
-      icon: mdi:water-percent
-    sensor.zigate_6ec3_pressure:
-      friendly_name: Luftdruck Balkon
-      icon: mdi:weather-windy
-    sensor.zigate_6ec3_pressure2:
-      friendly_name: Luftdruck Balkon
-      hidden: true
-
-    sensor.zigate_e15d_temperature:
-      friendly_name: Temperatur
-    sensor.zigate_e15d_humidity:
-      friendly_name: Luftfeuchtigkeit
-      icon: mdi:water-percent
-    sensor.zigate_e15d_pressure:
-      friendly_name: Luftdruck
-      icon: mdi:weather-windy
-    sensor.zigate_e15d_pressure2:
-      friendly_name: Luftdruck Kühlschrank
-      hidden: true
-
-    sensor.zigate_6440_temperature:
-      friendly_name: Temperatur
-    sensor.zigate_6440_humidity:
-      friendly_name: Luftfeuchtigkeit
-      icon: mdi:water-percent
-    sensor.zigate_6440_pressure:
-      friendly_name: Luftdruck
-      icon: mdi:weather-windy
-    sensor.zigate_6440_pressure2:
-      friendly_name: Luftdruck Gefrierschrank
-      hidden: true
-
-    sensor.zigate_7c8f_temperature:
-      friendly_name: Temperatur
-    sensor.zigate_7c8f_humidity:
-      friendly_name: Luftfeuchtigkeit
-      icon: mdi:water-percent
-    sensor.zigate_7c8f_pressure:
-      friendly_name: Luftdruck
-      icon: mdi:weather-windy
-    sensor.zigate_7c8f_pressure2:
-      friendly_name: Luftdruck Schlafzimmer
-      hidden: true
-
-    sensor.zigate_d44e_temperature:
-      friendly_name: Temperatur
-    sensor.zigate_d44e_humidity:
-      friendly_name: Luftfeuchtigkeit
-      icon: mdi:water-percent
-    sensor.zigate_d44e_pressure:
-      friendly_name: Luftdruck
-      icon: mdi:weather-windy
-    sensor.zigate_d44e_pressure2:
-      friendly_name: Luftdruck Arbeitszimmer
-      hidden: true
-
-    sensor.zigate_eff1_temperature:
-      friendly_name: Temperatur
-    sensor.zigate_eff1_humidity:
-      friendly_name: Luftfeuchtigkeit
-      icon: mdi:water-percent
-    sensor.zigate_eff1_pressure:
-      friendly_name: Luftdruck
-      icon: mdi:weather-windy
-    sensor.zigate_eff1_pressure2:
-      friendly_name: Luftdruck Küche
-      hidden: true
-
-    sensor.zigate_c4ed_temperature:
-      friendly_name: Temperatur
-    sensor.zigate_c4ed_humidity:
-      friendly_name: Luftfeuchtigkeit
-      icon: mdi:water-percent
-    sensor.zigate_c4ed_pressure:
-      friendly_name: Luftdruck
-      icon: mdi:weather-windy
-    sensor.zigate_c4ed_pressure2:
-      friendly_name: Luftdruck Flur
-      hidden: true
-
-    sensor.zigate_f874_temperature:
-      friendly_name: Temperatur Parkplatz
-    sensor.zigate_f874_humidity:
-      friendly_name: Luftfeuchtigkeit Parkplatz
-      icon: mdi:water-percent
-    sensor.zigate_f874_pressure:
-      friendly_name: Luftdruck Parkplatz
-      icon: mdi:weather-windy
-    sensor.zigate_f874_pressure2:
-      friendly_name: Luftdruck Parkplatz
-      hidden: true
-
-    binary_sensor.zigate_eac1_presence:
-      friendly_name: 'Bewegungsmelder'
-    binary_sensor.zigate_7904_presence:
-      friendly_name: 'Bewegungsmelder'
-    binary_sensor.zigate_be83_presence:
-      friendly_name: 'Bewegungsmelder'
-    binary_sensor.zigate_a230_presence:
-      friendly_name: 'Bewegungsmelder'
-    binary_sensor.zigate_0b57_presence:
-      friendly_name: 'Bewegungsmelder'
-
-    binary_sensor.zigate_30a6_onoff:
-#    binary_sensor.zigate_229b_onoff:
-      friendly_name: 'Türsensor'
-      device_class: door
-    binary_sensor.zigate_9bc8_onoff:
-      friendly_name: 'Türklingel'
-      device_class: sound
-
-    sensor.zigate_eac1_luminosity:
-      device_class: illuminance
-      friendly_name: 'Helligkeit'
-    sensor.zigate_be83_luminosity:
-      device_class: illuminance
-      friendly_name: 'Helligkeit'
-    sensor.zigate_a230_luminosity:
-      device_class: illuminance
-      friendly_name: 'Helligkeit'
-    sensor.zigate_0b57_luminosity:
-      device_class: illuminance
-      friendly_name: 'Helligkeit'
-
-    binary_sensor.zigate_6e71_onoff:
-      friendly_name: 'Fenster Wohnzimmer'
+    binary_sensor.fenster_wohnzimmer:
       device_class: window
-    binary_sensor.zigate_bd4c_onoff:
-      friendly_name: 'Fenster Schlafzimmer'
+    binary_sensor.fenster_schlafzimmer:
       device_class: window
-    binary_sensor.zigate_9619_onoff:
-      friendly_name: 'Fenster Küche'
+    binary_sensor.fenster_kueche:
       device_class: window
-    binary_sensor.zigate_3415_onoff:
-      friendly_name: 'Fenster Arbeitszimmer'
+    binary_sensor.fenster_arbeitszimmer:
       device_class: window
-    binary_sensor.zigate_2d17_onoff:
-      friendly_name: 'Fenster Sportzimmer'
+    binary_sensor.fenster_sportzimmer:
       device_class: window
-
-    switch.zigate_cda0_3:
-      friendly_name: Ladegerät
-      icon: mdi:battery-charging-60

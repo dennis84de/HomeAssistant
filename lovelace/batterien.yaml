@@ -15,7 +15,6 @@ cards:
     title: Batterien Sensoren
     show_header_toggle: false
     entities:
-      - entity: sensor.xiaomi_tuerklingel_batterie
       - entity: sensor.xiaomi_tuersensor_batterie
       - entity: sensor.xiaomi_cube_batterie
       - entity: sensor.xiaomi_vibration_wohnzimmer_batterie
@@ -34,35 +33,37 @@ cards:
     title: Batterien Thermometer
     show_header_toggle: false
     entities:
-      - entity: sensor.xiaomi_thermometer_balkon_batterie
-      - entity: sensor.xiaomi_thermometer_parkplatz_batterie
-      - entity: sensor.xiaomi_thermometer_schlafzimmer_batterie
-      - entity: sensor.xiaomi_thermometer_arbeitszimmer_batterie
-      - entity: sensor.xiaomi_thermometer_kueche_batterie
-      - entity: sensor.xiaomi_thermometer_sportzimmer_batterie
-      - entity: sensor.xiaomi_thermometer_kuehlschrank_batterie
-      - entity: sensor.xiaomi_thermometer_gefrierschrank_batterie
+      - entity: sensor.thermometer_flur_batterie
+      - entity: sensor.thermometer_balkon_batterie
+      - entity: sensor.thermometer_parkplatz_batterie
+      - entity: sensor.thermometer_schlafzimmer_batterie
+      - entity: sensor.thermometer_arbeitszimmer_batterie
+      - entity: sensor.thermometer_kueche_batterie
+      - entity: sensor.thermometer_sportzimmer_batterie
+      - entity: sensor.thermometer_kuehlschrank_batterie
+      - entity: sensor.thermometer_gefrierschrank_batterie
 
   - type: entities
     title: Batterien Fenster
     show_header_toggle: false
     entities:
-      - entity: sensor.xiaomi_fenster_wohnzimmer_batterie
-      - entity: sensor.xiaomi_fenster_schlafzimmer_batterie
-      - entity: sensor.xiaomi_fenster_kueche_batterie
-      - entity: sensor.xiaomi_fenster_arbeitszimmer_batterie
-      - entity: sensor.xiaomi_fenster_sportzimmer_batterie
+      - entity: sensor.fenster_wohnzimmer_batterie
+      - entity: sensor.fenster_schlafzimmer_batterie
+      - entity: sensor.fenster_kueche_batterie
+      - entity: sensor.fenster_arbeitszimmer_batterie
+      - entity: sensor.fenster_sportzimmer_batterie
 
   - type: entities
     title: Batterien Bewegungsmelder
     show_header_toggle: false
     entities:
-      - entity: sensor.fibaro_bewegungsmelder_badezimmer_batterie
-      - entity: sensor.xiaomi_bewegungsmelder_flur_batterie
-      - entity: sensor.xiaomi_bewegungsmelder_arbeitszimmer_batterie
-      - entity: sensor.xiaomi_bewegungsmelder_schlafzimmer_batterie
-      - entity: sensor.xiaomi_bewegungsmelder_kueche_batterie
-      - entity: sensor.xiaomi_bewegungsmelder_balkon_batterie
+      - entity: sensor.bewegungsmelder_badezimmer_batterie
+      - entity: sensor.bewegungsmelder_flur_vorne_batterie
+      - entity: sensor.bewegungsmelder_flur_hinten_batterie
+      - entity: sensor.bewegungsmelder_arbeitszimmer_batterie
+      - entity: sensor.bewegungsmelder_schlafzimmer_batterie
+      - entity: sensor.bewegungsmelder_kueche_batterie
+      - entity: sensor.bewegungsmelder_balkon_batterie
 
   - type: entities
     title: Batterien Heizung

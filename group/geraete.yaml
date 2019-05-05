@@ -10,7 +10,6 @@ alles_ausschalten:
     - switch.kuche_radio
     - switch.schlafzimmer_radio
     - switch.arbeitszimmer_radio
-    - switch.multimedia
     - switch.computer
     - switch.watchtv_wohnzimmer
     - switch.watchtv_schlafzimmer

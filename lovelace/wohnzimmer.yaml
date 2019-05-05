@@ -49,7 +49,7 @@ cards:
     title: Heizung
     show_header_toggle: false
     entities:
-      - entity: binary_sensor.zigate_6e71_onoff
+      - entity: binary_sensor.fenster_wohnzimmer
         name: Fenster
       - entity: climate.wohnzimmer
         name: Heizung
@@ -58,24 +58,26 @@ cards:
     title: Thermometer
     show_header_toggle: false
     entities:
-      - entity: sensor.aeotec_wohnzimmer_temperature
-      - entity: sensor.aeotec_wohnzimmer_relative_humidity
-      - entity: sensor.aeotec_wohnzimmer_luminance
+      - entity: sensor.wohnzimmer_temperatur
+      - entity: sensor.wohnzimmer_luftfeuchtigkeit
+      - entity: sensor.wohnzimmer_helligkeit
 
   - type: glance
     title: Sensoren
     show_header_toggle: false
     entities:
       - entity: binary_sensor.bewegungsmelder_wohnzimmer
+        name: Bewegungsmelder
       - entity: sensor.xiaomi_cube_status
-      - entity: sensor.xiaomi_vibration_wohnzimmer_status
+      - entity: binary_sensor.vibration_wohnzimmer
 
   - type: entities
     title: Balkon
     show_header_toggle: false
     entities:
-      - entity: binary_sensor.zigate_0b57_presence
-      - entity: sensor.zigate_0b57_luminosity
+      - entity: binary_sensor.bewegungsmelder_balkon
+        name: Bewegungsmelder
+      - entity: sensor.helligkeit_balkon
       - entity: switch.balkon_radio
       - entity: light.balkon_licht
 

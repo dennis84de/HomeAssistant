@@ -127,7 +127,7 @@ script:
       - service: light.turn_on
         entity_id: light.bett
       - service: switch.turn_off
-        entity_id: switch.multimedia, switch.wohnzimmer_radio, switch.balkon_radio, switch.flur_radio, switch.kuche_radio, switch.schlafzimmer_radio, switch.arbeitszimmer_radio
+        entity_id: switch.wohnzimmer_radio, switch.balkon_radio, switch.flur_radio, switch.kuche_radio, switch.schlafzimmer_radio, switch.arbeitszimmer_radio
       - service: switch.turn_off
         entity_id: switch.watchtv_wohnzimmer, switch.monitor
       - service: light.turn_off
@@ -180,13 +180,13 @@ automation:
         data_template:
           echo: "wohnzimmer"
           message: "Alle Geräte werden gleich ausgeschaltet."
-      - delay: '00:00:02'
+#      - delay: '00:00:02'
       - service: timer.start
         entity_id: timer.schlafen_einschalten
       - service: media_player.play_media
         data_template:
           entity_id:
-            - media_player.tts
+            - media_player.smarthome
           media_content_id: >-
             http://192.168.2.70:8123/local/countdown/countdown_5.mp3
           media_content_type: music
@@ -205,7 +205,7 @@ automation:
         state: 'active'
     action:
       - service: media_player.media_pause
-        entity_id: media_player.tts
+        entity_id: media_player.smarthome
       - service: !secret tts_service
         data_template:
           echo: "wohnzimmer"
@@ -213,7 +213,7 @@ automation:
       - service: timer.cancel
         entity_id: timer.schlafen_einschalten
       - service: media_player.clear_playlist
-        entity_id: media_player.tts
+        entity_id: media_player.smarthome
 
   - alias: "Schlafen gehen - Starten"
     initial_state: true
@@ -336,7 +336,7 @@ automation:
     initial_state: true
     trigger:
       platform: state
-      entity_id: binary_sensor.zigate_be83_presence
+      entity_id: binary_sensor.bewegungsmelder_schlafzimmer
       to: 'on'
     condition:
       condition: and

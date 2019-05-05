@@ -7,7 +7,8 @@ sensor:
         entity_id:
           - sensor.time
           - binary_sensor.bewegungsmelder_schlafzimmer
-          - binary_sensor.bewegungsmelder_flur
+          - binary_sensor.bewegungsmelder_flur_vorne
+          - binary_sensor.bewegungsmelder_flur_hinten
           - binary_sensor.bewegungsmelder_arbeitszimmer
           - binary_sensor.bewegungsmelder_kueche
           - binary_sensor.bewegungsmelder_balkon
@@ -16,7 +17,8 @@ sensor:
         value_template: >
           {%- set pirs = [
             states.binary_sensor.bewegungsmelder_schlafzimmer,
-            states.binary_sensor.bewegungsmelder_flur,
+            states.binary_sensor.bewegungsmelder_flur_vorne,
+            states.binary_sensor.bewegungsmelder_flur_hinten,
             states.binary_sensor.bewegungsmelder_arbeitszimmer,
             states.binary_sensor.bewegungsmelder_kueche,
             states.binary_sensor.bewegungsmelder_balkon,
@@ -34,80 +36,93 @@ sensor:
             Unbekannt
           {% endif %}
 
-      xiaomi_bewegungsmelder_flur_batterie:
-        friendly_name: Bewegungsmelder Flur
+      bewegungsmelder_flur_vorne_batterie:
+        friendly_name: Bewegungsmelder Flur vorne
         entity_id:
-          - binary_sensor.zigate_7904_presence
+          - zha.bewegungsmelder_flur_vorne
         value_template: >-
-          {% if is_state('binary_sensor.zigate_7904_presence', 'unknown') %}
+          {% if is_state('zha.bewegungsmelder_flur_vorne', 'unknown') %}
             0
           {% else %}
-            {{ states.binary_sensor.zigate_7904_presence.attributes["battery_level"] | float}}
+            {{ state_attr("zha.bewegungsmelder_flur_vorne", "battery_level") | float }}
           {% endif %}
         unit_of_measurement: '%'
         device_class: battery
 
-      xiaomi_bewegungsmelder_arbeitszimmer_batterie:
+      bewegungsmelder_flur_hinten_batterie:
+        friendly_name: Bewegungsmelder Flur hinten
+        entity_id:
+          - zha.bewegungsmelder_flur_hinten
+        value_template: >-
+          {% if is_state('zha.bewegungsmelder_flur_hinten', 'unknown') %}
+            0
+          {% else %}
+            {{ state_attr("zha.bewegungsmelder_flur_hinten", "battery_level") | float }}
+          {% endif %}
+        unit_of_measurement: '%'
+        device_class: battery
+
+      bewegungsmelder_arbeitszimmer_batterie:
         friendly_name: Bewegungsmelder Arbeitszimmer
         entity_id:
-          - binary_sensor.zigate_eac1_presence
-        value_template: >
-          {% if is_state('binary_sensor.zigate_eac1_presence', 'unknown') %}
+          - zha.bewegungsmelder_arbeitszimmer
+        value_template: >-
+          {% if is_state('zha.bewegungsmelder_arbeitszimmer', 'unknown') %}
             0
           {% else %}
-            {{ states.binary_sensor.zigate_eac1_presence.attributes["battery_level"] | float}}
+            {{ state_attr("zha.bewegungsmelder_arbeitszimmer", "battery_level") | float }}
           {% endif %}
         unit_of_measurement: '%'
         device_class: battery
 
-      xiaomi_bewegungsmelder_schlafzimmer_batterie:
+      bewegungsmelder_schlafzimmer_batterie:
         friendly_name: Bewegungsmelder Schlafzimmer
         entity_id:
-          - binary_sensor.zigate_be83_presence
-        value_template: >
-          {% if is_state('binary_sensor.zigate_be83_presence', 'unknown') %}
+          - zha.bewegungsmelder_schlafzimmer
+        value_template: >-
+          {% if is_state('zha.bewegungsmelder_schlafzimmer', 'unknown') %}
             0
           {% else %}
-            {{ states.binary_sensor.zigate_be83_presence.attributes["battery_level"] | float}}
+            {{ state_attr("zha.bewegungsmelder_schlafzimmer", "battery_level") | float }}
           {% endif %}
         unit_of_measurement: '%'
         device_class: battery
 
-      xiaomi_bewegungsmelder_kueche_batterie:
+      bewegungsmelder_kueche_batterie:
         friendly_name: Bewegungsmelder Küche
         entity_id:
-          - binary_sensor.zigate_a230_presence
-        value_template: >
-          {% if is_state('binary_sensor.zigate_a230_presence', 'unknown') %}
+          - zha.bewegungsmelder_kueche
+        value_template: >-
+          {% if is_state('zha.bewegungsmelder_kueche', 'unknown') %}
             0
           {% else %}
-            {{ states.binary_sensor.zigate_a230_presence.attributes["battery_level"] | float}}
+            {{ state_attr("zha.bewegungsmelder_kueche", "battery_level") | float }}
           {% endif %}
         unit_of_measurement: '%'
         device_class: battery
 
-      xiaomi_bewegungsmelder_balkon_batterie:
+      bewegungsmelder_balkon_batterie:
         friendly_name: Bewegungsmelder Balkon
         entity_id:
-          - binary_sensor.zigate_0b57_presence
-        value_template: >
-          {% if is_state('binary_sensor.zigate_0b57_presence', 'unknown') %}
+          - zha.bewegungsmelder_balkon
+        value_template: >-
+          {% if is_state('zha.bewegungsmelder_balkon', 'unknown') %}
             0
           {% else %}
-            {{ states.binary_sensor.zigate_0b57_presence.attributes["battery_level"] | float}}
+            {{ state_attr("zha.bewegungsmelder_balkon", "battery_level") | float }}
           {% endif %}
         unit_of_measurement: '%'
         device_class: battery
 
-      fibaro_bewegungsmelder_badezimmer_batterie:
+      bewegungsmelder_badezimmer_batterie:
         friendly_name: Bewegungsmelder Badezimmer
         entity_id:
           - zwave.fibaro_badezimmer
         value_template: >
-          {% if states.zwave.fibaro_badezimmer and states.zwave.fibaro_badezimmer.attributes['battery_level'] %}
-            {{ states.zwave.fibaro_badezimmer.attributes['battery_level'] | float}}
-          {% else %}
+          {% if is_state('zwave.fibaro_badezimmer', 'unknown') %}
             0
+          {% else %}
+            {{ state_attr("zwave.fibaro_badezimmer", "battery_level") | float }}
           {% endif %}
         unit_of_measurement: '%'
         device_class: battery
@@ -122,48 +137,7 @@ binary_sensor:
         device_class: occupancy
         value_template: "{{ is_state('binary_sensor.zu_hause', 'off') }}"
 
-      bewegungsmelder_flur:
-        friendly_name: Flur
-        entity_id:
-          - binary_sensor.zigate_7904_presence
-        device_class: motion
-        value_template: "{{ is_state('binary_sensor.zigate_7904_presence', 'on') }}"
-
-      bewegungsmelder_arbeitszimmer:
-        friendly_name: Arbeitszimmer
-        entity_id:
-          - binary_sensor.zigate_eac1_presence
-        device_class: motion
-        value_template: "{{ is_state('binary_sensor.zigate_eac1_presence', 'on') }}"
-
-      bewegungsmelder_schlafzimmer:
-        friendly_name: Schlafzimmer
-        entity_id:
-          - binary_sensor.zigate_be83_presence
-        device_class: motion
-        value_template: "{{ is_state('binary_sensor.zigate_be83_presence', 'on') }}"
-
-      bewegungsmelder_kueche:
-        friendly_name: Küche
-        entity_id:
-          - binary_sensor.zigate_a230_presence
-        device_class: motion
-        value_template: "{{ is_state('binary_sensor.zigate_a230_presence', 'on') }}"
-
-      bewegungsmelder_balkon:
-        friendly_name: Balkon
-        entity_id:
-          - binary_sensor.zigate_0b57_presence
-        device_class: motion
-        value_template: "{{ is_state('binary_sensor.zigate_0b57_presence', 'on') }}"
-
       bewegungsmelder_wohnzimmer:
-        friendly_name: Bewegungsmelder
-        entity_id:
-          - sensor.aeotec_wohnzimmer_burglar
-        device_class: motion
-        value_template: "{{ is_state('sensor.aeotec_wohnzimmer_burglar', '8') }}"
-      bewegungsmelder_wohnzimmer_template:
         friendly_name: Wohnzimmer
         entity_id:
           - sensor.aeotec_wohnzimmer_burglar
@@ -171,12 +145,6 @@ binary_sensor:
         value_template: "{{ is_state('sensor.aeotec_wohnzimmer_burglar', '8') }}"
 
       bewegungsmelder_badezimmer:
-        friendly_name: Bewegungsmelder
-        entity_id:
-          - sensor.fibaro_badezimmer_burglar
-        device_class: motion
-        value_template: "{{ is_state('sensor.fibaro_badezimmer_burglar', '8') }}"
-      bewegungsmelder_badezimmer_template:
         friendly_name: Badezimmer
         entity_id:
           - sensor.fibaro_badezimmer_burglar
@@ -195,7 +163,7 @@ entity_controller:
 
   bewegung_arbeitszimmer:
     friendly_name: "Bewegung Arbeitszimmer"
-    sensor: binary_sensor.zigate_eac1_presence
+    sensor: binary_sensor.bewegungsmelder_arbeitszimmer
     entities:
       - light.schreibtisch
       - light.arbeitszimmer_lampe
@@ -218,7 +186,7 @@ entity_controller:
 
   bewegung_balkon:
     friendly_name: "Bewegung Balkon"
-    sensor: binary_sensor.zigate_0b57_presence
+    sensor: binary_sensor.bewegungsmelder_balkon
     entity: light.balkon_licht
     delay: 600
     overrides:
@@ -228,8 +196,18 @@ entity_controller:
 
   bewegung_flur_vorne:
     friendly_name: "Bewegung Flur vorne"
-    sensor: binary_sensor.zigate_7904_presence
+    sensor: binary_sensor.bewegungsmelder_flur_vorne
     entity: light.sideboard
+    delay: 120
+    overrides:
+      - binary_sensor.bewegungsmelder_inaktiv_unterwegs
+      - binary_sensor.sonne_tagsueber
+      - input_boolean.bewegungsmelder_flur_deaktiviert
+
+  bewegung_flur_hinten:
+    friendly_name: "Bewegung Flur hinten"
+    sensor: binary_sensor.bewegungsmelder_flur_hinten
+    entity: light.schrank
     delay: 120
     overrides:
       - binary_sensor.bewegungsmelder_inaktiv_unterwegs
@@ -238,7 +216,7 @@ entity_controller:
 
   bewegung_kueche:
     friendly_name: "Bewegung Küche"
-    sensor: binary_sensor.zigate_a230_presence
+    sensor: binary_sensor.bewegungsmelder_kueche
     entity: light.regal
     delay: 120
     overrides:
@@ -248,7 +226,7 @@ entity_controller:
 
   bewegung_schlafzimmer:
     friendly_name: "Bewegung Schlafzimmer"
-    sensor: binary_sensor.zigate_be83_presence
+    sensor: binary_sensor.bewegungsmelder_schlafzimmer
     entity: light.bett
     delay: 60
     overrides:
@@ -268,21 +246,3 @@ entity_controller:
       - binary_sensor.sonne_tagsueber
       - input_boolean.bewegungsmelder_wohnzimmer_deaktiviert
       - switch.computer
-
-homeassistant:
-  customize:
-    binary_sensor.bewegungsmelder_flur:
-      hidden: true
-    binary_sensor.bewegungsmelder_arbeitszimmer:
-      hidden: true
-    binary_sensor.bewegungsmelder_schlafzimmer:
-      hidden: true
-    binary_sensor.bewegungsmelder_kueche:
-      hidden: true
-    binary_sensor.bewegungsmelder_balkon:
-      hidden: true
-
-    binary_sensor.bewegungsmelder_badezimmer_template:
-      hidden: true
-    binary_sensor.bewegungsmelder_wohnzimmer_template:
-      hidden: true

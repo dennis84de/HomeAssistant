@@ -59,12 +59,12 @@ cards:
     title: Thermometer
     show_header_toggle: false
     entities:
-      - entity: sensor.zigate_f874_temperature
-      - entity: sensor.zigate_f874_humidity
-      - entity: sensor.zigate_f874_pressure
-      - entity: sensor.zigate_6ec3_temperature
-      - entity: sensor.zigate_6ec3_humidity
-      - entity: sensor.zigate_6ec3_pressure
+      - entity: sensor.parkplatz_temperatur
+      - entity: sensor.parkplatz_luftfeuchtigkeit
+      - entity: sensor.parkplatz_luftdruck
+      - entity: sensor.balkon_temperatur
+      - entity: sensor.balkon_luftfeuchtigkeit
+      - entity: sensor.balkon_luftdruck
 
   - type: entities
     title: Wetter
@@ -86,8 +86,10 @@ cards:
       icon: false
       points: false
     entities:
-      - entity: sensor.zigate_f874_temperature
-      - entity: sensor.zigate_6ec3_temperature
+      - entity: sensor.parkplatz_temperatur
+        name: Parkplatz
+      - entity: sensor.balkon_temperatur
+        name: Balkon
 
   - type: entities
     title: Sonne und Mond

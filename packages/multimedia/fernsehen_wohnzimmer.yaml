@@ -115,16 +115,6 @@ switch:
 
   - platform: template
     switches:
-      wohnzimmer_fernseher:
-        friendly_name: "Wohnzimmer Fernseher"
-        value_template: "{{ is_state('switch.zigate_55a3_3', 'on') }}"
-        turn_on:
-          service: switch.turn_on
-          entity_id: switch.zigate_55a3_3
-        turn_off:
-          service: switch.turn_off
-          entity_id: switch.zigate_55a3_3
-
       watchtv_wohnzimmer:
         friendly_name: "Fernsehen"
         value_template: "{{ is_state('switch.wohnzimmer_fernseher', 'on') }}"
@@ -255,10 +245,13 @@ automation:
     initial_state: true
     trigger:
       - platform: state
-        entity_id: binary_sensor.zigate_7904_presence
+        entity_id: binary_sensor.bewegungsmelder_flur_vorne
         to: 'on'
       - platform: state
-        entity_id: binary_sensor.zigate_0b57_presence
+        entity_id: binary_sensor.bewegungsmelder_flur_hintens
+        to: 'on'
+      - platform: state
+        entity_id: binary_sensor.bewegungsmelder_balkon
         to: 'on'
     condition:
       - condition: state

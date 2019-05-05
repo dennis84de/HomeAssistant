@@ -1,15 +1,15 @@
 sun:
 
-openuv:
-  api_key: !secret openuv_key
-  binary_sensors:
-    monitored_conditions:
-      - uv_protection_window
-  sensors:
-    monitored_conditions:
-      - current_uv_index
-      - max_uv_index
-      - safe_exposure_time_type_3
+#openuv:
+#  api_key: !secret openuv_key
+#  binary_sensors:
+#    monitored_conditions:
+#      - uv_protection_window
+#  sensors:
+#    monitored_conditions:
+#      - current_uv_index
+#      - max_uv_index
+#      - safe_exposure_time_type_3
 
 camera:
   - platform: generic
@@ -105,9 +105,9 @@ sensor:
 
   - platform: mold_indicator
     name: Schimmelindikator
-    indoor_temp_sensor: sensor.aeotec_wohnzimmer_temperature
-    indoor_humidity_sensor: sensor.aeotec_wohnzimmer_relative_humidity
-    outdoor_temp_sensor: sensor.zigate_6ec3_temperature
+    indoor_temp_sensor: sensor.wohnzimmer_temperatur
+    indoor_humidity_sensor: sensor.wohnzimmer_luftfeuchtigkeit
+    outdoor_temp_sensor: sensor.balkon_temperatur
     calibration_factor: 1.16
 
   - platform: rest
@@ -409,13 +409,13 @@ automation:
     initial_state: true
     trigger:
       platform: template
-      value_template: '{{ states.sensor.zigate_6ec3_temperature.state | float > states.sensor.aeotec_wohnzimmer_temperature.state | float + 2 }}'
+      value_template: '{{ states.sensor.balkon_temperatur.state | float > states.sensor.wohnzimmer_temperatur.state | float + 2 }}'
     condition:
       - condition: numeric_state
-        entity_id: sensor.zigate_6ec3_temperature
+        entity_id: sensor.balkon_temperatur
         above: 23
       - condition: state
-        entity_id: binary_sensor.zigate_6e71_onoff
+        entity_id: binary_sensor.fenster_wohnzimmer
         state: 'on'
       - condition: numeric_state
         entity_id: sensor.laufzeit_minuten
@@ -424,8 +424,8 @@ automation:
       - service: !secret tts_service
         data_template:
           message: >-
-            {% set temperaturBalkon = states.sensor.zigate_6ec3_temperature.state | float %}
-            {% set temperaturWohnzimmer = states.sensor.aeotec_wohnzimmer_temperature.state | float %}
+            {% set temperaturBalkon = states.sensor.balkon_temperatur.state | float %}
+            {% set temperaturWohnzimmer = states.sensor.wohnzimmer_temperatur.state | float %}
 
             {% set difference = (temperaturBalkon - temperaturWohnzimmer) | round() %}
 

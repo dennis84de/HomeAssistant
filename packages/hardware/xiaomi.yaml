@@ -10,25 +10,12 @@ sensor:
       xiaomi_tuersensor_batterie:
         friendly_name: Türsensor
         entity_id:
-          - binary_sensor.zigate_30a6_onoff
+          - zha.tuersensor
         value_template: >-
-          {% if is_state('binary_sensor.zigate_30a6_onoff', 'unknown') %}
+          {% if is_state('zha.tuersensor', 'unavailable') %}
             0
           {% else %}
-            {{ states.binary_sensor.zigate_30a6_onoff.attributes["battery_level"] | float}}
-          {% endif %}
-        unit_of_measurement: '%'
-        device_class: battery
-
-      xiaomi_tuerklingel_batterie:
-        friendly_name: Türklingel
-        entity_id:
-          - binary_sensor.zigate_9bc8_onoff
-        value_template: >-
-          {% if is_state('binary_sensor.zigate_9bc8_onoff', 'unknown') %}
-            0
-          {% else %}
-            {{ states.binary_sensor.zigate_9bc8_onoff.attributes["battery_level"] | float}}
+            {{ state_attr("zha.tuersensor", "battery_level") | float }}
           {% endif %}
         unit_of_measurement: '%'
         device_class: battery
@@ -41,7 +28,7 @@ sensor:
           {% if is_state('binary_sensor.switch_158d0002c8c48b', 'unknown') %}
             0
           {% else %}
-            {{ states.binary_sensor.switch_158d0002c8c48b.attributes["battery_level"] | float}}
+            {{ state_attr("binary_sensor.switch_158d0002c8c48b", "battery_level") | float }}
           {% endif %}
         unit_of_measurement: '%'
         device_class: battery
@@ -54,7 +41,7 @@ sensor:
           {% if is_state('binary_sensor.switch_158d0002134568', 'unknown') %}
             0
           {% else %}
-            {{ states.binary_sensor.switch_158d0002134568.attributes["battery_level"] | float}}
+            {{ state_attr("binary_sensor.switch_158d0002134568", "battery_level") | float }}
           {% endif %}
         unit_of_measurement: '%'
         device_class: battery
@@ -67,7 +54,7 @@ sensor:
           {% if is_state('binary_sensor.switch_158d0001c30867', 'unknown') %}
             0
           {% else %}
-            {{ states.binary_sensor.switch_158d0001c30867.attributes["battery_level"] | float}}
+            {{ state_attr("binary_sensor.switch_158d0001c30867", "battery_level") | float }}
           {% endif %}
         unit_of_measurement: '%'
         device_class: battery
@@ -80,7 +67,7 @@ sensor:
           {% if is_state('binary_sensor.switch_158d0002c762ce', 'unknown') %}
             0
           {% else %}
-            {{ states.binary_sensor.switch_158d0002c762ce.attributes["battery_level"] | float}}
+            {{ state_attr("binary_sensor.switch_158d0002c762ce", "battery_level") | float }}
           {% endif %}
         unit_of_measurement: '%'
         device_class: battery
@@ -88,12 +75,12 @@ sensor:
       xiaomi_vibration_wohnzimmer_batterie:
         friendly_name: Vibration Wohnzimmer
         entity_id:
-          - binary_sensor.vibration_158d0002a48dc8
+          - zha.vibration_wohnzimmer
         value_template: >-
-          {% if is_state('binary_sensor.vibration_158d0002a48dc8', 'unknown') %}
+          {% if is_state('zha.vibration_wohnzimmer', 'unavailable') %}
             0
           {% else %}
-            {{ states.binary_sensor.vibration_158d0002a48dc8.attributes["battery_level"] | float}}
+            {{ state_attr("zha.vibration_wohnzimmer", "battery_level") | float }}
           {% endif %}
         unit_of_measurement: '%'
         device_class: battery
@@ -103,10 +90,10 @@ sensor:
         entity_id:
           - binary_sensor.vibration_158d0002a222a1
         value_template: >-
-          {% if is_state('sbinary_sensor.vibration_158d0002a222a1', 'unknown') %}
+          {% if is_state('binary_sensor.vibration_158d0002a222a1', 'unknown') %}
             0
           {% else %}
-            {{ states.binary_sensor.vibration_158d0002a222a1.attributes["battery_level"] | float}}
+            {{ state_attr("binary_sensor.vibration_158d0002a222a1", "battery_level") | float }}
           {% endif %}
         unit_of_measurement: '%'
         device_class: battery
@@ -119,7 +106,7 @@ sensor:
           {% if is_state('binary_sensor.cube_158d0001100d7a', 'unknown') %}
             0
           {% else %}
-            {{ states.binary_sensor.cube_158d0001100d7a.attributes["battery_level"] | float}}
+            {{ state_attr("binary_sensor.cube_158d0001100d7a", "battery_level") | float }}
           {% endif %}
         unit_of_measurement: '%'
         device_class: battery
@@ -129,7 +116,7 @@ sensor:
         entity_id:
           - binary_sensor.cube_158d0001100d7a
         value_template: >
-          {% set lastState = states.binary_sensor.cube_158d0001100d7a.attributes.last_action %}
+          {% set lastState = state_attr("binary_sensor.cube_158d0001100d7a", "last_action") %}
 
           {% if lastState == None %}
             Unbekannt
@@ -158,27 +145,6 @@ sensor:
           {% endif %}
         icon_template: >
             mdi:cube-outline
-
-      xiaomi_vibration_wohnzimmer_status:
-        friendly_name: Vibration Status
-        value_template: >
-          {% if is_state('binary_sensor.vibration_158d0002a48dc8', 'unknown') or states.binary_sensor.vibration_158d0002a48dc8.attributes["last_action"] == None %}
-            Unbekannt
-          {% else %}
-            {% set lastState = states.binary_sensor.vibration_158d0002a48dc8.attributes["last_action"] %}
-
-            {% if lastState == 'vibrate' %}
-              Vibration
-            {% elif lastState == 'tilt' %}
-              Neigung
-            {% elif lastState == 'free_fall' %}
-              Freier Fall
-            {% else %}
-              Unbekannt
-            {% endif %}
-          {% endif %}
-        icon_template: >
-            mdi:vibrate
 
       xiaomi_vibration_schlafzimmer_status:
         friendly_name: Vibration Status

@@ -1,0 +1,53 @@
+zha:
+  usb_path: /dev/ttyACM0
+  radio_type: deconz
+  database_path: /home/homeassistant/.homeassistant/zigbee.db
+
+homeassistant:
+  customize:
+    switch.ladegeraet:
+      icon: mdi:battery-charging-60
+
+    binary_sensor.tuersensor:
+      device_class: door
+
+    binary_sensor.bewegungsmelder_flur_vorne:
+      device_class: motion
+    binary_sensor.bewegungsmelder_flur_hinten:
+      device_class: motion
+    binary_sensor.bewegungsmelder_balkon:
+      device_class: motion
+    binary_sensor.bewegungsmelder_kueche:
+      device_class: motion
+    binary_sensor.bewegungsmelder_arbeitszimmer:
+      device_class: motion
+    binary_sensor.bewegungsmelder_schlafzimmer:
+      device_class: motion
+
+    sensor.helligkeit_flur_vorne:
+      device_class: illuminance
+    sensor.helligkeit_flur_hinten:
+      device_class: illuminance
+    sensor.helligkeit_balkon:
+      device_class: illuminance
+    sensor.helligkeit_kueche:
+      device_class: illuminance
+    sensor.helligkeit_arbeitszimmer:
+      device_class: illuminance
+    sensor.helligkeit_schlafzimmer:
+      device_class: illuminance
+
+    sensor.flur_luftfeuchtigkeit:
+      icon: mdi:water-percent
+    sensor.flur_luftdruck:
+      icon: mdi:weather-windy
+
+    sensor.kuehlschrank_luftfeuchtigkeit:
+      icon: mdi:water-percent
+    sensor.kuehlschrank_luftdruck:
+      icon: mdi:weather-windy
+
+    sensor.gefrierschrank_luftfeuchtigkeit:
+      icon: mdi:water-percent
+    sensor.gefrierschrank_luftdruck:
+      icon: mdi:weather-windy

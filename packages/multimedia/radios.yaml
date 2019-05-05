@@ -126,7 +126,7 @@ automation:
     initial_state: true
     trigger:
       - platform: state
-        entity_id: binary_sensor.zigate_0b57_presence
+        entity_id: binary_sensor.bewegungsmelder_balkon
         to: 'on'
     condition:
       - condition: time
@@ -181,7 +181,7 @@ automation:
     initial_state: true
     trigger:
       - platform: state
-        entity_id: binary_sensor.zigate_30a6_onoff
+        entity_id: binary_sensor.tuersensor
         to: 'on'
     condition:
       - condition: state
@@ -204,7 +204,7 @@ automation:
     initial_state: false
     trigger:
       - platform: state
-        entity_id: binary_sensor.zigate_30a6_onoff
+        entity_id: binary_sensor.tuersensor
         to: 'off'
     condition:
       - condition: state

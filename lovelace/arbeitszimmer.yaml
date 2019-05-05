@@ -5,7 +5,7 @@ cards:
     title: Geräte
     show_header_toggle: false
     entities:
-      - entity: switch.zigate_cda0_3
+      - entity: switch.ladegeraet
       - entity: switch.arbeitszimmer_radio
 
   - type: entities
@@ -19,22 +19,23 @@ cards:
     title: Thermometer
     show_header_toggle: false
     entities:
-      - entity: sensor.zigate_d44e_temperature
-      - entity: sensor.zigate_d44e_humidity
-      - entity: sensor.zigate_d44e_pressure
+      - entity: sensor.arbeitszimmer_temperatur
+      - entity: sensor.arbeitszimmer_luftfeuchtigkeit
+      - entity: sensor.arbeitszimmer_luftdruck
 
   - type: glance
     title: Sensoren
     show_header_toggle: false
     entities:
-      - entity: binary_sensor.zigate_eac1_presence
-      - entity: sensor.zigate_eac1_luminosity
+      - entity: binary_sensor.bewegungsmelder_arbeitszimmer
+        name: Bewegungsmelder
+      - entity: sensor.helligkeit_arbeitszimmer
 
   - type: glance
     title: Heizung
     show_header_toggle: false
     entities:
-      - entity: binary_sensor.zigate_3415_onoff
+      - entity: binary_sensor.fenster_arbeitszimmer
         name: Fenster
       - entity: climate.arbeitszimmer
         name: Heizung

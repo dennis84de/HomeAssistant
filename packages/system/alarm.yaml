@@ -219,19 +219,19 @@ automation:
     initial_state: true
     trigger:
       - platform: state
-        entity_id: binary_sensor.zigate_6e71_onoff
+        entity_id: binary_sensor.fenster_wohnzimmer
         to: 'on'
       - platform: state
-        entity_id: binary_sensor.zigate_bd4c_onoff
+        entity_id: binary_sensor.fenster_schlafzimmer
         to: 'on'
       - platform: state
-        entity_id: binary_sensor.zigate_9619_onoff
+        entity_id: binary_sensor.fenster_kueche
         to: 'on'
       - platform: state
-        entity_id: binary_sensor.zigate_3415_onoff
+        entity_id: binary_sensor.fenster_arbeitszimmer
         to: 'on'
       - platform: state
-        entity_id: binary_sensor.zigate_2d17_onoff
+        entity_id: binary_sensor.fenster_sportzimmer
         to: 'on'
     condition:
       - condition: state
@@ -245,15 +245,15 @@ automation:
       data_template:
         title: "Fenster geöffnet"
         message: >-
-          {% if trigger.entity_id == "binary_sensor.zigate_6e71_onoff" %}
+          {% if trigger.entity_id == "binary_sensor.fenster_wohnzimmer" %}
             Das Fenster im Wohnzimmer wurde geöffnet.
-          {% elif trigger.entity_id == "binary_sensor.zigate_bd4c_onoff" %}
+          {% elif trigger.entity_id == "binary_sensor.fenster_schlafzimmer" %}
             Das Fenster im Schlafzimmer wurde geöffnet.
-          {% elif trigger.entity_id == "binary_sensor.zigate_9619_onoff" %}
+          {% elif trigger.entity_id == "binary_sensor.fenster_kueche" %}
             Das Fenster in der Küche wurde geöffnet.
-          {% elif trigger.entity_id == "binary_sensor.zigate_3415_onoff" %}
+          {% elif trigger.entity_id == "binary_sensor.fenster_arbeitszimmer" %}
             Das Fenster im Arbeitszimmer wurde geöffnet.
-          {% elif trigger.entity_id == "binary_sensor.zigate_2d17_onoff" %}
+          {% elif trigger.entity_id == "binary_sensor.fenster_sportzimmer" %}
             Das Fenster im Sportzimmer wurde geöffnet.
           {% endif %}
 

@@ -15,12 +15,25 @@ cards:
       - entity: light.schrank
 
   - type: glance
+    title: Bewegungsmelder
+    show_header_toggle: false
+    entities:
+      - entity: binary_sensor.bewegungsmelder_flur_vorne
+      - entity: binary_sensor.bewegungsmelder_flur_hinten
+
+  - type: glance
     title: Sensoren
     show_header_toggle: false
     entities:
-      - entity: binary_sensor.zigate_7904_presence
-      - entity: binary_sensor.zigate_30a6_onoff
-      - entity: binary_sensor.zigate_9bc8_onoff
+      - entity: binary_sensor.tuersensor
+
+  - type: glance
+    title: Thermometer
+    show_header_toggle: false
+    entities:
+      - entity: sensor.flur_temperatur
+      - entity: sensor.flur_luftfeuchtigkeit
+      - entity: sensor.flur_luftdruck
 
   - type: entities
     title: Multimedia

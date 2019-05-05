@@ -19,38 +19,39 @@ cards:
     title: Thermometer
     show_header_toggle: false
     entities:
-      - entity: sensor.zigate_eff1_temperature
-      - entity: sensor.zigate_eff1_humidity
-      - entity: sensor.zigate_eff1_pressure
+      - entity: sensor.kueche_temperatur
+      - entity: sensor.kueche_luftfeuchtigkeit
+      - entity: sensor.kueche_luftdruck
 
   - type: glance
     title: Kühlschrank
     show_header_toggle: false
     entities:
-      - entity: sensor.zigate_e15d_temperature
-      - entity: sensor.zigate_e15d_humidity
-      - entity: sensor.zigate_e15d_pressure
+      - entity: sensor.kuehlschrank_temperatur
+      - entity: sensor.kuehlschrank_luftfeuchtigkeit
+      - entity: sensor.kuehlschrank_luftdruck
 
   - type: glance
     title: Gefrierschrank
     show_header_toggle: false
     entities:
-      - entity: sensor.zigate_6440_temperature
-      - entity: sensor.zigate_6440_humidity
-      - entity: sensor.zigate_6440_pressure
+      - entity: sensor.gefrierschrank_temperatur
+      - entity: sensor.gefrierschrank_luftfeuchtigkeit
+      - entity: sensor.gefrierschrank_luftdruck
 
   - type: glance
     title: Sensoren
     show_header_toggle: false
     entities:
-      - entity: binary_sensor.zigate_a230_presence
-      - entity: sensor.zigate_a230_luminosity
+      - entity: binary_sensor.bewegungsmelder_kueche
+        name: Bewegungsmelder
+      - entity: sensor.helligkeit_balkon
 
   - type: glance
     title: Heizung
     show_header_toggle: false
     entities:
-      - entity: binary_sensor.zigate_9619_onoff
+      - entity: binary_sensor.fenster_kueche
         name: Fenster
       - entity: climate.kuche
         name: Heizung

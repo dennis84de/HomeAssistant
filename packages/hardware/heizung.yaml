@@ -43,7 +43,7 @@ automation:
     initial_state: true
     trigger:
       - platform: state
-        entity_id: binary_sensor.zigate_6e71_onoff
+        entity_id: binary_sensor.fenster_wohnzimmer
         to: 'on'
         for:
           seconds: 30
@@ -63,7 +63,7 @@ automation:
     initial_state: true
     trigger:
       - platform: state
-        entity_id: binary_sensor.zigate_6e71_onoff
+        entity_id: binary_sensor.fenster_wohnzimmer
         to: 'off'
     condition:
       - condition: state
@@ -85,7 +85,7 @@ automation:
         to: 'heat'
     condition:
       - condition: state
-        entity_id: binary_sensor.zigate_6e71_onoff
+        entity_id: binary_sensor.fenster_wohnzimmer
         state: 'on'
     action:
       - service: climate.set_operation_mode
@@ -99,7 +99,7 @@ automation:
     initial_state: true
     trigger:
       - platform: state
-        entity_id: binary_sensor.zigate_9619_onoff
+        entity_id: binary_sensor.fenster_kueche
         to: 'on'
         for:
           seconds: 30
@@ -119,7 +119,7 @@ automation:
     initial_state: true
     trigger:
       - platform: state
-        entity_id: binary_sensor.zigate_9619_onoff
+        entity_id: binary_sensor.fenster_kueche
         to: 'off'
     condition:
       - condition: state
@@ -141,7 +141,7 @@ automation:
         to: 'heat'
     condition:
       - condition: state
-        entity_id: binary_sensor.zigate_9619_onoff
+        entity_id: binary_sensor.fenster_kueche
         state: 'on'
     action:
       - service: climate.set_operation_mode
@@ -155,7 +155,7 @@ automation:
     initial_state: true
     trigger:
       - platform: state
-        entity_id: binary_sensor.zigate_3415_onoff
+        entity_id: binary_sensor.fenster_arbeitszimmer
         to: 'on'
         for:
           seconds: 30
@@ -175,7 +175,7 @@ automation:
     initial_state: true
     trigger:
       - platform: state
-        entity_id: binary_sensor.zigate_3415_onoff
+        entity_id: binary_sensor.fenster_arbeitszimmer
         to: 'off'
     condition:
       - condition: state
@@ -197,7 +197,7 @@ automation:
         to: 'heat'
     condition:
       - condition: state
-        entity_id: binary_sensor.zigate_3415_onoff
+        entity_id: binary_sensor.fenster_arbeitszimmer
         state: 'on'
     action:
       - service: climate.set_operation_mode

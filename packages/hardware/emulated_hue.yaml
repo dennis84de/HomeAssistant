@@ -116,8 +116,6 @@ emulated_hue:
       hidden: true
     input_boolean.musik_ausschalten:
       hidden: true
-    switch.fernseher_wohnzimmer:
-      hidden: true
     switch.pi_hole:
       hidden: true
     input_boolean.bewegungsmelder_arbeitszimmer_deaktiviert:

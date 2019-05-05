@@ -51,22 +51,23 @@ cards:
     title: Heizung
     show_header_toggle: false
     entities:
-      - entity: binary_sensor.zigate_bd4c_onoff
+      - entity: binary_sensor.fenster_schlafzimmer
         name: Fenster
 
   - type: glance
     title: Thermometer
     show_header_toggle: false
     entities:
-      - entity: sensor.zigate_7c8f_temperature
-      - entity: sensor.zigate_7c8f_humidity
-      - entity: sensor.zigate_7c8f_pressure
+      - entity: sensor.schlafzimmer_temperatur
+      - entity: sensor.schlafzimmer_luftfeuchtigkeit
+      - entity: sensor.schlafzimmer_luftdruck
 
   - type: glance
     title: Sensoren
     show_header_toggle: false
     entities:
-      - entity: binary_sensor.zigate_be83_presence
-      - entity: sensor.zigate_be83_luminosity
+      - entity: binary_sensor.bewegungsmelder_schlafzimmer
+        name: Bewegungsmelder
+      - entity: sensor.helligkeit_schlafzimmer
       - entity: sensor.xiaomi_vibration_schlafzimmer_status
 
