@@ -13,16 +13,10 @@ discovery:
 wake_on_lan:
 system_health:
 
-#binary_sensor:
-#  - platform: mqtt
-#    name: Türklingel
-#    state_topic: "doorbell/sensor"
-
 custom_updater:
   hide_sensor: True
   track:
     - components
-#    - python_scripts
     - cards
   component_urls:
     - https://raw.githubusercontent.com/pnbruckner/homeassistant-config/master/custom_components.json
