@@ -4,12 +4,12 @@ sensor:
       thermometer_flur_batterie:
         friendly_name: Thermometer Flur
         entity_id:
-          - zha.thermometer_flur
+          - zigate.thermometer_flur
         value_template: >-
-          {% if is_state('zha.thermometer_flur', 'unknown') %}
+          {% if is_state('zigate.thermometer_flur', 'unknown') %}
             0
           {% else %}
-            {{ state_attr("zha.thermometer_flur", "battery_level") | float }}
+            {{ state_attr("zigate.thermometer_flur", "battery_level") | float }}
           {% endif %}
         unit_of_measurement: '%'
         device_class: battery
@@ -17,12 +17,12 @@ sensor:
       thermometer_balkon_batterie:
         friendly_name: Thermometer Balkon
         entity_id:
-          - zha.thermometer_balkon
+          - zigate.thermometer_balkon
         value_template: >-
-          {% if is_state('zha.thermometer_balkon', 'unknown') %}
+          {% if is_state('zigate.thermometer_balkon', 'unknown') %}
             0
           {% else %}
-            {{ state_attr("zha.thermometer_balkon", "battery_level") | float }}
+            {{ state_attr("zigate.thermometer_balkon", "battery_level") | float }}
           {% endif %}
         unit_of_measurement: '%'
         device_class: battery
@@ -30,12 +30,12 @@ sensor:
       thermometer_kuehlschrank_batterie:
         friendly_name: Thermometer Kühlschrank
         entity_id:
-          - zha.thermometer_kuehlschrank
+          - zigate.thermometer_kuehlschrank
         value_template: >-
-          {% if is_state('zha.thermometer_kuehlschrank', 'unknown') %}
+          {% if is_state('zigate.thermometer_kuehlschrank', 'unknown') %}
             0
           {% else %}
-            {{ state_attr("zha.thermometer_kuehlschrank", "battery_level") | float }}
+            {{ state_attr("zigate.thermometer_kuehlschrank", "battery_level") | float }}
           {% endif %}
         unit_of_measurement: '%'
         device_class: battery
@@ -43,12 +43,12 @@ sensor:
       thermometer_gefrierschrank_batterie:
         friendly_name: Thermometer Gefrierschrank
         entity_id:
-          - zha.thermometer_gefrierschrank
+          - zigate.thermometer_gefrierschrank
         value_template: >-
-          {% if is_state('zha.thermometer_gefrierschrank', 'unknown') %}
+          {% if is_state('zigate.thermometer_gefrierschrank', 'unknown') %}
             0
           {% else %}
-            {{ state_attr("zha.thermometer_gefrierschrank", "battery_level") | float }}
+            {{ state_attr("zigate.thermometer_gefrierschrank", "battery_level") | float }}
           {% endif %}
         unit_of_measurement: '%'
         device_class: battery
@@ -56,12 +56,12 @@ sensor:
       thermometer_schlafzimmer_batterie:
         friendly_name: Thermometer Schlafzimmer
         entity_id:
-          - zha.thermometer_schlafzimmer
+          - zigate.thermometer_schlafzimmer
         value_template: >-
-          {% if is_state('zha.thermometer_schlafzimmer', 'unknown') %}
+          {% if is_state('zigate.thermometer_schlafzimmer', 'unknown') %}
             0
           {% else %}
-            {{ state_attr("zha.thermometer_schlafzimmer", "battery_level") | float }}
+            {{ state_attr("zigate.thermometer_schlafzimmer", "battery_level") | float }}
           {% endif %}
         unit_of_measurement: '%'
         device_class: battery
@@ -69,12 +69,12 @@ sensor:
       thermometer_arbeitszimmer_batterie:
         friendly_name: Thermometer Arbeitszimmer
         entity_id:
-          - zha.thermometer_arbeitszimmer
+          - zigate.thermometer_arbeitszimmer
         value_template: >-
-          {% if is_state('zha.thermometer_arbeitszimmer', 'unknown') %}
+          {% if is_state('zigate.thermometer_arbeitszimmer', 'unknown') %}
             0
           {% else %}
-            {{ state_attr("zha.thermometer_arbeitszimmer", "battery_level") | float }}
+            {{ state_attr("zigate.thermometer_arbeitszimmer", "battery_level") | float }}
           {% endif %}
         unit_of_measurement: '%'
         device_class: battery
@@ -82,12 +82,12 @@ sensor:
       thermometer_kueche_batterie:
         friendly_name: Thermometer Küche
         entity_id:
-          - zha.thermometer_kueche
+          - zigate.thermometer_kueche
         value_template: >-
-          {% if is_state('zha.thermometer_kueche', 'unknown') %}
+          {% if is_state('zigate.thermometer_kueche', 'unknown') %}
             0
           {% else %}
-            {{ state_attr("zha.thermometer_kueche", "battery_level") | float }}
+            {{ state_attr("zigate.thermometer_kueche", "battery_level") | float }}
           {% endif %}
         unit_of_measurement: '%'
         device_class: battery
@@ -95,12 +95,12 @@ sensor:
       thermometer_sportzimmer_batterie:
         friendly_name: Thermometer Sportzimmer
         entity_id:
-          - zha.thermometer_sportzimmer
+          - zigate.thermometer_sportzimmer
         value_template: >-
-          {% if is_state('zha.thermometer_sportzimmer', 'unknown') %}
+          {% if is_state('zigate.thermometer_sportzimmer', 'unknown') %}
             0
           {% else %}
-            {{ state_attr("zha.thermometer_sportzimmer", "battery_level") | float }}
+            {{ state_attr("zigate.thermometer_sportzimmer", "battery_level") | float }}
           {% endif %}
         unit_of_measurement: '%'
         device_class: battery
@@ -108,12 +108,12 @@ sensor:
       thermometer_parkplatz_batterie:
         friendly_name: Thermometer Parkplatz
         entity_id:
-          - zha.thermometer_parkplatz
+          - zigate.thermometer_parkplatz
         value_template: >-
-          {% if is_state('zha.thermometer_parkplatz', 'unknown') %}
+          {% if is_state('zigate.thermometer_parkplatz', 'unknown') %}
             0
           {% else %}
-            {{ state_attr("zha.thermometer_parkplatz", "battery_level") | float }}
+            {{ state_attr("zigate.thermometer_parkplatz", "battery_level") | float }}
           {% endif %}
         unit_of_measurement: '%'
         device_class: battery

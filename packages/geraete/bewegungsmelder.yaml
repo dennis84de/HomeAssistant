@@ -39,12 +39,12 @@ sensor:
       bewegungsmelder_flur_vorne_batterie:
         friendly_name: Bewegungsmelder Flur vorne
         entity_id:
-          - zha.bewegungsmelder_flur_vorne
+          - zigate.bewegungsmelder_flur_vorne
         value_template: >-
-          {% if is_state('zha.bewegungsmelder_flur_vorne', 'unknown') %}
+          {% if is_state('zigate.bewegungsmelder_flur_vorne', 'unknown') %}
             0
           {% else %}
-            {{ state_attr("zha.bewegungsmelder_flur_vorne", "battery_level") | float }}
+            {{ state_attr("zigate.bewegungsmelder_flur_vorne", "battery_level") | float }}
           {% endif %}
         unit_of_measurement: '%'
         device_class: battery
@@ -52,12 +52,12 @@ sensor:
       bewegungsmelder_flur_hinten_batterie:
         friendly_name: Bewegungsmelder Flur hinten
         entity_id:
-          - zha.bewegungsmelder_flur_hinten
+          - zigate.bewegungsmelder_flur_hinten
         value_template: >-
-          {% if is_state('zha.bewegungsmelder_flur_hinten', 'unknown') %}
+          {% if is_state('zigate.bewegungsmelder_flur_hinten', 'unknown') %}
             0
           {% else %}
-            {{ state_attr("zha.bewegungsmelder_flur_hinten", "battery_level") | float }}
+            {{ state_attr("zigate.bewegungsmelder_flur_hinten", "battery_level") | float }}
           {% endif %}
         unit_of_measurement: '%'
         device_class: battery
@@ -65,12 +65,12 @@ sensor:
       bewegungsmelder_arbeitszimmer_batterie:
         friendly_name: Bewegungsmelder Arbeitszimmer
         entity_id:
-          - zha.bewegungsmelder_arbeitszimmer
+          - zigate.bewegungsmelder_arbeitszimmer
         value_template: >-
-          {% if is_state('zha.bewegungsmelder_arbeitszimmer', 'unknown') %}
+          {% if is_state('zigate.bewegungsmelder_arbeitszimmer', 'unknown') %}
             0
           {% else %}
-            {{ state_attr("zha.bewegungsmelder_arbeitszimmer", "battery_level") | float }}
+            {{ state_attr("zigate.bewegungsmelder_arbeitszimmer", "battery_level") | float }}
           {% endif %}
         unit_of_measurement: '%'
         device_class: battery
@@ -78,12 +78,12 @@ sensor:
       bewegungsmelder_schlafzimmer_batterie:
         friendly_name: Bewegungsmelder Schlafzimmer
         entity_id:
-          - zha.bewegungsmelder_schlafzimmer
+          - zigate.bewegungsmelder_schlafzimmer
         value_template: >-
-          {% if is_state('zha.bewegungsmelder_schlafzimmer', 'unknown') %}
+          {% if is_state('zigate.bewegungsmelder_schlafzimmer', 'unknown') %}
             0
           {% else %}
-            {{ state_attr("zha.bewegungsmelder_schlafzimmer", "battery_level") | float }}
+            {{ state_attr("zigate.bewegungsmelder_schlafzimmer", "battery_level") | float }}
           {% endif %}
         unit_of_measurement: '%'
         device_class: battery
@@ -91,12 +91,12 @@ sensor:
       bewegungsmelder_kueche_batterie:
         friendly_name: Bewegungsmelder Küche
         entity_id:
-          - zha.bewegungsmelder_kueche
+          - zigate.bewegungsmelder_kueche
         value_template: >-
-          {% if is_state('zha.bewegungsmelder_kueche', 'unknown') %}
+          {% if is_state('zigate.bewegungsmelder_kueche', 'unknown') %}
             0
           {% else %}
-            {{ state_attr("zha.bewegungsmelder_kueche", "battery_level") | float }}
+            {{ state_attr("zigate.bewegungsmelder_kueche", "battery_level") | float }}
           {% endif %}
         unit_of_measurement: '%'
         device_class: battery
@@ -104,12 +104,12 @@ sensor:
       bewegungsmelder_balkon_batterie:
         friendly_name: Bewegungsmelder Balkon
         entity_id:
-          - zha.bewegungsmelder_balkon
+          - zigate.bewegungsmelder_balkon
         value_template: >-
-          {% if is_state('zha.bewegungsmelder_balkon', 'unknown') %}
+          {% if is_state('zigate.bewegungsmelder_balkon', 'unknown') %}
             0
           {% else %}
-            {{ state_attr("zha.bewegungsmelder_balkon", "battery_level") | float }}
+            {{ state_attr("zigate.bewegungsmelder_balkon", "battery_level") | float }}
           {% endif %}
         unit_of_measurement: '%'
         device_class: battery

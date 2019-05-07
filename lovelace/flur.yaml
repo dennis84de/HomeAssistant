@@ -33,9 +33,9 @@ cards:
     title: Thermometer
     show_header_toggle: false
     entities:
-      - entity: sensor.flur_temperatur
-      - entity: sensor.flur_luftfeuchtigkeit
-      - entity: sensor.flur_luftdruck
+      - entity: sensor.flur_temperatur_neu
+      - entity: sensor.flur_luftfeuchtigkeit_neu
+      - entity: sensor.flur_luftdruck_neu
 
   - type: entities
     title: Multimedia

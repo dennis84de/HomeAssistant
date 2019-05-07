@@ -69,5 +69,5 @@ cards:
       - entity: binary_sensor.bewegungsmelder_schlafzimmer
         name: Bewegungsmelder
       - entity: sensor.helligkeit_schlafzimmer
-      - entity: sensor.xiaomi_vibration_schlafzimmer_status
+      - entity: sensor.vibration_schlafzimmer_status
 

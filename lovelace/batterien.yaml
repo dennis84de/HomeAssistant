@@ -18,7 +18,7 @@ cards:
       - entity: sensor.tuersensor_batterie
       - entity: sensor.tuerklingel_batterie
       - entity: sensor.briefkasten_batterie
-      - entity: sensor.cube_batterie
+      - entity: sensor.cube_wohnzimmer_batterie
       - entity: sensor.vibration_wohnzimmer_batterie
       - entity: sensor.vibration_schlafzimmer_batterie
 

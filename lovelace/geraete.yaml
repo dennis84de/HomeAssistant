@@ -67,12 +67,12 @@ cards:
     title: Bewegungsmelder
     show_header_toggle: false
     entities:
-      - entity: zha.bewegungsmelder_flur_vorne
-      - entity: zha.bewegungsmelder_flur_hinten
-      - entity: zha.bewegungsmelder_arbeitszimmer
-      - entity: zha.bewegungsmelder_schlafzimmer
-      - entity: zha.bewegungsmelder_kueche
-      - entity: zha.bewegungsmelder_balkon
+      - entity: zigate.bewegungsmelder_flur_vorne
+      - entity: zigate.bewegungsmelder_flur_hinten
+      - entity: zigate.bewegungsmelder_schlafzimmer
+      - entity: zigate.bewegungsmelder_kueche
+      - entity: zigate.bewegungsmelder_arbeitszimmer
+      - entity: zigate.bewegungsmelder_balkon
 
   - type: entities
     title: Fenster
@@ -88,24 +88,23 @@ cards:
     title: Thermometer
     show_header_toggle: false
     entities:
-      - entity: zha.thermometer_balkon
-      - entity: zha.thermometer_parkplatz
-      - entity: zha.thermometer_kuehlschrank
-      - entity: zha.thermometer_gefrierschrank
-      - entity: zha.thermometer_flur
-      - entity: zha.thermometer_schlafzimmer
-      - entity: zha.thermometer_arbeitszimmer
-      - entity: zha.thermometer_sportzimmer
-      - entity: zha.thermometer_kueche
+      - entity: zigate.thermometer_balkon
+      - entity: zigate.thermometer_parkplatz
+      - entity: zigate.thermometer_kuehlschrank
+      - entity: zigate.thermometer_gefrierschrank
+      - entity: zigate.thermometer_flur
+      - entity: zigate.thermometer_schlafzimmer
+      - entity: zigate.thermometer_arbeitszimmer
+      - entity: zigate.thermometer_sportzimmer
+      - entity: zigate.thermometer_kueche
 
   - type: entities
     title: Sensoren
     show_header_toggle: false
     entities:
-      - entity: zha.tuersensor
-      - entity: zha.tuerklingel
-      - entity: zha.briefkasten
-      - entity: zha.vibration_wohnzimmer
+      - entity: zigate.tuersensor
+      - entity: zigate.tuerklingel
+      - entity: zigate.briefkasten
 
   - type: entities
     title: Steckdosen

@@ -138,7 +138,7 @@ automation:
       - platform: event
         event_type: xiaomi_aqara.cube_action
         event_data:
-          entity_id: binary_sensor.cube_158d0001100d7a
+          entity_id: binary_sensor.cube_wohnzimmer
           action_type: free_fall
     condition:
       - condition: state
@@ -159,7 +159,7 @@ automation:
       - platform: event
         event_type: xiaomi_aqara.cube_action
         event_data:
-          entity_id: binary_sensor.cube_158d0001100d7a
+          entity_id: binary_sensor.cube_wohnzimmer
           action_type: tap_twice
     condition:
       - condition: state
@@ -183,7 +183,7 @@ automation:
       - platform: event
         event_type: xiaomi_aqara.cube_action
         event_data:
-          entity_id: binary_sensor.cube_158d0001100d7a
+          entity_id: binary_sensor.cube_wohnzimmer
           action_type: tap_twice
     condition:
       - condition: state

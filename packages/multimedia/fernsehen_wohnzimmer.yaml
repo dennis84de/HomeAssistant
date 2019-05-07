@@ -205,7 +205,7 @@ automation:
       - platform: event
         event_type: xiaomi_aqara.cube_action
         event_data:
-          entity_id: binary_sensor.cube_158d0001100d7a
+          entity_id: binary_sensor.cube_wohnzimmer
           action_type: flip90
     condition:
       - condition: or
@@ -226,7 +226,7 @@ automation:
       - platform: event
         event_type: xiaomi_aqara.click
         event_data:
-          entity_id: binary_sensor.switch_158d0002c8c48b
+          entity_id: binary_sensor.schalter_wohnzimmer
           click_type: single
     condition:
       - condition: or
@@ -301,7 +301,7 @@ automation:
       - platform: event
         event_type: xiaomi_aqara.cube_action
         event_data:
-          entity_id: binary_sensor.cube_158d0001100d7a
+          entity_id: binary_sensor.cube_wohnzimmer
           action_type: free_fall
     condition:
       - condition: template
@@ -387,7 +387,7 @@ automation:
       - platform: event
         event_type: xiaomi_aqara.cube_action
         event_data:
-          entity_id: binary_sensor.cube_158d0001100d7a
+          entity_id: binary_sensor.cube_wohnzimmer
           action_type: rotate
     condition:
       condition: state

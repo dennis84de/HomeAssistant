@@ -10,12 +10,12 @@ sensor:
       tuersensor_batterie:
         friendly_name: Türsensor
         entity_id:
-          - zha.tuersensor
+          - zigate.tuersensor
         value_template: >-
-          {% if is_state('zha.tuersensor', 'unavailable') %}
+          {% if is_state('zigate.tuersensor', 'unavailable') %}
             0
           {% else %}
-            {{ state_attr("zha.tuersensor", "battery_level") | float }}
+            {{ state_attr("zigate.tuersensor", "battery_level") | float }}
           {% endif %}
         unit_of_measurement: '%'
         device_class: battery
@@ -23,12 +23,12 @@ sensor:
       tuerklingel_batterie:
         friendly_name: Türklingel
         entity_id:
-          - zha.tuerklingel
+          - zigate.tuerklingel
         value_template: >-
-          {% if is_state('zha.tuerklingel', 'unavailable') %}
+          {% if is_state('zigate.tuerklingel', 'unavailable') %}
             0
           {% else %}
-            {{ state_attr("zha.tuerklingel", "battery_level") | float }}
+            {{ state_attr("zigate.tuerklingel", "battery_level") | float }}
           {% endif %}
         unit_of_measurement: '%'
         device_class: battery
@@ -36,12 +36,12 @@ sensor:
       briefkasten_batterie:
         friendly_name: Briefkasten
         entity_id:
-          - zha.briefkasten
+          - zigate.briefkasten
         value_template: >-
-          {% if is_state('zha.briefkasten', 'unavailable') %}
+          {% if is_state('zigate.briefkasten', 'unavailable') %}
             0
           {% else %}
-            {{ state_attr("zha.briefkasten", "battery_level") | float }}
+            {{ state_attr("zigate.briefkasten", "battery_level") | float }}
           {% endif %}
         unit_of_measurement: '%'
         device_class: battery
@@ -49,12 +49,12 @@ sensor:
       schalter_wohnzimmer_batterie:
         friendly_name: Schalter Wohnzimmer
         entity_id:
-          - binary_sensor.switch_158d0002c8c48b
+          - binary_sensor.schalter_wohnzimmer
         value_template: >-
-          {% if is_state('binary_sensor.switch_158d0002c8c48b', 'unknown') %}
+          {% if is_state('binary_sensor.schalter_wohnzimmer', 'unknown') %}
             0
           {% else %}
-            {{ state_attr("binary_sensor.switch_158d0002c8c48b", "battery_level") | float }}
+            {{ state_attr("binary_sensor.schalter_wohnzimmer", "battery_level") | float }}
           {% endif %}
         unit_of_measurement: '%'
         device_class: battery
@@ -62,12 +62,12 @@ sensor:
       schalter_schlafzimmer_batterie:
         friendly_name: Schalter Schlafzimmer
         entity_id:
-          - binary_sensor.switch_158d0002134568
+          - binary_sensor.schalter_schlafzimmer
         value_template: >-
-          {% if is_state('binary_sensor.switch_158d0002134568', 'unknown') %}
+          {% if is_state('binary_sensor.schalter_schlafzimmer', 'unknown') %}
             0
           {% else %}
-            {{ state_attr("binary_sensor.switch_158d0002134568", "battery_level") | float }}
+            {{ state_attr("binary_sensor.schalter_schlafzimmer", "battery_level") | float }}
           {% endif %}
         unit_of_measurement: '%'
         device_class: battery
@@ -75,12 +75,12 @@ sensor:
       schalter_flur_batterie:
         friendly_name: Schalter Flur
         entity_id:
-          - binary_sensor.switch_158d0001c30867
+          - binary_sensor.schalter_flur
         value_template: >-
-          {% if is_state('binary_sensor.switch_158d0001c30867', 'unknown') %}
+          {% if is_state('binary_sensor.schalter_flur', 'unknown') %}
             0
           {% else %}
-            {{ state_attr("binary_sensor.switch_158d0001c30867", "battery_level") | float }}
+            {{ state_attr("binary_sensor.schalter_flur", "battery_level") | float }}
           {% endif %}
         unit_of_measurement: '%'
         device_class: battery
@@ -88,12 +88,12 @@ sensor:
       schalter_balkon_batterie:
         friendly_name: Schalter Balkon
         entity_id:
-          - binary_sensor.switch_158d0002c762ce
+          - binary_sensor.schalter_balkon
         value_template: >-
-          {% if is_state('binary_sensor.switch_158d0002c762ce', 'unknown') %}
+          {% if is_state('binary_sensor.schalter_balkon', 'unknown') %}
             0
           {% else %}
-            {{ state_attr("binary_sensor.switch_158d0002c762ce", "battery_level") | float }}
+            {{ state_attr("binary_sensor.schalter_balkon", "battery_level") | float }}
           {% endif %}
         unit_of_measurement: '%'
         device_class: battery
@@ -101,12 +101,12 @@ sensor:
       vibration_wohnzimmer_batterie:
         friendly_name: Vibration Wohnzimmer
         entity_id:
-          - zha.vibration_wohnzimmer
+          - binary_sensor.vibration_wohnzimmer
         value_template: >-
-          {% if is_state('zha.vibration_wohnzimmer', 'unavailable') %}
+          {% if is_state('binary_sensor.vibration_wohnzimmer', 'unknown') %}
             0
           {% else %}
-            {{ state_attr("zha.vibration_wohnzimmer", "battery_level") | float }}
+            {{ state_attr("binary_sensor.vibration_wohnzimmer", "battery_level") | float }}
           {% endif %}
         unit_of_measurement: '%'
         device_class: battery
@@ -114,35 +114,35 @@ sensor:
       vibration_schlafzimmer_batterie:
         friendly_name: Vibration Schlafzimmer
         entity_id:
-          - binary_sensor.vibration_158d0002a222a1
+          - binary_sensor.vibration_schlafzimmer
         value_template: >-
-          {% if is_state('binary_sensor.vibration_158d0002a222a1', 'unknown') %}
+          {% if is_state('binary_sensor.vibration_schlafzimmer', 'unknown') %}
             0
           {% else %}
-            {{ state_attr("binary_sensor.vibration_158d0002a222a1", "battery_level") | float }}
+            {{ state_attr("binary_sensor.vibration_schlafzimmer", "battery_level") | float }}
           {% endif %}
         unit_of_measurement: '%'
         device_class: battery
 
-      cube_batterie:
+      cube_wohnzimmer_batterie:
         friendly_name: Cube Wohnzimmer
         entity_id:
-          - binary_sensor.cube_158d0001100d7a
+          - binary_sensor.cube_wohnzimmer
         value_template: >-
-          {% if is_state('binary_sensor.cube_158d0001100d7a', 'unknown') %}
+          {% if is_state('binary_sensor.cube_wohnzimmer', 'unknown') %}
             0
           {% else %}
-            {{ state_attr("binary_sensor.cube_158d0001100d7a", "battery_level") | float }}
+            {{ state_attr("binary_sensor.cube_wohnzimmer", "battery_level") | float }}
           {% endif %}
         unit_of_measurement: '%'
         device_class: battery
 
-      xiaomi_cube_status:
+      cube_wohnzimmer_status:
         friendly_name: Xiaomi Cube
         entity_id:
-          - binary_sensor.cube_158d0001100d7a
+          - binary_sensor.cube_wohnzimmer
         value_template: >
-          {% set lastState = state_attr("binary_sensor.cube_158d0001100d7a", "last_action") %}
+          {% set lastState = state_attr("binary_sensor.cube_wohnzimmer", "last_action") %}
 
           {% if lastState == None %}
             Unbekannt
@@ -172,13 +172,34 @@ sensor:
         icon_template: >
             mdi:cube-outline
 
-      xiaomi_vibration_schlafzimmer_status:
+      vibration_wohnzimmer_status:
         friendly_name: Vibration Status
         value_template: >
-          {% if is_state('binary_sensor.vibration_158d0002a222a1', 'unknown') or states.binary_sensor.vibration_158d0002a222a1.attributes["last_action"] == None %}
+          {% if is_state('binary_sensor.vibration_wohnzimmer', 'unknown') or states.binary_sensor.vibration_wohnzimmer.attributes["last_action"] == None %}
             Unbekannt
           {% else %}
-            {% set lastState = states.binary_sensor.vibration_158d0002a222a1.attributes["last_action"] %}
+            {% set lastState = states.binary_sensor.vibration_wohnzimmer.attributes["last_action"] %}
+
+            {% if lastState == 'vibrate' %}
+              Vibration
+            {% elif lastState == 'tilt' %}
+              Neigung
+            {% elif lastState == 'free_fall' %}
+              Freier Fall
+            {% else %}
+              Unbekannt
+            {% endif %}
+          {% endif %}
+        icon_template: >
+            mdi:vibrate
+
+      vibration_schlafzimmer_status:
+        friendly_name: Vibration Status
+        value_template: >
+          {% if is_state('binary_sensor.vibration_schlafzimmer', 'unknown') or states.binary_sensor.vibration_schlafzimmer.attributes["last_action"] == None %}
+            Unbekannt
+          {% else %}
+            {% set lastState = states.binary_sensor.vibration_schlafzimmer.attributes["last_action"] %}
 
             {% if lastState == 'vibrate' %}
               Vibration
@@ -200,53 +221,3 @@ homeassistant:
 
     vacuum.xiaomi_vacuum_cleaner:
       friendly_name: Xiaomi Robot
-
-    sensor.illumination_7811dcaf15a8:
-      friendly_name: Xioami Helligkeit
-      hidden: true
-    light.gateway_light_7811dcaf15a8:
-      friendly_name: Xiaomi Licht
-      hidden: true
-
-    binary_sensor.switch_158d0001c30867:
-      friendly_name: Schalter Flur
-      hidden: true
-    binary_sensor.switch_158d0002134568:
-      friendly_name: Schalter Schlafzimmer
-      hidden: true
-    binary_sensor.switch_158d0002c8c48b:
-      friendly_name: Schalter Wohnzimmer
-      hidden: true
-    binary_sensor.switch_158d0002c762ce:
-      friendly_name: Schalter Balkon
-      hidden: true
-
-    binary_sensor.cube_158d0001100d7a:
-      friendly_name: Cube Schlafzimmer
-      hidden: true
-
-    binary_sensor.vibration_158d0002a48dc8:
-      friendly_name: Vibration Wohnzimmer
-      hidden: true
-    sensor.bed_activity_158d0002a48dc8:
-      friendly_name: Aktivität Wohnzimmer
-      hidden: true
-    sensor.coordination_158d0002a48dc8:
-      friendly_name: Koordinaten Wohnzimmer
-      hidden: true
-    sensor.tilt_angle_158d0002a48dc8:
-      friendly_name: Winkel Wohnzimmer
-      hidden: true
-
-    binary_sensor.vibration_158d0002a222a1:
-      friendly_name: Vibration Schlafzimmer
-      hidden: true
-    sensor.bed_activity_158d0002a222a1:
-      friendly_name: Aktivität Schlafzimmer
-      hidden: true
-    sensor.coordination_158d0002a222a1:
-      friendly_name: Koordinaten Schlafzimmer
-      hidden: true
-    sensor.tilt_angle_158d0002a222a1:
-      friendly_name: Winkel Schlafzimmer
-      hidden: true

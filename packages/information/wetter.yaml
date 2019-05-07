@@ -1,15 +1,15 @@
 sun:
 
-#openuv:
-#  api_key: !secret openuv_key
-#  binary_sensors:
-#    monitored_conditions:
-#      - uv_protection_window
-#  sensors:
-#    monitored_conditions:
-#      - current_uv_index
-#      - max_uv_index
-#      - safe_exposure_time_type_3
+openuv:
+  api_key: !secret openuv_key
+  binary_sensors:
+    monitored_conditions:
+      - uv_protection_window
+  sensors:
+    monitored_conditions:
+      - current_uv_index
+      - max_uv_index
+      - safe_exposure_time_type_3
 
 camera:
   - platform: generic
@@ -40,11 +40,6 @@ binary_sensor:
         icon_template: mdi:weather-snowy-rainy
         value_template: >-
           {{ is_state('sensor.wetterlage', 'Klar') == False }}
-
-      regen_erwartet:
-        friendly_name: "Regen erwartet"
-        value_template: >-
-          {{ states.sensor.darksky_nearest_storm_distance.state | float < 9 and states.sensor.darksky_precip_probability.state | float > 80 }}
 
       sonne_tagsueber:
         friendly_name: "Sonne tagsüber"
@@ -541,8 +536,6 @@ homeassistant:
     sensor.darksky_precip:
       hidden: true
 
-    binary_sensor.regen_erwartet:
-      hidden: true
     binary_sensor.sonne_tagsueber:
       hidden: true
 

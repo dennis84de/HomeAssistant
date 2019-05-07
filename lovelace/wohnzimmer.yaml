@@ -68,8 +68,8 @@ cards:
     entities:
       - entity: binary_sensor.bewegungsmelder_wohnzimmer
         name: Bewegungsmelder
-      - entity: sensor.xiaomi_cube_status
-      - entity: binary_sensor.vibration_wohnzimmer
+      - entity: sensor.cube_wohnzimmer_status
+      - entity: sensor.vibration_wohnzimmer_status
 
   - type: entities
     title: Balkon

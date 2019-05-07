@@ -45,7 +45,7 @@ cards:
     entities:
       - entity: binary_sensor.bewegungsmelder_kueche
         name: Bewegungsmelder
-      - entity: sensor.helligkeit_balkon
+      - entity: sensor.helligkeit_kueche
 
   - type: glance
     title: Heizung
