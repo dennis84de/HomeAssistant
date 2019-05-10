@@ -32,7 +32,7 @@ popup_cards:
           name: Gewicht
           line_width: 2
           animate: true
-          hours_to_show: 168
+          hours_to_show: 672
           hour24: true
           show:
             icon: false
@@ -106,13 +106,6 @@ cards:
       - entity: binary_sensor.schlechtes_wetter
       - entity: sensor.abfahrzeit
 
-#  - type: history-graph
-#    title: Fahrzeit
-#    hours_to_show: 168
-#    entities:
-#      - entity: sensor.fahrzeit_zur_arbeit
-#      - entity: sensor.fahrzeit_nach_hause
-
   - type: custom:mini-graph-card
     name: Fahrzeit
     line_width: 2
@@ -129,23 +122,6 @@ cards:
       - entity: sensor.fahrzeit_zur_arbeit
       - entity: sensor.fahrzeit_nach_hause
 
-  - type: glance
-    title: Tanken
-    show_header_toggle: false
-    entities:
-      - entity: sensor.tankstelle_real
-      - entity: binary_sensor.tankstelle_real_status
-      - entity: sensor.tankstelle_jet
-      - entity: binary_sensor.tankstelle_jet_status
-
-  - type: entities
-    title: Formel 1
-    show_header_toggle: false
-    entities:
-      - entity: sensor.formel1_rennen
-      - entity: sensor.formel1_datum
-      - entity: sensor.formel1_qualifikation
-
   - type: entities
     title: Waage
     show_header_toggle: false
@@ -155,20 +131,20 @@ cards:
       - entity: sensor.wasser
       - entity: sensor.fett
 
-  - type: entities
-    title: Anrufliste
+  - type: glance
+    title: Tanken
     show_header_toggle: false
     entities:
-      - entity: sensor.anrufliste_call_0
-      - entity: sensor.anrufliste_call_1
-      - entity: sensor.anrufliste_call_2
-      - entity: sensor.anrufliste_call_3
-      - entity: sensor.anrufliste_call_4
+      - entity: sensor.tankstelle_real
+      - entity: binary_sensor.tankstelle_real_status
+      - entity: sensor.tankstelle_jet
+      - entity: binary_sensor.tankstelle_jet_status
 
   - type: custom:mini-graph-card
-    name: Thermometer
-    line_width: 3
+    name: Temperatur
+    line_width: 2
     animate: true
+    hour24: true
     show:
       fill: false
       icon: false
@@ -188,6 +164,24 @@ cards:
         name: Arbeitszimmer
       - entity: sensor.sportzimmer_temperatur
         name: Sportzimmer
+
+  - type: entities
+    title: Formel 1
+    show_header_toggle: false
+    entities:
+      - entity: sensor.formel1_rennen
+      - entity: sensor.formel1_datum
+      - entity: sensor.formel1_qualifikation
+
+  - type: entities
+    title: Anrufliste
+    show_header_toggle: false
+    entities:
+      - entity: sensor.anrufliste_call_0
+      - entity: sensor.anrufliste_call_1
+      - entity: sensor.anrufliste_call_2
+      - entity: sensor.anrufliste_call_3
+      - entity: sensor.anrufliste_call_4
 
   - type: entities
     title: Serien
