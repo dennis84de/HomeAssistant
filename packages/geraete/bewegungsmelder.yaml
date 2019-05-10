@@ -179,10 +179,18 @@ entity_controller:
     entity: light.badezimmerschrank
     sensor_type_duration: True
     delay: 120
+    service_data:
+      brightness: 100
     overrides:
       - binary_sensor.bewegungsmelder_inaktiv_unterwegs
       - binary_sensor.sonne_tagsueber
       - input_boolean.bewegungsmelder_badezimmer_deaktiviert
+    night_mode:
+      delay: 120
+      service_data:
+        brightness: 80
+      start_time: '23:00:00'
+      end_time: '05:00:00'
 
   bewegung_balkon:
     friendly_name: "Bewegung Balkon"
@@ -199,40 +207,72 @@ entity_controller:
     sensor: binary_sensor.bewegungsmelder_flur_vorne
     entity: light.sideboard
     delay: 120
+    service_data:
+      brightness: 100
     overrides:
       - binary_sensor.bewegungsmelder_inaktiv_unterwegs
       - binary_sensor.sonne_tagsueber
       - input_boolean.bewegungsmelder_flur_deaktiviert
+    night_mode:
+      delay: 120
+      service_data:
+        brightness: 80
+      start_time: '23:00:00'
+      end_time: '05:00:00'
 
   bewegung_flur_hinten:
     friendly_name: "Bewegung Flur hinten"
     sensor: binary_sensor.bewegungsmelder_flur_hinten
     entity: light.schrank
     delay: 120
+    service_data:
+      brightness: 100
     overrides:
       - binary_sensor.bewegungsmelder_inaktiv_unterwegs
       - binary_sensor.sonne_tagsueber
       - input_boolean.bewegungsmelder_flur_deaktiviert
+    night_mode:
+      delay: 120
+      service_data:
+        brightness: 60
+      start_time: '23:00:00'
+      end_time: '05:00:00'
 
   bewegung_kueche:
     friendly_name: "Bewegung Küche"
     sensor: binary_sensor.bewegungsmelder_kueche
     entity: light.regal
     delay: 120
+    service_data:
+      brightness: 100
     overrides:
       - binary_sensor.bewegungsmelder_inaktiv_unterwegs
       - binary_sensor.sonne_tagsueber
       - input_boolean.bewegungsmelder_kueche_deaktiviert
+    night_mode:
+      delay: 120
+      service_data:
+        brightness: 70
+      start_time: '23:00:00'
+      end_time: '05:00:00'
 
   bewegung_schlafzimmer:
     friendly_name: "Bewegung Schlafzimmer"
     sensor: binary_sensor.bewegungsmelder_schlafzimmer
     entity: light.bett
-    delay: 60
+    delay: 120
+    service_data:
+      brightness: 100
     overrides:
       - binary_sensor.bewegungsmelder_inaktiv_unterwegs
       - binary_sensor.sonne_tagsueber
       - input_boolean.bewegungsmelder_schlafzimmer_deaktiviert
+    night_mode:
+      delay: 120
+      service_data:
+        brightness: 60
+      start_time: '23:00:00'
+      end_time: '05:00:00'
 
   bewegung_wohnzimmer:
     friendly_name: "Bewegung Wohnzimmer"
