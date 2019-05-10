@@ -60,7 +60,6 @@ cards:
     entities:
       - entity: sensor.wohnzimmer_temperatur
       - entity: sensor.wohnzimmer_luftfeuchtigkeit
-      - entity: sensor.wohnzimmer_helligkeit
 
   - type: glance
     title: Sensoren
@@ -70,6 +69,7 @@ cards:
         name: Bewegungsmelder
       - entity: sensor.cube_wohnzimmer_status
       - entity: sensor.vibration_wohnzimmer_status
+      - entity: sensor.wohnzimmer_helligkeit
 
   - type: entities
     title: Balkon
@@ -80,9 +80,3 @@ cards:
       - entity: sensor.helligkeit_balkon
       - entity: switch.balkon_radio
       - entity: light.balkon_licht
-
-#  - type: custom:upcoming-media-card
-#    entity: sensor.kodi_recently_added_tv
-#    date: ddmm
-#    clock: 24
-#    all_shadows: false

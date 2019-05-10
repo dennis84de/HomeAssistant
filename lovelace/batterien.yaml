@@ -35,6 +35,7 @@ cards:
     title: Batterien Thermometer
     show_header_toggle: false
     entities:
+      - entity: sensor.thermometer_wohnzimmer_batterie
       - entity: sensor.thermometer_flur_batterie
       - entity: sensor.thermometer_balkon_batterie
       - entity: sensor.thermometer_parkplatz_batterie
