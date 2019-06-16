@@ -12,6 +12,10 @@ sensor:
     unit_of_measurement: "kg"
     icon: mdi:weight-kilogram
 
+  - platform: statistics
+    entity_id: sensor.gewicht
+    name: "Gewicht"
+
   - platform: template
     sensors:
       bmi:
@@ -58,3 +62,8 @@ sensor:
         friendly_name: Fett
         icon_template: mdi:human-pregnant
         unit_of_measurement: "kg"
+
+homeassistant:
+  customize:
+    sensor.gewicht_mean:
+      friendly_name: Durchschnitt

@@ -248,7 +248,7 @@ automation:
         entity_id: binary_sensor.bewegungsmelder_flur_vorne
         to: 'on'
       - platform: state
-        entity_id: binary_sensor.bewegungsmelder_flur_hintens
+        entity_id: binary_sensor.bewegungsmelder_flur_hinten
         to: 'on'
       - platform: state
         entity_id: binary_sensor.bewegungsmelder_balkon
@@ -274,9 +274,9 @@ automation:
   - alias: "Kodi - Wiedergabe starten - Bewegung Wohnzimmer"
     initial_state: true
     trigger:
-      platform: state
-      entity_id: binary_sensor.bewegungsmelder_wohnzimmer
-      to: 'on'
+      - platform: state
+        entity_id: binary_sensor.bewegungsmelder_wohnzimmer
+        to: 'on'
     condition:
       - condition: state
         entity_id: media_player.kodi_wohnzimmer
@@ -313,9 +313,9 @@ automation:
   - alias: "Kodi - Wiedergabe gestartet - Licht und Musik ausschalten"
     initial_state: true
     trigger:
-      platform: state
-      entity_id: media_player.kodi_wohnzimmer
-      to: 'playing'
+      - platform: state
+        entity_id: media_player.kodi_wohnzimmer
+        to: 'playing'
     action:
       - service: light.turn_off
         entity_id: light.sideboard, light.schrank, light.badezimmerschrank, light.schreibtisch, light.regal, light.arbeitszimmer_lampe, light.balkon_licht
@@ -432,11 +432,3 @@ homeassistant:
     switch.wohnzimmer_fernseher:
       icon: mdi:television
       friendly_name: Fernseher
-
-    sensor.soundbar_volume:
-      hidden: true
-    binary_sensor.soundbar_volume_changed:
-      hidden: true
-
-    input_boolean.kodi_pausiert:
-      hidden: true

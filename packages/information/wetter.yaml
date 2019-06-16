@@ -98,6 +98,10 @@ sensor:
     token: !secret co2signal_key
     scan_interval: 900
 
+  - platform: doomsday_clock
+    name: Weltuntergangsuhr
+    scan_interval: 86400
+
   - platform: mold_indicator
     name: Schimmelindikator
     indoor_temp_sensor: sensor.wohnzimmer_temperatur

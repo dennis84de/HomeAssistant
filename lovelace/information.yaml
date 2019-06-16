@@ -42,6 +42,9 @@ popup_cards:
           entities:
             - entity: sensor.gewicht
               show_state: false
+            - entity: sensor.gewicht_mean
+              name: Durchschnitt
+              show_state: false
 
 cards:
   - type: entities

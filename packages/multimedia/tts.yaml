@@ -50,7 +50,7 @@ script:
               media_player.echo_{{ echo }}
             {% elif letzteBewegung == None %}
               media_player.echo_wohnzimmer
-            {% elif letzteBewegung == 'Flur' or letzteBewegung == 'Badezimmer' %}
+            {% elif letzteBewegung == 'Flur vorne' or letzteBewegung == 'Flur hinten' or letzteBewegung == 'Badezimmer' %}
               media_player.echo_flur
             {% elif letzteBewegung == 'Küche' %}
               media_player.echo_kuche
@@ -195,3 +195,16 @@ automation:
     action:
       - service: media_player.media_pause
         entity_id: media_player.smarthome
+
+  - alias: 'Telegram - Benachrichtigung'
+    initial_state: true
+    trigger:
+      - platform: event
+        event_type: telegram_command
+        event_data:
+          command: '/info'
+    action:
+      - service: !secret tts_service
+        data_template:
+          message: >-
+            "{% for state in trigger.event.data["args"] %} {{ state }} {% endfor %}"

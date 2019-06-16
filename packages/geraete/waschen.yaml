@@ -185,7 +185,7 @@ automation:
           message: >-
             Die Waschmaschine wurde gestartet.
 
-  - alias: 'Waschmaschine fertig - Trocken einschalten'
+  - alias: 'Waschmaschine fertig - Trockner einschalten'
     initial_state: true
     trigger:
       - platform: state

@@ -43,6 +43,14 @@ cards:
       - entity: sensor.matrix_wdc_wd20ears_00mvwb0_load_used_space
       - entity: sensor.matrix_wdc_wd20ears_00mvwb0_temperatures_temperature
 
+  - type: glance
+    title: Hardware
+    show_header_toggle: false
+    entities:
+      - entity: sensor.hardware_temperatur
+      - entity: sensor.hardware_luftfeuchtigkeit
+      - entity: sensor.hardware_luftdruck
+
   - type: entities
     title: Z-Wave
     show_header_toggle: false
@@ -90,13 +98,14 @@ cards:
     entities:
       - entity: zigate.thermometer_balkon
       - entity: zigate.thermometer_parkplatz
-      - entity: zigate.thermometer_kuehlschrank
-      - entity: zigate.thermometer_gefrierschrank
       - entity: zigate.thermometer_flur
       - entity: zigate.thermometer_schlafzimmer
       - entity: zigate.thermometer_arbeitszimmer
       - entity: zigate.thermometer_sportzimmer
       - entity: zigate.thermometer_kueche
+      - entity: zigate.thermometer_kuehlschrank
+      - entity: zigate.thermometer_gefrierschrank
+      - entity: zigate.thermometer_hardware
 
   - type: entities
     title: Sensoren

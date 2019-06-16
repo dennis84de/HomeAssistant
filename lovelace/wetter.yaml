@@ -142,6 +142,7 @@ cards:
     entities:
       - entity: sensor.flugzeuge
       - entity: binary_sensor.iss
+      - entity: sensor.weltuntergangsuhr
       - entity: sensor.strommix
       - entity: sensor.schimmelindikator
       - entity: binary_sensor.auto_waschen

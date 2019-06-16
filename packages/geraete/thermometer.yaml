@@ -70,32 +70,6 @@ sensor:
         unit_of_measurement: '%'
         device_class: battery
 
-      thermometer_kuehlschrank_batterie:
-        friendly_name: Thermometer Kühlschrank
-        entity_id:
-          - zigate.thermometer_kuehlschrank
-        value_template: >-
-          {% if is_state('zigate.thermometer_kuehlschrank', 'unknown') %}
-            0
-          {% else %}
-            {{ state_attr("zigate.thermometer_kuehlschrank", "battery_level") | float }}
-          {% endif %}
-        unit_of_measurement: '%'
-        device_class: battery
-
-      thermometer_gefrierschrank_batterie:
-        friendly_name: Thermometer Gefrierschrank
-        entity_id:
-          - zigate.thermometer_gefrierschrank
-        value_template: >-
-          {% if is_state('zigate.thermometer_gefrierschrank', 'unknown') %}
-            0
-          {% else %}
-            {{ state_attr("zigate.thermometer_gefrierschrank", "battery_level") | float }}
-          {% endif %}
-        unit_of_measurement: '%'
-        device_class: battery
-
       thermometer_schlafzimmer_batterie:
         friendly_name: Thermometer Schlafzimmer
         entity_id:
@@ -157,6 +131,45 @@ sensor:
             0
           {% else %}
             {{ state_attr("zigate.thermometer_parkplatz", "battery_level") | float }}
+          {% endif %}
+        unit_of_measurement: '%'
+        device_class: battery
+
+      thermometer_kuehlschrank_batterie:
+        friendly_name: Thermometer Kühlschrank
+        entity_id:
+          - zigate.thermometer_kuehlschrank
+        value_template: >-
+          {% if is_state('zigate.thermometer_kuehlschrank', 'unknown') %}
+            0
+          {% else %}
+            {{ state_attr("zigate.thermometer_kuehlschrank", "battery_level") | float }}
+          {% endif %}
+        unit_of_measurement: '%'
+        device_class: battery
+
+      thermometer_gefrierschrank_batterie:
+        friendly_name: Thermometer Gefrierschrank
+        entity_id:
+          - zigate.thermometer_gefrierschrank
+        value_template: >-
+          {% if is_state('zigate.thermometer_gefrierschrank', 'unknown') %}
+            0
+          {% else %}
+            {{ state_attr("zigate.thermometer_gefrierschrank", "battery_level") | float }}
+          {% endif %}
+        unit_of_measurement: '%'
+        device_class: battery
+
+      thermometer_hardware_batterie:
+        friendly_name: Thermometer Hardware
+        entity_id:
+          - zigate.thermometer_hardware
+        value_template: >-
+          {% if is_state('zigate.thermometer_hardware', 'unknown') %}
+            0
+          {% else %}
+            {{ state_attr("zigate.thermometer_hardware", "battery_level") | float }}
           {% endif %}
         unit_of_measurement: '%'
         device_class: battery

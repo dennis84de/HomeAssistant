@@ -45,6 +45,7 @@ cards:
       - entity: sensor.thermometer_sportzimmer_batterie
       - entity: sensor.thermometer_kuehlschrank_batterie
       - entity: sensor.thermometer_gefrierschrank_batterie
+      - entity: sensor.thermometer_hardware_batterie
 
   - type: entities
     title: Batterien Fenster

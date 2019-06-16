@@ -23,8 +23,6 @@ device_tracker:
     devices:
       - HandyGPS
 
-  - platform: bluetooth_tracker
-
 fritzbox:
   devices:
     - host: !secret fritzbox_host

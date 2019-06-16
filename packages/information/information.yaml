@@ -86,8 +86,6 @@ binary_sensor:
         value_template: >-
           {{ states.sensor.tankstelle_real.attributes['prices']['51d4b714-a095-1aa0-e100-80009459e03a']['status'] == 'open' }}
 
-  - platform: template
-    sensors:
       tankstelle_jet_status:
         friendly_name: 'Status'
         device_class: door

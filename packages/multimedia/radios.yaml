@@ -131,6 +131,9 @@ automation:
     condition:
       - condition: time
         after: '08:00'
+        before: '12:00'
+      - condition: time
+        after: '15:00'
         before: '22:00'
       - condition: state
         entity_id: 'switch.alle_radios_wiedergabe_aktiv'

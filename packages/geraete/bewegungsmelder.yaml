@@ -169,7 +169,7 @@ entity_controller:
       - light.arbeitszimmer_lampe
     delay: 120
     overrides:
-      - binary_sensor.bewegungsmelder_inaktiv_unterwegs
+#      - binary_sensor.bewegungsmelder_inaktiv_unterwegs
       - binary_sensor.sonne_tagsueber
       - input_boolean.bewegungsmelder_arbeitszimmer_deaktiviert
 
@@ -182,9 +182,9 @@ entity_controller:
     service_data:
       brightness: 100
     overrides:
-      - binary_sensor.bewegungsmelder_inaktiv_unterwegs
+#      - binary_sensor.bewegungsmelder_inaktiv_unterwegs
       - binary_sensor.sonne_tagsueber
-      - input_boolean.bewegungsmelder_badezimmer_deaktiviert
+#      - input_boolean.bewegungsmelder_badezimmer_deaktiviert
     night_mode:
       delay: 120
       service_data:
@@ -198,9 +198,9 @@ entity_controller:
     entity: light.balkon_licht
     delay: 600
     overrides:
-      - binary_sensor.bewegungsmelder_inaktiv_unterwegs
+#      - binary_sensor.bewegungsmelder_inaktiv_unterwegs
       - binary_sensor.sonne_tagsueber
-      - input_boolean.bewegungsmelder_balkon_deaktiviert
+#      - input_boolean.bewegungsmelder_balkon_deaktiviert
 
   bewegung_flur_vorne:
     friendly_name: "Bewegung Flur vorne"
@@ -210,9 +210,9 @@ entity_controller:
     service_data:
       brightness: 100
     overrides:
-      - binary_sensor.bewegungsmelder_inaktiv_unterwegs
+#      - binary_sensor.bewegungsmelder_inaktiv_unterwegs
       - binary_sensor.sonne_tagsueber
-      - input_boolean.bewegungsmelder_flur_deaktiviert
+#      - input_boolean.bewegungsmelder_flur_deaktiviert
     night_mode:
       delay: 120
       service_data:
@@ -228,9 +228,9 @@ entity_controller:
     service_data:
       brightness: 100
     overrides:
-      - binary_sensor.bewegungsmelder_inaktiv_unterwegs
+#      - binary_sensor.bewegungsmelder_inaktiv_unterwegs
       - binary_sensor.sonne_tagsueber
-      - input_boolean.bewegungsmelder_flur_deaktiviert
+#      - input_boolean.bewegungsmelder_flur_deaktiviert
     night_mode:
       delay: 120
       service_data:
@@ -246,9 +246,9 @@ entity_controller:
     service_data:
       brightness: 100
     overrides:
-      - binary_sensor.bewegungsmelder_inaktiv_unterwegs
+#      - binary_sensor.bewegungsmelder_inaktiv_unterwegs
       - binary_sensor.sonne_tagsueber
-      - input_boolean.bewegungsmelder_kueche_deaktiviert
+#      - input_boolean.bewegungsmelder_kueche_deaktiviert
     night_mode:
       delay: 120
       service_data:
@@ -264,9 +264,9 @@ entity_controller:
     service_data:
       brightness: 100
     overrides:
-      - binary_sensor.bewegungsmelder_inaktiv_unterwegs
+#      - binary_sensor.bewegungsmelder_inaktiv_unterwegs
       - binary_sensor.sonne_tagsueber
-      - input_boolean.bewegungsmelder_schlafzimmer_deaktiviert
+#      - input_boolean.bewegungsmelder_schlafzimmer_deaktiviert
     night_mode:
       delay: 120
       service_data:
@@ -282,7 +282,7 @@ entity_controller:
       - light.strahler
     delay: 60
     overrides:
-      - binary_sensor.bewegungsmelder_inaktiv_unterwegs
+#      - binary_sensor.bewegungsmelder_inaktiv_unterwegs
       - binary_sensor.sonne_tagsueber
-      - input_boolean.bewegungsmelder_wohnzimmer_deaktiviert
+#      - input_boolean.bewegungsmelder_wohnzimmesr_deaktiviert
       - switch.computer

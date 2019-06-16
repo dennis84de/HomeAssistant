@@ -21,7 +21,7 @@ sensor:
         value_template: >-
           {% set lastClean = state_attr("vacuum.xiaomi_vacuum_cleaner", "clean_stop") %}
           {{ as_timestamp(lastClean) | timestamp_custom("%d.%m.%Y %H:%M", True) | string }}
-          
+
       reinigung_filter:
         friendly_name: Reinigung Filter
         unit_of_measurement: 'Stunden'
@@ -97,8 +97,13 @@ automation:
         - condition: state
           entity_id: binary_sensor.zu_hause
           state: 'off'
-        - condition: template
-          value_template: '{{ now().isoweekday() != 7 }}'
+        - condition: or
+          conditions:
+            - condition: state
+              entity_id: binary_sensor.arbeitstag
+              state: 'on'
+            - condition: template
+              value_template: '{{ now().isoweekday() == 6 }}'
         - condition: template
           value_template: >-
             {% set letzte_reinigung = as_timestamp(state_attr("vacuum.xiaomi_vacuum_cleaner", "clean_stop")) | timestamp_custom("%s", True) | int  %}
