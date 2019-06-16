@@ -1,0 +1,11 @@
+.light-unavailable {
+    fill: #c2c2d6 !important;
+}
+
+.light-off {
+    fill: #00004d !important;
+}
+
+.light-on {
+    fill: #ffff33 !important;
+}
