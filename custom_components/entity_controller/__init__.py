@@ -1,7 +1,7 @@
 """
 Entity controller component for Home Assistant.
 Maintainer:       Daniel Mason
-Version:          v3.3.3
+Version:          v4.0.1
 Documentation:    https://github.com/danobot/entity-controller
 Issues Tracker:   Report issues on Github. Ensure you have the latest version. Include:
                     * YAML configuration (for the misbehaving entity)
@@ -16,6 +16,7 @@ from homeassistant.const import (
     SUN_EVENT_SUNSET, SUN_EVENT_SUNRISE, CONF_NAME)
 from homeassistant.util import dt
 from homeassistant.helpers.entity_component import EntityComponent
+from homeassistant.exceptions import HomeAssistantError
 from transitions import Machine
 from transitions.extensions import HierarchicalMachine as Machine
 from threading import Timer
@@ -25,13 +26,13 @@ from homeassistant.helpers.sun import get_astral_event_date
 
 DEPENDENCIES = ['light', 'sensor', 'binary_sensor', 'cover', 'fan',
                 'media_player']
-REQUIREMENTS = ['transitions==0.6.9']
+# REQUIREMENTS = ['transitions==0.6.9']
 
 DOMAIN = 'entity_controller'
 CONSTRAIN_START = 1
 CONSTRAIN_END = 2
 
-VERSION = '3.3.3'
+VERSION = '4.0.1'
 SENSOR_TYPE_DURATION = 'duration'
 SENSOR_TYPE_EVENT = 'event'
 MODE_DAY = 'day'
@@ -44,8 +45,8 @@ DEFAULT_NAME = 'Entity Timer'
 # CONF_NAME = 'slug'
 CONF_CONTROL_ENTITIES = 'entities'
 CONF_CONTROL_ENTITY = 'entity'
-CONF_CONTROL_ENTITY_ON = 'entity_on'
-CONF_CONTROL_ENTITY_OFF = 'entity_off'
+CONF_TRIGGER_ON_ACTIVATE = 'trigger_on_activate'
+CONF_TRIGGER_ON_DEACTIVATE = 'trigger_on_deactivate'
 CONF_SENSOR = 'sensor'
 CONF_SENSORS = 'sensors'
 CONF_SERVICE_DATA = 'service_data'
@@ -74,7 +75,7 @@ MODE_SCHEMA = vol.Schema({
 })
 
 ENTITY_SCHEMA = vol.Schema(cv.has_at_least_one_key(CONF_CONTROL_ENTITIES, 
-                           CONF_CONTROL_ENTITY, CONF_CONTROL_ENTITY_ON), {
+                           CONF_CONTROL_ENTITY, CONF_TRIGGER_ON_ACTIVATE), {
     # vol.Required(CONF_NAME): cv.string,
     vol.Optional(CONF_DELAY, default=DEFAULT_DELAY): cv.positive_int,
     vol.Optional(CONF_START_TIME): cv.string,
@@ -86,8 +87,8 @@ ENTITY_SCHEMA = vol.Schema(cv.has_at_least_one_key(CONF_CONTROL_ENTITIES,
     vol.Optional(CONF_SENSORS, default=[]): cv.entity_ids,
     vol.Optional(CONF_CONTROL_ENTITIES, default=[]): cv.entity_ids,
     vol.Optional(CONF_CONTROL_ENTITY, default=[]): cv.entity_ids,
-    vol.Optional(CONF_CONTROL_ENTITY_ON, default=None): cv.entity_ids,
-    vol.Optional(CONF_CONTROL_ENTITY_OFF, default=None): cv.entity_ids,
+    vol.Optional(CONF_TRIGGER_ON_ACTIVATE, default=None): cv.entity_ids,
+    vol.Optional(CONF_TRIGGER_ON_DEACTIVATE, default=None): cv.entity_ids,
     vol.Optional(CONF_STATE_ENTITIES, default=[]):  cv.entity_ids,
     vol.Optional(CONF_BLOCK_TIMEOUT, default=None): cv.positive_int,
     vol.Optional(CONF_NIGHT_MODE, default=None): MODE_SCHEMA,
@@ -292,7 +293,8 @@ class Model():
         self.stateEntities = []
         self.controlEntities = []
         self.sensorEntities = []
-        self.offEntities = []
+        self.triggerOnDeactivate = []
+        self.triggerOnActivate = []
         self.timer_handle = None
         self.block_timer_handle = None
         self.sensor_type = None
@@ -324,6 +326,7 @@ class Model():
         self.config_sensor_entities(config)
         self.config_override_entities(config)
         self.config_off_entities(config)
+        self.config_on_entities(config)
         self.config_normal_mode(config)
         self.config_night_mode(
             config)  # must come after normal_mode (uses normal mode parameters if not set)
@@ -464,6 +467,10 @@ class Model():
     def _override_entity_state(self):
         for e in self.overrideEntities:
             s = self.hass.states.get(e)
+            
+            if s is None:
+                return None
+                
             if self.matches(s.state, self.OVERRIDE_ON_STATE):
                 self.log.debug("Override entities are ON. [%s]", e)
                 return e
@@ -584,16 +591,13 @@ class Model():
         
         self.add(self.controlEntities, config, CONF_CONTROL_ENTITY)
         self.add(self.controlEntities, config, CONF_CONTROL_ENTITIES)
-        self.add(self.controlEntities, config, CONF_CONTROL_ENTITIES)
-        self.add(self.controlEntities, config, CONF_CONTROL_ENTITY_ON)
 
         self.log.debug("Control Entities: " + str(self.controlEntities))
 
     def config_state_entities(self, config):
         self.stateEntities = []
-        self.add(self.stateEntities, config, CONF_STATE_ENTITIES)
-        if len(self.stateEntities) > 0:
-            self.stateEntities.extend(config.get(CONF_STATE_ENTITIES, [])) # for some reason, config validation is not returning default value!!!
+        self.add(self.stateEntities, config, CONF_STATE_ENTITIES) # adding optimistically
+        if len(self.stateEntities) > 0:                           # now checking whether they actually exist
             self.log.info("State Entities (explicitly defined): " + str(
                 self.stateEntities))
             event.async_track_state_change(self.hass, self.stateEntities,
@@ -609,10 +613,16 @@ class Model():
 
     def config_off_entities(self, config):
 
-        self.offEntities = []
-        self.add(self.offEntities, config, CONF_CONTROL_ENTITY_OFF)
-        if len(self.offEntities) > 0:
-            self.log.info('Off Entities: ' + str(self.offEntities))
+        self.triggerOnDeactivate = []
+        self.add(self.triggerOnDeactivate, config, CONF_TRIGGER_ON_DEACTIVATE)
+        if len(self.triggerOnDeactivate) > 0:
+            self.log.info('Off Entities: ' + str(self.triggerOnDeactivate))
+
+    def config_on_entities(self, config):
+        self.triggerOnActivate = []
+        self.add(self.triggerOnActivate, config, CONF_TRIGGER_ON_ACTIVATE)
+        if len(self.triggerOnActivate) > 0:
+            self.log.info('On Entities: ' + str(self.triggerOnActivate))
 
     def config_sensor_entities(self, config):
         self.sensorEntities = []
@@ -759,8 +769,10 @@ class Model():
 
         self.do_draw = config.get("draw", False)
 
-        if CONF_CONTROL_ENTITY_OFF in config:
-            self.entityOff = config.get(CONF_CONTROL_ENTITY_OFF)
+        # if CONF_TRIGGER_ON_DEACTIVATE in config:
+        #     self.entityOff = config.get(CONF_TRIGGER_ON_DEACTIVATE)
+        # if CONF_TRIGGER_ON_ACTIVATE in config:
+        #     self.entityOn = config.get(CONF_TRIGGER_ON_ACTIVATE)
         
         self.config[CONF_SENSOR_RESETS_TIMER] = config.get(CONF_SENSOR_RESETS_TIMER)
         
@@ -846,12 +858,31 @@ class Model():
             self.blocked()
         else:
             self.enable()
-            
+
     # =====================================================
     #    H E L P E R   F U N C T I O N S        ( N E W )
     # =====================================================
+
+    def turn_off_special_entities(self):
+        if len(self.triggerOnDeactivate) > 0:
+            self.log.info(
+                "Triggering Deactivation entities (no params passed along)")
+            for e in self.triggerOnDeactivate:
+                self.log.debug("Triggering with turn_on call: %s", e)
+                self.call_service(e, 'turn_on')
+
+    def turn_on_special_entities(self):
+        if len(self.triggerOnActivate) > 0:
+            self.log.info("Triggering Activation entities (no params passed along)")
+            for e in self.triggerOnActivate:
+                self.log.debug("Triggering with turn_on call: %s", e)
+                self.call_service(e, 'turn_on')
+
     def turn_on_control_entities(self):
+        self.turn_on_special_entities()
+
         for e in self.controlEntities:
+            # if light params are defined
             if self.lightParams.get(CONF_SERVICE_DATA) is not None:
                 self.log.debug("Turning on %s with service parameters %s", e,
                     self.lightParams.get(CONF_SERVICE_DATA))
@@ -861,23 +892,19 @@ class Model():
                 self.log.debug("Turning on %s (no parameters passed to service call)",
                     e)
                 self.call_service(e, 'turn_on')
-    def turn_off_control_entities(self):
-        if len(self.offEntities) > 0:
-            self.log.info(
-                "Turning on special off_entities that were defined, "
-                "instead of turning off the regular control_entities")
-            for e in self.offEntities:
-                self.log.debug("Turning on %s", e)
-                self.call_service(e, 'turn_on')
-        else:
-            for e in self.controlEntities:
-                self.log.debug("Turning off %s", e)
-                if self.lightParams.get(CONF_SERVICE_DATA_OFF) is not None:
-                    self.call_service(e, 'turn_off',
-                                      **self.lightParams.get(CONF_SERVICE_DATA_OFF))
-                else:
-                    self.call_service(e, 'turn_off')
 
+    def turn_off_control_entities(self):
+        self.turn_off_special_entities()
+        for e in self.controlEntities:
+            self.log.debug("Turning off %s", e)
+            
+            if self.lightParams.get(CONF_SERVICE_DATA_OFF) is not None:
+                self.call_service(e, 'turn_off',
+                                    **self.lightParams.get(CONF_SERVICE_DATA_OFF))
+            else:
+                self.call_service(e, 'turn_off')
+
+   
     def now_is_between(self, start_time_str, end_time_str, name=None):
         start_time = (self._parse_time(start_time_str, name))["datetime"]
         end_time = (self._parse_time(end_time_str, name))["datetime"]
@@ -1241,7 +1268,8 @@ class Model():
         self.log.debug("Sensor Entities         %s", str(self.sensorEntities))
         self.log.debug("Control Entities:       %s", str(self.controlEntities))
         self.log.debug("State Entities:         %s", str(self.stateEntities))
-        self.log.debug("Off Entities:           %s", str(self.offEntities))
+        self.log.debug("Activate Trigger E.:    %s", str(self.triggerOnActivate))
+        self.log.debug("Deactivate Trigger E.:  %s", str(self.triggerOnDeactivate))
         self.log.debug("Light params:           %s", str(self.lightParams))
         self.log.debug("        -------        Time        -------        ")
         self.log.debug("Start time:             %s", self._start_time_private)
