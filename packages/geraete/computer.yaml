@@ -36,7 +36,6 @@ switch:
 
 automation:
   - alias: 'Unterwegs - Computer ausschalten'
-    initial_state: true
     trigger:
       - platform: state
         entity_id: binary_sensor.zu_hause

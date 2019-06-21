@@ -62,7 +62,6 @@ script:
 
 automation:
   - alias: "Lautstärke Multimedia ändern"
-    initial_state: on
     trigger:
       - platform: state
         entity_id: input_number.sprache_lautstaerke
@@ -74,7 +73,6 @@ automation:
             {{ states.input_number.sprache_lautstaerke.state | int / 100 }}
 
   - alias: "Lautstärke Multimedia einstellen"
-    initial_state: on
     trigger:
       - platform: homeassistant
         event: start
@@ -86,7 +84,6 @@ automation:
             {{ states.media_player.smarthome.attributes.volume_level * 100 | int }}
 
   - alias: "Uhr - Glocke starten"
-    initial_state: true
     trigger:
       - platform: time_pattern
         minutes: 30
@@ -118,7 +115,6 @@ automation:
           media_content_type: music
 
   - alias: 'Uhr - Glocke abbrechen'
-    initial_state: true
     trigger:
       platform: state
       entity_id: input_boolean.uhr_einschalten
@@ -133,7 +129,6 @@ automation:
           - media_player.smarthome
 
   - alias: "BVB - Torhymne"
-    initial_state: true
     trigger:
       - platform: event
         event_type: xiaomi_aqara.cube_action
@@ -154,7 +149,6 @@ automation:
           media_content_type: music
 
   - alias: "BVB - Musik starten"
-    initial_state: true
     trigger:
       - platform: event
         event_type: xiaomi_aqara.cube_action
@@ -178,7 +172,6 @@ automation:
           media_content_type: music
 
   - alias: "BVB - Musik stoppen"
-    initial_state: true
     trigger:
       - platform: event
         event_type: xiaomi_aqara.cube_action
@@ -197,7 +190,6 @@ automation:
         entity_id: media_player.smarthome
 
   - alias: 'Telegram - Benachrichtigung'
-    initial_state: true
     trigger:
       - platform: event
         event_type: telegram_command

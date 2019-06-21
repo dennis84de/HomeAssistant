@@ -13,7 +13,6 @@ input_boolean:
 
 automation:
   - alias: "Licht Balkon - ausschalten"
-    initial_state: true
     trigger:
       - platform: state
         entity_id: binary_sensor.bewegungsmelder_wohnzimmer

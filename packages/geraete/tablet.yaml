@@ -55,7 +55,6 @@ sensor:
 
 automation:
   - alias: "Tablet Wohnzimmer - Batteriestand niedrig"
-    initial_state: true
     trigger:
       - platform: state
         entity_id: sensor.tasker_tablet_wohnzimmer
@@ -76,7 +75,6 @@ automation:
           message: "Das Tablet im Wohnzimmer muss aufgeladen werden. Der Batteriestand beträgt {{ states.sensor.tasker_tablet_wohnzimmer.state | int }} Prozent."
 
   - alias: "Tablet Schlafzimmer - Batteriestand niedrig"
-    initial_state: true
     trigger:
       - platform: state
         entity_id: sensor.tasker_tablet_schlafzimmer
@@ -97,7 +95,6 @@ automation:
           message: "Das Tablet im Schlafzimmer muss aufgeladen werden. Der Batteriestand beträgt {{ states.sensor.tasker_tablet_schlafzimmer.state | int }} Prozent."
 
   - alias: "Tablet Badezimmer - Batteriestand niedrig"
-    initial_state: true
     trigger:
       - platform: state
         entity_id: sensor.tasker_tablet_badezimmer
@@ -118,7 +115,6 @@ automation:
           message: "Das Tablet im Badezimmer muss aufgeladen werden. Der Batteriestand beträgt {{ states.sensor.tasker_tablet_badezimmer.state | int }} Prozent."
 
   - alias: "Tablet Küche - Batteriestand niedrig"
-    initial_state: true
     trigger:
       - platform: state
         entity_id: sensor.tasker_tablet_kueche
@@ -139,7 +135,6 @@ automation:
           message: "Das Tablet in der Küche muss aufgeladen werden. Der Batteriestand beträgt {{ states.sensor.tasker_tablet_kueche.state | int }} Prozent."
 
   - alias: "Tablet Wohnzimmer - Aufgeladen"
-    initial_state: true
     trigger:
       - platform: state
         entity_id: sensor.tasker_tablet_wohnzimmer
@@ -155,7 +150,6 @@ automation:
           message: "Das Tablet im Wohnzimmer wurde vollständig aufgeladen."
 
   - alias: "Tablet Schlafzimmer - Aufgeladen"
-    initial_state: true
     trigger:
       - platform: state
         entity_id: sensor.tasker_tablet_schlafzimmer
@@ -171,7 +165,6 @@ automation:
           message: "Das Tablet im Schlafzimmer wurde vollständig aufgeladen."
 
   - alias: "Tablet Badezimmer - Aufgeladen"
-    initial_state: true
     trigger:
       - platform: state
         entity_id: sensor.tasker_tablet_badezimmer
@@ -187,7 +180,6 @@ automation:
           message: "Das Tablet im Badezimmer wurde vollständig aufgeladen."
 
   - alias: "Tablet Küche - Aufgeladen"
-    initial_state: true
     trigger:
       - platform: state
         entity_id: sensor.tasker_tablet_kueche

@@ -158,7 +158,6 @@ script:
 
 automation:
   - alias: "Schlafen gehen - Countdown starten"
-    initial_state: true
     trigger:
       - platform: event
         event_type: xiaomi_aqara.click
@@ -189,7 +188,6 @@ automation:
           media_content_type: music
 
   - alias: "Schlafen gehen - Countdown abbrechen"
-    initial_state: true
     trigger:
       - platform: event
         event_type: xiaomi_aqara.click
@@ -213,7 +211,6 @@ automation:
         entity_id: media_player.smarthome
 
   - alias: "Schlafen gehen - Starten"
-    initial_state: true
     trigger:
       - platform: event
         event_type: timer.finished
@@ -227,7 +224,6 @@ automation:
       - service: script.schlafen_gehen
 
   - alias: "Schlafen gehen - Fernseher einschalten"
-    initial_state: true
     trigger:
       - platform: event
         event_type: timer.finished
@@ -241,7 +237,6 @@ automation:
       - service: script.schlafen_gehen_fernseher
 
   - alias: 'Sleeptimer starten'
-    initial_state: true
     trigger:
       platform: state
       entity_id: input_boolean.timer_schlafzimmer_aktiv
@@ -254,7 +249,6 @@ automation:
             {{ states.input_select.timer_schlafzimmer_dauer.state  | int * 60 | int }}
 
   - alias: 'Sleeptimer endet'
-    initial_state: true
     trigger:
       - platform: numeric_state
         entity_id: sensor.timer_schlafzimmer_zeit
@@ -280,7 +274,6 @@ automation:
             icon: "info"
 
   - alias: 'Sleeptimer geändert'
-    initial_state: true
     trigger:
       platform: state
       entity_id: input_select.timer_schlafzimmer_dauer
@@ -294,7 +287,6 @@ automation:
         entity_id: input_boolean.timer_schlafzimmer_aktiv
 
   - alias: 'Sleeptimer aktiviert'
-    initial_state: true
     trigger:
       platform: event
       event_type: timer.finished
@@ -306,7 +298,6 @@ automation:
         entity_id: light.bett
 
   - alias: 'Sleeptimer abbrechen'
-    initial_state: true
     trigger:
       platform: state
       entity_id: input_boolean.timer_schlafzimmer_aktiv
@@ -316,7 +307,6 @@ automation:
         entity_id: timer.sleeptimer
 
   - alias: "Schlafzimmer - Kodi gestartet"
-    initial_state: true
     trigger:
       platform: state
       entity_id: media_player.kodi_schlafzimmer
@@ -330,7 +320,6 @@ automation:
         entity_id: light.bett, light.sideboard, light.schrank, light.badezimmerschrank, light.schreibtisch, light.regal, light.arbeitszimmer_lampe
 
   - alias: "Schlafzimmer - Kodi pausiert"
-    initial_state: true
     trigger:
       platform: state
       entity_id: binary_sensor.bewegungsmelder_schlafzimmer

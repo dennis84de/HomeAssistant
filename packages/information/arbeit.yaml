@@ -70,7 +70,6 @@ input_select:
 
 automation:
   - alias: 'Benachrichtigung Arbeit'
-    initial_state: true
     trigger:
       - platform: template
         value_template: '{{ states.sensor.time.state == states.sensor.abfahrzeit.state }}'

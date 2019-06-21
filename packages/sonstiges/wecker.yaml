@@ -121,7 +121,6 @@ sensor:
 
 automation:
   - alias: "Weckzeit stellen"
-    initial_state: true
     trigger:
       - platform: state
         entity_id: sensor.tasker_tablet_weckzeit
@@ -142,7 +141,6 @@ automation:
       - service: script.weckzeit_einstellen
 
   - alias: "Wecker starten"
-    initial_state: true
     trigger:
       - platform: template
         value_template: '{{ states.sensor.time.state == states.sensor.wecker_startzeit.state }}'
@@ -197,7 +195,6 @@ automation:
       - service: script.wecker_einschalten
 
   - alias: "Aufstehen - Schlafen ausschalten"
-    initial_state: true
     trigger:
       - platform: state
         entity_id: binary_sensor.bewegungsmelder_kueche

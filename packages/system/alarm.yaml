@@ -23,7 +23,6 @@ alarm_control_panel:
 
 automation:
   - alias: "Alles ausschalten aktivieren"
-    initial_state: true
     trigger:
       - platform: event
         event_type: xiaomi_aqara.click
@@ -88,7 +87,6 @@ automation:
         entity_id: media_player.smarthome
 
   - alias: "Alles ausschalten deaktivieren"
-    initial_state: true
     trigger:
       platform: event
       event_type: timer.finished
@@ -106,7 +104,6 @@ automation:
       - service: script.radios_starten
 
   - alias: "Alarm ausgelöst"
-    initial_state: true
     trigger:
       - platform: state
         entity_id: binary_sensor.tuersensor
@@ -123,7 +120,6 @@ automation:
       entity_id: alarm_control_panel.alarm
 
   - alias: "Alarm Nachricht"
-    initial_state: true
     trigger:
       - platform: state
         entity_id: alarm_control_panel.alarm
@@ -135,7 +131,6 @@ automation:
         message: "Der Alarm in der Wohnung wurde ausgelöst."
 
   - alias: "Alarm aktiviert"
-    initial_state: true
     trigger:
       - platform: state
         entity_id: binary_sensor.zu_hause
@@ -147,7 +142,6 @@ automation:
         entity_id: alarm_control_panel.alarm
 
   - alias: "Zu Hause - Alarm deaktiviert"
-    initial_state: true
     trigger:
       - platform: state
         entity_id: binary_sensor.zu_hause
@@ -167,7 +161,6 @@ automation:
             "Hallo Dennis. Willkommen zu Hause."
 
   - alias: "Alarm - Bewegung"
-    initial_state: true
     trigger:
       - platform: state
         entity_id: binary_sensor.bewegungsmelder_badezimmer
@@ -219,7 +212,6 @@ automation:
           {% endif %}
 
   - alias: "Alarm - Fenster"
-    initial_state: true
     trigger:
       - platform: state
         entity_id: binary_sensor.fenster_wohnzimmer
@@ -261,7 +253,6 @@ automation:
           {% endif %}
 
   - alias: "Zu Hause - Geräte einschalten"
-    initial_state: true
     trigger:
       - platform: state
         entity_id: binary_sensor.zu_hause
@@ -277,7 +268,6 @@ automation:
       - service: script.zu_hause
 
   - alias: "Zu Hause - Radio Balkon einschalten"
-    initial_state: true
     trigger:
       - platform: state
         entity_id: binary_sensor.zu_hause
@@ -297,7 +287,6 @@ automation:
         entity_id: switch.balkon_radio
 
   - alias: "Zu Hause - Geräte einschalten abends"
-    initial_state: true
     trigger:
       - platform: state
         entity_id: binary_sensor.zu_hause
@@ -313,7 +302,6 @@ automation:
       - service: script.zu_hause_abends
 
   - alias: 'Unterwegs - Geräte eingeschaltet'
-    initial_state: true
     trigger:
       - platform: state
         entity_id: binary_sensor.zu_hause
@@ -383,15 +371,3 @@ script:
         state: 'on'
       - service: switch.turn_off
         entity_id: switch.pc
-
-homeassistant:
-  customize:
-    script.zu_hause:
-      hidden: true
-    script.zu_hause_abends:
-      hidden: true
-
-    input_boolean.alles_auschalten_aktiv:
-      hidden: true
-    timer.alles_auschalten:
-      hidden: true

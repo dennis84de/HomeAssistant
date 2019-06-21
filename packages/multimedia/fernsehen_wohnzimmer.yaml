@@ -179,7 +179,6 @@ script:
 
 automation:
   - alias: "Kodi - Musik ausschalten"
-    initial_state: true
     trigger:
       platform: state
       entity_id: media_player.kodi_wohnzimmer
@@ -200,7 +199,6 @@ automation:
         entity_id: switch.wohnzimmer_radio, switch.balkon_radio, switch.flur_radio, switch.kuche_radio, switch.schlafzimmer_radio, switch.arbeitszimmer_radio
 
   - alias: "Kodi - Wiedergabe Cube"
-    initial_state: true
     trigger:
       - platform: event
         event_type: xiaomi_aqara.cube_action
@@ -221,7 +219,6 @@ automation:
         entity_id: switch.play_wohnzimmer
 
   - alias: "Kodi - Widergabe Schalter"
-    initial_state: true
     trigger:
       - platform: event
         event_type: xiaomi_aqara.click
@@ -242,7 +239,6 @@ automation:
         entity_id: switch.play_wohnzimmer
 
   - alias: "Kodi - Wiedergabe pausieren - Bewegung Flur / Balkon"
-    initial_state: true
     trigger:
       - platform: state
         entity_id: binary_sensor.bewegungsmelder_flur_vorne
@@ -272,7 +268,6 @@ automation:
         entity_id: input_boolean.kodi_pausiert
 
   - alias: "Kodi - Wiedergabe starten - Bewegung Wohnzimmer"
-    initial_state: true
     trigger:
       - platform: state
         entity_id: binary_sensor.bewegungsmelder_wohnzimmer
@@ -296,7 +291,6 @@ automation:
         entity_id: input_boolean.kodi_pausiert
 
   - alias: "Kodi - Nächster Titel"
-    initial_state: true
     trigger:
       - platform: event
         event_type: xiaomi_aqara.cube_action
@@ -311,7 +305,6 @@ automation:
         entity_id: media_player.kodi_wohnzimmer
 
   - alias: "Kodi - Wiedergabe gestartet - Licht und Musik ausschalten"
-    initial_state: true
     trigger:
       - platform: state
         entity_id: media_player.kodi_wohnzimmer
@@ -326,7 +319,6 @@ automation:
         entity_id: media_player.badezimmer
 
   - alias: "Soundbar Lautstärke - Soundbar"
-    initial_state: on
     trigger:
       - platform: state
         entity_id: binary_sensor.soundbar_volume_changed
@@ -350,7 +342,6 @@ automation:
             {% endif %}
 
   - alias: "Soundbar Lautstärke - Slider"
-    initial_state: on
     trigger:
       - platform: state
         entity_id: input_number.soundbar_volume
@@ -382,7 +373,6 @@ automation:
             {{ states.input_number.soundbar_volume.state | int / 50 }}
 
   - alias: "Soundbar Lautstärke - Cube"
-    initial_state: true
     trigger:
       - platform: event
         event_type: xiaomi_aqara.cube_action

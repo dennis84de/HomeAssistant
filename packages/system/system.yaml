@@ -38,7 +38,6 @@ switch:
 
 automation:
   - alias: Haveibeenpwned
-    initial_state: 'on'
     trigger:
       - platform: numeric_state
         entity_id: !secret pwned_sensor

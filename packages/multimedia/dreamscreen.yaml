@@ -27,7 +27,6 @@ input_select:
 
 automation:
   - alias: "Dreamscreen - Modus ändern"
-    initial_state: true
     trigger:
       - platform: state
         entity_id: input_select.dreamscreen_modus
@@ -69,7 +68,6 @@ automation:
             {% endif %}
 
   - alias: "Dreamscreen - Ambiente ändern"
-    initial_state: true
     trigger:
       - platform: state
         entity_id: input_select.dreamscreen_ambiente

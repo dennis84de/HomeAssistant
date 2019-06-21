@@ -73,7 +73,6 @@ sensor:
 
 automation:
   - alias: "Automatische Reinigung"
-    initial_state: true
     trigger:
       - platform: state
         entity_id: binary_sensor.zu_hause
@@ -131,7 +130,6 @@ automation:
           message: 'Das Saugen der Wohnung wurde gestartet.'
 
   - alias: "Staubsaugen beendet"
-    initial_state: true
     trigger:
       - platform: state
         entity_id: vacuum.xiaomi_vacuum_cleaner
@@ -144,7 +142,6 @@ automation:
           message: 'Die Wohnung wurde vollständig gesaugt.'
 
   - alias: "Staubsaugen Fehler"
-    initial_state: true
     trigger:
       - platform: state
         entity_id: vacuum.xiaomi_vacuum_cleaner

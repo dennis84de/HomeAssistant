@@ -405,7 +405,6 @@ sensor:
 
 automation:
   - alias: 'Balkontür schließen'
-    initial_state: true
     trigger:
       platform: template
       value_template: '{{ states.sensor.balkon_temperatur.state | float > states.sensor.wohnzimmer_temperatur.state | float + 2 }}'

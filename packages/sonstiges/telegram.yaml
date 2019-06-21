@@ -12,7 +12,6 @@ notify:
 
 automation:
   - alias: 'Telegram - Status'
-    initial_state: true
     trigger:
       platform: event
       event_type: telegram_command
@@ -39,7 +38,6 @@ automation:
               - 'Geräte anzeigen:/geraete'
 
   - alias: 'Telegram - Unterwegs einschalten'
-    initial_state: true
     trigger:
       - platform: event
         event_type: telegram_callback
@@ -54,7 +52,6 @@ automation:
           message: "Der Status wird aktualisiert."
 
   - alias: 'Telegram - Eingeschaltete Geräte'
-    initial_state: true
     trigger:
       platform: event
       event_type: telegram_callback
@@ -88,7 +85,6 @@ automation:
             - 'Alles Ausschalten:/alles_ausschalten'
 
   - alias: 'Telegram - Alles ausschalten'
-    initial_state: true
     trigger:
       - platform: event
         event_type: telegram_callback
@@ -107,7 +103,6 @@ automation:
           message: "Alle Geräte werden ausgeschaltet."
 
   - alias: 'Telegram - Tanken'
-    initial_state: true
     trigger:
       platform: event
       event_type: telegram_command
@@ -123,7 +118,6 @@ automation:
             Jet: {% if states.sensor.tankstelle_jet.state != 'unknown' %}{{ states.sensor.tankstelle_jet.state }}€{% else %}{%if states.binary_sensor.tankstelle_jet_status.state == 'off' %}geschlossen{% else %}-{% endif %}{% endif %}
 
   - alias: 'Telegram - Fahrzeit nach Hause'
-    initial_state: true
     trigger:
       platform: event
       event_type: telegram_command
@@ -136,7 +130,6 @@ automation:
           message: "Die Fahrzeit nach Hause beträgt aktuell {{ states.sensor.fahrzeit_nach_hause.state }} Minuten."
 
   - alias: 'Telegram - Aufenthaltsort'
-    initial_state: true
     trigger:
       - platform: event
         event_type: telegram_command

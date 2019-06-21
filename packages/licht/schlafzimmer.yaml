@@ -17,7 +17,6 @@ input_boolean:
 
 automation:
   - alias: "Licht Schlafzimmer - ausschalten"
-    initial_state: true
     trigger:
       - platform: event
         event_type: xiaomi_aqara.click

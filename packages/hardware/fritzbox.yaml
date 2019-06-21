@@ -118,7 +118,6 @@ switch:
 
 automation:
   - alias: "Gäste-Wlan eingeschaltet - TTS"
-    initial_state: true
     trigger:
       - platform: state
         entity_id: switch.gaste_wlan
@@ -131,7 +130,6 @@ automation:
           Der Gastzugang wurde eingeschaltet. Der Name lautet "{{ state_attr('switch.gaste_wlan', 'SSID') }}". Das Passwort ist "{{ state_attr('switch.gaste_wlan', 'Password') }}".
 
   - alias: "Gäste-Wlan ausgeschaltet - TTS"
-    initial_state: true
     trigger:
       - platform: state
         entity_id: switch.gaste_wlan
@@ -144,7 +142,6 @@ automation:
           Der Gastzugang wurde ausgeschaltet.
 
   - alias: "Unterwegs - Standort aktualisieren"
-    initial_state: true
     trigger:
       - platform: state
         entity_id: device_tracker.handy
@@ -157,7 +154,6 @@ automation:
         entity_id: input_boolean.zu_hause
 
   - alias: "Zu Hause - Standort aktualisieren"
-    initial_state: true
     trigger:
       - platform: state
         entity_id: device_tracker.handy
@@ -178,7 +174,6 @@ automation:
           gps: ["{{ states.device_tracker.netzwerkdj.attributes.latitude }}", "{{ states.device_tracker.netzwerkdj.attributes.longitude }}"]
 
   - alias: "Zu Hause - Manuell geschaltet"
-    initial_state: false
     trigger:
       - platform: event
         event_type: xiaomi_aqara.click
@@ -200,8 +195,6 @@ homeassistant:
       icon: mdi:router-wireless
     switch.gaste_wlan:
       icon: mdi:wifi
-    binary_sensor.zu_hause:
-      hidden: true
 
     sensor.aufenthaltsort_handy:
       friendly_name: Aufenthaltsort

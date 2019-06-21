@@ -89,7 +89,6 @@ script:
 
 automation:
   - alias: "Wiedergabe Schlafzimmer - Schalter"
-    initial_state: true
     trigger:
       - platform: event
         event_type: xiaomi_aqara.click

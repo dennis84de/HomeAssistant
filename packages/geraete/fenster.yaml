@@ -68,7 +68,6 @@ sensor:
 
 automation:
   - alias: "Benachrichtigung Fenster"
-    initial_state: true
     trigger:
       - platform: state
         entity_id: binary_sensor.fenster_wohnzimmer

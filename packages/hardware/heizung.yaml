@@ -40,7 +40,6 @@ binary_sensor:
 
 automation:
   - alias: "Heizung Wohnzimmer - Fenster geöffnet"
-    initial_state: true
     trigger:
       - platform: state
         entity_id: binary_sensor.fenster_wohnzimmer
@@ -60,7 +59,6 @@ automation:
         entity_id: input_boolean.heizung_ausgeschaltet_wohnzimmer
 
   - alias: "Heizung Wohnzimmer - Fenster geschlossen"
-    initial_state: true
     trigger:
       - platform: state
         entity_id: binary_sensor.fenster_wohnzimmer
@@ -78,7 +76,6 @@ automation:
         entity_id: input_boolean.heizung_ausgeschaltet_wohnzimmer
 
   - alias: "Heizung Wohnzimmer - Heizung eingeschaltet"
-    initial_state: true
     trigger:
       - platform: state
         entity_id: climate.wohnzimmer
@@ -96,7 +93,6 @@ automation:
         entity_id: input_boolean.heizung_ausgeschaltet_wohnzimmer
 
   - alias: "Heizung Küche - Fenster geöffnet"
-    initial_state: true
     trigger:
       - platform: state
         entity_id: binary_sensor.fenster_kueche
@@ -116,7 +112,6 @@ automation:
         entity_id: input_boolean.heizung_ausgeschaltet_kueche
 
   - alias: "Heizung Küche - Fenster geschlossen"
-    initial_state: true
     trigger:
       - platform: state
         entity_id: binary_sensor.fenster_kueche
@@ -134,7 +129,6 @@ automation:
         entity_id: input_boolean.heizung_ausgeschaltet_kueche
 
   - alias: "Heizung Küche - Heizung eingeschaltet"
-    initial_state: true
     trigger:
       - platform: state
         entity_id: climate.kuche
@@ -152,7 +146,6 @@ automation:
         entity_id: input_boolean.heizung_ausgeschaltet_kueche
 
   - alias: "Heizung Arbeitszimmer - Fenster geöffnet"
-    initial_state: true
     trigger:
       - platform: state
         entity_id: binary_sensor.fenster_arbeitszimmer
@@ -172,7 +165,6 @@ automation:
         entity_id: input_boolean.heizung_ausgeschaltet_arbeitszimmer
 
   - alias: "Heizung Arbeitszimmer - Fenster geschlossen"
-    initial_state: true
     trigger:
       - platform: state
         entity_id: binary_sensor.fenster_arbeitszimmer
@@ -190,7 +182,6 @@ automation:
         entity_id: input_boolean.heizung_ausgeschaltet_arbeitszimmer
 
   - alias: "Heizung Arbeitszimmer - Heizung eingeschaltet"
-    initial_state: true
     trigger:
       - platform: state
         entity_id: climate.wohnzimmer

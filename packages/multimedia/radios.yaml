@@ -97,6 +97,8 @@ switch:
 input_boolean:
   radio_aktiv_balkon:
     name: Radio Balkon aktiv
+  radios_pausiert:
+    name: Radios pausiert
 
 binary_sensor:
   - platform: template
@@ -123,7 +125,6 @@ binary_sensor:
 
 automation:
   - alias: 'Radio Balkon - Bewegung erkannt'
-    initial_state: true
     trigger:
       - platform: state
         entity_id: binary_sensor.bewegungsmelder_balkon
@@ -149,7 +150,6 @@ automation:
           entity_id: media_player.balkon
 
   - alias: 'Radio Balkon - Keine Bewegung'
-    initial_state: true
     trigger:
       - platform: state
         entity_id: binary_sensor.bewegungsmelder_wohnzimmer
@@ -166,7 +166,6 @@ automation:
           entity_id: media_player.balkon
 
   - alias: 'Radio Balkon - Synchronisieren'
-    initial_state: true
     trigger:
       - platform: event
         event_type: xiaomi_aqara.click
@@ -181,7 +180,6 @@ automation:
       - service: script.sync_radios
 
   - alias: 'Radios pausieren - Tür geöffnet'
-    initial_state: true
     trigger:
       - platform: state
         entity_id: binary_sensor.tuersensor
@@ -200,11 +198,10 @@ automation:
     action:
       - service: switch.turn_off
         entity_id: switch.alle_radios_wiedergabe_aktiv
-      - service: automation.turn_on
-        entity_id: automation.radios_starten_tur_geschlossen
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.radios_pausiert
 
   - alias: 'Radios starten - Tür geschlossen'
-    initial_state: false
     trigger:
       - platform: state
         entity_id: binary_sensor.tuersensor
@@ -213,11 +210,14 @@ automation:
       - condition: state
         entity_id: switch.alle_radios_wiedergabe_aktiv
         state: 'off'
+      - condition: state
+        entity_id: input_boolean.radios_pausiert
+        state: 'on'
     action:
       - service: switch.turn_on
         entity_id: switch.alle_radios_wiedergabe_aktiv
-      - service: automation.turn_off
-        entity_id: automation.radios_starten_tur_geschlossen
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.radios_pausiert
 
 script:
   radio_badezimmer_einschalten:

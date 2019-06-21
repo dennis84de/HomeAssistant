@@ -49,7 +49,6 @@ sensor:
 
 automation:
   - alias: 'Telefon aktiv - Rufnummer suchen'
-    initial_state: true
     trigger:
       - platform: state
         entity_id: sensor.telefon
@@ -63,7 +62,6 @@ automation:
           rufnummer: '{{ states.sensor.telefon.attributes.from }}'
 
   - alias: 'Werbeanruf - Nachricht an Handy'
-    initial_state: true
     trigger:
       - platform: state
         entity_id: binary_sensor.werbeanruf
@@ -89,7 +87,6 @@ automation:
               - 'Gelesen:/gelesen'
 
   - alias: 'Werbeanruf - Zurücksetzen'
-    initial_state: true
     trigger:
       platform: event
       event_type: telegram_callback
@@ -109,7 +106,6 @@ automation:
             Werbeanruf wurde entfernt.
 
   - alias: 'Telefon aktiv - Kodi pausieren'
-    initial_state: true
     trigger:
       - platform: state
         entity_id: sensor.telefon
@@ -149,7 +145,6 @@ automation:
             icon: "info"
 
   - alias: 'Telefon inaktiv - Kodi wiedergeben'
-    initial_state: true
     trigger:
       platform: state
       entity_id: sensor.telefon
@@ -178,7 +173,6 @@ automation:
             icon: "info"
 
   - alias: 'Telefon aktiv - Musik pausieren'
-    initial_state: true
     trigger:
       - platform: state
         entity_id: sensor.telefon
@@ -202,7 +196,6 @@ automation:
           is_volume_muted: true
 
   - alias: 'Telefon inaktiv - Musik wiedergeben'
-    initial_state: true
     trigger:
       platform: state
       entity_id: sensor.telefon
@@ -223,7 +216,6 @@ automation:
           is_volume_muted: false
 
   - alias: 'Telefon aktiv - Nachricht an Handy'
-    initial_state: true
     trigger:
       - platform: state
         entity_id: sensor.telefon
@@ -246,7 +238,6 @@ automation:
             {% endif %}
 
   - alias: "Telefon aktiv - TTS"
-    initial_state: true
     trigger:
       - platform: state
         entity_id: sensor.telefon

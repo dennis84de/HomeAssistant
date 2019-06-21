@@ -56,7 +56,6 @@ sensor:
 
 automation:
   - alias: 'Handy aktiv - Kodi pausieren'
-    initial_state: true
     trigger:
       - platform: state
         entity_id: sensor.tasker_handystatus
@@ -90,7 +89,6 @@ automation:
             icon: "info"
 
   - alias: 'Handy inaktiv - Kodi wiedergeben'
-    initial_state: true
     trigger:
       - platform: state
         entity_id: sensor.tasker_handystatus
@@ -119,7 +117,6 @@ automation:
             icon: "info"
 
   - alias: 'Handy aktiv - Musik pausieren'
-    initial_state: true
     trigger:
       - platform: state
         entity_id: sensor.tasker_handystatus
@@ -143,7 +140,6 @@ automation:
           is_volume_muted: true
 
   - alias: 'Handy inaktiv - Musik wiedergeben'
-    initial_state: true
     trigger:
       - platform: state
         entity_id: sensor.tasker_handystatus
@@ -164,7 +160,6 @@ automation:
           is_volume_muted: false
 
   - alias: "Handy - Eingehender Anruf - TTS"
-    initial_state: true
     trigger:
       - platform: state
         entity_id: sensor.tasker_handystatus
@@ -180,7 +175,6 @@ automation:
           Ein eingehender Anruf von {% if states.sensor.tasker_handystatus.attributes.name != '-' and states.sensor.tasker_handystatus.attributes.name.startswith('+') == False %}{{ states.sensor.tasker_handystatus.attributes.name }}{% else %}einer unbekannten Nummer{% endif %}.
 
   - alias: "Handy - Neue SMS - TTS"
-    initial_state: true
     trigger:
       - platform: state
         entity_id: sensor.tasker_handystatus
@@ -201,7 +195,6 @@ automation:
           Eine neue SMS ist eingegangen.
 
   - alias: 'Handy - Neue SMS - Kodi'
-    initial_state: true
     trigger:
       - platform: state
         entity_id: sensor.tasker_handystatus
@@ -250,7 +243,6 @@ automation:
 #            icon: "info"
 
   - alias: "Handy - Batteriestand niedrig"
-    initial_state: true
     trigger:
       - platform: state
         entity_id: sensor.tasker_handy
@@ -266,7 +258,6 @@ automation:
           message: "Das Handy muss aufgeladen werden. Der Batteriestand beträgt {{ states.sensor.tasker_handy.state | int }} Prozent."
 
   - alias: "Handy - Aufgeladen"
-    initial_state: true
     trigger:
       - platform: state
         entity_id: sensor.tasker_handy

@@ -139,7 +139,6 @@ script:
 
 automation:
   - alias: "Update verfügbar"
-    initial_state: true
     trigger:
       - platform: state
         entity_id: sensor.hass_current_version
@@ -160,7 +159,6 @@ automation:
         message: "Home Assistant {{ states.sensor.hass_current_version.state }} ist jetzt verfügbar."
 
   - alias: "Home Assistant - Fehler Neustart"
-    initial_state: true
     trigger:
       - platform: state
         entity_id: persistent_notification.homeassistant_check_config
@@ -172,7 +170,6 @@ automation:
           message: "Während des Neustarts ist ein Fehler aufgetreten."
 
   - alias: "Home Assistant neugestartet - Handy"
-    initial_state: true
     trigger:
       - platform: homeassistant
         event: start
@@ -187,7 +184,6 @@ automation:
           message: "Home Assistant wurde neugestartet."
 
   - alias: "Home Assistant neugestartet - TTS"
-    initial_state: true
     trigger:
       - platform: homeassistant
         event: start
@@ -198,7 +194,6 @@ automation:
           message: "Home Assistant wurde neugestartet."
 
   - alias: "Home Assistant - Healthcheck"
-    initial_state: true
     trigger:
       - platform: homeassistant
         event: start
