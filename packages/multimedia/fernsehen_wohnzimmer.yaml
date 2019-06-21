@@ -17,6 +17,7 @@ input_boolean:
     icon: mdi:music-off
   kodi_pausiert:
     name: Wiedergabe pausiert
+    initial: off
   kodi_pausieren:
     name: Wiedergabe pausieren
     initial: on

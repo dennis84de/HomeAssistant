@@ -97,8 +97,9 @@ switch:
 input_boolean:
   radio_aktiv_balkon:
     name: Radio Balkon aktiv
-  radios_pausiert:
-    name: Radios pausiert
+  musik_pausiert:
+    name: Musik pausiert
+    initial: off
 
 binary_sensor:
   - platform: template
@@ -199,7 +200,7 @@ automation:
       - service: switch.turn_off
         entity_id: switch.alle_radios_wiedergabe_aktiv
       - service: input_boolean.turn_on
-        entity_id: input_boolean.radios_pausiert
+        entity_id: input_boolean.musik_pausiert
 
   - alias: 'Radios starten - Tür geschlossen'
     trigger:
@@ -211,13 +212,13 @@ automation:
         entity_id: switch.alle_radios_wiedergabe_aktiv
         state: 'off'
       - condition: state
-        entity_id: input_boolean.radios_pausiert
+        entity_id: input_boolean.musik_pausiert
         state: 'on'
     action:
       - service: switch.turn_on
         entity_id: switch.alle_radios_wiedergabe_aktiv
       - service: input_boolean.turn_off
-        entity_id: input_boolean.radios_pausiert
+        entity_id: input_boolean.musik_pausiert
 
 script:
   radio_badezimmer_einschalten:

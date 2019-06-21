@@ -2,15 +2,6 @@ shell_command:
   werbeanruf_suchen: "python3 /home/homeassistant/.homeassistant/python_scripts/werbeanrufe.py {{ rufnummer }}"
   werbeanruf_zuruecksetzen: "python3 /home/homeassistant/.homeassistant/python_scripts/werbeanrufe.py"
 
-input_boolean:
-  kodi_pausiert:
-    name: Kodi pausiert
-    initial: off
-
-  musik_pausiert:
-    name: Musik pausiert
-    initial: off
-
 sensor:
   - platform: template
     sensors:

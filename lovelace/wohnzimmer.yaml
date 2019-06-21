@@ -8,6 +8,7 @@ cards:
       - entity: light.couch
       - entity: light.strahler
       - entity: light.vitrine
+      - entity: light.benachrichtigungen
       - entity: input_select.dreamscreen_modus
       - entity: input_select.dreamscreen_ambiente
 
