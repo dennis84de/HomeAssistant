@@ -23,6 +23,13 @@ device_tracker:
     devices:
       - HandyGPS
 
+person:
+  - name: Dennis
+    id: dennis
+    device_trackers:
+      - device_tracker.handy
+      - device_tracker.handygps
+
 fritzbox:
   devices:
     - host: !secret fritzbox_host
@@ -89,9 +96,9 @@ binary_sensor:
     sensors:
       zu_hause:
         friendly_name: "zu Hause"
-        device_class: occupancy
+        device_class: presence
         value_template: >-
-          {% if (is_state('device_tracker.handy', 'home') or is_state('device_tracker.handygps', 'home')) and is_state('input_boolean.zu_hause', 'on') %}
+          {% if is_state('device_tracker.handy', 'home') or is_state('device_tracker.handygps', 'home') or is_state('input_boolean.zu_hause', 'on') %}
             true
           {% else %}
             false

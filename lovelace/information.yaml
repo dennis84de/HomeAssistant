@@ -46,13 +46,23 @@ popup_cards:
               name: Durchschnitt
               show_state: false
 
+  binary_sensor.zu_hause:
+    title: Geräte
+    card:
+      type: entities
+      entities:
+        - entity: person.dennis
+        - entity: device_tracker.handy
+        - entity: device_tracker.handygps
+
 cards:
   - type: entities
     title: Infos
     show_header_toggle: false
     entities:
       - entity: sensor.countdown_neuhaus
-      - entity: device_tracker.handy
+      - entity: binary_sensor.zu_hause
+        name: Dennis
       - entity: sensor.aufenthaltsort_handy
       - entity: proximity.home
       - entity: sensor.letzte_bewegung
