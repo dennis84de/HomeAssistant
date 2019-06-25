@@ -1,1 +1,1 @@
-"""The rpi_power component."""
+"""Raspberry Pi Power Supply Checker"""
