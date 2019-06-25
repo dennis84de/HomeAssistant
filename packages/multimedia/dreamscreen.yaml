@@ -1,4 +1,7 @@
 dreamscreen:
+  devices:
+    - fernseher:
+        address: !secret dreamscreen_host
 
 input_select:
   dreamscreen_modus:

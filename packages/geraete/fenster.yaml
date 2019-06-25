@@ -4,12 +4,12 @@ sensor:
       fenster_wohnzimmer_batterie:
         friendly_name: Fenster Wohnzimmer
         entity_id:
-          - binary_sensor.fenster_wohnzimmer
+          - zigate.fenster_wohnzimmer
         value_template: >-
-          {% if is_state('binary_sensor.fenster_wohnzimmer', 'unknown') %}
+          {% if is_state('zigate.fenster_wohnzimmer', 'unknown') %}
             0
           {% else %}
-            {{ state_attr("binary_sensor.fenster_wohnzimmer", "battery_level") | float }}
+            {{ state_attr("zigate.fenster_wohnzimmer", "battery_level") | float }}
           {% endif %}
         unit_of_measurement: '%'
         device_class: battery
@@ -17,12 +17,12 @@ sensor:
       fenster_schlafzimmer_batterie:
         friendly_name: Fenster Schlafzimmer
         entity_id:
-          - binary_sensor.fenster_schlafzimmer
+          - zigate.fenster_schlafzimmer
         value_template: >-
-          {% if is_state('binary_sensor.fenster_schlafzimmer', 'unknown') %}
+          {% if is_state('zigate.fenster_schlafzimmer', 'unknown') %}
             0
           {% else %}
-            {{ state_attr("binary_sensor.fenster_schlafzimmer", "battery_level") | float }}
+            {{ state_attr("zigate.fenster_schlafzimmer", "battery_level") | float }}
           {% endif %}
         unit_of_measurement: '%'
         device_class: battery
@@ -30,12 +30,12 @@ sensor:
       fenster_kueche_batterie:
         friendly_name: Fenster Küche
         entity_id:
-          - binary_sensor.fenster_kueche
+          - zigate.fenster_kueche
         value_template: >-
-          {% if is_state('binary_sensor.fenster_kueche', 'unknown') %}
+          {% if is_state('zigate.fenster_kueche', 'unknown') %}
             0
           {% else %}
-            {{ state_attr("binary_sensor.fenster_kueche", "battery_level") | float }}
+            {{ state_attr("zigate.fenster_kueche", "battery_level") | float }}
           {% endif %}
         unit_of_measurement: '%'
         device_class: battery
@@ -43,12 +43,12 @@ sensor:
       fenster_arbeitszimmer_batterie:
         friendly_name: Fenster Arbeitszimmer
         entity_id:
-          - binary_sensor.fenster_arbeitszimmer
+          - zigate.fenster_arbeitszimmer
         value_template: >-
-          {% if is_state('binary_sensor.fenster_arbeitszimmer', 'unknown') %}
+          {% if is_state('zigate.fenster_arbeitszimmer', 'unknown') %}
             0
           {% else %}
-            {{ state_attr("binary_sensor.fenster_arbeitszimmer", "battery_level") | float }}
+            {{ state_attr("zigate.fenster_arbeitszimmer", "battery_level") | float }}
           {% endif %}
         unit_of_measurement: '%'
         device_class: battery
@@ -56,12 +56,12 @@ sensor:
       fenster_sportzimmer_batterie:
         friendly_name: Fenster Sportzimmer
         entity_id:
-          - binary_sensor.fenster_sportzimmer
+          - zigate.fenster_sportzimmer
         value_template: >-
-          {% if is_state('binary_sensor.fenster_sportzimmer', 'unknown') %}
+          {% if is_state('zigate.fenster_sportzimmer', 'unknown') %}
             0
           {% else %}
-            {{ state_attr("binary_sensor.fenster_sportzimmer", "battery_level") | float }}
+            {{ state_attr("zigate.fenster_sportzimmer", "battery_level") | float }}
           {% endif %}
         unit_of_measurement: '%'
         device_class: battery

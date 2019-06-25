@@ -44,12 +44,10 @@ emulated_hue:
     light.schrank:
       name: Licht Schrank
     light.balkon_licht:
-      name: Balkon
+      name: Licht Balkon
     light.fernseher_schlafzimmer:
       name: Licht Fernseher
 
-    light.gateway_light_7811dcaf15a8:
-      hidden: true
     switch.sportzimmer_fernseher:
       hidden: true
     switch.wohnzimmer_fernseher:
@@ -133,4 +131,14 @@ emulated_hue:
     input_boolean.bewegungsmelder_wohnzimmer_deaktiviert:
       hidden: true
     input_boolean.radio_aktiv_balkon:
+      hidden: true
+    input_boolean.zu_hause:
+      hidden: true
+    input_boolean.alarmaktiv:
+      hidden: true
+    input_boolean.schlafen_einschalten_aktiv:
+      hidden: true
+    input_boolean.schlafen_fernseher_einschalten:
+      hidden: true
+    input_boolean.kodi_pausieren:
       hidden: true
