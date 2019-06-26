@@ -1,5 +1,15 @@
 title: Flur
 path: flur
+popup_cards:
+  sensor.flur_luftfeuchtigkeit:
+    title: Luftfeuchtigkeit
+    card:
+      type: entities
+      entities:
+        - entity: sensor.flur_absolutehumidity
+        - entity: sensor.flur_heatindex
+        - entity: sensor.flur_dewpoint
+        - entity: sensor.flur_perception
 cards:
   - type: entities
     title: Geräte
@@ -33,9 +43,9 @@ cards:
     title: Thermometer
     show_header_toggle: false
     entities:
-      - entity: sensor.flur_temperatur_neu
-      - entity: sensor.flur_luftfeuchtigkeit_neu
-      - entity: sensor.flur_luftdruck_neu
+      - entity: sensor.flur_temperatur
+      - entity: sensor.flur_luftfeuchtigkeit
+      - entity: sensor.flur_luftdruck
 
   - type: entities
     title: Multimedia

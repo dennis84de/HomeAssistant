@@ -1,5 +1,15 @@
 title: Sportzimmer
 path: sportzimmer
+popup_cards:
+  sensor.sportzimmer_luftfeuchtigkeit:
+    title: Luftfeuchtigkeit
+    card:
+      type: entities
+      entities:
+        - entity: sensor.sportzimmer_absolutehumidity
+        - entity: sensor.sportzimmer_heatindex
+        - entity: sensor.sportzimmer_dewpoint
+        - entity: sensor.sportzimmer_perception
 cards:
   - type: entities
     title: Heizung

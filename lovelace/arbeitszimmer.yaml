@@ -1,5 +1,15 @@
 title: Arbeitszimmer
 path: arbeitszimmer
+popup_cards:
+  sensor.arbeitszimmer_luftfeuchtigkeit:
+    title: Luftfeuchtigkeit
+    card:
+      type: entities
+      entities:
+        - entity: sensor.arbeitszimmer_absolutehumidity
+        - entity: sensor.arbeitszimmer_heatindex
+        - entity: sensor.arbeitszimmer_dewpoint
+        - entity: sensor.arbeitszimmer_perception
 cards:
   - type: entities
     title: Geräte

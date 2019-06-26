@@ -1,5 +1,15 @@
 title: Wohnzimmer
 path: wohnzimmer
+popup_cards:
+  sensor.wohnzimmer_luftfeuchtigkeit:
+    title: Luftfeuchtigkeit
+    card:
+      type: entities
+      entities:
+        - entity: sensor.wohnzimmer_absolutehumidity
+        - entity: sensor.wohnzimmer_heatindex
+        - entity: sensor.wohnzimmer_dewpoint
+        - entity: sensor.wohnzimmer_perception
 cards:
   - type: entities
     title: Licht
