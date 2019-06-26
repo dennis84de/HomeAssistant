@@ -17,9 +17,9 @@ device_tracker:
     new_device_defaults:
       track_new_devices: false
 
-  - platform: phonetracker
-    url: !secret phonetracker_url
-    token: !secret phonetracker_token
+  - platform: phonetrack
+    url: !secret phonetrack_url
+    token: !secret phonetrack_token
     devices:
       - HandyGPS
 
