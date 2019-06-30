@@ -1,1 +1,1 @@
-"""The kodi_recently_added component."""
+"""The Kodi Recently Added integration."""
