@@ -2,9 +2,7 @@ logger:
   default: error
   logs:
     homeassistant.components.openhardwaremonitor.sensor: fatal
-#    zigpy: debug
-#    zigate: debug
-
+    
 recorder:
   purge_interval: 1
   purge_keep_days: 14
