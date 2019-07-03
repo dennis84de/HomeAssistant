@@ -5,7 +5,7 @@ cards:
     title: Netzwerk
     show_header_toggle: false
     entities:
-      - entity: device_tracker.computer
+      - entity: device_tracker.pc
       - entity: device_tracker.pihomeassistant
       - entity: device_tracker.diskstation
       - entity: device_tracker.netzwerkdj
@@ -17,7 +17,7 @@ cards:
     entities:
       - entity: device_tracker.soundbar
       - entity: device_tracker.dreamscreen
-      
+
   - type: entities
     title: Haushalt
     show_header_toggle: false
@@ -64,6 +64,7 @@ cards:
     entities:
       - entity: device_tracker.echoflur
       - entity: device_tracker.echokueche
+      - entity: device_tracker.echobadezimmer
       - entity: device_tracker.echowohnzimmer
       - entity: device_tracker.echoschlafzimmer
 

@@ -13,20 +13,20 @@ switch:
       pc:
         friendly_name: PC
         entity_id:
-          - device_tracker.computer
-        value_template: "{{ is_state('device_tracker.computer', 'home') }}"
+          - device_tracker.pc
+        value_template: "{{ is_state('device_tracker.pc', 'home') }}"
         turn_on:
           service: wake_on_lan.send_magic_packet
           data:
-            mac: "74-D4-35-FA-4A-8E"
-            broadcast_address: 192.168.2.255
+            mac: !secret computer_mac
+            broadcast_address: !secret fritzbox_broadcast
         turn_off:
           service: shell_command.computer_hibernate
       computer:
         friendly_name: Computer
         entity_id:
-          - device_tracker.computer
-        value_template: "{{ is_state('device_tracker.computer', 'home') }}"
+          - device_tracker.pc
+        value_template: "{{ is_state('device_tracker.pc', 'home') }}"
         turn_on:
           service: switch.turn_on
           entity_id: switch.monitor, switch.pc

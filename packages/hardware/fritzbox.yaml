@@ -23,6 +23,13 @@ device_tracker:
     devices:
       - HandyGPS
 
+  - platform: ping
+    interval_seconds: 30
+    consider_home: 60
+    hosts:
+      pc: !secret computer_host
+      handyping: !secret handy_host
+
 person:
   - name: Dennis
     id: dennis
@@ -246,6 +253,8 @@ homeassistant:
 
     device_tracker.computer:
       icon: mdi:desktop-classic
+    device_tracker.pc:
+      icon: mdi:desktop-classic
     device_tracker.pihomeassistant:
       icon: mdi:home-assistant
     device_tracker.broadlinkwohnzimmer:
@@ -268,6 +277,8 @@ homeassistant:
     device_tracker.echokueche:
       icon: mdi:amazon-alexa
     device_tracker.echowohnzimmer:
+      icon: mdi:amazon-alexa
+    device_tracker.echobadezimmer:
       icon: mdi:amazon-alexa
     device_tracker.echoschlafzimmer:
       icon: mdi:amazon-alexa
