@@ -5,6 +5,7 @@ sensor:
     host: !secret synology_host
     port: 5000
     ssl: false
+    name: Diskstation
     username: !secret synology_username
     password: !secret synology_password
     monitored_conditions:
@@ -50,17 +51,17 @@ automation:
 
 homeassistant:
   customize:
-    sensor.cpu_load_total:
+    sensor.diskstation_cpu_load_total:
       friendly_name: CPU Leistung
-    sensor.memory_usage_real:
+    sensor.diskstation_memory_usage_real:
       friendly_name: Auslastung Arbeitsspeicher
-    sensor.network_up:
+    sensor.diskstation_network_up:
       friendly_name: Netzwerk Upload
-    sensor.network_down:
+    sensor.diskstation_network_down:
       friendly_name: Netzwerk Download
-    sensor.status_volume_1:
+    sensor.diskstation_status_volume_1:
       friendly_name: Volume Status
-    sensor.volume_used_volume_1:
+    sensor.diskstation_volume_used_volume_1:
       friendly_name: Belegter Speicherplatz
 
     sensor.speedtest_download:

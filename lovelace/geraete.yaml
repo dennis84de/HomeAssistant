@@ -17,12 +17,12 @@ cards:
     title: Synology Diskstation
     show_header_toggle: false
     entities:
-      - entity: sensor.cpu_load_total
-      - entity: sensor.memory_usage_real
-      - entity: sensor.volume_used_volume_1
-      - entity: sensor.status_volume_1
-      - entity: sensor.network_up
-      - entity: sensor.network_down
+      - entity: sensor.diskstation_cpu_load_total
+      - entity: sensor.diskstation_memory_usage_real
+      - entity: sensor.diskstation_volume_used_volume_1
+      - entity: sensor.diskstation_status_volume_1
+      - entity: sensor.diskstation_network_up
+      - entity: sensor.diskstation_network_down
 
   - type: entities
     title: Computer
