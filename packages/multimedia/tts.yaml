@@ -50,8 +50,10 @@ script:
               media_player.echo_{{ echo }}
             {% elif letzteBewegung == None %}
               media_player.echo_wohnzimmer
-            {% elif letzteBewegung == 'Flur vorne' or letzteBewegung == 'Flur hinten' or letzteBewegung == 'Badezimmer' %}
+            {% elif letzteBewegung == 'Flur vorne' or letzteBewegung == 'Flur hinten' %}
               media_player.echo_flur
+            {% elif letzteBewegung == 'Badezimmer' %}
+              media_player.echo_badezimmer
             {% elif letzteBewegung == 'Küche' %}
               media_player.echo_kuche
             {% else %}
