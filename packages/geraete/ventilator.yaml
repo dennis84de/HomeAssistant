@@ -1,0 +1,125 @@
+fan:
+  - platform: xiaomi_miio_fan
+    name: Ventilator
+    host: !secret xiaomi_fan_host
+    token: !secret xiaomi_fan_token
+
+input_number:
+  ventilator_geschwindigkeit:
+    name: Geschwindigkeit
+    initial: 0
+    min: 0
+    max: 100
+    step: 1
+
+input_select:
+  ventilator_drehungswinkel:
+    name: Drehungswinkel
+    options:
+      - '30'
+      - '60'
+      - '90'
+      - '120'
+    initial: '120'
+
+sensor:
+  - platform: template
+    sensors:
+      ventilator_geschwindigkeit:
+        friendly_name: "Geschwindigkeit"
+        value_template: >-
+          {% if is_state('fan.ventilator', 'unknown') or states.fan.ventilator == None %}
+            0
+          {% else %}
+            {{ state_attr("fan.ventilator", "direct_speed") | int }}
+          {% endif %}
+
+      ventilator_drehungswinkel:
+        friendly_name: "Drehungswinkel"
+        value_template: >-
+          {% if is_state('fan.ventilator', 'unknown') or states.fan.ventilator == None %}
+            0
+          {% else %}
+            {{ state_attr("fan.ventilator", "angle") | int }}
+          {% endif %}
+
+      ventilator_batterie:
+        friendly_name: "Batterie"
+        value_template: >-
+          {% if is_state('fan.ventilator', 'unknown') or states.fan.ventilator == None %}
+            0
+          {% else %}
+            {{ state_attr("fan.ventilator", "battery") }}
+          {% endif %}
+        unit_of_measurement: "%"
+        device_class: battery
+        icon_template: >-
+          {% if state_attr("fan.ventilator", "battery_charge") == 'progress' and state_attr("fan.ventilator", "ac_power") == True %}
+            mdi:battery-charging
+          {% elif state_attr("fan.ventilator", "battery_charge") == 'complete' and state_attr("fan.ventilator", "ac_power") == True %}
+            mdi:power-plug
+          {% else %}
+            mdi:power-plug-off
+          {% endif %}
+
+switch:
+  - platform: template
+    switches:
+      ventilator_natuerlicher_wind:
+        friendly_name: "Natürlicher Wind"
+        value_template: "{{ is_state('fan.ventilator', 'on') and state_attr('fan.ventilator', 'natural_speed') != 0 }}"
+        icon_template: >-
+          {% if is_state('fan.ventilator', 'on') and state_attr('fan.ventilator', 'natural_level') != 0 %}
+            mdi:weather-windy
+          {% else %}
+            mdi:weather-windy-variant
+          {% endif %}
+        turn_on:
+          service: fan.xiaomi_miio_set_natural_mode_on
+          data:
+            entity_id: fan.ventilator
+        turn_off:
+          service: fan.xiaomi_miio_set_natural_mode_off
+          data:
+            entity_id: fan.ventilator
+
+automation:
+    - alias: 'Ventilator Geschwindigkeit - Slider geändert'
+      trigger:
+        - platform: state
+          entity_id: input_number.ventilator_geschwindigkeit
+      action:
+        - service: fan.set_speed
+          data_template:
+            entity_id: fan.ventilator
+            speed: '{{ trigger.to_state.state | int }}'
+
+    - alias: 'Ventilator Geschwindigkeit - Sensor geändert'
+      trigger:
+        - platform: state
+          entity_id: sensor.ventilator_geschwindigkeit
+      action:
+        - service: input_number.set_value
+          data_template:
+            entity_id: input_number.ventilator_geschwindigkeit
+            value: '{{ trigger.to_state.state }}'
+
+    - alias: 'Ventilator Winkel - Slider geändert'
+      trigger:
+        - platform: state
+          entity_id: input_select.ventilator_drehungswinkel
+      action:
+        - service: fan.xiaomi_miio_set_oscillation_angle
+          data_template:
+            entity_id: fan.ventilator
+            angle: '{{ trigger.to_state.state | int }}'
+
+    - alias: 'Ventilator Winkel - Sensor geändert'
+      trigger:
+        - platform: state
+          entity_id: sensor.ventilator_drehungswinkel
+      action:
+        - service: input_select.select_option
+          data_template:
+            entity_id: input_select.ventilator_drehungswinkel
+            option: '{{ trigger.to_state.state }}'

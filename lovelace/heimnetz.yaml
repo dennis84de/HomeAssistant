@@ -23,6 +23,7 @@ cards:
     show_header_toggle: false
     entities:
       - entity: device_tracker.xiaomivacuum
+      - entity: device_tracker.xiaomifan
 
   - type: entities
     title: Gateways

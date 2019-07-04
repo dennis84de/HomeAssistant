@@ -255,6 +255,7 @@ homeassistant:
       icon: mdi:desktop-classic
     device_tracker.pc:
       icon: mdi:desktop-classic
+      friendly_name: "Computer"
     device_tracker.pihomeassistant:
       icon: mdi:home-assistant
     device_tracker.broadlinkwohnzimmer:
@@ -273,6 +274,8 @@ homeassistant:
       icon: mdi:radiator
     device_tracker.xiaomivacuum:
       icon: mdi:robot-vacuum-variant
+    device_tracker.xiaomifan:
+      icon: mdi:fan
 
     device_tracker.echokueche:
       icon: mdi:amazon-alexa
