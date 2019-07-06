@@ -5,6 +5,7 @@ emulated_hue:
     - input_boolean
     - light
     - vacuum
+    - fan
 
   entities:
     switch.wohnzimmer_radio:
