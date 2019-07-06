@@ -2,6 +2,13 @@ title: Batterien
 path: batterien
 cards:
   - type: entities
+    title: Batteriestand
+    show_header_toggle: false
+    entities:
+      - entity: input_number.batteriestand_warnlevel
+      - entity: sensor.batteriestand_niedrig
+
+  - type: entities
     title: Batterien Geräte
     show_header_toggle: false
     entities:
@@ -35,7 +42,6 @@ cards:
     title: Batterien Thermometer
     show_header_toggle: false
     entities:
-      - entity: sensor.thermometer_wohnzimmer_batterie
       - entity: sensor.thermometer_flur_batterie
       - entity: sensor.thermometer_balkon_batterie
       - entity: sensor.thermometer_parkplatz_batterie

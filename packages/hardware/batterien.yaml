@@ -1,0 +1,75 @@
+input_number:
+  batteriestand_warnlevel:
+    name: Warnlevel
+    min: 10
+    max: 80
+    step: 5
+
+sensor:
+  - platform: template
+    sensors:
+      batteriestand_niedrig:
+        friendly_name: Batteriestand niedrig
+        entity_id:
+          - sensor.time
+          - input_number.batteriestand_warnlevel
+          - sensor.laufzeit_minuten
+        icon_template: >
+          {% set min_battery_level = states.input_number.batteriestand_warnlevel.state | int -%}
+          {% set ns = namespace(found=false) -%}
+          {% for entity_id in states.group.batteriestand.attributes.entity_id -%}
+            {% set parts = entity_id.split('.') -%}
+            {% if (states(entity_id) | replace("%","") | int) <= min_battery_level -%}
+              {% set ns.found = true -%}
+            {% endif -%}
+          {% endfor -%}
+
+          {% if ns.found == True %}
+            mdi:battery-charging-10
+          {% else %}
+            mdi:battery
+          {% endif %}
+        value_template: >
+          {% set min_battery_level = states.input_number.batteriestand_warnlevel.state | int -%}
+          {% set ns = namespace(found=0) -%}
+          {% for entity_id in states.group.batteriestand.attributes.entity_id -%}
+            {% set parts = entity_id.split('.') -%}
+            {% if (states(entity_id) | replace("%","") | int) <= min_battery_level -%}
+              {% set ns.found = ns.found + 1 -%}
+            {% endif -%}
+          {% endfor -%}
+          {{ ns.found }}
+
+automation:
+  - alias: 'Batteriestand niedrig'
+    trigger:
+      - platform: time
+        at: '19:15:00'
+    condition:
+      - condition: state
+        entity_id: binary_sensor.zu_hause
+        state: 'on'
+      - condition: template
+        value_template: >
+          {% set count_entities = states.sensor.batteriestand_niedrig.state | int -%}
+
+          {{ count_entities > 0 }}
+    action:
+      - service: !secret tts_service
+        data_template:
+          message: >-
+            {% set min_battery_level = states.input_number.batteriestand_warnlevel.state | int -%}
+            {% set count_entities = states.sensor.batteriestand_niedrig.state | int -%}
+
+            {% if count_entities > 1 %}
+              {{ "Der Batteriestand der folgenden Geräte ist niedrig. " }}
+            {% else %}
+              {{ "Der Batteriestand des folgenden Gerätes ist niedrig. " }}
+            {% endif %}
+
+            {%- for entity_id in states.group.batteriestand.attributes.entity_id -%}
+              {%- set parts = entity_id.split('.') -%}
+              {%- if (states(entity_id) | replace("%","") | int) <= min_battery_level -%}
+                {{ states[parts[0]][parts[1]].name }},
+              {%- endif -%}
+            {%- endfor -%}
