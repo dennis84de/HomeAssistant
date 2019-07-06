@@ -469,7 +469,7 @@ class Model():
             s = self.hass.states.get(e)
             
             if s is None:
-                return None
+                continue
                 
             if self.matches(s.state, self.OVERRIDE_ON_STATE):
                 self.log.debug("Override entities are ON. [%s]", e)

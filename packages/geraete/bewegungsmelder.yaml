@@ -133,6 +133,7 @@ binary_sensor:
       bewegungsmelder_inaktiv_unterwegs:
         friendly_name: Unterwegs
         entity_id:
+          - sensor.time
           - binary_sensor.zu_hause
         device_class: occupancy
         value_template: "{{ is_state('binary_sensor.zu_hause', 'off') }}"
@@ -184,7 +185,7 @@ entity_controller:
     overrides:
 #      - binary_sensor.bewegungsmelder_inaktiv_unterwegs
       - binary_sensor.sonne_tagsueber
-#      - input_boolean.bewegungsmelder_badezimmer_deaktiviert
+      - input_boolean.bewegungsmelder_badezimmer_deaktiviert
     night_mode:
       delay: 120
       service_data:
@@ -200,7 +201,7 @@ entity_controller:
     overrides:
 #      - binary_sensor.bewegungsmelder_inaktiv_unterwegs
       - binary_sensor.sonne_tagsueber
-#      - input_boolean.bewegungsmelder_balkon_deaktiviert
+      - input_boolean.bewegungsmelder_balkon_deaktiviert
 
   bewegung_flur_vorne:
     friendly_name: "Bewegung Flur vorne"
@@ -212,7 +213,7 @@ entity_controller:
     overrides:
 #      - binary_sensor.bewegungsmelder_inaktiv_unterwegs
       - binary_sensor.sonne_tagsueber
-#      - input_boolean.bewegungsmelder_flur_deaktiviert
+      - input_boolean.bewegungsmelder_flur_deaktiviert
     night_mode:
       delay: 120
       service_data:
@@ -230,7 +231,7 @@ entity_controller:
     overrides:
 #      - binary_sensor.bewegungsmelder_inaktiv_unterwegs
       - binary_sensor.sonne_tagsueber
-#      - input_boolean.bewegungsmelder_flur_deaktiviert
+      - input_boolean.bewegungsmelder_flur_deaktiviert
     night_mode:
       delay: 120
       service_data:
@@ -248,7 +249,7 @@ entity_controller:
     overrides:
 #      - binary_sensor.bewegungsmelder_inaktiv_unterwegs
       - binary_sensor.sonne_tagsueber
-#      - input_boolean.bewegungsmelder_kueche_deaktiviert
+      - input_boolean.bewegungsmelder_kueche_deaktiviert
     night_mode:
       delay: 120
       service_data:
@@ -266,7 +267,7 @@ entity_controller:
     overrides:
 #      - binary_sensor.bewegungsmelder_inaktiv_unterwegs
       - binary_sensor.sonne_tagsueber
-#      - input_boolean.bewegungsmelder_schlafzimmer_deaktiviert
+      - input_boolean.bewegungsmelder_schlafzimmer_deaktiviert
     night_mode:
       delay: 120
       service_data:
@@ -284,5 +285,5 @@ entity_controller:
     overrides:
 #      - binary_sensor.bewegungsmelder_inaktiv_unterwegs
       - binary_sensor.sonne_tagsueber
-#      - input_boolean.bewegungsmelder_wohnzimmesr_deaktiviert
+      - input_boolean.bewegungsmelder_wohnzimmer_deaktiviert
       - switch.computer

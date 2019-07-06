@@ -101,6 +101,9 @@ automation:
       - condition: state
         entity_id: calendar.borussia_dortmund
         state: 'off'
+      - condition: state
+        entity_id: binary_sensor.zu_hause
+        state: 'on'
       - condition: template
         value_template: '{{ is_state("media_player.kodi_wohnzimmer", "playing") == False }}'
     action:

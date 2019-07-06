@@ -72,7 +72,7 @@ sensor:
     devicetracker_id: device_tracker.handygps
     options: street_street_number,city
     api_key: !secret openstreetmap_email
-    display_zone: hide
+#    display_zone: hide
     scan_interval: 60
 
   - platform: template
