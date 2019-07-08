@@ -1,3 +1,16 @@
+input_select:
+  letzte_bewegung:
+    name: Letzte Bewegung
+    options:
+      - 'Wohnzimmer'
+      - 'Arbeitszimmer'
+      - 'Badezimmer'
+      - 'Balkon'
+      - 'Flur hinten'
+      - 'Flur vorne'
+      - 'Küche'
+      - 'Schlafzimmer'
+
 sensor:
   - platform: template
     sensors:
@@ -5,36 +18,9 @@ sensor:
         friendly_name: 'Letzte Bewegung'
         icon_template: mdi:run
         entity_id:
-          - sensor.time
-          - binary_sensor.bewegungsmelder_schlafzimmer
-          - binary_sensor.bewegungsmelder_flur_vorne
-          - binary_sensor.bewegungsmelder_flur_hinten
-          - binary_sensor.bewegungsmelder_arbeitszimmer
-          - binary_sensor.bewegungsmelder_kueche
-          - binary_sensor.bewegungsmelder_balkon
-          - binary_sensor.bewegungsmelder_wohnzimmer
-          - binary_sensor.bewegungsmelder_badezimmer
-        value_template: >
-          {%- set pirs = [
-            states.binary_sensor.bewegungsmelder_schlafzimmer,
-            states.binary_sensor.bewegungsmelder_flur_vorne,
-            states.binary_sensor.bewegungsmelder_flur_hinten,
-            states.binary_sensor.bewegungsmelder_arbeitszimmer,
-            states.binary_sensor.bewegungsmelder_kueche,
-            states.binary_sensor.bewegungsmelder_balkon,
-            states.binary_sensor.bewegungsmelder_wohnzimmer,
-            states.binary_sensor.bewegungsmelder_badezimmer
-            ] | reject('none') | list %}
-
-          {% if pirs|length > 0 %}
-            {% for pir in pirs %}
-              {% if as_timestamp(pir.last_changed) == as_timestamp(pirs | map(attribute='last_changed') | max) %}
-                {{ pir.name }}
-              {% endif %}
-            {% endfor %}
-          {% else %}
-            Unbekannt
-          {% endif %}
+          - input_select.letzte_bewegung
+        value_template: >-
+          {{ states.input_select.letzte_bewegung.state }}
 
       bewegungsmelder_flur_vorne_batterie:
         friendly_name: Bewegungsmelder Flur vorne
@@ -151,6 +137,26 @@ binary_sensor:
           - sensor.fibaro_badezimmer_burglar
         device_class: motion
         value_template: "{{ is_state('sensor.fibaro_badezimmer_burglar', '8') }}"
+
+automation:
+  - alias: 'Letzte Bewegung'
+    trigger:
+      - platform: state
+        entity_id:
+          - binary_sensor.bewegungsmelder_schlafzimmer
+          - binary_sensor.bewegungsmelder_flur_vorne
+          - binary_sensor.bewegungsmelder_flur_hinten
+          - binary_sensor.bewegungsmelder_arbeitszimmer
+          - binary_sensor.bewegungsmelder_kueche
+          - binary_sensor.bewegungsmelder_balkon
+          - binary_sensor.bewegungsmelder_wohnzimmer
+          - binary_sensor.bewegungsmelder_badezimmer
+        to: 'on'
+    action:
+      - service: input_select.select_option
+        data_template:
+          entity_id: input_select.letzte_bewegung
+          option: '{{ trigger.to_state.attributes.friendly_name }}'
 
 entity_controller:
   radio_badezimmer:
