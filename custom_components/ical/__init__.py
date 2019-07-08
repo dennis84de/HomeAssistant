@@ -1,1 +1,0 @@
-"""The ical component."""

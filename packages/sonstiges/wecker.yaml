@@ -155,7 +155,7 @@ automation:
           state: 'on'
         - condition: template
           value_template: >-
-            {% if (states.sensor.tasker_tablet_weckzeit == None) %}
+            {% if is_state('sensor.tasker_tablet_weckzeit', None) %}
               True
             {% elif is_state('binary_sensor.tablet_wecker_ueberspringen', 'on') and states.sensor.tasker_tablet_weckzeit.attributes.day == now().today().day and is_state('input_boolean.alarmauto', 'on') %}
               False

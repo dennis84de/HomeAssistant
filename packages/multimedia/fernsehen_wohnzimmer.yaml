@@ -219,7 +219,7 @@ automation:
       - service: switch.toggle
         entity_id: switch.play_wohnzimmer
 
-  - alias: "Kodi - Widergabe Schalter"
+  - alias: "Kodi - Wiedergabe Schalter"
     trigger:
       - platform: event
         event_type: xiaomi_aqara.click
@@ -356,7 +356,7 @@ automation:
             {% elif state_attr("media_player.soundbar", "volume_level") == None %}
               {% set soundbar_volume = 0 %}
             {% else %}
-              {% set soundbar_volume = states.media_player.soundbar.attributes.volume_level * 50 %}
+              {% set soundbar_volume = state_attr("media_player.soundbar", "volume_level") * 50 %}
             {% endif %}
 
             {% set input_number = states.input_number.soundbar_volume.state %}
