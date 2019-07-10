@@ -59,6 +59,15 @@ sensor:
     duration:
       days: 7
 
+  - platform: sql
+    db_url: !secret mariadb_url
+    queries:
+      - name: Schlafen Letzte Uhrzeit
+        query: "SELECT last_changed FROM states WHERE entity_id = 'script.schlafen_gehen' AND state = 'on' ORDER BY created DESC LIMIT 1;"
+        column: 'last_changed'
+        unit_of_measurement: 'Uhr'
+        value_template: '{{ as_timestamp(value) | timestamp_custom("%H:%M", True) | string }}'
+
   - platform: template
     sensors:
       timer_schlafzimmer_zeit:
@@ -85,20 +94,6 @@ sensor:
             {% else %}
                 -
             {%- endif %}
-
-      schlafen_letzte_uhrzeit:
-        friendly_name: Letzte Uhrzeit
-        entity_id:
-          - script.schlafen_gehen
-        value_template: >
-          {% if states.script.schlafen_gehen.attributes.last_triggered == None %}
-            -
-          {% else %}
-            {{ as_timestamp(states.script.schlafen_gehen.attributes.last_triggered) | timestamp_custom('%H:%M') }}
-          {% endif %}
-        icon_template: >
-          mdi:av-timer
-        unit_of_measurement: 'Uhr'
 
       schlafen_dauer_durchschnitt:
         friendly_name: Durchschnittliche Dauer
@@ -343,6 +338,9 @@ homeassistant:
       icon: mdi:hotel
       can_cancel: false
 
+    sensor.schlafen_letzte_uhrzeit:
+      friendly_name: "Letzte Uhrzeit"
+      icon: mdi:av-timer
     timer.sleeptimer:
       hidden: true
     input_boolean.schlafen_aktiv:
