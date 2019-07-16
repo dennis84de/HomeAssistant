@@ -17,6 +17,7 @@ cards:
       - entity: sensor.tablet_kueche_batterie
       - entity: sensor.tablet_badezimmer_batterie
       - entity: sensor.tablet_schlafzimmer_batterie
+      - entity: sensor.tablet_balkon_batterie
 
   - type: entities
     title: Batterien Sensoren

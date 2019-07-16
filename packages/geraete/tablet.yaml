@@ -27,6 +27,19 @@ sensor:
         device_class: battery
         unit_of_measurement: '%'
 
+      tablet_balkon_batterie:
+        friendly_name: Tablet Balkon
+        entity_id:
+          - sensor.tasker_tablet_balkon
+        value_template: >
+          {% if states.sensor.tasker_tablet_balkon == None %}
+            0
+          {% else %}
+            {{ states.sensor.tasker_tablet_balkon.state | float}}
+          {% endif %}
+        device_class: battery
+        unit_of_measurement: '%'
+
       tablet_badezimmer_batterie:
         friendly_name: Tablet Badezimmer
         entity_id:
@@ -134,6 +147,26 @@ automation:
         data_template:
           message: "Das Tablet in der Küche muss aufgeladen werden. Der Batteriestand beträgt {{ states.sensor.tasker_tablet_kueche.state | int }} Prozent."
 
+  - alias: "Tablet Balkon - Batteriestand niedrig"
+    trigger:
+      - platform: state
+        entity_id: sensor.tasker_tablet_balkon
+      - platform: state
+        entity_id: binary_sensor.zu_hause
+        to: 'on'
+        for:
+          minutes: 10
+    condition:
+      - condition: numeric_state
+        entity_id: sensor.tasker_tablet_balkon
+        below: 16
+      - condition: template
+        value_template: '{{ state_attr("sensor.tasker_tablet_balkon", "is_charging") == False }}'
+    action:
+      - service: !secret tts_service
+        data_template:
+          message: "Das Tablet auf dem Balkon muss aufgeladen werden. Der Batteriestand beträgt {{ states.sensor.tasker_tablet_balkon.state | int }} Prozent."
+
   - alias: "Tablet Wohnzimmer - Aufgeladen"
     trigger:
       - platform: state
@@ -194,6 +227,21 @@ automation:
         data_template:
           message: "Das Tablet in der Küche wurde vollständig aufgeladen."
 
+  - alias: "Tablet Balkon - Aufgeladen"
+    trigger:
+      - platform: state
+        entity_id: sensor.tasker_tablet_balkon
+    condition:
+      - condition: numeric_state
+        entity_id: sensor.tasker_tablet_balkon
+        above: 99
+      - condition: template
+        value_template: '{{ state_attr("sensor.tasker_tablet_balkon", "is_charging") == True }}'
+    action:
+      - service: !secret tts_service
+        data_template:
+          message: "Das Tablet auf dem Balkon wurde vollständig aufgeladen."
+
 homeassistant:
   customize:
     sensor.tasker_tablet_wohnzimmer:
@@ -211,4 +259,8 @@ homeassistant:
     sensor.tasker_tablet_kueche:
       icon: mdi:battery
       friendly_name: Tablet Küche
+      hidden: true
+    sensor.tasker_tablet_balkon:
+      icon: mdi:battery
+      friendly_name: Tablet Balkon
       hidden: true

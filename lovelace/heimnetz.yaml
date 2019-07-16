@@ -85,6 +85,7 @@ cards:
       - entity: device_tracker.tabletwohnzimmer
       - entity: device_tracker.tabletschlafzimmer
       - entity: device_tracker.tabletkueche
+      - entity: device_tracker.tabletbalkon
 
   - type: entities
     title: Licht

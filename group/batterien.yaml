@@ -7,6 +7,7 @@ batteriestand:
     - sensor.tablet_wohnzimmer_batterie
     - sensor.tablet_kueche_batterie
     - sensor.tablet_badezimmer_batterie
+    - sensor.tablet_balkon_batterie
     - sensor.tablet_schlafzimmer_batterie
     - sensor.tuersensor_batterie
     - sensor.tuerklingel_batterie

@@ -296,6 +296,8 @@ homeassistant:
       icon: mdi:tablet-android
     device_tracker.tabletkueche:
       icon: mdi:tablet-android
+    device_tracker.tabletbalkon:
+      icon: mdi:tablet-android
 
     device_tracker.firetvschlafzimmer:
       icon: mdi:fire

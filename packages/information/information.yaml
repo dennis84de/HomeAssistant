@@ -111,10 +111,10 @@ automation:
           message: >-
             {% set mailCount = states.sensor.ungelesene_mails.state | default(0) | int %}
 
-            {% if mailCount > 1 %}
-              Es sind {{ mailCount }} ungelesene Mails vorhanden.
+            {% if mailCount == 1 %}
+              Eine neue E-Mail ist eingegangen.
             {% else %}
-              Es ist {{ mailCount }} ungelesene Mail vorhanden.
+              Es sind {{ mailCount }} neue E-Mails eingegangen.
             {% endif %}
           data:
             displaytime: 5000

@@ -92,16 +92,6 @@ cards:
       - entity: input_boolean.nicht_stoeren
 
   - type: entities
-    title: Schlafen
-    show_header_toggle: false
-    entities:
-      - entity: script.schlafen_gehen
-      - entity: binary_sensor.schlafen_aktiv
-      - entity: sensor.schlafen_letzte_uhrzeit
-      - entity: sensor.schlafen_dauer_durchschnitt
-      - entity: input_boolean.schlafen_fernseher_einschalten
-
-  - type: entities
     title: Radios
     show_header_toggle: false
     entities:
