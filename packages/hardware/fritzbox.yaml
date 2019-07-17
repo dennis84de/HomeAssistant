@@ -155,6 +155,50 @@ automation:
         message: >-
           Der Gastzugang wurde ausgeschaltet.
 
+  - alias: "Unterwegs - Begrüßung deaktivieren"
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.zu_hause
+        to: 'off'
+    action:
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.zu_hause_begruessung
+
+
+  - alias: 'Unterwegs - Geräte eingeschaltet'
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.zu_hause
+        to: 'off'
+        for:
+          minutes: 60
+    condition:
+      - condition: state
+        entity_id: group.alles_ausschalten
+        state: 'on'
+    action:
+      - service: notify.telegram
+        data_template:
+          title: "Es sind noch Geräte eingeschaltet"
+          message: >-
+            {%- set comma = joiner(",") -%}
+            {%- set deviceFound = false -%}
+
+            {% for entity_id in states.group.alles_ausschalten.attributes.entity_id -%}
+              {%- set domain, device = entity_id.split('.') -%}
+              {%- if states[domain][device].state == 'on' -%}
+                {%- set deviceFound = true -%}
+                {{ comma() }} {{ states[domain][device].attributes.friendly_name }}
+              {%- endif -%}
+            {%- endfor -%}
+
+            {%- if deviceFound == true -%}
+              Alle Geräte sind ausgeschaltet.
+            {%- endif -%}
+          data:
+            inline_keyboard:
+              - 'Alles Ausschalten:/alles_ausschalten'
+              
   - alias: "Unterwegs - Standort aktualisieren"
     trigger:
       - platform: state
