@@ -1,6 +1,6 @@
 switch:
   - platform: brematic
-    host: 192.168.2.57
+    host: !secret brematic_host
     switches:
       sportzimmer_fernseher:
         friendly_name: Sportzimmer Fernseher

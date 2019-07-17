@@ -19,20 +19,12 @@ light:
 
 switch:
   - platform: brematic
-    host: 192.168.2.57
+    host: !secret brematic_host
     switches:
-      couch:
-        friendly_name: Couch
-        system_code: "11110"
-        unit_code: "10000"
-      strahler:
-        friendly_name: Strahler
-        system_code: "00000"
-        unit_code: "00100"
       vitrine:
         friendly_name: Vitrine
-        system_code: "11111"
-        unit_code: "00010"
+        system_code: "00000"
+        unit_code: "00100"
 
 automation:
   - alias: Licht Abends
@@ -73,13 +65,6 @@ automation:
 
 homeassistant:
   customize:
-    switch.couch:
-      hidden: true
-    switch.strahler:
-      hidden: true
-    switch.vitrine:
-      hidden: true
-
     light.couch:
       icon: mdi:sofa
     light.strahler:

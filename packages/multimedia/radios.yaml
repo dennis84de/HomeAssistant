@@ -13,7 +13,7 @@ switch:
     name: Schlafzimmer Radio
 
   - platform: brematic
-    host: 192.168.2.57
+    host: !secret brematic_host
     switches:
       balkon_radio:
         friendly_name: Balkon Radio

@@ -14,10 +14,10 @@ input_boolean:
     name: Bewegungsmelder deaktiviert
     initial: off
     icon: mdi:sync-off
-    
+
 switch:
   - platform: brematic
-    host: 192.168.2.57
+    host: !secret brematic_host
     switches:
       arbeitszimmer_lampe:
         friendly_name: Lampe

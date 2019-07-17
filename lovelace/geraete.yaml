@@ -119,5 +119,7 @@ cards:
     title: Steckdosen
     show_header_toggle: false
     entities:
-      - entity: zha.ladegeraet
       - entity: zha.fernseher_wohnzimmer
+      - entity: zha.couch
+      - entity: zha.strahler
+      - entity: zha.ladegeraet
