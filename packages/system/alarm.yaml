@@ -288,10 +288,10 @@ automation:
     trigger:
       - platform: state
         entity_id: input_boolean.zu_hause_begruessung
-        state: 'on'
+        to: 'on'
         for: '00:01:00'
     condition:
-      - platform: state
+      - condition: state
         entity_id: binary_sensor.zu_hause
         state: 'on'
     action:
