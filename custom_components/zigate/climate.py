@@ -91,9 +91,11 @@ class ZigateClimate(ClimateDevice):
         return self._support_flags
 
     @property
-    def should_poll(self):
-        """Return the polling state."""
+    def should_poll(self) -> bool:
         return False
+
+    def update(self):
+        self._device.refresh_device()
 
     @property
     def name(self):
@@ -148,10 +150,10 @@ class ZigateClimate(ClimateDevice):
                                                               0x0201,
                                                               [(0x0002, 0x18, 1)])
 
-#     @property
-#     def is_on(self):
-#         """Return true if the device is on."""
-#         return self._on
+    @property
+    def is_on(self):
+        """Return true if the device is on."""
+        return True
 
     def set_temperature(self, **kwargs):
         """Set new target temperatures."""
