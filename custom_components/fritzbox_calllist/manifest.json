@@ -1,0 +1,10 @@
+{
+  "domain": "fritzbox_calllist",
+  "name": "Fritzbox calllist",
+  "documentation": "https://www.home-assistant.io/components/fritzbox_calllist",
+  "requirements": [],
+  "dependencies": [],
+  "codeowners": [
+    "@renemarc"
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "domain": "fritzbox_guestwifi",
+  "name": "Fritzbox guest wifi",
+  "documentation": "https://www.home-assistant.io/components/fritzbox_guestwifi",
+  "requirements": [],
+  "dependencies": [],
+  "codeowners": [
+    "@renemarc"
+  ]
+}

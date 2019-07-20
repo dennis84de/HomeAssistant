@@ -15,11 +15,7 @@ views:
   - !include lovelace/batterien.yaml
 
 resources:
-  - url: /local/lovelace/tracker-card.js?track=true
-    type: module
   - url: /local/lovelace/dark-sky-weather-card.js?v=7.1
-    type: module
-  - url: /local/floorplan/floorplan-card.js?v=1.1.14
     type: module
   - url: /community_plugin/mini-media-player/mini-media-player.js
     type: module

@@ -1,0 +1,10 @@
+{
+  "domain": "date_countdown",
+  "name": "Date countdown",
+  "documentation": "https://www.home-assistant.io/components/date_countdown",
+  "requirements": [],
+  "dependencies": [],
+  "codeowners": [
+    "@renemarc"
+  ]
+}

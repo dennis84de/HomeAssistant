@@ -1,0 +1,10 @@
+{
+  "domain": "carwash",
+  "name": "Carwash",
+  "documentation": "https://www.home-assistant.io/components/carwash",
+  "requirements": [],
+  "dependencies": [],
+  "codeowners": [
+    "@renemarc"
+  ]
+}

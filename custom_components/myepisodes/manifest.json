@@ -1,0 +1,10 @@
+{
+  "domain": "myepisodes",
+  "name": "My episodes",
+  "documentation": "https://www.home-assistant.io/components/my_episodes",
+  "requirements": [],
+  "dependencies": [],
+  "codeowners": [
+    "@renemarc"
+  ]
+}
