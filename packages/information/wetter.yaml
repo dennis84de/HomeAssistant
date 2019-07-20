@@ -1,5 +1,5 @@
 sun:
-#wwlln:
+wwlln:
 
 openuv:
   api_key: !secret openuv_key

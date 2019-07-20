@@ -200,7 +200,7 @@ automation:
         entity_id: binary_sensor.bewegungsmelder_kueche
         to: 'on'
       - platform: state
-        entity_id: binary_sensor.bewegungsmelder_flur
+        entity_id: binary_sensor.bewegungsmelder_flur_vorne
         to: 'on'
       - platform: state
         entity_id: binary_sensor.bewegungsmelder_wohnzimmer

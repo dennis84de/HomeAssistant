@@ -63,7 +63,7 @@ sensor:
     db_url: !secret mariadb_url
     queries:
       - name: Schlafen Letzte Uhrzeit
-        query: "SELECT last_changed FROM states WHERE entity_id = 'script.schlafen_gehen' AND state = 'on' ORDER BY created DESC LIMIT 1;"
+        query: "SELECT CONVERT_TZ(last_changed,'+00:00','+02:00') as last_changed FROM states WHERE entity_id = 'script.schlafen_gehen' AND state = 'on' ORDER BY created DESC LIMIT 1;"
         column: 'last_changed'
         unit_of_measurement: 'Uhr'
         value_template: '{{ as_timestamp(value) | timestamp_custom("%H:%M", True) | string }}'
