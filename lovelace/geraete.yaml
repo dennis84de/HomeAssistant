@@ -65,6 +65,16 @@ cards:
     entities:
       - entity: zigate.zigate
 
+  - type: custom:zha-network-card
+    title: ZHA
+    columns:
+      - prop: name
+        name: Name
+      - attr: rssi
+        name: RSSI
+      - attr: last_seen
+        name: Zuletzt Online
+
   - type: entities
     title: MQTT
     show_header_toggle: false
@@ -114,12 +124,3 @@ cards:
       - entity: zigate.tuersensor
       - entity: zigate.tuerklingel
       - entity: zigate.briefkasten
-
-  - type: entities
-    title: Steckdosen
-    show_header_toggle: false
-    entities:
-      - entity: zha.fernseher_wohnzimmer
-      - entity: zha.couch
-      - entity: zha.strahler
-      - entity: zha.ladegeraet

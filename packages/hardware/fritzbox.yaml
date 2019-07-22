@@ -198,7 +198,7 @@ automation:
           data:
             inline_keyboard:
               - 'Alles Ausschalten:/alles_ausschalten'
-              
+
   - alias: "Unterwegs - Standort aktualisieren"
     trigger:
       - platform: state

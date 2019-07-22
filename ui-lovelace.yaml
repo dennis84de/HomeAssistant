@@ -31,3 +31,5 @@ resources:
     type: js
   - url: /community_plugin/vertical-stack-in-card/vertical-stack-in-card.js
     type: js
+  - url: /community_plugin/zha-network-card/zha-network-card.js
+    type: js    
