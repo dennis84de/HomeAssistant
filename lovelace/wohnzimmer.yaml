@@ -65,7 +65,11 @@ cards:
       - entity: input_number.ventilator_geschwindigkeit
       - entity: input_select.ventilator_drehungswinkel
       - entity: sensor.ventilator_batterie
-
+      - type: divider
+      - entity: sensor.ventilator_timer
+      - entity: input_boolean.ventilator_timer_aktiv
+      - entity: input_select.ventilator_timer
+      
   - type: glance
     title: Heizung
     show_header_toggle: false

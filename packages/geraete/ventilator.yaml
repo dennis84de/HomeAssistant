@@ -11,6 +11,12 @@ input_number:
     max: 100
     step: 1
 
+input_boolean:
+  ventilator_timer_aktiv:
+    name: Timer aktiv
+    initial: off
+    icon: mdi:timer-off
+
 input_select:
   ventilator_drehungswinkel:
     name: Drehungswinkel
@@ -19,6 +25,23 @@ input_select:
       - '90'
       - '60'
       - '30'
+  ventilator_timer:
+    name: Timer Ventilator
+    options:
+      - 30
+      - 60
+      - 90
+      - 120
+      - 180
+      - 240
+    initial: 90
+    icon: mdi:clock-end
+
+timer:
+  ventilator:
+    name: Timer
+    icon: mdi:timer-off
+    duration: 4200
 
 sensor:
   - platform: template
@@ -60,6 +83,31 @@ sensor:
             mdi:power-plug-off
           {% endif %}
 
+      ventilator_timer:
+        friendly_name: Restzeit
+        icon_template: mdi:timer-off
+        entity_id:
+          - automation.ventilator_timer_gestartet
+          - input_boolean.ventilator_timer_aktiv
+          - input_select.ventilator_timer
+          - sensor.time
+        unit_of_measurement: 'Minuten'
+        value_template: >-
+            {%- if is_state('input_boolean.ventilator_timer_aktiv', 'on') %}
+              {% set now = as_timestamp(now()) | int %}
+              {% set last = as_timestamp(states.automation.ventilator_timer_gestartet.attributes.last_triggered) | int %}
+              {% set duration = states.input_select.ventilator_timer.state | int %}
+              {% set diff = (duration - ((now - last) / 60)) | int %}
+
+              {% if diff < 0 %}
+                {{ duration }}
+              {% else %}
+                {{ diff }}
+              {% endif %}
+            {% else %}
+                -
+            {%- endif %}
+
 switch:
   - platform: template
     switches:
@@ -82,46 +130,85 @@ switch:
             entity_id: fan.ventilator
 
 automation:
-    - alias: 'Ventilator Geschwindigkeit - Slider geändert'
-      trigger:
-        - platform: state
-          entity_id: input_number.ventilator_geschwindigkeit
-      condition:
-        - condition: state
+  - alias: 'Ventilator Geschwindigkeit - Slider geändert'
+    trigger:
+      - platform: state
+        entity_id: input_number.ventilator_geschwindigkeit
+    condition:
+      - condition: state
+        entity_id: fan.ventilator
+        state: 'on'
+    action:
+      - service: fan.set_speed
+        data_template:
           entity_id: fan.ventilator
-          state: 'on'
-      action:
-        - service: fan.set_speed
-          data_template:
-            entity_id: fan.ventilator
-            speed: '{{ trigger.to_state.state | int }}'
+          speed: '{{ trigger.to_state.state | int }}'
 
-    - alias: 'Ventilator Geschwindigkeit - Sensor geändert'
-      trigger:
-        - platform: state
-          entity_id: sensor.ventilator_geschwindigkeit
-      action:
-        - service: input_number.set_value
-          data_template:
-            entity_id: input_number.ventilator_geschwindigkeit
-            value: '{{ trigger.to_state.state }}'
+  - alias: 'Ventilator Geschwindigkeit - Sensor geändert'
+    trigger:
+      - platform: state
+        entity_id: sensor.ventilator_geschwindigkeit
+    action:
+      - service: input_number.set_value
+        data_template:
+          entity_id: input_number.ventilator_geschwindigkeit
+          value: '{{ trigger.to_state.state }}'
 
-    - alias: 'Ventilator Winkel - Slider geändert'
-      trigger:
-        - platform: state
+  - alias: 'Ventilator Winkel - Slider geändert'
+    trigger:
+      - platform: state
+        entity_id: input_select.ventilator_drehungswinkel
+    action:
+      - service: fan.xiaomi_miio_set_oscillation_angle
+        data_template:
+          entity_id: fan.ventilator
+          angle: '{{ trigger.to_state.state | int }}'
+
+  - alias: 'Ventilator Winkel - Sensor geändert'
+    trigger:
+      - platform: state
+        entity_id: sensor.ventilator_drehungswinkel
+    action:
+      - service: input_select.select_option
+        data_template:
           entity_id: input_select.ventilator_drehungswinkel
-      action:
-        - service: fan.xiaomi_miio_set_oscillation_angle
-          data_template:
-            entity_id: fan.ventilator
-            angle: '{{ trigger.to_state.state | int }}'
+          option: '{{ trigger.to_state.state }}'
 
-    - alias: 'Ventilator Winkel - Sensor geändert'
-      trigger:
-        - platform: state
-          entity_id: sensor.ventilator_drehungswinkel
-      action:
-        - service: input_select.select_option
-          data_template:
-            entity_id: input_select.ventilator_drehungswinkel
-            option: '{{ trigger.to_state.state }}'
+  - alias: 'Ventilator - Timer gestartet'
+    trigger:
+      - platform: state
+        entity_id: input_boolean.ventilator_timer_aktiv
+        to: 'on'
+      - platform: state
+        entity_id: input_select.ventilator_timer
+    action:
+      - service: fan.turn_on
+        entity_id: fan.ventilator
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.ventilator_timer_aktiv
+      - service: timer.start
+        entity_id: timer.ventilator
+        data_template:
+          duration: >
+            {{ states.input_select.ventilator_timer.state  | int * 60 | int }}
+
+  - alias: 'Ventilator - Timer abgebrochen'
+    trigger:
+      platform: state
+      entity_id: input_boolean.ventilator_timer_aktiv
+      to: 'off'
+    action:
+      - service: timer.cancel
+        entity_id: timer.ventilator
+
+  - alias: 'Ventilator - Timer beendet'
+    trigger:
+      platform: event
+      event_type: timer.finished
+      event_data:
+        entity_id: timer.ventilator
+    action:
+      - service: fan.turn_off
+        entity_id: fan.ventilator
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.ventilator_timer_aktiv
