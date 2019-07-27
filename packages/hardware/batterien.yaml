@@ -6,6 +6,44 @@ input_number:
     step: 5
 
 sensor:
+  - platform: attributes
+    friendly_name: "Batteriestand"
+    attribute: battery_level
+    unit_of_measurement: "%"
+    entities:
+      - zwave.fibaro_badezimmer
+      - zigate.bewegungsmelder_flur_vorne
+      - zigate.bewegungsmelder_flur_hinten
+      - zigate.bewegungsmelder_arbeitszimmer
+      - zigate.bewegungsmelder_schlafzimmer
+      - zigate.bewegungsmelder_kueche
+      - zigate.bewegungsmelder_balkon
+      - zigate.fenster_wohnzimmer
+      - zigate.fenster_schlafzimmer
+      - zigate.fenster_kueche
+      - zigate.fenster_arbeitszimmer
+      - zigate.fenster_sportzimmer
+      - zigate.thermometer_flur
+      - zigate.thermometer_balkon
+      - zigate.thermometer_schlafzimmer
+      - zigate.thermometer_arbeitszimmer
+      - zigate.thermometer_kueche
+      - zigate.thermometer_sportzimmer
+      - zigate.thermometer_parkplatz
+      - zigate.thermometer_kuehlschrank
+      - zigate.thermometer_gefrierschrank
+      - zigate.thermometer_hardware
+      - zigate.tuersensor
+      - zigate.tuerklingel
+      - zigate.briefkasten
+      - binary_sensor.schalter_wohnzimmer
+      - binary_sensor.schalter_schlafzimmer
+      - binary_sensor.schalter_flur
+      - binary_sensor.schalter_balkon
+      - binary_sensor.vibration_wohnzimmer
+      - binary_sensor.vibration_schlafzimmer
+      - binary_sensor.cube_wohnzimmer
+
   - platform: template
     sensors:
       batteriestand_niedrig:

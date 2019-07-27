@@ -23,58 +23,58 @@ cards:
     title: Batterien Sensoren
     show_header_toggle: false
     entities:
-      - entity: sensor.tuersensor_batterie
-      - entity: sensor.tuerklingel_batterie
-      - entity: sensor.briefkasten_batterie
-      - entity: sensor.cube_wohnzimmer_batterie
-      - entity: sensor.vibration_wohnzimmer_batterie
-      - entity: sensor.vibration_schlafzimmer_batterie
+      - entity: sensor.tuersensor_battery_level
+      - entity: sensor.tuerklingel_battery_level
+      - entity: sensor.briefkasten_battery_level
+      - entity: sensor.cube_wohnzimmer_battery_level
+      - entity: sensor.vibration_wohnzimmer_battery_level
+      - entity: sensor.vibration_schlafzimmer_battery_level
 
   - type: entities
     title: Batterien Schalter
     show_header_toggle: false
     entities:
-      - entity: sensor.schalter_wohnzimmer_batterie
-      - entity: sensor.schalter_flur_batterie
-      - entity: sensor.schalter_balkon_batterie
-      - entity: sensor.schalter_schlafzimmer_batterie
+      - entity: sensor.schalter_wohnzimmer_battery_level
+      - entity: sensor.schalter_flur_battery_level
+      - entity: sensor.schalter_balkon_battery_level
+      - entity: sensor.schalter_schlafzimmer_battery_level
 
   - type: entities
     title: Batterien Thermometer
     show_header_toggle: false
     entities:
-      - entity: sensor.thermometer_flur_batterie
-      - entity: sensor.thermometer_balkon_batterie
-      - entity: sensor.thermometer_parkplatz_batterie
-      - entity: sensor.thermometer_schlafzimmer_batterie
-      - entity: sensor.thermometer_arbeitszimmer_batterie
-      - entity: sensor.thermometer_kueche_batterie
-      - entity: sensor.thermometer_sportzimmer_batterie
-      - entity: sensor.thermometer_kuehlschrank_batterie
-      - entity: sensor.thermometer_gefrierschrank_batterie
-      - entity: sensor.thermometer_hardware_batterie
+      - entity: sensor.thermometer_flur_battery_level
+      - entity: sensor.thermometer_balkon_battery_level
+      - entity: sensor.thermometer_parkplatz_battery_level
+      - entity: sensor.thermometer_schlafzimmer_battery_level
+      - entity: sensor.thermometer_arbeitszimmer_battery_level
+      - entity: sensor.thermometer_kueche_battery_level
+      - entity: sensor.thermometer_sportzimmer_battery_level
+      - entity: sensor.thermometer_kuehlschrank_battery_level
+      - entity: sensor.thermometer_gefrierschrank_battery_level
+      - entity: sensor.thermometer_hardware_battery_level
 
   - type: entities
     title: Batterien Fenster
     show_header_toggle: false
     entities:
-      - entity: sensor.fenster_wohnzimmer_batterie
-      - entity: sensor.fenster_schlafzimmer_batterie
-      - entity: sensor.fenster_kueche_batterie
-      - entity: sensor.fenster_arbeitszimmer_batterie
-      - entity: sensor.fenster_sportzimmer_batterie
+      - entity: sensor.fenster_wohnzimmer_battery_level
+      - entity: sensor.fenster_schlafzimmer_battery_level
+      - entity: sensor.fenster_kueche_battery_level
+      - entity: sensor.fenster_arbeitszimmer_battery_level
+      - entity: sensor.fenster_sportzimmer_battery_level
 
   - type: entities
     title: Batterien Bewegungsmelder
     show_header_toggle: false
     entities:
-      - entity: sensor.bewegungsmelder_badezimmer_batterie
-      - entity: sensor.bewegungsmelder_flur_vorne_batterie
-      - entity: sensor.bewegungsmelder_flur_hinten_batterie
-      - entity: sensor.bewegungsmelder_arbeitszimmer_batterie
-      - entity: sensor.bewegungsmelder_schlafzimmer_batterie
-      - entity: sensor.bewegungsmelder_kueche_batterie
-      - entity: sensor.bewegungsmelder_balkon_batterie
+      - entity: sensor.bewegungsmelder_badezimmer_battery_level
+      - entity: sensor.bewegungsmelder_flur_vorne_battery_level
+      - entity: sensor.bewegungsmelder_flur_hinten_battery_level
+      - entity: sensor.bewegungsmelder_arbeitszimmer_battery_level
+      - entity: sensor.bewegungsmelder_schlafzimmer_battery_level
+      - entity: sensor.bewegungsmelder_kueche_battery_level
+      - entity: sensor.bewegungsmelder_balkon_battery_level
 
   - type: entities
     title: Batterien Heizung
