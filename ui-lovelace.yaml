@@ -15,7 +15,7 @@ views:
   - !include lovelace/batterien.yaml
 
 resources:
-  - url: /local/lovelace/dark-sky-weather-card.js?v=7.1
+  - url: /community_plugin/lovelace-darksky-card/darksky-card.js
     type: module
   - url: /community_plugin/mini-media-player/mini-media-player.js
     type: module
@@ -32,4 +32,4 @@ resources:
   - url: /community_plugin/vertical-stack-in-card/vertical-stack-in-card.js
     type: js
   - url: /community_plugin/zha-network-card/zha-network-card.js
-    type: js    
+    type: js

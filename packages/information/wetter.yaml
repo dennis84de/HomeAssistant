@@ -457,6 +457,23 @@ automation:
 
             Die Balkontür sollte geschlossen werden. Auf dem Balkon ist es {{ temperaturBalkon | round() }} Grad warm und damit {{ difference }} Grad wärmer als im Wohnzimmer.
 
+  - alias: 'Wetterwarnung'
+    trigger:
+      - entity_id: sensor.wetterwarnungen_current_warning_level
+        platform: state
+    condition:
+      - condition: template
+        value_template: '{{ is_state("sensor.wetterwarnungen_current_warning_level", "0") == False }}'
+    action:
+      - service: !secret tts_service
+        data_template:
+          message: >-
+            {% if state_attr('sensor.wetterwarnungen_current_warning_level','warning_count') | int == 0 or state_attr('sensor.wetterwarnungen_current_warning_level','warning_1_headline') == None %}
+              Aktuell liegt keine Wetterwarnung vor.
+            {% else %}
+              Achtung! {{ state_attr('sensor.wetterwarnungen_current_warning_level','warning_1_headline') }}. {{ state_attr('sensor.wetterwarnungen_current_warning_level','warning_1_description') }}. {{ state_attr('sensor.wetterwarnungen_current_warning_level','warning_1_instruction') }}.
+            {% endif %}
+
 homeassistant:
   customize:
     sun.sun:
