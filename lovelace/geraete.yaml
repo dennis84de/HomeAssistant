@@ -64,6 +64,7 @@ cards:
     show_header_toggle: false
     entities:
       - entity: zigate.zigate
+      - entity: sensor.zigate_offline
 
   - type: custom:zha-network-card
     title: ZHA

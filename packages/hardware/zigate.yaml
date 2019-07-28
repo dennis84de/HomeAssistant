@@ -3,6 +3,94 @@ zigate:
   channel: 24
   enable_led : false
 
+input_number:
+  zigate_offline_puffer:
+    name: Puffer
+    min: 1
+    max: 24
+    step: 1
+    initial: 24
+
+sensor:
+  - platform: template
+    sensors:
+      zigate_offline:
+        friendly_name: Geräte offline
+        entity_id:
+          - sensor.time
+          - sensor.laufzeit_minuten
+          - input_number.zigate_offline_puffer
+        icon_template: >
+          {% set now = as_timestamp(now()) | int %}
+          {% set puffer = states.input_number.zigate_offline_puffer.state | int * 60 | int -%}
+          {% set ns = namespace(found=false) -%}
+
+          {% for entity_id in states.group.zigate.attributes.entity_id -%}
+            {% set lastChange = as_timestamp(states(entity_id)) | int %}
+            {% set difference = (now - lastChange ) / 60 | round() %}
+
+            {% if difference > puffer %}
+              {% set ns.found = true -%}
+            {% endif %}
+          {% endfor -%}
+
+          {% if ns.found == True %}
+            mdi:access-point-network-off
+          {% else %}
+            mdi:access-point-network
+          {% endif %}
+        value_template: >
+          {% set now = as_timestamp(now()) | int %}
+          {% set puffer = states.input_number.zigate_offline_puffer.state | int * 60 | int -%}
+          {% set ns = namespace(found=0) -%}
+
+          {% for entity_id in states.group.zigate.attributes.entity_id -%}
+            {% set lastChange = as_timestamp(states(entity_id)) | int %}
+            {% set difference = (now - lastChange ) / 60 | round() %}
+
+            {% if difference > puffer %}
+              {% set ns.found = ns.found + 1 -%}
+            {% endif %}
+          {% endfor -%}
+
+          {{ ns.found }}
+
+automation:
+  - alias: 'Zigate - Geräte offline'
+    trigger:
+      - platform: time
+        at: '19:20:00'
+    condition:
+      - condition: template
+        value_template: >
+          {% set count_entities = states.sensor.zigate_offline.state | int -%}
+
+          {{ count_entities > 0 }}
+    action:
+      - service: !secret tts_service
+        data_template:
+          message: >-
+            {% set now = as_timestamp(now()) | int %}
+            {% set puffer = states.input_number.zigate_offline_puffer.state | int * 60 | int -%}
+            {% set count_entities = states.sensor.zigate_offline.state | int -%}
+
+            {% if count_entities == 0 %}
+              {{ "Alle Geräte sind online." }}
+            {% elif count_entities > 1 %}
+              {{ "Die folgenden Geräte sind offline. " }}
+            {% else %}
+              {{ "Das folgende Gerät ist offline. " }}
+            {% endif %}
+
+            {%- for entity_id in states.group.zigate.attributes.entity_id -%}
+              {%- set lastChange = as_timestamp(states(entity_id)) | int -%}
+              {%- set difference = (now - lastChange ) / 60 | round() -%}
+              {%- set parts = entity_id.split('.') -%}
+              {%- if difference > puffer -%}
+                {{ states[parts[0]][parts[1]].name }},
+              {%- endif -%}
+            {%- endfor -%}
+
 homeassistant:
   customize:
     binary_sensor.fenster_wohnzimmer:

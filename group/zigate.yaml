@@ -1,0 +1,29 @@
+zigate:
+  name: Zigate
+  view: no
+  control: hidden
+  entities:
+    - zigate.bewegungsmelder_flur_vorne
+    - zigate.bewegungsmelder_flur_hinten
+    - zigate.bewegungsmelder_schlafzimmer
+    - zigate.bewegungsmelder_kueche
+    - zigate.bewegungsmelder_arbeitszimmer
+    - zigate.bewegungsmelder_balkon
+    - zigate.fenster_wohnzimmer
+    - zigate.fenster_schlafzimmer
+    - zigate.fenster_kueche
+    - zigate.fenster_arbeitszimmer
+    - zigate.fenster_sportzimmer
+    - zigate.thermometer_balkon
+    - zigate.thermometer_parkplatz
+    - zigate.thermometer_flur
+    - zigate.thermometer_schlafzimmer
+    - zigate.thermometer_arbeitszimmer
+    - zigate.thermometer_sportzimmer
+    - zigate.thermometer_kueche
+    - zigate.thermometer_kuehlschrank
+    - zigate.thermometer_gefrierschrank
+    - zigate.thermometer_hardware
+    - zigate.tuersensor
+    - zigate.tuerklingel
+    - zigate.briefkasten
