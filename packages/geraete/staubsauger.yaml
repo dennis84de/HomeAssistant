@@ -7,7 +7,6 @@ input_boolean:
   xiaomi_vacuum_automatische_reinigung:
     name: Automatische Reinigung
     icon: mdi:flash-auto
-    initial: on
 
 sensor:
   - platform: template
