@@ -33,3 +33,5 @@ resources:
     type: js
   - url: /community_plugin/zha-network-card/zha-network-card.js
     type: js
+  - url: /community_plugin/travel-time-card/travel-time-card.js
+    type: js
