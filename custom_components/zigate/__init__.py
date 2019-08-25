@@ -24,12 +24,8 @@ import homeassistant.helpers.config_validation as cv
 
 _LOGGER = logging.getLogger(__name__)
 
-REQUIREMENTS = ['zigate==0.31.1']
-# REQUIREMENTS = ['https://github.com/doudz/zigate/archive/dev.zip#1.0.0']
-DEPENDENCIES = ['persistent_notification']
-
 DOMAIN = 'zigate'
-SCAN_INTERVAL = datetime.timedelta(seconds=60)
+SCAN_INTERVAL = datetime.timedelta(seconds=120)
 
 DATA_ZIGATE_DEVICES = 'zigate_devices'
 DATA_ZIGATE_ATTRS = 'zigate_attributes'
@@ -266,8 +262,9 @@ def setup(hass, config):
     def device_added(**kwargs):
         device = kwargs['device']
         _LOGGER.debug('Add device {}'.format(device))
-        ieee = device.ieee or device.addr  # compatibility
+        ieee = device.ieee
         if ieee not in hass.data[DATA_ZIGATE_DEVICES]:
+            hass.data[DATA_ZIGATE_DEVICES][ieee] = None  # reserve
             entity = ZiGateDeviceEntity(hass, device, polling)
             hass.data[DATA_ZIGATE_DEVICES][ieee] = entity
             component.add_entities([entity])
@@ -281,7 +278,7 @@ def setup(hass, config):
     def device_removed(**kwargs):
         # component.async_remove_entity
         device = kwargs['device']
-        ieee = device.ieee or device.addr  # compatibility
+        ieee = device.ieee
         hass.components.persistent_notification.create(
             'The ZiGate device {}({}) is gone.'.format(device.ieee,
                                                        device.addr),
@@ -307,7 +304,7 @@ def setup(hass, config):
 
     def attribute_updated(**kwargs):
         device = kwargs['device']
-        ieee = device.ieee or device.addr  # compatibility
+        ieee = device.ieee
         attribute = kwargs['attribute']
         _LOGGER.debug('Update attribute for device {} {}'.format(device,
                                                                  attribute))
@@ -328,7 +325,7 @@ def setup(hass, config):
     def device_updated(**kwargs):
         device = kwargs['device']
         _LOGGER.debug('Update device {}'.format(device))
-        ieee = device.ieee or device.addr  # compatibility
+        ieee = device.ieee
         entity = hass.data[DATA_ZIGATE_DEVICES].get(ieee)
         if not entity:
             _LOGGER.debug('Device not found {}, adding it'.format(device))
@@ -365,10 +362,10 @@ def setup(hass, config):
         myzigate.start_auto_save()
         myzigate.set_led(enable_led)
         version = myzigate.get_version_text()
-        if version < '3.0f':
+        if version < '3.1a':
             hass.components.persistent_notification.create(
                 ('Your zigate firmware is outdated, '
-                 'Please upgrade to 3.0f or later !'),
+                 'Please upgrade to 3.1a or later !'),
                 title='ZiGate')
         # first load
         for device in myzigate.devices:
@@ -379,7 +376,7 @@ def setup(hass, config):
 
         hass.bus.fire('zigate.started')
 
-    def stop_zigate(service_event):
+    def stop_zigate(service=None):
         myzigate.save_state()
         myzigate.close()
 
@@ -499,9 +496,6 @@ def setup(hass, config):
     def build_network_table(service):
         table = myzigate.build_neighbours_table(service.data.get('force', False))
         _LOGGER.debug('Neighbours table {}'.format(table))
-        entity = hass.data[DATA_ZIGATE_DEVICES].get('zigate')
-        if entity:
-            entity.network_table = table
 
     def ota_load_image(service):
         ota_image_path = service.data.get('imagepath')
@@ -570,6 +564,39 @@ def setup(hass, config):
         toscene = _to_int(service.data.get('to_scene'))
         myzigate.copy_scene(addr, endpoint, fromgroupaddr, fromscene, togroupaddr, toscene)
 
+    def upgrade_firmware(service):
+        from zigate.flasher import flash
+        from zigate.firmware import download_latest
+        port = myzigate.connection._port
+        pizigate = False
+        if isinstance(myzigate, zigate.ZiGateGPIO):
+            pizigate = True
+        if myzigate._started and not pizigate:
+            msg = 'You should stop zigate first using service zigate.stop_zigate and put zigate in download mode.'
+            hass.components.persistent_notification.create(msg, title='ZiGate')
+            return
+        if pizigate:
+            stop_zigate()
+            myzigate.set_bootloader_mode()
+        backup_filename = 'zigate_backup_{:%Y%m%d%H%M%S}.bin'.format(datetime.datetime.now())
+        backup_filename = os.path.join(hass.config.config_dir, backup_filename)
+        flash(port, save=backup_filename)
+        msg = 'ZiGate backup created {}'.format(backup_filename)
+        hass.components.persistent_notification.create(msg, title='ZiGate')
+        firmware_path = service.data.get('path')
+        if not firmware_path:
+            firmware_path = download_latest()
+        flash(port, write=firmware_path)
+        msg = 'ZiGate flashed with {}'.format(firmware_path)
+        hass.components.persistent_notification.create(msg, title='ZiGate')
+        myzigate._version = None
+        if pizigate:
+            myzigate.set_running_mode()
+            start_zigate()
+        else:
+            msg = 'Now you have to unplug/replug the ZiGate USB key and then call service zigate.start_zigate'
+            hass.components.persistent_notification.create(msg, title='ZiGate')
+
     hass.bus.listen_once(EVENT_HOMEASSISTANT_START, start_zigate)
     hass.bus.listen_once(EVENT_HOMEASSISTANT_STOP, stop_zigate)
 
@@ -632,6 +659,7 @@ def setup(hass, config):
                            schema=SCENE_MEMBERSHIP_REQUEST_SCHEMA)
     hass.services.register(DOMAIN, 'copy_scene', copy_scene,
                            schema=COPY_SCENE_SCHEMA)
+    hass.services.register(DOMAIN, 'upgrade_firmware', upgrade_firmware)
     track_time_change(hass, refresh_devices_list,
                       hour=0, minute=0, second=0)
 
@@ -644,7 +672,10 @@ class ZiGateComponentEntity(Entity):
         """Initialize the sensor."""
         self._device = myzigate
         self.entity_id = '{}.{}'.format(DOMAIN, 'zigate')
-        self.network_table = []
+
+    @property
+    def network_table(self):
+        return self._device._neighbours_table_cache
 
     @property
     def should_poll(self):
@@ -671,10 +702,15 @@ class ZiGateComponentEntity(Entity):
     @property
     def device_state_attributes(self):
         """Return the device specific state attributes."""
+        if not self._device.connection:
+            return {}
+        import zigate
         attrs = {'addr': self._device.addr,
                  'ieee': self._device.ieee,
                  'groups': self._device.groups,
-                 'network_table': self.network_table
+                 'network_table': self.network_table,
+                 'firmware_version': self._device.get_version_text(),
+                 'lib version': zigate.__version__
                  }
         return attrs
 

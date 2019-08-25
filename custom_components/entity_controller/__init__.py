@@ -1,7 +1,7 @@
 """
 Entity controller component for Home Assistant.
 Maintainer:       Daniel Mason
-Version:          v4.0.1
+Version:          v4.0.3
 Documentation:    https://github.com/danobot/entity-controller
 Issues Tracker:   Report issues on Github. Ensure you have the latest version. Include:
                     * YAML configuration (for the misbehaving entity)
@@ -16,7 +16,6 @@ from homeassistant.const import (
     SUN_EVENT_SUNSET, SUN_EVENT_SUNRISE, CONF_NAME)
 from homeassistant.util import dt
 from homeassistant.helpers.entity_component import EntityComponent
-from homeassistant.exceptions import HomeAssistantError
 from transitions import Machine
 from transitions.extensions import HierarchicalMachine as Machine
 from threading import Timer
@@ -32,7 +31,7 @@ DOMAIN = 'entity_controller'
 CONSTRAIN_START = 1
 CONSTRAIN_END = 2
 
-VERSION = '4.0.1'
+VERSION = '4.0.3'
 SENSOR_TYPE_DURATION = 'duration'
 SENSOR_TYPE_EVENT = 'event'
 MODE_DAY = 'day'
@@ -467,11 +466,14 @@ class Model():
     def _override_entity_state(self):
         for e in self.overrideEntities:
             s = self.hass.states.get(e)
-            
-            if s is None:
-                continue
-                
-            if self.matches(s.state, self.OVERRIDE_ON_STATE):
+            try:
+                state = s.state
+            except AttributeError:
+                self.log.error(
+                "Configuration error! Override Entity ({}) does not exist. Please check for spelling and typos.".format(e))
+                return None
+
+            if self.matches(state, self.OVERRIDE_ON_STATE):
                 self.log.debug("Override entities are ON. [%s]", e)
                 return e
         self.log.debug("Override entities are OFF.")
@@ -486,7 +488,14 @@ class Model():
     def _sensor_entity_state(self):
         for e in self.sensorEntities:
             s = self.hass.states.get(e)
-            if self.matches(s.state, self.SENSOR_ON_STATE):
+            try:
+                state = s.state
+            except AttributeError:
+                self.log.error(
+                "Configuration error! Sensor Entity ({}) does not exist. Please check for spelling and typos.".format(e))
+                return None
+
+            if self.matches(state, self.SENSOR_ON_STATE):
                 self.log.debug("Sensor entities are ON. [%s]", e)
                 return e
         self.log.debug("Sensor entities are OFF.")
@@ -502,7 +511,14 @@ class Model():
         for e in self.stateEntities:
             s = self.hass.states.get(e)
             self.log.info(s)
-            if self.matches(s.state, self.STATE_ON_STATE):
+            try:
+                state = s.state
+            except AttributeError:
+                self.log.error(
+                "Configuration error! State Entity ({}) does not exist. Please check for spelling and typos.".format(e))
+                return None
+
+            if self.matches(state, self.STATE_ON_STATE):
                 self.log.debug("State entities are ON. [%s]", e)
                 return e
         self.log.debug("State entities are OFF.")
