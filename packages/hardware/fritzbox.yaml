@@ -72,7 +72,6 @@ sensor:
     devicetracker_id: device_tracker.handygps
     options: street_street_number,city
     api_key: !secret openstreetmap_email
-#    display_zone: hide
     scan_interval: 60
 
   - platform: template
@@ -245,6 +244,14 @@ automation:
     action:
       - service: input_boolean.turn_on
         entity_id: input_boolean.zu_hause
+      - service: shell_command.send_position
+        data:
+          url: !secret phonetracker_send_position_url
+      - service: device_tracker.see
+        data_template:
+          dev_id: handygps
+          location_name: 'home'
+          gps: ["{{ states.device_tracker.netzwerkdj.attributes.latitude }}", "{{ states.device_tracker.netzwerkdj.attributes.longitude }}"]
 
 homeassistant:
   customize:
