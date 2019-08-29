@@ -43,7 +43,8 @@ cards:
       - type: custom:mini-media-player
         entity: media_player.wohnzimmer
         hide:
-          controls: true
+          source: true
+          progress: true
 
   - type: entities
     title: Geräte
@@ -69,7 +70,7 @@ cards:
       - entity: sensor.ventilator_timer
       - entity: input_boolean.ventilator_timer_aktiv
       - entity: input_select.ventilator_timer
-      
+
   - type: glance
     title: Heizung
     show_header_toggle: false

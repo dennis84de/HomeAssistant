@@ -33,7 +33,8 @@ cards:
       - type: custom:mini-media-player
         entity: media_player.schlafzimmer
         hide:
-          controls: true
+          source: true
+          progress: true
 
   - type: entities
     title: Schlafen

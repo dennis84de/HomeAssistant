@@ -54,4 +54,5 @@ cards:
       - type: custom:mini-media-player
         entity: media_player.flur
         hide:
-          controls: true
+          source: true
+          progress: true

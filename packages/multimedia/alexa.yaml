@@ -6,6 +6,7 @@ alexa_media:
       exclude_devices:
         - "Echo Simon"
         - "FireTablet Badezimmer"
+        - "FireTablet Schlafzimmer"
         - "FireTV Schlafzimmer"
         - "FireTV Badezimmer"
         - "FireTV Sportzimmer"

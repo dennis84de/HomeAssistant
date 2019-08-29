@@ -29,7 +29,7 @@ switch:
               entity_id: media_player.fire_tv_schlafzimmer
               source: "org.xbmc.kodi"
         turn_off:
-          - service: media_player.kodi_call_method
+          - service: kodi.call_method
             data:
               entity_id: media_player.kodi_schlafzimmer
               method: Input.Home

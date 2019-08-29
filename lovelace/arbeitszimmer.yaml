@@ -71,7 +71,8 @@ cards:
       - type: custom:mini-media-player
         entity: media_player.arbeitszimmer
         hide:
-          controls: true
+          source: true
+          progress: true
 
   - type: entities
     title: Drucker

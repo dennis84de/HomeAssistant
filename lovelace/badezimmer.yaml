@@ -14,7 +14,8 @@ cards:
       - type: custom:mini-media-player
         entity: media_player.badezimmer
         hide:
-          controls: true
+          source: true
+          progress: true
       - type: custom:mini-media-player
         entity: media_player.kodi_badezimmer
         hide:

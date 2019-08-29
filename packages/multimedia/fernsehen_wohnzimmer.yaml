@@ -87,19 +87,19 @@ cover:
         friendly_name: "Untertitel"
         position_template: 50
         open_cover:
-          service: media_player.kodi_call_method
+          service: kodi.call_method
           data:
             entity_id: media_player.kodi_wohnzimmer
             method: Input.ExecuteAction
             action: subtitledelayplus
         close_cover:
-          service: media_player.kodi_call_method
+          service: kodi.call_method
           data:
             entity_id: media_player.kodi_wohnzimmer
             method: Input.ExecuteAction
             action: subtitledelayminus
         stop_cover:
-          service: media_player.kodi_call_method
+          service: kodi.call_method
           data:
             entity_id: media_player.kodi_wohnzimmer
             method: Input.ExecuteAction
