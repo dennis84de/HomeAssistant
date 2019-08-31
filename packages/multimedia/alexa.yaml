@@ -4,6 +4,7 @@ alexa_media:
       password: !secret amazon_password
       url: amazon.de
       exclude_devices:
+        - "Überall"
         - "Echo Simon"
         - "FireTablet Badezimmer"
         - "FireTablet Schlafzimmer"

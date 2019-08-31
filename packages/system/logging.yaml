@@ -29,3 +29,20 @@ history:
       - switch
       - media_player
       - lights
+  exclude:
+    entities:
+      - switch.echo_badezimmer_do_not_disturb_switch
+      - switch.echo_badezimmer_repeat_switch
+      - switch.echo_badezimmer_shuffle_switch
+      - switch.echo_flur_do_not_disturb_switch
+      - switch.echo_flur_repeat_switch
+      - switch.echo_flur_shuffle_switch
+      - switch.echo_kuche_do_not_disturb_switch
+      - switch.echo_kuche_repeat_switch
+      - switch.echo_kuche_shuffle_switch
+      - switch.echo_schlafzimmer_do_not_disturb_switch
+      - switch.echo_schlafzimmer_repeat_switch
+      - switch.echo_schlafzimmer_shuffle_switch
+      - switch.echo_wohnzimmer_do_not_disturb_switch
+      - switch.echo_wohnzimmer_repeat_switch
+      - switch.echo_wohnzimmer_shuffle_switch
