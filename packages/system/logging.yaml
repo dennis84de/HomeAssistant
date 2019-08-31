@@ -2,6 +2,7 @@ logger:
   default: error
   logs:
     homeassistant.components.openhardwaremonitor.sensor: fatal
+    custom_components.squeezebox.media_player: fatal
 
 recorder:
   purge_interval: 1

@@ -16,10 +16,6 @@ sensor:
       - volume_status
       - volume_percentage_used
 
-#  - platform: haveibeenpwned
-#    email:
-#      - !secret pwned_mail
-
   - platform: pi_hole
     host: 192.168.2.70
     monitored_conditions:
@@ -36,18 +32,6 @@ switch:
         command_off: "curl -X GET 'http://192.168.2.70/admin/api.php?disable=3600&auth=f7e48f5d33ae1d2adf8f75b6a6a9b94cafd74890d86fe0df5a5d1ab78deaeb68'"
         command_state: "curl -X GET 'http://192.168.2.70/admin/api.php?status&auth=f7e48f5d33ae1d2adf8f75b6a6a9b94cafd74890d86fe0df5a5d1ab78deaeb68'"
         value_template: "{{ value_json.status == 'enabled' }}"
-
-automation:
-  - alias: Haveibeenpwned
-    trigger:
-      - platform: numeric_state
-        entity_id: !secret pwned_sensor
-        above: 0
-    action:
-      service: notify.telegram
-      data_template:
-        title: "Haveibeenpwned"
-        message: "Warnung - HaveIbeenPwned hat die E-Mail-Adresse {{trigger.to_state.attributes.friendly_name}} gefunden."
 
 homeassistant:
   customize:
@@ -68,10 +52,6 @@ homeassistant:
       icon: mdi:download-network
     sensor.speedtest_upload:
       icon: mdi:upload-network
-
-    !secret pwned_sensor:
-      icon: mdi:email-check
-      friendly_name: !secret pwned_mail
 
     switch.pi_hole:
       friendly_name: Pi-hole

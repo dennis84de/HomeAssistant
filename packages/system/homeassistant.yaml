@@ -8,10 +8,10 @@ lovelace:
 discovery:
   ignore:
     - songpal
-    - google_cast
 
 wake_on_lan:
 system_health:
+#updater:
 
 breaking_changes:
   name: Wichtige Änderungen

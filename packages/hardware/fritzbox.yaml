@@ -17,36 +17,11 @@ device_tracker:
     new_device_defaults:
       track_new_devices: false
 
-  - platform: phonetrack
-    url: !secret phonetrack_url
-    token: !secret phonetrack_token
-    devices:
-      - HandyGPS
-
-  - platform: ping
-    interval_seconds: 30
-    consider_home: 60
-    hosts:
-      pc: !secret computer_host
-      handyping: !secret handy_host
-
-person:
-  - name: Dennis
-    id: dennis
-    device_trackers:
-      - device_tracker.handy
-      - device_tracker.handygps
-
 fritzbox:
   devices:
     - host: !secret fritzbox_host
       username: !secret fritzbox_username
       password: !secret fritzbox_password
-
-input_boolean:
-  zu_hause:
-    name: zu Hause
-    initial: on
 
 sensor:
   - platform: fritzbox_callmonitor
@@ -66,13 +41,6 @@ sensor:
 #    host: !secret fritzbox_host
 #    username: !secret fritzbox_username
 #    password: !secret fritzbox_password
-
-  - platform: places
-    name: Aufenthaltsort Handy
-    devicetracker_id: device_tracker.handygps
-    options: street_street_number,city
-    api_key: !secret openstreetmap_email
-    scan_interval: 60
 
   - platform: template
     sensors:
@@ -96,29 +64,6 @@ sensor:
             {% else %}
               mdi:wifi-strength-lock-outline
             {% endif %}
-
-binary_sensor:
-  - platform: template
-    sensors:
-      zu_hause:
-        friendly_name: "zu Hause"
-        device_class: presence
-        value_template: >-
-          {% if (is_state('device_tracker.handy', 'home') or is_state('device_tracker.handygps', 'home')) and is_state('input_boolean.zu_hause', 'on') %}
-            true
-          {% else %}
-            false
-          {% endif %}
-
-proximity:
-  home:
-    devices:
-      - device_tracker.handy
-      - device_tracker.handygps
-    tolerance: 50
-
-shell_command:
-  send_position: "curl -X POST '{{ url }}?lat={{ states.device_tracker.netzwerkdj.attributes.latitude }}&lon={{ states.device_tracker.netzwerkdj.attributes.longitude }}&timestamp={{ as_timestamp(now()) | int }}'"
 
 switch:
   - platform: fritzbox_guestwifi
@@ -154,105 +99,6 @@ automation:
         message: >-
           Der Gastzugang wurde ausgeschaltet.
 
-  - alias: "Unterwegs - Begrüßung deaktivieren"
-    trigger:
-      - platform: state
-        entity_id: binary_sensor.zu_hause
-        to: 'off'
-    action:
-      - service: input_boolean.turn_off
-        entity_id: input_boolean.zu_hause_begruessung
-
-
-  - alias: 'Unterwegs - Geräte eingeschaltet'
-    trigger:
-      - platform: state
-        entity_id: binary_sensor.zu_hause
-        to: 'off'
-        for:
-          minutes: 60
-    condition:
-      - condition: state
-        entity_id: group.alles_ausschalten
-        state: 'on'
-    action:
-      - service: notify.telegram
-        data_template:
-          title: "Es sind noch Geräte eingeschaltet"
-          message: >-
-            {%- set comma = joiner(",") -%}
-            {%- set deviceFound = false -%}
-
-            {% for entity_id in states.group.alles_ausschalten.attributes.entity_id -%}
-              {%- set domain, device = entity_id.split('.') -%}
-              {%- if states[domain][device].state == 'on' -%}
-                {%- set deviceFound = true -%}
-                {{ comma() }} {{ states[domain][device].attributes.friendly_name }}
-              {%- endif -%}
-            {%- endfor -%}
-
-            {%- if deviceFound == true -%}
-              Alle Geräte sind ausgeschaltet.
-            {%- endif -%}
-          data:
-            inline_keyboard:
-              - 'Alles Ausschalten:/alles_ausschalten'
-
-  - alias: "Unterwegs - Standort aktualisieren"
-    trigger:
-      - platform: state
-        entity_id: device_tracker.handy
-        to: 'not_home'
-      - platform: state
-        entity_id: device_tracker.handygps
-        to: 'not_home'
-    action:
-      - service: input_boolean.turn_off
-        entity_id: input_boolean.zu_hause
-
-  - alias: "Zu Hause - Standort aktualisieren"
-    trigger:
-      - platform: state
-        entity_id: device_tracker.handy
-        to: 'home'
-      - platform: state
-        entity_id: device_tracker.handygps
-        to: 'home'
-    action:
-      - service: input_boolean.turn_on
-        entity_id: input_boolean.zu_hause
-      - service: shell_command.send_position
-        data:
-          url: !secret phonetracker_send_position_url
-      - service: device_tracker.see
-        data_template:
-          dev_id: handygps
-          location_name: 'home'
-          gps: ["{{ states.device_tracker.netzwerkdj.attributes.latitude }}", "{{ states.device_tracker.netzwerkdj.attributes.longitude }}"]
-
-  - alias: "Zu Hause - Manuell geschaltet"
-    trigger:
-      - platform: event
-        event_type: xiaomi_aqara.click
-        event_data:
-          entity_id: binary_sensor.schalter_flur
-          click_type: single
-    condition:
-      - condition: state
-        entity_id: input_boolean.zu_hause
-        state: 'off'
-    action:
-      - service: input_boolean.turn_on
-        entity_id: input_boolean.zu_hause
-      - service: shell_command.send_position
-        data:
-          url: !secret phonetracker_send_position_url
-      - service: device_tracker.see
-        data_template:
-          dev_id: handygps
-          location_name: 'home'
-          gps: ["{{ states.device_tracker.netzwerkdj.attributes.latitude }}", "{{ states.device_tracker.netzwerkdj.attributes.longitude }}"]
-
 homeassistant:
   customize:
     sensor.netmonitor:
@@ -260,12 +106,6 @@ homeassistant:
       icon: mdi:router-wireless
     switch.gaste_wlan:
       icon: mdi:wifi
-
-    sensor.aufenthaltsort_handy:
-      friendly_name: Aufenthaltsort
-      icon: mdi:google-maps
-    proximity.home:
-      friendly_name: Entfernung
 
     device_tracker.edimaxwohnzimmerradio:
       icon: mdi:power-socket-eu

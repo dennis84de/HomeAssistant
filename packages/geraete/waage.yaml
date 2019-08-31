@@ -14,7 +14,7 @@ sensor:
 
   - platform: statistics
     entity_id: sensor.gewicht
-    name: "Gewicht"
+    name: "Gewicht Durchschnitt"
 
   - platform: template
     sensors:
@@ -65,5 +65,5 @@ sensor:
 
 homeassistant:
   customize:
-    sensor.gewicht_mean:
+    sensor.gewicht_durchschnitt:
       friendly_name: Durchschnitt

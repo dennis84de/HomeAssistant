@@ -1,8 +1,6 @@
 input_boolean:
   alles_auschalten_aktiv:
     name: "Alles ausschalten aktiv"
-  zu_hause_begruessung:
-    name: "Begrüßung"
 
 timer:
   alles_auschalten:
@@ -235,104 +233,7 @@ automation:
             Das Fenster im Sportzimmer wurde geöffnet.
           {% endif %}
 
-  - alias: "Zu Hause - Geräte einschalten"
-    trigger:
-      - platform: state
-        entity_id: binary_sensor.zu_hause
-        to: 'on'
-    condition:
-      - condition: time
-        after: '08:00'
-        before: '20:00'
-      - condition: numeric_state
-        entity_id: sensor.laufzeit_minuten
-        above: 5
-    action:
-      - service: script.zu_hause
-
-  - alias: "Zu Hause - Radio Balkon einschalten"
-    trigger:
-      - platform: state
-        entity_id: binary_sensor.zu_hause
-        to: 'on'
-    condition:
-      - condition: time
-        after: '08:00'
-        before: '20:00'
-      - condition: numeric_state
-        entity_id: sensor.balkon_temperatur
-        above: 15
-      - condition: numeric_state
-        entity_id: sensor.laufzeit_minuten
-        above: 5
-    action:
-      - service: switch.turn_on
-        entity_id: switch.balkon_radio
-
-  - alias: "Zu Hause - Geräte einschalten abends"
-    trigger:
-      - platform: state
-        entity_id: binary_sensor.zu_hause
-        to: 'on'
-    condition:
-      - condition: time
-        after: '20:00'
-        before: '23:30'
-      - condition: numeric_state
-        entity_id: sensor.laufzeit_minuten
-        above: 5
-    action:
-      - service: script.zu_hause_abends
-
-  - alias: "Zu Hause - Begrüßung"
-    trigger:
-      - platform: state
-        entity_id: input_boolean.zu_hause_begruessung
-        to: 'on'
-        for: '00:01:00'
-    condition:
-      - condition: state
-        entity_id: binary_sensor.zu_hause
-        state: 'on'
-    action:
-      - service: !secret tts_service
-        data_template:
-          echo: "flur"
-          message: >-
-            "Hallo Dennis. Willkommen zu Hause."
-
 script:
-  zu_hause:
-    alias: "Zu Hause"
-    sequence:
-      - service: alarm_control_panel.alarm_disarm
-        entity_id: alarm_control_panel.alarm
-      - service: input_boolean.turn_on
-        entity_id: input_boolean.zu_hause_begruessung
-      - service: switch.turn_on
-        entity_id: switch.badezimmer_radio, switch.wohnzimmer_radio, switch.flur_radio, switch.kuche_radio, switch.computer, switch.watchtv_wohnzimmer
-      - wait_template: "{{ is_state('media_player.wohnzimmer', 'playing') }}"
-      - service: script.sync_radios
-      - condition: state
-        entity_id: binary_sensor.sonne_tagsueber
-        state: 'off'
-      - service: light.turn_on
-        entity_id: light.couch, light.strahler
-
-  zu_hause_abends:
-    alias: "Zu Hause - abends"
-    sequence:
-      - service: alarm_control_panel.alarm_disarm
-        entity_id: alarm_control_panel.alarm
-      - service: input_boolean.turn_on
-        entity_id: input_boolean.zu_hause_begruessung
-      - service: light.turn_on
-        entity_id: light.couch, light.strahler
-      - service: switch.turn_on
-        entity_id: switch.computer, switch.watchtv_wohnzimmer
-      - service: switch.turn_on
-        entity_id: switch.badezimmer_radio
-
   alles_ausschalten:
     alias: "Alles ausschalten"
     sequence:

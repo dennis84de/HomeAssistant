@@ -42,7 +42,7 @@ popup_cards:
           entities:
             - entity: sensor.gewicht
               show_state: false
-            - entity: sensor.gewicht_mean
+            - entity: sensor.gewicht_durchschnitt
               name: Durchschnitt
               show_state: false
 
