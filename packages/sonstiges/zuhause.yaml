@@ -110,6 +110,38 @@ automation:
       - service: input_boolean.turn_off
         entity_id: input_boolean.zu_hause
 
+  - alias: "Unterwegs - Lichtsimulation starten"
+    trigger:
+      - platform: time_pattern
+        minutes: '/10'
+    condition:
+      - condition: state
+        entity_id: binary_sensor.zu_hause
+        state: 'off'
+      - condition: sun
+        after: sunset
+        after_offset: '-00:30:00'
+      - condition: time
+        before: '22:30:00'
+    action:
+      - delay: "00:{{ '{:02}'.format(range(0, 30) | random | int) }}:00"
+      - service: homeassistant.toggle
+        data_template:
+          entity_id: "{{ state_attr('group.licht_unterwegs','entity_id') | random }}"
+
+  - alias: "Unterwegs - Lichtsimulation beenden"
+    trigger:
+        - platform: time
+          at: '22:30:00'
+    condition:
+      - condition: state
+        entity_id: binary_sensor.zu_hause
+        state: 'off'
+    action:
+      - delay: '00:{{ range(15,59) | random | int }}:00'
+      - service: homeassistant.turn_off
+        entity_id: group.licht_unterwegs
+
   - alias: "Zu Hause - Standort aktualisieren"
     trigger:
       - platform: state
@@ -218,7 +250,7 @@ automation:
           echo: "flur"
           message: >-
             "Hallo Dennis. Willkommen zu Hause."
-            
+
 script:
   zu_hause:
     alias: "Zu Hause"

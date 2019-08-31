@@ -25,3 +25,14 @@ alles_ausschalten:
     - light.regal
     - light.balkon_licht
     - fan.ventilator
+
+licht_unterwegs:
+  name: Licht unterwegs
+  view: no
+  control: hidden
+  entities:
+    - light.couch
+    - light.strahler
+    - light.arbeitszimmer_lampe
+    - light.regal
+    - light.balkon_licht
