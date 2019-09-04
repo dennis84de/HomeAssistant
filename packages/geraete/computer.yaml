@@ -13,7 +13,6 @@ device_tracker:
     consider_home: 60
     hosts:
       pc: !secret computer_host
-      handyping: !secret handy_host
 
 switch:
   - platform: template
