@@ -615,10 +615,10 @@ class Places(Entity):
                 new_state = osm_decoded['error_message']
                 _LOGGER.info( "(" + self._name + ") An error occurred contacting the web service")
             elif self._devicetracker_zone == "not_home":
-                if city == '':
-                    city = postal_town
-                    if city == '':
-                        city = county
+                if city == '' or city == '-':
+                    city = county
+                    if city == '' or city == '-':
+                        city = postal_town
 
                 # Options:  "zone, place, street_number, street, city, county, state, postal_code, country, formatted_address"
 
