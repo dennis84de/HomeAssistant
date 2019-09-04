@@ -16,6 +16,7 @@ cards:
         hide:
           source: true
           progress: true
+          volume: true
       - type: custom:mini-media-player
         entity: media_player.kodi_badezimmer
         hide:

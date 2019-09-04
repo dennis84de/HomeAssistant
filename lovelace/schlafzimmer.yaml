@@ -35,6 +35,7 @@ cards:
         hide:
           source: true
           progress: true
+          volume: true
 
   - type: entities
     title: Schlafen

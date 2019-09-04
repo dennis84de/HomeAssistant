@@ -74,3 +74,4 @@ cards:
         hide:
           source: true
           progress: true
+          volume: true
