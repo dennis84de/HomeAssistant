@@ -54,6 +54,7 @@ popup_cards:
         - entity: person.dennis
         - entity: device_tracker.handy
         - entity: device_tracker.handygps
+        - entity: device_tracker.handymqtt
 
 cards:
   - type: entities

@@ -44,8 +44,11 @@ automation:
         event_data:
           data: '/unterwegs'
     action:
-      - service: input_boolean.turn_off
-        entity_id: input_boolean.zu_hause
+      - service: mqtt.publish
+        data:
+           topic: 'location/handy'
+           payload: 'home'
+           retain: true
       - service: telegram_bot.send_message
         data_template:
           target: '{{ trigger.event.data.chat_id }}'

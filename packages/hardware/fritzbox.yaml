@@ -201,7 +201,9 @@ homeassistant:
       icon: mdi:cellphone
     device_tracker.handygps:
       icon: mdi:cellphone
-      hidden: true
+    device_tracker.handymqtt:
+      icon: mdi:cellphone
+      friendly_name: Handy MQTT
     device_tracker.handyurlaub:
       hidden: true
 

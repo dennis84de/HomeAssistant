@@ -5,17 +5,19 @@ device_tracker:
     devices:
       - HandyGPS
 
+  - platform: mqtt
+    devices:
+      handymqtt: 'location/handy'
+
 person:
   - name: Dennis
     id: dennis
     device_trackers:
       - device_tracker.handy
       - device_tracker.handygps
+      - device_tracker.handymqtt
 
 input_boolean:
-  zu_hause:
-    name: zu Hause
-    initial: on
   zu_hause_begruessung:
     name: "Begrüßung"
 
@@ -44,22 +46,13 @@ binary_sensor:
         friendly_name: "zu Hause"
         device_class: presence
         value_template: >-
-          {% if (is_state('person.dennis', 'home') or is_state('device_tracker.handy', 'home') or is_state('device_tracker.handygps', 'home')) and is_state('input_boolean.zu_hause', 'on') %}
+          {% if (is_state('person.dennis', 'home') or is_state('device_tracker.handy', 'home') or is_state('device_tracker.handygps', 'home')) or is_state('device_tracker.handymqtt', 'on') %}
             true
           {% else %}
             false
           {% endif %}
 
 automation:
-  - alias: "Unterwegs - Begrüßung deaktivieren"
-    trigger:
-      - platform: state
-        entity_id: binary_sensor.zu_hause
-        to: 'off'
-    action:
-      - service: input_boolean.turn_off
-        entity_id: input_boolean.zu_hause_begruessung
-
   - alias: 'Unterwegs - Geräte eingeschaltet'
     trigger:
       - platform: state
@@ -94,22 +87,6 @@ automation:
             inline_keyboard:
               - 'Alles Ausschalten:/alles_ausschalten'
 
-  - alias: "Unterwegs - Standort aktualisieren"
-    trigger:
-      - platform: state
-        entity_id: device_tracker.handy
-        to: 'not_home'
-        for:
-          minutes: 10
-      - platform: state
-        entity_id: device_tracker.handygps
-        to: 'not_home'
-        for:
-          minutes: 10
-    action:
-      - service: input_boolean.turn_off
-        entity_id: input_boolean.zu_hause
-
   - alias: "Unterwegs - Lichtsimulation starten"
     trigger:
       - platform: time_pattern
@@ -131,8 +108,8 @@ automation:
 
   - alias: "Unterwegs - Lichtsimulation beenden"
     trigger:
-        - platform: time
-          at: '22:30:00'
+      - platform: time
+        at: '22:30:00'
     condition:
       - condition: state
         entity_id: binary_sensor.zu_hause
@@ -151,8 +128,11 @@ automation:
         entity_id: device_tracker.handygps
         to: 'home'
     action:
-      - service: input_boolean.turn_on
-        entity_id: input_boolean.zu_hause
+      - service: mqtt.publish
+        data:
+           topic: 'location/handy'
+           payload: 'home'
+           retain: true
       - service: shell_command.send_position
         data:
           url: !secret phonetracker_send_position_url
@@ -171,11 +151,14 @@ automation:
           click_type: single
     condition:
       - condition: state
-        entity_id: input_boolean.zu_hause
-        state: 'off'
+        entity_id: device_tracker.handymqtt
+        state: 'not_home'
     action:
-      - service: input_boolean.turn_on
-        entity_id: input_boolean.zu_hause
+      - service: mqtt.publish
+        data:
+           topic: 'location/handy'
+           payload: 'home'
+           retain: true
       - service: shell_command.send_position
         data:
           url: !secret phonetracker_send_position_url
@@ -245,6 +228,8 @@ automation:
         entity_id: binary_sensor.zu_hause
         state: 'on'
     action:
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.zu_hause_begruessung
       - service: !secret tts_service
         data_template:
           echo: "flur"

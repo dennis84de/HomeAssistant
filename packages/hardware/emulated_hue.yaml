@@ -133,8 +133,6 @@ emulated_hue:
       hidden: true
     input_boolean.radio_aktiv_balkon:
       hidden: true
-    input_boolean.zu_hause:
-      hidden: true
     input_boolean.alarmaktiv:
       hidden: true
     input_boolean.schlafen_einschalten_aktiv:
