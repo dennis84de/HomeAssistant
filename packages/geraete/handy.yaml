@@ -116,6 +116,52 @@ automation:
             displaytime: 2000
             icon: "info"
 
+  - alias: 'Handy aktiv - Soundbar deaktivieren'
+    trigger:
+      - platform: state
+        entity_id: sensor.tasker_handystatus
+        to: 'incoming'
+      - platform: state
+        entity_id: sensor.tasker_handystatus
+        to: 'outgoing'
+    condition:
+      - condition: state
+        entity_id: media_player.soundbar
+        state: 'on'
+      - condition: state
+        entity_id: input_boolean.nicht_stoeren
+        state: 'off'        
+      - condition: or
+        conditions:
+          - condition: state
+            entity_id: media_player.kodi_wohnzimmer
+            state: 'off'          
+          - condition: state
+            entity_id: media_player.kodi_wohnzimmer
+            state: 'idle'
+    action:
+      - service: media_player.volume_mute
+        data:
+          entity_id: media_player.soundbar
+          is_volume_muted: true
+
+  - alias: 'Handy inaktiv - Soundbar aktivieren'
+    trigger:
+      - platform: state
+        entity_id: sensor.tasker_handystatus
+        to: 'idle'
+    condition:
+      - condition: state
+        entity_id: media_player.soundbar
+        state: 'on'
+      - condition: template
+        value_template: '{{ state_attr("media_player.soundbar", "is_volume_muted") == True }}'
+    action:
+      - service: media_player.volume_mute
+        data:
+          entity_id: media_player.soundbar
+          is_volume_muted: false
+          
   - alias: 'Handy aktiv - Musik pausieren'
     trigger:
       - platform: state

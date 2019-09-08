@@ -137,9 +137,9 @@ automation:
 
   - alias: 'Telefon inaktiv - Kodi wiedergeben'
     trigger:
-      platform: state
-      entity_id: sensor.telefon
-      to: 'idle'
+      - platform: state
+        entity_id: sensor.telefon
+        to: 'idle'
     condition:
       - condition: state
         entity_id: media_player.kodi_wohnzimmer
@@ -163,6 +163,52 @@ automation:
             displaytime: 2000
             icon: "info"
 
+  - alias: 'Telefon aktiv - Soundbar deaktivieren'
+    trigger:
+      - platform: state
+        entity_id: sensor.telefon
+        to: 'ringing'
+      - platform: state
+        entity_id: sensor.telefon
+        to: 'dialing'
+    condition:
+      - condition: state
+        entity_id: media_player.soundbar
+        state: 'on'
+      - condition: state
+        entity_id: input_boolean.nicht_stoeren
+        state: 'off'        
+      - condition: or
+        conditions:
+          - condition: state
+            entity_id: media_player.kodi_wohnzimmer
+            state: 'off'          
+          - condition: state
+            entity_id: media_player.kodi_wohnzimmer
+            state: 'idle'
+    action:
+      - service: media_player.volume_mute
+        data:
+          entity_id: media_player.soundbar
+          is_volume_muted: true
+
+  - alias: 'Telefon inaktiv - Soundbar aktivieren'
+    trigger:
+      - platform: state
+        entity_id: sensor.telefon
+        to: 'idle'
+    condition:
+      - condition: state
+        entity_id: media_player.soundbar
+        state: 'on'
+      - condition: template
+        value_template: '{{ state_attr("media_player.soundbar", "is_volume_muted") == True }}'
+    action:
+      - service: media_player.volume_mute
+        data:
+          entity_id: media_player.soundbar
+          is_volume_muted: false
+          
   - alias: 'Telefon aktiv - Musik pausieren'
     trigger:
       - platform: state
