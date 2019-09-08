@@ -1,6 +1,12 @@
 title: Heimnetz
 path: heimnetz
-cards:
+cards:     
+  - type: entities
+    title: Status
+    show_header_toggle: false
+    entities:
+      - entity: sensor.heimnetz_offline  
+      
   - type: entities
     title: Netzwerk
     show_header_toggle: false
@@ -10,7 +16,7 @@ cards:
       - entity: device_tracker.diskstation
       - entity: device_tracker.netzwerkdj
       - entity: device_tracker.fritz_repeater
-
+      
   - type: entities
     title: Multimedia
     show_header_toggle: false

@@ -134,6 +134,16 @@ automation:
       - condition: time
         after: '08:00'
         before: '22:00'
+      - condition: or
+        conditions:
+          - condition: time
+            after: '08:00'            
+            before: '12:00'           
+          - condition: time
+            after: '15:00'
+            before: '22:00'  
+      - condition: template
+        value_template: '{{ now().isoweekday() != 7 }}'   
       - condition: state
         entity_id: 'switch.alle_radios_wiedergabe_aktiv'
         state: 'on'
@@ -197,10 +207,12 @@ automation:
 
           {{ diff >= 10 }}
     action:
-      - service: switch.turn_off
-        entity_id: switch.alle_radios_wiedergabe_aktiv
       - service: input_boolean.turn_on
         entity_id: input_boolean.musik_pausiert
+      - service: media_player.volume_mute
+        data:
+          entity_id: media_player.kuche, media_player.badezimmer, media_player.wohnzimmer, media_player.schlafzimmer, media_player.arbeitszimmer, media_player.flur, media_player.balkon
+          is_volume_muted: true        
 
   - alias: 'Radios starten - Tür geschlossen'
     trigger:
@@ -209,16 +221,15 @@ automation:
         to: 'off'
     condition:
       - condition: state
-        entity_id: switch.alle_radios_wiedergabe_aktiv
-        state: 'off'
-      - condition: state
         entity_id: input_boolean.musik_pausiert
         state: 'on'
     action:
-      - service: switch.turn_on
-        entity_id: switch.alle_radios_wiedergabe_aktiv
       - service: input_boolean.turn_off
         entity_id: input_boolean.musik_pausiert
+      - service: media_player.volume_mute
+        data:
+          entity_id: media_player.kuche, media_player.badezimmer, media_player.wohnzimmer, media_player.schlafzimmer, media_player.arbeitszimmer, media_player.flur, media_player.balkon
+          is_volume_muted: false        
 
 script:
   radio_badezimmer_einschalten:

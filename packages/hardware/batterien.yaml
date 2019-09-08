@@ -70,13 +70,15 @@ sensor:
         value_template: >
           {% set min_battery_level = states.input_number.batteriestand_warnlevel.state | int -%}
           {% set ns = namespace(found=0) -%}
+          
           {% for entity_id in states.group.batteriestand.attributes.entity_id -%}
             {% set parts = entity_id.split('.') -%}
             {% if (states(entity_id) | replace("%","") | int) <= min_battery_level -%}
               {% set ns.found = ns.found + 1 -%}
             {% endif -%}
           {% endfor -%}
-          {{ ns.found }}
+          
+          {{ ns.found | int }}
 
 automation:
   - alias: 'Batteriestand niedrig'

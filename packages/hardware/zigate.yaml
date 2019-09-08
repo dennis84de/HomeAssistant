@@ -53,7 +53,7 @@ sensor:
             {% endif %}
           {% endfor -%}
 
-          {{ ns.found }}
+          {{ ns.found | int }}
 
 automation:
   - alias: 'Zigate - Geräte offline'

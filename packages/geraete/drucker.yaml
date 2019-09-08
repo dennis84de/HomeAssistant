@@ -1,7 +1,7 @@
 sensor:
   - platform: command_line
     name: Patrone Schwarz
-    command: curl -k -X GET https://192.168.2.23/PRESENTATION/HTML/TOP/PRTINFO.HTML | awk -F"'" '/Ink_K.PNG/ && $6+0 == $6 { printf "%.0f\n", $6 / 50 * 100 }'
+    command: curl -k -X GET http://192.168.2.23/PRESENTATION/HTML/TOP/PRTINFO.HTML | awk -F"'" '/Ink_K.PNG/ && $6+0 == $6 { printf "%.0f\n", $6 / 50 * 100 }'
     unit_of_measurement: '%'
     value_template: >-
         {%- if is_state("device_tracker.epsondrucker", "home") %}
@@ -12,7 +12,7 @@ sensor:
 
   - platform: command_line
     name: Patrone Magenta
-    command: curl -k -X GET https://192.168.2.23/PRESENTATION/HTML/TOP/PRTINFO.HTML | awk -F"'" '/Ink_M.PNG/ && $6+0 == $6 { printf "%.0f\n", $6 / 50 * 100 }'
+    command: curl -k -X GET http://192.168.2.23/PRESENTATION/HTML/TOP/PRTINFO.HTML | awk -F"'" '/Ink_M.PNG/ && $6+0 == $6 { printf "%.0f\n", $6 / 50 * 100 }'
     unit_of_measurement: '%'
     value_template: >-
         {%- if is_state("device_tracker.epsondrucker", "home") %}
@@ -23,7 +23,7 @@ sensor:
 
   - platform: command_line
     name: Patrone Gelb
-    command: curl -k -X GET https://192.168.2.23/PRESENTATION/HTML/TOP/PRTINFO.HTML | awk -F"'" '/Ink_Y.PNG/ && $6+0 == $6 { printf "%.0f\n", $6 / 50 * 100 }'
+    command: curl -k -X GET http://192.168.2.23/PRESENTATION/HTML/TOP/PRTINFO.HTML | awk -F"'" '/Ink_Y.PNG/ && $6+0 == $6 { printf "%.0f\n", $6 / 50 * 100 }'
     unit_of_measurement: '%'
     value_template: >-
         {%- if is_state("device_tracker.epsondrucker", "home") %}
@@ -34,7 +34,7 @@ sensor:
 
   - platform: command_line
     name: Patrone Cyan
-    command: curl -k -X GET https://192.168.2.23/PRESENTATION/HTML/TOP/PRTINFO.HTML | awk -F"'" '/Ink_C.PNG/ && $6+0 == $6 { printf "%.0f\n", $6 / 50 * 100 }'
+    command: curl -k -X GET http://192.168.2.23/PRESENTATION/HTML/TOP/PRTINFO.HTML | awk -F"'" '/Ink_C.PNG/ && $6+0 == $6 { printf "%.0f\n", $6 / 50 * 100 }'
     unit_of_measurement: '%'
     value_template: >-
         {%- if is_state("device_tracker.epsondrucker", "home") %}
@@ -45,7 +45,7 @@ sensor:
 
   - platform: command_line
     name: Patrone Abfall
-    command: curl -k -X GET https://192.168.2.23/PRESENTATION/HTML/TOP/PRTINFO.HTML | awk -F"'" '/Ink_Waste.PNG/ && $6+0 == $6 { printf "%.0f\n", $6 / 50 * 100 }'
+    command: curl -k -X GET http://192.168.2.23/PRESENTATION/HTML/TOP/PRTINFO.HTML | awk -F"'" '/Ink_Waste.PNG/ && $6+0 == $6 { printf "%.0f\n", $6 / 50 * 100 }'
     unit_of_measurement: '%'
     value_template: >-
         {%- if is_state("device_tracker.epsondrucker", "home") %}

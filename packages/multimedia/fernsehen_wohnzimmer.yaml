@@ -181,19 +181,20 @@ script:
 automation:
   - alias: "Kodi - Musik ausschalten"
     trigger:
-      platform: state
-      entity_id: media_player.kodi_wohnzimmer
-      from: 'off'
-      to: 'idle'
+      - platform: state
+        entity_id: media_player.kodi_wohnzimmer
+        from: 'off'
+        to: 'idle'
     condition:
-      condition: and
-      conditions:
-        - condition: state
-          state: 'on'
-          entity_id: switch.alle_radios
-        - condition: state
-          state: 'on'
-          entity_id: input_boolean.musik_ausschalten
+      - condition: state
+        state: 'on'
+        entity_id: switch.alle_radios
+      - condition: state
+        state: 'on'
+        entity_id: input_boolean.musik_ausschalten
+      - condition: numeric_state
+        entity_id: sensor.laufzeit_minuten
+        above: 2
     action:
       - service: script.radios_pausieren
       - service: switch.turn_off

@@ -54,6 +54,7 @@ sensor:
             {% else %}
               mdi:wifi-off
             {% endif %}
+            
       gaeste_wlan_password:
         friendly_name: "Gäste-Wlan Passwort"
         value_template: >-
@@ -64,6 +65,40 @@ sensor:
             {% else %}
               mdi:wifi-strength-lock-outline
             {% endif %}
+            
+      heimnetz_offline:
+        friendly_name: Geräte offline
+        entity_id:
+          - sensor.time
+          - sensor.laufzeit_minuten
+        icon_template: >
+          {% set ns = namespace(found=false) -%}
+
+          {%- for entity_id in states.group.heimnetz.attributes.entity_id -%}
+            {% set parts = entity_id.split('.') -%}
+            
+            {% if states(entity_id) == 'not_home' %}
+              {% set ns.found = true -%}
+            {% endif %}
+          {%- endfor %}
+
+          {% if ns.found == True %}
+            mdi:access-point-network-off
+          {% else %}
+            mdi:access-point-network
+          {% endif %}
+        value_template: >
+          {% set ns = namespace(found=0) -%}
+
+          {%- for entity_id in states.group.heimnetz.attributes.entity_id -%}
+            {% set parts = entity_id.split('.') -%}
+            
+            {% if states(entity_id) == 'not_home' %}
+              {% set ns.found = ns.found + 1 -%}
+            {% endif %}
+          {%- endfor %}
+
+          {{ ns.found | int }}            
 
 switch:
   - platform: fritzbox_guestwifi
@@ -99,6 +134,36 @@ automation:
         message: >-
           Der Gastzugang wurde ausgeschaltet.
 
+  - alias: 'Heimnetz - Geräte offline'
+    trigger:
+      - platform: time
+        at: '19:30:00'
+    condition:
+      - condition: numeric_state
+        entity_id: sensor.heimnetz_offline
+        above: 0
+    action:
+      - service: !secret tts_service
+        data_template:
+          message: >-
+            {% set count_entities = states.sensor.heimnetz_offline.state | int -%}
+
+            {% if count_entities == 0 %}
+              {{ "Alle Geräte sind online." }}
+            {% elif count_entities > 1 %}
+              {{ "Die folgenden Geräte sind offline. " }}
+            {% else %}
+              {{ "Das folgende Gerät ist offline. " }}
+            {% endif %}
+
+            {%- for entity_id in states.group.heimnetz.attributes.entity_id -%}
+              {% set parts = entity_id.split('.') -%}
+
+              {% if states(entity_id) == 'not_home' %}
+                {{ states[parts[0]][parts[1]].name }},
+              {% endif %}
+            {%- endfor %}
+            
 homeassistant:
   customize:
     sensor.netmonitor:

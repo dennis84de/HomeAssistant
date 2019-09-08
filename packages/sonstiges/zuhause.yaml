@@ -95,6 +95,9 @@ automation:
       - condition: state
         entity_id: binary_sensor.zu_hause
         state: 'off'
+      - condition: state
+        entity_id: calendar.urlaub
+        state: 'on'
       - condition: sun
         after: sunset
         after_offset: '-00:30:00'
@@ -114,6 +117,9 @@ automation:
       - condition: state
         entity_id: binary_sensor.zu_hause
         state: 'off'
+      - condition: state
+        entity_id: calendar.urlaub
+        state: 'on'        
     action:
       - delay: '00:{{ range(15,59) | random | int }}:00'
       - service: homeassistant.turn_off
@@ -127,6 +133,9 @@ automation:
       - platform: state
         entity_id: device_tracker.handygps
         to: 'home'
+      - platform: state
+        entity_id: device_tracker.handymqtt
+        to: 'home'        
     action:
       - service: mqtt.publish
         data:

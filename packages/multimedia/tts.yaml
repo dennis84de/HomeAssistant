@@ -132,6 +132,8 @@ automation:
       - service: media_player.media_pause
         entity_id:
           - media_player.smarthome
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.uhr_einschalten
 
   - alias: "BVB - Torhymne"
     trigger:
