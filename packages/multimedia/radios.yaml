@@ -1,7 +1,24 @@
 media_player:
   - platform: squeezebox
-    host: 192.168.2.100
+    host: !secret squeezebox_host
     port: 9002
+    players:
+      - name: "Arbeitszimmer"        
+        playerid: !secret squeezebox_mac_arbeitszimmer
+      - name: "Badezimmer"
+        playerid: !secret squeezebox_mac_badezimmer
+      - name: "Balkon"
+        playerid: !secret squeezebox_mac_balkon
+      - name: "Flur"
+        playerid: !secret squeezebox_mac_flur
+      - name: "Küche"
+        playerid: !secret squeezebox_mac_kueche
+      - name: "Schlafzimmer"
+        playerid: !secret squeezebox_mac_schlafzimmer
+      - name: "Wohnzimmer"
+        playerid: !secret squeezebox_mac_wohnzimmer
+      - name: "Smarthome"
+        playerid: !secret squeezebox_mac_smarthome
 
 switch:
   - platform: edimax
@@ -37,9 +54,13 @@ switch:
             mdi:pause-circle-outline
           {% endif %}
         turn_on:
-          service: script.radio_badezimmer_einschalten
+          - service: media_player.media_play
+            data:
+              entity_id: media_player.badezimmer
         turn_off:
-          service: script.radio_badezimmer_ausschalten
+          - service: media_player.media_pause
+            data:
+              entity_id: media_player.badezimmer
 
       alle_radios_wiedergabe_aktiv:
         friendly_name: Wiedergabe aktiv
@@ -232,20 +253,6 @@ automation:
           is_volume_muted: false        
 
 script:
-  radio_badezimmer_einschalten:
-    alias: Radio Badezimmer starten
-    sequence:
-      - service: media_player.media_play
-        data:
-          entity_id: media_player.badezimmer
-
-  radio_badezimmer_ausschalten:
-    alias: Radio Badezimmer stoppen
-    sequence:
-      - service: media_player.media_pause
-        data:
-          entity_id: media_player.badezimmer
-
   sync_radios:
     alias: Radios synchronisieren
     sequence:
@@ -306,11 +313,6 @@ homeassistant:
       icon: mdi:sync
     switch.alle_radios:
       icon: mdi:cast-off
-
-    input_boolean.radio_aktiv_balkon:
-      hidden: true
-    binary_sensor.radio_badezimmer_inaktiv:
-      hidden: true
 
     switch.wohnzimmer_radio:
       icon: mdi:radio

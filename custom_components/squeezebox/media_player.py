@@ -46,6 +46,7 @@ _LOGGER = logging.getLogger(__name__)
 
 DEFAULT_PORT = 9000
 TIMEOUT = 10
+CONF_PLAYERS = 'players'
 
 SUPPORT_SQUEEZEBOX = (
     SUPPORT_PAUSE
@@ -70,6 +71,7 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
         vol.Optional(CONF_PASSWORD): cv.string,
         vol.Optional(CONF_PORT, default=DEFAULT_PORT): cv.port,
         vol.Optional(CONF_USERNAME): cv.string,
+        vol.Optional(CONF_PLAYERS, default=[]): cv.ensure_list,
     }
 )
 
@@ -128,7 +130,7 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
         ipaddr = socket.gethostbyname(host)
     except (OSError) as error:
         _LOGGER.error("Could not communicate with %s:%d: %s", host, port, error)
-        return False
+        return
 
     if ipaddr in known_servers:
         return
@@ -137,7 +139,7 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
     _LOGGER.debug("Creating LMS object for %s", ipaddr)
     lms = LogitechMediaServer(hass, host, port, username, password)
 
-    players = await lms.create_players()
+    players = await lms.create_players(config.get(CONF_PLAYERS))
 
     hass.data[DATA_SQUEEZEBOX].extend(players)
     async_add_entities(players)
@@ -189,16 +191,25 @@ class LogitechMediaServer:
         self._username = username
         self._password = password
 
-    async def create_players(self):
+    async def create_players(self, confplayers):
         """Create a list of devices connected to LMS."""
         result = []
-        data = await self.async_query("players", "status")
-        if data is False:
-            return result
-        for players in data.get("players_loop", []):
-            player = SqueezeBoxDevice(self, players["playerid"], players["name"])
-            await player.async_update()
-            result.append(player)
+
+        if not confplayers:
+            data = await self.async_query('players', 'status')
+            if data is False:
+                return result
+            for players in data.get('players_loop', []):
+                player = SqueezeBoxDevice(
+                    self, players['playerid'], players['name'])
+                await player.async_update()
+                result.append(player)
+        else:
+            for p in confplayers:
+                player = SqueezeBoxDevice(self, p['playerid'], p['name'])
+                await player.async_update()
+                result.append(player)
+
         return result
 
     async def async_query(self, *command, player=""):
@@ -208,7 +219,7 @@ class LogitechMediaServer:
             if self._username is None
             else aiohttp.BasicAuth(self._username, self._password)
         )
-        url = "http://{}:{}/jsonrpc.js".format(self.host, self.port)
+        url = f"http://{self.host}:{self.port}/jsonrpc.js"
         data = json.dumps(
             {"id": "1", "method": "slim.request", "params": [player, command]}
         )
@@ -267,7 +278,7 @@ class SqueezeBoxDevice(MediaPlayerDevice):
     @property
     def state(self):
         """Return the state of the device."""
-        if "power" in self._status and self._status["power"] == 0:
+        if ('power' in self._status and self._status['power'] == 0) or ('player_connected' in self._status and self._status['player_connected'] == 0):
             return STATE_OFF
         if "mode" in self._status:
             if self._status["mode"] == "pause":
@@ -276,7 +287,7 @@ class SqueezeBoxDevice(MediaPlayerDevice):
                 return STATE_PLAYING
             if self._status["mode"] == "stop":
                 return STATE_IDLE
-        return None
+        return STATE_OFF
 
     def async_query(self, *parameters):
         """Send a command to the LMS.
@@ -288,9 +299,7 @@ class SqueezeBoxDevice(MediaPlayerDevice):
     async def async_update(self):
         """Retrieve the current state of the player."""
         tags = "adKl"
-        response = await self.async_query(
-            "status", "-", "1", "tags:{tags}".format(tags=tags)
-        )
+        response = await self.async_query("status", "-", "1", f"tags:{tags}")
 
         if response is False:
             return
@@ -299,16 +308,10 @@ class SqueezeBoxDevice(MediaPlayerDevice):
 
         self._status = {}
 
-        try:
-            self._status.update(response["playlist_loop"][0])
-        except KeyError:
-            pass
-        try:
-            self._status.update(response["remoteMeta"])
-        except KeyError:
-            pass
-
-        self._status.update(response)
+        if response:
+            if "playlist_loop" in response:
+                self._status.update(response["playlist_loop"][0])
+            self._status.update(response)
 
         if self.media_position != last_media_position:
             _LOGGER.debug(
