@@ -39,13 +39,35 @@ binary_sensor:
   - platform: template
     sensors:
       bewegungsmelder_inaktiv_unterwegs:
-        friendly_name: Unterwegs
+        friendly_name: Bewegungmelder inaktiv - Unterwegs
         entity_id:
           - sensor.time
           - binary_sensor.zu_hause
         device_class: occupancy
-        value_template: "{{ is_state('binary_sensor.zu_hause', 'off') }}"
+        value_template: >-
+          {% if states.binary_sensor.zu_hause == None %}
+            True
+          {% elif is_state('binary_sensor.zu_hause', 'on') %}
+            False
+          {% else %}
+            False
+          {% endif %}
 
+      bewegungsmelder_inaktiv_staubsauger:
+        friendly_name: Bewegungmelder inaktiv - Staubsauger
+        entity_id:
+          - sensor.time
+          - vacuum.xiaomi_vacuum_cleaner
+        device_class: occupancy
+        value_template: >-
+          {% if states.vacuum.xiaomi_vacuum_cleaner == None %}
+            True
+          {% elif is_state('vacuum.xiaomi_vacuum_cleaner', 'docked') == False %}
+            True
+          {% else %}
+            False
+          {% endif %}
+          
       bewegungsmelder_wohnzimmer:
         friendly_name: Wohnzimmer
         entity_id:
@@ -98,8 +120,9 @@ entity_controller:
       - light.arbeitszimmer_lampe
     delay: 120
     overrides:
-#      - binary_sensor.bewegungsmelder_inaktiv_unterwegs
       - binary_sensor.sonne_tagsueber
+      - binary_sensor.bewegungsmelder_inaktiv_unterwegs  
+      - binary_sensor.bewegungsmelder_inaktiv_staubsauger
       - input_boolean.bewegungsmelder_arbeitszimmer_deaktiviert
 
   bewegung_badezimmer:
@@ -110,25 +133,27 @@ entity_controller:
     delay: 120
     service_data:
       brightness: 100
-    overrides:
-#      - binary_sensor.bewegungsmelder_inaktiv_unterwegs
-      - binary_sensor.sonne_tagsueber
-      - input_boolean.bewegungsmelder_badezimmer_deaktiviert
     night_mode:
       delay: 120
       service_data:
         brightness: 80
       start_time: '23:00:00'
-      end_time: '05:00:00'
-
+      end_time: '05:00:00'      
+    overrides:
+      - binary_sensor.sonne_tagsueber
+      - binary_sensor.bewegungsmelder_inaktiv_unterwegs      
+      - binary_sensor.bewegungsmelder_inaktiv_staubsauger
+      - input_boolean.bewegungsmelder_badezimmer_deaktiviert
+      
   bewegung_balkon:
     friendly_name: "Bewegung Balkon"
     sensor: binary_sensor.bewegungsmelder_balkon
     entity: light.balkon_licht
     delay: 600
-    overrides:
-#      - binary_sensor.bewegungsmelder_inaktiv_unterwegs
+    overrides:  
       - binary_sensor.sonne_tagsueber
+      - binary_sensor.bewegungsmelder_inaktiv_unterwegs
+      - binary_sensor.bewegungsmelder_inaktiv_staubsauger
       - input_boolean.bewegungsmelder_balkon_deaktiviert
 
   bewegung_flur_vorne:
@@ -138,16 +163,17 @@ entity_controller:
     delay: 120
     service_data:
       brightness: 100
-    overrides:
-#      - binary_sensor.bewegungsmelder_inaktiv_unterwegs
-      - binary_sensor.sonne_tagsueber
-      - input_boolean.bewegungsmelder_flur_deaktiviert
     night_mode:
       delay: 120
       service_data:
         brightness: 80
       start_time: '23:00:00'
-      end_time: '05:00:00'
+      end_time: '05:00:00'      
+    overrides:
+      - binary_sensor.sonne_tagsueber
+      - binary_sensor.bewegungsmelder_inaktiv_unterwegs
+      - binary_sensor.bewegungsmelder_inaktiv_staubsauger
+      - input_boolean.bewegungsmelder_flur_deaktiviert
 
   bewegung_flur_hinten:
     friendly_name: "Bewegung Flur hinten"
@@ -156,16 +182,17 @@ entity_controller:
     delay: 120
     service_data:
       brightness: 100
-    overrides:
-#      - binary_sensor.bewegungsmelder_inaktiv_unterwegs
-      - binary_sensor.sonne_tagsueber
-      - input_boolean.bewegungsmelder_flur_deaktiviert
     night_mode:
       delay: 120
       service_data:
         brightness: 60
       start_time: '23:00:00'
-      end_time: '05:00:00'
+      end_time: '05:00:00'      
+    overrides:
+      - binary_sensor.sonne_tagsueber
+      - binary_sensor.bewegungsmelder_inaktiv_unterwegs
+      - binary_sensor.bewegungsmelder_inaktiv_staubsauger
+      - input_boolean.bewegungsmelder_flur_deaktiviert
 
   bewegung_kueche:
     friendly_name: "Bewegung Küche"
@@ -174,16 +201,17 @@ entity_controller:
     delay: 120
     service_data:
       brightness: 100
-    overrides:
-#      - binary_sensor.bewegungsmelder_inaktiv_unterwegs
-      - binary_sensor.sonne_tagsueber
-      - input_boolean.bewegungsmelder_kueche_deaktiviert
     night_mode:
       delay: 120
       service_data:
         brightness: 70
       start_time: '23:00:00'
-      end_time: '05:00:00'
+      end_time: '05:00:00'      
+    overrides:
+      - binary_sensor.sonne_tagsueber
+      - binary_sensor.bewegungsmelder_inaktiv_unterwegs
+      - binary_sensor.bewegungsmelder_inaktiv_staubsauger
+      - input_boolean.bewegungsmelder_kueche_deaktiviert
 
   bewegung_schlafzimmer:
     friendly_name: "Bewegung Schlafzimmer"
@@ -192,16 +220,17 @@ entity_controller:
     delay: 120
     service_data:
       brightness: 100
-    overrides:
-#      - binary_sensor.bewegungsmelder_inaktiv_unterwegs
-      - binary_sensor.sonne_tagsueber
-      - input_boolean.bewegungsmelder_schlafzimmer_deaktiviert
     night_mode:
       delay: 120
       service_data:
         brightness: 60
       start_time: '23:00:00'
-      end_time: '05:00:00'
+      end_time: '05:00:00'      
+    overrides:
+      - binary_sensor.sonne_tagsueber
+      - binary_sensor.bewegungsmelder_inaktiv_unterwegs
+      - binary_sensor.bewegungsmelder_inaktiv_staubsauger
+      - input_boolean.bewegungsmelder_schlafzimmer_deaktiviert
 
   bewegung_wohnzimmer:
     friendly_name: "Bewegung Wohnzimmer"
@@ -211,7 +240,8 @@ entity_controller:
       - light.strahler
     delay: 60
     overrides:
-#      - binary_sensor.bewegungsmelder_inaktiv_unterwegs
       - binary_sensor.sonne_tagsueber
+      - binary_sensor.bewegungsmelder_inaktiv_unterwegs
+      - binary_sensor.bewegungsmelder_inaktiv_staubsauger
       - input_boolean.bewegungsmelder_wohnzimmer_deaktiviert
       - switch.computer

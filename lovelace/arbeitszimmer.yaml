@@ -62,7 +62,8 @@ cards:
       - entity: sensor.reinigung_filter
       - entity: sensor.reinigung_buerste
       - entity: sensor.reinigung_seitenbuerste
-      - entity: sensor.reinigung_behaelter
+      - entity: sensor.reinigung_sensor
+      - entity: counter.behaelter_leeren
 
   - type: entities
     title: Multimedia

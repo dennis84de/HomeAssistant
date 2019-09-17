@@ -1,3 +1,9 @@
+fritzbox:
+  devices:
+    - host: !secret fritzbox_host
+      username: !secret fritzbox_username
+      password: !secret fritzbox_password
+
 input_boolean:
   heizung_ausgeschaltet_wohnzimmer:
     name: Heizung ausgeschaltet - Wohnzimmer
@@ -50,11 +56,13 @@ automation:
       - condition: state
         entity_id: climate.wohnzimmer
         state: 'heat'
+      - condition: template
+        value_template: '{{ state_attr("climate.wohnzimmer", "preset_mode") == "comfort" }}'        
     action:
-      - service: climate.set_operation_mode
+      - service: climate.set_preset_mode
         data:
           entity_id: climate.wohnzimmer
-          operation_mode: 'eco'
+          preset_mode: 'eco'
       - service: input_boolean.turn_on
         entity_id: input_boolean.heizung_ausgeschaltet_wohnzimmer
 
@@ -68,10 +76,10 @@ automation:
         entity_id: input_boolean.heizung_ausgeschaltet_wohnzimmer
         state: 'on'
     action:
-      - service: climate.set_operation_mode
+      - service: climate.set_preset_mode
         data:
           entity_id: climate.wohnzimmer
-          operation_mode: 'heat'
+          preset_mode: 'comfort'
       - service: input_boolean.turn_off
         entity_id: input_boolean.heizung_ausgeschaltet_wohnzimmer
 
@@ -80,15 +88,17 @@ automation:
       - platform: state
         entity_id: climate.wohnzimmer
         to: 'heat'
+      - platform: template
+        value_template: '{{ state_attr("climate.wohnzimmer", "preset_mode") == "comfort" }}'
     condition:
       - condition: state
         entity_id: binary_sensor.fenster_wohnzimmer
         state: 'on'
     action:
-      - service: climate.set_operation_mode
+      - service: climate.set_preset_mode
         data:
           entity_id: climate.wohnzimmer
-          operation_mode: 'eco'
+          preset_mode: 'eco'
       - service: input_boolean.turn_on
         entity_id: input_boolean.heizung_ausgeschaltet_wohnzimmer
 
@@ -103,11 +113,13 @@ automation:
       - condition: state
         entity_id: climate.kuche
         state: 'heat'
+      - condition: template
+        value_template: '{{ state_attr("climate.kuche", "preset_mode") == "comfort" }}'        
     action:
-      - service: climate.set_operation_mode
+      - service: climate.set_preset_mode
         data:
           entity_id: climate.kuche
-          operation_mode: 'eco'
+          preset_mode: 'eco'
       - service: input_boolean.turn_on
         entity_id: input_boolean.heizung_ausgeschaltet_kueche
 
@@ -121,10 +133,10 @@ automation:
         entity_id: input_boolean.heizung_ausgeschaltet_kueche
         state: 'on'
     action:
-      - service: climate.set_operation_mode
+      - service: climate.set_preset_mode
         data:
           entity_id: climate.kuche
-          operation_mode: 'heat'
+          preset_mode: 'comfort'
       - service: input_boolean.turn_off
         entity_id: input_boolean.heizung_ausgeschaltet_kueche
 
@@ -133,15 +145,17 @@ automation:
       - platform: state
         entity_id: climate.kuche
         to: 'heat'
+      - platform: template
+        value_template: '{{ state_attr("climate.wohnzimmer", "preset_mode") == "comfort" }}'        
     condition:
       - condition: state
         entity_id: binary_sensor.fenster_kueche
         state: 'on'
     action:
-      - service: climate.set_operation_mode
+      - service: climate.set_preset_mode
         data:
           entity_id: climate.kuche
-          operation_mode: 'eco'
+          preset_mode: 'eco'
       - service: input_boolean.turn_on
         entity_id: input_boolean.heizung_ausgeschaltet_kueche
 
@@ -156,11 +170,13 @@ automation:
       - condition: state
         entity_id: climate.arbeitszimmer
         state: 'heat'
+      - condition: template
+        value_template: '{{ state_attr("climate.arbeitszimmer", "preset_mode") == "comfort" }}'          
     action:
-      - service: climate.set_operation_mode
+      - service: climate.set_preset_mode
         data:
           entity_id: climate.arbeitszimmer
-          operation_mode: 'eco'
+          preset_mode: 'eco'
       - service: input_boolean.turn_on
         entity_id: input_boolean.heizung_ausgeschaltet_arbeitszimmer
 
@@ -174,10 +190,10 @@ automation:
         entity_id: input_boolean.heizung_ausgeschaltet_arbeitszimmer
         state: 'on'
     action:
-      - service: climate.set_operation_mode
+      - service: climate.set_preset_mode
         data:
           entity_id: climate.arbeitszimmer
-          operation_mode: 'heat'
+          preset_mode: 'comfort'
       - service: input_boolean.turn_off
         entity_id: input_boolean.heizung_ausgeschaltet_arbeitszimmer
 
@@ -186,23 +202,16 @@ automation:
       - platform: state
         entity_id: climate.wohnzimmer
         to: 'heat'
+      - platform: template
+        value_template: '{{ state_attr("climate.wohnzimmer", "preset_mode") == "comfort" }}'
     condition:
       - condition: state
         entity_id: binary_sensor.fenster_arbeitszimmer
         state: 'on'
     action:
-      - service: climate.set_operation_mode
+      - service: climate.set_preset_mode
         data:
           entity_id: climate.wohnzimmer
-          operation_mode: 'eco'
+          preset_mode: 'eco'
       - service: input_boolean.turn_on
         entity_id: input_boolean.heizung_ausgeschaltet_arbeitszimmer
-
-homeassistant:
-  customize:
-    input_boolean.heizung_ausgeschaltet_wohnzimmer:
-      hidden: true
-    input_boolean.heizung_ausgeschaltet_kueche:
-      hidden: true
-    input_boolean.heizung_ausgeschaltet_arbeitszimmer:
-      hidden: true

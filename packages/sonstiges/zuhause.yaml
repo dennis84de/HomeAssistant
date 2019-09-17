@@ -61,9 +61,27 @@ automation:
         for:
           minutes: 60
     condition:
-      - condition: state
-        entity_id: group.alles_ausschalten
-        state: 'on'
+      - condition: template
+        value_template: >-
+          {% set ns = namespace(found=0) -%}
+          {% set computerEingeschaltet = is_state('switch.computer', 'on') %}
+          {% set computerEingeschaltetLassen = is_state('input_boolean.computer_ausschalten', 'on') %}
+
+          {% for entity_id in states.group.alles_ausschalten.attributes.entity_id -%}
+            {% set parts = entity_id.split('.') -%}
+            {% if (states(entity_id) == 'on') -%}
+              {% set ns.found = ns.found + 1 -%}
+            {% endif -%}
+          {% endfor -%}
+          
+          {% if ns.found > 1 %}
+            True
+          {% elif ns.found == 0 or (ns.found == 1 and computerEingeschaltet == True and computerEingeschaltetLassen == True) %}
+            False
+          {% else %}
+            True
+          {% endif %}  
+          
     action:
       - service: notify.telegram
         data_template:
@@ -241,10 +259,26 @@ automation:
         entity_id: input_boolean.zu_hause_begruessung
       - service: !secret tts_service
         data_template:
-          echo: "flur"
           message: >-
             "Hallo Dennis. Willkommen zu Hause."
 
+  - alias: "Zu Hause - Staubsaugerbehälter leeren"
+    trigger:
+      - platform: state
+        entity_id: input_boolean.zu_hause_begruessung
+        to: 'off'
+    condition:
+      - condition: numeric_state
+        entity_id: counter.behaelter_leeren
+        below: 1
+    action:
+      - service: counter.reset
+        entity_id: counter.behaelter_leeren
+      - service: !secret tts_service
+        data_template:
+          message: >-
+            "Der Staubsaugerbehälter muss geleert werden."
+            
 script:
   zu_hause:
     alias: "Zu Hause"

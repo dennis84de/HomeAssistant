@@ -124,7 +124,7 @@ automation:
     trigger:
       - platform: numeric_state
         entity_id: sensor.ungelesene_mails
-        above: 0
+        above: 0 
     action:
       service: !secret tts_service
       data_template:

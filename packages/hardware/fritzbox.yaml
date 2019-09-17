@@ -17,12 +17,6 @@ device_tracker:
     new_device_defaults:
       track_new_devices: false
 
-fritzbox:
-  devices:
-    - host: !secret fritzbox_host
-      username: !secret fritzbox_username
-      password: !secret fritzbox_password
-
 sensor:
   - platform: fritzbox_callmonitor
     name: Telefon
@@ -36,14 +30,48 @@ sensor:
     username: !secret fritzbox_username
     password: !secret fritzbox_password
 
-#  - platform: fritzbox_netmonitor
-#    name: Netmonitor
-#    host: !secret fritzbox_host
-#    username: !secret fritzbox_username
-#    password: !secret fritzbox_password
+  - platform: fritzbox_netmonitor
+    name: Netmonitor
+    host: !secret fritzbox_host
 
   - platform: template
     sensors:
+      netmonitor_uptime:
+        friendly_name: "Fritzbox Uptime"
+        entity_id:
+          - sensor.netmonitor        
+        value_template: >-
+          {% set onlineSeconds = state_attr('sensor.netmonitor','uptime') | int %}
+          {% set now = as_timestamp(now()) | int %}
+          {% set lastReboot = now - onlineSeconds | int %}
+          {% set weekday = lastReboot | timestamp_custom("%w", True) | int %}
+
+          {{ ['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'][weekday-1] }}, {{ lastReboot | timestamp_custom("%d.%m.%Y", True) | string }}     
+        icon_template: >-
+          mdi:calendar-range        
+           
+      netmonitor_data_sent:
+        friendly_name: "Fritzbox Daten gesendet"
+        entity_id:
+          - sensor.netmonitor       
+        unit_of_measurement: GB
+        value_template: >-
+          {% set bytesSent = (state_attr('sensor.netmonitor','bytes_sent') / 1024 / 1024 / 1024) | round() %}
+          {{ bytesSent }}          
+        icon_template: >-
+          mdi:upload-network
+          
+      netmonitor_data_received:
+        friendly_name: "Fritzbox Daten empfangen"
+        entity_id:
+          - sensor.netmonitor       
+        unit_of_measurement: GB
+        value_template: >-
+          {% set bytesSent = (state_attr('sensor.netmonitor','bytes_received') / 1024 / 1024 / 1024) | round() %}
+          {{ bytesSent }}          
+        icon_template: >-
+          mdi:download-network
+          
       gaeste_wlan_ssid:
         friendly_name: "Gäste-Wlan SSID"
         value_template: >-

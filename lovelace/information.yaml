@@ -32,7 +32,7 @@ popup_cards:
           name: Gewicht
           line_width: 2
           animate: true
-          hours_to_show: 672
+          hours_to_show: 336
           hour24: true
           show:
             icon: false
@@ -51,10 +51,14 @@ popup_cards:
     card:
       type: entities
       entities:
-        - entity: person.dennis
+        - entity: person.dennis          
+          secondary_info: last-changed
         - entity: device_tracker.handy
+          secondary_info: last-changed
         - entity: device_tracker.handygps
+          secondary_info: last-changed
         - entity: device_tracker.handymqtt
+          secondary_info: last-changed
 
 cards:
   - type: entities

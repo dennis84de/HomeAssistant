@@ -47,7 +47,7 @@ binary_sensor:
       sonne_tagsueber:
         friendly_name: "Sonne tagsüber"
         value_template: >-
-          {% if states.sensor.helligkeit.state == None %}
+          {% if states.sensor.helligkeit.state == None or is_state('sensor.helligkeit', 'unknown') %}
             False
           {% else %}
             {{ states.sensor.helligkeit.state | float > 20 }}
@@ -569,14 +569,6 @@ homeassistant:
 
     sensor.strommix:
       icon: mdi:solar-power
-
-    sensor.darksky_icon:
-      hidden: true
-    sensor.darksky_precip:
-      hidden: true
-
-    binary_sensor.sonne_tagsueber:
-      hidden: true
 
     sensor.co2_intensity_51_49_7_36:
       friendly_name: CO2 Belastung
