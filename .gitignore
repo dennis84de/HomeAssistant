@@ -26,4 +26,3 @@ update.sh
 zigate.json*
 adbkey*
 __pycache__/*
-*.gz
