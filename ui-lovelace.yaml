@@ -35,3 +35,5 @@ resources:
     type: js
   - url: /community_plugin/travel-time-card/travel-time-card.js
     type: js
+  - url: /community_plugin/secondaryinfo-entity-row/secondaryinfo-entity-row.js
+    type: js
