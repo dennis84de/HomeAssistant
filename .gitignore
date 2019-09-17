@@ -25,3 +25,5 @@ update.sh
 .google.token
 zigate.json*
 adbkey*
+__pycache__/*
+*.gz
