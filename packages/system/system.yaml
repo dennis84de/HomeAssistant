@@ -1,5 +1,8 @@
 speedtestdotnet:
 
+pi_hole:
+  host: !secret pihole_host
+
 sensor:
   - platform: synologydsm
     host: !secret synology_host
@@ -15,14 +18,6 @@ sensor:
       - network_down
       - volume_status
       - volume_percentage_used
-
-  - platform: pi_hole
-    host: 192.168.2.70
-    monitored_conditions:
-      - ads_blocked_today
-      - ads_percentage_today
-      - unique_clients
-      - clients_ever_seen
 
 switch:
   - platform: command_line
