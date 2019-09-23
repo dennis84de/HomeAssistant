@@ -79,6 +79,7 @@ cards:
       - entity: sensor.hass_installed_version
       - entity: sensor.hass_current_version
       - entity: sensor.wichtige_anderungen
+      - entity: sensor.hacs
       - entity: script.restart_homeassistant
       - entity: script.upgrade_homeassistant
 

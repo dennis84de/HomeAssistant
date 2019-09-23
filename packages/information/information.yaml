@@ -2,6 +2,12 @@ wunderlist:
   client_id: !secret wunderlist_client_id
   access_token: !secret wunderlist_token
 
+bring_shopping_list:
+  lists:
+    - id: !secret bring_list_id_einkaufen
+      name: Einkaufen
+      locale: de-DE
+      
 sensor:
   - platform: imap
     server: mail.manitu.de
@@ -154,17 +160,5 @@ homeassistant:
     sensor.tankstelle_jet:
       icon: mdi:gas-station
 
-    sensor.packages_in_transit:
-      hidden: true
-    sensor.packages_delivered:
-      hidden: true
-    sensor.packages_expired:
-      hidden: true
-    sensor.packages_not_found:
-      hidden: true
-    sensor.packages_ready_to_be_picked_up:
-      hidden: true
-    sensor.packages_returned:
-      hidden: true
-    sensor.packages_undelivered:
-      hidden: true
+    sensor.bring_shopping_list_einkaufen:
+      friendly_name: Einkaufen

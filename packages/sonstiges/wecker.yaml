@@ -280,17 +280,22 @@ script:
     sequence:
       - service: input_boolean.turn_on
         entity_id: input_boolean.alarmaktiv
-      - service: switch.turn_on
-        entity_id: switch.schlafzimmer_radio
       - service: light.turn_on
         data:
           entity_id: light.bett
           effect: colorloop
+      - service: switch.turn_on
+        entity_id: switch.schlafzimmer_radio          
+      - wait_template: >-
+          {{ is_state('device_tracker.pisleeping', 'home') }}
+        timeout: '00:01:00'       
+      - service: media_player.media_play
+        entity_id: media_player.schlafzimmer         
       - delay: '00:{{ states.input_number.alarmdelay.state | int }} :00'
       - service: switch.turn_on
-        entity_id: switch.badezimmer_radio, switch.wohnzimmer_radio, switch.kuche_radio, switch.flur_radio
+        entity_id: switch.computer      
       - service: switch.turn_on
-        entity_id: switch.computer
+        entity_id: switch.badezimmer_radio, switch.wohnzimmer_radio, switch.kuche_radio, switch.flur_radio
 
 homeassistant:
   customize:

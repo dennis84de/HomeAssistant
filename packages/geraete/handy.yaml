@@ -52,8 +52,22 @@ sensor:
             {{ states.sensor.tasker_handy.state | float }}
           {% endif %}
         device_class: battery
-        unit_of_measurement: '%'
 
+      handy_zuletzt_geladen:
+        friendly_name: Zuletzt geladen
+        entity_id:
+          - sensor.tasker_handy
+        value_template: >
+          {% if states.sensor.tasker_handy == None %}
+            -
+          {% else %}
+            {% set lastCharged = state_attr('sensor.tasker_handy','last_charged') | int %}
+            {% set weekday = lastCharged | timestamp_custom("%w", True) | int %}
+
+            {{ ['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'][weekday-1] }}, {{ lastCharged | timestamp_custom("%d.%m.%Y", True) | string }}  
+          {% endif %}
+        device_class: timestamp
+        
 automation:
   - alias: 'Handy aktiv - Kodi pausieren'
     trigger:

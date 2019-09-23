@@ -42,17 +42,9 @@ switch:
       wiedergabe_badezimmer:
         friendly_name: Wiedergabe Badezimmer
         value_template: >-
-          {% if is_state('media_player.badezimmer', 'playing') %}
-            true
-          {% else %}
-            false
-          {% endif %}
+          {{ is_state('media_player.badezimmer', 'playing') }}
         icon_template: >-
-          {% if is_state('media_player.badezimmer', 'playing') %}
-            mdi:play-circle-outline
-          {% else %}
-            mdi:pause-circle-outline
-          {% endif %}
+          {{ 'mdi:play-circle-outline' if is_state('media_player.badezimmer', 'playing') else 'mdi:pause-circle-outline' }}
         turn_on:
           - service: media_player.media_play
             data:
@@ -73,9 +65,9 @@ switch:
             or is_state('media_player.flur', 'playing')
             or is_state('media_player.balkon', 'playing')
           %}
-            true
+            True
           {% else %}
-            false
+            False
           {% endif %}
         icon_template: >-
           {% if is_state('media_player.kuche', 'playing')
@@ -106,9 +98,9 @@ switch:
             or is_state('switch.arbeitszimmer_radio', 'on')
             or is_state('switch.kuche_radio', 'on')
           %}
-            true
+            True
           {% else %}
-            false
+            False
           {% endif %}
         turn_on:
           service: script.radios_einschalten
@@ -250,8 +242,37 @@ automation:
       - service: media_player.volume_mute
         data:
           entity_id: media_player.kuche, media_player.badezimmer, media_player.wohnzimmer, media_player.schlafzimmer, media_player.arbeitszimmer, media_player.flur, media_player.balkon
-          is_volume_muted: false        
-
+          is_volume_muted: false    
+          
+  - alias: 'Radio eingeschaltet - Starten und synchronisieren'
+    trigger:
+      - platform: state
+        entity_id: device_tracker.piliving
+        to: 'home'
+      - platform: state
+        entity_id: device_tracker.picorridor
+        to: 'home'
+      - platform: state
+        entity_id: device_tracker.pibath
+        to: 'home'
+      - platform: state
+        entity_id: device_tracker.pikitchen
+        to: 'home'
+      - platform: state
+        entity_id: device_tracker.piworking
+        to: 'home'
+      - platform: state
+        entity_id: device_tracker.pisleeping
+        to: 'home'        
+    condition:
+      - condition: state
+        entity_id: switch.alle_radios_wiedergabe_aktiv
+        state: 'on'
+    action:
+      - service: script.radios_starten
+      - delay: '00:00:10'
+      - service: script.sync_radios  
+          
 script:
   sync_radios:
     alias: Radios synchronisieren
@@ -270,29 +291,13 @@ script:
     sequence:
       - service: switch.turn_on
         entity_id: switch.wohnzimmer_radio, switch.balkon_radio, switch.flur_radio, switch.badezimmer_radio, switch.kuche_radio, switch.schlafzimmer_radio, switch.arbeitszimmer_radio
-      - wait_template: >-
-          {% if is_state('media_player.kuche', 'playing')
-            and is_state('media_player.badezimmer', 'playing')
-            and is_state('media_player.wohnzimmer', 'playing')
-            and is_state('media_player.schlafzimmer', 'playing')
-            and is_state('media_player.arbeitszimmer', 'playing')
-            and is_state('media_player.flur', 'playing')
-          %}
-            true
-          {% else %}
-            false
-          {% endif %}
-
-      - service: script.sync_radio
 
   radios_ausschalten:
     alias: Radios ausschalten
     sequence:
-      - service: media_player.media_pause
-        entity_id: media_player.kuche, media_player.badezimmer, media_player.wohnzimmer, media_player.schlafzimmer, media_player.arbeitszimmer, media_player.flur
+      - service: script.radios_pausieren
       - service: switch.turn_off
-        entity_id: switch.alle_radios, switch.alle_radios_wiedergabe_aktiv,switch.wohnzimmer_radio,switch.flur_radio, switch.badezimmer_radio,switch.kuche_radio, switch.schlafzimmer_radio ,switch.arbeitszimmer_radio,switch.balkon_radio,script.sync_radios
-
+        entity_id: switch.wohnzimmer_radio, switch.balkon_radio, switch.flur_radio, switch.badezimmer_radio, switch.kuche_radio, switch.schlafzimmer_radio, switch.arbeitszimmer_radio
 
   radios_starten:
     alias: Radios abspielen

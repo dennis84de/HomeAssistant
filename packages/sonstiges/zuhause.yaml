@@ -8,7 +8,7 @@ device_tracker:
   - platform: mqtt
     devices:
       handymqtt: 'location/handy'
-
+    
 person:
   - name: Dennis
     id: dennis
@@ -287,10 +287,9 @@ script:
         entity_id: alarm_control_panel.alarm
       - service: input_boolean.turn_on
         entity_id: input_boolean.zu_hause_begruessung
+      - service: script.zu_hause_radios_einschalten
       - service: switch.turn_on
-        entity_id: switch.badezimmer_radio, switch.wohnzimmer_radio, switch.flur_radio, switch.kuche_radio, switch.computer, switch.watchtv_wohnzimmer
-      - wait_template: "{{ is_state('media_player.wohnzimmer', 'playing') }}"
-      - service: script.sync_radios
+        entity_id: switch.computer, switch.watchtv_wohnzimmer      
       - condition: state
         entity_id: binary_sensor.sonne_tagsueber
         state: 'off'
@@ -310,6 +309,36 @@ script:
         entity_id: switch.computer, switch.watchtv_wohnzimmer
       - service: switch.turn_on
         entity_id: switch.badezimmer_radio
+
+  zu_hause_radios_einschalten:
+    alias: "Zu Hause - Radios einschalten"
+    sequence:
+      - service: switch.turn_on
+        entity_id: switch.badezimmer_radio, switch.wohnzimmer_radio, switch.flur_radio, switch.kuche_radio
+      - wait_template: >-
+          {% if is_state('device_tracker.piliving', 'home')
+            and is_state('device_tracker.picorridor', 'home')
+            and is_state('device_tracker.pibath', 'home')
+            and is_state('device_tracker.pikitchen', 'home')
+          %}
+            True
+          {% else %}
+            False
+          {% endif %}
+        timeout: '00:01:00'       
+      - service: script.radios_starten
+      - wait_template: >-
+          {% if is_state('media_player.kuche', 'playing')
+            and is_state('media_player.badezimmer', 'playing')
+            and is_state('media_player.wohnzimmer', 'playing')
+            and is_state('media_player.flur', 'playing')
+          %}
+            True
+          {% else %}
+            False
+          {% endif %}      
+        timeout: '00:00:30'
+      - service: script.sync_radios
 
 homeassistant:
   customize:
