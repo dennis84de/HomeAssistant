@@ -5,6 +5,7 @@ heimnetz:
   entities:
     - device_tracker.diskstation
     - device_tracker.fritz_repeater
+    - device_tracker.pihole
     - device_tracker.soundbar
     - device_tracker.dreamscreen
     - device_tracker.xiaomivacuum

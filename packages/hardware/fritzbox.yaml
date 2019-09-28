@@ -239,6 +239,8 @@ homeassistant:
     device_tracker.fritz_repeater:
       icon: mdi:wifi
       friendly_name: Repeater
+    device_tracker.pihole:
+      icon: mdi:pi-hole
 
     device_tracker.computer:
       icon: mdi:desktop-classic
@@ -302,8 +304,6 @@ homeassistant:
     device_tracker.handymqtt:
       icon: mdi:cellphone
       friendly_name: Handy MQTT
-    device_tracker.handyurlaub:
-      hidden: true
 
     device_tracker.magichomeflurvorne:
       icon: mdi:lightbulb-on-outline
@@ -349,11 +349,6 @@ homeassistant:
     device_tracker.pibalcony:
       icon: mdi:raspberry-pi
       friendly_name: Balkon
-
-    device_tracker.tabletprestigio:
-      hidden: true
-    device_tracker.laptopdj:
-      hidden: true
       
     device_tracker.tuerklingel:
       icon: mdi:wifi-star
