@@ -1,0 +1,25 @@
+esphome:
+  name: klingel
+  platform: ESP8266
+  board: nodemcuv2
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+logger:
+api:
+ota:
+    
+sensor:
+  - platform: wifi_signal
+    name: "Türklingel Signal"
+    update_interval: 60s
+    
+binary_sensor:
+  - platform: gpio
+    pin: D5
+    name: "Türklingel"
+    device_class: sound
+    filters:
+      - delayed_off: 1s
