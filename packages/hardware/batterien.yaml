@@ -34,8 +34,8 @@ sensor:
       - zigate.thermometer_gefrierschrank
       - zigate.thermometer_hardware
       - zigate.tuersensor
-      - zigate.tuerklingel
-      - zigate.briefkasten
+      - zigate.tuer_kuehlschrank
+      - zigate.tuer_gefrierschrank
       - binary_sensor.schalter_wohnzimmer
       - binary_sensor.schalter_schlafzimmer
       - binary_sensor.schalter_flur

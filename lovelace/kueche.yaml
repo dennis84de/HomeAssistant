@@ -39,6 +39,7 @@ cards:
       - entity: sensor.kuehlschrank_temperatur
       - entity: sensor.kuehlschrank_luftfeuchtigkeit
       - entity: sensor.kuehlschrank_luftdruck
+      - entity: binary_sensor.tuer_kuehlschrank
 
   - type: glance
     title: Gefrierschrank
@@ -47,6 +48,7 @@ cards:
       - entity: sensor.gefrierschrank_temperatur
       - entity: sensor.gefrierschrank_luftfeuchtigkeit
       - entity: sensor.gefrierschrank_luftdruck
+      - entity: binary_sensor.tuer_gefrierschrank
 
   - type: glance
     title: Sensoren

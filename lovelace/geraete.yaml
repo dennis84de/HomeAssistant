@@ -123,5 +123,5 @@ cards:
     show_header_toggle: false
     entities:
       - entity: zigate.tuersensor
-      - entity: zigate.tuerklingel
-      - entity: zigate.briefkasten
+      - entity: zigate.tuer_kuehlschrank
+      - entity: zigate.tuer_gefrierschrank

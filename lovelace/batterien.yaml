@@ -24,8 +24,8 @@ cards:
     show_header_toggle: false
     entities:
       - entity: sensor.tuersensor_battery_level
-      - entity: sensor.tuerklingel_battery_level
-      - entity: sensor.briefkasten_battery_level
+      - entity: sensor.tuer_kuehlschrank_battery_level
+      - entity: sensor.tuer_gefrierschrank_battery_level      
       - entity: sensor.cube_wohnzimmer_battery_level
       - entity: sensor.vibration_wohnzimmer_battery_level
       - entity: sensor.vibration_schlafzimmer_battery_level

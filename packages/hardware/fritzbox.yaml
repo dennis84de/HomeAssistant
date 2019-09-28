@@ -354,3 +354,8 @@ homeassistant:
       hidden: true
     device_tracker.laptopdj:
       hidden: true
+      
+    device_tracker.tuerklingel:
+      icon: mdi:wifi-star
+    device_tracker.briefkasten:
+      icon: mdi:wifi-star      

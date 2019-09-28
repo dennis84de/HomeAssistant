@@ -25,5 +25,5 @@ zigate:
     - zigate.thermometer_gefrierschrank
     - zigate.thermometer_hardware
     - zigate.tuersensor
-    - zigate.tuerklingel
-    - zigate.briefkasten
+    - zigate.tuer_kuehlschrank
+    - zigate.tuer_gefrierschrank
