@@ -1,0 +1,25 @@
+esphome:
+  name: tuerklingel
+  platform: ESP8266
+  board: d1_mini
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+logger:
+api:
+ota:
+
+sensor:
+  - platform: wifi_signal
+    name: "Türklingel Signal"
+    update_interval: 60s
+    
+binary_sensor:
+  - platform: gpio
+    pin: D2
+    name: "Türklingel"
+    device_class: sound
+    filters:
+      - delayed_off: 1s    

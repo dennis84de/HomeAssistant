@@ -1,5 +1,5 @@
 esphome:
-  name: klingel
+  name: briefkasten
   platform: ESP8266
   board: nodemcuv2
 
@@ -13,13 +13,13 @@ ota:
     
 sensor:
   - platform: wifi_signal
-    name: "Türklingel Signal"
+    name: "Briefkasten Signal"
     update_interval: 60s
     
-binary_sensor:
-  - platform: gpio
-    pin: D5
-    name: "Türklingel"
-    device_class: sound
-    filters:
-      - delayed_off: 1s
+#binary_sensor:
+#  - platform: gpio
+#    pin: D5
+#    name: "Briefkasten"
+#    device_class: sound
+#    filters:
+#      - delayed_off: 1s
