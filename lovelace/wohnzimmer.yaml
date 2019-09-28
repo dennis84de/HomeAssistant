@@ -107,3 +107,9 @@ cards:
       - entity: sensor.helligkeit_balkon
       - entity: switch.balkon_radio
       - entity: light.balkon_licht
+      - type: custom:mini-media-player
+        entity: media_player.balkon
+        hide:
+          source: true
+          progress: true
+          volume: true      
