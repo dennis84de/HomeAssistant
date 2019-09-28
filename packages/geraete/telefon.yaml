@@ -147,9 +147,8 @@ automation:
       - condition: state
         entity_id: input_boolean.kodi_pausiert
         state: 'on'
-      - condition: state
-        entity_id: sensor.handy_status
-        state: 'Ruhezustand'
+      - condition: template
+        value_template: '{{ is_state("sensor.tasker_handystatus", "incoming") == False and is_state("sensor.tasker_handystatus", "outgoing") == False }}'        
     action:
       - service: input_boolean.turn_off
         entity_id: input_boolean.kodi_pausiert
@@ -219,7 +218,7 @@ automation:
         to: 'dialing'
     condition:
       - condition: state
-        entity_id: switch.alle_radios_wiedergabe_aktiv
+        entity_id: switch.wiedergabe_aktiv
         state: 'on'
       - condition: state
         entity_id: input_boolean.nicht_stoeren
@@ -241,9 +240,8 @@ automation:
       - condition: state
         entity_id: input_boolean.musik_pausiert
         state: 'on'
-      - condition: state
-        entity_id: sensor.handy_status
-        state: 'Ruhezustand'
+      - condition: template
+        value_template: '{{ is_state("sensor.tasker_handystatus", "incoming") == False and is_state("sensor.tasker_handystatus", "outgoing") == False }}' 
     action:
       - service: input_boolean.turn_off
         entity_id: input_boolean.musik_pausiert

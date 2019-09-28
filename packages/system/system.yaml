@@ -2,6 +2,7 @@ speedtestdotnet:
 
 pi_hole:
   host: !secret pihole_host
+  verify_ssl: false
 
 sensor:
   - platform: synologydsm
@@ -23,9 +24,9 @@ switch:
   - platform: command_line
     switches:
       pi_hole:
-        command_on: "curl -X GET 'http://192.168.2.70/admin/api.php?enable&auth=f7e48f5d33ae1d2adf8f75b6a6a9b94cafd74890d86fe0df5a5d1ab78deaeb68'"
-        command_off: "curl -X GET 'http://192.168.2.70/admin/api.php?disable=3600&auth=f7e48f5d33ae1d2adf8f75b6a6a9b94cafd74890d86fe0df5a5d1ab78deaeb68'"
-        command_state: "curl -X GET 'http://192.168.2.70/admin/api.php?status&auth=f7e48f5d33ae1d2adf8f75b6a6a9b94cafd74890d86fe0df5a5d1ab78deaeb68'"
+        command_on: "curl -X GET 'http://192.168.2.75/admin/api.php?enable&auth=f7e48f5d33ae1d2adf8f75b6a6a9b94cafd74890d86fe0df5a5d1ab78deaeb68'"
+        command_off: "curl -X GET 'http://192.168.2.75/admin/api.php?disable=3600&auth=f7e48f5d33ae1d2adf8f75b6a6a9b94cafd74890d86fe0df5a5d1ab78deaeb68'"
+        command_state: "curl -X GET 'http://192.168.2.75/admin/api.php?status&auth=f7e48f5d33ae1d2adf8f75b6a6a9b94cafd74890d86fe0df5a5d1ab78deaeb68'"
         value_template: "{{ value_json.status == 'enabled' }}"
 
 homeassistant:

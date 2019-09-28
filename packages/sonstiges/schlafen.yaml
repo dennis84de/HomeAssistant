@@ -179,7 +179,7 @@ automation:
           entity_id:
             - media_player.smarthome
           media_content_id: >-
-            http://192.168.2.70:8123/local/countdown/countdown_5.mp3
+            http://192.168.2.75:8123/local/countdown/countdown_5.mp3
           media_content_type: music
 
   - alias: "Schlafen gehen - Countdown abbrechen"

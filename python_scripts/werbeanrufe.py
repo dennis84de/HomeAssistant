@@ -5,7 +5,7 @@ import json
 from requests import post
 
 def main():      
-    url = 'http://192.168.2.70:8123/api/states/binary_sensor.werbeanruf'
+    url = 'http://192.168.2.75:8123/api/states/binary_sensor.werbeanruf'
     header = {'content-type': 'application/json'}
     payload = {'state': 'off', 'attributes': {'friendly_name': 'Werbeanruf'}}
 

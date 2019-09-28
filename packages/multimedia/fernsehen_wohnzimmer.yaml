@@ -199,7 +199,7 @@ automation:
       - service: script.radios_pausieren
       - service: switch.turn_off
         entity_id: switch.wohnzimmer_radio, switch.balkon_radio, switch.flur_radio, switch.kuche_radio, switch.schlafzimmer_radio, switch.arbeitszimmer_radio
-
+      
   - alias: "Kodi - Wiedergabe Cube"
     trigger:
       - platform: event

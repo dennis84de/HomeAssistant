@@ -1,5 +1,5 @@
 emulated_hue:
-  host_ip: 192.168.2.70
+  host_ip: 192.168.2.75
   exposed_domains:
     - switch
     - input_boolean
@@ -99,7 +99,7 @@ emulated_hue:
       hidden: true
     input_boolean.uhr_einschalten:
       hidden: true
-    switch.alle_radios_wiedergabe_aktiv:
+    switch.wiedergabe_aktiv:
       hidden: true
     input_boolean.computer_ausschalten:
       hidden: true

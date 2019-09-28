@@ -285,12 +285,7 @@ script:
           entity_id: light.bett
           effect: colorloop
       - service: switch.turn_on
-        entity_id: switch.schlafzimmer_radio          
-      - wait_template: >-
-          {{ is_state('device_tracker.pisleeping', 'home') }}
-        timeout: '00:01:00'       
-      - service: media_player.media_play
-        entity_id: media_player.schlafzimmer         
+        entity_id: switch.schlafzimmer_radio               
       - delay: '00:{{ states.input_number.alarmdelay.state | int }} :00'
       - service: switch.turn_on
         entity_id: switch.computer      

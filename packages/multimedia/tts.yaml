@@ -113,9 +113,9 @@ automation:
             - media_player.smarthome
           media_content_id: >-
             {% if now().strftime("%M")|int == 30 %}
-              http://192.168.2.70:8123/local/uhr/GrandFatherChime_half.mp3
+              http://192.168.2.75:8123/local/uhr/GrandFatherChime_half.mp3
             {% else %}
-              http://192.168.2.70:8123/local/uhr/GrandFatherChime_{{now().strftime("%I")}}.mp3
+              http://192.168.2.75:8123/local/uhr/GrandFatherChime_{{now().strftime("%I")}}.mp3
             {% endif %}
           media_content_type: music
 
@@ -152,7 +152,7 @@ automation:
           entity_id:
             - media_player.smarthome
           media_content_id: >-
-            http://192.168.2.70:8123/local/bvb/torhymne.mp3
+            http://192.168.2.75:8123/local/bvb/torhymne.mp3
           media_content_type: music
 
   - alias: "BVB - Musik starten"
@@ -175,7 +175,7 @@ automation:
           entity_id:
             - media_player.smarthome
           media_content_id: >-
-            http://192.168.2.70:8123/local/bvb/heja_bvb.mp3
+            http://192.168.2.75:8123/local/bvb/heja_bvb.mp3
           media_content_type: music
 
   - alias: "BVB - Musik stoppen"

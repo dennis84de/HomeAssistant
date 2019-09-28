@@ -1,5 +1,5 @@
 mqtt:
-  broker: 192.168.2.70
+  broker: !secret mqtt_host
   client_id: !secret mqtt_clientid
   username: !secret mqtt_username
   password: !secret mqtt_password

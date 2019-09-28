@@ -19,7 +19,7 @@ media_player:
         playerid: !secret squeezebox_mac_wohnzimmer
       - name: "Smarthome"
         playerid: !secret squeezebox_mac_smarthome
-
+      
 switch:
   - platform: edimax
     host: 192.168.2.36
@@ -54,7 +54,7 @@ switch:
             data:
               entity_id: media_player.badezimmer
 
-      alle_radios_wiedergabe_aktiv:
+      wiedergabe_aktiv:
         friendly_name: Wiedergabe aktiv
         value_template: >-
           {% if is_state('media_player.kuche', 'playing')
@@ -116,7 +116,7 @@ input_boolean:
 
 binary_sensor:
   - platform: template
-    sensors:
+    sensors:         
       radio_badezimmer_inaktiv:
         friendly_name: Radio Badezimmer inaktiv
         device_class: motion
@@ -158,7 +158,7 @@ automation:
       - condition: template
         value_template: '{{ now().isoweekday() != 7 }}'   
       - condition: state
-        entity_id: 'switch.alle_radios_wiedergabe_aktiv'
+        entity_id: 'switch.wiedergabe_aktiv'
         state: 'on'
       - condition: state
         entity_id: 'media_player.balkon'
@@ -166,6 +166,11 @@ automation:
       - condition: state
         entity_id: 'device_tracker.pibalcony'
         state: 'home'
+      - condition: template
+        value_template: '{{ is_state("sensor.tasker_handystatus", "incoming") == False and is_state("sensor.tasker_handystatus", "outgoing") == False }}'
+      - condition: state
+        entity_id: 'sensor.telefon'
+        state: 'idle'            
     action:
       - service: input_boolean.turn_on
         entity_id: input_boolean.radio_aktiv_balkon
@@ -210,8 +215,13 @@ automation:
         to: 'on'
     condition:
       - condition: state
-        entity_id: switch.alle_radios_wiedergabe_aktiv
+        entity_id: switch.wiedergabe_aktiv
         state: 'on'
+      - condition: template
+        value_template: '{{ is_state("sensor.tasker_handystatus", "incoming") == False and is_state("sensor.tasker_handystatus", "outgoing") == False }}'
+      - condition: state
+        entity_id: 'sensor.telefon'
+        state: 'idle'             
       - condition: template
         value_template: >-
           {% set now = as_timestamp(now()) | int %}
@@ -243,35 +253,6 @@ automation:
         data:
           entity_id: media_player.kuche, media_player.badezimmer, media_player.wohnzimmer, media_player.schlafzimmer, media_player.arbeitszimmer, media_player.flur, media_player.balkon
           is_volume_muted: false    
-          
-  - alias: 'Radio eingeschaltet - Starten und synchronisieren'
-    trigger:
-      - platform: state
-        entity_id: device_tracker.piliving
-        to: 'home'
-      - platform: state
-        entity_id: device_tracker.picorridor
-        to: 'home'
-      - platform: state
-        entity_id: device_tracker.pibath
-        to: 'home'
-      - platform: state
-        entity_id: device_tracker.pikitchen
-        to: 'home'
-      - platform: state
-        entity_id: device_tracker.piworking
-        to: 'home'
-      - platform: state
-        entity_id: device_tracker.pisleeping
-        to: 'home'        
-    condition:
-      - condition: state
-        entity_id: switch.alle_radios_wiedergabe_aktiv
-        state: 'on'
-    action:
-      - service: script.radios_starten
-      - delay: '00:00:10'
-      - service: script.sync_radios  
           
 script:
   sync_radios:

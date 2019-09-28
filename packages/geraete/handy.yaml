@@ -52,7 +52,8 @@ sensor:
             {{ states.sensor.tasker_handy.state | float }}
           {% endif %}
         device_class: battery
-
+        unit_of_measurement: '%'
+        
       handy_zuletzt_geladen:
         friendly_name: Zuletzt geladen
         entity_id:
@@ -186,7 +187,7 @@ automation:
         to: 'outgoing'
     condition:
       - condition: state
-        entity_id: switch.alle_radios_wiedergabe_aktiv
+        entity_id: switch.wiedergabe_aktiv
         state: 'on'
       - condition: state
         entity_id: input_boolean.nicht_stoeren
@@ -336,11 +337,7 @@ homeassistant:
   customize:
     sensor.tasker_handy:
       friendly_name: Handy Tasker
-      hidden: true
-
     sensor.tasker_handystatus:
       friendly_name: Handy Status
-      hidden: true
-
     input_boolean.nicht_stoeren:
       icon: mdi:do-not-disturb
