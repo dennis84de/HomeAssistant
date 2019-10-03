@@ -1,20 +1,20 @@
 switch:
   - platform: brematic
     host: !secret brematic_host
+    system_code: '00100'
     switches:
       sportzimmer_fernseher:
+        unit_code: '10000'
         friendly_name: Sportzimmer Fernseher
-        system_code: "00100"
-        unit_code: "10000"
       sportzimmer_crosstrainer:
-        friendly_name: Crosstrainer
-        system_code: "00100"
-        unit_code: "01000"
-
+        unit_code: '01000'
+        friendly_name: Crosstrainer    
+        
 homeassistant:
   customize:
     switch.sportzimmer_fernseher:
       icon: mdi:television
-      friendly_name: Fernseher
+      assumed_state: false
     switch.sportzimmer_crosstrainer:
       icon: mdi:run-fast
+      assumed_state: false

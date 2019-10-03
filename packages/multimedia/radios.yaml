@@ -31,12 +31,12 @@ switch:
 
   - platform: brematic
     host: !secret brematic_host
+    system_code: '11100'
     switches:
       balkon_radio:
+        unit_code: '01000'
         friendly_name: Balkon Radio
-        system_code: "11100"
-        unit_code: "01000"
-
+        
   - platform: template
     switches:
       wiedergabe_badezimmer:
@@ -321,8 +321,11 @@ homeassistant:
     switch.wohnzimmer_radio:
       icon: mdi:radio
     switch.schlafzimmer_radio:
+      icon: mdi:radio   
+    switch.balkon_radio:
       icon: mdi:radio
-
+      assumed_state: false
+      
     media_player.badezimmer:
       friendly_name: Radio Badezimmer
     media_player.arbeitszimmer:

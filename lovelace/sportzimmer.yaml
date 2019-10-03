@@ -31,6 +31,7 @@ cards:
     show_header_toggle: false
     entities:
       - entity: switch.sportzimmer_fernseher
+        name: Fernseher
       - entity: switch.sportzimmer_crosstrainer
 
 

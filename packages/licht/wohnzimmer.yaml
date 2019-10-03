@@ -20,11 +20,11 @@ light:
 switch:
   - platform: brematic
     host: !secret brematic_host
+    system_code: '10000'
     switches:
       vitrine:
+        unit_code: '00010'
         friendly_name: Vitrine
-        system_code: "00000"
-        unit_code: "00100"
 
 automation:
   - alias: Licht Abends

@@ -28,5 +28,3 @@ homeassistant:
       icon: mdi:radio
     switch.arbeitszimmer_radio:
       icon: mdi:radio
-    switch.balkon_radio:
-      icon: mdi:radio

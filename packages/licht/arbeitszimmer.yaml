@@ -18,12 +18,12 @@ input_boolean:
 switch:
   - platform: brematic
     host: !secret brematic_host
+    system_code: '10000'
     switches:
       arbeitszimmer_lampe:
+        unit_code: '00100'
         friendly_name: Lampe
-        system_code: "10000"
-        unit_code: "00100"
-
+        
 homeassistant:
   customize:
     switch.arbeitszimmer_lampe:
