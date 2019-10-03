@@ -36,4 +36,3 @@ homeassistant:
   customize:
     light.balkon_licht:
       icon: mdi:led-strip
-      friendly_name: "Licht"

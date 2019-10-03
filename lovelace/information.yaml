@@ -97,6 +97,7 @@ cards:
     entities:
       - entity: calendar.kalender
       - entity: sensor.naechster_urlaub
+      - entity: sensor.naechster_feiertag
 
   - type: entities
     title: Abfallkalender

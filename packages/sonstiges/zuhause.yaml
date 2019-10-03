@@ -244,24 +244,97 @@ automation:
     action:
       - service: script.zu_hause_abends
 
-  - alias: "Zu Hause - Begrüßung"
+  - alias: "Zu Hause - Begrüßung aktivieren"
     trigger:
       - platform: state
-        entity_id: input_boolean.zu_hause_begruessung
+        entity_id: binary_sensor.tuersensor
         to: 'on'
-        for: '00:01:00'
-    condition:
+    condition: 
       - condition: state
         entity_id: binary_sensor.zu_hause
-        state: 'on'
+        state: 'off'     
+    action:
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.zu_hause_begruessung        
+        
+  - alias: "Zu Hause - Begrüßung starten"
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.tuersensor
+        to: 'off'
+    condition:
+      - condition: state
+        entity_id: input_boolean.zu_hause_begruessung
+        state: 'on'  
+      - condition: time        
+        before: '23:00'        
     action:
       - service: input_boolean.turn_off
         entity_id: input_boolean.zu_hause_begruessung
+      - delay: '00:01:00'
       - service: !secret tts_service
         data_template:
           message: >-
             "Hallo Dennis. Willkommen zu Hause."
+            
+            {% if is_state('counter.behaelter_leeren', '0') %}
+              "Der Staubsaugerbehälter muss geleert werden."
+            {% endif %}
 
+            {% set count_heimnetz_entities = states.sensor.heimnetz_offline.state | int -%}
+            {% set count_zigate_entities = states.sensor.zigate_offline.state | int -%}
+            {% set count_complete = count_heimnetz_entities + count_zigate_entities | int -%}
+            
+            {% if count_complete > 0 %}
+              {% if count_complete > 1 %}
+                {{ "Die folgenden Geräte sind offline. " }}
+              {% else %}
+                {{ "Das folgende Gerät ist offline. " }}
+              {% endif %}            
+            
+              {% if count_heimnetz_entities > 0 %}
+                {%- for entity_id in states.group.heimnetz.attributes.entity_id -%}
+                  {% set parts = entity_id.split('.') -%}
+
+                  {% if states(entity_id) == 'not_home' %}
+                    {{ states[parts[0]][parts[1]].name }},
+                  {% endif %}
+                {%- endfor %}
+              {% endif %}
+                            
+              {% set now = as_timestamp(now()) | int %}
+              {% set puffer = states.input_number.zigate_offline_puffer.state | int * 60 | int -%}
+
+              {% if count_zigate_entities > 0 %}
+                {%- for entity_id in states.group.zigate.attributes.entity_id -%}
+                  {%- set lastChange = as_timestamp(states(entity_id)) | int -%}
+                  {%- set difference = (now - lastChange ) / 60 | round() -%}
+                  {%- set parts = entity_id.split('.') -%}
+                  {%- if difference > puffer -%}
+                    {{ states[parts[0]][parts[1]].name }},
+                  {%- endif -%}
+                {%- endfor -%}            
+              {% endif %}                 
+            {% endif %}
+           
+            {% set min_battery_level = states.input_number.batteriestand_warnlevel.state | int -%}
+            {% set count_battery_entities = states.sensor.batteriestand_niedrig.state | int -%}
+
+            {%if count_battery_entities > 0 %}
+              {% if count_battery_entities > 1 %}
+                {{ "Der Batteriestand der folgenden Geräte ist niedrig. " }}
+              {% else %}
+                {{ "Der Batteriestand des folgenden Gerätes ist niedrig. " }}
+              {% endif %}
+
+              {%- for entity_id in states.group.batteriestand.attributes.entity_id -%}
+                {%- set parts = entity_id.split('.') -%}
+                {%- if (states(entity_id) | replace("%","") | int) <= min_battery_level -%}
+                  {{ states[parts[0]][parts[1]].name }},
+                {%- endif -%}
+              {%- endfor -%}              
+            {% endif %}
+                                 
   - alias: "Zu Hause - Staubsaugerbehälter leeren"
     trigger:
       - platform: state
@@ -274,10 +347,6 @@ automation:
     action:
       - service: counter.reset
         entity_id: counter.behaelter_leeren
-      - service: !secret tts_service
-        data_template:
-          message: >-
-            "Der Staubsaugerbehälter muss geleert werden."
             
 script:
   zu_hause:
@@ -287,7 +356,7 @@ script:
         entity_id: alarm_control_panel.alarm
       - service: input_boolean.turn_on
         entity_id: input_boolean.zu_hause_begruessung
-      - service: script.zu_hause_radios_einschalten
+      - service: script.wohnung_radios_einschalten
       - service: switch.turn_on
         entity_id: switch.computer, switch.watchtv_wohnzimmer      
       - condition: state
@@ -309,36 +378,6 @@ script:
         entity_id: switch.computer, switch.watchtv_wohnzimmer
       - service: switch.turn_on
         entity_id: switch.badezimmer_radio
-
-  zu_hause_radios_einschalten:
-    alias: "Zu Hause - Radios einschalten"
-    sequence:
-      - service: switch.turn_on
-        entity_id: switch.badezimmer_radio, switch.wohnzimmer_radio, switch.flur_radio, switch.kuche_radio
-      - wait_template: >-
-          {% if is_state('device_tracker.piliving', 'home')
-            and is_state('device_tracker.picorridor', 'home')
-            and is_state('device_tracker.pibath', 'home')
-            and is_state('device_tracker.pikitchen', 'home')
-          %}
-            True
-          {% else %}
-            False
-          {% endif %}
-        timeout: '00:01:00'       
-      - service: script.radios_starten
-      - wait_template: >-
-          {% if is_state('media_player.kuche', 'playing')
-            and is_state('media_player.badezimmer', 'playing')
-            and is_state('media_player.wohnzimmer', 'playing')
-            and is_state('media_player.flur', 'playing')
-          %}
-            True
-          {% else %}
-            False
-          {% endif %}      
-        timeout: '00:00:30'
-      - service: script.sync_radios
 
 homeassistant:
   customize:

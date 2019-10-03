@@ -170,6 +170,22 @@ sensor:
         friendly_name_template: >-
           {{ states.calendar.urlaub.attributes.message }}
         icon_template: mdi:sunglasses
+        
+      naechster_feiertag:
+        friendly_name: Nächster Feiertag
+        entity_id:
+          - calendar.ferien_feiertage
+        value_template: >
+          {% if states.calendar.ferien_feiertage.attributes.start_time %}
+            {% set weekday = as_timestamp(states.calendar.ferien_feiertage.attributes.start_time) | timestamp_custom("%w", True) | int %}
+
+            {{ ['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'][weekday-1] }}, {{ as_timestamp(states.calendar.ferien_feiertage.attributes.start_time) | timestamp_custom("%d.%m.%Y", True) | string }}
+          {% else %}
+            -
+          {% endif %}
+        friendly_name_template: >-
+          {{ states.calendar.ferien_feiertage.attributes.message }}
+        icon_template: mdi:calendar-star    
 
 homeassistant:
   customize:

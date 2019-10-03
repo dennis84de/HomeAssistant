@@ -105,8 +105,10 @@ cards:
       - entity: binary_sensor.bewegungsmelder_balkon
         name: Bewegungsmelder
       - entity: sensor.helligkeit_balkon
-      - entity: switch.balkon_radio
       - entity: light.balkon_licht
+        name: Licht      
+      - entity: switch.balkon_radio
+        name: Radio
       - type: custom:mini-media-player
         entity: media_player.balkon
         hide:

@@ -292,6 +292,24 @@ script:
         - service: media_player.media_pause
           entity_id: media_player.kuche, media_player.badezimmer, media_player.wohnzimmer, media_player.schlafzimmer, media_player.arbeitszimmer, media_player.flur
 
+  wohnung_radios_einschalten:
+    alias: "Wohnung - Radios einschalten"
+    sequence:
+      - service: switch.turn_on
+        entity_id: switch.badezimmer_radio, switch.wohnzimmer_radio, switch.flur_radio, switch.kuche_radio
+      - wait_template: >-
+          {% if is_state('media_player.kuche', 'playing')
+            and is_state('media_player.badezimmer', 'playing')
+            and is_state('media_player.wohnzimmer', 'playing')
+            and is_state('media_player.flur', 'playing')
+          %}
+            True
+          {% else %}
+            False
+          {% endif %}      
+        timeout: '00:02:00'
+      - service: script.sync_radios
+      
 homeassistant:
   customize:
     script.sync_radios:

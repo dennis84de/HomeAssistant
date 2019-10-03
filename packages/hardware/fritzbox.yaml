@@ -167,7 +167,7 @@ automation:
         message: >-
           Der Gastzugang wurde ausgeschaltet.
 
-  - alias: 'Heimnetz - Geräte offline'
+  - alias: 'Heimnetz - Geräte offline'    
     trigger:
       - platform: time
         at: '19:30:00'

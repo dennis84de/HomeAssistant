@@ -1,9 +1,8 @@
 emulated_hue:
   host_ip: 192.168.2.75
-  listen_port: 80
+#  listen_port: 80
   exposed_domains:
     - switch
-    - input_boolean
     - light
     - vacuum
     - fan
@@ -71,74 +70,43 @@ emulated_hue:
     switch.licht_fernseher_schlafzimmer:
       hidden: true
     switch.kodi_schlafzimmer:
-      hidden: true
-    input_boolean.kodi_pausiert:
-      hidden: true
-    input_boolean.musik_pausiert:
-      hidden: true
-    input_boolean.timer_schlafzimmer_aktiv:
-      hidden: true
-    input_boolean.sleeptimer_turn_off_tv:
-      hidden: true
-    input_boolean.alarmstatus:
-      hidden: true
-    input_boolean.alarmworkday:
-      hidden: true
-    input_boolean.bewegung_licht_flur:
-      hidden: true
-    input_boolean.bewegung_licht_schlafzimmer:
-      hidden: true
-    input_boolean.bewegung_licht_badezimmer:
-      hidden: true
-    input_boolean.bewegung_licht_arbeitszimmer:
-      hidden: true
-    input_boolean.bewegung_licht_kueche:
-      hidden: true
-    input_boolean.xiaomi_vacuum_automatische_reinigung:
-      hidden: true
-    input_boolean.sprachausgabe:
-      hidden: true
-    input_boolean.uhr_einschalten:
-      hidden: true
+      hidden: true   
     switch.wiedergabe_aktiv:
-      hidden: true
-    input_boolean.computer_ausschalten:
-      hidden: true
-    input_boolean.alarmauto:
-      hidden: true
-    input_boolean.heizung_ausgeschaltet_wohnzimmer:
-      hidden: true
-    input_boolean.heizung_ausgeschaltet_kueche:
-      hidden: true
-    input_boolean.heizung_ausgeschaltet_arbeitszimmer:
-      hidden: true
-    input_boolean.alles_auschalten_aktiv:
-      hidden: true
-    input_boolean.musik_ausschalten:
       hidden: true
     switch.pi_hole:
       hidden: true
-    input_boolean.bewegungsmelder_arbeitszimmer_deaktiviert:
+    switch.ventilator_natuerlicher_wind:
+      hidden: true       
+      
+    switch.echo_badezimmer_do_not_disturb_switch:
+      hidden: true      
+    switch.echo_flur_do_not_disturb_switch:
       hidden: true
-    input_boolean.bewegungsmelder_badezimmer_deaktiviert:
+    switch.echo_kuche_do_not_disturb_switch:
       hidden: true
-    input_boolean.bewegungsmelder_balkon_deaktiviert:
+    switch.echo_schlafzimmer_do_not_disturb_switch:
       hidden: true
-    input_boolean.bewegungsmelder_flur_deaktiviert:
+    switch.echo_wohnzimmer_do_not_disturb_switch:
       hidden: true
-    input_boolean.bewegungsmelder_kueche_deaktiviert:
+      
+    switch.echo_badezimmer_repeat_switch:
+      hidden: true      
+    switch.echo_flur_repeat_switch:
       hidden: true
-    input_boolean.bewegungsmelder_schlafzimmer_deaktiviert:
+    switch.echo_kuche_repeat_switch:
       hidden: true
-    input_boolean.bewegungsmelder_wohnzimmer_deaktiviert:
+    switch.echo_schlafzimmer_repeat_switch:
       hidden: true
-    input_boolean.radio_aktiv_balkon:
+    switch.echo_wohnzimmer_repeat_switch:
       hidden: true
-    input_boolean.alarmaktiv:
+      
+    switch.echo_badezimmer_shuffle_switch:
       hidden: true
-    input_boolean.schlafen_einschalten_aktiv:
+    switch.echo_flur_shuffle_switch:
       hidden: true
-    input_boolean.schlafen_fernseher_einschalten:
+    switch.echo_kuche_shuffle_switch:
       hidden: true
-    input_boolean.kodi_pausieren:
+    switch.echo_schlafzimmer_shuffle_switch:
       hidden: true
+    switch.echo_wohnzimmer_shuffle_switch:
+      hidden: true      
