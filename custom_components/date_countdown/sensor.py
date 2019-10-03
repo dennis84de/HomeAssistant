@@ -1,55 +1,53 @@
-"""
-Date Countdown
-"""
-
-import datetime
-from datetime import timedelta
-import logging
+"""Platform for sensor integration."""
 
 import voluptuous as vol
-
 import homeassistant.helpers.config_validation as cv
 from homeassistant.components.sensor import PLATFORM_SCHEMA
-from homeassistant.const import CONF_NAME
+from homeassistant.const import (
+    CONF_NAME,
+)
+
 from homeassistant.helpers.entity import Entity
-from homeassistant.util import Throttle
+from datetime import datetime, date, timedelta
 
+CONF_DATE = "date"
+ATTR_DATE = "date"
+CONF_ICON_NORMAL = "icon_normal"
+CONF_ICON_TODAY = "icon_today"
+CONF_ICON_TOMORROW = "icon_tomorrow"
 
-_LOGGER = logging.getLogger(__name__)
+DEFAULT_UNIT_OF_MEASUREMENT = 'Minuten'
 
-ATTR_DAYS = 'days'
-ATTR_HOURS = 'hours'
-ATTR_MINUTES = 'minutes'
+DEFAULT_ICON_NORMAL = "mdi:calendar-blank"
+DEFAULT_ICON_TODAY = "mdi:calendar-star"
+DEFAULT_ICON_TOMORROW = "mdi:calendar"
 
-DEFAULT_NAME = "Countdown"
-CONF_DATE = 'date'
-
-MIN_TIME_BETWEEN_UPDATES = timedelta(minutes=1)
 
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
-    vol.Required(CONF_DATE): cv.string,
-    vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
+    vol.Required(CONF_DATE): cv.date,
+    vol.Required(CONF_NAME): cv.string,
+    vol.Optional(CONF_ICON_NORMAL, default=DEFAULT_ICON_NORMAL): cv.icon,
+    vol.Optional(CONF_ICON_TODAY, default=DEFAULT_ICON_TODAY): cv.icon,
+    vol.Optional(CONF_ICON_TOMORROW, default=DEFAULT_ICON_TOMORROW): cv.icon,
+
 })
 
+TRACKABLE_DOMAINS = ["sensor"]
 
-def setup_platform(hass, config, add_devices, discovery_info=None):
-    """Set up date countdown sensor."""
-    end_date = config.get(CONF_DATE)
-    sensor_name = config.get(CONF_NAME)
+async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+    """Setup the sensor platform."""
+    async_add_entities([countdown(config)],True)  
 
-    add_devices([Countdown(sensor_name, end_date)])
-
-
-class Countdown(Entity):
-    """Implementation of the date countdown sensor."""
-
-    def __init__(self, sensor_name, end_date):
+class countdown(Entity):
+    def __init__(self, config):
         """Initialize the sensor."""
-        self.end_date = end_date
-        self._name = sensor_name
-        self._state = None
-        self._data = {}
-        self.update()
+        self._name = config.get(CONF_NAME)
+        self._date = config.get(CONF_DATE)
+        self._icon_normal = config.get(CONF_ICON_NORMAL)
+        self._icon_today = config.get(CONF_ICON_TODAY)
+        self._icon_tomorrow = config.get(CONF_ICON_TOMORROW)
+        self._icon = self._icon_normal
+        self._state = 0
 
     @property
     def name(self):
@@ -58,64 +56,48 @@ class Countdown(Entity):
 
     @property
     def state(self):
-        """Return the state of the sensor."""
+        """Return the name of the sensor."""
         return self._state
 
-    @property
+    @property 
     def device_state_attributes(self):
-        return {
-            ATTR_DAYS: self._data.get("days"),
-            ATTR_HOURS: self._data.get("hours"),
-            ATTR_MINUTES: self._data.get("minutes")
-        }
+        """Return the state attributes."""
+        res = {}
+        res[ATTR_DATE] = datetime.strftime(self._date,"%Y-%m-%d")
+        return res
+
+    @property
+    def unit_of_measurement(self):
+        """Return the unit_of_measurement of the sensor."""
+
+        unit_of_measurement = 'Tage'
+
+        if self._state == 1:
+            unit_of_measurement = 'Tag'
+
+        return unit_of_measurement
 
     @property
     def icon(self):
-        """Icon to use in the frontend, if any."""
-        return 'mdi:calendar'
+        return self._icon
 
-    @Throttle(MIN_TIME_BETWEEN_UPDATES)
-    def update(self):
-        """Calculate time until end"""
-        end_date = datetime.datetime.strptime(self.end_date, '%d-%m-%Y %H:%M')
-        days = (end_date - datetime.datetime.now())
+    async def async_update(self):
+        today = date.today()
+        nextDate = date(today.year, self._date.month, self._date.day)
+        daysRemaining = 0
 
-        days, seconds = days.days, days.seconds
-        hours = seconds // 3600
-        minutes = (seconds % 3600) // 60
-        seconds = seconds % 60
+        if today < nextDate:
+            daysRemaining = (nextDate - today).days
+        elif today == nextDate:
+            daysRemaining = 0
+        elif today > nextDate:
+            nextDate = date(today.year + 1, self._date.month, self._date.day)
+            daysRemaining = (nextDate - today).days
 
-        if days == 0:
-            dayPart = ""
-        elif days == 1:
-            dayPart = str(days) + " Tag"
+        if daysRemaining == 0:
+            self._icon = self._icon_today
+        elif daysRemaining == 1:
+            self._icon = self._icon_tomorrow
         else:
-            dayPart = str(days) + " Tage"
-
-        if hours == 0:
-            hourPart = ""
-        elif hours == 1:
-            hourPart = str(hours) + " Stunde"
-        else:
-            hourPart = str(hours) + " Stunden"
-
-        if minutes == 0:
-            minutePart = ""
-        elif minutes == 1:
-            minutePart = str(minutes) + " Minute"
-        else:
-            minutePart = str(minutes) + " Minuten"
-
-        self._data["days"] = days
-        self._data["hours"] = hours
-        self._data["minutes"] = minutes
-      
-        if days > 0:
-            self._state = dayPart
-        elif hours > 0:
-            self._state = hourPart
-        elif minutes > 0:
-            self._state = minutePart
-        else:
-            self._state = "-"
-        
+            self._icon = self._icon_normal
+        self._state = daysRemaining

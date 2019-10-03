@@ -17,6 +17,12 @@ device_tracker:
     new_device_defaults:
       track_new_devices: false
 
+  - platform: ping
+    interval_seconds: 30
+    consider_home: 60
+    hosts:
+      brematic_gateway: !secret brematic_host
+      
 sensor:
   - platform: fritzbox_callmonitor
     name: Telefon
@@ -141,7 +147,7 @@ switch:
     username: !secret fritzbox_username
     password: !secret fritzbox_password
     interface: 2
-
+    
 automation:
   - alias: "Gäste-Wlan eingeschaltet - TTS"
     trigger:
@@ -167,36 +173,6 @@ automation:
         message: >-
           Der Gastzugang wurde ausgeschaltet.
 
-  - alias: 'Heimnetz - Geräte offline'    
-    trigger:
-      - platform: time
-        at: '19:30:00'
-    condition:
-      - condition: numeric_state
-        entity_id: sensor.heimnetz_offline
-        above: 0
-    action:
-      - service: !secret tts_service
-        data_template:
-          message: >-
-            {% set count_entities = states.sensor.heimnetz_offline.state | int -%}
-
-            {% if count_entities == 0 %}
-              {{ "Alle Geräte sind online." }}
-            {% elif count_entities > 1 %}
-              {{ "Die folgenden Geräte sind offline. " }}
-            {% else %}
-              {{ "Das folgende Gerät ist offline. " }}
-            {% endif %}
-
-            {%- for entity_id in states.group.heimnetz.attributes.entity_id -%}
-              {% set parts = entity_id.split('.') -%}
-
-              {% if states(entity_id) == 'not_home' %}
-                {{ states[parts[0]][parts[1]].name }},
-              {% endif %}
-            {%- endfor %}
-            
 homeassistant:
   customize:
     sensor.netmonitor:
@@ -260,6 +236,8 @@ homeassistant:
     device_tracker.epsondrucker:
       icon: mdi:printer
     device_tracker.brematicgateway:
+      icon: mdi:signal-variant
+    device_tracker.brematic_gateway:
       icon: mdi:signal-variant
     device_tracker.maxheizung:
       icon: mdi:radiator

@@ -44,7 +44,7 @@ cards:
     title: Gateways
     show_header_toggle: false
     entities:
-      - entity: device_tracker.brematicgateway
+      - entity: device_tracker.brematic_gateway
       - entity: device_tracker.xiaomigateway
 
   - type: entities

@@ -1,13 +1,3 @@
-wunderlist:
-  client_id: !secret wunderlist_client_id
-  access_token: !secret wunderlist_token
-
-bring_shopping_list:
-  lists:
-    - id: !secret bring_list_id_einkaufen
-      name: Einkaufen
-      locale: de-DE
-      
 sensor:
   - platform: imap
     server: mail.manitu.de
@@ -50,15 +40,11 @@ sensor:
 
   - platform: date_countdown
     name: Countdown Neuhaus
-    date: "18-07-2020 22:00"
-
+    date: '2020-07-18'
+    
   - platform: time_date
     display_options:
       - 'time'
-
-#  - platform: aftership
-#    name: Kommende Pakete
-#    api_key: !secret aftership_apikey
 
   - platform: seventeentrack
     username: !secret 17track_name
@@ -158,7 +144,4 @@ homeassistant:
     sensor.tankstelle_real:
       icon: mdi:gas-station
     sensor.tankstelle_jet:
-      icon: mdi:gas-station
-
-    sensor.bring_shopping_list_einkaufen:
-      friendly_name: Einkaufen
+      icon: mdi:gas-station     
