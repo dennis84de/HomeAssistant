@@ -2,6 +2,7 @@ http:
 config:
 websocket_api:
 frontend:
+mobile_app:
 lovelace:
   mode: yaml
 

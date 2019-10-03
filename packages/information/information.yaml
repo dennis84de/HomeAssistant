@@ -6,6 +6,12 @@ sensor:
     username: !secret email_username
     password: !secret email_password
 
+  - platform: google_keep
+    username: !secret google_keep_username
+    password: !secret google_keep_password
+    labels:
+      - 'Einkaufen'    
+    
   - platform: rest
     resource: !secret tankerkoenig_url_real
     name: Tankstelle Real
@@ -145,3 +151,6 @@ homeassistant:
       icon: mdi:gas-station
     sensor.tankstelle_jet:
       icon: mdi:gas-station     
+      
+    sensor.google_keep_499e4d2310:
+      friendly_name: Einkaufen

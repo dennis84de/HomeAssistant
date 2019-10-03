@@ -216,3 +216,10 @@ cards:
       - entity: sensor.serien_episode_7
       - entity: sensor.serien_episode_8
       - entity: sensor.serien_episode_9
+
+#  - type: custom:google-keep-card
+#    entity: sensor.google_keep_499e4d2310
+#    title: Einkaufen
+#    show:
+#      - checked
+#      - unchecked
