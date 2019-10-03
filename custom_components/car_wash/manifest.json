@@ -1,10 +1,8 @@
 {
-  "domain": "carwash",
-  "name": "Carwash",
-  "documentation": "https://www.home-assistant.io/components/carwash",
+  "domain": "car_wash",
+  "name": "Car Wash",
+  "documentation": "https://github.com/Limych/HomeAssistantComponents/tree/master/custom_components/car_wash",
   "requirements": [],
   "dependencies": [],
-  "codeowners": [
-    "@renemarc"
-  ]
+  "codeowners": ["@limych"]
 }
