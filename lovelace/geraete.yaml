@@ -81,6 +81,7 @@ cards:
     show_header_toggle: false
     entities:
       - entity: binary_sensor.bluetooth_gateway
+      - entity: binary_sensor.winthing
 
   - type: entities
     title: Bewegungsmelder

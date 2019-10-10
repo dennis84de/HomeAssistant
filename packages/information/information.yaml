@@ -139,7 +139,7 @@ panel_iframe:
   infoscreen:
     title: Infoscreen
     icon: mdi:information
-    url: http://192.168.2.75/infoscreen/
+    url: http://192.168.2.78/infoscreen/
 
 homeassistant:
   customize:

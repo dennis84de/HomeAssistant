@@ -1,0 +1,10 @@
+{
+  "domain": "phonebook",
+  "name": "Phonebook",
+  "documentation": "https://github.com/dennis84de/phonebook",
+  "requirements": [],
+  "dependencies": [],
+  "codeowners": [
+  	"@dennis84de"
+  ]
+}

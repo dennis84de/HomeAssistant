@@ -1,7 +1,3 @@
-shell_command:
-  werbeanruf_suchen: "python3 /home/homeassistant/.homeassistant/python_scripts/werbeanrufe.py {{ rufnummer }}"
-  werbeanruf_zuruecksetzen: "python3 /home/homeassistant/.homeassistant/python_scripts/werbeanrufe.py"
-
 sensor:
   - platform: template
     sensors:
@@ -38,63 +34,57 @@ sensor:
             {% endif %}
           {% endif %}
 
+  - platform: mqtt
+    name: "Letzter Anruf"
+    state_topic: "phone/last_call"
+    value_template: >-
+      {% if value == None %}
+        -
+      {% else %}
+        {{ value }}
+      {% endif %}
+    icon: mdi:phone-classic
+    
+  - platform: phonebook
+    sensors:
+      werbeanruf:
+        entity_id: sensor.letzter_anruf
+        friendly_name: "Werbeanruf"
+    
 automation:
-  - alias: 'Telefon aktiv - Rufnummer suchen'
+  - alias: 'Eingehender Anruf - Telefon'
     trigger:
       - platform: state
         entity_id: sensor.telefon
         to: 'ringing'
     condition:
       - condition: template
-        value_template: '{{ state_attr("sensor.telefon", "from_name") == "unknown" and state_attr("sensor.telefon", "from") != None and state_attr("sensor.telefon", "from") != "" }}'
+        value_template: '{{ state_attr("sensor.telefon", "from") != None }}'        
     action:
-      - service: shell_command.werbeanruf_suchen
+      - service: mqtt.publish
         data_template:
-          rufnummer: '{{ states.sensor.telefon.attributes.from }}'
-
+          payload: '{{ state_attr(trigger.entity_id, "from") }}'          
+          topic: phone/last_call
+          retain: true
+          
   - alias: 'Werbeanruf - Nachricht an Handy'
     trigger:
       - platform: state
-        entity_id: binary_sensor.werbeanruf
-        to: 'on'
+        entity_id: sensor.werbeanruf
     condition:
       - condition: state
         entity_id: binary_sensor.zu_hause
-        state: 'off'
+        state: 'off'    
+      - condition: template
+        value_template: '{{ is_state("sensor.werbeanruf", "unknown") == False }}'
     action:
       - service: notify.telegram
         data_template:
           title: Werbeanruf Festnetz
           message: >
-            Anrufer: {{ state_attr('binary_sensor.werbeanruf', 'name') }}
+            Anrufer: {{ states.sensor.werbeanruf.state }}
 
-            Rufnummer: {{ state_attr('binary_sensor.werbeanruf', 'number') }}
-
-            Anruftyp: {{ state_attr('binary_sensor.werbeanruf', 'type') }}
-
-            Bewertung: {{ state_attr('binary_sensor.werbeanruf', 'score') }}
-          data:
-            inline_keyboard:
-              - 'Gelesen:/gelesen'
-
-  - alias: 'Werbeanruf - Zurücksetzen'
-    trigger:
-      platform: event
-      event_type: telegram_callback
-      event_data:
-        data: '/gelesen'
-    action:
-      - service: shell_command.werbeanruf_zuruecksetzen
-      - service: telegram_bot.edit_replymarkup
-        data_template:
-          message_id: '{{ trigger.event.data.message.message_id }}'
-          chat_id: '{{ trigger.event.data.user_id }}'
-          inline_keyboard: []
-      - service: telegram_bot.send_message
-        data_template:
-          target: '{{ trigger.event.data.chat_id }}'
-          message: >-
-            Werbeanruf wurde entfernt.
+            Rufnummer: {{ state_attr('sensor.werbeanruf', 'number') }}
 
   - alias: 'Telefon aktiv - Kodi pausieren'
     trigger:
@@ -296,8 +286,6 @@ automation:
 homeassistant:
   customize:
     sensor.telefon:
-      icon: mdi:phone-classic
-      hidden: true
-    binary_sensor.werbeanruf:
-      icon: mdi:phone-log
-      hidden: true
+      icon: mdi:phone-classic      
+    sensor.werbeanruf:
+      icon: mdi:phone-log      

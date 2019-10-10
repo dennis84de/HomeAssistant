@@ -70,6 +70,21 @@ sensor:
         device_class: timestamp
         
 automation:
+  - alias: 'Eingehender Anruf - Handy'
+    trigger:
+      - platform: state
+        entity_id: sensor.tasker_handystatus
+        to: 'incoming'
+    condition:
+      - condition: template
+        value_template: '{{ state_attr("sensor.tasker_handystatus", "number") != None }}'        
+    action:
+      - service: mqtt.publish
+        data_template:
+          payload: '{{ state_attr(trigger.entity_id, "number") }}'          
+          topic: phone/last_call
+          retain: true
+          
   - alias: 'Handy aktiv - Kodi pausieren'
     trigger:
       - platform: state

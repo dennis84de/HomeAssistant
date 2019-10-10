@@ -32,7 +32,7 @@ cards:
       - entity: switch.watchtv_wohnzimmer
       - entity: input_boolean.musik_ausschalten
       - entity: input_boolean.kodi_pausieren
-      - entity: cover.fernseher_eingang
+      - entity: cover.fernseher_eingang     
       - entity: input_number.soundbar_volume
       - type: custom:mini-media-player
         entity: media_player.kodi_wohnzimmer

@@ -267,11 +267,12 @@ automation:
         entity_id: input_boolean.zu_hause_begruessung
         state: 'on'  
       - condition: time        
-        before: '23:00'        
+        before: '23:00'   
+      - condition: numeric_state
+        entity_id: sensor.laufzeit_minuten
+        above: 5        
     action:
-      - service: input_boolean.turn_off
-        entity_id: input_boolean.zu_hause_begruessung
-      - delay: '00:01:00'
+      - delay: '00:00:30'
       - service: !secret tts_service
         data_template:
           message: >-
@@ -334,6 +335,8 @@ automation:
                 {%- endif -%}
               {%- endfor -%}              
             {% endif %}
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.zu_hause_begruessung                           
                                  
   - alias: "Zu Hause - Staubsaugerbehälter leeren"
     trigger:

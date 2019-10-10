@@ -1,7 +1,7 @@
 media_player:
   - platform: songpal
     name: Soundbar
-    endpoint: http://192.168.2.20:10000/sony
+    endpoint: !secret songpal_endpoint_url
 
 input_number:
   soundbar_volume:

@@ -17,6 +17,7 @@ OZW_Log.txt
 /nbproject/*
 emulated_hue_ids.json
 /.storage/*
+/.cloud/*
 custom_components/**/__pycache__/
 .cloud/production_auth.json
 alexa_media.amazon@*

@@ -79,37 +79,3 @@ sensor:
           {% endfor -%}
           
           {{ ns.found | int }}
-
-automation:
-  - alias: 'Batteriestand niedrig'
-    trigger:
-      - platform: time
-        at: '19:15:00'
-    condition:
-      - condition: state
-        entity_id: binary_sensor.zu_hause
-        state: 'on'
-      - condition: template
-        value_template: >
-          {% set count_entities = states.sensor.batteriestand_niedrig.state | int -%}
-
-          {{ count_entities > 0 }}
-    action:
-      - service: !secret tts_service
-        data_template:
-          message: >-
-            {% set min_battery_level = states.input_number.batteriestand_warnlevel.state | int -%}
-            {% set count_entities = states.sensor.batteriestand_niedrig.state | int -%}
-
-            {% if count_entities > 1 %}
-              {{ "Der Batteriestand der folgenden Geräte ist niedrig. " }}
-            {% else %}
-              {{ "Der Batteriestand des folgenden Gerätes ist niedrig. " }}
-            {% endif %}
-
-            {%- for entity_id in states.group.batteriestand.attributes.entity_id -%}
-              {%- set parts = entity_id.split('.') -%}
-              {%- if (states(entity_id) | replace("%","") | int) <= min_battery_level -%}
-                {{ states[parts[0]][parts[1]].name }},
-              {%- endif -%}
-            {%- endfor -%}
