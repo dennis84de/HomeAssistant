@@ -13,11 +13,23 @@ cards:
     show_header_toggle: false
     entities:
       - entity: sensor.handy_batterie
-      - entity: sensor.tablet_wohnzimmer_batterie
-      - entity: sensor.tablet_kueche_batterie
+        type: "custom:secondaryinfo-entity-row"
+        secondary_info: "Zuletzt geladen: [[ sensor.handy_zuletzt_geladen ]]"      
+      - entity: sensor.tablet_wohnzimmer_batterie     
+        type: "custom:secondaryinfo-entity-row"
+        secondary_info: "Zuletzt geladen: [[ sensor.tablet_wohnzimmer_zuletzt_geladen ]]"           
+      - entity: sensor.tablet_kuche_batterie
+        type: "custom:secondaryinfo-entity-row"
+        secondary_info: "Zuletzt geladen: [[ sensor.tablet_kueche_zuletzt_geladen ]]"         
       - entity: sensor.tablet_badezimmer_batterie
+        type: "custom:secondaryinfo-entity-row"
+        secondary_info: "Zuletzt geladen: [[ sensor.tablet_badezimmer_zuletzt_geladen ]]"         
       - entity: sensor.tablet_schlafzimmer_batterie
+        type: "custom:secondaryinfo-entity-row"
+        secondary_info: "Zuletzt geladen: [[ sensor.tablet_schlafzimmer_zuletzt_geladen ]]"         
       - entity: sensor.tablet_balkon_batterie
+        type: "custom:secondaryinfo-entity-row"
+        secondary_info: "Zuletzt geladen: [[ sensor.tablet_balkon_zuletzt_geladen ]]"         
 
   - type: entities
     title: Batterien Sensoren
@@ -51,7 +63,6 @@ cards:
       - entity: sensor.thermometer_kueche_battery_level
       - entity: sensor.thermometer_sportzimmer_battery_level
       - entity: sensor.thermometer_kuehlschrank_battery_level
-      - entity: sensor.thermometer_gefrierschrank_battery_level
       - entity: sensor.thermometer_hardware_battery_level
 
   - type: entities

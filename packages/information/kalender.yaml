@@ -24,10 +24,10 @@ sensor:
         entity_id:
           - calendar.edg_restmuell
         value_template: >
-          {% if states.calendar.edg_restmuell.attributes.start_time %}
-            {% set weekday = as_timestamp(states.calendar.edg_restmuell.attributes.start_time) | timestamp_custom("%w", True) | int %}
+          {% if state_attr('calendar.edg_restmuell', 'start_time') %}
+            {% set weekday = as_timestamp(state_attr('calendar.edg_restmuell', 'start_time')) | timestamp_custom("%w", True) | int %}
 
-            {{ ['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'][weekday-1] }}, {{ as_timestamp(states.calendar.edg_restmuell.attributes.start_time) | timestamp_custom("%d.%m.%Y", True) | string }}
+            {{ ['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'][weekday-1] }}, {{ as_timestamp(state_attr('calendar.edg_restmuell', 'start_time')) | timestamp_custom("%d.%m.%Y", True) | string }}
           {% else %}
             -
           {% endif %}
@@ -38,10 +38,10 @@ sensor:
         entity_id:
           - calendar.edg_wertstoff
         value_template: >
-          {% if states.calendar.edg_wertstoff.attributes.start_time %}
-            {% set weekday = as_timestamp(states.calendar.edg_wertstoff.attributes.start_time) | timestamp_custom("%w", True) | int %}
+          {% if state_attr('calendar.edg_wertstoff', 'start_time') %}
+            {% set weekday = as_timestamp(state_attr('calendar.edg_wertstoff', 'start_time')) | timestamp_custom("%w", True) | int %}
 
-            {{ ['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'][weekday-1] }}, {{ as_timestamp(states.calendar.edg_wertstoff.attributes.start_time) | timestamp_custom("%d.%m.%Y", True) | string }}
+            {{ ['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'][weekday-1] }}, {{ as_timestamp(state_attr('calendar.edg_wertstoff', 'start_time')) | timestamp_custom("%d.%m.%Y", True) | string }}
           {% else %}
             -
           {% endif %}
@@ -52,10 +52,10 @@ sensor:
         entity_id:
           - calendar.edg_papier
         value_template: >
-          {% if states.calendar.edg_papier.attributes.start_time %}
-            {% set weekday = as_timestamp(states.calendar.edg_papier.attributes.start_time) | timestamp_custom("%w", True) | int %}
+          {% if state_attr('calendar.edg_papier', 'start_time') %}
+            {% set weekday = as_timestamp(state_attr('calendar.edg_papier', 'start_time')) | timestamp_custom("%w", True) | int %}
 
-            {{ ['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'][weekday-1] }}, {{ as_timestamp(states.calendar.edg_papier.attributes.start_time) | timestamp_custom("%d.%m.%Y", True) | string }}
+            {{ ['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'][weekday-1] }}, {{ as_timestamp(state_attr('calendar.edg_papier', 'start_time')) | timestamp_custom("%d.%m.%Y", True) | string }}
           {% else %}
             -
           {% endif %}
@@ -66,8 +66,8 @@ sensor:
         entity_id:
           - calendar.borussia_dortmund
         value_template: >
-          {% if states.calendar.borussia_dortmund.attributes.message %}
-            {{ states.calendar.borussia_dortmund.attributes.message }}
+          {% if state_attr('calendar.borussia_dortmund', 'message') %}
+            {{ state_attr('calendar.borussia_dortmund', 'message') }}
           {% else %}
             -
           {% endif %}
@@ -78,10 +78,10 @@ sensor:
         entity_id:
           - calendar.borussia_dortmund
         value_template: >
-          {% if states.calendar.borussia_dortmund.attributes.start_time %}
-            {% set weekday = as_timestamp(states.calendar.borussia_dortmund.attributes.start_time) | timestamp_custom("%w", True) | int %}
+          {% if state_attr('calendar.borussia_dortmund', 'start_time') %}
+            {% set weekday = as_timestamp(state_attr('calendar.borussia_dortmund', 'start_time')) | timestamp_custom("%w", True) | int %}
 
-            {{ ['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'][weekday-1] }}, {{ as_timestamp(states.calendar.borussia_dortmund.attributes.start_time) | timestamp_custom("%d.%m.%Y", True) | string }}
+            {{ ['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'][weekday-1] }}, {{ as_timestamp(state_attr('calendar.borussia_dortmund', 'start_time')) | timestamp_custom("%d.%m.%Y", True) | string }}
           {% else %}
             -
           {% endif %}
@@ -92,8 +92,8 @@ sensor:
         entity_id:
           - calendar.borussia_dortmund
         value_template: >
-          {% if states.calendar.borussia_dortmund.attributes.start_time %}
-            {{ as_timestamp(states.calendar.borussia_dortmund.attributes.start_time) | timestamp_custom("%H:%M Uhr", True) | string }}
+          {% if state_attr('calendar.borussia_dortmund', 'start_time') %}
+            {{ as_timestamp(state_attr('calendar.borussia_dortmund', 'start_time')) | timestamp_custom("%H:%M Uhr", True) | string }}
           {% else %}
             -
           {% endif %}
@@ -104,8 +104,8 @@ sensor:
         entity_id:
           - calendar.borussia_dortmund
         value_template: >
-          {% if states.calendar.borussia_dortmund.attributes.location %}
-            {{ states.calendar.borussia_dortmund.attributes.location }}
+          {% if state_attr('calendar.borussia_dortmund', 'location') %}
+            {{ state_attr('calendar.borussia_dortmund', 'location') }}
           {% else %}
             -
           {% endif %}
@@ -116,10 +116,12 @@ sensor:
         entity_id:
           - calendar.formel1_rennen
         value_template: >
-          {% if states.calendar.formel1_rennen.attributes.location %}
-            {{ states.calendar.formel1_rennen.attributes.location }}
-          {% else %}
+          {% set ort = state_attr('calendar.formel1_rennen', 'location') %}
+        
+          {% if ort == None %}
             -
+          {% else %}
+            {{ ort }}
           {% endif %}
         icon_template: mdi:car-sports
 
@@ -128,11 +130,14 @@ sensor:
         entity_id:
           - calendar.formel1_rennen
         value_template: >
-          {% if states.calendar.formel1_rennen.attributes.start_time %}
-            {{ as_timestamp(states.calendar.formel1_rennen.attributes.start_time) | timestamp_custom("%d.%m.%Y", True) | string }}, {{ as_timestamp(states.calendar.formel1_rennen.attributes.start_time) | timestamp_custom("%H:%M Uhr", True) | string }}
-          {% else %}
+          {% set rennen = state_attr('calendar.formel1_rennen', 'start_time') %}
+        
+          {% if rennen == None %}
             -
-          {% endif %}
+          {% else %}
+            {% set rennenTs = as_timestamp(state_attr('calendar.formel1_rennen', 'start_time')) %}
+            {{ rennenTs | timestamp_custom("%d.%m.%Y", True) | string }}, {{ rennenTs | timestamp_custom("%H:%M Uhr", True) | string }}       
+          {% endif %}         
         icon_template: mdi:calendar-alert
 
       formel1_qualifikation:
@@ -141,18 +146,25 @@ sensor:
           - calendar.formel1_rennen
           - calendar.formel1_qualifikation
         value_template: >
-          {% set qualifikation = as_timestamp(states.calendar.formel1_qualifikation.attributes.start_time) %}
-          {% set rennen = as_timestamp(states.calendar.formel1_rennen.attributes.start_time) %}
-
-          {% if qualifikation > rennen %}
+          {% set qualifikation = state_attr('calendar.formel1_qualifikation', 'start_time') %}
+          {% set rennen = state_attr('calendar.formel1_rennen', 'start_time') %}
+          
+          {% if qualifikation == None or rennen == None %}
             -
           {% else %}
-            {% if states.calendar.formel1_qualifikation.attributes.start_time %}
-              {{ as_timestamp(states.calendar.formel1_qualifikation.attributes.start_time) | timestamp_custom("%d.%m.%Y", True) | string }}, {{ as_timestamp(states.calendar.formel1_qualifikation.attributes.start_time) | timestamp_custom("%H:%M Uhr", True) | string }}
-            {% else %}
+            {% set qualifikationTs = as_timestamp(state_attr('calendar.formel1_qualifikation', 'start_time')) %}
+            {% set rennenTs = as_timestamp(state_attr('calendar.formel1_rennen', 'start_time')) %}
+            
+            {% if qualifikation > rennen %}
               -
+            {% else %}
+              {% if state_attr('calendar.formel1_qualifikation', 'start_time') %}
+                {{ rennenTs | timestamp_custom("%d.%m.%Y", True) | string }}, {{ rennenTs | timestamp_custom("%H:%M Uhr", True) | string }}
+              {% else %}
+                -
+              {% endif %}
             {% endif %}
-          {% endif %}
+          {% endif %}       
         icon_template: mdi:car-sports
 
       naechster_urlaub:
@@ -160,15 +172,19 @@ sensor:
         entity_id:
           - calendar.urlaub
         value_template: >
-          {% if states.calendar.urlaub.attributes.start_time %}
-            {% set weekday = as_timestamp(states.calendar.urlaub.attributes.start_time) | timestamp_custom("%w", True) | int %}
+          {% if state_attr('calendar.urlaub', 'start_time') %}          
+            {% set weekday = as_timestamp(state_attr('calendar.urlaub', 'start_time')) | timestamp_custom("%w", True) | int %}
 
-            {{ ['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'][weekday-1] }}, {{ as_timestamp(states.calendar.urlaub.attributes.start_time) | timestamp_custom("%d.%m.%Y", True) | string }}
+            {{ ['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'][weekday-1] }}, {{ as_timestamp(state_attr('calendar.urlaub', 'start_time')) | timestamp_custom("%d.%m.%Y", True) | string }}
           {% else %}
             -
           {% endif %}
         friendly_name_template: >-
-          {{ states.calendar.urlaub.attributes.message }}
+          {% if state_attr('calendar.urlaub', 'message') %}
+            {{ state_attr('calendar.urlaub', 'message') }}
+          {% else %}
+            -
+          {% endif %}          
         icon_template: mdi:sunglasses
         
       naechster_feiertag:
@@ -176,15 +192,19 @@ sensor:
         entity_id:
           - calendar.ferien_feiertage
         value_template: >
-          {% if states.calendar.ferien_feiertage.attributes.start_time %}
-            {% set weekday = as_timestamp(states.calendar.ferien_feiertage.attributes.start_time) | timestamp_custom("%w", True) | int %}
+          {% if state_attr('calendar.ferien_feiertage', 'start_time') %}             
+            {% set weekday = as_timestamp(state_attr('calendar.ferien_feiertage', 'start_time')) | timestamp_custom("%w", True) | int %}
 
-            {{ ['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'][weekday-1] }}, {{ as_timestamp(states.calendar.ferien_feiertage.attributes.start_time) | timestamp_custom("%d.%m.%Y", True) | string }}
+            {{ ['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'][weekday-1] }}, {{ as_timestamp(state_attr('calendar.ferien_feiertage', 'start_time')) | timestamp_custom("%d.%m.%Y", True) | string }}
           {% else %}
             -
           {% endif %}
         friendly_name_template: >-
-          {{ states.calendar.ferien_feiertage.attributes.message }}
+          {% if state_attr('calendar.ferien_feiertage', 'message') %}
+            {{ state_attr('calendar.ferien_feiertage', 'message') }}
+          {% else %}
+            -
+          {% endif %}
         icon_template: mdi:calendar-star    
 
 homeassistant:

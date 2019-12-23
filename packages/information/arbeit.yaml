@@ -1,18 +1,18 @@
 sensor:
   - platform: google_travel_time
     api_key: !secret googlemaps_apikey
-    name: Fahrzeit zur Arbeit
+    name: Fahrzeit zur Arbeit - Google
     origin: !secret googlemaps_home
     destination: !secret googlemaps_work
 
   - platform: google_travel_time
     api_key: !secret googlemaps_apikey
-    name: Fahrzeit nach Hause
+    name: Fahrzeit nach Hause - Google
     origin: !secret googlemaps_work
     destination: !secret googlemaps_home
 
   - platform: here_travel_time
-    name: Fahrzeit Arbeit
+    name: Fahrzeit zur Arbeit
     app_id: !secret here_app_id
     app_code: !secret here_app_code
     origin_latitude: !secret home_latitude
@@ -22,11 +22,11 @@ sensor:
     traffic_mode: true
 
   - platform: here_travel_time
-    name: Fahrzeit Hause
+    name: Fahrzeit nach Hause
     app_id: !secret here_app_id
     app_code: !secret here_app_code
     origin_latitude: !secret work_latitude
-    origin_longitude: !secret work_longitude
+    origin_longitude: !secret work_longitude    
     destination_latitude: !secret home_latitude
     destination_longitude: !secret home_longitude
     traffic_mode: true
@@ -44,9 +44,9 @@ sensor:
           - sensor.fahrzeit_zur_arbeit
           - binary_sensor.schlechtes_wetter
         value_template: >-
-          {% set minuten_arbeit = (states.input_select.arbeit_stunden.state | int * 60) + (states.input_select.arbeit_minuten.state | int) | int %}
-          {% set verzoegerung_wetter = (10 if states.binary_sensor.schlechtes_wetter.state == 'on' else 0) %}
-          {% set minuten_minus_fahrzeit = (minuten_arbeit - states.sensor.fahrzeit_zur_arbeit.state | int) - (states.input_select.arbeit_puffer.state | int) - (verzoegerung_wetter | int) | int %}
+          {% set minuten_arbeit = (states('input_select.arbeit_stunden') | int * 60) + (states('input_select.arbeit_minuten') | int) | int %}
+          {% set verzoegerung_wetter = (10 if is_state('binary_sensor.schlechtes_wetter', 'on') else 0) %}
+          {% set minuten_minus_fahrzeit = (minuten_arbeit - states('sensor.fahrzeit_zur_arbeit') | int) - (states('input_select.arbeit_puffer') | int) - (verzoegerung_wetter | int) | int %}
           {% set stunde_abfahrt = (minuten_minus_fahrzeit / 60) | int %}
           {% set minuten_abfahrt = (minuten_minus_fahrzeit - stunde_abfahrt * 60) | int %}
           {% set abfahrt = "%0.02d:%0.02d" | format(stunde_abfahrt, minuten_abfahrt ) %}
@@ -63,7 +63,6 @@ input_select:
       - 18
       - 19
       - 20
-    initial: 6
     icon: mdi:av-timer
 
   arbeit_minuten:
@@ -75,7 +74,6 @@ input_select:
       - 30
       - 40
       - 50
-    initial: 50
     icon: mdi:timer
 
   arbeit_puffer:
@@ -85,14 +83,13 @@ input_select:
       - 10
       - 20
       - 30
-    initial: 10
     icon: mdi:timelapse
 
 automation:
   - alias: 'Benachrichtigung Arbeit'
     trigger:
       - platform: template
-        value_template: '{{ states.sensor.time.state == states.sensor.abfahrzeit.state }}'
+        value_template: '{{ states("sensor.time") == states("sensor.abfahrzeit") }}'
     condition:
       - condition: state
         entity_id: binary_sensor.arbeitstag
@@ -104,8 +101,25 @@ automation:
       - service: !secret tts_service
         data_template:
           message: >-
-            "Es ist Zeit zur Arbeit zu fahren. Die aktuelle Fahrzeit beträgt {{ states.sensor.fahrzeit_zur_arbeit.state }} Minuten.{% if is_state('binary_sensor.schlechtes_wetter', 'on') %} Aktuell ist mit {{ states.sensor.wetterlage.state }} zu rechnen.{% endif %}"
+            "Es ist Zeit zur Arbeit zu fahren. Die aktuelle Fahrzeit beträgt {{ states('sensor.fahrzeit_zur_arbeit') }} Minuten.{% if is_state('binary_sensor.schlechtes_wetter', 'on') %} Aktuell ist mit {{ states('sensor.wetterlage') }} zu rechnen.{% endif %}"
 
+  - alias: 'Telegram - Fahrzeit nach Hause'
+    trigger:
+      platform: event
+      event_type: telegram_command
+      event_data:
+        command: '/fahrzeit'
+    action:
+      - service: notify.telegram
+        data_template:
+          title: "Fahrzeit nach Hause"
+          message: >-
+            Die Fahrzeit von der Arbeit nach Hause beträgt aktuell {{ states('sensor.fahrzeit_nach_hause') }} Minuten.
+            
+            
+            Die folgende Route wird empfohlen:
+            {{ state_attr('sensor.fahrzeit_nach_hause', 'route') }}
+          
 homeassistant:
   customize:
     sensor.fahrzeit_zur_arbeit:

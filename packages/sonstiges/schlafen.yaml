@@ -63,7 +63,7 @@ sensor:
     db_url: !secret mariadb_url
     queries:
       - name: Schlafen Letzte Uhrzeit
-        query: "SELECT CONVERT_TZ(last_changed,'+00:00','+02:00') as last_changed FROM states WHERE entity_id = 'script.schlafen_gehen' AND state = 'on' ORDER BY created DESC LIMIT 1;"
+        query: "SELECT CONVERT_TZ(last_changed,'+00:00','+01:00') as last_changed FROM states WHERE entity_id = 'script.schlafen_gehen' AND state = 'on' ORDER BY created DESC LIMIT 1;"
         column: 'last_changed'
         unit_of_measurement: 'Uhr'
         value_template: '{{ as_timestamp(value) | timestamp_custom("%H:%M", True) | string }}'
@@ -82,8 +82,8 @@ sensor:
         value_template: >-
             {%- if is_state('input_boolean.timer_schlafzimmer_aktiv', 'on') %}
               {% set now = as_timestamp(now()) | int %}
-              {% set last = as_timestamp(states.automation.sleeptimer_starten.attributes.last_triggered) | int %}
-              {% set duration = states.input_select.timer_schlafzimmer_dauer.state | int %}
+              {% set last = as_timestamp(state_attr('automation.sleeptimer_starten', 'last_triggered')) | int %}              
+              {% set duration = states('input_select.timer_schlafzimmer_dauer') | int %}
               {% set diff = (duration - ((now - last) / 60)) | int %}
 
               {% if diff < 0 %}
@@ -103,7 +103,7 @@ sensor:
           {% if states.sensor.schlafdauer == None %}
             0
           {% else %}
-            {% set stunden = states.sensor.schlafdauer.state | float * 24 / 100 | float %}
+            {% set stunden = states('sensor.schlafdauer') | float * 24 / 100 | float %}
             {{'%0.2f' % stunden | float }}
           {% endif %}
         icon_template: >
@@ -241,7 +241,7 @@ automation:
         entity_id: timer.sleeptimer
         data_template:
           duration: >
-            {{ states.input_select.timer_schlafzimmer_dauer.state  | int * 60 | int }}
+            {{ states('input_select.timer_schlafzimmer_dauer')  | int * 60 | int }}
 
   - alias: 'Sleeptimer endet'
     trigger:
@@ -257,7 +257,7 @@ automation:
         data:
           title: 'Sleeptimer'
           message: >-
-            {% set restzeit = states.sensor.timer_schlafzimmer_zeit.state | default(0) | int %}
+            {% set restzeit = states('sensor.timer_schlafzimmer_zeit') | default(0) | int %}
 
             {% if restzeit > 1 %}
               Der Sleeptimer endet in {{ restzeit }} Minuten.
@@ -277,7 +277,7 @@ automation:
         entity_id: timer.sleeptimer
         data_template:
           duration: >
-            {{ states.input_select.timer_schlafzimmer_dauer.state  | int * 60 | int }}
+            {{ states('input_select.timer_schlafzimmer_dauer') | int * 60 | int }}
       - service: input_boolean.turn_on
         entity_id: input_boolean.timer_schlafzimmer_aktiv
 
@@ -337,15 +337,8 @@ homeassistant:
     script.schlafen_gehen:
       icon: mdi:hotel
       can_cancel: false
-
     sensor.schlafen_letzte_uhrzeit:
       friendly_name: "Letzte Uhrzeit"
       icon: mdi:av-timer
-    timer.sleeptimer:
-      hidden: true
-    input_boolean.schlafen_aktiv:
-      hidden: true
     binary_sensor.schlafen_aktiv:
       icon: mdi:sleep
-    sensor.schlafdauer:
-      hidden: true

@@ -8,7 +8,11 @@ import logging
 import voluptuous as vol
 import os
 import datetime
+import requests
+from aiohttp import web
+import zigate
 
+from homeassistant.components.http import HomeAssistantView
 from homeassistant.helpers.entity import Entity
 from homeassistant.helpers.entity_component import EntityComponent
 from homeassistant.components.group import \
@@ -16,7 +20,7 @@ from homeassistant.components.group import \
 from homeassistant.helpers.discovery import load_platform
 from homeassistant.helpers.event import track_time_change
 from homeassistant.const import (ATTR_BATTERY_LEVEL, CONF_PORT,
-                                 CONF_HOST,
+                                 CONF_HOST, CONF_SCAN_INTERVAL,
                                  ATTR_ENTITY_ID,
                                  EVENT_HOMEASSISTANT_START,
                                  EVENT_HOMEASSISTANT_STOP)
@@ -50,6 +54,8 @@ CONFIG_SCHEMA = vol.Schema({
         vol.Optional('gpio'): cv.boolean,
         vol.Optional('enable_led'): cv.boolean,
         vol.Optional('polling'): cv.boolean,
+        vol.Optional(CONF_SCAN_INTERVAL): cv.positive_int,
+        vol.Optional('admin_panel'): cv.boolean,
     })
 }, extra=vol.ALLOW_EXTRA)
 
@@ -58,6 +64,7 @@ REFRESH_DEVICE_SCHEMA = vol.Schema({
     vol.Optional(ADDR): cv.string,
     vol.Optional(IEEE): cv.string,
     vol.Optional(ATTR_ENTITY_ID): cv.entity_id,
+    vol.Optional('full'): cv.boolean,
 })
 
 DISCOVER_DEVICE_SCHEMA = vol.Schema({
@@ -222,17 +229,41 @@ BUILD_NETWORK_TABLE_SCHEMA = vol.Schema({
     vol.Optional('force'): cv.boolean,
     })
 
+ACTION_IAS_WARNING_SCHEMA = vol.Schema({
+    vol.Optional(ADDR): cv.string,
+    vol.Optional(IEEE): cv.string,
+    vol.Optional(ATTR_ENTITY_ID): cv.entity_id,
+    vol.Required('endpoint'): cv.string,
+    vol.Optional('mode'): cv.string,
+    vol.Optional('strobe'): cv.boolean,
+    vol.Optional('level'): cv.string,
+    vol.Optional('duration'): cv.positive_int,
+    vol.Optional('strobe_cycle'): cv.positive_int,
+    vol.Optional('strobe_level'): cv.string,
+})
+
+ACTION_IAS_SQUAWK_SCHEMA = vol.Schema({
+    vol.Optional(ADDR): cv.string,
+    vol.Optional(IEEE): cv.string,
+    vol.Optional(ATTR_ENTITY_ID): cv.entity_id,
+    vol.Required('endpoint'): cv.string,
+    vol.Optional('mode'): cv.string,
+    vol.Optional('strobe'): cv.boolean,
+    vol.Optional('level'): cv.string,
+})
+
 
 def setup(hass, config):
     """Setup zigate platform."""
-    import zigate
-
     port = config[DOMAIN].get(CONF_PORT)
     host = config[DOMAIN].get(CONF_HOST)
     gpio = config[DOMAIN].get('gpio', False)
     enable_led = config[DOMAIN].get('enable_led', True)
     polling = config[DOMAIN].get('polling', True)
     channel = config[DOMAIN].get('channel')
+    scan_interval = config[DOMAIN].get(CONF_SCAN_INTERVAL, SCAN_INTERVAL)
+    admin_panel = config[DOMAIN].get('admin_panel', False)
+
     persistent_file = os.path.join(hass.config.config_dir,
                                    'zigate.json')
 
@@ -241,6 +272,7 @@ def setup(hass, config):
     _LOGGER.debug('GPIO : %s', gpio)
     _LOGGER.debug('Led : %s', enable_led)
     _LOGGER.debug('Channel : %s', channel)
+    _LOGGER.debug('Scan interval : %s', scan_interval)
 
     myzigate = zigate.connect(port=port, host=host,
                               path=persistent_file,
@@ -253,7 +285,7 @@ def setup(hass, config):
     hass.data[DATA_ZIGATE_DEVICES] = {}
     hass.data[DATA_ZIGATE_ATTRS] = {}
 
-    component = EntityComponent(_LOGGER, DOMAIN, hass, SCAN_INTERVAL, GROUP_NAME_ALL_ZIGATE)
+    component = EntityComponent(_LOGGER, DOMAIN, hass, scan_interval, GROUP_NAME_ALL_ZIGATE)
     component.setup(config)
     entity = ZiGateComponentEntity(myzigate)
     hass.data[DATA_ZIGATE_DEVICES]['zigate'] = entity
@@ -411,12 +443,13 @@ def setup(hass, config):
         return int(value)
 
     def refresh_device(service):
+        full = service.data.get('full', False)
         addr = _get_addr_from_service_request(service)
         if addr:
-            myzigate.refresh_device(addr, full=True)
+            myzigate.refresh_device(addr, full=full)
         else:
             for device in myzigate.devices:
-                device.refresh_device(full=True)
+                device.refresh_device(full=full)
 
     def discover_device(service):
         addr = _get_addr_from_service_request(service)
@@ -564,6 +597,25 @@ def setup(hass, config):
         toscene = _to_int(service.data.get('to_scene'))
         myzigate.copy_scene(addr, endpoint, fromgroupaddr, fromscene, togroupaddr, toscene)
 
+    def ias_warning(service):
+        addr = _get_addr_from_service_request(service)
+        endpoint = _to_int(service.data.get('endpoint', '1'))
+        mode = service.data.get('mode', 'burglar')
+        strobe = service.data.get('strobe', True)
+        level = service.data.get('level', 'low')
+        duration = service.data.get('duration', 60)
+        strobe_cycle = service.data.get('strobe_cycle', 10)
+        strobe_level = service.data.get('strobe_level', 'low')
+        myzigate.action_ias_warning(addr, endpoint, mode, strobe, level, duration, strobe_cycle, strobe_level)
+
+    def ias_squawk(service):
+        addr = _get_addr_from_service_request(service)
+        endpoint = _to_int(service.data.get('endpoint', '1'))
+        mode = service.data.get('mode', 'armed')
+        strobe = service.data.get('strobe', True)
+        level = service.data.get('level', 'low')
+        myzigate.action_ias_squawk(addr, endpoint, mode, strobe, level)
+
     def upgrade_firmware(service):
         from zigate.flasher import flash
         from zigate.firmware import download_latest
@@ -639,6 +691,10 @@ def setup(hass, config):
                            schema=ACTION_ONOFF_SCHEMA)
     hass.services.register(DOMAIN, 'build_network_table', build_network_table,
                            schema=BUILD_NETWORK_TABLE_SCHEMA)
+    hass.services.register(DOMAIN, 'ias_warning', ias_warning,
+                           schema=ACTION_IAS_WARNING_SCHEMA)
+    hass.services.register(DOMAIN, 'ias_squawk', ias_squawk,
+                           schema=ACTION_IAS_SQUAWK_SCHEMA)
 
     hass.services.register(DOMAIN, 'ota_load_image', ota_load_image,
                            schema=OTA_LOAD_IMAGE_SCHEMA)
@@ -663,7 +719,99 @@ def setup(hass, config):
     track_time_change(hass, refresh_devices_list,
                       hour=0, minute=0, second=0)
 
+    if admin_panel:
+        _LOGGER.debug('Start ZiGate Admin Panel on port 9998')
+        myzigate.start_adminpanel(prefix='/zigateproxy')
+
+        hass.http.register_view(ZiGateAdminPanel())
+        hass.http.register_view(ZiGateProxy())
+        custom_panel_config = {
+            "name": "zigateadmin",
+            "embed_iframe": False,
+            "trust_external": False,
+            "html_url": "/zigateadmin.html",
+        }
+
+        config = {}
+        config["_panel_custom"] = custom_panel_config
+
+        hass.components.frontend.async_register_built_in_panel(
+            component_name="custom",
+            sidebar_title='Zigate Admin',
+            sidebar_icon='mdi:zigbee',
+            frontend_url_path="zigateadmin",
+            config=config,
+            require_admin=True,
+        )
+
     return True
+
+
+class ZiGateAdminPanel(HomeAssistantView):
+    requires_auth = False
+    name = "zigateadmin"
+    url = "/zigateadmin.html"
+
+    async def get(self, request):
+        """Handle ZiGate admin panel requests."""
+        return web.Response(text=base_panel)
+
+
+class ZiGateProxy(HomeAssistantView):
+    requires_auth = False
+    cors_allowed = True
+    name = "zigateproxy"
+    url = "/zigateproxy/{routename:.*}"
+
+    async def get(self, request, routename):
+        """Handle ZiGate proxy requests."""
+        headers = {
+            "Cache-Control": "no-cache",
+            "Pragma": "no-cache"
+        }
+        r = requests.get('http://localhost:9998/'+routename, params=request.query, headers=headers)
+        headers = r.headers.copy()
+        headers['Access-Control-Allow-Origin'] = '*'
+        headers['Access-Control-Allow-Methods'] = 'POST, GET, OPTIONS, PUT'
+        headers['Cache-Control'] = 'no-cache'
+        headers['Pragma'] = 'no-cache'
+        return web.Response(body=r.content, status=r.status_code, headers=headers)
+
+
+base_panel = '''
+<dom-module id='ha-panel-zigateadmin'>
+  <template>
+    <iframe src="/zigateproxy/" style="width:99%; height:99%; border:0"></iframe>
+  </template>
+</dom-module>
+
+<script>
+class HaPanelZiGateadmin extends Polymer.Element {
+  static get is() { return 'ha-panel-zigateadmin'; }
+
+  static get properties() {
+    return {
+      // Home Assistant object
+      hass: Object,
+      // If should render in narrow mode
+      narrow: {
+        type: Boolean,
+        value: false,
+      },
+      // If sidebar is currently shown
+      showMenu: {
+        type: Boolean,
+        value: false,
+      },
+      // Home Assistant panel info
+      // panel.config contains config passed to register_panel serverside
+      panel: Object
+    };
+  }
+}
+customElements.define(HaPanelZiGateadmin.is, HaPanelZiGateadmin);
+</script>
+'''
 
 
 class ZiGateComponentEntity(Entity):

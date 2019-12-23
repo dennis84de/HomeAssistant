@@ -6,32 +6,24 @@ sensor:
         entity_id:
           - sensor.telefon
         value_template: >
-          {% if states.sensor.telefon == None %}
-            Ruhezustand
+          {% if is_state('sensor.telefon', 'ringing') %}
+            Eingehender Anruf
+          {% elif is_state('sensor.telefon', 'dialing') %}
+            Ausgehender Anruf
+          {% elif is_state('sensor.telefon', 'talking') %}
+            Aktiver Anruf
           {% else %}
-            {% if is_state('sensor.telefon', 'ringing') %}
-              Eingehender Anruf
-            {% elif is_state('sensor.telefon', 'dialing') %}
-              Ausgehender Anruf
-            {% elif is_state('sensor.telefon', 'talking') %}
-              Aktiver Anruf
-            {% else %}
-              Ruhezustand
-            {% endif %}
+            Ruhezustand
           {% endif %}
         icon_template: >
-          {% if states.sensor.tasker_handystatus == None %}
-            mdi:phone
+          {% if is_state('sensor.telefon', 'ringing') %}
+            mdi:phone-incoming
+          {% elif is_state('sensor.telefon', 'dialing') %}
+            mdi:phone-outgoing
+          {% elif is_state('sensor.telefon', 'talking') %}
+            mdi:phone-in-talk
           {% else %}
-            {% if is_state('sensor.telefon', 'ringing') %}
-              mdi:phone-incoming
-            {% elif is_state('sensor.telefon', 'dialing') %}
-              mdi:phone-outgoing
-            {% elif is_state('sensor.telefon', 'talking') %}
-              mdi:phone-in-talk
-            {% else %}
-              mdi:phone
-            {% endif %}
+            mdi:phone
           {% endif %}
 
   - platform: mqtt
@@ -82,7 +74,7 @@ automation:
         data_template:
           title: Werbeanruf Festnetz
           message: >
-            Anrufer: {{ states.sensor.werbeanruf.state }}
+            Anrufer: {{ states(sensor.werbeanruf) }}
 
             Rufnummer: {{ state_attr('sensor.werbeanruf', 'number') }}
 
@@ -110,15 +102,15 @@ automation:
         data:
           title: 'Telefon'
           message: >-
-            {% if is_state("sensor.telefon", "dialing") %}
-              {{ states.sensor.telefon.attributes.to_name }} ({{ states.sensor.telefon.attributes.to }}) wird angerufen.
-            {% elif is_state("sensor.telefon", "ringing") %}
-              {% if states.sensor.telefon.attributes.from == '' %}
+            {% if is_state("sensor.telefon", 'dialing') %}
+              {{ state_attr('sensor.telefon', 'to_name') }} ({{ state_attr('sensor.telefon', 'to') }}) wird angerufen.
+            {% elif is_state("sensor.telefon", 'ringing') %}
+              {% if state_attr('sensor.telefon', 'from') == '' %}
                 Ein Anruf ohne Rufnummer.
-              {% elif states.sensor.telefon.attributes.from_name == 'unknown' %}
-                Ein Anruf von einer unbekannten Rufnummer ({{ states.sensor.telefon.attributes.from }}).
+              {% elif state_attr('sensor.telefon', 'from_name')  == 'unknown' %}
+                Ein Anruf von einer unbekannten Rufnummer ({{ state_attr('sensor.telefon', 'from') }}).
               {% else %}
-                Anruf von {{ states.sensor.telefon.attributes.from_name }} ({{ states.sensor.telefon.attributes.from }}).
+                Anruf von {{ state_attr('sensor.telefon', 'from_name') }} ({{ state_attr('sensor.telefon', 'from') }}).
               {% endif %}
             {% endif %}
           data:
@@ -138,7 +130,7 @@ automation:
         entity_id: input_boolean.kodi_pausiert
         state: 'on'
       - condition: template
-        value_template: '{{ is_state("sensor.tasker_handystatus", "incoming") == False and is_state("sensor.tasker_handystatus", "outgoing") == False }}'        
+        value_template: '{{ is_state("sensor.handy", "incoming") == False and is_state("sensor.handy", "outgoing") == False }}'        
     action:
       - service: input_boolean.turn_off
         entity_id: input_boolean.kodi_pausiert
@@ -231,7 +223,7 @@ automation:
         entity_id: input_boolean.musik_pausiert
         state: 'on'
       - condition: template
-        value_template: '{{ is_state("sensor.tasker_handystatus", "incoming") == False and is_state("sensor.tasker_handystatus", "outgoing") == False }}' 
+        value_template: '{{ is_state("sensor.handy", "incoming") == False and is_state("sensor.handy", "outgoing") == False }}' 
     action:
       - service: input_boolean.turn_off
         entity_id: input_boolean.musik_pausiert
@@ -257,7 +249,7 @@ automation:
             {% if state_attr('sensor.telefon', 'from') == None or state_attr('sensor.telefon', 'from') == '' %}
               Ein Anruf ohne Rufnummer.
             {% elif state_attr('sensor.telefon', 'from_name') == None or state_attr('sensor.telefon', 'from_name') == 'unknown' %}
-              Ein Anruf von einer unbekannten Rufnummer ({{ states.sensor.telefon.attributes.from }}).
+              Ein Anruf von einer unbekannten Rufnummer ({{ state_attr('sensor.telefon', 'from') }}).
             {% else %}
               Anruf von {{ state_attr('sensor.telefon', 'from_name') }} ({{ state_attr('sensor.telefon', 'from') }}).
             {% endif %}

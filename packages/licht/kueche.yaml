@@ -13,7 +13,21 @@ input_boolean:
     name: Bewegungsmelder deaktiviert
     initial: off
     icon: mdi:sync-off
-
+    
+binary_sensor:
+  - platform: template
+    sensors:
+      kuechenregal_tagsueber:
+        friendly_name: "Küchenregal tagsüber"
+        value_template: >-
+          {% set hour = now().strftime("%H") | int %}
+          
+          {% if hour > 8 or hour < 22 %}
+            True
+          {% else %}
+            True
+          {% endif %}
+          
 homeassistant:
   customize:
     light.kueche:

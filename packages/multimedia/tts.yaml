@@ -44,7 +44,7 @@ script:
           data:
             type: tts
           target: >-
-            {% set letzteBewegung = states.sensor.letzte_bewegung.state %}
+            {% set letzteBewegung = states('sensor.letzte_bewegung') %}
 
             {% if echo is defined and echo|length %}
               media_player.echo_{{ echo }}
@@ -72,7 +72,7 @@ automation:
         data_template:
           entity_id: media_player.smarthome
           volume_level: >-
-            {{ states.input_number.sprache_lautstaerke.state | int / 100 }}
+            {{ states('input_number.sprache_lautstaerke') | int / 100 }}
 
   - alias: "Lautstärke Multimedia einstellen"
     trigger:
@@ -83,7 +83,7 @@ automation:
         data_template:
           entity_id: input_number.sprache_lautstaerke
           value: >-
-            {{ states.media_player.smarthome.attributes.volume_level * 100 | int }}
+            {{ state_attr('media_player.smarthome', 'volume_level') * 100 | int }}            
 
   - alias: "Uhr - Glocke starten"
     trigger:
@@ -121,9 +121,14 @@ automation:
 
   - alias: 'Uhr - Glocke abbrechen'
     trigger:
-      platform: state
-      entity_id: input_boolean.uhr_einschalten
-      to: 'off'
+      - platform: state
+        entity_id: input_boolean.uhr_einschalten
+        to: 'off'
+      - platform: event
+        event_type: xiaomi_aqara.cube_action
+        event_data:
+          entity_id: binary_sensor.cube_wohnzimmer
+          action_type: tap_twice        
     condition:
       - condition: state
         entity_id: media_player.smarthome

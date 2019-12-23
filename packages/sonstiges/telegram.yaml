@@ -22,7 +22,7 @@ automation:
         data_template:
           title: "Status Home Assistant"
           message: >-
-            Das System ist seit {{ states.sensor.laufzeit.state }} Stunden online.
+            Das System ist seit {{ states('sensor.laufzeit') }} Stunden online.
             {%- if is_state('group.alles_ausschalten', 'off') %}
             Alle Geräte sind ausgeschaltet.
             {% endif %}
@@ -73,11 +73,10 @@ automation:
             {%- set comma = joiner(",") -%}
             {%- set deviceFound = false -%}
 
-            {% for entity_id in states.group.alles_ausschalten.attributes.entity_id -%}
-              {%- set domain, device = entity_id.split('.') -%}
-              {%- if states[domain][device].state == 'on' -%}
+            {% for entity_id in state_attr('group.alles_ausschalten', 'entity_id') -%}
+              {%- if states(entity_id) == 'on' -%}
                 {%- set deviceFound = true -%}
-                {{ comma() }} {{ states[domain][device].attributes.friendly_name }}
+                {{ comma() }} {{ state_attr(entity_id, 'friendly_name') }}
               {%- endif -%}
             {%- endfor -%}
 
@@ -116,21 +115,9 @@ automation:
         data_template:
           title: "Aktuelle Benzinpreise"
           message: >
-            Real: {% if states.sensor.tankstelle_real.state != 'unknown' %}{{ states.sensor.tankstelle_real.state }}€{% else %}{%if states.binary_sensor.tankstelle_real_status.state == 'off' %}geschlossen{% else %}-{% endif %}{% endif %}
+            Real: {% if states('sensor.tankstelle_real') != 'unknown' %}{{ states('sensor.tankstelle_real') }}€{% else %}{%if states('sensor.tankstelle_real_status') == 'off' %}geschlossen{% else %}-{% endif %}{% endif %}
 
-            Jet: {% if states.sensor.tankstelle_jet.state != 'unknown' %}{{ states.sensor.tankstelle_jet.state }}€{% else %}{%if states.binary_sensor.tankstelle_jet_status.state == 'off' %}geschlossen{% else %}-{% endif %}{% endif %}
-
-  - alias: 'Telegram - Fahrzeit nach Hause'
-    trigger:
-      platform: event
-      event_type: telegram_command
-      event_data:
-        command: '/fahrzeit'
-    action:
-      - service: notify.telegram
-        data_template:
-          title: "Fahrzeit nach Hause"
-          message: "Die Fahrzeit nach Hause beträgt aktuell {{ states.sensor.fahrzeit_nach_hause.state }} Minuten."
+            Jet: {% if states('sensor.tankstelle_jet') != 'unknown' %}{{ states('sensor.tankstelle_jet') }}€{% else %}{%if states('sensor.tankstelle_jet_status') == 'off' %}geschlossen{% else %}-{% endif %}{% endif %}
 
   - alias: 'Telegram - Aufenthaltsort'
     trigger:
@@ -142,4 +129,4 @@ automation:
       - service: notify.telegram
         data_template:
           title: "Aufenthaltsort"
-          message: "{{ states.sensor.aufenthaltsort_handy.state }} {% if states.proximity.home.state | int > 0 %}({{ states.proximity.home.state }}km von zu Hause.){% endif %}"
+          message: "{{ states('sensor.aufenthaltsort_handy') }} {% if states('proximity.home') | int > 0 %}({{ states('proximity.home') }}km von zu Hause.){% endif %}"

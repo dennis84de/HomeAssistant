@@ -167,7 +167,7 @@ automation:
         entity_id: 'device_tracker.pibalcony'
         state: 'home'
       - condition: template
-        value_template: '{{ is_state("sensor.tasker_handystatus", "incoming") == False and is_state("sensor.tasker_handystatus", "outgoing") == False }}'
+        value_template: '{{ is_state("sensor.handy", "incoming") == False and is_state("sensor.handy", "outgoing") == False }}'
       - condition: state
         entity_id: 'sensor.telefon'
         state: 'idle'            
@@ -218,7 +218,7 @@ automation:
         entity_id: switch.wiedergabe_aktiv
         state: 'on'
       - condition: template
-        value_template: '{{ is_state("sensor.tasker_handystatus", "incoming") == False and is_state("sensor.tasker_handystatus", "outgoing") == False }}'
+        value_template: '{{ is_state("sensor.handy", "incoming") == False and is_state("sensor.handy", "outgoing") == False }}'
       - condition: state
         entity_id: 'sensor.telefon'
         state: 'idle'             

@@ -1,76 +1,127 @@
 sensor:
+  - platform: mqtt
+    name: "Tablet Wohnzimmer Batterie"
+    device_class: battery
+    unit_of_measurement: '%'
+    state_topic: "tablet/wohnzimmer/batterie"
+    value_template: "{{ value_json.battery }}"
+    json_attributes_topic: "tablet/wohnzimmer/batterie"
+    json_attributes_template: "{{ value_json | tojson }}"   
+    
+  - platform: mqtt
+    name: "Tablet Schlafzimmer Batterie"
+    device_class: battery
+    unit_of_measurement: '%'
+    state_topic: "tablet/schlafzimmer/batterie"
+    value_template: "{{ value_json.battery }}"
+    json_attributes_topic: "tablet/schlafzimmer/batterie"
+    json_attributes_template: "{{ value_json | tojson }}"   
+      
+  - platform: mqtt
+    name: "Tablet Badezimmer Batterie"
+    device_class: battery
+    unit_of_measurement: '%'
+    state_topic: "tablet/badezimmer/batterie"
+    value_template: "{{ value_json.battery }}"
+    json_attributes_topic: "tablet/badezimmer/batterie"
+    json_attributes_template: "{{ value_json | tojson }}"   
+    
+  - platform: mqtt
+    name: "Tablet Küche Batterie"
+    device_class: battery
+    unit_of_measurement: '%'
+    state_topic: "tablet/kueche/batterie"
+    value_template: "{{ value_json.battery }}"
+    json_attributes_topic: "tablet/kueche/batterie"
+    json_attributes_template: "{{ value_json | tojson }}"          
+    
+  - platform: mqtt
+    name: "Tablet Balkon Batterie"
+    device_class: battery
+    unit_of_measurement: '%'
+    state_topic: "tablet/balkon/batterie"
+    value_template: "{{ value_json.battery }}"
+    json_attributes_topic: "tablet/balkon/batterie"
+    json_attributes_template: "{{ value_json | tojson }}"   
+
   - platform: template
     sensors:
-      tablet_wohnzimmer_batterie:
-        friendly_name: Tablet Wohnzimmer
+      tablet_wohnzimmer_zuletzt_geladen:
+        friendly_name: Tablet Wohnzimmer - Zuletzt geladen
         entity_id:
-          - sensor.tasker_tablet_wohnzimmer
+          - sensor.tablet_wohnzimmer_batterie
         value_template: >
-          {% if states.sensor.tasker_tablet_wohnzimmer == None %}
-            0
+          {% if is_state('sensor.tablet_wohnzimmer_batterie', None) %}
+            -
           {% else %}
-            {{ states.sensor.tasker_tablet_wohnzimmer.state | float}}
-          {% endif %}
-        device_class: battery
-        unit_of_measurement: '%'
+            {% set lastCharged = state_attr('sensor.tablet_wohnzimmer_batterie','last_charged') | int %}
+            {% set weekday = lastCharged | timestamp_custom("%w", True) | int %}
 
-      tablet_schlafzimmer_batterie:
-        friendly_name: Tablet Schlafzimmer
-        entity_id:
-          - sensor.tasker_tablet_schlafzimmer
-        value_template: >
-          {% if states.sensor.tasker_tablet_schlafzimmer == None %}
-            0
-          {% else %}
-            {{ states.sensor.tasker_tablet_schlafzimmer.state | float}}
+            {{ ['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'][weekday-1] }}, {{ lastCharged | timestamp_custom("%d.%m.%Y", True) | string }}  
           {% endif %}
-        device_class: battery
-        unit_of_measurement: '%'
+        device_class: timestamp
+      tablet_badezimmer_zuletzt_geladen:
+        friendly_name: Tablet Badezimmer - Zuletzt geladen
+        entity_id:
+          - sensor.tablet_badezimmer_batterie
+        value_template: >
+          {% if is_state('sensor.tablet_badezimmer_batterie', None) %}
+            -
+          {% else %}
+            {% set lastCharged = state_attr('sensor.tablet_badezimmer_batterie','last_charged') | int %}
+            {% set weekday = lastCharged | timestamp_custom("%w", True) | int %}
 
-      tablet_balkon_batterie:
-        friendly_name: Tablet Balkon
-        entity_id:
-          - sensor.tasker_tablet_balkon
-        value_template: >
-          {% if states.sensor.tasker_tablet_balkon == None %}
-            0
-          {% else %}
-            {{ states.sensor.tasker_tablet_balkon.state | float}}
+            {{ ['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'][weekday-1] }}, {{ lastCharged | timestamp_custom("%d.%m.%Y", True) | string }}  
           {% endif %}
-        device_class: battery
-        unit_of_measurement: '%'
+        device_class: timestamp
+      tablet_kueche_zuletzt_geladen:
+        friendly_name: Tablet Küche - Zuletzt geladen
+        entity_id:
+          - sensor.tablet_kuche_batterie
+        value_template: >
+          {% if is_state('sensor.tablet_kuche_batterie', None) %}
+            -
+          {% else %}
+            {% set lastCharged = state_attr('sensor.tablet_kuche_batterie','last_charged') | int %}
+            {% set weekday = lastCharged | timestamp_custom("%w", True) | int %}
 
-      tablet_badezimmer_batterie:
-        friendly_name: Tablet Badezimmer
-        entity_id:
-          - sensor.tasker_tablet_badezimmer
-        value_template: >
-          {% if states.sensor.tasker_tablet_badezimmer == None %}
-            0
-          {% else %}
-            {{ states.sensor.tasker_tablet_badezimmer.state | float}}
+            {{ ['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'][weekday-1] }}, {{ lastCharged | timestamp_custom("%d.%m.%Y", True) | string }}  
           {% endif %}
-        device_class: battery
-        unit_of_measurement: '%'
+        device_class: timestamp
+      tablet_schlafzimmer_zuletzt_geladen:
+        friendly_name: Tablet Schlafzimmer - Zuletzt geladen
+        entity_id:
+          - sensor.tablet_schlafzimmer_batterie
+        value_template: >
+          {% if is_state('sensor.tablet_schlafzimmer_batterie', None) %}
+            -
+          {% else %}
+            {% set lastCharged = state_attr('sensor.tablet_schlafzimmer_batterie','last_charged') | int %}
+            {% set weekday = lastCharged | timestamp_custom("%w", True) | int %}
 
-      tablet_kueche_batterie:
-        friendly_name: Tablet Küche
-        entity_id:
-          - sensor.tasker_tablet_kueche
-        value_template: >
-          {% if states.sensor.tasker_tablet_kueche == None %}
-            0
-          {% else %}
-            {{ states.sensor.tasker_tablet_kueche.state | float}}
+            {{ ['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'][weekday-1] }}, {{ lastCharged | timestamp_custom("%d.%m.%Y", True) | string }}  
           {% endif %}
-        device_class: battery
-        unit_of_measurement: '%'
+        device_class: timestamp      
+      tablet_balkon_zuletzt_geladen:
+        friendly_name: Tablet Balkon - Zuletzt geladen
+        entity_id:
+          - sensor.tablet_balkon_batterie
+        value_template: >
+          {% if is_state('sensor.tablet_balkon_batterie', None) %}
+            -
+          {% else %}
+            {% set lastCharged = state_attr('sensor.tablet_balkon_batterie','last_charged') | int %}
+            {% set weekday = lastCharged | timestamp_custom("%w", True) | int %}
+
+            {{ ['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'][weekday-1] }}, {{ lastCharged | timestamp_custom("%d.%m.%Y", True) | string }}  
+          {% endif %}
+        device_class: timestamp           
 
 automation:
   - alias: "Tablet Wohnzimmer - Batteriestand niedrig"
     trigger:
       - platform: state
-        entity_id: sensor.tasker_tablet_wohnzimmer
+        entity_id: sensor.tablet_wohnzimmer_batterie
       - platform: state
         entity_id: binary_sensor.zu_hause
         to: 'on'
@@ -78,19 +129,19 @@ automation:
           minutes: 5
     condition:
       - condition: numeric_state
-        entity_id: sensor.tasker_tablet_wohnzimmer
+        entity_id: sensor.tablet_wohnzimmer_batterie
         below: 16
       - condition: template
-        value_template: '{{ state_attr("sensor.tasker_tablet_wohnzimmer", "is_charging") == False }}'
+        value_template: '{{ state_attr("sensor.tablet_wohnzimmer_batterie", "is_charging") == False }}'
     action:
       - service: !secret tts_service
         data_template:
-          message: "Das Tablet im Wohnzimmer muss aufgeladen werden. Der Batteriestand beträgt {{ states.sensor.tasker_tablet_wohnzimmer.state | int }} Prozent."
+          message: "Das Tablet im Wohnzimmer muss aufgeladen werden. Der Batteriestand beträgt {{ states('sensor.tablet_wohnzimmer_batterie') | int }} Prozent."
 
   - alias: "Tablet Schlafzimmer - Batteriestand niedrig"
     trigger:
       - platform: state
-        entity_id: sensor.tasker_tablet_schlafzimmer
+        entity_id: sensor.tablet_schlafzimmer_batterie
       - platform: state
         entity_id: binary_sensor.zu_hause
         to: 'on'
@@ -98,19 +149,19 @@ automation:
           minutes: 10
     condition:
       - condition: numeric_state
-        entity_id: sensor.tasker_tablet_schlafzimmer
+        entity_id: sensor.tablet_schlafzimmer_batterie
         below: 16
       - condition: template
-        value_template: '{{ state_attr("sensor.tasker_tablet_schlafzimmer", "is_charging") == False }}'
+        value_template: '{{ state_attr("sensor.tablet_schlafzimmer_batterie", "is_charging") == False }}'
     action:
       - service: !secret tts_service
         data_template:
-          message: "Das Tablet im Schlafzimmer muss aufgeladen werden. Der Batteriestand beträgt {{ states.sensor.tasker_tablet_schlafzimmer.state | int }} Prozent."
+          message: "Das Tablet im Schlafzimmer muss aufgeladen werden. Der Batteriestand beträgt {{ states('sensor.tablet_schlafzimmer_batterie') | int }} Prozent."
 
   - alias: "Tablet Badezimmer - Batteriestand niedrig"
     trigger:
       - platform: state
-        entity_id: sensor.tasker_tablet_badezimmer
+        entity_id: sensor.tablet_badezimmer_batterie
       - platform: state
         entity_id: binary_sensor.zu_hause
         to: 'on'
@@ -118,19 +169,19 @@ automation:
           minutes: 15
     condition:
       - condition: numeric_state
-        entity_id: sensor.tasker_tablet_badezimmer
+        entity_id: sensor.tablet_badezimmer_batterie
         below: 16
       - condition: template
-        value_template: '{{ state_attr("sensor.tasker_tablet_badezimmer", "is_charging") == False }}'
+        value_template: '{{ state_attr("sensor.tablet_badezimmer_batterie", "is_charging") == False }}'
     action:
       - service: !secret tts_service
         data_template:
-          message: "Das Tablet im Badezimmer muss aufgeladen werden. Der Batteriestand beträgt {{ states.sensor.tasker_tablet_badezimmer.state | int }} Prozent."
+          message: "Das Tablet im Badezimmer muss aufgeladen werden. Der Batteriestand beträgt {{ states('sensor.tablet_badezimmer_batterie') | int }} Prozent."
 
   - alias: "Tablet Küche - Batteriestand niedrig"
     trigger:
       - platform: state
-        entity_id: sensor.tasker_tablet_kueche
+        entity_id: sensor.tablet_kuche_batterie
       - platform: state
         entity_id: binary_sensor.zu_hause
         to: 'on'
@@ -138,19 +189,19 @@ automation:
           minutes: 20
     condition:
       - condition: numeric_state
-        entity_id: sensor.tasker_tablet_kueche
+        entity_id: sensor.tablet_kuche_batterie
         below: 16
       - condition: template
-        value_template: '{{ state_attr("sensor.tasker_tablet_kueche", "is_charging") == False }}'
+        value_template: '{{ state_attr("sensor.tablet_kuche_batterie", "is_charging") == False }}'
     action:
       - service: !secret tts_service
         data_template:
-          message: "Das Tablet in der Küche muss aufgeladen werden. Der Batteriestand beträgt {{ states.sensor.tasker_tablet_kueche.state | int }} Prozent."
+          message: "Das Tablet in der Küche muss aufgeladen werden. Der Batteriestand beträgt {{ states('sensor.tablet_kuche_batterie') | int }} Prozent."
 
   - alias: "Tablet Balkon - Batteriestand niedrig"
     trigger:
       - platform: state
-        entity_id: sensor.tasker_tablet_balkon
+        entity_id: sensor.tablet_balkon_batterie
       - platform: state
         entity_id: binary_sensor.zu_hause
         to: 'on'
@@ -158,25 +209,25 @@ automation:
           minutes: 10
     condition:
       - condition: numeric_state
-        entity_id: sensor.tasker_tablet_balkon
+        entity_id: sensor.tablet_balkon_batterie
         below: 16
       - condition: template
-        value_template: '{{ state_attr("sensor.tasker_tablet_balkon", "is_charging") == False }}'
+        value_template: '{{ state_attr("sensor.tablet_balkon_batterie", "is_charging") == False }}'
     action:
       - service: !secret tts_service
         data_template:
-          message: "Das Tablet auf dem Balkon muss aufgeladen werden. Der Batteriestand beträgt {{ states.sensor.tasker_tablet_balkon.state | int }} Prozent."
+          message: "Das Tablet auf dem Balkon muss aufgeladen werden. Der Batteriestand beträgt {{ states('sensor.tablet_balkon_batterie') | int }} Prozent."
 
   - alias: "Tablet Wohnzimmer - Aufgeladen"
     trigger:
       - platform: state
-        entity_id: sensor.tasker_tablet_wohnzimmer
+        entity_id: sensor.tablet_wohnzimmer_batterie
     condition:
       - condition: numeric_state
-        entity_id: sensor.tasker_tablet_wohnzimmer
+        entity_id: sensor.tablet_wohnzimmer_batterie
         above: 99
       - condition: template
-        value_template: '{{ state_attr("sensor.tasker_tablet_wohnzimmer", "is_charging") == True }}'
+        value_template: '{{ state_attr("sensor.tablet_wohnzimmer_batterie", "is_charging") == True }}'
     action:
       - service: !secret tts_service
         data_template:
@@ -185,13 +236,13 @@ automation:
   - alias: "Tablet Schlafzimmer - Aufgeladen"
     trigger:
       - platform: state
-        entity_id: sensor.tasker_tablet_schlafzimmer
+        entity_id: sensor.tablet_schlafzimmer_batterie
     condition:
       - condition: numeric_state
-        entity_id: sensor.tasker_tablet_schlafzimmer
+        entity_id: sensor.tablet_schlafzimmer_batterie
         above: 99
       - condition: template
-        value_template: '{{ state_attr("sensor.tasker_tablet_schlafzimmer", "is_charging") == True }}'
+        value_template: '{{ state_attr("sensor.tablet_schlafzimmer_batterie", "is_charging") == True }}'
     action:
       - service: !secret tts_service
         data_template:
@@ -200,13 +251,13 @@ automation:
   - alias: "Tablet Badezimmer - Aufgeladen"
     trigger:
       - platform: state
-        entity_id: sensor.tasker_tablet_badezimmer
+        entity_id: sensor.tablet_badezimmer_batterie
     condition:
       - condition: numeric_state
-        entity_id: sensor.tasker_tablet_badezimmer
+        entity_id: sensor.tablet_badezimmer_batterie
         above: 99
       - condition: template
-        value_template: '{{ state_attr("sensor.tasker_tablet_badezimmer", "is_charging") == True }}'
+        value_template: '{{ state_attr("sensor.tablet_badezimmer_batterie", "is_charging") == True }}'
     action:
       - service: !secret tts_service
         data_template:
@@ -215,13 +266,13 @@ automation:
   - alias: "Tablet Küche - Aufgeladen"
     trigger:
       - platform: state
-        entity_id: sensor.tasker_tablet_kueche
+        entity_id: sensor.tablet_kuche_batterie
     condition:
       - condition: numeric_state
-        entity_id: sensor.tasker_tablet_kueche
+        entity_id: sensor.tablet_kuche_batterie
         above: 99
       - condition: template
-        value_template: '{{ state_attr("sensor.tasker_tablet_kueche", "is_charging") == True }}'
+        value_template: '{{ state_attr("sensor.tablet_kuche_batterie", "is_charging") == True }}'
     action:
       - service: !secret tts_service
         data_template:
@@ -230,13 +281,13 @@ automation:
   - alias: "Tablet Balkon - Aufgeladen"
     trigger:
       - platform: state
-        entity_id: sensor.tasker_tablet_balkon
+        entity_id: sensor.tablet_balkon_batterie
     condition:
       - condition: numeric_state
-        entity_id: sensor.tasker_tablet_balkon
+        entity_id: sensor.tablet_balkon_batterie
         above: 99
       - condition: template
-        value_template: '{{ state_attr("sensor.tasker_tablet_balkon", "is_charging") == True }}'
+        value_template: '{{ state_attr("sensor.tablet_balkon_batterie", "is_charging") == True }}'
     action:
       - service: !secret tts_service
         data_template:
@@ -244,23 +295,13 @@ automation:
 
 homeassistant:
   customize:
-    sensor.tasker_tablet_wohnzimmer:
-      icon: mdi:battery
-      friendly_name: Tablet Wohnzimmer
-      hidden: true
-    sensor.tasker_tablet_schlafzimmer:
-      icon: mdi:battery
-      friendly_name: Tablet Schlafzimmer
-      hidden: true
-    sensor.tasker_tablet_badezimmer:
-      icon: mdi:battery
+    sensor.tablet_schlafzimmer_batterie:
+      friendly_name: Tablet Schlafzimmer   
+    sensor.tablet_badezimmer_batterie:
       friendly_name: Tablet Badezimmer
-      hidden: true
-    sensor.tasker_tablet_kueche:
-      icon: mdi:battery
+    sensor.tablet_wohnzimmer_batterie:
+      friendly_name: Tablet Wohnzimmer
+    sensor.tablet_kuche_batterie:
       friendly_name: Tablet Küche
-      hidden: true
-    sensor.tasker_tablet_balkon:
-      icon: mdi:battery
+    sensor.tablet_balkon_batterie:
       friendly_name: Tablet Balkon
-      hidden: true

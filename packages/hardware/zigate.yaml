@@ -22,10 +22,10 @@ sensor:
           - input_number.zigate_offline_puffer
         icon_template: >
           {% set now = as_timestamp(now()) | int %}
-          {% set puffer = states.input_number.zigate_offline_puffer.state | int * 60 | int -%}
+          {% set puffer = states('input_number.zigate_offline_puffer') | int * 60 | int -%}
           {% set ns = namespace(found=false) -%}
 
-          {% for entity_id in states.group.zigate.attributes.entity_id -%}
+          {% for entity_id in state_attr('group.zigate', 'entity_id') -%}
             {% set lastChange = as_timestamp(states(entity_id)) | int %}
             {% set difference = (now - lastChange ) / 60 | round() %}
 
@@ -41,10 +41,10 @@ sensor:
           {% endif %}
         value_template: >
           {% set now = as_timestamp(now()) | int %}
-          {% set puffer = states.input_number.zigate_offline_puffer.state | int * 60 | int -%}
+          {% set puffer = states('input_number.zigate_offline_puffer') | int * 60 | int -%}
           {% set ns = namespace(found=0) -%}
 
-          {% for entity_id in states.group.zigate.attributes.entity_id -%}
+          {% for entity_id in state_attr('group.zigate', 'entity_id') -%}
             {% set lastChange = as_timestamp(states(entity_id)) | int %}
             {% set difference = (now - lastChange ) / 60 | round() %}
 

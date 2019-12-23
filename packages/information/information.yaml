@@ -5,12 +5,6 @@ sensor:
     name: Ungelesene Mails
     username: !secret email_username
     password: !secret email_password
-
-  - platform: google_keep
-    username: !secret google_keep_username
-    password: !secret google_keep_password
-    labels:
-      - 'Einkaufen'    
     
   - platform: rest
     resource: !secret tankerkoenig_url_real
@@ -63,7 +57,7 @@ sensor:
         entity_id:
           - sensor.packages_in_transit
         value_template: >-
-          {% set pakete = states.sensor.packages_in_transit.state | int %}
+          {% set pakete = states('sensor.packages_in_transit') | int %}
 
           {% if pakete == 0 %}
             -
@@ -82,7 +76,17 @@ binary_sensor:
         entity_id:
           - sensor.tankstelle_real
         value_template: >-
-          {{ states.sensor.tankstelle_real.attributes['prices']['51d4b714-a095-1aa0-e100-80009459e03a']['status'] == 'open' }}
+          {% set prices = state_attr('sensor.tankstelle_real', 'prices') %}
+          
+          {% if prices['51d4b714-a095-1aa0-e100-80009459e03a'] %}
+            {% if prices['51d4b714-a095-1aa0-e100-80009459e03a']['status'] %}
+              {{ prices['51d4b714-a095-1aa0-e100-80009459e03a']['status'] == 'open' }}
+            {% else %}
+              False
+            {% endif %}            
+          {% else %}
+            False
+          {% endif %}
 
       tankstelle_jet_status:
         friendly_name: 'Status'
@@ -90,7 +94,17 @@ binary_sensor:
         entity_id:
           - sensor.tankstelle_jet
         value_template: >-
-          {{ states.sensor.tankstelle_jet.attributes['prices']['51d4b5ae-a095-1aa0-e100-80009459e03a']['status'] == 'open' }}
+          {% set prices = state_attr('sensor.tankstelle_jet', 'prices') %}
+          
+          {% if prices['51d4b5ae-a095-1aa0-e100-80009459e03a'] %}
+            {% if prices['51d4b5ae-a095-1aa0-e100-80009459e03a']['status'] %}
+              {{ prices['51d4b5ae-a095-1aa0-e100-80009459e03a']['status'] == 'open' }}
+            {% else %}
+              False
+            {% endif %}            
+          {% else %}
+            False
+          {% endif %}          
 
 automation:
   - alias: 'Neue E-Mail - Kodi'
@@ -107,7 +121,7 @@ automation:
         data:
           title: 'E-Mail'
           message: >-
-            {% set mailCount = states.sensor.ungelesene_mails.state | default(0) | int %}
+            {% set mailCount = states('sensor.ungelesene_mails') | default(0) | int %}
 
             {% if mailCount == 1 %}
               Eine neue E-Mail ist eingegangen.
@@ -127,7 +141,7 @@ automation:
       service: !secret tts_service
       data_template:
         message: >-
-          {% set mailCount = states.sensor.ungelesene_mails.state | int %}
+          {% set mailCount = states('sensor.ungelesene_mails') | int %}
 
           {% if mailCount == 1 %}
             Eine neue E-Mail ist eingegangen.
@@ -139,7 +153,7 @@ panel_iframe:
   infoscreen:
     title: Infoscreen
     icon: mdi:information
-    url: http://192.168.2.78/infoscreen/
+    url: http://192.168.2.74/infoscreen/
 
 homeassistant:
   customize:
@@ -149,8 +163,3 @@ homeassistant:
 
     sensor.tankstelle_real:
       icon: mdi:gas-station
-    sensor.tankstelle_jet:
-      icon: mdi:gas-station     
-      
-    sensor.google_keep_499e4d2310:
-      friendly_name: Einkaufen

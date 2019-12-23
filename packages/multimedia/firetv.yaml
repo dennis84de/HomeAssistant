@@ -14,15 +14,7 @@ switch:
         icon_template: >-
           mdi:kodi
         value_template: >-
-          {% if states.media_player.fire_tv_schlafzimmer.state == None %}
-            False
-          {% elif is_state("media_player.fire_tv_schlafzimmer", "unknown") %}
-            False
-          {% elif states.media_player.fire_tv_schlafzimmer.attributes.source == "org.xbmc.kodi" %}
-            True
-          {% else %}
-            False
-          {% endif %}
+          {{ state_attr('media_player.fire_tv_schlafzimmer', 'source') == "Kodi" }}
         turn_on:
           - service: media_player.select_source
             data:

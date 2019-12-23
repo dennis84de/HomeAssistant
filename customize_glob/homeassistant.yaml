@@ -1,5 +1,2 @@
 "sensor.matrix_*":
   hidden: true
-
-"sensor.tasker_*":
-  hidden: true

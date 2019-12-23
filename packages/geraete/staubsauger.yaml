@@ -4,17 +4,79 @@ vacuum:
     token: !secret xiaomi_vacuum_token
 
 input_boolean:
-  xiaomi_vacuum_automatische_reinigung:
+  staubsauger_automatische_reinigung:
     name: Automatische Reinigung
     icon: mdi:flash-auto
-
+  staubsauger_automatische_reinigung_gestartet:
+    name: Automatische Reinigung gestartet    
+    
+input_select:
+  staubsauger_raumauswahl:
+    name: Raum reinigen
+    options:
+      - Raum auswählen
+      - Wohnzimmer
+      - Schlafzimmer
+      - Arbeitszimmer
+      - Flur
+      - Küche
+    initial: Raum auswählen
+    
+script:
+  staubsauger_wohnzimmer:
+    alias: "Staubsauger - Wohnzimmer"
+    sequence:
+      - service: xiaomi_miio.vacuum_clean_zone
+        data:
+          entity_id: vacuum.xiaomi_vacuum_cleaner
+          zone:
+            - [20357,27051,25157,31151]
+          repeats: 1
+  staubsauger_schlafzimmer:
+    alias: "Staubsauger - Schlafzimmer"
+    sequence:
+      - service: xiaomi_miio.vacuum_clean_zone
+        data:
+          entity_id: vacuum.xiaomi_vacuum_cleaner
+          zone:
+            - [16151,27033,20051,31083]
+          repeats: 1
+  staubsauger_arbeitszimmer:
+    alias: "Staubsauger - Arbeitszimmer"
+    sequence:
+      - service: xiaomi_miio.vacuum_clean_zone
+        data:
+          entity_id: vacuum.xiaomi_vacuum_cleaner
+          zone:
+            - [22659,23908,25809,27008]
+          repeats: 1
+  staubsauger_flur:
+    alias: "Staubsauger - Flur"
+    sequence:
+      - service: xiaomi_miio.vacuum_clean_zone
+        data:
+          entity_id: vacuum.xiaomi_vacuum_cleaner
+          zone:
+            - [17951,25375,22651,26925]
+            - [21342,22607,22642,25357]
+          repeats: 1
+  staubsauger_kueche:
+    alias: "Staubsauger - Küche"
+    sequence:
+      - service: xiaomi_miio.vacuum_clean_zone
+        data:
+          entity_id: vacuum.xiaomi_vacuum_cleaner
+          zone:
+            - [16139,24393,18089,26993]
+          repeats: 1          
+    
 counter:
   behaelter_leeren:
     name: Behälter leeren
     icon: mdi:delete-empty
     initial: 3
     step: 1
-    
+          
 sensor:
   - platform: template
     sensors:
@@ -79,7 +141,7 @@ sensor:
         unit_of_measurement: '%'
 
 automation:
-  - alias: "Staubsagen - Automatische Reinigung"
+  - alias: "Staubsaugen - Automatische Reinigung"
     trigger:
       - platform: state
         entity_id: binary_sensor.zu_hause
@@ -98,7 +160,7 @@ automation:
           entity_id: vacuum.xiaomi_vacuum_cleaner
           state: 'docked'
         - condition: state
-          entity_id: input_boolean.xiaomi_vacuum_automatische_reinigung
+          entity_id: input_boolean.staubsauger_automatische_reinigung
           state: 'on'
         - condition: state
           entity_id: binary_sensor.zu_hause
@@ -123,14 +185,15 @@ automation:
               value_template: '{{ now().isoweekday() == 1 or now().isoweekday() == 4 }}'
             - condition: template
               value_template: >-
-                {% set letzte_reinigung = as_timestamp(state_attr("vacuum.xiaomi_vacuum_cleaner", "clean_stop")) | timestamp_custom("%s", True) | int  %}
-                {% set now = now().strftime("%s") | int %}
-                {% set abstand_tage = ((now - letzte_reinigung | timestamp_custom("%s") | int) / 86400) | int %}
-
-                {{ True if abstand_tage >= 3 else False }}
+                {% set letzte_reinigung = as_timestamp(state_attr("vacuum.xiaomi_vacuum_cleaner", "clean_stop")) | timestamp_custom("%d", True) | int  %}
+                {% set heute = now().day | int %}
+                
+                {{ True if heute - letzte_reinigung >= 3 else False }}
     action:
       - service: vacuum.start
         entity_id: vacuum.xiaomi_vacuum_cleaner
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.staubsauger_automatische_reinigung_gestartet
       - service: notify.telegram
         data_template:
           title: 'Staubsaugen gestartet'
@@ -141,26 +204,135 @@ automation:
       - platform: state
         entity_id: vacuum.xiaomi_vacuum_cleaner
         from: 'returning'
-        to: 'docked'
+        to: 'docked'    
+    condition:
+      - condition: state
+        entity_id: input_boolean.staubsauger_automatische_reinigung_gestartet
+        state: 'on'      
+      - condition: template
+        value_template: >-
+          {% set letzter_start = as_timestamp(state_attr("automation.staubsaugen_automatische_reinigung", "last_triggered")) | timestamp_custom("%s", True) | int  %}
+          {% set now = now().strftime("%s") | int %}
+          {% set abstand_stunden = ((now - letzter_start | timestamp_custom("%s") | int) / 3600) | int %}
+
+          {{ True if abstand_stunden <= 2 else False }}         
     action:
       - service: counter.decrement
-        entity_id: counter.behaelter_leeren      
+        entity_id: counter.behaelter_leeren        
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.staubsauger_automatische_reinigung_gestartet        
+
+  - alias: "Staubsaugen - Nachricht Telegram"
+    trigger:
+      - platform: state
+        entity_id: vacuum.xiaomi_vacuum_cleaner
+        from: 'returning'
+        to: 'docked'
+    condition:        
+      - condition: state
+        entity_id: binary_sensor.zu_hause
+        state: 'off'        
+    action:   
       - service: notify.telegram
         data_template:
           title: 'Staubsaugen beendet'
           message: 'Die Wohnung wurde vollständig gesaugt.'
-
+          
   - alias: "Staubsaugen - Fehler"
     trigger:
       - platform: state
         entity_id: vacuum.xiaomi_vacuum_cleaner
         to: 'error'
+    condition:
+      - condition: state
+        entity_id: binary_sensor.zu_hause
+        state: 'off'        
     action:
       - service: notify.telegram
         data_template:
           title: 'Fehler beim Staubsaugen'
           message: 'Während des Staubsaugens ist ein Fehler aufgetreten.'             
-
+                                 
+  - alias: "Staubsaugen - Behälter leeren"
+    trigger:
+      - platform: state
+        entity_id: input_boolean.zu_hause_begruessung
+        to: 'off'
+    condition:
+      - condition: numeric_state
+        entity_id: counter.behaelter_leeren
+        below: 1
+    action:
+      - service: persistent_notification.create
+        data:
+          title: "Staubsauger"
+          message: "Der Staubsaugerbehälter muss geleert werden."
+          notification_id: staubsauger_leeren
+        
+  - alias: "Staubsaugen - Behälter geleert"
+    trigger:
+      - platform: event
+        event_type: call_service
+        event_data:
+          domain: persistent_notification
+          service: dismiss      
+    condition:
+      - condition: template
+        value_template: '{{ trigger.event.data.service_data.notification_id == "staubsauger_leeren" }}'
+    action:
+      - service: counter.reset
+        entity_id: counter.behaelter_leeren
+        
+  - alias: "Staubsauger - Raum reinigen"    
+    trigger:
+      - platform: state
+        entity_id: input_select.staubsauger_raumauswahl
+        from: 'Raum auswählen'
+    condition:
+      - condition: state
+        entity_id: vacuum.xiaomi_vacuum_cleaner
+        state: 'docked'      
+    action:
+      - service: script.turn_on
+        data_template:
+          entity_id: >
+            {% if is_state("input_select.staubsauger_raumauswahl", "Wohnzimmer") %}
+              script.staubsauger_wohnzimmer
+            {% elif is_state("input_select.staubsauger_raumauswahl", "Schlafzimmer") %}
+              script.staubsauger_schlafzimmer
+            {% elif is_state("input_select.staubsauger_raumauswahl", "Arbeitszimmer") %}
+              script.staubsauger_arbeitszimmer
+            {% elif is_state("input_select.staubsauger_raumauswahl", "Flur") %}
+              script.staubsauger_flur
+            {% elif is_state("input_select.staubsauger_raumauswahl", "Küche") %}
+              script.staubsauger_kueche
+            {% else %}
+            {% endif %}
+      - service: input_select.select_option
+        data:
+          entity_id: input_select.staubsauger_raumauswahl
+          option: "Raum auswählen"        
+        
+  - alias: "Staubsauger - Bereits aktiv"    
+    trigger:
+      - platform: state
+        entity_id: input_select.staubsauger_raumauswahl
+        from: 'Raum auswählen'
+    condition:
+      - condition: state
+        entity_id: vacuum.xiaomi_vacuum_cleaner
+        state: 'cleaning'      
+    action:
+      - service: !secret tts_service
+        data_template:
+          echo: "wohnzimmer"
+          message: >-
+            "Der Staubsauger ist bereits aktiv."     
+      - service: input_select.select_option
+        data:
+          entity_id: input_select.staubsauger_raumauswahl
+          option: "Raum auswählen"    
+          
 homeassistant:
   customize:
     vacuum.xiaomi_vacuum_cleaner:

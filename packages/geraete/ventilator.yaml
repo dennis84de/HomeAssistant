@@ -95,8 +95,8 @@ sensor:
         value_template: >-
             {%- if is_state('input_boolean.ventilator_timer_aktiv', 'on') %}
               {% set now = as_timestamp(now()) | int %}
-              {% set last = as_timestamp(states.automation.ventilator_timer_gestartet.attributes.last_triggered) | int %}
-              {% set duration = states.input_select.ventilator_timer.state | int %}
+              {% set last = as_timestamp(state_attr('automation.ventilator_timer_gestartet', 'last_triggered')) | int %}              
+              {% set duration = states('input_select.ventilator_timer') | int %}
               {% set diff = (duration - ((now - last) / 60)) | int %}
 
               {% if diff < 0 %}
@@ -190,7 +190,7 @@ automation:
         entity_id: timer.ventilator
         data_template:
           duration: >
-            {{ states.input_select.ventilator_timer.state  | int * 60 | int }}
+            {{ states('input_select.ventilator_timer') | int * 60 | int }}
 
   - alias: 'Ventilator - Timer abgebrochen'
     trigger:

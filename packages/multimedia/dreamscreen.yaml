@@ -52,7 +52,7 @@ automation:
           entity_id: input_select.dreamscreen_ambiente
           option: >-
             {% if is_state("input_select.dreamscreen_modus", "Ambiente") %}
-              {% set scene = states.dreamscreen.fernseher.attributes.ambient_scene %}
+              {% set scene = state_attr('dreamscreen.fernseher', 'ambient_scene') %}              
               {% set ambient = {
                 0:'Random Colors',
                 1:'Fireside',
@@ -86,7 +86,7 @@ automation:
         data_template:
           entity_id: dreamscreen.fernseher
           scene: >-
-            {% set state = states.input_select.dreamscreen_ambiente.state %}
+            {% set state = states('input_select.dreamscreen_ambiente') %}
             {% set ambient = {
               'Random Colors':0,
               'Fireside':1,

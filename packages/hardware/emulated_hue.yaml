@@ -1,10 +1,9 @@
 emulated_hue:
   host_ip: 192.168.2.75
-#  listen_port: 80
+  listen_port: 80
   exposed_domains:
     - switch
     - light
-    - vacuum
     - fan
 
   entities:
@@ -32,9 +31,6 @@ emulated_hue:
       name: Crosstrainer
     switch.watchtv_schlafzimmer:
       name: Fernsehen Schlafzimmer
-
-    vacuum.xiaomi_vacuum_cleaner:
-      name: Staubsauger
 
     light.bett:
       name: Licht Schlafzimmer

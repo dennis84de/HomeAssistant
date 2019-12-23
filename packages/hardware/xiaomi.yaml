@@ -45,10 +45,10 @@ sensor:
       vibration_wohnzimmer_status:
         friendly_name: Vibration Status
         value_template: >
-          {% if is_state('binary_sensor.vibration_wohnzimmer', 'unknown') or states.binary_sensor.vibration_wohnzimmer.attributes["last_action"] == None %}
+          {% if is_state('binary_sensor.vibration_wohnzimmer', 'unknown') or state_attr('binary_sensor.vibration_wohnzimmer', 'last_action') == None %}
             Unbekannt
           {% else %}
-            {% set lastState = states.binary_sensor.vibration_wohnzimmer.attributes["last_action"] %}
+            {% set lastState = state_attr('binary_sensor.vibration_wohnzimmer', 'last_action') %}
 
             {% if lastState == 'vibrate' %}
               Vibration
@@ -66,10 +66,10 @@ sensor:
       vibration_schlafzimmer_status:
         friendly_name: Vibration Status
         value_template: >
-          {% if is_state('binary_sensor.vibration_schlafzimmer', 'unknown') or states.binary_sensor.vibration_schlafzimmer.attributes["last_action"] == None %}
+          {% if is_state('binary_sensor.vibration_schlafzimmer', 'unknown') or state_attr('binary_sensor.vibration_schlafzimmer', 'last_action') == None %}
             Unbekannt
           {% else %}
-            {% set lastState = states.binary_sensor.vibration_schlafzimmer.attributes["last_action"] %}
+            {% set lastState = state_attr('binary_sensor.vibration_schlafzimmer', 'last_action') %}
 
             {% if lastState == 'vibrate' %}
               Vibration

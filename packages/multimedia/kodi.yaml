@@ -1,6 +1,6 @@
 media_player:
   - platform: kodi
-    host: 192.168.2.21
+    host: !secret computer_host
     username: !secret kodi_username
     password: !secret kodi_password
     name: Kodi Wohnzimmer
@@ -30,7 +30,7 @@ media_player:
 notify:
   - platform: kodi
     name: Kodi Wohnzimmer
-    host: 192.168.2.21
+    host: !secret computer_host
     username: !secret kodi_username
     password: !secret kodi_password
 

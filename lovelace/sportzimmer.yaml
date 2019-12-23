@@ -23,7 +23,7 @@ cards:
     show_header_toggle: false
     entities:
       - entity: sensor.sportzimmer_temperatur
-      - entity: sensor.sportzimmer_luftfeuchtigkeit
+      - entity: sensor.sportzimmer_luftfeuchtigkeit            
       - entity: sensor.sportzimmer_luftdruck
 
   - type: entities

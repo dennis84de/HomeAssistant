@@ -11,7 +11,6 @@ sensor:
     attribute: battery_level
     unit_of_measurement: "%"
     entities:
-      - zwave.fibaro_badezimmer
       - zigate.bewegungsmelder_flur_vorne
       - zigate.bewegungsmelder_flur_hinten
       - zigate.bewegungsmelder_arbeitszimmer
@@ -31,7 +30,6 @@ sensor:
       - zigate.thermometer_sportzimmer
       - zigate.thermometer_parkplatz
       - zigate.thermometer_kuehlschrank
-      - zigate.thermometer_gefrierschrank
       - zigate.thermometer_hardware
       - zigate.tuersensor
       - zigate.tuer_kuehlschrank
@@ -53,9 +51,9 @@ sensor:
           - input_number.batteriestand_warnlevel
           - sensor.laufzeit_minuten
         icon_template: >
-          {% set min_battery_level = states.input_number.batteriestand_warnlevel.state | int -%}
+          {% set min_battery_level = states('input_number.batteriestand_warnlevel') | int -%}
           {% set ns = namespace(found=false) -%}
-          {% for entity_id in states.group.batteriestand.attributes.entity_id -%}
+          {% for entity_id in state_attr('group.batteriestand', 'entity_id') -%}
             {% set parts = entity_id.split('.') -%}
             {% if (states(entity_id) | replace("%","") | int) <= min_battery_level -%}
               {% set ns.found = true -%}
@@ -68,10 +66,10 @@ sensor:
             mdi:battery
           {% endif %}
         value_template: >
-          {% set min_battery_level = states.input_number.batteriestand_warnlevel.state | int -%}
+          {% set min_battery_level = states('input_number.batteriestand_warnlevel') | int -%}
           {% set ns = namespace(found=0) -%}
           
-          {% for entity_id in states.group.batteriestand.attributes.entity_id -%}
+          {% for entity_id in state_attr('group.batteriestand', 'entity_id') -%}
             {% set parts = entity_id.split('.') -%}
             {% if (states(entity_id) | replace("%","") | int) <= min_battery_level -%}
               {% set ns.found = ns.found + 1 -%}

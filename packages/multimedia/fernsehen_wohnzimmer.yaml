@@ -3,14 +3,6 @@ media_player:
     name: Soundbar
     endpoint: !secret songpal_endpoint_url
 
-input_number:
-  soundbar_volume:
-    name: Lautstärke
-    min: 0
-    max: 50
-    step: 1
-    icon: mdi:volume-high
-
 input_boolean:
   musik_ausschalten:
     name: Musik ausschalten
@@ -22,39 +14,6 @@ input_boolean:
     name: Wiedergabe pausieren
     initial: on
     icon: mdi:sync-off
-
-sensor:
-  - platform: template
-    sensors:
-      soundbar_volume:
-        entity_id:
-          - media_player.soundbar
-        value_template: >-
-            {% if states.media_player.soundbar.state == "off" %}
-              0
-            {% elif states.media_player.soundbar.attributes.volume_level == None %}
-              0
-            {% else %}
-              {% set volume = states.media_player.soundbar.attributes.volume_level %}
-              {% set new_volume = volume * 50 %}
-              {{ new_volume | int }}
-            {% endif %}
-
-binary_sensor:
-  - platform: template
-    sensors:
-      soundbar_volume_changed:
-        entity_id:
-          - input_number.soundbar_volume
-          - sensor.soundbar_volume
-          - media_player.soundbar
-        friendly_name: "Lautsärke geändert"
-        value_template: >-
-          {% if (states.input_number.soundbar_volume.state | int) != (states.sensor.soundbar_volume.state | int ) %}
-            true
-          {% else %}
-            false
-          {% endif %}
 
 cover:
   - platform: template
@@ -124,34 +83,14 @@ switch:
         turn_off:
           service: script.watchtv_wohnzimmer_off
 
-      play_wohnzimmer:
-        friendly_name: "Wiedergabe Kodi"
-        value_template: "{{ is_state('media_player.kodi_wohnzimmer', 'playing') }}"
-        turn_on:
-          service: media_player.media_play
-          entity_id: media_player.kodi_wohnzimmer
-        turn_off:
-          service: media_player.media_pause
-          entity_id: media_player.kodi_wohnzimmer
-
-      wohnzimmer_soundbar:
-        friendly_name: "Soundbar"
-        value_template: "{{ is_state('media_player.soundbar', 'on') }}"
-        icon_template: >-
-          mdi:surround-sound
-        turn_on:
-          - service: media_player.turn_on
-            entity_id: media_player.soundbar
-        turn_off:
-          - service: media_player.turn_off
-            entity_id: media_player.soundbar
-
 script:
   watchtv_wohnzimmer_on:
     alias: "Fernsehen Wohnzimmer einschalten"
     sequence:
       - service: switch.turn_on
-        entity_id: switch.wohnzimmer_fernseher, switch.wohnzimmer_soundbar
+        entity_id: switch.wohnzimmer_fernseher
+      - service: media_player.turn_on
+        entity_id: media_player.soundbar        
       - wait_template: "{{is_state('media_player.soundbar', 'on')}}"
       - service: media_player.select_source
         entity_id: media_player.soundbar
@@ -171,8 +110,10 @@ script:
     - wait_template: "{{is_state('media_player.kodi_wohnzimmer', 'off')}}"
       timeout: '00:00:05'
       continue_on_timeout: 'true'
+    - service: media_player.turn_off
+      entity_id: media_player.soundbar      
     - service: switch.turn_off
-      entity_id: switch.wohnzimmer_fernseher, switch.wohnzimmer_soundbar
+      entity_id: switch.wohnzimmer_fernseher
     - service: input_select.select_option
       data:
         entity_id: input_select.dreamscreen_modus
@@ -217,8 +158,8 @@ automation:
           entity_id: media_player.kodi_wohnzimmer
           state: 'paused'
     action:
-      - service: switch.toggle
-        entity_id: switch.play_wohnzimmer
+      - service: media_player.media_play_pause
+        entity_id: media_player.kodi_wohnzimmer
 
   - alias: "Kodi - Wiedergabe Schalter"
     trigger:
@@ -237,8 +178,8 @@ automation:
           entity_id: media_player.kodi_wohnzimmer
           state: 'paused'
     action:
-      - service: switch.toggle
-        entity_id: switch.play_wohnzimmer
+      - service: media_player.media_play_pause
+        entity_id: media_player.kodi_wohnzimmer
 
   - alias: "Kodi - Wiedergabe pausieren - Bewegung Flur / Balkon"
     trigger:
@@ -262,10 +203,10 @@ automation:
         entity_id: sensor.telefon
         state: 'idle'
       - condition: template
-        value_template: '{{ is_state("sensor.tasker_handystatus", "incoming") == False and is_state("sensor.tasker_handystatus", "outgoing") == False }}'
+        value_template: '{{ is_state("sensor.handy", "incoming") == False and is_state("sensor.handy", "outgoing") == False }}'
     action:
-      - service: switch.turn_off
-        entity_id: switch.play_wohnzimmer
+      - service: media_player.media_pause
+        entity_id: media_player.kodi_wohnzimmer        
       - service: input_boolean.turn_on
         entity_id: input_boolean.kodi_pausiert
 
@@ -285,10 +226,10 @@ automation:
         entity_id: sensor.telefon
         state: 'idle'
       - condition: template
-        value_template: '{{ is_state("sensor.tasker_handystatus", "incoming") == False and is_state("sensor.tasker_handystatus", "outgoing") == False }}'
+        value_template: '{{ is_state("sensor.handy", "incoming") == False and is_state("sensor.handy", "outgoing") == False }}'
     action:
-      - service: switch.turn_on
-        entity_id: switch.play_wohnzimmer
+      - service: media_player.media_play
+        entity_id: media_player.kodi_wohnzimmer
       - service: input_boolean.turn_off
         entity_id: input_boolean.kodi_pausiert
 
@@ -320,60 +261,6 @@ automation:
       - service: media_player.media_pause
         entity_id: media_player.badezimmer
 
-  - alias: "Soundbar Lautstärke - Soundbar"
-    trigger:
-      - platform: state
-        entity_id: binary_sensor.soundbar_volume_changed
-        to: 'true'
-        for:
-          seconds: 1
-      - platform: homeassistant
-        event: start
-      - platform: state
-        entity_id: media_player.soundbar
-        to: 'on'
-    action:
-      - service: input_number.set_value
-        data_template:
-          entity_id: input_number.soundbar_volume
-          value: >-
-            {% if states.media_player.soundbar.state == "off" %}
-              0
-            {% else %}
-              {{states.sensor.soundbar_volume.state }}
-            {% endif %}
-
-  - alias: "Soundbar Lautstärke - Slider"
-    trigger:
-      - platform: state
-        entity_id: input_number.soundbar_volume
-    condition:
-      condition: and
-      conditions:
-        - condition: template
-          value_template: >-
-            {% if is_state('media_player.soundbar', 'off') %}
-              {% set soundbar_volume = 0 %}
-            {% elif state_attr("media_player.soundbar", "volume_level") == None %}
-              {% set soundbar_volume = 0 %}
-            {% else %}
-              {% set soundbar_volume = state_attr("media_player.soundbar", "volume_level") * 50 %}
-            {% endif %}
-
-            {% set input_number = states.input_number.soundbar_volume.state %}
-
-            {% if input_number != soundbar_volume %}
-              true
-            {%else%}
-              false
-            {% endif %}
-    action:
-      - service: media_player.volume_set
-        data_template:
-          entity_id: media_player.soundbar
-          volume_level: >-
-            {{ states.input_number.soundbar_volume.state | int / 50 }}
-
   - alias: "Soundbar Lautstärke - Cube"
     trigger:
       - platform: event
@@ -390,12 +277,12 @@ automation:
         data_template:
           entity_id: media_player.soundbar
           volume_level: >
-            {% if states.media_player.soundbar.state == "off" %}
+            {% if is_state('media_player.soundbar', 'off') %}
               {% set oldState = 0 %}
-            {% elif states.media_player.soundbar.attributes.volume_level == None %}
+            {% elif state_attr('media_player.soundbar', 'volume_level') == None %}            
               {% set oldState = 0 %}
             {% else %}
-              {% set oldState = states.media_player.soundbar.attributes.volume_level -%}
+              {% set oldState = state_attr('media_player.soundbar', 'volume_level') | float -%}
             {% endif %}
 
             {% if trigger.event.data.action_value | float > 0 %}
@@ -405,22 +292,11 @@ automation:
             {% endif %}
 
             {{ newState }}
-      - service: input_number.set_value
-        data_template:
-          entity_id: input_number.soundbar_volume
-          value: >-
-            {% if states.media_player.soundbar.state == "off" %}
-              0
-            {% else %}
-              {{states.sensor.soundbar_volume.state }}
-            {% endif %}
 
 homeassistant:
   customize:
     switch.watchtv_wohnzimmer:
       icon: mdi:television-classic
-    switch.play_wohnzimmer:
-      icon: mdi:play-pause
     switch.wohnzimmer_fernseher:
       icon: mdi:television
       friendly_name: Fernseher

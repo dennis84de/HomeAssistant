@@ -14,7 +14,6 @@ person:
     id: dennis
     device_trackers:
       - device_tracker.handy
-      - device_tracker.handygps
       - device_tracker.handymqtt
 
 input_boolean:
@@ -29,7 +28,7 @@ proximity:
     tolerance: 50
 
 shell_command:
-  send_position: "curl -X POST '{{ url }}?lat={{ states.device_tracker.netzwerkdj.attributes.latitude }}&lon={{ states.device_tracker.netzwerkdj.attributes.longitude }}&timestamp={{ as_timestamp(now()) | int }}'"
+  send_position: "curl -X POST '{{ url }}?lat={{ state_attr('device_tracker.netzwerkdj', 'latitude') }}&lon={{ state_attr('device_tracker.netzwerkdj', 'longitude') }}&timestamp={{ as_timestamp(now()) | int }}'"
 
 sensor:
   - platform: places
@@ -46,7 +45,7 @@ binary_sensor:
         friendly_name: "zu Hause"
         device_class: presence
         value_template: >-
-          {% if (is_state('person.dennis', 'home') or is_state('device_tracker.handy', 'home') or is_state('device_tracker.handygps', 'home')) or is_state('device_tracker.handymqtt', 'on') %}
+          {% if is_state('person.dennis', 'home') or is_state('device_tracker.handy', 'home') or is_state('device_tracker.handymqtt', 'home') %}
             true
           {% else %}
             false
@@ -67,7 +66,7 @@ automation:
           {% set computerEingeschaltet = is_state('switch.computer', 'on') %}
           {% set computerEingeschaltetLassen = is_state('input_boolean.computer_ausschalten', 'on') %}
 
-          {% for entity_id in states.group.alles_ausschalten.attributes.entity_id -%}
+          {% for entity_id in state_attr('group.alles_ausschalten', 'entity_id') -%}
             {% set parts = entity_id.split('.') -%}
             {% if (states(entity_id) == 'on') -%}
               {% set ns.found = ns.found + 1 -%}
@@ -90,11 +89,10 @@ automation:
             {%- set comma = joiner(",") -%}
             {%- set deviceFound = false -%}
 
-            {% for entity_id in states.group.alles_ausschalten.attributes.entity_id -%}
-              {%- set domain, device = entity_id.split('.') -%}
-              {%- if states[domain][device].state == 'on' -%}
+            {% for entity_id in state_attr('group.alles_ausschalten', 'entity_id') -%}              
+              {%- if states(entity_id) == 'on' -%}
                 {%- set deviceFound = true -%}
-                {{ comma() }} {{ states[domain][device].attributes.friendly_name }}
+                {{ comma() }} {{ state_attr(entity_id, 'friendly_name') }}
               {%- endif -%}
             {%- endfor -%}
 
@@ -167,7 +165,7 @@ automation:
         data_template:
           dev_id: handygps
           location_name: 'home'
-          gps: ["{{ states.device_tracker.netzwerkdj.attributes.latitude }}", "{{ states.device_tracker.netzwerkdj.attributes.longitude }}"]
+          gps: ["{{ state_attr('device_tracker.netzwerkdj', 'latitude') }}", "{{ state_attr('device_tracker.netzwerkdj', 'longitude') }}"]
 
   - alias: "Zu Hause - Manuell geschaltet"
     trigger:
@@ -193,7 +191,7 @@ automation:
         data_template:
           dev_id: handygps
           location_name: 'home'
-          gps: ["{{ states.device_tracker.netzwerkdj.attributes.latitude }}", "{{ states.device_tracker.netzwerkdj.attributes.longitude }}"]
+          gps: ["{{ state_attr('device_tracker.netzwerkdj', 'latitude') }}", "{{ state_attr('device_tracker.netzwerkdj', 'longitude') }}"]
 
   - alias: "Zu Hause - Geräte einschalten"
     trigger:
@@ -249,10 +247,24 @@ automation:
       - platform: state
         entity_id: binary_sensor.tuersensor
         to: 'on'
-    condition: 
-      - condition: state
+      - platform: state
         entity_id: binary_sensor.zu_hause
-        state: 'off'     
+        to: 'on'
+    condition: 
+      - condition: time        
+        before: '23:00'   
+      - condition: numeric_state
+        entity_id: sensor.laufzeit_minuten
+        above: 5
+      - condition: or
+        conditions:
+          - condition: state
+            entity_id: binary_sensor.zu_hause
+            state: 'off'
+          - condition: state
+            entity_id: binary_sensor.tuersensor
+            state: 'off'
+            for: '00:05:00'
     action:
       - service: input_boolean.turn_on
         entity_id: input_boolean.zu_hause_begruessung        
@@ -261,16 +273,11 @@ automation:
     trigger:
       - platform: state
         entity_id: binary_sensor.tuersensor
-        to: 'off'
+        to: 'off' 
     condition:
       - condition: state
         entity_id: input_boolean.zu_hause_begruessung
-        state: 'on'  
-      - condition: time        
-        before: '23:00'   
-      - condition: numeric_state
-        entity_id: sensor.laufzeit_minuten
-        above: 5        
+        state: 'on'       
     action:
       - delay: '00:00:30'
       - service: !secret tts_service
@@ -282,8 +289,8 @@ automation:
               "Der Staubsaugerbehälter muss geleert werden."
             {% endif %}
 
-            {% set count_heimnetz_entities = states.sensor.heimnetz_offline.state | int -%}
-            {% set count_zigate_entities = states.sensor.zigate_offline.state | int -%}
+            {% set count_heimnetz_entities = states('sensor.heimnetz_offline') | int -%}
+            {% set count_zigate_entities = states('sensor.zigate_offline') | int -%}
             {% set count_complete = count_heimnetz_entities + count_zigate_entities | int -%}
             
             {% if count_complete > 0 %}
@@ -294,7 +301,7 @@ automation:
               {% endif %}            
             
               {% if count_heimnetz_entities > 0 %}
-                {%- for entity_id in states.group.heimnetz.attributes.entity_id -%}
+                {%- for entity_id in state_attr('group.heimnetz', 'entity_id') -%}
                   {% set parts = entity_id.split('.') -%}
 
                   {% if states(entity_id) == 'not_home' %}
@@ -304,10 +311,10 @@ automation:
               {% endif %}
                             
               {% set now = as_timestamp(now()) | int %}
-              {% set puffer = states.input_number.zigate_offline_puffer.state | int * 60 | int -%}
+              {% set puffer = states('input_number.zigate_offline_puffer') | int * 60 | int -%}
 
               {% if count_zigate_entities > 0 %}
-                {%- for entity_id in states.group.zigate.attributes.entity_id -%}
+                {%- for entity_id in state_attr('group.zigate', 'entity_id') -%}
                   {%- set lastChange = as_timestamp(states(entity_id)) | int -%}
                   {%- set difference = (now - lastChange ) / 60 | round() -%}
                   {%- set parts = entity_id.split('.') -%}
@@ -318,8 +325,8 @@ automation:
               {% endif %}                 
             {% endif %}
            
-            {% set min_battery_level = states.input_number.batteriestand_warnlevel.state | int -%}
-            {% set count_battery_entities = states.sensor.batteriestand_niedrig.state | int -%}
+            {% set min_battery_level = states('input_number.batteriestand_warnlevel') | int -%}
+            {% set count_battery_entities = states('sensor.batteriestand_niedrig') | int -%}
 
             {%if count_battery_entities > 0 %}
               {% if count_battery_entities > 1 %}
@@ -328,7 +335,7 @@ automation:
                 {{ "Der Batteriestand des folgenden Gerätes ist niedrig. " }}
               {% endif %}
 
-              {%- for entity_id in states.group.batteriestand.attributes.entity_id -%}
+              {%- for entity_id in state_attr('group.batteriestand', 'entity_id') -%}
                 {%- set parts = entity_id.split('.') -%}
                 {%- if (states(entity_id) | replace("%","") | int) <= min_battery_level -%}
                   {{ states[parts[0]][parts[1]].name }},
@@ -337,19 +344,6 @@ automation:
             {% endif %}
       - service: input_boolean.turn_off
         entity_id: input_boolean.zu_hause_begruessung                           
-                                 
-  - alias: "Zu Hause - Staubsaugerbehälter leeren"
-    trigger:
-      - platform: state
-        entity_id: input_boolean.zu_hause_begruessung
-        to: 'off'
-    condition:
-      - condition: numeric_state
-        entity_id: counter.behaelter_leeren
-        below: 1
-    action:
-      - service: counter.reset
-        entity_id: counter.behaelter_leeren
             
 script:
   zu_hause:
@@ -381,6 +375,15 @@ script:
         entity_id: switch.computer, switch.watchtv_wohnzimmer
       - service: switch.turn_on
         entity_id: switch.badezimmer_radio
+      - wait_template: >-
+          {% if is_state('media_player.badezimmer', 'playing') %}
+            True
+          {% else %}
+            False
+          {% endif %}      
+        timeout: '00:02:00'
+      - service: media_player.media_pause
+        entity_id: media_player.badezimmer
 
 homeassistant:
   customize:

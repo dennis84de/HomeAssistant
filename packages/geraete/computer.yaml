@@ -1,5 +1,5 @@
 shell_command:
-  computer_hibernate: curl http://192.168.2.21:7760/hibernate
+  computer_hibernate: curl http://192.168.2.81:7760/hibernate
 
 input_boolean:
   computer_ausschalten:

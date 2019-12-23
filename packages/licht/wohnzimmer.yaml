@@ -59,6 +59,8 @@ automation:
       - condition: state
         entity_id: calendar.borussia_dortmund
         state: 'off'
+      - condition: template
+        value_template: '{{ is_state("media_player.smarthome", "playing") == False }}'           
     action:
       - service: light.toggle
         entity_id: light.couch

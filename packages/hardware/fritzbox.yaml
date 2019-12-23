@@ -16,12 +16,6 @@ device_tracker:
     consider_home: 60
     new_device_defaults:
       track_new_devices: false
-
-  - platform: ping
-    interval_seconds: 30
-    consider_home: 60
-    hosts:
-      brematic_gateway: !secret brematic_host
       
 sensor:
   - platform: fritzbox_callmonitor
@@ -113,7 +107,7 @@ sensor:
         icon_template: >
           {% set ns = namespace(found=false) -%}
 
-          {%- for entity_id in states.group.heimnetz.attributes.entity_id -%}
+          {%- for entity_id in state_attr('group.heimnetz', 'entity_id') -%}
             {% set parts = entity_id.split('.') -%}
             
             {% if states(entity_id) == 'not_home' %}
@@ -129,7 +123,7 @@ sensor:
         value_template: >
           {% set ns = namespace(found=0) -%}
 
-          {%- for entity_id in states.group.heimnetz.attributes.entity_id -%}
+          {%- for entity_id in state_attr('group.heimnetz', 'entity_id') -%}
             {% set parts = entity_id.split('.') -%}
             
             {% if states(entity_id) == 'not_home' %}
@@ -222,7 +216,7 @@ homeassistant:
       icon: mdi:desktop-classic
     device_tracker.pc:
       icon: mdi:desktop-classic
-      friendly_name: "Computer"
+      friendly_name: Computer
     device_tracker.pihomeassistant:
       icon: mdi:home-assistant
     device_tracker.broadlinkwohnzimmer:
@@ -235,8 +229,6 @@ homeassistant:
       icon: mdi:router-wireless
     device_tracker.epsondrucker:
       icon: mdi:printer
-    device_tracker.brematicgateway:
-      icon: mdi:signal-variant
     device_tracker.brematic_gateway:
       icon: mdi:signal-variant
     device_tracker.maxheizung:

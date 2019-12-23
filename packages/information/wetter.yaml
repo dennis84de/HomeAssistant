@@ -1,7 +1,7 @@
 sun:
 wwlln:
-  window: 3600
-  radius: 500
+  window: 60
+  radius: 50
 
 openuv:
   api_key: !secret openuv_key
@@ -47,10 +47,10 @@ binary_sensor:
       sonne_tagsueber:
         friendly_name: "Sonne tagsüber"
         value_template: >-
-          {% if states.sensor.helligkeit.state == None or is_state('sensor.helligkeit', 'unknown') %}
+          {% if is_state('sensor.helligkeit', None) or is_state('sensor.helligkeit', 'unknown') %}
             False
           {% else %}
-            {{ states.sensor.helligkeit.state | float > 20 }}
+            {{ states('sensor.helligkeit') | float > 20 }}
           {% endif %}
 
 sensor:
@@ -163,6 +163,7 @@ sensor:
     name: Strommix
     resource: !secret strommix_url
     unit_of_measurement: '%'
+    scan_interval: 3600
     value_template: '{{ value_json[0].eevalue }}'
 
   - platform: template
@@ -244,21 +245,21 @@ sensor:
         entity_id:
           - sun.sun
         value_template: >-
-          {% if (as_timestamp(states.sun.sun.attributes.next_dusk)) - (as_timestamp(states.sun.sun.attributes.next_setting)) < 0 %}
+          {% if (as_timestamp(state_attr('sun.sun', 'next_dusk'))) - (as_timestamp(state_attr('sun.sun', 'next_setting'))) < 0 %}
             Abenddämmerung
-          {% elif (as_timestamp(states.sun.sun.attributes.next_rising)) - (as_timestamp(states.sun.sun.attributes.next_dawn)) < 0 %}
+          {% elif (as_timestamp(state_attr('sun.sun', 'next_rising'))) - (as_timestamp(state_attr('sun.sun', 'next_dawn'))) < 0 %}
             Morgendämmerung
-          {% elif (states.sun.sun.attributes.elevation) < - 4 %}
+          {% elif (state_attr('sun.sun', 'elevation')) < - 4 %}
             Nacht
           {% else %}
             Tag
           {% endif %}
         entity_picture_template: >-
-          {% if (as_timestamp(states.sun.sun.attributes.next_dusk)) - (as_timestamp(states.sun.sun.attributes.next_setting)) < 0 %}
+          {% if (as_timestamp(state_attr('sun.sun', 'next_dusk'))) - (as_timestamp(state_attr('sun.sun', 'next_setting'))) < 0 %}
             /local/sonne/Dawn.png
-          {% elif (as_timestamp(states.sun.sun.attributes.next_rising)) - (as_timestamp(states.sun.sun.attributes.next_dawn)) < 0 %}
-            /local/sonne/Dusk.png
-          {% elif (states.sun.sun.attributes.elevation) < - 4 %}
+          {% elif (as_timestamp(state_attr('sun.sun', 'next_rising'))) - (as_timestamp(state_attr('sun.sun', 'next_dawn'))) < 0 %}
+            /local/sonne/Dusk.png         
+          {% elif (state_attr('sun.sun', 'elevation')) < - 4 %}
             /local/sonne/Night.png
           {% else %}
             /local/sonne/Day.png
@@ -268,14 +269,14 @@ sensor:
         friendly_name: 'Nächster Sonnenaufgang'
         entity_id:
           - sun.sun
-        value_template: "{{ as_timestamp(states.sun.sun.attributes.next_rising) | timestamp_custom('%d.%m.%Y %H:%M') }}"
+        value_template: "{{ as_timestamp(state_attr('sun.sun', 'next_rising')) | timestamp_custom('%d.%m.%Y %H:%M') }}"
         icon_template: mdi:weather-sunset-up
 
       sonnenuntergang:
         friendly_name: 'Nächster Sonnenuntergang'
         entity_id:
           - sun.sun
-        value_template: "{{ as_timestamp(states.sun.sun.attributes.next_setting) | timestamp_custom('%d.%m.%Y %H:%M') }}"
+        value_template: "{{ as_timestamp(state_attr('sun.sun', 'next_setting')) | timestamp_custom('%d.%m.%Y %H:%M') }}"
         icon_template: mdi:weather-sunset-down
 
       mondphasen:
@@ -323,46 +324,67 @@ sensor:
         friendly_name: 'Nächstes Startdatum'
         entity_id:
           - sensor.spacex
-        value_template: '{{ states.sensor.spacex.state | int | timestamp_custom("%d.%m.%Y")}}'
+        value_template: '{{ states("sensor.spacex") | int | timestamp_custom("%d.%m.%Y")}}'
 
       spacex_next_launch_time:
         friendly_name: 'Startzeit'
         entity_id:
           - sensor.spacex
-        value_template: '{{ states.sensor.spacex.state | int | timestamp_custom("%H:%M")}}'
+        value_template: '{{ states("sensor.spacex") | int | timestamp_custom("%H:%M")}}'
         unit_of_measurement: 'Uhr'
 
       spacex_next_rocket:
         friendly_name: 'Nächste Rakete'
         entity_id:
           - sensor.spacex
-        value_template: '{{ states.sensor.spacex.attributes["rocket"]["rocket_name"] }}'
+        value_template: >-
+          {% set rocket = state_attr('sensor.spacex', 'rocket') %}
+
+          {% if rocket == None %}
+            -
+          {% else %}
+            {{ rocket.rocket_name }}
+          {% endif %}
 
       spacex_next_launch_site:
         friendly_name: 'Abflugsort'
-        value_template: '{{ states.sensor.spacex.attributes["launch_site"]["site_name_long"] }}'
+        value_template: >-
+          {% set launchSite = state_attr('sensor.spacex', 'launch_site') %}
+
+          {% if launchSite == None %}
+            -
+          {% else %}
+            {{ launchSite.site_name_long }}
+          {% endif %}
 
       spacex_next_mission_name:
         friendly_name: 'Mission'
         entity_id:
           - sensor.spacex
-        value_template: '{{ states.sensor.spacex.attributes["mission_name"] }}'
+        value_template: >-
+          {% set MissionName = state_attr('sensor.spacex', 'mission_name') %}
+
+          {% if launchSite == None %}
+            -
+          {% else %}
+            {{ MissionName }}
+          {% endif %}
 
       uv_index_current:
         friendly_name: 'UV Index'
         unit_of_measurement: 'UV'
         entity_id:
           - sensor.current_uv_index
-        value_template: '{{ states.sensor.current_uv_index.state | float | round(2) }}'
-        icon_template: '{{ states.sensor.current_uv_index.attributes.icon }}'
+        value_template: '{{ states("sensor.current_uv_index") | float | round(2) }}'
+        icon_template: '{{ state_attr("sensor.current_uv_index","icon") }}'
 
       uv_index_max:
         friendly_name: 'Maximaler UV Index'
         unit_of_measurement: 'UV'
         entity_id:
           - sensor.max_uv_index
-        value_template: '{{ states.sensor.max_uv_index.state | float | round(2) }}'
-        icon_template: '{{ states.sensor.max_uv_index.attributes.icon }}'
+        value_template: '{{ states("sensor.max_uv_index") | float | round(2) }}'
+        icon_template: '{{ state_attr("sensor.max_uv_index","icon") }}'
 
       zeit_sonne:
         friendly_name: 'Zeit in der Sonne'
@@ -372,9 +394,9 @@ sensor:
           {% if is_state('sensor.skin_type_3_safe_exposure_time', 'unknown') %}
             0
           {% else %}
-            {{ states.sensor.skin_type_3_safe_exposure_time.state | int }}
+            {{ states('sensor.skin_type_3_safe_exposure_time') | int }}
           {% endif %}
-        icon_template: '{{ states.sensor.skin_type_3_safe_exposure_time.attributes.icon }}'
+        icon_template: '{{ state_attr("sensor.skin_type_3_safe_exposure_time","icon") }}'        
         unit_of_measurement: 'Minuten'
 
       windrichtung:
@@ -383,7 +405,7 @@ sensor:
         entity_id:
           - sensor.darksky_wind_bearing
         value_template: >-
-          {% set wind_dir = states.sensor.darksky_wind_bearing.state %}
+          {% set wind_dir = states('sensor.darksky_wind_bearing') %}
 
           {% if wind_dir | float <= 23 %} Nord
           {% elif wind_dir | float > 338 %} Nord
@@ -396,7 +418,7 @@ sensor:
           {% elif 293 < (wind_dir|float) <= 338 %} NW
           {%- endif %}
         entity_picture_template: >-
-          {% set wind_dir = states.sensor.darksky_wind_bearing.state %}
+          {% set wind_dir = states('sensor.darksky_wind_bearing') %}
 
           {% if wind_dir | float <= 23 %} /local/wind/0.png
           {% elif wind_dir | float > 338 %} /local/wind/0.png
@@ -421,7 +443,8 @@ automation:
   - alias: 'Balkontür schließen'
     trigger:
       platform: template
-      value_template: '{{ states.sensor.balkon_temperatur.state | float > states.sensor.wohnzimmer_temperatur.state | float + 2 }}'
+      value_template: >-
+        {{ states('sensor.balkon_temperatur') | float > states('sensor.wohnzimmer_temperatur') | float + 2 }}
     condition:
       - condition: numeric_state
         entity_id: sensor.balkon_temperatur
@@ -436,8 +459,8 @@ automation:
       - service: !secret tts_service
         data_template:
           message: >-
-            {% set temperaturBalkon = states.sensor.balkon_temperatur.state | float %}
-            {% set temperaturWohnzimmer = states.sensor.wohnzimmer_temperatur.state | float %}
+            {% set temperaturBalkon = states('sensor.balkon_temperatur') | float %}
+            {% set temperaturWohnzimmer = states('sensor.wohnzimmer_temperatur') | float %}
 
             {% set difference = (temperaturBalkon - temperaturWohnzimmer) | round() %}
 
@@ -445,16 +468,13 @@ automation:
 
   - alias: 'Wetterwarnung'
     trigger:
-#      - entity_id: sensor.wetterwarnungen_current_warning_level
-#        platform: state
-      - platform: numeric_state
-        entity_id: sensor.wetterwarnungen_current_warning_level
-        above: 1
+      - entity_id: sensor.wetterwarnungen_current_warning_level
+        platform: state
     condition:
       - condition: template
         value_template: '{{ is_state("sensor.wetterwarnungen_current_warning_level", "0") == False }}'
-      - condition: template
-        value_template: '{{ trigger.from_state.state | int == 0 }}'
+      - condition: template     
+        value_template: '{{ trigger.from_state.state != trigger.to_state.state }}'
     action:
       - service: !secret tts_service
         data_template:

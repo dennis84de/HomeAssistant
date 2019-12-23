@@ -8,5 +8,6 @@
   "dependencies": [
     "light", "sensor", "binary_sensor", "cover", "fan", "media_player", "input_boolean"
   ],
-  "codeowners": ["@danobot"]
+  "codeowners": ["@danobot"],
+  "homeassistant": "0.102.3"
 }

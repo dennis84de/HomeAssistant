@@ -4,65 +4,57 @@ input_boolean:
     initial: off
 
 sensor:
+  - platform: mqtt
+    name: "Handy Batterie"
+    device_class: battery
+    unit_of_measurement: '%'
+    state_topic: "handy/batterie"
+    value_template: "{{ value_json.battery }}"
+    json_attributes_topic: "handy/batterie"
+    json_attributes_template: "{{ value_json | tojson }}"   
+    
+  - platform: mqtt
+    name: "Handy"
+    state_topic: "handy/status"
+    value_template: "{{ value_json.status }}"   
+    json_attributes_topic: "handy/status"
+    json_attributes_template: "{{ value_json | tojson }}"   
+
   - platform: template
     sensors:
       handy_status:
         friendly_name: Handy
         entity_id:
-          - sensor.tasker_handystatus
-        value_template: >
-          {% if states.sensor.tasker_handystatus == None %}
-            Ruhezustand
+          - sensor.handy
+        value_template: >-
+          {% if is_state('sensor.handy', 'incoming') %}
+            Eingehender Anruf
+          {% elif is_state('sensor.handy', 'outgoing') %}
+            Ausgehender Anruf
+          {% elif is_state('sensor.handy', 'sms') %}
+            Ungelesene SMS
           {% else %}
-            {% if is_state('sensor.tasker_handystatus', 'incoming') %}
-              Eingehender Anruf
-            {% elif is_state('sensor.tasker_handystatus', 'outgoing') %}
-              Ausgehender Anruf
-            {% elif is_state('sensor.tasker_handystatus', 'sms') %}
-              Ungelesene SMS
-            {% else %}
-              Ruhezustand
-            {% endif %}
+            Ruhezustand
           {% endif %}
         icon_template: >
-          {% if states.sensor.tasker_handystatus == None %}
+          {% if is_state('sensor.handy', 'incoming') %}
+            mdi:phone-incoming
+          {% elif is_state('sensor.handy', 'outgoing') %}
+            mdi:phone-outgoing
+          {% elif is_state('sensor.handy', 'sms') %}
+            mdi:message-alert
+          {% else %}   
             mdi:phone
-          {% else %}
-            {% if is_state('sensor.tasker_handystatus', 'incoming') %}
-              mdi:phone-incoming
-            {% elif is_state('sensor.tasker_handystatus', 'outgoing') %}
-              mdi:phone-outgoing
-            {% elif is_state('sensor.tasker_handystatus', 'sms') %}
-              mdi:message-alert
-            {% else %}
-              mdi:phone
-            {% endif %}
-          {% endif %}
-
-  - platform: template
-    sensors:
-      handy_batterie:
-        friendly_name: Handy
-        entity_id:
-          - sensor.tasker_handy
-        value_template: >
-          {% if states.sensor.tasker_handy == None %}
-            0
-          {% else %}
-            {{ states.sensor.tasker_handy.state | float }}
-          {% endif %}
-        device_class: battery
-        unit_of_measurement: '%'
-        
+          {% endif %}          
       handy_zuletzt_geladen:
-        friendly_name: Zuletzt geladen
+        friendly_name: Handy - Zuletzt geladen
         entity_id:
-          - sensor.tasker_handy
+          - sensor.handy_batterie
         value_template: >
-          {% if states.sensor.tasker_handy == None %}
+          {% if is_state('sensor.handy_batterie', None) %}
             -
           {% else %}
-            {% set lastCharged = state_attr('sensor.tasker_handy','last_charged') | int %}
+            {% set lastCharged = state_attr('sensor.handy_batterie','last_charged') | int %}
             {% set weekday = lastCharged | timestamp_custom("%w", True) | int %}
 
             {{ ['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'][weekday-1] }}, {{ lastCharged | timestamp_custom("%d.%m.%Y", True) | string }}  
@@ -73,11 +65,11 @@ automation:
   - alias: 'Eingehender Anruf - Handy'
     trigger:
       - platform: state
-        entity_id: sensor.tasker_handystatus
+        entity_id: sensor.handy
         to: 'incoming'
     condition:
       - condition: template
-        value_template: '{{ state_attr("sensor.tasker_handystatus", "number") != None }}'        
+        value_template: '{{ state_attr("sensor.handy", "number") != None }}'        
     action:
       - service: mqtt.publish
         data_template:
@@ -88,10 +80,10 @@ automation:
   - alias: 'Handy aktiv - Kodi pausieren'
     trigger:
       - platform: state
-        entity_id: sensor.tasker_handystatus
+        entity_id: sensor.handy
         to: 'incoming'
       - platform: state
-        entity_id: sensor.tasker_handystatus
+        entity_id: sensor.handy
         to: 'outgoing'
     condition:
       - condition: state
@@ -109,11 +101,23 @@ automation:
         data:
           title: 'Handy'
           message: >-
-            {% if is_state("sensor.tasker_handystatus", "outgoing") %}
-              {{ states.sensor.tasker_handystatus.attributes.name }} ({{ states.sensor.tasker_handystatus.attributes.number }}) wird angerufen.
-            {% elif is_state("sensor.tasker_handystatus", "incoming") %}
-              Eingehender Anruf von {{ states.sensor.tasker_handystatus.attributes.name }} ({{ states.sensor.tasker_handystatus.attributes.number }}).
-            {% endif %}
+            {% set name = state_attr('sensor.handy', 'name') %}
+            {% set number = state_attr('sensor.handy', 'number') %}
+            
+            {% if is_state("sensor.handy", "outgoing") %}
+              {% if name == number %}
+                {{ state_attr('sensor.handy', 'name') }} wird angerufen.
+              {% else %}
+                {{ state_attr('sensor.handy', 'name') }} ({{ state_attr('sensor.handy', 'number') }}) wird angerufen.
+              {% endif %}
+              
+            {% elif is_state("sensor.handy", "incoming") %}
+              {% if name == number %}
+                Eingehender Anruf von {{ state_attr('sensor.handy', 'name') }}.
+              {% else %}
+                Eingehender Anruf von {{ state_attr('sensor.handy', 'name') }} ({{ state_attr('sensor.handy', 'number') }}).
+              {% endif %}                          
+            {% endif %}                                 
           data:
             displaytime: 5000
             icon: "info"
@@ -121,7 +125,7 @@ automation:
   - alias: 'Handy inaktiv - Kodi wiedergeben'
     trigger:
       - platform: state
-        entity_id: sensor.tasker_handystatus
+        entity_id: sensor.handy
         to: 'idle'
     condition:
       - condition: state
@@ -149,10 +153,10 @@ automation:
   - alias: 'Handy aktiv - Soundbar deaktivieren'
     trigger:
       - platform: state
-        entity_id: sensor.tasker_handystatus
+        entity_id: sensor.handy
         to: 'incoming'
       - platform: state
-        entity_id: sensor.tasker_handystatus
+        entity_id: sensor.handy
         to: 'outgoing'
     condition:
       - condition: state
@@ -178,7 +182,7 @@ automation:
   - alias: 'Handy inaktiv - Soundbar aktivieren'
     trigger:
       - platform: state
-        entity_id: sensor.tasker_handystatus
+        entity_id: sensor.handy
         to: 'idle'
     condition:
       - condition: state
@@ -195,10 +199,10 @@ automation:
   - alias: 'Handy aktiv - Musik pausieren'
     trigger:
       - platform: state
-        entity_id: sensor.tasker_handystatus
+        entity_id: sensor.handy
         to: 'incoming'
       - platform: state
-        entity_id: sensor.tasker_handystatus
+        entity_id: sensor.handy
         to: 'outgoing'
     condition:
       - condition: state
@@ -218,7 +222,7 @@ automation:
   - alias: 'Handy inaktiv - Musik wiedergeben'
     trigger:
       - platform: state
-        entity_id: sensor.tasker_handystatus
+        entity_id: sensor.handy
         to: 'idle'
     condition:
       - condition: state
@@ -238,7 +242,7 @@ automation:
   - alias: "Handy - Eingehender Anruf - TTS"
     trigger:
       - platform: state
-        entity_id: sensor.tasker_handystatus
+        entity_id: sensor.handy
         to: 'incoming'
     condition:
       - condition: state
@@ -248,12 +252,12 @@ automation:
       service: !secret tts_service
       data_template:
         message: >-
-          Ein eingehender Anruf von {% if states.sensor.tasker_handystatus.attributes.name != '-' and states.sensor.tasker_handystatus.attributes.name.startswith('+') == False %}{{ states.sensor.tasker_handystatus.attributes.name }}{% else %}einer unbekannten Nummer{% endif %}.
+          Ein eingehender Anruf von {% if state_attr('sensor.handy', 'name') != '-' and state_attr('sensor.handy', 'name').startswith('+') == False %}{{ state_attr('sensor.handy', 'name') }}{% else %}einer unbekannten Nummer{% endif %}.
 
   - alias: "Handy - Neue SMS - TTS"
     trigger:
       - platform: state
-        entity_id: sensor.tasker_handystatus
+        entity_id: sensor.handy
         to: 'sms'
     condition:
       - condition: state
@@ -262,18 +266,13 @@ automation:
     action:
       service: !secret tts_service
       data_template:
-#        message: >-
-#          Eine neue SMS von {% if states.sensor.tasker_handystatus.attributes.name != '-' and states.sensor.tasker_handystatus.attributes.name.startswith('+') == False and states.sensor.tasker_handystatus.attributes.name.startswith('0') == False %} {{ states.sensor.tasker_handystatus.attributes.name }}{% else %}einer unbekannten Nummer{% endif %} ist eingegangen.
-#        message: >-
-#          Eine neue SMS{% if states.sensor.tasker_handystatus.attributes.name != '-' or states.sensor.tasker_handystatus.attributes.name.startswith('+') or states.sensor.tasker_handystatus.attributes.name.startswith('0')%} von {{ states.sensor.tasker_handystatus.attributes.name }}{% endif %} ist eingegangen.
-#          {% if states.sensor.tasker_handystatus.attributes.text != '-'%}{{ states.sensor.tasker_handystatus.attributes.text }}{% endif %}
         message: >-
-          Eine neue SMS ist eingegangen.
+          Eine neue SMS von {% if state_attr('sensor.handy', 'name') != '-' and state_attr('sensor.handy', 'name').startswith('+') == False and state_attr('sensor.handy', 'name').startswith('0') == False %}"{{ state_attr('sensor.handy', 'name') }}"{% else %}einer unbekannten Nummer{% endif %} ist eingegangen.
 
   - alias: 'Handy - Neue SMS - Kodi'
     trigger:
       - platform: state
-        entity_id: sensor.tasker_handystatus
+        entity_id: sensor.handy
         to: 'sms'
     condition:
       - condition: state
@@ -286,63 +285,55 @@ automation:
       - service: notify.kodi_wohnzimmer
         data:
           title: 'Handy'
-#          message: >-
-#            {% set name = states.sensor.tasker_handystatus.attributes.name | string %}
-#
-#            {% if name.startswith('+') or name.startswith('0') or name == '-' %}
-#              Eine neue SMS ist eingegangen.
-#            {% else %}
-#              Eine neue SMS von {{ name }} ist eingegangen.
-#            {% endif %}
           message: >-
-            Eine neue SMS ist eingegangen.
+            {% set name = state_attr('sensor.handy', 'name') | string %}
+
+            {% if name.startswith('+') or name.startswith('0') or name == '-' %}
+              Eine neue SMS ist eingegangen.
+            {% else %}
+              Eine neue SMS von {{ name }} ist eingegangen.
+            {% endif %}
           data:
             displaytime: 3000
             icon: "info"
-#      - condition: template
-#        value_template: >-
-#          {% set text = states.sensor.tasker_handystatus.attributes.text %}
-#
-#          {% if text == '-' %}
-#            False
-#          {% else %}
-#            True
-#          {% endif %}
-#      - delay: '00:00:03'
-#      - service: notify.kodi_wohnzimmer
-#        data:
-#          title: 'Handy'
-#          message: >-
-#            {{ states.sensor.tasker_handystatus.attributes.text }}
-#          data:
-#            displaytime: 6000
-#            icon: "info"
+      - condition: template
+        value_template: >-
+          {{ state_attr('sensor.handy', 'text') != '-' }}
+      - delay: '00:00:03'
+      - service: notify.kodi_wohnzimmer
+        data:
+          title: 'Handy'
+          message: >-
+            {{ state_attr('sensor.handy', 'text') }}
+          data:
+            displaytime: 6000
+            icon: "info"
 
   - alias: "Handy - Batteriestand niedrig"
     trigger:
       - platform: state
-        entity_id: sensor.tasker_handy
+        entity_id: sensor.handy_batterie
     condition:
       - condition: numeric_state
-        entity_id: sensor.tasker_handy
+        entity_id: sensor.handy_batterie
         below: 16
       - condition: template
-        value_template: '{{ state_attr("sensor.tasker_handy", "is_charging") == False }}'
+        value_template: '{{ state_attr("sensor.handy_batterie", "is_charging") == False }}'
     action:
       - service: !secret tts_service
         data_template:
-          message: "Das Handy muss aufgeladen werden. Der Batteriestand beträgt {{ states.sensor.tasker_handy.state | int }} Prozent."
+          message: "Das Handy muss aufgeladen werden. Der Batteriestand beträgt {{ states('sensor.handy_batterie') | int }} Prozent."
 
   - alias: "Handy - Aufgeladen"
     trigger:
       - platform: state
-        entity_id: sensor.tasker_handy
+        entity_id: sensor.handy_batterie
     condition:
       - condition: numeric_state
-        entity_id: sensor.tasker_handy
+        entity_id: sensor.handy_batterie
         above: 99
       - condition: template
-        value_template: '{{ state_attr("sensor.tasker_handy", "is_charging") == True }}'
+        value_template: '{{ state_attr("sensor.handy_batterie", "is_charging") == True }}'
     action:
       - service: !secret tts_service
         data_template:
@@ -350,9 +341,9 @@ automation:
 
 homeassistant:
   customize:
-    sensor.tasker_handy:
-      friendly_name: Handy Tasker
-    sensor.tasker_handystatus:
+    sensor.handy_batterie:
+      friendly_name: Handy
+    sensor.handy:
       friendly_name: Handy Status
     input_boolean.nicht_stoeren:
       icon: mdi:do-not-disturb

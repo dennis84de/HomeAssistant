@@ -1,7 +1,7 @@
 title: Infomation
 path: information
 popup_cards:
-  sensor.abfahrzeit:
+  sensor.abfahrzeit: 
     title: Ankunftszeit
     card:
       type: entities
@@ -67,7 +67,7 @@ cards:
     entities:
       - entity: sensor.countdown_neuhaus
       - entity: binary_sensor.zu_hause
-        name: Dennis
+        name: Dennis      
       - entity: sensor.aufenthaltsort_handy
       - entity: proximity.home
       - entity: sensor.letzte_bewegung
@@ -85,7 +85,7 @@ cards:
     title: Wecker
     show_header_toggle: false
     entities:
-      - entity: sensor.wecker_startzeit
+      - entity: sensor.wecker_startzeit  
       - entity: input_boolean.alarmstatus
       - entity: binary_sensor.alarm_aktiv
       - entity: binary_sensor.arbeitstag
@@ -124,7 +124,7 @@ cards:
       - entity: sensor.fahrzeit_nach_hause
       - entity: binary_sensor.schlechtes_wetter
       - entity: sensor.abfahrzeit
-
+      
   - type: custom:mini-graph-card
     name: Fahrzeit
     line_width: 2
@@ -146,6 +146,8 @@ cards:
     show_header_toggle: false
     entities:
       - entity: sensor.gewicht
+        type: "custom:secondaryinfo-entity-row"
+        secondary_info: "Durchschnitt: [[ sensor.gewicht_durchschnitt ]] kg"       
       - entity: sensor.bmi
       - entity: sensor.wasser
       - entity: sensor.fett

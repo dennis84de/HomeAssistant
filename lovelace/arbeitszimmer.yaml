@@ -30,7 +30,7 @@ cards:
     show_header_toggle: false
     entities:
       - entity: sensor.arbeitszimmer_temperatur
-      - entity: sensor.arbeitszimmer_luftfeuchtigkeit
+      - entity: sensor.arbeitszimmer_luftfeuchtigkeit   
       - entity: sensor.arbeitszimmer_luftdruck
 
   - type: glance
@@ -55,9 +55,10 @@ cards:
     show_header_toggle: false
     entities:
       - entity: vacuum.xiaomi_vacuum_cleaner
-      - entity: input_boolean.xiaomi_vacuum_automatische_reinigung
+      - entity: input_boolean.staubsauger_automatische_reinigung
       - entity: sensor.xiaomi_vacuum_batterie
       - entity: sensor.letzte_reinigung
+      - entity: input_select.staubsauger_raumauswahl
       - type: divider
       - entity: sensor.reinigung_filter
       - entity: sensor.reinigung_buerste

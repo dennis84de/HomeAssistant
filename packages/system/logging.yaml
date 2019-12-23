@@ -21,7 +21,6 @@ logbook:
       - automation
   exclude:
     entities:
-      - automation.home_assistant_healthcheck
       - automation.letzte_bewegung
 
 history:

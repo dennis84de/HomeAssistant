@@ -56,8 +56,8 @@ cards:
     show_header_toggle: false
     entities:
       - entity: zwave.aeotec_zwave_stick
-      - entity: zwave.aeotec_wohnzimmer
-      - entity: zwave.fibaro_badezimmer
+      - entity: zwave.bewegungsmelder_wohnzimmer
+      - entity: zwave.bewegungsmelder_badezimmer
 
   - type: entities
     title: Zigbee
@@ -116,7 +116,6 @@ cards:
       - entity: zigate.thermometer_sportzimmer
       - entity: zigate.thermometer_kueche
       - entity: zigate.thermometer_kuehlschrank
-      - entity: zigate.thermometer_gefrierschrank
       - entity: zigate.thermometer_hardware
 
   - type: entities

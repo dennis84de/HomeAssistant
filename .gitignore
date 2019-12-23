@@ -9,6 +9,7 @@ google_calendars.yaml
 *.conf
 .editorconfig
 *.data
+*.pem
 deps
 tts
 .HA_VERSION

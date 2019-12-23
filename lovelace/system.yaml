@@ -95,9 +95,9 @@ cards:
   - type: entities
     title: Radios
     show_header_toggle: false
-    entities:
-      - entity: switch.alle_radios
-      - entity: switch.wiedergabe_aktiv
+    entities:   
+      - entity: switch.alle_radios      
+      - entity: switch.wiedergabe_aktiv      
       - entity: script.sync_radios
 
   - type: glance
@@ -176,10 +176,13 @@ cards:
         icon: mdi:sync-off
 
   - type: custom:vertical-stack-in-card
-    title: Internetgeschwindigkeit
+    title: Internet
     cards:
+      - type: entities
+        entities:
+          - entity: binary_sensor.healthcheck          
+          - entity: sensor.speedtest_ping          
       - type: horizontal-stack
-        title: Network Status
         cards:
           - type: sensor
             entity: sensor.speedtest_download
@@ -193,13 +196,3 @@ cards:
             hours_to_show: 24
             graph: line
             detail: 1
-      - type: entities
-        entities:
-          - entity: sensor.speedtest_ping
-
-#  - type: custom:tracker-card
-#    title: Updates
-#    current_text: Aktuell
-#    available_text: Verfügbar
-#    check_text: Überprüfen
-#    update_all_text: Aktualisieren

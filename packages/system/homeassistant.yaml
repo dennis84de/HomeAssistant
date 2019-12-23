@@ -1,11 +1,28 @@
 http:
+#  ssl_certificate: /home/homeassistant/.homeassistant/ha_certificate.pem
+#  ssl_key: /home/homeassistant/.homeassistant/ha_privatekey.pem  
 config:
 websocket_api:
 frontend:
 mobile_app:
 lovelace:
   mode: yaml
-
+browser_mod:
+  prefix: "browser_"
+  devices:
+    52b5eccf-f131cf4d:
+      name: wohnzimmer_chrome
+      disable:
+        - light
+        - media_player
+    8a069996-a981f1d9:
+      name: wohnzimmer_firefox    
+      disable:
+        - light
+        - media_player      
+  disable:
+    - all
+    
 discovery:
   ignore:
     - songpal
@@ -17,10 +34,6 @@ system_health:
 
 breaking_changes:
   name: Wichtige Änderungen
-
-rest_command:
-  healthcheck:
-    url: !secret healthcheck_url
 
 python_script:
 map:
@@ -93,7 +106,7 @@ sensor:
         icon_template: >-
           mdi:av-timer
         value_template: >-
-          {{ as_timestamp(states.sensor.last_boot.state) | timestamp_custom("%d.%m.%Y") | string }}
+          {{ as_timestamp(states('sensor.last_boot')) | timestamp_custom("%d.%m.%Y") | string }}
 
 shell_command:
   upgrade_homeassistant: /home/homeassistant/.homeassistant/bash_scripts/upgrade-hass.sh
@@ -113,10 +126,10 @@ script:
     sequence:
       - condition: template
         value_template: >-
-          {% if states.sensor.hass_current_version.state == None or states.sensor.hass_installed_version.state == None %}
+          {% if is_state('sensor.hass_current_version', None) or is_state('sensor.hass_installed_version', None) %}
             False
           {% else %}
-            {{ states.sensor.hass_current_version.state != states.sensor.hass_installed_version.state }}
+            {{ states('sensor.hass_current_version') != states('sensor.hass_installed_version') }}
           {% endif %}
       - service: !secret tts_service
         data_template:
@@ -132,18 +145,18 @@ automation:
     condition:
       - condition: template
         value_template: >-
-          {% if states.sensor.hass_current_version.state == None or states.sensor.hass_installed_version.state == None %}
+          {% if is_state('sensor.hass_current_version', None) or is_state('sensor.hass_installed_version', None) %}
             False
           {% elif is_state("sensor.hass_current_version", "unavailable") == True %}
             False
           {% else %}
-            {{ states.sensor.hass_current_version.state != states.sensor.hass_installed_version.state }}
+            {{ states('sensor.hass_current_version') != states('sensor.hass_installed_version') }}
           {% endif %}
     action:
       service: notify.telegram
       data_template:
         title: 'Neue Version'
-        message: "Home Assistant {{ states.sensor.hass_current_version.state }} ist jetzt verfügbar."
+        message: "Home Assistant {{ states('sensor.hass_current_version') }} ist jetzt verfügbar."
 
   - alias: "Home Assistant - Fehler Neustart"
     trigger:
@@ -179,15 +192,6 @@ automation:
         data_template:
           echo: "wohnzimmer"
           message: "Home Assistant wurde neugestartet."
-
-  - alias: "Home Assistant - Healthcheck"
-    trigger:
-      - platform: homeassistant
-        event: start
-      - platform: time_pattern
-        minutes: '/5'
-    action:
-      - service: rest_command.healthcheck
 
 homeassistant:
   customize:

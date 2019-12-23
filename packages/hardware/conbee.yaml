@@ -50,8 +50,3 @@ homeassistant:
       icon: mdi:water-percent
     sensor.kuehlschrank_luftdruck:
       icon: mdi:weather-windy
-
-    sensor.gefrierschrank_luftfeuchtigkeit:
-      icon: mdi:water-percent
-    sensor.gefrierschrank_luftdruck:
-      icon: mdi:weather-windy
