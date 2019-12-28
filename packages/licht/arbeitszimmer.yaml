@@ -26,8 +26,6 @@ switch:
         
 homeassistant:
   customize:
-    switch.arbeitszimmer_lampe:
-      hidden: true
     light.arbeitszimmer_lampe:
       friendly_name: Lampe
       icon: mdi:lamp

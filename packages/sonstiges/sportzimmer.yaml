@@ -2,14 +2,28 @@ switch:
   - platform: brematic
     host: !secret brematic_host
     system_code: '00100'
-    switches:
+    switches:      
       sportzimmer_fernseher:
         unit_code: '10000'
         friendly_name: Sportzimmer Fernseher
       sportzimmer_crosstrainer:
         unit_code: '01000'
         friendly_name: Crosstrainer    
-        
+      sportzimmer_licht:
+        unit_code: '00100'
+        friendly_name: Sportzimmer Licht    
+      
+light:
+  - platform: switch
+    name: Sportzimmer Licht
+    entity_id: switch.sportzimmer_licht
+  
+input_boolean:
+  bewegungsmelder_sportzimmer_deaktiviert:
+    name: Bewegungsmelder deaktiviert
+    initial: off
+    icon: mdi:sync-off
+                
 homeassistant:
   customize:
     switch.sportzimmer_fernseher:
@@ -18,3 +32,7 @@ homeassistant:
     switch.sportzimmer_crosstrainer:
       icon: mdi:run-fast
       assumed_state: false
+      
+#    light.sportzimmer_licht:
+#      friendly_name: Licht
+#      icon: mdi:led           

@@ -234,58 +234,60 @@ homeassistant:
       friendly_name: Power Status
       icon: mdi:power-plug
 
-    sensor.matrix_intel_core_i5_4590_temperatures_cpu_package:
-      hidden: false
-      friendly_name: CPU Temperatur
-    sensor.matrix_intel_core_i5_4590_load_cpu_total:
-      hidden: false
-      friendly_name: CPU Auslastung
-      icon: mdi:progress-check
-    sensor.matrix_intel_core_i5_4590_clocks_cpu_core_1:
-      hidden: false
-      friendly_name: CPU Geschwindigkeit
-      icon: mdi:speedometer
-
-    sensor.matrix_asus_r7_250x_series_temperatures_gpu_core:
-      hidden: false
-      friendly_name: GPU Temperatur
-    sensor.matrix_asus_r7_250x_series_load_gpu_core:
-      hidden: false
-      friendly_name: GPU Auslastung
-      icon: mdi:progress-check
-    sensor.matrix_asus_r7_250x_series_clocks_gpu_core:
-      hidden: false
-      friendly_name: GPU Geschwindigkeit
-      icon: mdi:speedometer
-    sensor.matrix_asus_r7_250x_series_fans_gpu_fan:
-      hidden: false
-      friendly_name: GPU Lüfter
-      icon: mdi:fan
-
-    sensor.matrix_gigabyte_h97_hd3_ite_it8620e_temperatures_temperature_1:
-      hidden: false
-      friendly_name: Mainboard Temperatur
-    sensor.matrix_gigabyte_h97_hd3_ite_it8620e_fans_fan_1:
-      hidden: false
-      friendly_name: Mainboard Lüfter
-      icon: mdi:fan
-
-    sensor.matrix_generic_memory_load_memory:
-      hidden: false
-      friendly_name: RAM Auslastung
-
-    sensor.matrix_samsung_ssd_840_series_load_used_space:
-      hidden: false
+    sensor.computer_generic_hard_disk_load_used_space:
       friendly_name: SSD Speicherplatz
       icon: mdi:nas
-    sensor.matrix_samsung_ssd_840_series_temperatures_temperature:
-      hidden: false
-      friendly_name: SSD Temperatur
+    sensor.computer_generic_memory_data_available_memory:
+      friendly_name: Arbeitsspeicher verfügbar
+    sensor.computer_generic_memory_data_used_memory:
+      friendly_name: Arbeitsspeicher genutzt   
+    sensor.computer_generic_memory_load_memory:
+      friendly_name: RAM Auslastung
+      
+    sensor.computer_intel_core_i5_8259u_clocks_bus_speed:
+      friendly_name: CPU Bus Speed
+    sensor.computer_intel_core_i5_8259u_clocks_cpu_core_1:
+      friendly_name: CPU Bus Speed Core 1
+    sensor.computer_intel_core_i5_8259u_clocks_cpu_core_2:
+      friendly_name: CPU Bus Speed Core 2
+    sensor.computer_intel_core_i5_8259u_clocks_cpu_core_3:
+      friendly_name: CPU Bus Speed Core 3
+    sensor.computer_intel_core_i5_8259u_clocks_cpu_core_4:
+      friendly_name: CPU Bus Speed Core 4
+      
+    sensor.computer_intel_core_i5_8259u_load_cpu_total:
+      friendly_name: CPU Auslastung
+    sensor.computer_intel_core_i5_8259u_load_cpu_core_1:
+      friendly_name: CPU Load Core 1
+    sensor.computer_intel_core_i5_8259u_load_cpu_core_2:
+      friendly_name: CPU Load Core 2
+    sensor.computer_intel_core_i5_8259u_load_cpu_core_3:
+      friendly_name: CPU Load Core 3
+    sensor.computer_intel_core_i5_8259u_load_cpu_core_4:
+      friendly_name: CPU Load Core 4
 
-    sensor.matrix_wdc_wd20ears_00mvwb0_load_used_space:
-      hidden: false
+    sensor.computer_intel_core_i5_8259u_powers_cpu_cores:
+      friendly_name: Leistung Cores
+    sensor.computer_intel_core_i5_8259u_powers_cpu_dram:
+      friendly_name: Leistung DRAM
+    sensor.computer_intel_core_i5_8259u_powers_cpu_graphics:
+      friendly_name: Leistung Grafik
+    sensor.computer_intel_core_i5_8259u_powers_cpu_package:
+      friendly_name: Leistung CPU
+
+    sensor.computer_intel_core_i5_8259u_temperatures_cpu_package:
+      friendly_name: Temperatur CPU
+    sensor.computer_intel_core_i5_8259u_temperatures_cpu_core_1:
+      friendly_name: Temperatur CPU Core 1
+    sensor.computer_intel_core_i5_8259u_temperatures_cpu_core_2:
+      friendly_name: Temperatur CPU Core 2
+    sensor.computer_intel_core_i5_8259u_temperatures_cpu_core_3:
+      friendly_name: Temperatur CPU Core 3
+    sensor.computer_intel_core_i5_8259u_temperatures_cpu_core_4:
+      friendly_name: Temperatur CPU Core 4
+        
+    sensor.computer_wdc_wd20spzx_22ua7t0_load_used_space:
       icon: mdi:nas
       friendly_name: HDD Speicherplatz
-    sensor.matrix_wdc_wd20ears_00mvwb0_temperatures_temperature:
-      hidden: false
-      friendly_name: HDD Temperatur
+    sensor.computer_wdc_wd20spzx_22ua7t0_temperatures_temperature:      
+      friendly_name: HDD Temperatur     

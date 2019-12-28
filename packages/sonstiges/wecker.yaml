@@ -63,7 +63,7 @@ binary_sensor:
         entity_id:
           - sensor.tablet_weckzeit
         value_template: >-
-          {% if (states('sensor.tablet_weckzeit') == None) %}
+          {% if states('sensor.tablet_weckzeit') == None or states('sensor.tablet_weckzeit') == 'unknown'  or states('sensor.tablet_weckzeit') == '-' %}
             False
           {% elif "skip" in state_attr('sensor.tablet_weckzeit', 'raw') %}
             True
@@ -87,14 +87,19 @@ sensor:
     icon: mdi:tablet
     state_topic: "tablet/schlafzimmer/wecker"
     value_template: >-
-      {% if value_json == None %}
+      {% if value_json == None or value_json == undefined or value_json.weckzeit == None or value_json.weckzeit == '-' %}
         -
       {% else %}
         {{ value_json.weckzeit }}
       {% endif %}
     json_attributes_topic: "tablet/schlafzimmer/wecker"
-    json_attributes_template: "{{ value_json | tojson }}"   
-    
+    json_attributes_template: >-
+      {% if value_json == None or value_json == undefined or value_json.weckzeit == '%taskertime' %}
+        {% set value_json = [] %}        
+      {% endif %}     
+      
+      {{ value_json | tojson }}
+      
   - platform: template
     sensors:
       wecker_startzeit:
@@ -278,13 +283,16 @@ script:
         data_template:
           entity_id: input_number.alarmhour
           value: >
-            {% if states('sensor.tablet_weckzeit') == None %}
+            {% set tabletStunde = state_attr('sensor.tablet_weckzeit', 'hour') %}
+            {% set tabletMinuten = state_attr('sensor.tablet_weckzeit', 'minute') %}
+            
+            {% if tabletStunde == None or tabletMinuten == None or states('sensor.tablet_weckzeit') == None or states('sensor.tablet_weckzeit') == '-' %}
               {{ states('input_number.alarmhour') | int }}
             {% else %}
-              {% set newHour = state_attr('sensor.tablet_weckzeit', 'hour') | int %}
-              {% set newMinute = state_attr('sensor.tablet_weckzeit', 'minute') - states('input_number.alarmadvance') | int %}
-
-              {% if newMinute < 0 %}
+              {% set newHour = tabletStunde | int %}
+              {% set newMinute = tabletMinuten | int - states('input_number.alarmadvance') | int %}             
+            
+              {% if newMinute | int < 0 %}
                 {% set newHour = newHour - 1 | int %}
               {% endif %}
 
@@ -294,10 +302,13 @@ script:
         data_template:
           entity_id: input_number.alarmminutes
           value: >
-            {% if states('sensor.tablet_weckzeit') == None %}
+            {% set tabletStunde = state_attr('sensor.tablet_weckzeit', 'hour') %}
+            {% set tabletMinuten = state_attr('sensor.tablet_weckzeit', 'minute') %}
+          
+            {% if tabletStunde == None or tabletMinuten == None or states('sensor.tablet_weckzeit') == None or states('sensor.tablet_weckzeit') == '-' %}
               {{ states('input_number.alarmminutes') | int }}              
             {% else %}              
-              {% set newMinute = state_attr('sensor.tablet_weckzeit', 'minute') - states('input_number.alarmadvance') | int %}
+              {% set newMinute = tabletMinuten | int - states('input_number.alarmadvance') | int %}
 
               {% if newMinute < 0 %}
                 {% set newMinute = 60 + newMinute | int %}

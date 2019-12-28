@@ -26,14 +26,18 @@ cards:
     title: Multimedia
     show_header_toggle: false
     entities:
-      - entity: switch.play_wohnzimmer
       - entity: cover.kodi_untertitel
       - entity: switch.computer
       - entity: switch.watchtv_wohnzimmer
       - entity: input_boolean.musik_ausschalten
       - entity: input_boolean.kodi_pausieren
       - entity: cover.fernseher_eingang     
-      - entity: input_number.soundbar_volume
+      - type: custom:mini-media-player
+        entity: media_player.soundbar
+        hide:
+          source: true
+          progress: true
+          controls: true
       - type: custom:mini-media-player
         entity: media_player.kodi_wohnzimmer
         hide:
@@ -51,12 +55,20 @@ cards:
     title: Geräte
     show_header_toggle: false
     entities:
+      - entity: switch.wohnzimmer_fernseher
+      - entity: switch.wohnzimmer_radio
+  - type: entities
+    title: Computer
+    show_header_toggle: false
+    entities:
+      - entity: binary_sensor.computer_leerlauf
+        name: Leerlauf
+      - entity: sensor.computer_aktives_fenster
+        name: Aktives Fenster
       - entity: switch.pc
       - entity: switch.monitor
-      - entity: switch.wohnzimmer_fernseher
-      - entity: switch.wohnzimmer_soundbar
-      - entity: switch.wohnzimmer_radio
       - entity: input_boolean.computer_ausschalten
+
 
   - type: entities
     title: Ventilator

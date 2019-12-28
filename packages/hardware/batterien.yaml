@@ -14,6 +14,7 @@ sensor:
       - zigate.bewegungsmelder_flur_vorne
       - zigate.bewegungsmelder_flur_hinten
       - zigate.bewegungsmelder_arbeitszimmer
+      - zigate.bewegungsmelder_sportzimmer
       - zigate.bewegungsmelder_schlafzimmer
       - zigate.bewegungsmelder_kueche
       - zigate.bewegungsmelder_balkon

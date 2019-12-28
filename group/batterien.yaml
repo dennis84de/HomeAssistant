@@ -37,6 +37,8 @@ batteriestand:
     - sensor.bewegungsmelder_flur_vorne_battery_level
     - sensor.bewegungsmelder_flur_hinten_battery_level
     - sensor.bewegungsmelder_arbeitszimmer_battery_level
+    - sensor.bewegungsmelder_sportzimmer_battery_level
     - sensor.bewegungsmelder_schlafzimmer_battery_level
     - sensor.bewegungsmelder_kueche_battery_level
     - sensor.bewegungsmelder_balkon_battery_level
+    - sensor.bewegungsmelder_wohnzimmer_battery_level

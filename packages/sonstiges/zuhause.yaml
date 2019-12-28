@@ -23,7 +23,6 @@ input_boolean:
 proximity:
   home:
     devices:
-      - device_tracker.handy
       - device_tracker.handygps
     tolerance: 50
 
@@ -145,9 +144,6 @@ automation:
     trigger:
       - platform: state
         entity_id: device_tracker.handy
-        to: 'home'
-      - platform: state
-        entity_id: device_tracker.handygps
         to: 'home'
       - platform: state
         entity_id: device_tracker.handymqtt

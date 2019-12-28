@@ -47,7 +47,7 @@ automation:
       - service: mqtt.publish
         data:
            topic: 'location/handy'
-           payload: 'home'
+           payload: 'not_home'
            retain: true
       - service: telegram_bot.send_message
         data_template:

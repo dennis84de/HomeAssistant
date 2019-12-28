@@ -28,20 +28,12 @@ cards:
     title: Computer
     show_header_toggle: false
     entities:
-      - entity: sensor.matrix_intel_core_i5_4590_temperatures_cpu_package
-      - entity: sensor.matrix_intel_core_i5_4590_load_cpu_total
-      - entity: sensor.matrix_intel_core_i5_4590_clocks_cpu_core_1
-      - entity: sensor.matrix_asus_r7_250x_series_temperatures_gpu_core
-      - entity: sensor.matrix_asus_r7_250x_series_load_gpu_core
-      - entity: sensor.matrix_asus_r7_250x_series_clocks_gpu_core
-      - entity: sensor.matrix_asus_r7_250x_series_fans_gpu_fan
-      - entity: sensor.matrix_gigabyte_h97_hd3_ite_it8620e_temperatures_temperature_1
-      - entity: sensor.matrix_gigabyte_h97_hd3_ite_it8620e_fans_fan_1
-      - entity: sensor.matrix_generic_memory_load_memory
-      - entity: sensor.matrix_samsung_ssd_840_series_load_used_space
-      - entity: sensor.matrix_samsung_ssd_840_series_temperatures_temperature
-      - entity: sensor.matrix_wdc_wd20ears_00mvwb0_load_used_space
-      - entity: sensor.matrix_wdc_wd20ears_00mvwb0_temperatures_temperature
+      - entity: sensor.computer_generic_hard_disk_load_used_space
+      - entity: sensor.computer_wdc_wd20spzx_22ua7t0_load_used_space
+      - entity: sensor.computer_wdc_wd20spzx_22ua7t0_temperatures_temperature
+      - entity: sensor.computer_generic_memory_load_memory
+      - entity: sensor.computer_intel_core_i5_8259u_load_cpu_total
+      - entity: sensor.computer_intel_core_i5_8259u_temperatures_cpu_package
 
   - type: glance
     title: Hardware
@@ -81,7 +73,7 @@ cards:
     show_header_toggle: false
     entities:
       - entity: binary_sensor.bluetooth_gateway
-      - entity: binary_sensor.winthing
+      - entity: binary_sensor.computer_winthing
 
   - type: entities
     title: Bewegungsmelder

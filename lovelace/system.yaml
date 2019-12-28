@@ -171,6 +171,9 @@ cards:
       - entity: input_boolean.bewegungsmelder_arbeitszimmer_deaktiviert
         name: Arbeitszimmer
         icon: mdi:sync-off
+      - entity: input_boolean.bewegungsmelder_sportzimmer_deaktiviert
+        name: Sportzimmer
+        icon: mdi:sync-off        
       - entity: input_boolean.bewegungsmelder_balkon_deaktiviert
         name: Balkon
         icon: mdi:sync-off

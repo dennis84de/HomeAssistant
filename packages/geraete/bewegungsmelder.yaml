@@ -4,6 +4,7 @@ input_select:
     options:
       - 'Wohnzimmer'
       - 'Arbeitszimmer'
+      - 'Sportzimmer'
       - 'Badezimmer'
       - 'Balkon'
       - 'Flur hinten'
@@ -78,6 +79,7 @@ automation:
           - binary_sensor.bewegungsmelder_flur_vorne
           - binary_sensor.bewegungsmelder_flur_hinten
           - binary_sensor.bewegungsmelder_arbeitszimmer
+          - binary_sensor.bewegungsmelder_sportzimmer
           - binary_sensor.bewegungsmelder_kueche
           - binary_sensor.bewegungsmelder_balkon
           - binary_sensor.bewegungsmelder_wohnzimmer
@@ -112,6 +114,18 @@ entity_controller:
       - binary_sensor.bewegungsmelder_inaktiv_staubsauger
       - input_boolean.bewegungsmelder_arbeitszimmer_deaktiviert
 
+  bewegung_sportzimmer:
+    friendly_name: "Bewegung Sportzimmer"
+    sensor: binary_sensor.bewegungsmelder_arbeitszimmer
+    entities:      
+      - light.sportzimmer_licht
+    delay: 120
+    overrides:
+      - binary_sensor.sonne_tagsueber
+      - binary_sensor.bewegungsmelder_inaktiv_unterwegs  
+      - binary_sensor.bewegungsmelder_inaktiv_staubsauger
+      - input_boolean.bewegungsmelder_sportzimmer_deaktiviert
+      
   bewegung_badezimmer:
     friendly_name: "Bewegung Badezimmer"
     sensor: binary_sensor.bewegungsmelder_badezimmer

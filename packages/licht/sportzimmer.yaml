@@ -1,0 +1,16 @@
+#light:
+#  - platform: switch
+#    name: Sportzimmer Licht
+#    entity_id: switch.sportzimmer_licht
+#  
+#input_boolean:
+#  bewegungsmelder_sportzimmer_deaktiviert:
+#    name: Bewegungsmelder deaktiviert
+#    initial: off
+#    icon: mdi:sync-off
+#    
+homeassistant:
+  customize:
+    light.sportzimmer_licht:
+      friendly_name: Licht
+      icon: mdi:led

@@ -14,6 +14,25 @@ device_tracker:
     hosts:
       pc: !secret computer_host
 
+binary_sensor:
+  - platform: mqtt
+    name: "Computer - Winthing"
+    state_topic: "winthing/system/online"
+    payload_on: "true"
+    payload_off: "false"
+    device_class: connectivity
+    
+  - platform: mqtt
+    name: "Computer - Leerlauf"    
+    state_topic: "winthing/system/idle"
+    payload_on: "True"
+    payload_off: "False"
+    
+sensor:
+  - platform: mqtt
+    name: "Computer - Aktives Fenster"    
+    state_topic: "winthing/system/activeWindow"
+    
 switch:
   - platform: template
     switches:
@@ -74,3 +93,8 @@ homeassistant:
 
     media_player.soundbar:
       icon: mdi:music
+      
+    sensor.computer_aktives_fenster:
+      icon: mdi:dock-window
+    binary_sensor.computer_leerlauf:
+      icon: mdi:bell-ring

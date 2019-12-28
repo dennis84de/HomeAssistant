@@ -12,13 +12,6 @@ binary_sensor:
     payload_off: "offline"
     device_class: connectivity
 
-  - platform: mqtt
-    name: "Winthing"
-    state_topic: "winthing/system/online"
-    payload_on: "true"
-    payload_off: "false"
-    device_class: connectivity
-
 homeassistant:
   customize:
     binary_sensor.bluetooth_gateway:
