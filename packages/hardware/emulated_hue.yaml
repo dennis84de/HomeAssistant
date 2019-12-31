@@ -36,6 +36,8 @@ emulated_hue:
       name: Licht Schlafzimmer
     light.arbeitszimmer_lampe:
       name: Lampe
+    light.sportzimmer_regal:
+      name: Licht Sportzimmer      
     light.sideboard:
       name: Licht Sideboard
     light.schrank:
@@ -63,6 +65,8 @@ emulated_hue:
       hidden: true
     switch.arbeitszimmer_lampe:
       hidden: true
+    switch.sportzimmer_regal:
+      hidden: true      
     switch.licht_fernseher_schlafzimmer:
       hidden: true
     switch.kodi_schlafzimmer:

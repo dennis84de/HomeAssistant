@@ -210,9 +210,10 @@ homeassistant:
     sensor.processor_use:
       friendly_name: CPU-Auslastung
       icon: mdi:creation
-    sensor.last_boot:
-      hidden: true
-
+    
+    sensor.gpu_temperatur:
+      icon: mdi:thermometer-low
+        
     sensor.database_size:
       friendly_name: Größe Datenbank
       icon: mdi:database
@@ -227,9 +228,6 @@ homeassistant:
       icon: mdi:update
       can_cancel: false
 
-    sensor.laufzeit_minuten:
-      hidden: true
-
     sensor.rpi_power_status:
       friendly_name: Power Status
       icon: mdi:power-plug
@@ -243,6 +241,7 @@ homeassistant:
       friendly_name: Arbeitsspeicher genutzt   
     sensor.computer_generic_memory_load_memory:
       friendly_name: RAM Auslastung
+      icon: mdi:speedometer-medium
       
     sensor.computer_intel_core_i5_8259u_clocks_bus_speed:
       friendly_name: CPU Bus Speed
@@ -257,6 +256,7 @@ homeassistant:
       
     sensor.computer_intel_core_i5_8259u_load_cpu_total:
       friendly_name: CPU Auslastung
+      icon: mdi:speedometer-slow
     sensor.computer_intel_core_i5_8259u_load_cpu_core_1:
       friendly_name: CPU Load Core 1
     sensor.computer_intel_core_i5_8259u_load_cpu_core_2:
@@ -276,18 +276,18 @@ homeassistant:
       friendly_name: Leistung CPU
 
     sensor.computer_intel_core_i5_8259u_temperatures_cpu_package:
-      friendly_name: Temperatur CPU
+      friendly_name: CPU Temperatur
     sensor.computer_intel_core_i5_8259u_temperatures_cpu_core_1:
-      friendly_name: Temperatur CPU Core 1
+      friendly_name: CPU Temperatur Core 1
     sensor.computer_intel_core_i5_8259u_temperatures_cpu_core_2:
-      friendly_name: Temperatur CPU Core 2
+      friendly_name: CPU Temperatur Core 2
     sensor.computer_intel_core_i5_8259u_temperatures_cpu_core_3:
-      friendly_name: Temperatur CPU Core 3
+      friendly_name: CPU Temperatur Core 3
     sensor.computer_intel_core_i5_8259u_temperatures_cpu_core_4:
-      friendly_name: Temperatur CPU Core 4
+      friendly_name: CPU Temperatur Core 4
         
     sensor.computer_wdc_wd20spzx_22ua7t0_load_used_space:
-      icon: mdi:nas
-      friendly_name: HDD Speicherplatz
+      icon: mdi:harddisk
+      friendly_name: HDD Speicherplatz      
     sensor.computer_wdc_wd20spzx_22ua7t0_temperatures_temperature:      
       friendly_name: HDD Temperatur     

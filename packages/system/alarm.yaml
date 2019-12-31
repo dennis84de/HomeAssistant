@@ -154,6 +154,9 @@ automation:
         entity_id: binary_sensor.bewegungsmelder_arbeitszimmer
         to: 'on'
       - platform: state
+        entity_id: binary_sensor.bewegungsmelder_sportszimmer
+        to: 'on'        
+      - platform: state
         entity_id: binary_sensor.bewegungsmelder_schlafzimmer
         to: 'on'
       - platform: state
@@ -182,6 +185,8 @@ automation:
             Im Flur wurde eine Bewegung erkannt.
           {% elif trigger.entity_id == "binary_sensor.bewegungsmelder_arbeitszimmer" %}
             Im Arbeitszimmer wurde eine Bewegung erkannt.
+          {% elif trigger.entity_id == "binary_sensor.bewegungsmelder_sportszimmer" %}
+            Im Sportzimmer wurde eine Bewegung erkannt.            
           {% elif trigger.entity_id == "binary_sensor.bewegungsmelder_schlafzimmer" %}
             Im Schlafzimmer wurde eine Bewegung erkannt.
           {% elif trigger.entity_id == "binary_sensor.bewegungsmelder_kueche" %}
@@ -238,7 +243,7 @@ script:
       - service: switch.turn_off
         entity_id: switch.alle_radios, switch.monitor, switch.schlafzimmer_fernseher, switch.watchtv_wohnzimmer, switch.watchtv_schlafzimmer
       - service: light.turn_off
-        entity_id: light.couch, light.strahler, light.vitrine, light.sideboard, light.schrank, light.badezimmerschrank, light.bett, light.regal, light.schreibtisch, light.balkon_licht, light.arbeitszimmer_lampe
+        entity_id: light.couch, light.strahler, light.vitrine, light.sideboard, light.schrank, light.badezimmerschrank, light.bett, light.regal, light.schreibtisch, light.balkon_licht, light.arbeitszimmer_lampe, light.sportzimmer_regal
       - service: mqtt.publish
         data:
            topic: 'location/handy'

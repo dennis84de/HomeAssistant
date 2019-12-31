@@ -29,7 +29,7 @@ cards:
     title: Licht
     show_header_toggle: false
     entities:      
-      - entity: light.sportzimmer_licht
+      - entity: light.sportzimmer_regal
       
   - type: glance
     title: Thermometer

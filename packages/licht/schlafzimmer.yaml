@@ -34,7 +34,7 @@ automation:
           state: 'off'
     action:
       - service: light.turn_off
-        entity_id: light.bett, light.sideboard, light.schrank, light.badezimmerschrank, light.schreibtisch, light.regal, light.arbeitszimmer_lampe
+        entity_id: light.bett, light.sideboard, light.schrank, light.badezimmerschrank, light.schreibtisch, light.regal, light.arbeitszimmer_lampe, light.sportzimmer_regal
 
 homeassistant:
   customize:

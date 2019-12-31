@@ -254,7 +254,7 @@ automation:
         to: 'playing'
     action:
       - service: light.turn_off
-        entity_id: light.sideboard, light.schrank, light.badezimmerschrank, light.schreibtisch, light.regal, light.arbeitszimmer_lampe, light.balkon_licht
+        entity_id: light.sideboard, light.schrank, light.badezimmerschrank, light.schreibtisch, light.regal, light.arbeitszimmer_lampe, light.balkon_licht, light.sportzimmer_regal
       - condition: state
         entity_id: media_player.badezimmer
         state: 'playing'

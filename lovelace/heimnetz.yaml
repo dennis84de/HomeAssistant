@@ -38,14 +38,18 @@ cards:
     show_header_toggle: false
     entities:
       - entity: device_tracker.xiaomivacuum
+        name: Staubsauger
       - entity: device_tracker.xiaomifan
+        name: Ventilator
 
   - type: entities
     title: Gateways
     show_header_toggle: false
     entities:
       - entity: device_tracker.brematic_gateway
+        name: Brematic
       - entity: device_tracker.xiaomigateway
+        name: Xiaomi
 
   - type: entities
     title: Radios
@@ -79,48 +83,71 @@ cards:
     show_header_toggle: false
     entities:
       - entity: device_tracker.echoflur
+        name: Flur
       - entity: device_tracker.echokueche
+        name: Küche
       - entity: device_tracker.echobadezimmer
+        name: Badezimmer
       - entity: device_tracker.echowohnzimmer
+        name: Wohnzimmer
       - entity: device_tracker.echoschlafzimmer
+        name: Schlafzimmer
 
   - type: entities
     title: Fire TV
     show_header_toggle: false
     entities:
       - entity: device_tracker.firetvschlafzimmer
+        name: Schlafzimmer
       - entity: device_tracker.firetvbadezimmer
+        name: Badezimmer
       - entity: device_tracker.firetvsportzimmer
+        name: Sportzimmer
 
   - type: entities
     title: Tablets
     show_header_toggle: false
     entities:
       - entity: device_tracker.tabletbadezimmer
+        name: Badezimmer
       - entity: device_tracker.tabletwohnzimmer
+        name: Wohnzimmer
       - entity: device_tracker.tabletschlafzimmer
+        name: Schlafzimmer
       - entity: device_tracker.tabletkueche
+        name: Küche
       - entity: device_tracker.tabletbalkon
+        name: Balkon
 
   - type: entities
     title: Licht
     show_header_toggle: false
     entities:
       - entity: device_tracker.magichomeflurvorne
+        name: Flur vorne
       - entity: device_tracker.magichomeflurhinten
+        name: Flur hinten
       - entity: device_tracker.magichomekueche
+        name: Küche
       - entity: device_tracker.magichomekuechenschraenke
+        name: Küchenschränke
       - entity: device_tracker.magichomebadezimmer
+        name: Badezimmer
       - entity: device_tracker.magichomeschlafzimmer
+        name: Schlafzimmer
       - entity: device_tracker.magichomearbeitszimmer
+        name: Arbeitszimmer
       - entity: device_tracker.magichomebalkon
+        name: Balkon
 
   - type: entities
     title: Broadlink
     show_header_toggle: false
     entities:
       - entity: device_tracker.broadlinkwohnzimmer
+        name: Wohnzimmer
       - entity: device_tracker.broadlinkschlafzimmer
+        name: Schlafzimmer
       
   - type: entities
     title: ESPHome

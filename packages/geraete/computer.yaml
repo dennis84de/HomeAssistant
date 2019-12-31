@@ -94,6 +94,8 @@ homeassistant:
     media_player.soundbar:
       icon: mdi:music
       
+    binary_sensor.computer_winthing:
+      friendly_name: WinThing
     sensor.computer_aktives_fenster:
       icon: mdi:dock-window
     binary_sensor.computer_leerlauf:

@@ -6,3 +6,4 @@ sensor.*_heatindex:
   friendly_name: Wärme Index
 sensor.*_perception:
   friendly_name: Wahrnehmung
+  icon: mdi:weather-cloudy

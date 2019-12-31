@@ -25,6 +25,8 @@ homeassistant:
       device_class: motion
     binary_sensor.bewegungsmelder_arbeitszimmer:
       device_class: motion
+    binary_sensor.bewegungsmelder_sportzimmer:
+      device_class: motion      
     binary_sensor.bewegungsmelder_schlafzimmer:
       device_class: motion
 

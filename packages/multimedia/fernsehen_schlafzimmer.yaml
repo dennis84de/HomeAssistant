@@ -115,6 +115,3 @@ homeassistant:
     switch.schlafzimmer_fernseher:
       icon: mdi:television
       friendly_name: Fernseher
-
-    switch.fernseher_schlafzimmer_remote:
-      hidden: true

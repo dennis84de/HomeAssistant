@@ -17,6 +17,7 @@ alles_ausschalten:
     - light.strahler
     - light.vitrine
     - light.arbeitszimmer_lampe
+    - light.sportzimmer_regal
     - light.schreibtisch
     - light.sideboard
     - light.schrank
@@ -34,5 +35,6 @@ licht_unterwegs:
     - light.couch
     - light.strahler
     - light.arbeitszimmer_lampe
+    - light.sportzimmer_regal
     - light.regal
     - light.balkon_licht

@@ -116,9 +116,9 @@ entity_controller:
 
   bewegung_sportzimmer:
     friendly_name: "Bewegung Sportzimmer"
-    sensor: binary_sensor.bewegungsmelder_arbeitszimmer
+    sensor: binary_sensor.bewegungsmelder_sportzimmer
     entities:      
-      - light.sportzimmer_licht
+      - light.sportzimmer_regal
     delay: 120
     overrides:
       - binary_sensor.sonne_tagsueber
