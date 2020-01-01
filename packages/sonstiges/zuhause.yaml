@@ -35,6 +35,7 @@ sensor:
     devicetracker_id: device_tracker.handygps
     options: street_street_number,city
     api_key: !secret openstreetmap_email
+    map_provider: google
     scan_interval: 60
 
 binary_sensor:
