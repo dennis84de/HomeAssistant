@@ -482,7 +482,15 @@ automation:
             {% if state_attr('sensor.wetterwarnungen_current_warning_level','warning_count') | int == 0 or state_attr('sensor.wetterwarnungen_current_warning_level','warning_1_headline') == None %}
               Aktuell liegt keine Wetterwarnung vor.
             {% else %}
-              Achtung! {{ state_attr('sensor.wetterwarnungen_current_warning_level','warning_1_headline') }}. {{ state_attr('sensor.wetterwarnungen_current_warning_level','warning_1_description') }}. {{ state_attr('sensor.wetterwarnungen_current_warning_level','warning_1_instruction') }}.
+              {% set headline1 = state_attr('sensor.wetterwarnungen_current_warning_level','warning_1_headline') %}
+              {% set description1 = state_attr('sensor.wetterwarnungen_current_warning_level','warning_1_description') | replace('°C', 'Grad') %}
+              {% set instruction1 = state_attr('sensor.wetterwarnungen_current_warning_level','warning_1_instruction') %}
+              
+              {% set headline2 = state_attr('sensor.wetterwarnungen_current_warning_level','warning_2_headline') %}
+              {% set description2 = state_attr('sensor.wetterwarnungen_current_warning_level','warning_2_description') | replace('°C', 'Grad') %}
+              {% set instruction2 = state_attr('sensor.wetterwarnungen_current_warning_level','warning_2_instruction') %}
+                            
+              Achtung! {{ headline1 }}. {{ description1 }} {% if instruction1 != None %} {{ instruction1 }} {% endif %} {% if headline2 != None and description2 != None %} {{ headline2 }}. {{ description2 }} {% if instruction2 != None %} {{ instruction2 }} {% endif %} {% endif %}
             {% endif %}
 
 homeassistant:
