@@ -66,8 +66,8 @@ class PhoneTrackDeviceTracker(object):
             lat, lon = data[device]['lat'], data[device]['lon']
             accuracy = data[device]['accuracy']
             battery = data[device]['batterylevel']
-            if self.max_gps_accuracy is not None and \
-                data[device]['accuracy'] > self.max_gps_accuracy:
+            if self.max_gps_accuracy is not None and accuracy is not None and \
+                accuracy > self.max_gps_accuracy:
                 _LOGGER.info("Ignoring %s update because expected GPS "
                              "accuracy is not met", device)
                 continue
