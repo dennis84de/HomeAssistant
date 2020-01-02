@@ -16,10 +16,6 @@ popup_cards:
       type: entities
       entities:
         - entity: sensor.tablet_weckzeit
-        - entity: input_boolean.alarmauto
-        - entity: input_boolean.alarmworkday
-        - entity: input_number.alarmhour
-        - entity: input_number.alarmminutes
         - entity: input_number.alarmadvance
         - entity: input_number.alarmdelay
 
@@ -85,10 +81,8 @@ cards:
     title: Wecker
     show_header_toggle: false
     entities:
-      - entity: sensor.wecker_startzeit  
-      - entity: input_boolean.alarmstatus
-      - entity: binary_sensor.alarm_aktiv
-      - entity: binary_sensor.arbeitstag
+      - entity: sensor.wecker_startzeit
+      - entity: binary_sensor.alarm_aktiv      
       - entity: binary_sensor.tablet_wecker_ueberspringen
 
   - type: entities
@@ -122,8 +116,9 @@ cards:
     entities:
       - entity: sensor.fahrzeit_zur_arbeit
       - entity: sensor.fahrzeit_nach_hause
-      - entity: binary_sensor.schlechtes_wetter
-      - entity: sensor.abfahrzeit
+      - entity: sensor.abfahrzeit      
+      - entity: binary_sensor.schlechtes_wetter      
+      - entity: binary_sensor.arbeitstag
       
   - type: custom:mini-graph-card
     name: Fahrzeit

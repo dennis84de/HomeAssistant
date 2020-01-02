@@ -68,6 +68,11 @@ sensor:
           mdi:truck-delivery
 
 binary_sensor:
+  - platform: workday
+    name: Arbeitstag
+    country: DE
+    province: NW
+    
   - platform: template
     sensors:
       tankstelle_real_status:
@@ -157,6 +162,9 @@ panel_iframe:
 
 homeassistant:
   customize:
+    binary_sensor.arbeitstag:
+      icon: mdi:worker
+      
     sensor.time:
       friendly_name: Uhrzeit
       hidden: true
