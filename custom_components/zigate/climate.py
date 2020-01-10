@@ -5,8 +5,9 @@ For more details about this platform, please refer to the documentation
 https://home-assistant.io/components/climate.zigate/
 """
 import logging
-from homeassistant.const import ATTR_TEMPERATURE, TEMP_CELSIUS
 
+from homeassistant.exceptions import PlatformNotReady
+from homeassistant.const import ATTR_TEMPERATURE, TEMP_CELSIUS
 from homeassistant.components.climate import ClimateDevice, ENTITY_ID_FORMAT
 from homeassistant.components.climate.const import SUPPORT_TARGET_TEMPERATURE, SUPPORT_PRESET_MODE, HVAC_MODE_HEAT
 from . import DOMAIN as ZIGATE_DOMAIN
@@ -77,6 +78,8 @@ class ZigateClimate(ClimateDevice):
             and self._endpoint == call.data['endpoint']
         ):
             _LOGGER.debug("Event received: %s", call.data)
+            if not self.hass:
+                raise PlatformNotReady
             self.schedule_update_ha_state()
 
     @property

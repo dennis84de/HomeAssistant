@@ -6,6 +6,7 @@ https://home-assistant.io/components/cover.zigate/
 """
 import logging
 
+from homeassistant.exceptions import PlatformNotReady
 from homeassistant.components.cover import (
     CoverDevice, ENTITY_ID_FORMAT, SUPPORT_OPEN, SUPPORT_CLOSE, SUPPORT_STOP)
 from . import DOMAIN as ZIGATE_DOMAIN
@@ -73,7 +74,8 @@ class ZiGateCover(CoverDevice):
             _LOGGER.debug("Attribute update received: %s", call.data)
             if call.data['cluster'] == 258 and call.data['attribute'] == 8:
                 self._pos = call.data['value']
-
+            if not self.hass:
+                raise PlatformNotReady
             self.schedule_update_ha_state()
 
     @property

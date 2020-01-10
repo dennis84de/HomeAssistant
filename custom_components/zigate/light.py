@@ -8,6 +8,7 @@ import logging
 from functools import reduce
 from operator import ior
 
+from homeassistant.exceptions import PlatformNotReady
 from homeassistant.components.light import (
     ATTR_BRIGHTNESS, ATTR_TRANSITION, ATTR_HS_COLOR,
     SUPPORT_BRIGHTNESS, SUPPORT_COLOR_TEMP,
@@ -15,6 +16,7 @@ from homeassistant.components.light import (
     SUPPORT_COLOR, Light, ENTITY_ID_FORMAT)
 from . import DOMAIN as ZIGATE_DOMAIN
 from . import DATA_ZIGATE_ATTRS
+
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -105,6 +107,8 @@ class ZiGateLight(Light):
                 self._is_on = call.data['value']
             if call.data['cluster'] == 8 and call.data['attribute'] == 0:
                 self._brightness = int(call.data['value'] * 255 / 100)
+            if not self.hass:
+                raise PlatformNotReady
             self.schedule_update_ha_state()
 
     @property

@@ -5,6 +5,8 @@ For more details about this platform, please refer to the documentation
 https://home-assistant.io/components/sensor.zigate/
 """
 import logging
+
+from homeassistant.exceptions import PlatformNotReady
 from homeassistant.components.sensor import ENTITY_ID_FORMAT
 from homeassistant.const import (DEVICE_CLASS_HUMIDITY,
                                  DEVICE_CLASS_TEMPERATURE,
@@ -99,6 +101,8 @@ class ZiGateSensor(Entity):
         ):
             _LOGGER.debug("Event received: %s", call.data)
             self._state = call.data['value']
+            if not self.hass:
+                raise PlatformNotReady
             self.schedule_update_ha_state()
 
     @property

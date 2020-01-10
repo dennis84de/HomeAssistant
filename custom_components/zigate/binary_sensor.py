@@ -5,6 +5,8 @@ For more details about this platform, please refer to the documentation
 https://home-assistant.io/components/binary_sensor.zigate/
 """
 import logging
+
+from homeassistant.exceptions import PlatformNotReady
 from homeassistant.components.binary_sensor import (BinarySensorDevice,
                                                     ENTITY_ID_FORMAT)
 from . import DOMAIN as ZIGATE_DOMAIN
@@ -100,6 +102,8 @@ class ZiGateBinarySensor(BinarySensorDevice):
                 self._is_on = call.data['value'].get('alarm1', False)
             else:
                 self._is_on = call.data['value']
+            if not self.hass:
+                raise PlatformNotReady
             self.schedule_update_ha_state()
 
     @property
