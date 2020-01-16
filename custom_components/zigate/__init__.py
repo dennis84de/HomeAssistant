@@ -29,14 +29,13 @@ import homeassistant.helpers.config_validation as cv
 _LOGGER = logging.getLogger(__name__)
 
 DOMAIN = 'zigate'
-SCAN_INTERVAL = datetime.timedelta(seconds=120)
+SCAN_INTERVAL = 120
 
 DATA_ZIGATE_DEVICES = 'zigate_devices'
 DATA_ZIGATE_ATTRS = 'zigate_attributes'
 ADDR = 'addr'
 IEEE = 'ieee'
 
-GROUP_NAME_ALL_ZIGATE = 'all zigate'
 ENTITY_ID_ALL_ZIGATE = GROUP_ENTITY_ID_FORMAT.format('all_zigate')
 
 SUPPORTED_PLATFORMS = ('sensor',
@@ -261,7 +260,7 @@ def setup(hass, config):
     enable_led = config[DOMAIN].get('enable_led', True)
     polling = config[DOMAIN].get('polling', True)
     channel = config[DOMAIN].get('channel')
-    scan_interval = config[DOMAIN].get(CONF_SCAN_INTERVAL, SCAN_INTERVAL)
+    scan_interval = datetime.timedelta(seconds=config[DOMAIN].get(CONF_SCAN_INTERVAL, SCAN_INTERVAL))
     admin_panel = config[DOMAIN].get('admin_panel', False)
 
     persistent_file = os.path.join(hass.config.config_dir,
@@ -285,7 +284,7 @@ def setup(hass, config):
     hass.data[DATA_ZIGATE_DEVICES] = {}
     hass.data[DATA_ZIGATE_ATTRS] = {}
 
-    component = EntityComponent(_LOGGER, DOMAIN, hass, scan_interval, GROUP_NAME_ALL_ZIGATE)
+    component = EntityComponent(_LOGGER, DOMAIN, hass, scan_interval)
     component.setup(config)
     entity = ZiGateComponentEntity(myzigate)
     hass.data[DATA_ZIGATE_DEVICES]['zigate'] = entity
