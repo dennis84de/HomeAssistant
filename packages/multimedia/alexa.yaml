@@ -6,6 +6,7 @@ alexa_media:
       exclude_devices:
         - "Überall"
         - "Echo Simon"
+        - "Echo Brigitte"
         - "FireTablet Badezimmer"
         - "FireTablet Balkon" 
         - "FireTablet Balkon's Alexa Apps"        

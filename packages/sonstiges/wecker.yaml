@@ -98,6 +98,8 @@ automation:
         entity_id: sensor.tablet_weckzeit
       - platform: state
         entity_id: input_number.alarmadvance
+      - platform: state
+        entity_id: binary_sensor.alarm_aktiv        
     condition:
       condition: and
       conditions:

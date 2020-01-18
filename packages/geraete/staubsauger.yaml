@@ -255,11 +255,7 @@ automation:
                                  
   - alias: "Staubsaugen - Behälter leeren"
     trigger:
-      - platform: state
-        entity_id: input_boolean.zu_hause_begruessung
-        to: 'off'
-    condition:
-      - condition: numeric_state
+      - platform: numeric_state
         entity_id: counter.behaelter_leeren
         below: 1
     action:
@@ -268,6 +264,11 @@ automation:
           title: "Staubsauger"
           message: "Der Staubsaugerbehälter muss geleert werden."
           notification_id: staubsauger_leeren
+      - service: vacuum.send_command
+        data:
+          entity_id: vacuum.xiaomi_vacuum_cleaner
+          command: app_goto_target
+          params: [33463,24839]
         
   - alias: "Staubsaugen - Behälter geleert"
     trigger:
@@ -282,6 +283,8 @@ automation:
     action:
       - service: counter.reset
         entity_id: counter.behaelter_leeren
+      - service: vacuum.return_to_base
+        entity_id: vacuum.xiaomi_vacuum_cleaner
         
   - alias: "Staubsauger - Raum reinigen"    
     trigger:

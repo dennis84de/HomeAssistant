@@ -6,7 +6,25 @@ sensor:
   - platform: cert_expiry
     host: !secret nextcloud_url
     name: Nextcloud Zertifikat
-
+    
+  - platform: nextcloud
+    url: !secret nextcloud_ur_https
+    username: !secret nextcloud_username
+    password: !secret nextcloud_app_password
+    
+  - platform: template
+    sensors:  
+      nextcloud_datenbank:
+        friendly_name: "Datenbankgröße"
+        entity_id:
+          - sensor.nextcloud_server_database_size       
+        unit_of_measurement: MB
+        value_template: >-
+          {% set bytesSent = (states('sensor.nextcloud_server_database_size') | int / 1024 / 1024) | round() %}
+          {{ bytesSent }}          
+        icon_template: >-
+          mdi:server
+          
 homeassistant:
   customize:
     binary_sensor.nextcloud:
@@ -14,3 +32,6 @@ homeassistant:
 
     sensor.nextcloud_zertifikat:
       friendly_name: Laufzeit Zertifikat
+      unit_of_measurement: Tage
+    sensor.nextcloud_system_version:
+      friendly_name: Installierte Version

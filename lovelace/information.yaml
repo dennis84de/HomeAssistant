@@ -125,7 +125,7 @@ cards:
     line_width: 2
     animate: true
     hours_to_show: 168
-    points_per_hour: 5
+    points_per_hour: 2
     hour24: true
     show:
       fill: false

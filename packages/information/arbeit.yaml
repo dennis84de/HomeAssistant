@@ -13,8 +13,7 @@ sensor:
 
   - platform: here_travel_time
     name: Fahrzeit zur Arbeit
-    app_id: !secret here_app_id
-    app_code: !secret here_app_code
+    api_key: !secret here_api_key
     origin_latitude: !secret home_latitude
     origin_longitude: !secret home_longitude
     destination_latitude: !secret work_latitude
@@ -23,8 +22,7 @@ sensor:
 
   - platform: here_travel_time
     name: Fahrzeit nach Hause
-    app_id: !secret here_app_id
-    app_code: !secret here_app_code
+    api_key: !secret here_api_key
     origin_latitude: !secret work_latitude
     origin_longitude: !secret work_longitude    
     destination_latitude: !secret home_latitude

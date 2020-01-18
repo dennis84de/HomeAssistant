@@ -23,6 +23,7 @@ input_boolean:
 proximity:
   home:
     devices:
+      - device_tracker.handy
       - device_tracker.handygps
     tolerance: 50
 
@@ -36,7 +37,6 @@ sensor:
     options: street_street_number,city
     api_key: !secret openstreetmap_email
     map_provider: google
-    scan_interval: 60
 
 binary_sensor:
   - platform: template

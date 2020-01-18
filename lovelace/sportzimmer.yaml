@@ -47,4 +47,13 @@ cards:
         name: Fernseher
       - entity: switch.sportzimmer_crosstrainer
 
-
+  - type: entities
+    title: Multimedia
+    show_header_toggle: false
+    entities:
+      - type: custom:mini-media-player
+        entity: media_player.kodi_sportzimmer
+        hide:
+          source: true
+          volume: true
+          progress: true
