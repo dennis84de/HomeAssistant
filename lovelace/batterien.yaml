@@ -70,10 +70,15 @@ cards:
     show_header_toggle: false
     entities:
       - entity: sensor.fenster_wohnzimmer_battery_level
+        name: Wohnzimmer
       - entity: sensor.fenster_schlafzimmer_battery_level
+        name: Schlafzimmer
       - entity: sensor.fenster_kueche_battery_level
+        name: Küche
       - entity: sensor.fenster_arbeitszimmer_battery_level
+        name: Arbeitszimmer
       - entity: sensor.fenster_sportzimmer_battery_level
+        name: Sportzimmer
 
   - type: entities
     title: Batterien Bewegungsmelder
