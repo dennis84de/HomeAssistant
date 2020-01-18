@@ -60,8 +60,10 @@ def async_setup_platform(hass, config, async_add_devices, discovery_info=None):
     _LOGGER.info("Loading phonebook data from json file")
 
     for i in data:
-        _LOGGER.debug("Adding number %s to phonebook", i['Nummer'])
-        phonebookData[i['Nummer']] = i['Anrufname']
+        callername = i['callername'] if 'callername' in i else i['number']
+          
+        _LOGGER.debug("Adding number %s to phonebook", i['number'])
+        phonebookData[i['number']] = callername
 
     for device, device_config in config[CONF_SENSORS].items():
 
