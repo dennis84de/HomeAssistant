@@ -514,13 +514,13 @@ class Places(Entity):
             proceed_with_update = False
         elif int(distance_traveled) > 0 and self._updateskipped > 3:
             proceed_with_update = True
-            _LOGGER.debug( "(" + self._name + ") Allowing update after 3 skips even with distance traveled < 10m" )            
+            _LOGGER.debug( "(" + self._name + ") Allowing update after 3 skips even with distance traveled < 10m" ) 
         elif int(distance_traveled) < 10:
             self._updateskipped = self._updateskipped + 1
             _LOGGER.debug( "(" + self._name + ") Skipping update because location changed " + str(distance_traveled) + " < 10m  (" + str(self._updateskipped) + ")" )
             proceed_with_update = False
         
-        if previous_state == 'Initialisieren...':
+        if previous_state == 'Initialisieren...' or 'Ini' in previous_state:
             _LOGGER.debug( "(" + self._name + ") Peforming Initial Update for user at home..." )
             proceed_with_update = True
 
