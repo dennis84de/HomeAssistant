@@ -198,7 +198,7 @@ entity_controller:
   bewegung_kuechenregal:
     friendly_name: "Bewegung Küchenregal"
     sensor: binary_sensor.bewegungsmelder_kueche
-    entity: light.regal
+    entity: light.kuche_regal
     delay: 120
     service_data:
       brightness: 100
@@ -217,11 +217,11 @@ entity_controller:
   bewegung_kuechenschrank:
     friendly_name: "Bewegung Küchenschrank"
     sensor: binary_sensor.bewegungsmelder_kueche
-    entity: light.kuchenschrank
+    entity: light.kuche_schrank
     delay: 120    
     overrides:      
       - binary_sensor.sonne_tagsueber
-      - binary_sensor.kuechenregal_tagsueber
+      - binary_sensor.kuechenschrank_tagsueber
       - binary_sensor.bewegungsmelder_inaktiv_unterwegs
       - binary_sensor.bewegungsmelder_inaktiv_staubsauger
       - input_boolean.bewegungsmelder_kueche_deaktiviert

@@ -23,7 +23,7 @@ alles_ausschalten:
     - light.schrank
     - light.badezimmerschrank
     - light.bett
-    - light.regal
+    - light.kuche_regal
     - light.balkon_licht
     - fan.ventilator
 
@@ -36,5 +36,5 @@ licht_unterwegs:
     - light.strahler
     - light.arbeitszimmer_lampe
     - light.sportzimmer_regal
-    - light.regal
+    - light.kuche_regal
     - light.balkon_licht

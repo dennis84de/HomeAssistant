@@ -2,10 +2,10 @@ light:
   - platform: flux_led
     devices:
       192.168.2.46:
-        name: Regal
+        name: Küche Regal
         mode: "rgb"
       192.168.2.68:
-        name: Küchenschrank
+        name: Küche Schrank
         mode: "w"
 
 input_boolean:
@@ -17,8 +17,8 @@ input_boolean:
 binary_sensor:
   - platform: template
     sensors:
-      kuechenregal_tagsueber:
-        friendly_name: "Küchenregal tagsüber"
+      kuechenschrank_tagsueber:
+        friendly_name: "Küchenschrank tagsüber"
         value_template: >-
           {% set hour = now().strftime("%H") | int %}
           
@@ -30,7 +30,9 @@ binary_sensor:
           
 homeassistant:
   customize:
-    light.kueche:
+    light.kuche_regal:
       icon: mdi:led-strip
-    timer.licht_kueche:
-      hidden: true
+      friendly_name: Regal
+    light.kuche_schrank:
+      icon: mdi:led-strip
+      friendly_name: Schrank      

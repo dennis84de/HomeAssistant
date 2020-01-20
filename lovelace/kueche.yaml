@@ -21,8 +21,8 @@ cards:
     title: Licht
     show_header_toggle: false
     entities:
-      - entity: light.regal
-      - entity: light.kuchenschrank
+      - entity: light.kuche_regal
+      - entity: light.kuche_schrank
 
   - type: glance
     title: Thermometer
