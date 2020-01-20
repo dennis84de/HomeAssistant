@@ -2,14 +2,14 @@ title: Batterien
 path: batterien
 cards:
   - type: entities
-    title: Batteriestand
+    title: Status
     show_header_toggle: false
     entities:
       - entity: input_number.batteriestand_warnlevel
       - entity: sensor.batteriestand_niedrig
 
   - type: entities
-    title: Batterien Geräte
+    title: Geräte
     show_header_toggle: false
     entities:
       - entity: sensor.handy_batterie
@@ -32,7 +32,7 @@ cards:
         secondary_info: "Zuletzt geladen: [[ sensor.tablet_balkon_zuletzt_geladen ]]"         
 
   - type: entities
-    title: Batterien Sensoren
+    title: Sensoren
     show_header_toggle: false
     entities:
       - entity: sensor.tuersensor_battery_level
@@ -43,30 +43,43 @@ cards:
       - entity: sensor.vibration_schlafzimmer_battery_level
 
   - type: entities
-    title: Batterien Schalter
+    title: Schalter
     show_header_toggle: false
     entities:
       - entity: sensor.schalter_wohnzimmer_battery_level
+        name: Wohnzimmer
       - entity: sensor.schalter_flur_battery_level
+        name: Flur
       - entity: sensor.schalter_balkon_battery_level
+        name: Balkon
       - entity: sensor.schalter_schlafzimmer_battery_level
+        name: Schlafzimmer
 
   - type: entities
-    title: Batterien Thermometer
+    title: Thermometer
     show_header_toggle: false
     entities:
       - entity: sensor.thermometer_flur_battery_level
+        name: Flur      
       - entity: sensor.thermometer_balkon_battery_level
+        name: Balkon      
       - entity: sensor.thermometer_parkplatz_battery_level
+        name: Parkplatz      
       - entity: sensor.thermometer_schlafzimmer_battery_level
+        name: Schlafzimmer
       - entity: sensor.thermometer_arbeitszimmer_battery_level
+        name: Arbeitszimmer
       - entity: sensor.thermometer_kueche_battery_level
+        name: Küche
       - entity: sensor.thermometer_sportzimmer_battery_level
+        name: Sportzimmer
       - entity: sensor.thermometer_kuehlschrank_battery_level
+        name: Kühlschrank
       - entity: sensor.thermometer_hardware_battery_level
+        name: Hardware
 
   - type: entities
-    title: Batterien Fenster
+    title: Fenster
     show_header_toggle: false
     entities:
       - entity: sensor.fenster_wohnzimmer_battery_level
@@ -81,24 +94,37 @@ cards:
         name: Sportzimmer
 
   - type: entities
-    title: Batterien Bewegungsmelder
+    title: Bewegungsmelder
     show_header_toggle: false
     entities:
       - entity: sensor.bewegungsmelder_wohnzimmer_battery_level
+        name: Wohnzimmer
       - entity: sensor.bewegungsmelder_badezimmer_battery_level
+        name: Badezimmer
       - entity: sensor.bewegungsmelder_flur_vorne_battery_level
+        name: Flur vorne
       - entity: sensor.bewegungsmelder_flur_hinten_battery_level
+        name: Flur hinten
       - entity: sensor.bewegungsmelder_arbeitszimmer_battery_level
+        name: Arbeitszimmer
       - entity: sensor.bewegungsmelder_sportzimmer_battery_level
+        name: Sportzimmer
       - entity: sensor.bewegungsmelder_schlafzimmer_battery_level
+        name: Schlafzimmer
       - entity: sensor.bewegungsmelder_kueche_battery_level
+        name: Küche
       - entity: sensor.bewegungsmelder_balkon_battery_level
+        name: Balkon
 
   - type: entities
-    title: Batterien Heizung
+    title: Heizung
     show_header_toggle: false
     entities:
       - entity: binary_sensor.heizung_arbeitszimmer_batterie
+        name: Arbeitszimmer
       - entity: binary_sensor.heizung_badezimmer_batterie
+        name: Badezimmer
       - entity: binary_sensor.heizung_kueche_batterie
+        name: Küche
       - entity: binary_sensor.heizung_wohnzimmer_batterie
+        name: Wohnzimmer

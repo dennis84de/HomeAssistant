@@ -80,11 +80,17 @@ cards:
     show_header_toggle: false
     entities:
       - entity: zigate.bewegungsmelder_flur_vorne
+        name: Flur vorne
       - entity: zigate.bewegungsmelder_flur_hinten
+        name: Flur hinten
       - entity: zigate.bewegungsmelder_schlafzimmer
+        name: Schlafzimmer
       - entity: zigate.bewegungsmelder_kueche
+        name: Küche
       - entity: zigate.bewegungsmelder_arbeitszimmer
+        name: Arbeitszimmer
       - entity: zigate.bewegungsmelder_balkon
+        name: Balkon
 
   - type: entities
     title: Fenster
@@ -106,14 +112,23 @@ cards:
     show_header_toggle: false
     entities:
       - entity: zigate.thermometer_balkon
+        name: Balkon
       - entity: zigate.thermometer_parkplatz
+        name: Parkplatz
       - entity: zigate.thermometer_flur
+        name: Flur
       - entity: zigate.thermometer_schlafzimmer
+        name: Schlafzimmer
       - entity: zigate.thermometer_arbeitszimmer
+        name: Arbeitszimmer
       - entity: zigate.thermometer_sportzimmer
+        name: Sportzimmer
       - entity: zigate.thermometer_kueche
+        name: Küche
       - entity: zigate.thermometer_kuehlschrank
+        name: Kühlschrank
       - entity: zigate.thermometer_hardware
+        name: Hardware
 
   - type: entities
     title: Sensoren
