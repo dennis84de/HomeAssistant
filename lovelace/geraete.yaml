@@ -89,6 +89,8 @@ cards:
         name: Küche
       - entity: zigate.bewegungsmelder_arbeitszimmer
         name: Arbeitszimmer
+      - entity: zigate.bewegungsmelder_sportzimmer
+        name: Sportzimmer
       - entity: zigate.bewegungsmelder_balkon
         name: Balkon
 
