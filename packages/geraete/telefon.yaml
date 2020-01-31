@@ -261,6 +261,9 @@ automation:
         to: 'ringing'
     condition:
       - condition: state
+        entity_id: binary_sensor.zu_hause
+        state: 'on'      
+      - condition: state
         entity_id: input_boolean.nicht_stoeren
         state: 'off'
     action:

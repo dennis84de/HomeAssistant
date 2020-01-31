@@ -39,6 +39,9 @@ script:
           - condition: state
             entity_id: binary_sensor.schlafen_aktiv
             state: 'off'
+          - condition: state
+            entity_id: input_boolean.nicht_stoeren
+            state: 'off'            
       - service: notify.alexa_media
         data_template:
           data:

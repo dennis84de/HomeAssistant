@@ -445,7 +445,7 @@ automation:
       platform: template
       value_template: >-
         {{ states('sensor.balkon_temperatur') | float > states('sensor.wohnzimmer_temperatur') | float + 2 }}
-    condition:
+    condition:       
       - condition: numeric_state
         entity_id: sensor.balkon_temperatur
         above: 23
@@ -471,6 +471,9 @@ automation:
       - entity_id: sensor.wetterwarnungen_current_warning_level
         platform: state
     condition:
+      - condition: state
+        entity_id: binary_sensor.zu_hause
+        state: 'on'
       - condition: template
         value_template: '{{ is_state("sensor.wetterwarnungen_current_warning_level", "0") == False }}'
       - condition: template     

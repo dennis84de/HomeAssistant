@@ -195,11 +195,15 @@ automation:
         entity_id: switch.trockner
 
   - alias: 'Waschmaschine fertig - TTS'
-    trigger:
+    trigger:      
       - platform: state
         entity_id: input_select.status_waschmaschine
         from: 'Waschen'
         to: 'Stillstand'
+    condition:
+      - condition: state
+        entity_id: binary_sensor.zu_hause
+        state: 'on'        
     action:
       - service: !secret tts_service
         data_template:
@@ -246,6 +250,10 @@ automation:
         entity_id: input_select.status_trockner
         from: 'Trocknen'
         to: 'Stillstand'
+    condition:
+      - condition: state
+        entity_id: binary_sensor.zu_hause
+        state: 'on'        
     action:
       - service: !secret tts_service
         data_template:

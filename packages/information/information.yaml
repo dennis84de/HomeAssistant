@@ -142,6 +142,10 @@ automation:
       - platform: numeric_state
         entity_id: sensor.ungelesene_mails
         above: 0 
+    condition:
+      - condition: state
+        entity_id: binary_sensor.zu_hause
+        state: 'on'
     action:
       service: !secret tts_service
       data_template:
