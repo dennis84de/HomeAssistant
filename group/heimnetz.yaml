@@ -1,7 +1,5 @@
 heimnetz:
   name: Heimnetz
-  view: no
-  control: hidden
   entities:
     - device_tracker.diskstation
     - device_tracker.fritz_repeater

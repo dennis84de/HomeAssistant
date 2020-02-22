@@ -1,7 +1,5 @@
 zigate:
   name: Zigate
-  view: no
-  control: hidden
   entities:
     - zigate.bewegungsmelder_flur_vorne
     - zigate.bewegungsmelder_flur_hinten

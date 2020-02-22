@@ -1,7 +1,5 @@
 alles_ausschalten:
   name: Alles auschalten
-  view: no
-  control: hidden
   entities:
     - switch.wohnzimmer_radio
     - switch.balkon_radio
@@ -29,8 +27,6 @@ alles_ausschalten:
 
 licht_unterwegs:
   name: Licht unterwegs
-  view: no
-  control: hidden
   entities:
     - light.couch
     - light.strahler

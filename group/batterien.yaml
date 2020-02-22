@@ -1,7 +1,5 @@
 batteriestand:
   name: Batteriestand
-  view: no
-  control: hidden
   entities:
     - sensor.handy_batterie
     - sensor.tablet_wohnzimmer_batterie
