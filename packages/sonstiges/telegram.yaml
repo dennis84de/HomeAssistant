@@ -103,7 +103,7 @@ automation:
         data_template:
           target: '{{ trigger.event.data.chat_id }}'
           message: "Alle Geräte werden ausgeschaltet."
-
+          
   - alias: 'Telegram - Tanken'
     trigger:
       platform: event
