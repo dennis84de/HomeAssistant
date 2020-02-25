@@ -2,16 +2,16 @@
 import asyncio
 import json
 import logging
+import socket
 import urllib.parse
 
 import aiohttp
 import async_timeout
 import voluptuous as vol
 
-from homeassistant.components.media_player import MediaPlayerDevice, PLATFORM_SCHEMA
+from homeassistant.components.media_player import PLATFORM_SCHEMA, MediaPlayerDevice
 from homeassistant.components.media_player.const import (
     ATTR_MEDIA_ENQUEUE,
-    DOMAIN,
     MEDIA_TYPE_MUSIC,
     SUPPORT_CLEAR_PLAYLIST,
     SUPPORT_NEXT_TRACK,
@@ -38,9 +38,21 @@ from homeassistant.const import (
     STATE_PAUSED,
     STATE_PLAYING,
 )
+from homeassistant.exceptions import PlatformNotReady
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 import homeassistant.helpers.config_validation as cv
 from homeassistant.util.dt import utcnow
+
+from .const import DOMAIN
+
+SERVICE_CALL_METHOD = "call_method"
+SERVICE_CALL_QUERY = "call_query"
+SERVICE_SYNC = "sync"
+SERVICE_UNSYNC = "unsync"
+
+ATTR_QUERY_RESULT = "query_result"
+ATTR_SYNC_GROUP = "sync_group"
+ATTR_PLAYER_ID = "player_id"
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -75,13 +87,12 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
     }
 )
 
-SERVICE_CALL_METHOD = "squeezebox_call_method"
-
 DATA_SQUEEZEBOX = "squeezebox"
 
 KNOWN_SERVERS = "squeezebox_known_servers"
 
 ATTR_PARAMETERS = "parameters"
+ATTR_OTHER_PLAYER = "other_player"
 
 SQUEEZEBOX_CALL_METHOD_SCHEMA = MEDIA_PLAYER_SCHEMA.extend(
     {
@@ -92,17 +103,31 @@ SQUEEZEBOX_CALL_METHOD_SCHEMA = MEDIA_PLAYER_SCHEMA.extend(
     }
 )
 
+SQUEEZEBOX_SYNC_SCHEMA = MEDIA_PLAYER_SCHEMA.extend(
+    {vol.Required(ATTR_OTHER_PLAYER): cv.string}
+)
+
 SERVICE_TO_METHOD = {
     SERVICE_CALL_METHOD: {
         "method": "async_call_method",
         "schema": SQUEEZEBOX_CALL_METHOD_SCHEMA,
-    }
+    },
+    SERVICE_CALL_QUERY: {
+        "method": "async_call_query",
+        "schema": SQUEEZEBOX_CALL_METHOD_SCHEMA,
+    },
+    SERVICE_SYNC: {"method": "async_sync", "schema": SQUEEZEBOX_SYNC_SCHEMA},
+    SERVICE_UNSYNC: {"method": "async_unsync", "schema": None},
 }
 
+ATTR_TO_PROPERTY = [
+    ATTR_QUERY_RESULT,
+    ATTR_SYNC_GROUP,
+    ATTR_PLAYER_ID,
+]
 
 async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
     """Set up the squeezebox platform."""
-    import socket
 
     known_servers = hass.data.get(KNOWN_SERVERS)
     if known_servers is None:
@@ -128,18 +153,21 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
     # Get IP of host, to prevent duplication of same host (different DNS names)
     try:
         ipaddr = socket.gethostbyname(host)
-    except (OSError) as error:
+    except OSError as error:
         _LOGGER.error("Could not communicate with %s:%d: %s", host, port, error)
-        return
+        raise PlatformNotReady from error
 
     if ipaddr in known_servers:
         return
 
-    known_servers.add(ipaddr)
     _LOGGER.debug("Creating LMS object for %s", ipaddr)
     lms = LogitechMediaServer(hass, host, port, username, password)
 
     players = await lms.create_players(config.get(CONF_PLAYERS))
+    if players is None:
+        raise PlatformNotReady
+
+    known_servers.add(ipaddr)
 
     hass.data[DATA_SQUEEZEBOX].extend(players)
     async_add_entities(players)
@@ -154,7 +182,7 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
             key: value for key, value in service.data.items() if key != "entity_id"
         }
         entity_ids = service.data.get("entity_id")
-        if entity_ids:
+        if entity_ids and entity_ids != "all":
             target_players = [
                 player
                 for player in hass.data[DATA_SQUEEZEBOX]
@@ -257,13 +285,25 @@ class SqueezeBoxDevice(MediaPlayerDevice):
 
     def __init__(self, lms, player_id, name):
         """Initialize the SqueezeBox device."""
-        super(SqueezeBoxDevice, self).__init__()
+        super().__init__()
         self._lms = lms
         self._id = player_id
         self._status = {}
         self._name = name
         self._last_update = None
+        self._query_result = {}
         _LOGGER.debug("Creating SqueezeBox object: %s, %s", name, player_id)
+
+    @property
+    def device_state_attributes(self):
+        """Return device-specific attributes."""
+        squeezebox_attr = {
+            attr: getattr(self, attr)
+            for attr in ATTR_TO_PROPERTY
+            if getattr(self, attr) is not None
+        }
+
+        return squeezebox_attr
 
     @property
     def name(self):
@@ -287,7 +327,7 @@ class SqueezeBoxDevice(MediaPlayerDevice):
                 return STATE_PLAYING
             if self._status["mode"] == "stop":
                 return STATE_IDLE
-        return STATE_OFF
+        return None
 
     async def async_query(self, *parameters):
         """Send a command to the LMS."""
@@ -305,10 +345,16 @@ class SqueezeBoxDevice(MediaPlayerDevice):
 
         self._status = {}
 
-        if response:
-            if "playlist_loop" in response:
-                self._status.update(response["playlist_loop"][0])
-            self._status.update(response)
+        try:
+            self._status.update(response["playlist_loop"][0])
+        except KeyError:
+            pass
+        try:
+            self._status.update(response["remoteMeta"])
+        except KeyError:
+            pass
+
+        self._status.update(response)
 
         if self.media_position != last_media_position:
             _LOGGER.debug(
@@ -419,6 +465,25 @@ class SqueezeBoxDevice(MediaPlayerDevice):
         """Flag media player features that are supported."""
         return SUPPORT_SQUEEZEBOX
 
+    @property
+    def sync_group(self):
+        """List of players we are synced with."""
+        try:
+            sync_group = f"{self._status['sync_master']}: {self._status['sync_slaves']}"
+        except KeyError:
+            sync_group = "unsynced"
+        return sync_group
+
+    @property
+    def query_result(self):
+        """Exposes the result from the call_query service."""
+        return self._query_result
+
+    @property
+    def player_id(self):
+        """Exposes the player id. Needed for sync."""
+        return self._id
+
     async def async_turn_off(self):
         """Turn off media player."""
         await self.async_query("power", "0")
@@ -472,6 +537,7 @@ class SqueezeBoxDevice(MediaPlayerDevice):
     async def async_play_media(self, media_type, media_id, **kwargs):
         """
         Send the play_media command to the media player.
+
         If ATTR_MEDIA_ENQUEUE is True, add `media_id` to the current playlist.
         """
         if kwargs.get(ATTR_MEDIA_ENQUEUE):
@@ -499,6 +565,7 @@ class SqueezeBoxDevice(MediaPlayerDevice):
     async def async_call_method(self, command, parameters=None):
         """
         Call Squeezebox JSON/RPC method.
+
         Additional parameters are added to the command to form the list of
         positional parameters (p0, p1...,  pN) passed to JSON/RPC server.
         """
@@ -507,3 +574,38 @@ class SqueezeBoxDevice(MediaPlayerDevice):
             for parameter in parameters:
                 all_params.append(parameter)
         await self.async_query(*all_params)
+
+    async def async_call_query(self, command, parameters=None):
+        """
+        Call Squeezebox JSON/RPC method where we care about the result.
+        Additional parameters are added to the command to form the list of
+        positional parameters (p0, p1...,  pN) passed to JSON/RPC server.
+        """
+        all_params = [command]
+        if parameters:
+            for parameter in parameters:
+                all_params.append(parameter)
+        self._query_result = await self.async_query(*all_params)
+        _LOGGER.debug("call_query got result %s", self._query_result)
+
+    async def async_sync(self, other_player):
+        """
+        Add another Squeezebox player to this player's sync group.
+        If the other player is a member of a sync group, it will leave the current sync group
+        without asking.
+        """
+        other_player_id = None
+        other_player_state = self._lms.hass.states.get(other_player)
+        if other_player_state:
+            try:
+                other_player_id = other_player_state.attributes["player_id"]
+            except KeyError:
+                _LOGGER.info(
+                    "Could not find player_id for %s. Not syncing.", other_player
+                )
+        if other_player_id:
+            await self.async_query("sync", other_player_id)
+
+    async def async_unsync(self):
+        """Unsync this Squeezebox player."""
+        await self.async_query("sync", "-")
