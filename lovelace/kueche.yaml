@@ -33,21 +33,13 @@ cards:
       - entity: sensor.kueche_luftdruck
 
   - type: glance
-    title: Kühlschrank
-    show_header_toggle: false
-    entities:
-      - entity: sensor.kuehlschrank_temperatur
-      - entity: sensor.kuehlschrank_luftfeuchtigkeit
-      - entity: sensor.kuehlschrank_luftdruck
-      - entity: binary_sensor.tuer_kuehlschrank
-
-  - type: glance
     title: Sensoren
     show_header_toggle: false
     entities:
       - entity: binary_sensor.bewegungsmelder_kueche
         name: Bewegungsmelder
       - entity: sensor.helligkeit_kueche
+      - entity: binary_sensor.tuer_kuehlschrank
 
   - type: glance
     title: Heizung

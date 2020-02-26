@@ -30,7 +30,6 @@ sensor:
       - zigate.thermometer_kueche
       - zigate.thermometer_sportzimmer
       - zigate.thermometer_parkplatz
-      - zigate.thermometer_kuehlschrank
       - zigate.thermometer_hardware
       - zigate.tuersensor
       - zigate.tuer_kuehlschrank

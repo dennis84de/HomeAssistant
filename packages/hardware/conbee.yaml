@@ -47,8 +47,3 @@ homeassistant:
       icon: mdi:water-percent
     sensor.flur_luftdruck:
       icon: mdi:weather-windy
-
-    sensor.kuehlschrank_luftfeuchtigkeit:
-      icon: mdi:water-percent
-    sensor.kuehlschrank_luftdruck:
-      icon: mdi:weather-windy

@@ -127,8 +127,6 @@ cards:
         name: Sportzimmer
       - entity: zigate.thermometer_kueche
         name: Küche
-      - entity: zigate.thermometer_kuehlschrank
-        name: Kühlschrank
       - entity: zigate.thermometer_hardware
         name: Hardware
 
