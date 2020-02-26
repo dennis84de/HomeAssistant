@@ -48,9 +48,7 @@ binary_sensor:
           - vacuum.xiaomi_vacuum_cleaner
         device_class: occupancy
         value_template: >-
-          {% if states.vacuum.xiaomi_vacuum_cleaner == None %}
-            True
-          {% elif is_state('vacuum.xiaomi_vacuum_cleaner', 'docked') == False %}
+          {% if is_state('vacuum.xiaomi_vacuum_cleaner', 'cleaning') or is_state('vacuum.xiaomi_vacuum_cleaner', 'returning') %}
             True
           {% else %}
             False
