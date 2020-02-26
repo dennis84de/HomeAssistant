@@ -1,2 +1,2 @@
-sensor:
-  - platform: mitemp_bt
+#sensor:
+#  - platform: mitemp_bt
