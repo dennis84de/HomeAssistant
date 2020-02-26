@@ -42,6 +42,11 @@ zone:
     longitude: !secret home_longitude
     radius: 50
     icon: mdi:home-account
+  - name: Work
+    latitude: !secret work_latitude
+    longitude: !secret work_longitude
+    radius: 50
+    icon: mdi:wan 
 
 sensor:
   - platform: sql
