@@ -20,6 +20,9 @@ weather:
     name: Wetter
     api_key: !secret darksky_key
 
+gdacs:
+  radius: 100
+  
 binary_sensor:
   - platform: car_wash
     name: Auto waschen
@@ -441,9 +444,14 @@ automation:
       - condition: numeric_state
         entity_id: sensor.balkon_temperatur
         above: 23
-      - condition: state
-        entity_id: binary_sensor.fenster_wohnzimmer
-        state: 'on'
+      - condition: or
+        conditions:
+          - condition: state
+            entity_id: binary_sensor.fenster_balkontuer
+            state: 'on'
+          - condition: state
+            entity_id: binary_sensor.fenster_wohnzimmer
+            state: 'on'            
       - condition: numeric_state
         entity_id: sensor.laufzeit_minuten
         above: 5
@@ -595,7 +603,9 @@ homeassistant:
 
     sensor.co2_intensity_51_49_7_36:
       friendly_name: CO2 Belastung
-
+    sensor.gdacs_51_485918_7_361026:
+      friendly_name: Katastrophenalarm
+    
     sensor.pollen_41_today_birke:
       friendly_name: Birke
     sensor.pollen_41_today_graeser:
