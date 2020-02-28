@@ -35,6 +35,7 @@ popup_cards:
             state: false
             name: false
             extrema: false
+            points: false
           entities:
             - entity: sensor.gewicht
               show_state: false
@@ -118,7 +119,7 @@ cards:
       - entity: sensor.fahrzeit_nach_hause
       - entity: sensor.abfahrzeit      
       - entity: binary_sensor.schlechtes_wetter      
-      - entity: binary_sensor.arbeitstag
+      - entity: binary_sensor.arbeitstag      
       
   - type: custom:mini-graph-card
     name: Fahrzeit
@@ -128,7 +129,6 @@ cards:
     points_per_hour: 2
     hour24: true
     show:
-      fill: false
       icon: false
       points: false
       state: false
@@ -213,10 +213,3 @@ cards:
       - entity: sensor.serien_episode_7
       - entity: sensor.serien_episode_8
       - entity: sensor.serien_episode_9
-
-#  - type: custom:google-keep-card
-#    entity: sensor.google_keep_499e4d2310
-#    title: Einkaufen
-#    show:
-#      - checked
-#      - unchecked
