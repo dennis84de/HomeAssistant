@@ -81,7 +81,6 @@ cards:
       - entity: sensor.wichtige_anderungen
       - entity: sensor.hacs
       - entity: script.restart_homeassistant
-      - entity: script.upgrade_homeassistant
 
   - type: entities
     title: Benachrichtigungen
