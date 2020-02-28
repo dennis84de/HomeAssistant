@@ -237,7 +237,7 @@ class AttributeSensor(RestoreEntity):
                                 ' the state is unknown.', self._entity)
                 return
             self._state = None
-            _LOGGER.error('Could not attribute sensor for %s: %s',
+            _LOGGER.warning('Could not attribute sensor for %s: %s',
                           self._entity, ex)
 
         if self._icon_template is not None:
@@ -251,5 +251,5 @@ class AttributeSensor(RestoreEntity):
                                     ' the state is unknown.', self._name)
                     return
                 self._icon = super().icon
-                _LOGGER.error('Could not render icon template %s: %s',
+                _LOGGER.warning('Could not render icon template %s: %s',
                               self._name, ex)
