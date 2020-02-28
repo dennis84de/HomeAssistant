@@ -36,7 +36,7 @@ cards:
     show_header_toggle: false
     entities:
       - entity: sensor.tuersensor_battery_level
-      - entity: sensor.tuer_kuehlschrank_battery_level
+      - entity: sensor.tuer_kuehlschrank_battery_level      
       - entity: sensor.tuer_gefrierschrank_battery_level      
       - entity: sensor.cube_wohnzimmer_battery_level
       - entity: sensor.vibration_wohnzimmer_battery_level
@@ -80,6 +80,8 @@ cards:
     title: Fenster
     show_header_toggle: false
     entities:
+      - entity: sensor.fenster_balkontuer_battery_level
+        name: Balkontür      
       - entity: sensor.fenster_wohnzimmer_battery_level
         name: Wohnzimmer
       - entity: sensor.fenster_schlafzimmer_battery_level

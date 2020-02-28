@@ -45,8 +45,36 @@ automation:
         data:
           displaytime: 5000
 
+  - alias: "Benachrichtigung Balkontür"
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.fenster_balkontuer
+    condition:
+      - condition: state
+        entity_id: 'media_player.kodi_wohnzimmer'
+        state: 'playing'
+      - condition: numeric_state
+        entity_id: sensor.laufzeit_minuten
+        above: 1
+    action:
+      service: notify.kodi_wohnzimmer
+      data_template:
+        title: "Balkontür"
+        message: >-
+          {% if trigger.to_state.state == 'on' %}
+            {% set status = "geöffnet" %}
+          {% else %}
+            {% set status = "geschlossen" %}
+          {% endif %}
+
+          Die Balkontür wurde {{ status }}.
+        data:
+          displaytime: 5000
+          
 homeassistant:
   customize:
+    binary_sensor.fenster_balkontuer:
+      device_class: door    
     binary_sensor.fenster_wohnzimmer:
       device_class: window
     binary_sensor.fenster_schlafzimmer:

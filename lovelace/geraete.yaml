@@ -98,6 +98,8 @@ cards:
     title: Fenster
     show_header_toggle: false
     entities:
+      - entity: zigate.fenster_balkontuer
+        name: Balkontür      
       - entity: zigate.fenster_wohnzimmer
         name: Wohnzimmer
       - entity: zigate.fenster_schlafzimmer
@@ -135,5 +137,5 @@ cards:
     show_header_toggle: false
     entities:
       - entity: zigate.tuersensor
-      - entity: zigate.tuer_kuehlschrank
+      - entity: zigate.tuer_kuehlschrank      
       - entity: zigate.tuer_gefrierschrank

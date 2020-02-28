@@ -198,6 +198,9 @@ automation:
   - alias: "Alarm - Fenster"
     trigger:
       - platform: state
+        entity_id: binary_sensor.fenster_balkontuer
+        to: 'on'      
+      - platform: state
         entity_id: binary_sensor.fenster_wohnzimmer
         to: 'on'
       - platform: state
@@ -224,8 +227,10 @@ automation:
       data_template:
         title: "Fenster geöffnet"
         message: >-
-          {% if trigger.entity_id == "binary_sensor.fenster_wohnzimmer" %}
-            Das Fenster im Wohnzimmer wurde geöffnet.
+          {% if trigger.entity_id == "binary_sensor.fenster_balkontuer" %}
+            Die Balontür wurde geöffnet.
+          {% elif trigger.entity_id == "binary_sensor.fenster_wohnzimmer" %}
+            Das Fenster im Wohnzimmer wurde geöffnet.            
           {% elif trigger.entity_id == "binary_sensor.fenster_schlafzimmer" %}
             Das Fenster im Schlafzimmer wurde geöffnet.
           {% elif trigger.entity_id == "binary_sensor.fenster_kueche" %}

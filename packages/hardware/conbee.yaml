@@ -10,10 +10,6 @@ homeassistant:
 
     binary_sensor.tuersensor:
       device_class: door
-    binary_sensor.tuer_kuehlschrank:
-      device_class: opening
-    binary_sensor.tuer_gefrierschrank:
-      device_class: opening
 
     binary_sensor.bewegungsmelder_flur_vorne:
       device_class: motion

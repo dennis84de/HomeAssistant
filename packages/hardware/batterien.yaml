@@ -18,11 +18,12 @@ sensor:
       - zigate.bewegungsmelder_schlafzimmer
       - zigate.bewegungsmelder_kueche
       - zigate.bewegungsmelder_balkon
+      - zigate.fenster_balkontuer
       - zigate.fenster_wohnzimmer
       - zigate.fenster_schlafzimmer
       - zigate.fenster_kueche
       - zigate.fenster_arbeitszimmer
-      - zigate.fenster_sportzimmer
+      - zigate.fenster_sportzimmer     
       - zigate.thermometer_flur
       - zigate.thermometer_balkon
       - zigate.thermometer_schlafzimmer
@@ -32,7 +33,7 @@ sensor:
       - zigate.thermometer_parkplatz
       - zigate.thermometer_hardware
       - zigate.tuersensor
-      - zigate.tuer_kuehlschrank
+      - zigate.tuer_kuehlschrank      
       - zigate.tuer_gefrierschrank
       - binary_sensor.schalter_wohnzimmer
       - binary_sensor.schalter_schlafzimmer
