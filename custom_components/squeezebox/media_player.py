@@ -270,7 +270,7 @@ class LogitechMediaServer:
                 data = await response.json()
 
         except (asyncio.TimeoutError, aiohttp.ClientError) as error:
-            _LOGGER.error("Failed communicating with LMS: %s", type(error))
+            _LOGGER.warning("Failed communicating with LMS: %s", type(error))
             return False
 
         try:
