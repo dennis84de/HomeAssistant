@@ -514,7 +514,7 @@ class Places(Entity):
             proceed_with_update = False
         elif int(distance_traveled) > 0 and self._updateskipped > 3:
             proceed_with_update = True
-            _LOGGER.debug( "(" + self._name + ") Allowing update after 3 skips even with distance traveled < 10m" ) 
+            _LOGGER.debug( "(" + self._name + ") Allowing update after 3 skips even with distance traveled < 10m" )            
         elif int(distance_traveled) < 10:
             self._updateskipped = self._updateskipped + 1
             _LOGGER.debug( "(" + self._name + ") Skipping update because location changed " + str(distance_traveled) + " < 10m  (" + str(self._updateskipped) + ")" )
@@ -640,8 +640,8 @@ class Places(Entity):
             elif self._devicetracker_zone == "not_home":
                 if city == '' or city == '-':
                     city = county
-                    if city == '' or city == '-':
-                        city = postal_town
+                if city == '' or city == '-':
+                    city = postal_town
 
                 # Options:  "zone, place, street_number, street, city, county, state, postal_code, country, formatted_address"
 
@@ -712,8 +712,8 @@ class Places(Entity):
                 if devicetracker_zone == "home":
                     new_state = "Zu Hause"
                 else:
-                    new_state = devicetracker_zone                    
-                    _LOGGER.debug( "(" + self._name + ") New State from DeviceTracker set to: " + new_state)
+                  new_state = devicetracker_zone
+                  _LOGGER.debug( "(" + self._name + ") New State from DeviceTracker set to: " + new_state)
 
             current_time = "%02d:%02d" % (now.hour, now.minute)
             
