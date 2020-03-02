@@ -2,7 +2,6 @@ logger:
   default: error
   logs:
     homeassistant.components.openhardwaremonitor.sensor: fatal
-    custom_components.squeezebox.media_player: fatal    
     homeassistant.components.emulated_hue.hue_api: fatal
     
 recorder:
