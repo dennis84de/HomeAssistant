@@ -196,11 +196,9 @@ automation:
 
   - alias: 'Radio Balkon - Synchronisieren'
     trigger:
-      - platform: event
-        event_type: xiaomi_aqara.click
-        event_data:
-          entity_id: binary_sensor.schalter_balkon
-          click_type: single
+      - platform: state
+        entity_id: sensor.schalter_balkon
+        to: '2'
     condition:
       - condition: state
         entity_id: switch.balkon_radio

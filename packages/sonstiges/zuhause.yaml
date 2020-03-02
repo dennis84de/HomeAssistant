@@ -166,11 +166,9 @@ automation:
 
   - alias: "Zu Hause - Manuell geschaltet"
     trigger:
-      - platform: event
-        event_type: xiaomi_aqara.click
-        event_data:
-          entity_id: binary_sensor.schalter_flur
-          click_type: single
+      - platform: state
+        entity_id: binary_sensor.schalter_flur
+        to: 'off'
     condition:
       - condition: state
         entity_id: device_tracker.handymqtt

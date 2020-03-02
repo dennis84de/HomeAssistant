@@ -24,11 +24,9 @@ alarm_control_panel:
 automation:
   - alias: "Alles ausschalten aktivieren"
     trigger:
-      - platform: event
-        event_type: xiaomi_aqara.click
-        event_data:
-          entity_id: binary_sensor.schalter_flur
-          click_type: long_click_press
+      - platform: state
+        entity_id: sensor.schalter_flur
+        to: '2'
     condition:
       - condition: state
         entity_id: automation.alles_ausschalten
@@ -57,11 +55,9 @@ automation:
   - alias: "Alles ausschalten"
     initial_state: false
     trigger:
-      - platform: event
-        event_type: xiaomi_aqara.click
-        event_data:
-          entity_id: binary_sensor.schalter_flur
-          click_type: single
+      - platform: state
+        entity_id: binary_sensor.schalter_flur
+        to: 'off'
     condition:
       - condition: state
         entity_id: timer.alles_auschalten

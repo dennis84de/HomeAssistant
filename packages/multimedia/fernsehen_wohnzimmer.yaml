@@ -143,12 +143,11 @@ automation:
       
   - alias: "Kodi - Wiedergabe Cube"
     trigger:
-      - platform: event
-        event_type: xiaomi_aqara.cube_action
-        event_data:
-          entity_id: binary_sensor.cube_wohnzimmer
-          action_type: flip90
+      - platform: state
+        entity_id: sensor.cube_bewegung
     condition:
+      - condition: template
+        value_template: '{{ True if "flip90" in trigger.to_state.state else False }}'
       - condition: or
         conditions:
         - condition: state
@@ -163,11 +162,9 @@ automation:
 
   - alias: "Kodi - Wiedergabe Schalter"
     trigger:
-      - platform: event
-        event_type: xiaomi_aqara.click
-        event_data:
-          entity_id: binary_sensor.schalter_wohnzimmer
-          click_type: single
+      - platform: state
+        entity_id: binary_sensor.schalter_wohnzimmer
+        to: 'off'
     condition:
       - condition: or
         conditions:
@@ -235,12 +232,11 @@ automation:
 
   - alias: "Kodi - Nächster Titel"
     trigger:
-      - platform: event
-        event_type: xiaomi_aqara.cube_action
-        event_data:
-          entity_id: binary_sensor.cube_wohnzimmer
-          action_type: free_fall
+      - platform: state
+        entity_id: sensor.cube_bewegung
     condition:
+      - condition: template
+        value_template: '{{ True if "drop" in trigger.to_state.state else False }}'         
       - condition: template
         value_template: '{{ is_state("media_player.kodi_wohnzimmer", "off") == False }}'
     action:
@@ -263,15 +259,12 @@ automation:
 
   - alias: "Soundbar Lautstärke - Cube"
     trigger:
-      - platform: event
-        event_type: xiaomi_aqara.cube_action
-        event_data:
-          entity_id: binary_sensor.cube_wohnzimmer
-          action_type: rotate
+      - platform: state
+        entity_id: sensor.cube_drehung
     condition:
-      condition: state
-      entity_id: media_player.soundbar
-      state: 'on'
+      - condition: state
+        entity_id: media_player.soundbar
+        state: 'on'
     action:
       - service: media_player.volume_set
         data_template:
@@ -285,7 +278,7 @@ automation:
               {% set oldState = state_attr('media_player.soundbar', 'volume_level') | float -%}
             {% endif %}
 
-            {% if trigger.event.data.action_value | float > 0 %}
+            {% if trigger.to_state.state | float > 0 %}
                {% set newState = oldState + 0.05 -%}
             {% else %}
                {% set newState = oldState - 0.05 -%}
@@ -295,6 +288,9 @@ automation:
 
 homeassistant:
   customize:
+    media_player.soundbar:
+      icon: mdi:music
+          
     switch.watchtv_wohnzimmer:
       icon: mdi:television-classic
     switch.wohnzimmer_fernseher:

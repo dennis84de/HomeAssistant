@@ -90,11 +90,9 @@ script:
 automation:
   - alias: "Wiedergabe Schlafzimmer - Schalter"
     trigger:
-      - platform: event
-        event_type: xiaomi_aqara.click
-        event_data:
-          entity_id: binary_sensor.schalter_schlafzimmer
-          click_type: single
+      - platform: state        
+        entity_id: binary_sensor.schalter_schlafzimmer
+        to: 'on'
     condition:
       - condition: or
         conditions:

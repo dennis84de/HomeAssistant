@@ -12,7 +12,20 @@ input_boolean:
     icon: mdi:sync-off
 
 automation:
-  - alias: "Licht Balkon - ausschalten"
+  - alias: 'Radio Balkon - Einschalten'
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.schalter_balkon
+        to: 'off'
+    condition:
+      - condition: state
+        entity_id: light.balkon_licht
+        state: 'off'
+    action:
+      - service: light.turn_on
+        entity_id: light.balkon_licht
+      
+  - alias: "Licht Balkon - Ausschalten"
     trigger:
       - platform: state
         entity_id: binary_sensor.bewegungsmelder_wohnzimmer

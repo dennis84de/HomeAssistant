@@ -154,11 +154,9 @@ script:
 automation:
   - alias: "Schlafen gehen - Countdown starten"
     trigger:
-      - platform: event
-        event_type: xiaomi_aqara.click
-        event_data:
-          entity_id: binary_sensor.schalter_wohnzimmer
-          click_type: long_click_press
+      - platform: state
+        entity_id: sensor.schalter_wohnzimmer
+        to: '2'      
     condition:
       - condition: state
         entity_id: binary_sensor.schlafen_aktiv
@@ -184,11 +182,9 @@ automation:
 
   - alias: "Schlafen gehen - Countdown abbrechen"
     trigger:
-      - platform: event
-        event_type: xiaomi_aqara.click
-        event_data:
-          entity_id: binary_sensor.schalter_wohnzimmer
-          click_type: single
+      - platform: state
+        entity_id: binary_sensor.schalter_wohnzimmer
+        to: 'off'
     condition:
       - condition: state
         entity_id: timer.schlafen_einschalten

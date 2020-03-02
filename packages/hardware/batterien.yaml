@@ -35,13 +35,13 @@ sensor:
       - zigate.tuersensor
       - zigate.tuer_kuehlschrank      
       - zigate.tuer_gefrierschrank
-      - binary_sensor.schalter_wohnzimmer
-      - binary_sensor.schalter_schlafzimmer
-      - binary_sensor.schalter_flur
-      - binary_sensor.schalter_balkon
-      - binary_sensor.vibration_wohnzimmer
-      - binary_sensor.vibration_schlafzimmer
-      - binary_sensor.cube_wohnzimmer
+      - zigate.schalter_wohnzimmer
+      - zigate.schalter_schlafzimmer
+      - zigate.schalter_flur
+      - zigate.schalter_balkon
+      - zigate.cube_wohnzimmer
+      - zigate.vibration_wohnzimmer
+      - zigate.vibration_schlafzimmer
 
   - platform: template
     sensors:

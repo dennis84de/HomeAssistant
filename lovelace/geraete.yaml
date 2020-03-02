@@ -139,3 +139,18 @@ cards:
       - entity: zigate.tuersensor
       - entity: zigate.tuer_kuehlschrank      
       - entity: zigate.tuer_gefrierschrank
+      - entity: zigate.vibration_wohnzimmer
+      - entity: zigate.vibration_schlafzimmer
+      
+  - type: entities
+    title: Schalter
+    show_header_toggle: false
+    entities:
+      - entity: zigate.schalter_wohnzimmer
+        name: Wohnzimmer
+      - entity: zigate.schalter_schlafzimmer
+        name: Schlafzimmer
+      - entity: zigate.schalter_flur
+        name: Flur
+      - entity: zigate.schalter_balkon
+        name: Balkon        

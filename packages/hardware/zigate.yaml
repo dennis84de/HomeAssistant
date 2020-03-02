@@ -11,9 +11,33 @@ input_number:
     step: 1
     initial: 24
 
+input_select:
+  cube_letzte_aktion:
+    name: Letzte Aktion
+    options:
+      - 'Unbekannt'
+      - 'Drehen 90°'
+      - 'Drehen 180°'
+      - 'Bewegung'
+      - 'Schütteln'
+      - 'Alarm'
+      - 'Aufgewacht'
+      - 'Freier Fall'
+      - 'Rotieren'
+      - 'Klopfen'
+      
 sensor:
   - platform: template
     sensors:
+      cube_wohnzimmer_status:
+        friendly_name: Xiaomi Cube
+        entity_id:
+          - input_select.cube_letzte_aktion
+        value_template: >-
+          {{ states("input_select.cube_letzte_aktion") }}
+        icon_template: >
+            mdi:cube-outline
+            
       zigate_offline:
         friendly_name: Geräte offline
         entity_id:
@@ -54,3 +78,52 @@ sensor:
           {% endfor -%}
 
           {{ ns.found | int }}
+          
+automation:
+  - alias: 'Cube - Letzte Aktion'
+    trigger:
+      - platform: state
+        entity_id:
+          - sensor.cube_bewegung
+          - sensor.cube_drehung
+    condition:
+      condition: or
+      conditions:
+        - condition: template
+          value_template: >-
+            {{ True if trigger.entity_id == "sensor.cube_drehung" else False }}
+        - condition: template
+          value_template: >-
+            {{ True if trigger.to_state.state else False }}
+    action:
+      - service: input_select.select_option
+        data_template:
+          entity_id: input_select.cube_letzte_aktion    
+          option: >-
+            {% if trigger.entity_id == "sensor.cube_drehung" %}
+              Rotieren
+            {% else %}
+              {% set lastAction = states("sensor.cube_bewegung") %}
+
+              {% if lastAction == None %}
+                Unbekannt
+              {% elif 'flip90' in lastAction %}
+                Drehen 90°
+              {% elif 'flip180' in lastAction %}
+                Drehen 180°
+              {% elif 'push' in lastAction %}
+                Bewegung
+              {% elif 'shake' in lastAction %}
+                Schütteln
+              {% elif 'alert' in lastAction %}
+                Alarm
+              {% elif 'wakeup' in lastAction %}
+                Aufgewacht
+              {% elif 'drop' in lastAction %}
+                Freier Fall
+              {% elif 'double_tap' in lastAction %}
+                Klopfen
+              {% else %}
+                Unbekannt
+              {% endif %}               
+            {% endif %}

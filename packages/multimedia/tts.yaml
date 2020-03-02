@@ -130,12 +130,15 @@ automation:
       - platform: state
         entity_id: input_boolean.uhr_einschalten
         to: 'off'
-      - platform: event
-        event_type: xiaomi_aqara.cube_action
-        event_data:
-          entity_id: binary_sensor.cube_wohnzimmer
-          action_type: tap_twice        
+      - platform: state
+        entity_id: sensor.cube_bewegung    
     condition:
+      - condition: or
+        conditions:
+          - condition: template
+            value_template: '{{ True if "double_tap" in trigger.to_state.state else False }}' 
+          - condition: template
+            value_template: '{{ True if trigger.entity_id == "input_boolean.uhr_einschalten" else False }}'               
       - condition: state
         entity_id: media_player.smarthome
         state: 'playing'
@@ -148,12 +151,11 @@ automation:
 
   - alias: "BVB - Torhymne"
     trigger:
-      - platform: event
-        event_type: xiaomi_aqara.cube_action
-        event_data:
-          entity_id: binary_sensor.cube_wohnzimmer
-          action_type: free_fall
+      - platform: state
+        entity_id: sensor.cube_bewegung
     condition:
+      - condition: template
+        value_template: '{{ True if "drop" in trigger.to_state.state else False }}'
       - condition: state
         entity_id: calendar.borussia_dortmund
         state: 'on'
@@ -168,12 +170,11 @@ automation:
 
   - alias: "BVB - Musik starten"
     trigger:
-      - platform: event
-        event_type: xiaomi_aqara.cube_action
-        event_data:
-          entity_id: binary_sensor.cube_wohnzimmer
-          action_type: tap_twice
+      - platform: state
+        entity_id: sensor.cube_bewegung
     condition:
+      - condition: template
+        value_template: '{{ True if "double_tap" in trigger.to_state.state else False }}'       
       - condition: state
         entity_id: calendar.borussia_dortmund
         state: 'on'
@@ -191,12 +192,11 @@ automation:
 
   - alias: "BVB - Musik stoppen"
     trigger:
-      - platform: event
-        event_type: xiaomi_aqara.cube_action
-        event_data:
-          entity_id: binary_sensor.cube_wohnzimmer
-          action_type: tap_twice
+      - platform: state
+        entity_id: sensor.cube_bewegung
     condition:
+      - condition: template
+        value_template: '{{ True if "double_tap" in trigger.to_state.state else False }}'         
       - condition: state
         entity_id: calendar.borussia_dortmund
         state: 'on'
