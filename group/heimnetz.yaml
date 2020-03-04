@@ -9,7 +9,6 @@ heimnetz:
     - device_tracker.xiaomivacuum
     - device_tracker.xiaomifan
     - device_tracker.brematic_gateway
-    - device_tracker.xiaomigateway
     - device_tracker.tplinkwohnzimmermonitor
     - device_tracker.edimaxwohnzimmerradio
     - device_tracker.tplinkarbeitszimmerradio

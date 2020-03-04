@@ -48,8 +48,6 @@ cards:
     entities:
       - entity: device_tracker.brematic_gateway
         name: Brematic
-      - entity: device_tracker.xiaomigateway
-        name: Xiaomi
 
   - type: entities
     title: Radios
