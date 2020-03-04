@@ -166,6 +166,19 @@ cards:
       - entity: sensor.spacex_next_launch_time
       - entity: sensor.spacex_next_launch_site
 
+  - type: entities
+    title: Corona Virus
+    show_header_toggle: false
+    entities:
+      - entity: sensor.germany_coronavirus_confirmed
+        name: Bestätigt
+      - entity: sensor.germany_coronavirus_current
+        name: Aktuell
+      - entity: sensor.germany_coronavirus_recovered
+        name: Geheilt
+      - entity: sensor.germany_coronavirus_deaths
+        name: Tote
+      
   - type: map
     entities: []
     geo_location_sources:
