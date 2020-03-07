@@ -13,7 +13,18 @@ alexa_media:
         - "FireTV Schlafzimmer"
         - "FireTV Badezimmer"
         - "FireTV Sportzimmer"
-        
+    
+input_boolean:
+  alexa_witz_gestartet:
+    name: Alexa Witz - Gestartet
+    initial: off
+  
+counter:
+  alexa_witz_status:
+    name: Alexa Witz - Statusänderungen    
+    initial: 0
+    step: 1
+    
 sensor:
   - platform: template
     sensors:
@@ -33,4 +44,66 @@ sensor:
             {% set diff = ((timer - now) / 60) | int %}
 
             {{ diff }}
-          {% endif %}
+          {% endif %}          
+          
+automation:
+  - alias: "Alexa Witz - Aktiv"
+    trigger:
+      - platform: state
+        entity_id: media_player.echo_wohnzimmer
+    condition:
+      - condition: state
+        entity_id: input_boolean.alexa_witz_gestartet
+        state: 'on'
+      - condition: template
+        value_template: '{{ trigger.from_state.attributes.media_position_updated_at !=  trigger.to_state.attributes.media_position_updated_at }}'
+    action:
+      - service: counter.increment
+        entity_id: counter.alexa_witz_status
+       
+  - alias: "Alexa Witz - Beendet"
+    trigger:
+      - platform: numeric_state
+        entity_id: counter.alexa_witz_status
+        above: 3
+    condition:
+      - condition: state
+        entity_id: input_boolean.alexa_witz_gestartet
+        state: 'on'
+    action:
+      - service: script.alexa_witz_beendet
+        
+script:
+  alexa_witz_gestartet:
+    alias: Alexa Witz - Gestartet
+    sequence:
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.alexa_witz_gestartet
+      - service: media_player.play_media
+        data:
+          entity_id: media_player.echo_wohnzimmer
+          media_content_id: Alexa.Joke.Play
+          media_content_type: sequence
+      - service: media_player.volume_mute
+        data:
+          entity_id: media_player.kuche, media_player.badezimmer, media_player.wohnzimmer, media_player.schlafzimmer, media_player.arbeitszimmer, media_player.flur, media_player.balkon
+          is_volume_muted: true          
+       
+  alexa_witz_beendet:
+    alias: Alexa Witz - Beendet
+    sequence:
+      - service: counter.reset
+        entity_id: counter.alexa_witz_status
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.alexa_witz_gestartet        
+      - service: media_player.volume_mute
+        data:
+          entity_id: media_player.kuche, media_player.badezimmer, media_player.wohnzimmer, media_player.schlafzimmer, media_player.arbeitszimmer, media_player.flur, media_player.balkon
+          is_volume_muted: false  
+          
+homeassistant:
+  customize:
+    script.alexa_witz_gestartet:
+      can_cancel: false
+      icon: mdi:emoticon-excited-outline          
+      friendly_name: Witz erzählen
