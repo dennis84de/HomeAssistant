@@ -25,7 +25,8 @@ cards:
       - entity: device_tracker.netzwerkdj
       - entity: device_tracker.fritz_repeater
       - entity: device_tracker.pihole
-      
+      - entity: device_tracker.brematic_gateway
+
   - type: entities
     title: Multimedia
     show_header_toggle: false
@@ -41,13 +42,6 @@ cards:
         name: Staubsauger
       - entity: device_tracker.xiaomifan
         name: Ventilator
-
-  - type: entities
-    title: Gateways
-    show_header_toggle: false
-    entities:
-      - entity: device_tracker.brematic_gateway
-        name: Brematic
 
   - type: entities
     title: Radios
