@@ -21,6 +21,9 @@ automation:
       - platform: state        
         entity_id: binary_sensor.schalter_schlafzimmer
         to: 'on'
+      - platform: state        
+        entity_id: sensor.schalter_schlafzimmer
+        to: '2'
     condition:
       - condition: or
         conditions:
