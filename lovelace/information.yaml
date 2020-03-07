@@ -189,15 +189,15 @@ cards:
       - entity: sensor.formel1_datum
       - entity: sensor.formel1_qualifikation
 
-  - type: entities
-    title: Anrufliste
-    show_header_toggle: false
-    entities:
-      - entity: sensor.anrufliste_call_0
-      - entity: sensor.anrufliste_call_1
-      - entity: sensor.anrufliste_call_2
-      - entity: sensor.anrufliste_call_3
-      - entity: sensor.anrufliste_call_4
+#  - type: entities
+#    title: Anrufliste
+#    show_header_toggle: false
+#    entities:
+#      - entity: sensor.anrufliste_call_0
+#      - entity: sensor.anrufliste_call_1
+#      - entity: sensor.anrufliste_call_2
+#      - entity: sensor.anrufliste_call_3
+#      - entity: sensor.anrufliste_call_4
 
   - type: entities
     title: Serien

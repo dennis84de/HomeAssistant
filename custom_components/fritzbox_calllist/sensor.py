@@ -19,7 +19,7 @@ from homeassistant.util import Throttle
 import homeassistant.helpers.config_validation as cv
 
 _LOGGER = logging.getLogger(__name__)
-REQUIREMENTS = ['fritzconnection==0.6.5']
+REQUIREMENTS = ['fritzconnection==1.2.0']
 
 PLATFORM = 'fritz_calllist'
 
@@ -69,23 +69,22 @@ def callparser(callData):
     
     for call in callData:
         callType = None
-      
-        if (call['Type'] == 1):
+
+        _LOGGER.error(call)
+
+        if (call['type'] == 1):
           callType = "incoming"
-        elif (call['Type'] == 2):
+        elif (call['type'] == 2):
           callType = "missed"
-        elif (call['Type'] == 3):
+        elif (call['type'] == 3):
           callType = "outgoing"
-          
-        number = call['Called'] if call['Type'] == 3 else call['Caller']
-        name = number if call['Name'] == None else call['Name']
         
         call_dict = {
             'calltype': callType,
-            'name': name,
-            'number': number,
-            'date': call['Date'].strftime("%d.%m.%Y %H:%M"),
-            'duration': call['Duration'].seconds // 60 % 60
+            'name': call['number'],
+            'number': call['number'],
+            'date': call['date/time'].strftime("%d.%m.%Y %H:%M"),
+            'duration': call['duration'].seconds // 60 % 60
         }
 
         calls.append(call_dict)
@@ -180,8 +179,9 @@ class CallDataSensor(Entity):
 class CallData(object):
     def __init__(self, host, username, password):      
         import fritzconnection as fc
-    
-        self.conn = fc.FritzCall(address=host, user=username, password=password)
+        from fritzconnection.lib.fritzcall import FritzCall
+
+        self.conn = FritzCall(address=host, user=username, password=password)
         self.data = None
 
     @Throttle(MIN_TIME_BETWEEN_UPDATES)
