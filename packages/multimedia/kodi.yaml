@@ -7,8 +7,8 @@ media_player:
     turn_on_action:
       service: mqtt.publish
       data_template:
-        payload: '[kodi]'          
-        topic: winthing/system/commands/run
+        topic: "iotlink/workgroup/computer/commands/run"
+        payload: '{ "command": "C:\\Program Files\\Kodi\\kodi.exe", "path": "C:\\Program Files\\Kodi", "user": "", "visible": true, "fallback": true }'
     turn_off_action:
       service: kodi.call_method
       data:

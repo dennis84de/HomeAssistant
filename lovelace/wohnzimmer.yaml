@@ -60,10 +60,6 @@ cards:
     title: Computer
     show_header_toggle: false
     entities:
-      - entity: binary_sensor.computer_leerlauf
-        name: Leerlauf
-      - entity: sensor.computer_aktives_fenster
-        name: Aktives Fenster
       - entity: switch.pc
       - entity: switch.monitor
       - entity: input_boolean.computer_ausschalten

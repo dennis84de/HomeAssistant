@@ -1,6 +1,3 @@
-shell_command:
-  computer_hibernate: curl http://192.168.2.81:7760/hibernate
-
 input_boolean:
   computer_ausschalten:
     name: Computer ausschalten
@@ -16,23 +13,14 @@ device_tracker:
 
 binary_sensor:
   - platform: mqtt
-    name: "Computer - Winthing"
-    state_topic: "winthing/system/online"
-    payload_on: "true"
-    payload_off: "false"
-    device_class: connectivity
-    
-  - platform: mqtt
-    name: "Computer - Leerlauf"    
-    state_topic: "winthing/system/idle"
-    payload_on: "True"
-    payload_off: "False"
-    
-sensor:
-  - platform: mqtt
-    name: "Computer - Aktives Fenster"    
-    state_topic: "winthing/system/activeWindow"
-    
+    name: "Computer - Status"
+    state_topic: "iotlink/workgroup/computer/lwt"
+    value_template: "{{ value }}"
+    payload_on: "ON"
+    payload_off: "OFF"
+    device_class: "connectivity"
+    qos: 1
+
 switch:
   - platform: template
     switches:
@@ -47,7 +35,10 @@ switch:
             mac: !secret computer_mac
             broadcast_address: !secret fritzbox_broadcast
         turn_off:
-          service: shell_command.computer_hibernate
+          service: mqtt.publish
+          data:
+            topic: "iotlink/workgroup/computer/commands/hibernate"
+            payload: ""
       computer:
         friendly_name: Computer
         entity_id:
@@ -105,9 +96,5 @@ homeassistant:
       friendly_name: PC
       icon: mdi:desktop-tower
 
-    binary_sensor.computer_winthing:
-      friendly_name: WinThing
-    sensor.computer_aktives_fenster:
-      icon: mdi:dock-window
-    binary_sensor.computer_leerlauf:
-      icon: mdi:bell-ring
+    binary_sensor.computer_status:
+      friendly_name: Computer
