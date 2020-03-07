@@ -1,67 +1,35 @@
 sensor:
   - platform: mqtt
     name: "Gewicht"
-    state_topic: "scale/weight/kg"
-    value_template: >-
-      {% if value == None %}
-        -
-      {% else %}
-        {{ value }}
-      {% endif %}
-
+    state_topic: "scale/Dennis/weight"
+    value_template: "{{ value_json['Weight'] }}"    
+    json_attributes_topic: "scale/Dennis/weight"
     unit_of_measurement: "kg"
-    icon: mdi:weight-kilogram
+    icon: mdi:scale-bathroom   
+
+  - platform: mqtt
+    name: "BMI"
+    state_topic: "scale/Dennis/weight"
+    value_template: "{{ value_json['BMI'] }}"
+    icon: mdi:human-pregnant
+
+  - platform: mqtt
+    name: "Wasser"
+    state_topic: "scale/Dennis/weight"
+    value_template: "{{ value_json['Water'] }}"   
+    unit_of_measurement: "kg"
+    icon: mdi:water
+
+  - platform: mqtt
+    name: "Fett"
+    state_topic: "scale/Dennis/weight"
+    value_template: "{{ value_json['Body Fat'] }}"    
+    unit_of_measurement: "kg"
+    icon: mdi:scale-balance
 
   - platform: statistics
     entity_id: sensor.gewicht
     name: "Gewicht Durchschnitt"
-
-  - platform: template
-    sensors:
-      bmi:
-        entity_id: sensor.gewicht
-        value_template: >
-          {% set gewicht = states("sensor.gewicht") | float %}
-
-          {% if gewicht == None or gewicht == 0 or gewicht == '-' %}
-            -
-          {% else %}
-            {{ (gewicht / (1.78 * 1.78)) | round(1) }}
-          {% endif %}
-        friendly_name: BMI
-        icon_template: mdi:human-pregnant
-        unit_of_measurement: "kg/m²"
-
-      wasser:
-        entity_id:
-          - sensor.gewicht
-        value_template: >
-          {% set gewicht = states("sensor.gewicht") | float %}
-
-          {% if gewicht == None or gewicht == 0 or gewicht == '-' %}
-            -
-          {% else %}
-            {{ (0.72 * (-1.976 + 0.907 * gewicht)) | round(1) }}
-          {% endif %}
-        friendly_name: Wasser
-        icon_template: mdi:water
-        unit_of_measurement: "kg"
-
-      fett:
-        entity_id:
-          - sensor.gewicht
-          - sensor.bmi
-        value_template: >
-          {% set bmi = states("sensor.bmi") | float %}
-
-          {% if bmi == None or bmi == 0 or bmi == '-' %}
-            -
-          {% else %}
-            {{ ((1.281 * bmi) - 10.13) | round(1) }}
-          {% endif %}
-        friendly_name: Fett
-        icon_template: mdi:human-pregnant
-        unit_of_measurement: "kg"
 
 homeassistant:
   customize:
