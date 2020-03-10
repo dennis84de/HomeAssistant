@@ -15,4 +15,4 @@ binary_sensor:
 homeassistant:
   customize:
     binary_sensor.bluetooth_gateway:
-      icon: mdi:access-point-network
+      icon: mdi:bluetooth-connect
