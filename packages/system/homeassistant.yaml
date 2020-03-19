@@ -63,17 +63,17 @@ breaking_changes:
 
 python_script:
 map:
-zone:
-  - name: Zu Hause
-    latitude: !secret home_latitude
-    longitude: !secret home_longitude
-    radius: 60
-    icon: mdi:home-account
-  - name: Arbeit
-    latitude: !secret work_latitude
-    longitude: !secret work_longitude
-    radius: 70
-    icon: mdi:wan 
+#zone:
+#  - name: Zu Hause
+#    latitude: !secret home_latitude
+#    longitude: !secret home_longitude
+#    radius: 60
+#    icon: mdi:home-account
+#  - name: Arbeit
+#    latitude: !secret work_latitude
+#    longitude: !secret work_longitude
+#    radius: 70
+#    icon: mdi:wan 
 
 sensor:
   - platform: sql
