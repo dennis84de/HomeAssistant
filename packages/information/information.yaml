@@ -1,3 +1,11 @@
+#tankerkoenig:
+#  api_key: tankerkoenig_apikey 
+#  fuel_types:
+#    - 'e10'
+#  stations:
+#    - !secret tankerkoenig_id_real
+#    - !secret tankerkoenig_id_jet
+
 sensor:
   - platform: imap
     server: mail.manitu.de
@@ -5,7 +13,7 @@ sensor:
     name: Ungelesene Mails
     username: !secret email_username
     password: !secret email_password
-    
+
   - platform: rest
     resource: !secret tankerkoenig_url_real
     name: Tankstelle Real

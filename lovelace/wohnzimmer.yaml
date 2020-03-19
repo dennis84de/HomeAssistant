@@ -24,12 +24,12 @@ cards:
   - type: entities
     title: Multimedia
     show_header_toggle: false
-    entities:
-      - entity: cover.kodi_untertitel
+    entities:      
       - entity: switch.computer
       - entity: switch.watchtv_wohnzimmer
       - entity: input_boolean.musik_ausschalten
       - entity: input_boolean.kodi_pausieren
+      - entity: cover.kodi_untertitel      
       - entity: cover.fernseher_eingang     
       - type: custom:mini-media-player
         entity: media_player.soundbar

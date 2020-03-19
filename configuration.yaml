@@ -20,3 +20,15 @@ group: !include_dir_merge_named group
 
 hacs:
   token: !secret github_access_token
+
+zone:
+  - name: Zu Hause
+    latitude: !secret home_latitude
+    longitude: !secret home_longitude
+    radius: 60
+    icon: mdi:home-account
+  - name: Arbeit
+    latitude: !secret work_latitude
+    longitude: !secret work_longitude
+    radius: 70
+    icon: mdi:wan 

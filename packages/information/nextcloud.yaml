@@ -5,10 +5,9 @@ binary_sensor:
 sensor:
   - platform: cert_expiry
     host: !secret nextcloud_url
-    name: Nextcloud Zertifikat
     
   - platform: nextcloud
-    url: !secret nextcloud_ur_https
+    url: !secret nextcloud_url_https
     username: !secret nextcloud_username
     password: !secret nextcloud_app_password
     
@@ -32,6 +31,6 @@ homeassistant:
 
     sensor.nextcloud_zertifikat:
       friendly_name: Laufzeit Zertifikat
-      unit_of_measurement: Tage
+      unit_of_measurement: Tage      
     sensor.nextcloud_system_version:
-      friendly_name: Installierte Version
+      friendly_name: Installierte Version          
