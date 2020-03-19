@@ -119,6 +119,29 @@ script:
         entity_id: input_select.dreamscreen_modus
         option: "Aus"
 
+  sky_starten:
+    alias: "Sky starten"
+    sequence:
+#    - service: media_player.media_stop
+#      entity_id: media_player.kodi_wohnzimmer   
+#    - wait_template: "{{is_state('media_player.kodi_wohnzimmer', 'idle')}}"
+#      timeout: '00:00:05'
+#      continue_on_timeout: 'true'
+#    - service: media_player.turn_off
+#      entity_id: media_player.kodi_wohnzimmer      
+#    - service: script.radios_pausieren
+#    - service: switch.turn_off
+#      entity_id: switch.wohnzimmer_radio, switch.balkon_radio, switch.flur_radio, switch.kuche_radio, switch.schlafzimmer_radio, switch.arbeitszimmer_radio
+    - service: mqtt.publish
+      data_template:
+        topic: "iotlink/workgroup/computer/commands/run"
+        payload: '{ "command": "C:\\Users\\Dennis\\AppData\\Roaming\\Sky\\Sky Go\\Sky Go.exe", "path": "C:\\Users\\Dennis\\AppData\\Roaming\\Sky\\Sky Go", "user": "", "visible": true, "fallback": true }'      
+#    - delay: '00:00:10'
+#    - service: mqtt.publish
+#      data_template:
+#        topic: "iotlink/workgroup/computer/commands/send-keys"
+#        payload: '["^{ESC}","CHROME.EXE","{ENTER}"]'        
+
 automation:
   - alias: "Kodi - Musik ausschalten"
     trigger:
@@ -296,3 +319,6 @@ homeassistant:
     switch.wohnzimmer_fernseher:
       icon: mdi:television
       friendly_name: Fernseher
+      
+    script.sky_starten:
+      icon: mdi:soccer

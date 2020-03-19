@@ -110,6 +110,7 @@ cards:
       - entity: sensor.bvb_datum
       - entity: sensor.bvb_uhrzeit
       - entity: sensor.bvb_ort
+      - entity: script.sky_starten
 
   - type: entities
     title: Arbeit
