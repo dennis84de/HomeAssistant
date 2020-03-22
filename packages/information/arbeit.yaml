@@ -51,6 +51,43 @@ sensor:
 
           {{ abfahrt }}
 
+binary_sensor:
+  - platform: template
+    sensors:
+      home_office:
+        friendly_name: Home Office
+        icon_template: mdi:home-city
+        entity_id:
+          - input_boolean.home_office
+          - binary_sensor.arbeitstag
+          - calendar.urlaub
+          - sensor.time
+        value_template: >-
+          {% set istHomeOffice = is_state('input_boolean.home_office', 'on') %}
+          {% set istArbeitstag = is_state('binary_sensor.arbeitstag', 'on') %}
+          {% set keinUrlaub = is_state('calendar.urlaub', 'off') %}
+          {% set nachArbeitsBeginn = states('sensor.time') > (state_attr('input_datetime.arbeit_beginn', 'timestamp') | int | timestamp_custom('%H:%M', True)) %}
+          {% set vorArbeitsEnde = states('sensor.time') < (state_attr('input_datetime.arbeit_ende', 'timestamp') | int | timestamp_custom('%H:%M', True)) %}
+          
+          {{ True if (istHomeOffice and istArbeitstag and keinUrlaub and nachArbeitsBeginn and vorArbeitsEnde) else False }}
+          
+input_boolean:
+  home_office:
+    name: Home Office
+    icon: mdi:home-city-outline
+  
+input_datetime:
+  arbeit_beginn:
+    name: Arbeitsbeginn    
+    has_time: true
+    icon: mdi:clock-start
+    initial: '07:00'
+  arbeit_ende:
+    name: Arbeitsende    
+    has_time: true
+    icon: mdi:clock-end
+    initial: '16:00'    
+    
 input_select:
   arbeit_stunden:
     name: Stunde
@@ -58,9 +95,6 @@ input_select:
       - 5
       - 6
       - 7
-      - 18
-      - 19
-      - 20
     icon: mdi:av-timer
 
   arbeit_minuten:
@@ -92,6 +126,9 @@ automation:
       - condition: state
         entity_id: binary_sensor.arbeitstag
         state: 'on'
+      - condition: state
+        entity_id: binary_sensor.home_office
+        state: 'off'
       - condition: state
         entity_id: calendar.urlaub
         state: 'off'

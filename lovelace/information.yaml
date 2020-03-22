@@ -10,6 +10,16 @@ popup_cards:
         - entity: input_select.arbeit_minuten
         - entity: input_select.arbeit_puffer
 
+  input_boolean.home_office:
+    title: Arbeitszeiten
+    card:
+      type: entities
+      entities:
+        - entity: input_datetime.arbeit_beginn
+          name: Beginn
+        - entity: input_datetime.arbeit_ende
+          name: Ende
+        
   sensor.wecker_startzeit:
     title: Einstellungen
     card:
@@ -120,7 +130,8 @@ cards:
       - entity: sensor.fahrzeit_nach_hause
       - entity: sensor.abfahrzeit      
       - entity: binary_sensor.schlechtes_wetter      
-      - entity: binary_sensor.arbeitstag      
+      - entity: binary_sensor.arbeitstag
+      - entity: input_boolean.home_office
       
   - type: custom:mini-graph-card
     name: Fahrzeit
