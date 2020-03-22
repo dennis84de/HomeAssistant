@@ -1,16 +1,4 @@
 sensor:
-#  - platform: google_travel_time
-#    api_key: !secret googlemaps_apikey
-#    name: Fahrzeit zur Arbeit - Google
-#    origin: !secret googlemaps_home
-#    destination: !secret googlemaps_work
-#
-#  - platform: google_travel_time
-#    api_key: !secret googlemaps_apikey
-#    name: Fahrzeit nach Hause - Google
-#    origin: !secret googlemaps_work
-#    destination: !secret googlemaps_home
-
   - platform: here_travel_time
     name: Fahrzeit zur Arbeit
     api_key: !secret here_api_key
