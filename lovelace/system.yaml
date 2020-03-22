@@ -182,13 +182,15 @@ cards:
         name: Balkon
         icon: mdi:sync-off
 
-  - type: custom:vertical-stack-in-card
+  - type: custom:stack-in-card
     title: Internet
     cards:
-      - type: entities
-        entities:
-          - entity: binary_sensor.healthcheck          
-          - entity: sensor.speedtest_ping          
+      - type: horizontal-stack
+        cards:
+          - type: entities
+            entities:
+              - entity: binary_sensor.healthcheck          
+              - entity: sensor.speedtest_ping          
       - type: horizontal-stack
         cards:
           - type: sensor
