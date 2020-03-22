@@ -54,10 +54,14 @@ automation:
         entity_id: sensor.cube_bewegung
     condition:
       - condition: template
-        value_template: '{{ True if "double_tap" in trigger.to_state.state else False }}'         
-      - condition: state
-        entity_id: calendar.borussia_dortmund
-        state: 'off'
+        value_template: '{{ True if "double_tap" in trigger.to_state.state else False }}'
+      - condition: or
+        conditions:          
+          - condition: state
+            entity_id: calendar.borussia_dortmund
+            state: 'off'
+          - condition: template
+            value_template: '{{ True if "(T.B.A.)" in state_attr("calendar.borussia_dortmund", "message") else False }}'
       - condition: template
         value_template: '{{ is_state("media_player.smarthome", "playing") == False }}'           
     action:

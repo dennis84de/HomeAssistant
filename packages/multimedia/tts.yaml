@@ -162,6 +162,8 @@ automation:
       - condition: state
         entity_id: calendar.borussia_dortmund
         state: 'on'
+      - condition: template
+        value_template: '{{ True if "(T.B.A.)" in state_attr("calendar.borussia_dortmund", "message") else False }}'
     action:
       - service: media_player.play_media
         data_template:
@@ -181,6 +183,8 @@ automation:
       - condition: state
         entity_id: calendar.borussia_dortmund
         state: 'on'
+      - condition: template
+        value_template: '{{ True if "(T.B.A.)" in state_attr("calendar.borussia_dortmund", "message") else False }}'        
       - condition: state
         entity_id: media_player.smarthome
         state: 'idle'
@@ -203,6 +207,8 @@ automation:
       - condition: state
         entity_id: calendar.borussia_dortmund
         state: 'on'
+      - condition: template
+        value_template: '{{ True if "(T.B.A.)" in state_attr("calendar.borussia_dortmund", "message") else False }}'
       - condition: state
         entity_id: media_player.smarthome
         state: 'playing'
