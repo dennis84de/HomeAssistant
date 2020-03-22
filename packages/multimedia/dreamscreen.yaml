@@ -105,4 +105,3 @@ homeassistant:
   customize:
     dreamscreen.fernseher:
       friendly_name: Dreamscreen
-      hidden: true

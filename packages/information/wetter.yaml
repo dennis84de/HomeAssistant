@@ -499,17 +499,14 @@ homeassistant:
   customize:
     sun.sun:
       friendly_name: Sonnenstand
-      hidden: true
     sensor.moon:
       friendly_name: Mondstand
-      hidden: true
 
     sensor.pws_weather:
       friendly_name: Aktuelles Wetter
 
     sensor.darksky_precip_type:
-      friendly_name: Heutige Niederschlagsart
-      hidden: true
+      friendly_name: Heutige Niederschlagsart      
     sensor.darksky_precip_probability:
       friendly_name: Heutige Regenwahrscheinlichkeit
     sensor.darksky_precip_intensity:
@@ -520,8 +517,7 @@ homeassistant:
       friendly_name: Gefühlte Temperatur
     sensor.darksky_wind_speed:
       friendly_name: Windgeschwindigkeit
-    sensor.darksky_wind_bearing:
-      hidden: true
+    sensor.darksky_wind_bearing:      
       friendly_name: Windrichtung
     sensor.darksky_cloud_coverage:
       friendly_name: Wolkendecke
@@ -534,14 +530,11 @@ homeassistant:
     sensor.darksky_hourly_summary:
       friendly_name: Zusammenfassung
     sensor.darksky_daytime_high_temperature_d0:
-      friendly_name: Heutige Höchsttemperatur
-      hidden: false
+      friendly_name: Heutige Höchsttemperatur      
     sensor.darksky_overnight_low_temperature_d0:
-      friendly_name: Heutige Tiefsttemperatur
-      hidden: false
+      friendly_name: Heutige Tiefsttemperatur      
     sensor.darksky_dew_point:
-      friendly_name: Taupunkt
-      hidden: true
+      friendly_name: Taupunkt      
     sensor.darksky_nearest_storm_distance:
       friendly_name: Nächster Sturm
     sensor.darksky_summary:
@@ -549,9 +542,7 @@ homeassistant:
 
     sensor.wetterwarnungen_current_warning_level:
       friendly_name: Wetterwarnungen
-      icon: mdi:weather-hurricane
-    sensor.wetterwarnungen_advance_warning_level:
-      hidden: true
+      icon: mdi:weather-hurricane    
 
     sensor.schimmelindikator:
       icon: mdi:biohazard
@@ -563,16 +554,7 @@ homeassistant:
 
     binary_sensor.iss:
       icon: mdi:earth
-
-    sensor.pollen_birke:
-      hidden: true
-    sensor.pollen_graser:
-      hidden: true
-    sensor.pollen_roggen:
-      hidden: true
-
-    sensor.spacex:
-      hidden: true
+    
     sensor.spacex_next_rocket:
       icon: mdi:rocket
     sensor.spacex_next_launch_day:
@@ -586,13 +568,6 @@ homeassistant:
 
     binary_sensor.protection_window:
       friendly_name: Sonnenschutz
-
-    sensor.skin_type_3_safe_exposure_time:
-      hidden: true
-    sensor.current_uv_index:
-      hidden: true
-    sensor.max_uv_index:
-      hidden: true
 
     sensor.helligkeit:
       icon: mdi:theme-light-dark

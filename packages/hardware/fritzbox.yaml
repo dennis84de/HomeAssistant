@@ -287,7 +287,6 @@ homeassistant:
       icon: mdi:lightbulb-on-outline
     device_tracker.magichomekuechenschraenke:
       icon: mdi:lightbulb-on-outline
-      hidden: true
     device_tracker.magichomearbeitszimmer:
       icon: mdi:lightbulb-on-outline
     device_tracker.magichomebalkon:

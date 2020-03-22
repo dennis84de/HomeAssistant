@@ -206,15 +206,4 @@ sensor:
           {% else %}
             -
           {% endif %}
-        icon_template: mdi:calendar-star    
-
-homeassistant:
-  customize:
-    calendar.bvb:
-      hidden: true
-    calendar.edg_restmuell:
-      hidden: true
-    calendar.edg_wertstoff:
-      hidden: true
-    calendar.edg_papier:
-      hidden: true
+        icon_template: mdi:calendar-star

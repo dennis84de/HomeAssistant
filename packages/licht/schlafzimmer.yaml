@@ -46,5 +46,4 @@ homeassistant:
       friendly_name: Fernseher
 
     switch.licht_fernseher_schlafzimmer:
-      hidden: true
       assumed_state: false

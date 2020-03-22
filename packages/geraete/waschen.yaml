@@ -276,10 +276,3 @@ automation:
           title: "Trockner fertig"
           message: >-
             Der Trockner ist fertig.
-
-homeassistant:
-  customize:
-    input_select.status_waschmaschine:
-      hidden: true
-    input_select.status_trockner:
-      hidden: true
