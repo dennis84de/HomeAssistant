@@ -1,10 +1,11 @@
-#tankerkoenig:
-#  api_key: tankerkoenig_apikey 
-#  fuel_types:
-#    - 'e10'
-#  stations:
-#    - !secret tankerkoenig_id_real
-#    - !secret tankerkoenig_id_jet
+tankerkoenig:
+  api_key: !secret tankerkoenig_apikey 
+  fuel_types:
+    - 'e10'
+  radius: 1
+  stations:
+    - !secret tankerkoenig_id_real
+    - !secret tankerkoenig_id_jet
 
 sensor:
   - platform: imap
@@ -13,38 +14,6 @@ sensor:
     name: Ungelesene Mails
     username: !secret email_username
     password: !secret email_password
-
-  - platform: rest
-    resource: !secret tankerkoenig_url_real
-    name: Tankstelle Real
-    unit_of_measurement: '€'
-    value_template: >-
-      {% if value_json.prices is defined == False %}
-        -
-      {% elif value_json.prices["51d4b714-a095-1aa0-e100-80009459e03a"] is defined == False or value_json.prices["51d4b714-a095-1aa0-e100-80009459e03a"].e10 is defined == False %}
-        -
-      {% else %}
-        {{ value_json.prices["51d4b714-a095-1aa0-e100-80009459e03a"].e10 }}
-      {% endif %}
-    scan_interval: 1800
-    json_attributes:
-      - prices
-
-  - platform: rest
-    resource: !secret tankerkoenig_url_jet
-    name: Tankstelle Jet
-    unit_of_measurement: '€'
-    value_template: >-
-      {% if value_json.prices is defined == False %}
-        -
-      {% elif value_json.prices["51d4b5ae-a095-1aa0-e100-80009459e03a"] is defined == False or value_json.prices["51d4b5ae-a095-1aa0-e100-80009459e03a"].e10 is defined == False %}
-        -
-      {% else %}
-        {{ value_json.prices["51d4b5ae-a095-1aa0-e100-80009459e03a"].e10 }}
-      {% endif %}
-    scan_interval: 1800
-    json_attributes:
-      - prices
 
   - platform: date_countdown
     name: Countdown Neuhaus
@@ -60,6 +29,36 @@ sensor:
 
   - platform: template
     sensors:
+      tankstelle_real:
+        friendly_name: 'Tankstelle Real'        
+        unit_of_measurement: €
+        icon_template: mdi:gas-station
+        entity_id:
+          - sensor.tankerkoenig_supermarkt_tankstelle_am_real_markt_dortmund_wulfshofstr_e10
+        value_template: >-
+          {% set price = states('sensor.tankerkoenig_supermarkt_tankstelle_am_real_markt_dortmund_wulfshofstr_e10') %}
+
+          {% if price == 'unknown' %}
+            -
+          {% else %}
+            {{ price }}
+          {% endif %}          
+      
+      tankstelle_jet:
+        friendly_name: 'Tankstelle Jet'    
+        unit_of_measurement: €
+        icon_template: mdi:gas-station
+        entity_id:
+          - sensor.tankerkoenig_jet_muelheim_strassburger_allee_75_e10
+        value_template: >-
+          {% set price = states('sensor.tankerkoenig_jet_muelheim_strassburger_allee_75_e10') %}
+
+          {% if price == 'unknown' %}
+            -
+          {% else %}
+            {{ price }}
+          {% endif %}
+          
       kommende_pakete:
         friendly_name: 'Kommende Pakete'
         entity_id:
@@ -87,38 +86,18 @@ binary_sensor:
         friendly_name: 'Status'
         device_class: door
         entity_id:
-          - sensor.tankstelle_real
+          - sensor.tankerkoenig_supermarkt_tankstelle_am_real_markt_dortmund_wulfshofstr_e10
         value_template: >-
-          {% set prices = state_attr('sensor.tankstelle_real', 'prices') %}
-          
-          {% if prices['51d4b714-a095-1aa0-e100-80009459e03a'] %}
-            {% if prices['51d4b714-a095-1aa0-e100-80009459e03a']['status'] %}
-              {{ prices['51d4b714-a095-1aa0-e100-80009459e03a']['status'] == 'open' }}
-            {% else %}
-              False
-            {% endif %}            
-          {% else %}
-            False
-          {% endif %}
+          {{ is_state_attr('sensor.tankerkoenig_supermarkt_tankstelle_am_real_markt_dortmund_wulfshofstr_e10', 'is_open', True) }}
 
       tankstelle_jet_status:
         friendly_name: 'Status'
         device_class: door
         entity_id:
-          - sensor.tankstelle_jet
+          - sensor.tankerkoenig_jet_muelheim_strassburger_allee_75_e10
         value_template: >-
-          {% set prices = state_attr('sensor.tankstelle_jet', 'prices') %}
-          
-          {% if prices['51d4b5ae-a095-1aa0-e100-80009459e03a'] %}
-            {% if prices['51d4b5ae-a095-1aa0-e100-80009459e03a']['status'] %}
-              {{ prices['51d4b5ae-a095-1aa0-e100-80009459e03a']['status'] == 'open' }}
-            {% else %}
-              False
-            {% endif %}            
-          {% else %}
-            False
-          {% endif %}          
-
+          {{ is_state_attr('sensor.tankerkoenig_jet_muelheim_strassburger_allee_75_e10', 'is_open', True) }}
+       
 automation:
   - alias: 'Neue E-Mail - Kodi'
     trigger:
@@ -179,7 +158,3 @@ homeassistant:
       
     sensor.time:
       friendly_name: Uhrzeit
-      hidden: true
-
-    sensor.tankstelle_real:
-      icon: mdi:gas-station
