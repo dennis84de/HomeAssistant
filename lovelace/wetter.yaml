@@ -33,6 +33,42 @@ popup_cards:
         - entity: sensor.germany_coronavirus_deaths
           name: Tote    
 
+  sensor.wetterwarnungen_current_warning_level:
+    title: Wetterwarnungen
+    card:
+      type: markdown
+      content: >-
+        {% set level_colors = ["#c5e566", "#ffeb3b", "#fb8c00", "#e53935", "#880e4f"] %}
+        {% set current_count = state_attr("sensor.wetterwarnungen_current_warning_level", "warning_count") %}
+        {% set advance_count = state_attr("sensor.wetterwarnungen_advance_warning_level", "warning_count") %}
+        {% if ((current_count == 0) and (advance_count == 0)) %}
+        **<font color={{ level_colors[0] }}>Keine Warnungen</font>**
+        {% else %}
+          {% for i in range(current_count) %}
+            {% set headline = state_attr("sensor.wetterwarnungen_current_warning_level", "warning_" ~ loop.index ~ "_headline") %}
+            {% set description = state_attr("sensor.wetterwarnungen_current_warning_level", "warning_" ~ loop.index ~ "_description") %}
+            {% set level = state_attr("sensor.wetterwarnungen_current_warning_level", "warning_" ~ loop.index ~ "_level") %}
+            {% set time_start = state_attr("sensor.wetterwarnungen_current_warning_level", "warning_" ~ loop.index ~ "_start") %}
+            {% set time_end = state_attr("sensor.wetterwarnungen_current_warning_level", "warning_" ~ loop.index ~ "_end") %}
+          **<font color={{ level_colors[level] }}>{{ headline }}</font>**
+          {{ time_start.strftime("%a %H:%M") ~ " - " ~ time_end.strftime("%a %H:%M") }}
+          *{{ description }}*
+          {% if not loop.last %}***{% endif %}
+          {% endfor %}
+          {% if ((current_count != 0) and (advance_count != 0)) %}***{% endif %}
+          {% for i in range(advance_count) %}
+            {% set headline = state_attr("sensor.sensor.wetterwarnungen_advance_warning_level", "warning_" ~ loop.index ~ "_headline") %}
+            {% set description = state_attr("sensor.sensor.wetterwarnungen_advance_warning_level", "warning_" ~ loop.index ~ "_description") %}
+            {% set level = state_attr("sensor.sensor.wetterwarnungen_advance_warning_level", "warning_" ~ loop.index ~ "_level") %}
+            {% set time_start = state_attr("sensor.sensor.wetterwarnungen_advance_warning_level", "warning_" ~ loop.index ~ "_start") %}
+            {% set time_end = state_attr("sensor.sensor.wetterwarnungen_advance_warning_level", "warning_" ~ loop.index ~ "_end") %}
+          **<font color={{ level_colors[level] }}>{{ headline }}</font>**
+          {{ time_start.strftime("%a %H:%M") ~ " - " ~ time_end.strftime("%a %H:%M") }}
+          *{{ description }}*
+          {% if not loop.last %}***{% endif %}
+          {% endfor %}
+        {% endif %}
+          
 cards:
   - type: 'custom:dark-sky-weather-card'
     locale: de
@@ -102,7 +138,7 @@ cards:
       - entity: sensor.darksky_temperature   
       - entity: sensor.wetterwarnungen_current_warning_level
       - entity: sensor.wetterlage
-
+  
   - type: custom:mini-graph-card
     name: Temperatur
     line_width: 2
