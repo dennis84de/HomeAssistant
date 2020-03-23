@@ -158,3 +158,10 @@ homeassistant:
       
     sensor.time:
       friendly_name: Uhrzeit
+      
+    sensor.tankerkoenig_dortmund_borussiastrasse_118_e10:
+      friendly_name: Tankstelle Borussiastraße
+    sensor.tankerkoenig_jet_muelheim_strassburger_allee_75_e10:
+      friendly_name: Tankstelle Jet
+    sensor.tankerkoenig_supermarkt_tankstelle_am_real_markt_dortmund_wulfshofstr_e10:
+      friendly_name: Tankstelle Real
