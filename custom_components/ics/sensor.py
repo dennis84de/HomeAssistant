@@ -22,6 +22,7 @@ from icalendar import Calendar, Event
 import recurring_ical_events
 import datetime
 import pytz
+import traceback
 
 
 _LOGGER = logging.getLogger(__name__)
@@ -128,17 +129,34 @@ class ics_Sensor(Entity):
 			self.ics['pickup_date'] = "no pick up"
 
 			if(len(reoccuring_events)>0):
+				# sort events so strange ordered calerdar will be ok
+				try:
+					reoccuring_events = sorted(reoccuring_events, key=lambda x: x["DTSTART"].dt, reverse=False)
+				except:
+					print("sorting failure")
+					print(traceback.format_exc())
+				# loop, to find first events
 				for e in reoccuring_events:
-					if(e.has_key("SUMMARY")):
-						date = e["DTSTART"].dt
+					if(e.has_key('SUMMARY')):
+						date = e['DTSTART'].dt
 						self.ics['pickup_date'] = date.strftime(self._timeformat)
-						rem = date - datetime.datetime.now(pytz.utc)
-						extra['remaining'] = rem.days+1
-						extra['description'] = self.fix_text(e["SUMMARY"])
+						if(e.get('DTSTART').params['VALUE'] == 'DATE'):
+							rem = date - datetime.datetime.now(pytz.utc).date()
+						else:
+							rem = date.date() - datetime.datetime.now(pytz.utc).date()
+						extra['remaining'] = rem.days
+						extra['description'] = self.fix_text(e['SUMMARY'])
 						if(extra['description'].startswith(self._sw)):
 							break
 
 		except:
+			print("\n\n============= ISC Integration Error ================")
+			print("unfortunately ICS hit an error, please open a ticket at")
+			print("https://github.com/KoljaWindeler/ics/issues")
+			print("and paste the following output:\n")
+			print(traceback.format_exc())
+			print("\nthanks, Kolja")
+			print("============= ISC Integration Error ================\n\n")
 			self.ics['pickup_date'] = "failure"
 
 	def update(self):
