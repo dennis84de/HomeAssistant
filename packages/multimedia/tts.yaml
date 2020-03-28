@@ -1,3 +1,8 @@
+media_player:
+  - platform: mpd
+    host: !secret mpd_host
+    name: Home Assistant
+
 tts:
   - platform: google_translate
     language: 'de'
@@ -53,7 +58,7 @@ script:
               media_player.echo_{{ echo }}
             {% elif letzteBewegung == None %}
               media_player.echo_wohnzimmer
-            {% elif letzteBewegung == 'Flur vorne' or letzteBewegung == 'Flur hinten' %}
+            {% elif letzteBewegung == 'Flur vorne' or letzteBewegung == 'Flur hinten' or letzteBewegung == 'Arbeitszimmer' %}
               media_player.echo_flur
             {% elif letzteBewegung == 'Badezimmer' %}
               media_player.echo_badezimmer
@@ -73,7 +78,7 @@ automation:
     action:
       - service: media_player.volume_set
         data_template:
-          entity_id: media_player.smarthome
+          entity_id: media_player.home_assistant
           volume_level: >-
             {{ states('input_number.sprache_lautstaerke') | int / 100 }}
 
@@ -86,7 +91,9 @@ automation:
         data_template:
           entity_id: input_number.sprache_lautstaerke
           value: >-
-            {{ state_attr('media_player.smarthome', 'volume_level') * 100 | int }}            
+            {% set volumeLevel = state_attr('media_player.home_assistant', 'volume_level') %}
+
+            {{ (volumeLevel * 100 | int) if volumeLevel else 0 }}            
 
   - alias: "Uhr - Glocke starten"
     trigger:
@@ -119,7 +126,7 @@ automation:
       - service: media_player.play_media
         data_template:
           entity_id:
-            - media_player.smarthome
+            - media_player.home_assistant
           media_content_id: >-
             {% if now().strftime("%M")|int == 30 %}
               http://192.168.2.75:8123/local/uhr/GrandFatherChime_half.mp3
@@ -143,12 +150,12 @@ automation:
           - condition: template
             value_template: '{{ True if trigger.entity_id == "input_boolean.uhr_einschalten" else False }}'               
       - condition: state
-        entity_id: media_player.smarthome
+        entity_id: media_player.home_assistant
         state: 'playing'
     action:
       - service: media_player.media_pause
         entity_id:
-          - media_player.smarthome
+          - media_player.home_assistant
       - service: input_boolean.turn_on
         entity_id: input_boolean.uhr_einschalten
 
@@ -168,7 +175,7 @@ automation:
       - service: media_player.play_media
         data_template:
           entity_id:
-            - media_player.smarthome
+            - media_player.home_assistant
           media_content_id: >-
             http://192.168.2.75:8123/local/bvb/torhymne.mp3
           media_content_type: music
@@ -186,13 +193,13 @@ automation:
       - condition: template
         value_template: '{{ True if "(T.B.A.)" in state_attr("calendar.borussia_dortmund", "message") else False }}'        
       - condition: state
-        entity_id: media_player.smarthome
-        state: 'idle'
+        entity_id: media_player.home_assistant
+        state: 'off'
     action:
       - service: media_player.play_media
         data_template:
           entity_id:
-            - media_player.smarthome
+            - media_player.home_assistant
           media_content_id: >-
             http://192.168.2.75:8123/local/bvb/heja_bvb.mp3
           media_content_type: music
@@ -210,11 +217,11 @@ automation:
       - condition: template
         value_template: '{{ True if "(T.B.A.)" in state_attr("calendar.borussia_dortmund", "message") else False }}'
       - condition: state
-        entity_id: media_player.smarthome
+        entity_id: media_player.home_assistant
         state: 'playing'
     action:
       - service: media_player.media_pause
-        entity_id: media_player.smarthome
+        entity_id: media_player.home_assistant
 
   - alias: 'Telegram - Benachrichtigung'
     trigger:

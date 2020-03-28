@@ -43,7 +43,7 @@ automation:
       - service: media_player.play_media
         data_template:
           entity_id:
-            - media_player.smarthome
+            - media_player.home_assistant
           media_content_id: >-
             http://192.168.2.75:8123/local/countdown/countdown_10.mp3
           media_content_type: music
@@ -64,7 +64,7 @@ automation:
         state: 'active'
     action:
       - service: media_player.media_pause
-        entity_id: media_player.smarthome
+        entity_id: media_player.home_assistant
       - service: !secret tts_service
         data_template:
           echo: "flur"
@@ -77,8 +77,6 @@ automation:
       - service: automation.turn_on
         entity_id: automation.alles_ausschalten_aktivieren
       - service: script.alles_ausschalten
-      - service: media_player.clear_playlist
-        entity_id: media_player.smarthome
 
   - alias: "Alles ausschalten deaktivieren"
     trigger:
