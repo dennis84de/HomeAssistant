@@ -279,7 +279,7 @@ automation:
       - condition: template      
         value_template: "{{ state_attr('sensor.handy', 'text') != null }}"
     action:
-      - service: persistent_notification.create
+      - service: persistent_notification.create        
         data_template:
           title: >-
             {% if state_attr('sensor.handy', 'name') != '-' and state_attr('sensor.handy', 'name').startswith('+') == False and state_attr('sensor.handy', 'name').startswith('0') == False %} {{ state_attr('sensor.handy', 'name') }} {% else %}Unbekannte Nummer{% endif %}
@@ -326,6 +326,26 @@ automation:
           data:
             displaytime: 6000
             icon: "info"
+
+  - alias: "Handy - SMS gelesen"
+    trigger:
+      - platform: event
+        event_type: call_service
+        event_data:
+          domain: persistent_notification
+          service: dismiss      
+    condition:
+      - condition: template
+        value_template: '{{ trigger.event.data.service_data.notification_id == "neue_sms" }}'
+      - condition: state
+        entity_id: sensor.handy
+        state: 'sms'
+    action:
+      - service: mqtt.publish
+        data_template:
+           topic: 'handy/status'
+           payload: '{"date":"-","name":"-","number":"-","status":"idle","text":"-","time":"-"}'
+           retain: true
 
   - alias: "Handy - Batteriestand niedrig"
     trigger:
