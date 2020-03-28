@@ -3,6 +3,7 @@ http:
 #  ssl_key: /home/homeassistant/.homeassistant/ha_privatekey.pem  
 config:
 websocket_api:
+api:
 frontend:
 mobile_app:
   
@@ -26,8 +27,6 @@ lovelace:
     - url: /hacsfiles/lovelace-fold-entity-row/fold-entity-row.js
       type: js
     - url: /hacsfiles/zha-network-card/zha-network-card.js
-      type: js
-    - url: /hacsfiles/travel-time-card/travel-time-card.js
       type: js
     - url: /hacsfiles/secondaryinfo-entity-row/secondaryinfo-entity-row.js
       type: js
