@@ -54,8 +54,8 @@ binary_sensor:
           {% set istHomeOffice = is_state('input_boolean.home_office', 'on') %}
           {% set istArbeitstag = is_state('binary_sensor.arbeitstag', 'on') %}
           {% set keinUrlaub = is_state('calendar.urlaub', 'off') %}
-          {% set nachArbeitsBeginn = states('sensor.time') > (state_attr('input_datetime.arbeit_beginn', 'timestamp') | int | timestamp_custom('%H:%M', True)) %}
-          {% set vorArbeitsEnde = states('sensor.time') < (state_attr('input_datetime.arbeit_ende', 'timestamp') | int | timestamp_custom('%H:%M', True)) %}
+          {% set nachArbeitsBeginn = states('sensor.time') > (state_attr('input_datetime.arbeit_beginn', 'timestamp') | int | timestamp_custom('%H:%M', False)) %}
+          {% set vorArbeitsEnde = states('sensor.time') < (state_attr('input_datetime.arbeit_ende', 'timestamp') | int | timestamp_custom('%H:%M', False)) %}
           
           {{ True if (istHomeOffice and istArbeitstag and keinUrlaub and nachArbeitsBeginn and vorArbeitsEnde) else False }}
           
