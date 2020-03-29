@@ -33,20 +33,7 @@ lovelace:
       
 browser_mod:
   prefix: "browser_"
-  devices:
-    52b5eccf-f131cf4d:
-      name: wohnzimmer_chrome
-      disable:
-        - light
-        - media_player
-    8a069996-a981f1d9:
-      name: wohnzimmer_firefox    
-      disable:
-        - light
-        - media_player      
-  disable:
-    - all
-    
+  
 discovery:
   ignore:
     - songpal
