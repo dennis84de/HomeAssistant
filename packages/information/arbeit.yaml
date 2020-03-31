@@ -69,7 +69,7 @@ input_datetime:
     name: Arbeitsbeginn    
     has_time: true
     icon: mdi:clock-start
-    initial: '07:00'
+    initial: '06:30'
   arbeit_ende:
     name: Arbeitsende    
     has_time: true
@@ -106,6 +106,30 @@ input_select:
     icon: mdi:timelapse
 
 automation:
+  - alias: 'Home Office - Start'
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.home_office
+        to: 'on'
+    action:
+      - service: switch.turn_off
+        entity_id: switch.schlafzimmer_radio
+      - service: switch.turn_on
+        entity_id: switch.arbeitszimmer_radio      
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.bewegungsmelder_arbeitszimmer_deaktiviert
+      
+  - alias: 'Home Office - Ende'
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.home_office
+        to: 'off'
+    action:
+      - service: switch.turn_off
+        entity_id: switch.arbeitszimmer_radio      
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.bewegungsmelder_arbeitszimmer_deaktiviert
+        
   - alias: 'Benachrichtigung Arbeit'
     trigger:
       - platform: template
