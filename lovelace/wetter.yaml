@@ -108,7 +108,7 @@ cards:
       {% set level_colors = ["#c5e566", "#ffeb3b", "#fb8c00", "#e53935", "#880e4f"] %}
       {% set current_count = state_attr("sensor.wetterwarnungen_current_warning_level", "warning_count") %}
       {% set advance_count = state_attr("sensor.wetterwarnungen_advance_warning_level", "warning_count") %}
-      {% if ((current_count == 0) and (advance_count == 0)) %}
+      {% if ((current_count == 0 or current_count == None) and (advance_count == 0 or advance_count == None)) %}
       **<font color={{ level_colors[0] }}>Keine Warnungen</font>**
       {% else %}
         {% for i in range(current_count) %}
