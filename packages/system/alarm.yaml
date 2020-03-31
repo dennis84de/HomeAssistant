@@ -236,6 +236,16 @@ automation:
           {% endif %}
 
 script:
+  alles_ausschalten_nfc:
+    alias: "Alles ausschalten - NFC"
+    sequence:
+      - service: script.radios_pausieren
+      - service: !secret tts_service
+        data_template:
+          echo: "flur"
+          message: >-
+            "Alle Geräte werden ausgeschaltet. Auf Wiedersehen."
+      - service: script.alles_ausschalten            
   alles_ausschalten:
     alias: "Alles ausschalten"
     sequence:
