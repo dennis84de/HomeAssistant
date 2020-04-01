@@ -9,7 +9,7 @@ tankerkoenig:
 
 sensor:
   - platform: imap
-    server: mail.manitu.de
+    server: !secret email_server
     port: 993
     name: Ungelesene Mails
     username: !secret email_username
