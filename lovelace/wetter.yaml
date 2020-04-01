@@ -173,8 +173,7 @@ cards:
       - entity: sensor.darksky_precip_intensity
       - entity: sensor.darksky_precip_probability
       - entity: sensor.darksky_cloud_coverage
-      - entity: sensor.darksky_wind_speed
-      - entity: sensor.darksky_nearest_storm_distance
+      - entity: sensor.darksky_wind_speed      
       - entity: sensor.windrichtung
 
   - type: entities
