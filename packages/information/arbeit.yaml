@@ -1,3 +1,10 @@
+device_tracker:
+  - platform: ping
+    interval_seconds: 30
+    consider_home: 60
+    hosts:
+      pc_arbeit: !secret computerarbeit_host
+      
 sensor:
   - platform: here_travel_time
     name: Fahrzeit zur Arbeit
@@ -74,7 +81,7 @@ input_datetime:
     name: Arbeitsende    
     has_time: true
     icon: mdi:clock-end
-    initial: '16:00'    
+    initial: '15:30'    
     
 input_select:
   arbeit_stunden:
@@ -122,13 +129,15 @@ automation:
   - alias: 'Home Office - Ende'
     trigger:
       - platform: state
-        entity_id: binary_sensor.home_office
-        to: 'off'
+        entity_id: device_tracker.pc_arbeit
+        to: 'not_home'  
     action:
       - service: switch.turn_off
         entity_id: switch.arbeitszimmer_radio      
       - service: input_boolean.turn_off
         entity_id: input_boolean.bewegungsmelder_arbeitszimmer_deaktiviert
+      - service: switch.turn_on
+        entity_id: switch.computer
         
   - alias: 'Benachrichtigung Arbeit'
     trigger:
