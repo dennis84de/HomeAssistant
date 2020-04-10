@@ -204,10 +204,11 @@ automation:
               value_template: '{{ now().isoweekday() == 1 or now().isoweekday() == 4 }}'
             - condition: template
               value_template: >-
-                {% set letzte_reinigung = as_timestamp(state_attr("vacuum.xiaomi_vacuum_cleaner", "clean_stop")) | timestamp_custom("%d", True) | int  %}
-                {% set heute = now().day | int %}
-                
-                {{ True if heute - letzte_reinigung >= 3 else False }}
+                {% set letzte_reinigung = as_timestamp(state_attr("vacuum.xiaomi_vacuum_cleaner", "clean_stop")) | timestamp_custom("%s", True) | int  %}
+                {% set now = now().strftime("%s") | int %}
+                {% set abstand_stunden = ((now - letzte_reinigung | timestamp_custom("%s") | int) / 3600) | int %}
+
+                {{ True if abstand_stunden >= 72 else False }}
     action:
       - service: vacuum.start
         entity_id: vacuum.xiaomi_vacuum_cleaner
