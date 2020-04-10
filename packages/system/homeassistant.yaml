@@ -33,6 +33,14 @@ lovelace:
       
 browser_mod:
   prefix: "browser_"
+  devices:
+    cdc4e312_9eb8b4c5:
+      name: Firefox
+      disable:
+        - light
+        - media_player
+  disable:
+    - all  
   
 discovery:
   ignore:
