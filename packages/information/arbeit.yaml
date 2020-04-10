@@ -131,6 +131,10 @@ automation:
       - platform: state
         entity_id: device_tracker.pc_arbeit
         to: 'not_home'  
+    condition:
+      - condition: state
+        entity_id: binary_sensor.home_office
+        state: 'off'        
     action:
       - service: switch.turn_off
         entity_id: switch.arbeitszimmer_radio      
