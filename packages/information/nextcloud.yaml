@@ -5,12 +5,7 @@ binary_sensor:
 sensor:
   - platform: cert_expiry
     host: !secret nextcloud_url
-    
-  - platform: nextcloud
-    url: !secret nextcloud_url_https
-    username: !secret nextcloud_username
-    password: !secret nextcloud_app_password
-    
+
   - platform: template
     sensors:  
       nextcloud_datenbank:
@@ -23,7 +18,12 @@ sensor:
           {{ bytesSent }}          
         icon_template: >-
           mdi:server
-          
+       
+nextcloud:
+    url: !secret nextcloud_url_https
+    username: !secret nextcloud_username
+    password: !secret nextcloud_app_password
+            
 homeassistant:
   customize:
     binary_sensor.nextcloud:
