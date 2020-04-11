@@ -12,7 +12,7 @@ input_boolean:
     icon: mdi:sync-off
 
 automation:
-  - alias: 'Radio Balkon - Einschalten'
+  - alias: 'Licht Balkon - Einschalten'
     trigger:
       - platform: state
         entity_id: binary_sensor.schalter_balkon

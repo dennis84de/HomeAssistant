@@ -203,25 +203,6 @@ automation:
     action:
       - service: script.zu_hause
 
-  - alias: "Zu Hause - Radio Balkon einschalten"
-    trigger:
-      - platform: state
-        entity_id: binary_sensor.zu_hause
-        to: 'on'
-    condition:
-      - condition: time
-        after: '08:00'
-        before: '20:00'
-      - condition: numeric_state
-        entity_id: sensor.balkon_temperatur
-        above: 15
-      - condition: numeric_state
-        entity_id: sensor.laufzeit_minuten
-        above: 5
-    action:
-      - service: switch.turn_on
-        entity_id: switch.balkon_radio
-
   - alias: "Zu Hause - Geräte einschalten abends"
     trigger:
       - platform: state
