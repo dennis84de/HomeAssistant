@@ -15,18 +15,17 @@ sensor:
     username: !secret email_username
     password: !secret email_password
 
-  - platform: date_countdown
-    name: Countdown Neuhaus
-    date: '2020-07-18'
-    
   - platform: time_date
     display_options:
       - 'time'
 
-  - platform: seventeentrack
-    username: !secret 17track_name
-    password: !secret 17track_password
+#  - platform: seventeentrack
+#    username: !secret 17track_name
+#    password: !secret 17track_password
 
+  - platform: aftership  
+    api_key: !secret aftership_apikey    
+    
   - platform: template
     sensors:
       tankstelle_real:
@@ -62,9 +61,9 @@ sensor:
       kommende_pakete:
         friendly_name: 'Kommende Pakete'
         entity_id:
-          - sensor.packages_in_transit
+          - sensor.aftership
         value_template: >-
-          {% set pakete = states('sensor.packages_in_transit') | int %}
+          {% set pakete = states('sensor.aftership') | int %}
 
           {% if pakete == 0 %}
             -
@@ -153,6 +152,9 @@ panel_iframe:
 
 homeassistant:
   customize:
+    sensor.countdown_sudtirol:
+      unit_of_measurement: Tage
+      
     binary_sensor.arbeitstag:
       icon: mdi:worker
       

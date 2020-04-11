@@ -72,7 +72,7 @@ cards:
     title: Infos
     show_header_toggle: false
     entities:
-      - entity: sensor.countdown_neuhaus
+      - entity: sensor.countdown_sudtirol
       - entity: binary_sensor.zu_hause
         name: Dennis      
       - entity: sensor.aufenthaltsort_handy
