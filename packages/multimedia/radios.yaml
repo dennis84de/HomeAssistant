@@ -143,6 +143,9 @@ automation:
       - platform: state
         entity_id: binary_sensor.zu_hause
         to: 'on'
+      - platform: state
+        entity_id: binary_sensor.home_office
+        to: 'off'        
       - platform: numeric_state
         entity_id: sensor.balkon_temperatur
         above: 15
@@ -151,7 +154,12 @@ automation:
     condition:
       - condition: state
         entity_id: binary_sensor.zu_hause
-        state: 'on'      
+        state: 'on'
+      - condition: state
+        entity_id: binary_sensor.home_office
+        state: 'off'
+      - condition: template
+        value_template: '{{ now().isoweekday() != 7 }}'        
       - condition: time
         after: '08:00'
         before: '20:00'
