@@ -93,6 +93,8 @@ cards:
     show_header_toggle: false
     entities:
       - entity: sensor.wecker_startzeit
+        type: "custom:secondaryinfo-entity-row"              
+        secondary_info: "[[ sensor.wecker_startdatum ]]"       
       - entity: binary_sensor.alarm_aktiv      
       - entity: binary_sensor.tablet_wecker_ueberspringen
 
