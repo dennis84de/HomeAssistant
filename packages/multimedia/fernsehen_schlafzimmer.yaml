@@ -1,3 +1,18 @@
+media_player:
+  - platform: androidtv
+    host: 192.168.2.35
+    name: Fire TV Schlafzimmer
+    adbkey: '/home/homeassistant/.homeassistant/adbkey'
+
+  - platform: kodi
+    host: 192.168.2.35
+    name: Kodi Schlafzimmer
+    
+notify:
+  - platform: kodi
+    name: Kodi Schlafzimmer
+    host: 192.168.2.35
+
 switch:
   - platform: broadlink
     host: 192.168.2.28
@@ -13,7 +28,7 @@ switch:
         friendly_name: Fernseher
         command_on: 'JgBYAAABL5EWDxYQFRAVERUQFREVEBYPFTUVNRY0FjQVNBY0FTUVNRY0FjMWEBUQFhAVEBURFTQWEBURFDUVNRU1FTQUNhQSEwAFIgABLEkUAAxbAAEsSRQADQU=='
         command_off: 'JgBYAAABK5QTEhMTExMSEhMTExITEhMTEzcUNRM3EzcTNxM2EzcTNxMSEzcTEhMTExITEhMTEzcTNhMTEzYTNxM3EzcTNxMSEwAFIgABLUgUAAxbAAEsSBUADQU=='
-
+  
   - platform: template
     switches:
       watchtv_schlafzimmer:
@@ -24,7 +39,29 @@ switch:
         turn_on:
           service: script.watchtv_schlafzimmer_on
         turn_off:
-          service: script.watchtv_schlafzimmer_off
+          service: script.watchtv_schlafzimmer_off      
+      kodi_schlafzimmer:
+        friendly_name: Kodi
+        entity_id:
+          - media_player.fire_tv_schlafzimmer
+        icon_template: >-
+          mdi:kodi
+        value_template: >-
+          {{ state_attr('media_player.fire_tv_schlafzimmer', 'source') == "Kodi" }}
+        turn_on:
+          - service: media_player.select_source
+            data:
+              entity_id: media_player.fire_tv_schlafzimmer
+              source: "org.xbmc.kodi"
+        turn_off:
+          - service: kodi.call_method
+            data:
+              entity_id: media_player.kodi_schlafzimmer
+              method: Input.Home
+          - service: media_player.select_source
+            data:
+              entity_id: media_player.fire_tv_schlafzimmer
+              source: "com.amazon.tv.launcher"
 
 cover:
   - platform: template
