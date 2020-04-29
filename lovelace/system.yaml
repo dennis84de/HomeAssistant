@@ -100,26 +100,6 @@ cards:
       - entity: switch.wiedergabe_aktiv      
       - entity: script.sync_radios
 
-  - type: glance
-    title: Waschmaschine
-    show_header_toggle: false
-    entities:
-      - entity: switch.waschmaschine
-      - entity: sensor.waschmaschine_status
-        name: Status
-      - entity: sensor.waschmaschine_verbrauch
-        name: Verbrauch
-
-  - type: glance
-    title: Trockner
-    show_header_toggle: false
-    entities:
-      - entity: switch.trockner
-      - entity: sensor.trockner_status
-        name: Status
-      - entity: sensor.trockner_verbrauch
-        name: Verbrauch
-
   - type: entities
     title: Nextcloud
     show_header_toggle: false
@@ -140,6 +120,26 @@ cards:
         name: SSID
       - entity: sensor.gaeste_wlan_password
         name: Passwort
+        
+  - type: glance
+    title: Waschmaschine
+    show_header_toggle: false
+    entities:
+      - entity: switch.waschmaschine
+      - entity: sensor.waschmaschine_status
+        name: Status
+      - entity: sensor.waschmaschine_verbrauch
+        name: Verbrauch
+
+  - type: glance
+    title: Trockner
+    show_header_toggle: false
+    entities:
+      - entity: switch.trockner
+      - entity: sensor.trockner_status
+        name: Status
+      - entity: sensor.trockner_verbrauch
+        name: Verbrauch
 
   - type: entities
     title: Pi-hole

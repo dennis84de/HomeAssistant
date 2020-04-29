@@ -4,21 +4,11 @@ pi_hole:
   host: !secret pihole_host
   verify_ssl: false
 
-sensor:
-  - platform: synologydsm
-    host: !secret synology_host
-    port: 5000
-    ssl: false
-    name: Diskstation
-    username: !secret synology_username
-    password: !secret synology_password
-    monitored_conditions:
-      - cpu_total_load
-      - memory_real_usage
-      - network_up
-      - network_down
-      - volume_status
-      - volume_percentage_used
+synology_dsm:
+  host: !secret synology_host        
+  username: !secret synology_username
+  password: !secret synology_password
+  ssl: false
 
 switch:
   - platform: command_line
@@ -31,17 +21,17 @@ switch:
 
 homeassistant:
   customize:
-    sensor.diskstation_cpu_load_total:
+    sensor.synology_cpu_load_total:
       friendly_name: CPU Leistung
-    sensor.diskstation_memory_usage_real:
+    sensor.synology_memory_usage_real:
       friendly_name: Auslastung Arbeitsspeicher
-    sensor.diskstation_network_up:
+    sensor.synology_network_up:
       friendly_name: Netzwerk Upload
-    sensor.diskstation_network_down:
+    sensor.synology_network_down:
       friendly_name: Netzwerk Download
-    sensor.diskstation_status_volume_1:
+    sensor.synology_status_volume_1:
       friendly_name: Volume Status
-    sensor.diskstation_volume_used_volume_1:
+    sensor.synology_volume_used_volume_1:
       friendly_name: Belegter Speicherplatz
 
     sensor.speedtest_download:
