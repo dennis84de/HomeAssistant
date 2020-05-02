@@ -222,8 +222,8 @@ entity_controller:
       - binary_sensor.bewegungsmelder_inaktiv_staubsauger
       - input_boolean.bewegungsmelder_kueche_deaktiviert
       
-  bewegung_schlafzimmer:
-    friendly_name: "Bewegung Schlafzimmer"
+  bewegung_schlafzimmer_bett:
+    friendly_name: "Bewegung Schlafzimmer Bett"
     sensor: binary_sensor.bewegungsmelder_schlafzimmer
     entity: light.bett
     delay: 120
@@ -236,10 +236,23 @@ entity_controller:
       start_time: '23:00:00'
       end_time: '05:00:00'      
     overrides:
+      - binary_sensor.schlafen_inaktiv
       - binary_sensor.sonne_tagsueber
       - binary_sensor.bewegungsmelder_inaktiv_unterwegs
       - binary_sensor.bewegungsmelder_inaktiv_staubsauger
       - input_boolean.bewegungsmelder_schlafzimmer_deaktiviert
+
+  bewegung_schlafzimmer_kleiderschrank:
+    friendly_name: "Bewegung Schlafzimmer Kleiderschrank"
+    sensor: binary_sensor.bewegungsmelder_schlafzimmer
+    entity: light.kleiderschrank
+    delay: 120  
+    overrides:
+      - binary_sensor.schlafen_aktiv
+      - binary_sensor.sonne_tagsueber
+      - binary_sensor.bewegungsmelder_inaktiv_unterwegs
+      - binary_sensor.bewegungsmelder_inaktiv_staubsauger
+      - input_boolean.bewegungsmelder_schlafzimmer_deaktiviert      
 
   bewegung_wohnzimmer:
     friendly_name: "Bewegung Wohnzimmer"

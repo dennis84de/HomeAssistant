@@ -33,7 +33,9 @@ emulated_hue:
       name: Fernsehen Schlafzimmer
 
     light.bett:
-      name: Licht Schlafzimmer
+      name: Licht Bett
+    light.kleiderschrank:
+      name: Licht Kleiderschrank
     light.arbeitszimmer_lampe:
       name: Lampe
     light.sportzimmer_regal:

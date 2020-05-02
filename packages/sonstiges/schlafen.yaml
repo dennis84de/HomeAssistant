@@ -48,6 +48,12 @@ binary_sensor:
           - input_boolean.schlafen_aktiv
         value_template: >
           {{ is_state('input_boolean.schlafen_aktiv', 'on') }}
+      schlafen_inaktiv:
+        friendly_name: Schlafen inaktiv
+        entity_id:
+          - binary_sensor.schlafen_aktiv
+        value_template: >
+          {{ is_state('binary_sensor.schlafen_aktiv', 'off') }}
 
 sensor:
   - platform: history_stats
@@ -306,7 +312,7 @@ automation:
         state: 'active'
     action:
       - service: light.turn_off
-        entity_id: light.bett, light.sideboard, light.schrank, light.badezimmerschrank, light.schreibtisch, light.kuche_regal, light.arbeitszimmer_lampe, light.sportzimmer_regal
+        entity_id: light.bett, light.kleiderschrank, light.sideboard, light.schrank, light.badezimmerschrank, light.schreibtisch, light.kuche_regal, light.arbeitszimmer_lampe, light.sportzimmer_regal
 
   - alias: "Schlafzimmer - Kodi pausiert"
     trigger:
