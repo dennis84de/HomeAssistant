@@ -1,12 +1,3 @@
-switch:
-  - platform: brematic
-    host: !secret brematic_host
-    system_code: '00100'
-    switches:      
-      sportzimmer_regal:
-        unit_code: '00100'
-        friendly_name: Sportzimmer Regal    
-      
 light:
   - platform: switch
     name: Sportzimmer Regal

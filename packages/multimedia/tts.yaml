@@ -4,6 +4,10 @@ media_player:
     name: Home Assistant
 
 tts:
+  - platform: google_cloud
+    key_file: !secret google_cloud_key
+    language: 'de-DE'
+    
   - platform: google_translate
     language: 'de'
 
@@ -70,6 +74,29 @@ script:
           message: >-
             {{ message }}
 
+  google_tts:
+    alias: "Google TTS"
+    sequence:
+      - condition: and
+        conditions:
+          - condition: state
+            entity_id: binary_sensor.zu_hause
+            state: 'on'
+          - condition: state
+            entity_id: input_boolean.sprachausgabe
+            state: 'on'
+          - condition: state
+            entity_id: binary_sensor.schlafen_aktiv
+            state: 'off'
+          - condition: state
+            entity_id: input_boolean.nicht_stoeren
+            state: 'off'            
+      - service: tts.google_translate_say
+        data_template:
+          entity_id: media_player.smarthome
+          message: >-
+            {{ message }}
+            
 automation:
   - alias: "Lautstärke Multimedia ändern"
     trigger:

@@ -28,3 +28,4 @@ update.sh
 zigate.json*
 adbkey*
 __pycache__
+google_cloud.json

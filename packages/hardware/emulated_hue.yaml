@@ -27,7 +27,7 @@ emulated_hue:
     switch.play_wohnzimmer:
       name: Wiedergabe TV
 
-    switch.sportzimmer_crosstrainer:
+    switch.crosstrainer:
       name: Crosstrainer
     switch.watchtv_schlafzimmer:
       name: Fernsehen Schlafzimmer

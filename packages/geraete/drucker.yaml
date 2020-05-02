@@ -54,6 +54,15 @@ sensor:
             -
         {%- endif %}
 
+#  - platform: template
+#    sensors:
+#      drucker_schwarz:
+#        friendly_name: Schwarzs        
+#        unit_of_measurement: "%"
+#        value_template: >
+#          {% set levelBlack = states('sensor.patrone_schwarz') %}
+#          {{ states('sensor.drucker_schwarz') if levelBlack == 0 else pm10 }}
+
 homeassistant:
   customize:
     sensor.patrone_schwarz:

@@ -206,6 +206,15 @@ homeassistant:
     device_tracker.tplinkschlafzimmerfernseher:
       icon: mdi:power-socket-eu
       friendly_name: Schlafzimmer Fernseher
+    device_tracker.tplinksportzimmerfernseher:
+      icon: mdi:power-socket-eu
+      friendly_name: Sportzimmer Fernseher
+    device_tracker.tplinksportzimmerlicht:
+      icon: mdi:power-socket-eu
+      friendly_name: Sportzimmer Licht
+    device_tracker.tplinkcrosstrainer:
+      icon: mdi:power-socket-eu
+      friendly_name: Crosstrainer
     device_tracker.fritz_repeater:
       icon: mdi:wifi
       friendly_name: Repeater

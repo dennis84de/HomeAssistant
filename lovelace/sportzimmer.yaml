@@ -45,20 +45,22 @@ cards:
     entities:
       - entity: switch.sportzimmer_fernseher
         name: Fernseher
-      - entity: switch.sportzimmer_crosstrainer
+      - entity: switch.crosstrainer
 
   - type: entities
     title: Multimedia
     show_header_toggle: false
     entities:
-#      - entity: switch.kodi_sportzimmer        
-#      - type: custom:mini-media-player
-#        entity: media_player.fire_tv_schlafzimmer
-#        hide:
-#          source: true
-#          controls: true
-#          progress: true      
+      - entity: switch.kodi_sportzimmer        
       - type: custom:mini-media-player
+        entity: media_player.fire_tv_schlafzimmer
+        name: Fire TV
+        hide:
+          source: true
+          controls: true
+          progress: true      
+      - type: custom:mini-media-player
+        name: Kodi
         entity: media_player.kodi_sportzimmer
         hide:
           source: true

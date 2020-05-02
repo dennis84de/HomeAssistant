@@ -13,12 +13,14 @@ cards:
     entities:
       - type: custom:mini-media-player
         entity: media_player.badezimmer
+        name: Radio
         hide:
           source: true
           progress: true
           volume: true
       - type: custom:mini-media-player
         entity: media_player.kodi_badezimmer
+        name: Kodi
         hide:
           source: true
           progress: true

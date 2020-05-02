@@ -52,6 +52,7 @@ cards:
     entities:
       - type: custom:mini-media-player
         entity: media_player.flur
+        name: Radio
         hide:
           source: true
           progress: true

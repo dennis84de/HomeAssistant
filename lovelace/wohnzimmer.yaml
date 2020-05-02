@@ -39,12 +39,14 @@ cards:
           controls: true
       - type: custom:mini-media-player
         entity: media_player.kodi_wohnzimmer
+        name: Kodi
         hide:
           source: true
           progress: true
           volume: true
       - type: custom:mini-media-player
         entity: media_player.wohnzimmer
+        name: Radio
         hide:
           source: true
           progress: true

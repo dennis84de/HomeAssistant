@@ -59,6 +59,7 @@ cards:
     entities:
       - type: custom:mini-media-player
         entity: media_player.kuche
+        name: Radio
         hide:
           source: true
           progress: true

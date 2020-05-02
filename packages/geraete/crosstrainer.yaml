@@ -1,14 +1,4 @@
-switch:
-  - platform: brematic
-    host: !secret brematic_host
-    system_code: '00100'
-    switches:      
-      sportzimmer_crosstrainer:
-        unit_code: '01000'
-        friendly_name: Crosstrainer    
-               
 homeassistant:
   customize:
-    switch.sportzimmer_crosstrainer:
+    switch.crosstrainer:
       icon: mdi:weight-lifter
-      assumed_state: false

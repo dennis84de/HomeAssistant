@@ -9,6 +9,9 @@ tplink:
     - host: 192.168.2.51
     - host: 192.168.2.41
     - host: 192.168.2.69
+    - host: 192.168.2.31
+    - host: 192.168.2.83
+    - host: 192.168.2.39
 
 homeassistant:
   customize:

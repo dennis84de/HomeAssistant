@@ -19,6 +19,7 @@ cards:
       - entity: switch.kodi_schlafzimmer
       - entity: cover.fernseher_schlafzimmer_lautstaerke
       - type: custom:mini-media-player
+        name: Kodi
         entity: media_player.kodi_schlafzimmer
         hide:
           source: true
@@ -26,12 +27,14 @@ cards:
           progress: true
       - type: custom:mini-media-player
         entity: media_player.fire_tv_schlafzimmer
+        name: Fire TV
         hide:
           source: true
           controls: true
           progress: true
       - type: custom:mini-media-player
         entity: media_player.schlafzimmer
+        name: Radio
         hide:
           source: true
           progress: true
@@ -60,6 +63,7 @@ cards:
     show_header_toggle: false
     entities:
       - entity: light.bett
+      - entity: light.kleiderschrank
       - entity: light.fernseher_schlafzimmer
 
   - type: entities

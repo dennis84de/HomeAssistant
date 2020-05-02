@@ -1,48 +1,40 @@
 media_player:
-#  - platform: androidtv
-#    host: 192.168.2.27
-#    name: Fire TV Sportzimmer   
+  - platform: androidtv
+    host: 192.168.2.27
+    name: Fire TV Sportzimmer   
+    adbkey: '/home/homeassistant/.homeassistant/adbkey'
     
   - platform: kodi
     host: 192.168.2.27
     name: Kodi Sportzimmer
    
 switch:
-  - platform: brematic
-    host: !secret brematic_host
-    system_code: '00100'
-    switches:      
-      sportzimmer_fernseher:
-        unit_code: '10000'
-        friendly_name: Sportzimmer Fernseher        
- 
-#  - platform: template
-#    switches:
-#      kodi_sportzimmer:
-#        friendly_name: Kodi
-#        entity_id:
-#          - media_player.fire_tv_sportzimmer
-#        icon_template: >-
-#          mdi:kodi
-#        value_template: >-
-#          {{ state_attr('media_player.fire_tv_sportzimmer', 'source') == "Kodi" }}
-#        turn_on:
-#          - service: media_player.select_source
-#            data:
-#              entity_id: media_player.fire_tv_sportzimmer
-#              source: "org.xbmc.kodi"
-#        turn_off:
-#          - service: kodi.call_method
-#            data:
-#              entity_id: media_player.kodi_sportzimmer
-#              method: Input.Home
-#          - service: media_player.select_source
-#            data:
-#              entity_id: media_player.fire_tv_sportzimmer
-#              source: "com.amazon.tv.launcher"        
+  - platform: template
+    switches:
+      kodi_sportzimmer:
+        friendly_name: Kodi
+        entity_id:
+          - media_player.fire_tv_sportzimmer
+        icon_template: >-
+          mdi:kodi
+        value_template: >-
+          {{ state_attr('media_player.fire_tv_sportzimmer', 'source') == "Kodi" }}
+        turn_on:
+          - service: media_player.select_source
+            data:
+              entity_id: media_player.fire_tv_sportzimmer
+              source: "org.xbmc.kodi"
+        turn_off:
+          - service: kodi.call_method
+            data:
+              entity_id: media_player.kodi_sportzimmer
+              method: Input.Home
+          - service: media_player.select_source
+            data:
+              entity_id: media_player.fire_tv_sportzimmer
+              source: "com.amazon.tv.launcher"        
 
 homeassistant:
   customize:
     switch.sportzimmer_fernseher:
       icon: mdi:television
-      assumed_state: false

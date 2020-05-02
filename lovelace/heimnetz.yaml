@@ -67,6 +67,9 @@ cards:
       - entity: device_tracker.tplinkbadezimmerradio
       - entity: device_tracker.tplinkkuecheradio
       - entity: device_tracker.tplinkschlafzimmerfernseher
+      - entity: device_tracker.tplinksportzimmerfernseher
+      - entity: device_tracker.tplinksportzimmerlicht
+      - entity: device_tracker.tplinkcrosstrainer
       - entity: device_tracker.tplinkwaschmaschine
       - entity: device_tracker.tplinktrockner
 
@@ -91,10 +94,10 @@ cards:
     entities:
       - entity: device_tracker.firetvschlafzimmer
         name: Schlafzimmer
+      - entity: device_tracker.firetvsportzimmer
+        name: Sportzimmer        
       - entity: device_tracker.firetvbadezimmer
         name: Badezimmer
-      - entity: device_tracker.firetvsportzimmer
-        name: Sportzimmer
 
   - type: entities
     title: Tablets

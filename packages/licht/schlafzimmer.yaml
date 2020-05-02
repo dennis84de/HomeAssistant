@@ -1,3 +1,12 @@
+switch:
+  - platform: brematic
+    host: !secret brematic_host
+    system_code: '00100'
+    switches:      
+      schlafzimmer_kleiderschrank:
+        unit_code: '10000'
+        friendly_name: Schlafzimmer Kleiderschrank
+
 light:
   - platform: flux_led
     devices:
@@ -8,6 +17,10 @@ light:
   - platform: switch
     name: Fernseher Schlafzimmer
     entity_id: switch.licht_fernseher_schlafzimmer
+
+  - platform: switch
+    name: Kleiderschrank
+    entity_id: switch.schlafzimmer_kleiderschrank
 
 input_boolean:
   bewegungsmelder_schlafzimmer_deaktiviert:
@@ -40,7 +53,9 @@ automation:
 homeassistant:
   customize:
     light.bett:
-      icon: mdi:led-strip
+      icon: mdi:bed-queen
+    light.kleiderschrank:
+      icon: mdi:wardrobe 
     light.fernseher_schlafzimmer:
       icon: mdi:television-classic
       friendly_name: Fernseher
