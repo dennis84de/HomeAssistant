@@ -129,10 +129,10 @@ script:
       - service: switch.turn_off
         entity_id: switch.watchtv_wohnzimmer, switch.monitor
       - service: light.turn_off
-        entity_id: light.strahler, light.vitrine, light.balkon_licht
+        entity_id: light.strahler, light.balkon_licht
       - service: input_boolean.turn_on
         entity_id: input_boolean.timer_schlafzimmer_aktiv
-      - delay: '00:04:00'
+      - delay: '00:05:00'
       - service: switch.turn_off
         entity_id: switch.badezimmer_radio
       - service: light.turn_off

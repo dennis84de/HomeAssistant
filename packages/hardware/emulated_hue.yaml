@@ -63,8 +63,6 @@ emulated_hue:
       hidden: true
     switch.strahler:
       hidden: true
-    switch.vitrine:
-      hidden: true
     switch.arbeitszimmer_lampe:
       hidden: true
     switch.sportzimmer_regal:

@@ -13,19 +13,6 @@ light:
     name: Strahler
     entity_id: switch.strahler
 
-  - platform: switch
-    name: Vitrine
-    entity_id: switch.vitrine
-
-switch:
-  - platform: brematic
-    host: !secret brematic_host
-    system_code: '10000'
-    switches:
-      vitrine:
-        unit_code: '00010'
-        friendly_name: Vitrine
-
 automation:
   - alias: Licht Abends
     trigger:
@@ -74,5 +61,3 @@ homeassistant:
       icon: mdi:sofa
     light.strahler:
       icon: mdi:spotlight
-    light.vitrine:
-      icon: mdi:lightbulb-on-outline

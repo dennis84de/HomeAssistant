@@ -13,7 +13,6 @@ alles_ausschalten:
     - switch.watchtv_schlafzimmer
     - light.couch
     - light.strahler
-    - light.vitrine
     - light.arbeitszimmer_lampe
     - light.sportzimmer_regal
     - light.schreibtisch
@@ -21,6 +20,7 @@ alles_ausschalten:
     - light.schrank
     - light.badezimmerschrank
     - light.bett
+    - light.kleiderschrank
     - light.kuche_regal
     - light.balkon_licht
     - fan.ventilator
