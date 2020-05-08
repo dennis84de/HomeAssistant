@@ -116,13 +116,16 @@ sensor:
         friendly_name: Nächstes Rennen
         entity_id:
           - calendar.formel1_rennen
-        value_template: >
-          {% set ort = state_attr('calendar.formel1_rennen', 'location') %}
-        
-          {% if ort == None %}
-            -
-          {% else %}
+        value_template: >       
+          {% set ort = state_attr('calendar.formel1_rennen', 'location') %}          
+          {% set location = state_attr('calendar.formel1_rennen', 'message').split(':')[1].split('/') %}
+
+          {% if ort != None and ort != '' %}
             {{ ort }}
+          {% elif location != None and location != '' %}
+            {{ location[1] }} ({{ location[0].strip() }})
+          {% else %}
+            --
           {% endif %}
         icon_template: mdi:car-sports
 
@@ -160,7 +163,7 @@ sensor:
               -
             {% else %}
               {% if state_attr('calendar.formel1_qualifikation', 'start_time') %}
-                {{ rennenTs | timestamp_custom("%d.%m.%Y", True) | string }}, {{ rennenTs | timestamp_custom("%H:%M Uhr", True) | string }}
+                {{ qualifikationTs | timestamp_custom("%d.%m.%Y", True) | string }}, {{ qualifikationTs | timestamp_custom("%H:%M Uhr", True) | string }}
               {% else %}
                 -
               {% endif %}
