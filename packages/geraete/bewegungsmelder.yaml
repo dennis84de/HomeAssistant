@@ -26,6 +26,32 @@ sensor:
 binary_sensor:
   - platform: template
     sensors:
+      bewegungsmelder_aktiv:
+        friendly_name: Bewegungsmelder aktiv
+        entity_id:
+          - entity_controller.bewegung_arbeitszimmer
+          - entity_controller.bewegung_badezimmer
+          - entity_controller.bewegung_balkon
+          - entity_controller.bewegung_flur_hinten
+          - entity_controller.bewegung_flur_vorne
+          - entity_controller.bewegung_kuchenregal
+          - entity_controller.bewegung_kuchenschrank
+          - entity_controller.bewegung_schlafzimmer_bett
+          - entity_controller.bewegung_schlafzimmer_kleiderschrank
+          - entity_controller.bewegung_sportzimmer
+        device_class: motion
+        value_template: >
+          {% set ns = namespace(found=false) -%}
+          
+          {% for entity_id in state_attr('group.entity_controller', 'entity_id') -%}
+            {% set parts = entity_id.split('.') -%}
+            {% if (states(entity_id)) == 'active_timer' -%}
+              {% set ns.found = true -%}
+            {% endif -%}
+          {% endfor -%}
+          
+          {{ ns.found }}
+        
       bewegungsmelder_inaktiv_unterwegs:
         friendly_name: Bewegungmelder inaktiv - Unterwegs
         entity_id:
@@ -86,6 +112,31 @@ automation:
         data_template:
           entity_id: input_select.letzte_bewegung          
           option: '{{ trigger.to_state.attributes.friendly_name }}'
+          
+  - alias: 'Sonne scheint - Licht ausschalten'
+    trigger:
+      - platform: state
+        entity_id:
+          - binary_sensor.sonne_tagsueber
+        to: 'on'
+    condition:
+      - condition: state
+        entity_id: binary_sensor.bewegungsmelder_aktiv
+        state: 'on'      
+    action:
+      - service: light.turn_off
+        entity_id:
+          - light.schreibtisch
+          - light.arbeitszimmer_lampe    
+          - light.badezimmerschrank
+          - light.balkon_licht
+          - light.sideboard
+          - light.schrank
+          - light.kuche_regal
+          - light.kuche_schrank
+          - light.bett
+          - light.kleiderschrank
+          - light.couch          
 
 entity_controller:
   radio_badezimmer:
