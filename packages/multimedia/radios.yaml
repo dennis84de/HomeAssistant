@@ -145,12 +145,7 @@ automation:
         to: 'on'
       - platform: state
         entity_id: binary_sensor.home_office
-        to: 'off'        
-      - platform: numeric_state
-        entity_id: sensor.balkon_temperatur
-        above: 15
-        for: 
-          minutes: 5
+        to: 'off'
     condition:
       - condition: state
         entity_id: binary_sensor.zu_hause
