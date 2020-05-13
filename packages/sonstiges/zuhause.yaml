@@ -162,7 +162,7 @@ automation:
         data_template:
           dev_id: handygps
           location_name: 'home'
-          gps: ["{{ state_attr('device_tracker.netzwerkdj', 'latitude') }}", "{{ state_attr('device_tracker.netzwerkdj', 'longitude') }}"]
+          gps: ["{{ state_attr('zone.zu_hause', 'latitude') }}", "{{ state_attr('zone.zu_hause', 'longitude') }}"]
 
   - alias: "Zu Hause - Manuell geschaltet"
     trigger:
@@ -186,7 +186,7 @@ automation:
         data_template:
           dev_id: handygps
           location_name: 'home'
-          gps: ["{{ state_attr('device_tracker.netzwerkdj', 'latitude') }}", "{{ state_attr('device_tracker.netzwerkdj', 'longitude') }}"]
+          gps: ["{{ state_attr('zone.zu_hause', 'latitude') }}", "{{ state_attr('zone.zu_hause', 'longitude') }}"]
 
   - alias: "Zu Hause - Geräte einschalten"
     trigger:
