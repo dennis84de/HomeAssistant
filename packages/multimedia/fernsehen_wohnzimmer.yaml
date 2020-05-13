@@ -224,7 +224,7 @@ automation:
       - service: media_player.media_play_pause
         entity_id: media_player.kodi_wohnzimmer
 
-  - alias: "Kodi - Wiedergabe pausieren - Bewegung Flur / Balkon"
+  - alias: "Kodi - Wiedergabe pausieren - Bewegung Flur"
     trigger:
       - platform: state
         entity_id: binary_sensor.bewegungsmelder_flur_vorne
@@ -232,10 +232,33 @@ automation:
       - platform: state
         entity_id: binary_sensor.bewegungsmelder_flur_hinten
         to: 'on'
+    condition:
+      - condition: state
+        entity_id: media_player.kodi_wohnzimmer
+        state: 'playing'
+      - condition: state
+        entity_id: input_boolean.kodi_pausieren
+        state: 'on'
+      - condition: state
+        entity_id: sensor.telefon
+        state: 'idle'
+      - condition: template
+        value_template: '{{ is_state("sensor.handy", "incoming") == False and is_state("sensor.handy", "outgoing") == False }}'
+    action:
+      - service: media_player.media_pause
+        entity_id: media_player.kodi_wohnzimmer        
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.kodi_pausiert
+
+  - alias: "Kodi - Wiedergabe pausieren - Bewegung Balkon"
+    trigger:
       - platform: state
         entity_id: binary_sensor.bewegungsmelder_balkon
         to: 'on'
     condition:
+      - condition: state
+        entity_id: binary_sensor.fenster_balkontuer
+        state: 'on'      
       - condition: state
         entity_id: media_player.kodi_wohnzimmer
         state: 'playing'
