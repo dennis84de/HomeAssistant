@@ -43,10 +43,6 @@ browser_mod:
     - all  
   
 discovery:
-  ignore:
-    - songpal
-    - igd
-
 wake_on_lan:
 system_health:
 

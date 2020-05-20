@@ -1,6 +1,4 @@
 zha:
-  usb_path: /dev/ttyACM0
-  radio_type: deconz
   database_path: /home/homeassistant/.homeassistant/zigbee.db
 
 homeassistant:

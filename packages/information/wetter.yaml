@@ -46,7 +46,13 @@ binary_sensor:
           {% else %}
             {{ states('sensor.helligkeit') | float > 20 }}
           {% endif %}
-
+          
+      sommerzeit:
+        friendly_name: "Sommerzeit"
+        entity_id: sensor.time
+        device_class: light
+        value_template: "{{ now().timetuple().tm_isdst > 0 }}"
+        
 sensor:
   - platform: moon
 

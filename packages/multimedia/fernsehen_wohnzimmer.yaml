@@ -15,7 +15,7 @@ media_player:
         entity_id: media_player.kodi_wohnzimmer
         method: Application.Quit
         
-  - platform: songpal
+songpal:
     name: Soundbar
     endpoint: !secret songpal_endpoint_url
 
