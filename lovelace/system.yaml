@@ -89,6 +89,7 @@ cards:
       - entity: input_boolean.sprachausgabe
       - entity: input_number.sprache_lautstaerke
       - entity: input_boolean.uhr_einschalten
+      - entity: input_boolean.besuch
       - entity: input_boolean.nicht_stoeren
       - entity: script.alexa_witz_gestartet
       

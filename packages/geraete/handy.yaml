@@ -76,6 +76,11 @@ automation:
           payload: '{{ state_attr(trigger.entity_id, "number") }}'          
           topic: phone/last_call
           retain: true
+#          payload: >-
+#            {% set date = state_attr(trigger.entity_id, "date") %}
+#            {% set time = state_attr(trigger.entity_id, "time") %}
+#   
+#            {{ '{"number": "{{ state_attr(trigger.entity_id, "number") }}", "name": "{{ state_attr(trigger.entity_id, "name") }}", "date": "{{ date }} {{ time }}"}' }}
           
   - alias: 'Handy aktiv - Kodi pausieren'
     trigger:
@@ -164,7 +169,10 @@ automation:
         state: 'on'
       - condition: state
         entity_id: input_boolean.nicht_stoeren
-        state: 'off'        
+        state: 'off'      
+      - condition: state
+        entity_id: binary_sensor.besuch
+        state: 'off'            
       - condition: or
         conditions:
           - condition: state
@@ -211,6 +219,9 @@ automation:
       - condition: state
         entity_id: input_boolean.nicht_stoeren
         state: 'off'
+      - condition: state
+        entity_id: binary_sensor.besuch
+        state: 'off'        
     action:
       - service: input_boolean.turn_on
         entity_id: input_boolean.musik_pausiert

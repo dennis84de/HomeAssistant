@@ -19,7 +19,10 @@ person:
 input_boolean:
   zu_hause_begruessung:
     name: "Begrüßung"
-
+  besuch:
+    name: "Besuch"
+    icon: mdi:account-multiple
+    
 proximity:
   home:
     devices:
@@ -50,6 +53,16 @@ binary_sensor:
           {% else %}
             false
           {% endif %}
+          
+      besuch:
+        friendly_name: "Besuch"
+        device_class: presence        
+        value_template: >-
+          {% if is_state('input_boolean.besuch', 'on') %}
+            true
+          {% else %}
+            false
+          {% endif %}          
 
 automation:
   - alias: 'Unterwegs - Geräte eingeschaltet'
