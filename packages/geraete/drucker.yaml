@@ -1,67 +1,138 @@
 sensor:
-  - platform: command_line
-    name: Patrone Schwarz
-    command: curl -k -X GET http://192.168.2.23/PRESENTATION/HTML/TOP/PRTINFO.HTML | awk -F"'" '/Ink_K.PNG/ && $6+0 == $6 { printf "%.0f\n", $6 / 50 * 100 }'
-    unit_of_measurement: '%'
-    value_template: >-
-        {%- if is_state("device_tracker.epsondrucker", "home") %}
-            {{ value | int }}
-        {% else %}
-            -
-        {%- endif %}
+  - platform: epsonworkforce
+    host: !secret drucker_host
+    monitored_conditions:
+      - black
+      - yellow
+      - magenta
+      - cyan
+      - clean
 
-  - platform: command_line
-    name: Patrone Magenta
-    command: curl -k -X GET http://192.168.2.23/PRESENTATION/HTML/TOP/PRTINFO.HTML | awk -F"'" '/Ink_M.PNG/ && $6+0 == $6 { printf "%.0f\n", $6 / 50 * 100 }'
+  - platform: mqtt
+    name: "Patrone Schwarz"
     unit_of_measurement: '%'
-    value_template: >-
-        {%- if is_state("device_tracker.epsondrucker", "home") %}
-            {{ value | int }}
-        {% else %}
-            -
-        {%- endif %}
-
-  - platform: command_line
-    name: Patrone Gelb
-    command: curl -k -X GET http://192.168.2.23/PRESENTATION/HTML/TOP/PRTINFO.HTML | awk -F"'" '/Ink_Y.PNG/ && $6+0 == $6 { printf "%.0f\n", $6 / 50 * 100 }'
+    state_topic: "printer/black"
+        
+  - platform: mqtt
+    name: "Patrone Magenta"
     unit_of_measurement: '%'
-    value_template: >-
-        {%- if is_state("device_tracker.epsondrucker", "home") %}
-            {{ value | int }}
-        {% else %}
-            -
-        {%- endif %}
-
-  - platform: command_line
-    name: Patrone Cyan
-    command: curl -k -X GET http://192.168.2.23/PRESENTATION/HTML/TOP/PRTINFO.HTML | awk -F"'" '/Ink_C.PNG/ && $6+0 == $6 { printf "%.0f\n", $6 / 50 * 100 }'
+    state_topic: "printer/magenta"
+    
+  - platform: mqtt
+    name: "Patrone Gelb"
     unit_of_measurement: '%'
-    value_template: >-
-        {%- if is_state("device_tracker.epsondrucker", "home") %}
-            {{ value | int }}
-        {% else %}
-            -
-        {%- endif %}
-
-  - platform: command_line
-    name: Patrone Abfall
-    command: curl -k -X GET http://192.168.2.23/PRESENTATION/HTML/TOP/PRTINFO.HTML | awk -F"'" '/Ink_Waste.PNG/ && $6+0 == $6 { printf "%.0f\n", $6 / 50 * 100 }'
+    state_topic: "printer/yellow"
+    
+  - platform: mqtt
+    name: "Patrone Cyan"
     unit_of_measurement: '%'
-    value_template: >-
-        {%- if is_state("device_tracker.epsondrucker", "home") %}
-            {{ value | int }}
-        {% else %}
-            -
-        {%- endif %}
-
-#  - platform: template
-#    sensors:
-#      drucker_schwarz:
-#        friendly_name: Schwarzs        
-#        unit_of_measurement: "%"
-#        value_template: >
-#          {% set levelBlack = states('sensor.patrone_schwarz') %}
-#          {{ states('sensor.drucker_schwarz') if levelBlack == 0 else pm10 }}
+    state_topic: "printer/cyan"    
+    
+  - platform: mqtt
+    name: "Patrone Abfall"
+    unit_of_measurement: '%'
+    state_topic: "printer/waste"    
+    
+automation:
+  - alias: 'Drucker - Patrone Schwarz'
+    trigger:
+      - platform: state
+        entity_id: sensor.patrone_commandline_schwarz
+    condition:
+      condition: not
+      conditions:
+        - condition: state
+          entity_id: device_tracker.epsondrucker
+          state: 'not_home'
+        - condition: state
+          entity_id: sensor.patrone_commandline_schwarz
+          state: '-'      
+    action:
+      - service: mqtt.publish
+        data_template:
+          topic: printer/black
+          retain: true
+          payload: '{{ states("sensor.patrone_commandline_schwarz") }}'
+          
+  - alias: 'Drucker - Patrone Magenta'
+    trigger:
+      - platform: state
+        entity_id: sensor.ink_level_magenta
+    condition:
+      condition: not
+      conditions:
+        - condition: state
+          entity_id: device_tracker.epsondrucker
+          state: 'not_home'
+        - condition: state
+          entity_id: sensor.ink_level_magenta
+          state: '-'      
+    action:
+      - service: mqtt.publish
+        data_template:
+          topic: printer/magenta
+          retain: true
+          payload: '{{ states("sensor.ink_level_magenta") }}'
+          
+  - alias: 'Drucker - Patrone Gelb'
+    trigger:
+      - platform: state
+        entity_id: sensor.ink_level_yellow
+    condition:
+      condition: not
+      conditions:
+        - condition: state
+          entity_id: device_tracker.epsondrucker
+          state: 'not_home'
+        - condition: state
+          entity_id: sensor.ink_level_yellow
+          state: '-'      
+    action:
+      - service: mqtt.publish
+        data_template:
+          topic: printer/yellow
+          retain: true
+          payload: '{{ states("sensor.ink_level_yellow") }}'
+          
+  - alias: 'Drucker - Patrone Cyan'
+    trigger:
+      - platform: state
+        entity_id: sensor.ink_level_cyan
+    condition:
+      condition: not
+      conditions:
+        - condition: state
+          entity_id: device_tracker.epsondrucker
+          state: 'not_home'
+        - condition: state
+          entity_id: sensor.ink_level_cyan
+          state: '-'      
+    action:
+      - service: mqtt.publish
+        data_template:
+          topic: printer/cyan
+          retain: true
+          payload: '{{ states("sensor.ink_level_cyan") }}'
+          
+  - alias: 'Drucker - Patrone Abfall'
+    trigger:
+      - platform: state
+        entity_id: sensor.cleaning_level
+    condition:
+      condition: not
+      conditions:
+        - condition: state
+          entity_id: device_tracker.epsondrucker
+          state: 'not_home'
+        - condition: state
+          entity_id: sensor.cleaning_level
+          state: '-'      
+    action:
+      - service: mqtt.publish
+        data_template:
+          topic: printer/waste
+          retain: true
+          payload: '{{ states("sensor.cleaning_level") }}'          
 
 homeassistant:
   customize:
