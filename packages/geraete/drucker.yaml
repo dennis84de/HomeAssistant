@@ -6,7 +6,7 @@ sensor:
       - yellow
       - magenta
       - cyan
-      - clean
+      - clean    
 
   - platform: mqtt
     name: "Patrone Schwarz"
@@ -37,36 +37,26 @@ automation:
   - alias: 'Drucker - Patrone Schwarz'
     trigger:
       - platform: state
-        entity_id: sensor.patrone_commandline_schwarz
+        entity_id: sensor.ink_level_black
     condition:
-      condition: not
-      conditions:
-        - condition: state
-          entity_id: device_tracker.epsondrucker
-          state: 'not_home'
-        - condition: state
-          entity_id: sensor.patrone_commandline_schwarz
-          state: '-'      
+      - condition: state
+        entity_id: device_tracker.epsondrucker
+        state: 'home'
     action:
       - service: mqtt.publish
         data_template:
           topic: printer/black
           retain: true
-          payload: '{{ states("sensor.patrone_commandline_schwarz") }}'
+          payload: '{{ states("sensor.ink_level_black") }}'
           
   - alias: 'Drucker - Patrone Magenta'
     trigger:
       - platform: state
         entity_id: sensor.ink_level_magenta
     condition:
-      condition: not
-      conditions:
-        - condition: state
-          entity_id: device_tracker.epsondrucker
-          state: 'not_home'
-        - condition: state
-          entity_id: sensor.ink_level_magenta
-          state: '-'      
+      - condition: state
+        entity_id: device_tracker.epsondrucker
+        state: 'home'     
     action:
       - service: mqtt.publish
         data_template:
@@ -79,14 +69,9 @@ automation:
       - platform: state
         entity_id: sensor.ink_level_yellow
     condition:
-      condition: not
-      conditions:
-        - condition: state
-          entity_id: device_tracker.epsondrucker
-          state: 'not_home'
-        - condition: state
-          entity_id: sensor.ink_level_yellow
-          state: '-'      
+      - condition: state
+        entity_id: device_tracker.epsondrucker
+        state: 'home'
     action:
       - service: mqtt.publish
         data_template:
@@ -99,14 +84,9 @@ automation:
       - platform: state
         entity_id: sensor.ink_level_cyan
     condition:
-      condition: not
-      conditions:
-        - condition: state
-          entity_id: device_tracker.epsondrucker
-          state: 'not_home'
-        - condition: state
-          entity_id: sensor.ink_level_cyan
-          state: '-'      
+      - condition: state
+        entity_id: device_tracker.epsondrucker
+        state: 'home'     
     action:
       - service: mqtt.publish
         data_template:
@@ -119,14 +99,9 @@ automation:
       - platform: state
         entity_id: sensor.cleaning_level
     condition:
-      condition: not
-      conditions:
-        - condition: state
-          entity_id: device_tracker.epsondrucker
-          state: 'not_home'
-        - condition: state
-          entity_id: sensor.cleaning_level
-          state: '-'      
+      - condition: state
+        entity_id: device_tracker.epsondrucker
+        state: 'home'
     action:
       - service: mqtt.publish
         data_template:
