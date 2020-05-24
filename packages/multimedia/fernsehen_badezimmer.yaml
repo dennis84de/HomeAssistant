@@ -1,4 +1,35 @@
 media_player:
+  - platform: androidtv
+    host: 192.168.2.33
+    name: Fire TV Badezimmer
+    adbkey: '/home/homeassistant/.homeassistant/adbkey'
+    
   - platform: kodi
     host: 192.168.2.33
     name: Kodi Badezimmer
+    
+switch:
+  - platform: template
+    switches:
+      kodi_badezimmer:
+        friendly_name: Kodi
+        entity_id:
+          - media_player.fire_tv_badezimmer
+        icon_template: >-
+          mdi:kodi
+        value_template: >-
+          {{ state_attr('media_player.fire_tv_badezimmer', 'source') == "Kodi" }}
+        turn_on:
+          - service: media_player.select_source
+            data:
+              entity_id: media_player.fire_tv_badezimmer
+              source: "org.xbmc.kodi"
+        turn_off:
+          - service: kodi.call_method
+            data:
+              entity_id: media_player.kodi_badezimmer
+              method: Input.Home
+          - service: media_player.select_source
+            data:
+              entity_id: media_player.fire_tv_badezimmer
+              source: "com.amazon.tv.launcher"

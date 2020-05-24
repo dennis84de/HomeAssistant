@@ -274,6 +274,9 @@ automation:
       - condition: state
         entity_id: input_boolean.nicht_stoeren
         state: 'off'
+      - condition: state
+        entity_id: binary_sensor.besuch
+        state: 'off'        
     action:
       service: !secret tts_service
       data_template:
@@ -339,18 +342,33 @@ automation:
             icon: "info"
 
   - alias: "Handy - SMS gelesen"
+    trigger: 
+      - platform: state
+        entity_id: sensor.handy
+        to: 'idle'          
+    condition:    
+      - condition: template     
+        value_template: '{{ trigger.from_state.state == "sms" }}'
+    action:
+      - service: persistent_notification.dismiss  
+        data:              
+          notification_id: neue_sms           
+
+  - alias: "Handy - Benachrichtigung ausgeblendet"
     trigger:
       - platform: event
         event_type: call_service
         event_data:
           domain: persistent_notification
-          service: dismiss      
+          service: dismiss           
     condition:
       - condition: template
-        value_template: '{{ trigger.event.data.service_data.notification_id == "neue_sms" }}'
-      - condition: state
-        entity_id: sensor.handy
-        state: 'sms'
+        value_template: >-
+          {% if trigger.event.data.service_data.notification_id == "neue_sms" %}
+            True
+          {% else %}
+            False
+          {% endif %}
     action:
       - service: mqtt.publish
         data_template:

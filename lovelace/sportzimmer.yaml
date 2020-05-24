@@ -53,7 +53,7 @@ cards:
     entities:
       - entity: switch.kodi_sportzimmer        
       - type: custom:mini-media-player
-        entity: media_player.fire_tv_schlafzimmer
+        entity: media_player.fire_tv_sportzimmer
         name: Fire TV
         hide:
           source: true

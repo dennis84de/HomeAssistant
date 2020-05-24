@@ -11,13 +11,14 @@ cards:
     title: Multimedia
     show_header_toggle: false
     entities:
+      - entity: switch.kodi_badezimmer
       - type: custom:mini-media-player
-        entity: media_player.badezimmer
-        name: Radio
+        entity: media_player.fire_tv_badezimmer
+        name: Fire TV
         hide:
           source: true
-          progress: true
-          volume: true
+          controls: true
+          progress: true                
       - type: custom:mini-media-player
         entity: media_player.kodi_badezimmer
         name: Kodi
@@ -25,6 +26,13 @@ cards:
           source: true
           progress: true
           volume: true
+      - type: custom:mini-media-player
+        entity: media_player.badezimmer
+        name: Radio
+        hide:
+          source: true
+          progress: true
+          volume: true          
 
   - type: entities
     title: Licht
