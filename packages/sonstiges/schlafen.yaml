@@ -170,6 +170,9 @@ automation:
       - condition: state
         entity_id: timer.schlafen_einschalten
         state: 'idle'
+      - condition: time
+        after: '20:00'
+        before: '06:00'  
     action:
       - service: !secret tts_service
         data_template:
