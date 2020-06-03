@@ -12,6 +12,19 @@ google:
   client_id: !secret google_clientid
   client_secret: !secret google_apikey
 
+binary_sensor:
+  - platform: template
+    sensors:
+      urlaub_morgen:
+        friendly_name: 'Urlaub morgen'
+        device_class: opening
+        entity_id:
+          - calendar.urlaub
+        value_template: >-
+          {% set nextVacation = strptime(state_attr('calendar.urlaub', 'start_time'),'%Y-%m-%d %H:%M:%S') %}
+
+          {{ nextVacation.strftime('%j')|int - now().strftime('%j')|int == 1 }}
+
 sensor:
   - platform: myepisodes
     name: "Serien"

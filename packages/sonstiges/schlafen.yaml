@@ -234,6 +234,58 @@ automation:
     action:
       - service: script.schlafen_gehen_fernseher
 
+  - alias: "Schlafen gehen - Kein Wecker gestellt"
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.bewegungsmelder_schlafzimmer
+        to: 'on'
+    condition:
+      - condition: state
+        entity_id: input_boolean.schlafen_aktiv
+        state: 'on'
+      - condition: state
+        entity_id: binary_sensor.arbeitstag_morgen
+        state: 'on'         
+      - condition: state
+        entity_id: binary_sensor.urlaub_morgen
+        state: 'off'
+      - condition: state
+        entity_id: sensor.tablet_weckzeit
+        state: '-'                
+    action:
+      - service: !secret tts_service
+        data_template:
+          echo: "schlafzimmer"
+          message: "Für morgen ist noch kein Wecker gestellt."
+
+#  - alias: "Schlafen gehen - Wecker gestellt"
+#    trigger:
+#      - platform: state
+#        entity_id: binary_sensor.bewegungsmelder_schlafzimmer
+#        to: 'on'
+#    condition:
+#      - condition: state
+#        entity_id: input_boolean.schlafen_aktiv
+#        state: 'on'     
+#      - condition: not
+#        conditions:
+#          - condition: state
+#            entity_id: sensor.tablet_weckzeit
+#            state: '-'
+#      - condition: or
+#        conditions:
+#          - condition: state
+#            entity_id: binary_sensor.arbeitstag_morgen
+#            state: 'off'         
+#          - condition: state
+#            entity_id: binary_sensor.urlaub_morgen
+#            state: 'on'          
+#    action:
+#      - service: !secret tts_service
+#        data_template:
+#          echo: "schlafzimmer"
+#          message: "Der Wecker für morgen ist noch gestellt."
+
   - alias: 'Sleeptimer starten'
     trigger:
       platform: state
