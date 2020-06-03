@@ -5,21 +5,13 @@ input_boolean:
     icon: mdi:desktop-classic
 
 device_tracker:
-  - platform: ping
-    interval_seconds: 30
-    consider_home: 60
-    hosts:
-      pc: !secret computer_host
-
-binary_sensor:
   - platform: mqtt
-    name: "Computer - Status"
-    state_topic: "iotlink/workgroup/computer/lwt"
-    value_template: "{{ value }}"
-    payload_on: "ON"
-    payload_off: "OFF"
-    device_class: "connectivity"
+    devices:
+      pc: 'iotlink/workgroup/computer/lwt'
     qos: 1
+    payload_home: 'ON'
+    payload_not_home: 'OFF'
+    source_type: router
 
 switch:
   - platform: template
@@ -43,7 +35,8 @@ switch:
         friendly_name: Computer
         entity_id:
           - device_tracker.pc
-        value_template: "{{ is_state('device_tracker.pc', 'home') }}"
+        value_template: >-
+          {{ is_state('switch.pc', 'on') and is_state('switch.monitor', 'on') }}
         turn_on:
           service: switch.turn_on
           entity_id: switch.monitor, switch.pc
