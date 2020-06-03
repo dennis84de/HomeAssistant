@@ -23,8 +23,8 @@ sensor:
 #    username: !secret 17track_name
 #    password: !secret 17track_password
 
-  - platform: aftership  
-    api_key: !secret aftership_apikey    
+#  - platform: aftership  
+#    api_key: !secret aftership_apikey    
     
   - platform: template
     sensors:
