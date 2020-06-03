@@ -105,9 +105,9 @@ sensor:
 
   - platform: mold_indicator
     name: Schimmelindikator
-    indoor_temp_sensor: sensor.wohnzimmer_temperatur
-    indoor_humidity_sensor: sensor.wohnzimmer_luftfeuchtigkeit
-    outdoor_temp_sensor: sensor.balkon_temperatur
+    indoor_temp_sensor: sensor.mold_wohnzimmer_temperatur
+    indoor_humidity_sensor: sensor.mold_wohnzimmer_luftfeuchtigkeit
+    outdoor_temp_sensor: sensor.mold_balkon_temperatur
     calibration_factor: 1.16
 
   - platform: thermal_comfort
@@ -166,6 +166,31 @@ sensor:
 
   - platform: template
     sensors:
+      mold_wohnzimmer_temperatur:
+        value_template: >-
+          {% if is_state('sensor.wohnzimmer_temperatur', 'unavailable') %}
+            {{ 0.00 | float }}
+          {% else %}
+            {{ states('sensor.wohnzimmer_temperatur') | float }}
+          {% endif %}
+        unit_of_measurement: '°C'
+      mold_wohnzimmer_luftfeuchtigkeit:
+        value_template: >-
+          {% if is_state('sensor.wohnzimmer_luftfeuchtigkeit', 'unavailable') %}
+            {{ 0.00 | float }}
+          {% else %}
+            {{ states('sensor.wohnzimmer_luftfeuchtigkeit') | float }}
+          {% endif %}        
+        unit_of_measurement: '%'
+      mold_balkon_temperatur:
+        value_template: >-        
+          {% if is_state('sensor.balkon_temperatur', 'unavailable') %}
+            {{ 0.00 | float }}
+          {% else %}
+            {{ states('sensor.balkon_temperatur') | float }}
+          {% endif %}          
+        unit_of_measurement: '°C'
+        
       wetter_text:
         friendly_name: 'Wetter'
         value_template:  >
