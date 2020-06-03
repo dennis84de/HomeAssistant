@@ -1,6 +1,4 @@
 sun:
-wwlln:
-  radius: 50
 
 openuv:
   api_key: !secret openuv_key

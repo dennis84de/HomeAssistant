@@ -238,14 +238,6 @@ cards:
         name: Geheilt
       - entity: sensor.germany_coronavirus_deaths
         name: Tote
-      
-  - type: map
-    entities: []
-    geo_location_sources:
-      - wwlln
-    title: Gewitter
-    default_zoom: 10
-    aspect_ratio: '2'
 
   - type: picture-glance
     title: Wetter
