@@ -7,6 +7,10 @@ tankerkoenig:
     - !secret tankerkoenig_id_real
     - !secret tankerkoenig_id_jet
 
+ourgroceries:
+  username: !secret our_groceries_username
+  password: !secret our_groceries_password
+  
 sensor:
   - platform: imap
     server: !secret email_server

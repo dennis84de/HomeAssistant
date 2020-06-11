@@ -202,6 +202,20 @@ cards:
       - entity: sensor.sportzimmer_temperatur
         name: Sportzimmer
 
+  - type: 'custom:our-groceries-card'
+    title: Einkaufen    
+    entity: sensor.our_groceries
+    show_crossed_off: false
+
+  - type: custom:atomic-calendar-revive
+    name: Serien
+    maxDaysToShow: 30
+    maxEventCount: 10
+    showLocation: false
+    disableEventLink: true
+    entities:
+      - entity: calendar.serien
+        
   - type: entities
     title: Formel 1
     show_header_toggle: false
@@ -220,15 +234,6 @@ cards:
 #      - entity: sensor.anrufliste_call_3
 #      - entity: sensor.anrufliste_call_4
 
-  - type: custom:atomic-calendar-revive
-    name: Serien
-    maxDaysToShow: 30
-    maxEventCount: 10
-    showLocation: false
-    disableEventLink: true
-    entities:
-      - entity: calendar.serien
-    
 #  - type: entities
 #    title: Serien
 #    show_header_toggle: false
