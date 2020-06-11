@@ -25,7 +25,7 @@ emulated_hue:
     switch.watchtv_wohnzimmer:
       name: Fernsehen Wohnzimmer
     switch.play_wohnzimmer:
-      name: Wiedergabe TV
+      name: Wiedergabe TV    
 
     switch.crosstrainer:
       name: Crosstrainer
@@ -70,7 +70,11 @@ emulated_hue:
     switch.licht_fernseher_schlafzimmer:
       hidden: true
     switch.kodi_schlafzimmer:
-      hidden: true   
+      hidden: true
+    switch.kodi_sportzimmer:
+      hidden: true
+    switch.kodi_badezimmer:
+      hidden: true
     switch.wiedergabe_aktiv:
       hidden: true
     switch.pi_hole:
@@ -87,6 +91,8 @@ emulated_hue:
     switch.echo_schlafzimmer_do_not_disturb_switch:
       hidden: true
     switch.echo_wohnzimmer_do_not_disturb_switch:
+      hidden: true
+    switch.musik_tablet_balkon_s_alexa_apps_do_not_disturb_switch:
       hidden: true
       
     switch.echo_badezimmer_repeat_switch:

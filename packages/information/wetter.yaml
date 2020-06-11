@@ -1,8 +1,5 @@
 sun:
 
-openuv:
-  api_key: !secret openuv_key
-
 camera:
   - platform: generic
     still_image_url: http://api.sat24.com/mostrecent/DE/visual5hdcomplete
