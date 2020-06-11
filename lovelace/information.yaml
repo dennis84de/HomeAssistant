@@ -220,17 +220,26 @@ cards:
 #      - entity: sensor.anrufliste_call_3
 #      - entity: sensor.anrufliste_call_4
 
-  - type: entities
-    title: Serien
-    show_header_toggle: false
+  - type: custom:atomic-calendar-revive
+    name: Serien
+    maxDaysToShow: 30
+    maxEventCount: 10
+    showLocation: false
+    disableEventLink: true
     entities:
-      - entity: sensor.serien_episode_0
-      - entity: sensor.serien_episode_1
-      - entity: sensor.serien_episode_2
-      - entity: sensor.serien_episode_3
-      - entity: sensor.serien_episode_4
-      - entity: sensor.serien_episode_5
-      - entity: sensor.serien_episode_6
-      - entity: sensor.serien_episode_7
-      - entity: sensor.serien_episode_8
-      - entity: sensor.serien_episode_9
+      - entity: calendar.serien
+    
+#  - type: entities
+#    title: Serien
+#    show_header_toggle: false
+#    entities:
+#      - entity: sensor.serien_episode_0
+#      - entity: sensor.serien_episode_1
+#      - entity: sensor.serien_episode_2
+#      - entity: sensor.serien_episode_3
+#      - entity: sensor.serien_episode_4
+#      - entity: sensor.serien_episode_5
+#      - entity: sensor.serien_episode_6
+#      - entity: sensor.serien_episode_7
+#      - entity: sensor.serien_episode_8
+#      - entity: sensor.serien_episode_9
