@@ -315,7 +315,7 @@ automation:
       - service: input_boolean.turn_off
         entity_id: input_boolean.kodi_pausiert
 
-  - alias: "Kodi - Ende - Nächster Titel"
+  - alias: "Kodi - Folge zu Ende - Nächster Titel"
     trigger:
       - platform: template
         value_template: >-
@@ -333,15 +333,14 @@ automation:
           {{
           remainingSeconds < 15 or
           remainingSeconds < 30 or
-          remainingSeconds < 45 or
-          remainingSeconds < 60
+          remainingSeconds < 45
           }}
     condition:   
       - condition: state
         entity_id: media_player.kodi_wohnzimmer
         state: 'playing'
       - condition: template
-        value_template: '{{ is_state_attr("media_player.kodi_wohnzimmer", "media_content_type") == "tvshow" }}'
+        value_template: '{{ is_state_attr("media_player.kodi_wohnzimmer", "media_content_type", "tvshow") }}'
     action:
       - service: media_player.media_next_track
         entity_id: media_player.kodi_wohnzimmer
