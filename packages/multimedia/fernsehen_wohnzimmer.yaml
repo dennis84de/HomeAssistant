@@ -38,6 +38,16 @@ input_boolean:
     initial: on
     icon: mdi:sync-off
 
+binary_sensor:
+  - platform: mqtt
+    name: "Kodi Wohnzimmer - MQTT"    
+    state_topic: "kodi_wohnzimmer/connected"
+    payload_on: "2"
+    payload_off: "0"
+    device_class: connectivity
+    json_attributes_topic: "kodi_wohnzimmer/status/progress"
+    json_attributes_template: "{{ value_json | tojson }}"   
+    
 cover:
   - platform: template
     covers:
@@ -305,7 +315,38 @@ automation:
       - service: input_boolean.turn_off
         entity_id: input_boolean.kodi_pausiert
 
-  - alias: "Kodi - Nächster Titel"
+  - alias: "Kodi - Ende - Nächster Titel"
+    trigger:
+      - platform: template
+        value_template: >-
+          {% set kodiSensor = 'binary_sensor.kodi_wohnzimmer_mqtt' %}
+          {% set timeTotal = state_attr(kodiSensor, 'kodi_totaltime') or '10:00:00' %}
+          {% set timeCurrent = state_attr(kodiSensor, 'kodi_time') or '00:00:00' %}
+
+          {% set totalHour, totalMinute, totalSeconds = timeTotal.split(':') %}
+          {% set currentHour, currentMinute, currentSeconds = timeCurrent.split(':') %}
+
+          {% set totalSeconds = (totalHour | int * 3600) + (totalMinute | int * 60) + (totalSeconds | int) %}       
+          {% set currentSeconds = (currentHour | int * 3600) + (currentMinute | int * 60) + (currentSeconds | int) %}
+          {% set remainingSeconds = totalSeconds - currentSeconds %}
+          
+          {{
+          remainingSeconds < 15 or
+          remainingSeconds < 30 or
+          remainingSeconds < 45 or
+          remainingSeconds < 60
+          }}
+    condition:   
+      - condition: state
+        entity_id: media_player.kodi_wohnzimmer
+        state: 'playing'
+      - condition: template
+        value_template: '{{ is_state_attr("media_player.kodi_wohnzimmer", "media_content_type") == "tvshow" }}'
+    action:
+      - service: media_player.media_next_track
+        entity_id: media_player.kodi_wohnzimmer
+
+  - alias: "Kodi - Cube - Nächster Titel"
     trigger:
       - platform: state
         entity_id: sensor.cube_bewegung
