@@ -18,7 +18,7 @@ media_player:
 songpal:
     name: Soundbar
     endpoint: !secret songpal_endpoint_url
-
+        
 notify:
   - platform: kodi
     name: Kodi Wohnzimmer
@@ -332,8 +332,7 @@ automation:
           
           {{
           remainingSeconds < 15 or
-          remainingSeconds < 30 or
-          remainingSeconds < 45
+          remainingSeconds < 30
           }}
     condition:   
       - condition: state
