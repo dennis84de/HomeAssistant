@@ -122,8 +122,6 @@ script:
     sequence:
       - service: input_boolean.turn_on
         entity_id: input_boolean.schlafen_aktiv
-      - service: light.turn_on
-        entity_id: light.kleiderschrank
       - service: switch.turn_off
         entity_id: switch.wohnzimmer_radio, switch.balkon_radio, switch.flur_radio, switch.kuche_radio, switch.schlafzimmer_radio, switch.arbeitszimmer_radio
       - service: switch.turn_off
@@ -221,6 +219,20 @@ automation:
           message: "Alle Geräte werden jetzt ausgeschaltet. Gute Nacht."
       - service: script.schlafen_gehen
 
+  - alias: "Schlafen gehen - Licht einschalten"
+    trigger:
+      - platform: event
+        event_type: timer.finished
+        event_data:
+          entity_id: timer.schlafen_einschalten
+    condition:
+      - condition: state
+        entity_id: binary_sensor.fenster_schlafzimmer
+        state: 'off'          
+    action:
+      - service: light.turn_on
+        entity_id: light.kleiderschrank
+      
   - alias: "Schlafen gehen - Fernseher einschalten"
     trigger:
       - platform: event
