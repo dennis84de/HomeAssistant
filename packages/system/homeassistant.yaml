@@ -6,7 +6,9 @@ websocket_api:
 api:
 frontend:
 mobile_app:
-  
+scene:
+saver:
+
 lovelace:
   mode: yaml
   resources:

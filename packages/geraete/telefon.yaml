@@ -45,6 +45,31 @@ sensor:
         entity_id: sensor.letzter_anruf
         friendly_name: "Werbeanruf"
     
+script:
+  eingehender_anruf_licht_start:
+    alias: Eingehender Anruf - Licht einschalten
+    sequence:                 
+      - service: light.toggle
+        entity_id: light.strahler
+      - delay:
+          seconds: 1        
+      - service: script.turn_on
+        entity_id: script.eingehender_anruf_licht_wiederholen
+        
+  eingehender_anruf_licht_wiederholen:
+    alias: Eingehender Anruf - Licht wiederholen
+    sequence:        
+      - condition: or
+        conditions:
+          - condition: state
+            entity_id: sensor.telefon
+            state: 'ringing'
+          - condition: state
+            entity_id: sensor.handy
+            state: 'incoming'      
+      - service: script.turn_on
+        entity_id: script.eingehender_anruf_licht_start         
+        
 automation:
   - alias: 'Eingehender Anruf - Telefon'
     trigger:
@@ -66,6 +91,55 @@ automation:
 #
 #            {{ '{"number": "{{ state_attr(trigger.entity_id, "from") }}", "name": "{{ state_attr(trigger.entity_id, "from_name") }}", "date": "{{ timestamp }}"}' }}
           
+  - alias: 'Eingehender Anruf - Licht starten'
+    trigger:
+      - platform: state
+        entity_id: sensor.telefon
+        to: 'ringing'
+      - platform: state
+        entity_id: sensor.handy
+        to: 'incoming'        
+    condition:
+      - condition: state
+        entity_id: input_boolean.nicht_stoeren
+        state: 'off'
+      - condition: state
+        entity_id: binary_sensor.besuch
+        state: 'off' 
+      - condition: state
+        entity_id: binary_sensor.zu_hause
+        state: 'on'        
+    action:
+      - service: scene.create
+        data_template:
+          scene_id: eingehender_anruf_licht_status
+          entities:
+            light.strahler:
+              state: "{{ states('light.strahler') }}"      
+      - service: script.eingehender_anruf_licht_start
+
+  - alias: 'Eingehender Anruf - Licht beenden'
+    trigger:
+      - platform: state
+        entity_id: sensor.telefon
+        to: 'idle'
+      - platform: state
+        entity_id: sensor.telefon
+        to: 'talking'       
+      - platform: state
+        entity_id: sensor.handy
+        to: 'idle'   
+      - platform: state
+        entity_id: sensor.handy
+        to: 'talking'           
+    condition:
+      - condition: state
+        entity_id: binary_sensor.zu_hause
+        state: 'on'     
+    action:
+      - service: scene.turn_on
+        entity_id: scene.eingehender_anruf_licht_status
+
   - alias: 'Werbeanruf - Nachricht an Handy'
     trigger:
       - platform: state

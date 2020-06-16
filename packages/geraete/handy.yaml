@@ -31,6 +31,8 @@ sensor:
             Eingehender Anruf
           {% elif is_state('sensor.handy', 'outgoing') %}
             Ausgehender Anruf
+          {% elif is_state('sensor.handy', 'talking') %}
+            Aktiver Anruf            
           {% elif is_state('sensor.handy', 'sms') %}
             Ungelesene SMS
           {% else %}
@@ -41,6 +43,8 @@ sensor:
             mdi:phone-incoming
           {% elif is_state('sensor.handy', 'outgoing') %}
             mdi:phone-outgoing
+          {% elif is_state('sensor.handy', 'talking') %}
+            mdi:phone-in-talk            
           {% elif is_state('sensor.handy', 'sms') %}
             mdi:message-alert
           {% else %}   
