@@ -8,7 +8,6 @@ synology_dsm:
   host: !secret synology_host        
   username: !secret synology_username
   password: !secret synology_password
-  ssl: false
 
 switch:
   - platform: command_line
@@ -21,17 +20,19 @@ switch:
 
 homeassistant:
   customize:
-    sensor.synology_cpu_load_total:
+    binary_sensor.diskstation_security_status:
+      friendly_name: Sicherheitsstatus
+    sensor.diskstation_cpu_load_total:
       friendly_name: CPU Leistung
-    sensor.synology_memory_usage_real:
+    sensor.diskstation_memory_usage_real:
       friendly_name: Auslastung Arbeitsspeicher
-    sensor.synology_network_up:
+    sensor.diskstation_network_up:
       friendly_name: Netzwerk Upload
-    sensor.synology_network_down:
+    sensor.diskstation_network_down:
       friendly_name: Netzwerk Download
-    sensor.synology_status_volume_1:
+    sensor.diskstation_volume_1_status:
       friendly_name: Volume Status
-    sensor.synology_volume_used_volume_1:
+    sensor.diskstation_volume_1_volume_used:
       friendly_name: Belegter Speicherplatz
 
     sensor.speedtest_download:
