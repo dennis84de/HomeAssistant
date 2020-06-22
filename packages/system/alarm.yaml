@@ -69,7 +69,11 @@ automation:
         data_template:
           echo: "flur"
           message: >-
-            "Alle Geräte werden ausgeschaltet. Auf Wiedersehen."
+            {% if is_state('binary_sensor.reinigung_heute', 'on') %}
+              "Die Wohnung wird heute gesaugt. Alle Geräte werden ausgeschaltet. Auf Wiedersehen."
+            {% else %}
+              "Alle Geräte werden ausgeschaltet. Auf Wiedersehen."
+            {% endif %}            
       - service: timer.cancel
         entity_id: timer.alles_auschalten
       - service: automation.turn_off
@@ -242,9 +246,13 @@ script:
       - service: script.radios_pausieren
       - service: !secret tts_service
         data_template:
-          echo: "flur"
+          echo: "flur"          
           message: >-
-            "Alle Geräte werden ausgeschaltet. Auf Wiedersehen."
+            {% if is_state('binary_sensor.reinigung_heute', 'on') %}
+              "Die Wohnung wird heute gesaugt. Alle Geräte werden ausgeschaltet. Auf Wiedersehen."
+            {% else %}
+              "Alle Geräte werden ausgeschaltet. Auf Wiedersehen."
+            {% endif %}               
       - service: script.alles_ausschalten   
       
   alles_ausschalten:
