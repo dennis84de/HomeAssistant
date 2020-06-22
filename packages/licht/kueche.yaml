@@ -19,6 +19,8 @@ binary_sensor:
     sensors:
       kuechenschrank_tagsueber:
         friendly_name: "Küchenschrank tagsüber"
+        entity_id:
+          - sensor.time        
         value_template: >-
           {% set hour = now().strftime("%H") | int %}
           
