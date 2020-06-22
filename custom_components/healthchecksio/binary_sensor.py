@@ -1,5 +1,5 @@
 """Binary sensor platform for Healthchecksio."""
-from homeassistant.components.binary_sensor import BinarySensorDevice
+from homeassistant.components.binary_sensor import BinarySensorEntity
 from .const import ATTRIBUTION, BINARY_SENSOR_DEVICE_CLASS, DOMAIN_DATA, DOMAIN
 
 
@@ -19,7 +19,7 @@ async def async_setup_entry(hass, config_entry, async_add_devices):
     async_add_devices(checks, True)
 
 
-class HealthchecksioBinarySensor(BinarySensorDevice):
+class HealthchecksioBinarySensor(BinarySensorEntity):
     """Healthchecksio binary_sensor class."""
 
     def __init__(self, hass, config, config_entry):

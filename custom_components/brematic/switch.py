@@ -4,7 +4,7 @@ import voluptuous as vol
 
 # Import the device class from the component that you want to support
 from homeassistant.components.switch import (
-    ENTITY_ID_FORMAT, PLATFORM_SCHEMA, SwitchDevice)
+    ENTITY_ID_FORMAT, PLATFORM_SCHEMA, SwitchEntity)
 from homeassistant.const import (
     CONF_FRIENDLY_NAME, CONF_HOST, CONF_SWITCHES, STATE_ON)
 import homeassistant.helpers.config_validation as cv
@@ -123,7 +123,7 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
     add_entities(switches)
 
 
-class BrematicSwitch(SwitchDevice, RestoreEntity):
+class BrematicSwitch(SwitchEntity, RestoreEntity):
     """Representation a switch that can be toggled using Brematic Gateway"""
 
     def __init__(self, hass, object_id, gateway, unit, friendly_name):

@@ -10,7 +10,7 @@ https://home-assistant.io/components/switch.fritzbox_wifi/
 import logging
 import voluptuous as vol
 
-from homeassistant.components.switch import (SwitchDevice, PLATFORM_SCHEMA)
+from homeassistant.components.switch import (SwitchEntity, PLATFORM_SCHEMA)
 from homeassistant.const import (
     CONF_HOST, CONF_PORT, CONF_NAME, CONF_USERNAME, CONF_PASSWORD)
 import homeassistant.helpers.config_validation as cv
@@ -58,7 +58,7 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
     add_entities([FritzBoxWifiSwitch(conn, name, interface, wlan_password)], True)
 
 
-class FritzBoxWifiSwitch(SwitchDevice):
+class FritzBoxWifiSwitch(SwitchEntity):
     """The switch class for Fritzbox WiFi switches."""
 
     def __init__(self, conn, name, interface, wlan_password):

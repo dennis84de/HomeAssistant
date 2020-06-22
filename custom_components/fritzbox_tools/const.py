@@ -10,10 +10,12 @@ CONF_USE_WIFI = "use_wifi"
 CONF_USE_PORT = "use_port"
 CONF_USE_DEFLECTIONS = "use_deflections"
 CONF_USE_DEVICES = "use_devices"
+CONF_GUEST_WIFI_PASSWORD = "wlan_password"
 
 DEFAULT_HOST = "192.168.178.1"  # set to fritzbox default
 DEFAULT_PORT = 49000  # set to fritzbox default
 DEFAULT_USERNAME = ""  # set to fritzbox default?!
+DEFAULT_GUEST_WIFI_PASSWORD = 'password'
 
 DEFAULT_USE_WIFI = True
 DEFAULT_USE_PORT = True
