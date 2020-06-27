@@ -17,8 +17,6 @@ media_player:
         playerid: !secret squeezebox_mac_schlafzimmer
       - name: "Wohnzimmer"
         playerid: !secret squeezebox_mac_wohnzimmer
-      - name: "Smarthome"
-        playerid: !secret squeezebox_mac_smarthome
       
 switch:
   - platform: edimax

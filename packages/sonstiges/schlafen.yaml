@@ -182,7 +182,7 @@ automation:
       - service: media_player.play_media
         data_template:
           entity_id:
-            - media_player.home_assistant
+            - media_player.smarthome
           media_content_id: >-
             http://192.168.2.75:8123/local/countdown/countdown_5.mp3
           media_content_type: music
@@ -198,7 +198,7 @@ automation:
         state: 'active'
     action:
       - service: media_player.media_pause
-        entity_id: media_player.home_assistant
+        entity_id: media_player.smarthome
       - service: !secret tts_service
         data_template:
           echo: "wohnzimmer"
