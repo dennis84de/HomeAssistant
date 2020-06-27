@@ -106,8 +106,11 @@ switch:
           service: script.radios_ausschalten
 
 input_boolean:
-  radio_aktiv_balkon:
+  radio_balkon_aktiv:
     name: Radio Balkon aktiv
+  radio_balkon_bewegungsmelder_deaktiviert:
+    name: Radio Balkon Bewegungsmelder deaktiviert  
+    icon: mdi:motion-sensor-off
   musik_pausiert:
     name: Musik pausiert
     initial: off
@@ -192,6 +195,9 @@ automation:
         entity_id: 'media_player.balkon'
         state: 'off'
       - condition: state
+        entity_id: 'input_boolean.radio_balkon_bewegungsmelder_deaktiviert'
+        state: 'off'        
+      - condition: state
         entity_id: 'device_tracker.pibalcony'
         state: 'home'
       - condition: template
@@ -201,7 +207,7 @@ automation:
         state: 'idle'            
     action:
       - service: input_boolean.turn_on
-        entity_id: input_boolean.radio_aktiv_balkon
+        entity_id: input_boolean.radio_balkon_aktiv
       - service: media_player.turn_on
         data:
           entity_id: media_player.balkon
@@ -213,16 +219,16 @@ automation:
         to: 'on'
     condition:
       - condition: state
-        entity_id: input_boolean.radio_aktiv_balkon
+        entity_id: input_boolean.radio_balkon_aktiv
         state: 'on'
     action:
       - service: input_boolean.turn_off
-        entity_id: input_boolean.radio_aktiv_balkon
+        entity_id: input_boolean.radio_balkon_aktiv
       - service: media_player.turn_off
         data:
           entity_id: media_player.balkon
 
-  - alias: 'Radio Balkon - Synchronisieren'
+  - alias: 'Radio Balkon - Einschalten'
     trigger:
       - platform: state
         entity_id: sensor.schalter_balkon
@@ -231,6 +237,33 @@ automation:
       - condition: state
         entity_id: switch.balkon_radio
         state: 'on'
+      - condition: state
+        entity_id: 'device_tracker.pibalcony'
+        state: 'home'   
+      - condition: state
+        entity_id: 'switch.wiedergabe_aktiv'
+        state: 'on'        
+      - condition: not
+        conditions:
+          - condition: state
+            entity_id: media_player.balkon
+            state: 'playing'                        
+    action:
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.radio_balkon_aktiv
+      - service: media_player.turn_on
+        data:
+          entity_id: media_player.balkon
+      
+  - alias: 'Radio Balkon - Synchronisieren'
+    trigger:
+      - platform: state
+        entity_id: sensor.schalter_balkon
+        to: '2'
+    condition:
+      - condition: state
+        entity_id: media_player.balkon
+        state: 'playing'
     action:
       - service: script.sync_radios
 

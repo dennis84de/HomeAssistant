@@ -119,6 +119,8 @@ cards:
         name: Licht      
       - entity: switch.balkon_radio
         name: Radio
+      - entity: input_boolean.radio_balkon_bewegungsmelder_deaktiviert
+        name: Bewegungsmelder deaktiviert
       - type: custom:mini-media-player
         entity: media_player.balkon
         hide:
