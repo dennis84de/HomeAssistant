@@ -1,0 +1,139 @@
+automation:
+  - alias: "Lautstärke Multimedia ändern"
+    trigger:
+      - platform: state
+        entity_id: input_number.sprache_lautstaerke
+    action:
+      - service: media_player.volume_set
+        data_template:
+          entity_id: media_player.smarthome
+          volume_level: >-
+            {{ states('input_number.sprache_lautstaerke') | int / 100 }}       
+
+  - alias: "Uhr - Glocke starten"
+    trigger:
+      - platform: time_pattern
+        minutes: 30
+      - platform: time_pattern
+        minutes: 00
+    condition:
+      - condition: time
+        after: '08:00'
+        before: '23:00'
+      - condition: state
+        entity_id: input_boolean.uhr_einschalten
+        state: 'on'
+      - condition: state
+        entity_id: calendar.borussia_dortmund
+        state: 'off'
+      - condition: state
+        entity_id: binary_sensor.zu_hause
+        state: 'on'
+      - condition: state
+        entity_id: binary_sensor.home_office
+        state: 'off'
+      - condition: state
+        entity_id: binary_sensor.schlafen_aktiv
+        state: 'off'        
+      - condition: template
+        value_template: '{{ is_state("media_player.kodi_wohnzimmer", "playing") == False }}'
+    action:
+      - service: media_player.play_media
+        data_template:
+          entity_id:
+            - media_player.smarthome
+          media_content_id: >-
+            {% if now().strftime("%M")|int == 30 %}
+              http://192.168.2.75:8123/local/uhr/GrandFatherChime_half.mp3
+            {% else %}
+              http://192.168.2.75:8123/local/uhr/GrandFatherChime_{{now().strftime("%I")}}.mp3
+            {% endif %}
+          media_content_type: music
+
+  - alias: 'Uhr - Glocke abbrechen'
+    trigger:
+      - platform: state
+        entity_id: input_boolean.uhr_einschalten
+        to: 'off'
+      - platform: state
+        entity_id: sensor.cube_bewegung    
+    condition:
+      - condition: or
+        conditions:
+          - condition: template
+            value_template: '{{ True if "double_tap" in trigger.to_state.state else False }}' 
+          - condition: template
+            value_template: '{{ True if trigger.entity_id == "input_boolean.uhr_einschalten" else False }}'               
+      - condition: state
+        entity_id: media_player.smarthome
+        state: 'playing'
+    action:
+      - service: media_player.media_pause
+        entity_id:
+          - media_player.smarthome
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.uhr_einschalten
+
+  - alias: "BVB - Torhymne"
+    trigger:
+      - platform: state
+        entity_id: sensor.cube_bewegung
+    condition:
+      - condition: template
+        value_template: '{{ True if "drop" in trigger.to_state.state else False }}'
+      - condition: state
+        entity_id: calendar.borussia_dortmund
+        state: 'on'
+      - condition: template
+        value_template: '{{ True if not "(T.B.A.)" in state_attr("calendar.borussia_dortmund", "message") else False }}'
+    action:
+      - service: media_player.play_media
+        data_template:
+          entity_id:
+            - media_player.smarthome
+          media_content_id: >-
+            http://192.168.2.75:8123/local/bvb/torhymne.mp3
+          media_content_type: music
+
+  - alias: "BVB - Musik starten"
+    trigger:
+      - platform: state
+        entity_id: sensor.cube_bewegung
+    condition:
+      - condition: template
+        value_template: '{{ True if "double_tap" in trigger.to_state.state else False }}'       
+      - condition: state
+        entity_id: calendar.borussia_dortmund
+        state: 'on'
+      - condition: template
+        value_template: '{{ True if not "(T.B.A.)" in state_attr("calendar.borussia_dortmund", "message") else False }}'        
+      - condition: state
+        entity_id: media_player.smarthome
+        state: 'off'
+    action:
+      - service: media_player.play_media
+        data_template:
+          entity_id:
+            - media_player.smarthome
+          media_content_id: >-
+            http://192.168.2.75:8123/local/bvb/heja_bvb.mp3
+          media_content_type: music
+
+  - alias: "BVB - Musik stoppen"
+    trigger:
+      - platform: state
+        entity_id: sensor.cube_bewegung
+    condition:
+      - condition: template
+        value_template: '{{ True if "double_tap" in trigger.to_state.state else False }}'         
+      - condition: state
+        entity_id: calendar.borussia_dortmund
+        state: 'on'
+      - condition: template
+        value_template: '{{ True if "(T.B.A.)" in state_attr("calendar.borussia_dortmund", "message") else False }}'
+      - condition: state
+        entity_id: media_player.smarthome
+        state: 'playing'
+    action:
+      - service: media_player.media_pause
+        entity_id: media_player.smarthome

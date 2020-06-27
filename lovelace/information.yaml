@@ -85,7 +85,6 @@ cards:
       - entity: sensor.aufenthaltsort_handy
       - entity: proximity.home
       - entity: sensor.letzte_bewegung
-      - entity: sensor.kommende_pakete
 
   - type: entities
     title: Benachrichtigungen
@@ -121,15 +120,20 @@ cards:
       - entity: sensor.edg_wertstoff
       - entity: sensor.edg_papier
 
-  - type: entities
-    title: Borussia Dortmund
-    show_header_toggle: false
-    entities:
+  - type: conditional
+    conditions:
       - entity: sensor.bvb_spiel
-      - entity: sensor.bvb_datum
-      - entity: sensor.bvb_uhrzeit
-      - entity: sensor.bvb_ort
-      - entity: script.sky_starten
+        state_not: "-"
+    card:
+      type: entities
+      title: Borussia Dortmund
+      show_header_toggle: false
+      entities:
+        - entity: sensor.bvb_spiel
+        - entity: sensor.bvb_datum
+        - entity: sensor.bvb_uhrzeit
+        - entity: sensor.bvb_ort
+        - entity: script.sky_starten
 
   - type: entities
     title: Arbeit
@@ -202,11 +206,6 @@ cards:
       - entity: sensor.sportzimmer_temperatur
         name: Sportzimmer
 
-  - type: 'custom:our-groceries-card'
-    title: Einkaufen    
-    entity: sensor.our_groceries
-    show_crossed_off: false
-
   - type: custom:atomic-calendar-revive
     name: Serien
     maxDaysToShow: 30
@@ -215,36 +214,16 @@ cards:
     disableEventLink: true
     entities:
       - entity: calendar.serien
-        
-  - type: entities
-    title: Formel 1
-    show_header_toggle: false
-    entities:
-      - entity: sensor.formel1_rennen
+              
+  - type: conditional
+    conditions:
       - entity: sensor.formel1_datum
-      - entity: sensor.formel1_qualifikation
-
-#  - type: entities
-#    title: Anrufliste
-#    show_header_toggle: false
-#    entities:
-#      - entity: sensor.anrufliste_call_0
-#      - entity: sensor.anrufliste_call_1
-#      - entity: sensor.anrufliste_call_2
-#      - entity: sensor.anrufliste_call_3
-#      - entity: sensor.anrufliste_call_4
-
-#  - type: entities
-#    title: Serien
-#    show_header_toggle: false
-#    entities:
-#      - entity: sensor.serien_episode_0
-#      - entity: sensor.serien_episode_1
-#      - entity: sensor.serien_episode_2
-#      - entity: sensor.serien_episode_3
-#      - entity: sensor.serien_episode_4
-#      - entity: sensor.serien_episode_5
-#      - entity: sensor.serien_episode_6
-#      - entity: sensor.serien_episode_7
-#      - entity: sensor.serien_episode_8
-#      - entity: sensor.serien_episode_9
+        state_not: "-"
+    card:
+      type: entities
+      title: Formel 1
+      show_header_toggle: false
+      entities:
+        - entity: sensor.formel1_rennen
+        - entity: sensor.formel1_datum
+        - entity: sensor.formel1_qualifikation     

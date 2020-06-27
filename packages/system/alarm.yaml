@@ -22,7 +22,7 @@ alarm_control_panel:
       arming_time: 0
 
 automation:
-  - alias: "Alles ausschalten aktivieren"
+  - alias: "Alles ausschalten - Aktivieren"
     trigger:
       - platform: state
         entity_id: sensor.schalter_flur
@@ -52,7 +52,7 @@ automation:
       - service: automation.turn_off
         entity_id: automation.alles_ausschalten_aktivieren
 
-  - alias: "Alles ausschalten"
+  - alias: "Alles ausschalten - Starten"
     initial_state: false
     trigger:
       - platform: state
@@ -82,7 +82,7 @@ automation:
         entity_id: automation.alles_ausschalten_aktivieren
       - service: script.alles_ausschalten
 
-  - alias: "Alles ausschalten deaktivieren"
+  - alias: "Alles ausschalten - Deaktivieren"
     trigger:
       platform: event
       event_type: timer.finished
@@ -99,7 +99,7 @@ automation:
         entity_id: automation.alles_ausschalten_aktivieren
       - service: script.radios_starten
 
-  - alias: "Alarm aktiviert"
+  - alias: "Alarm - Aktiviert"
     trigger:
       - platform: state
         entity_id: binary_sensor.zu_hause
@@ -110,7 +110,7 @@ automation:
       - service: alarm_control_panel.alarm_arm_away
         entity_id: alarm_control_panel.alarm
 
-  - alias: "Alarm ausgelöst"
+  - alias: "Alarm - Ausgelöst"
     trigger:
       - platform: state
         entity_id: binary_sensor.tuersensor
@@ -126,7 +126,7 @@ automation:
       service: alarm_control_panel.alarm_trigger
       entity_id: alarm_control_panel.alarm
 
-  - alias: "Alarm Nachricht"
+  - alias: "Alarm - Nachricht Telegram"
     trigger:
       - platform: state
         entity_id: alarm_control_panel.alarm
@@ -137,7 +137,7 @@ automation:
         title: "Alarm"
         message: "Der Alarm in der Wohnung wurde ausgelöst."
 
-  - alias: "Alarm - Bewegung"
+  - alias: "Alarm - Nachricht Bewegungsmelder"
     trigger:
       - platform: state
         entity_id: binary_sensor.bewegungsmelder_badezimmer
@@ -193,7 +193,7 @@ automation:
             Eine sonstige Bewegung wurde erkannt.
           {% endif %}
 
-  - alias: "Alarm - Fenster"
+  - alias: "Alarm - Nachricht Fenster"
     trigger:
       - platform: state
         entity_id: binary_sensor.fenster_balkontuer

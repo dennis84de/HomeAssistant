@@ -1,5 +1,3 @@
-speedtestdotnet:
-
 shell_command:
   pihole_enable: !secret pi_hole_enable
   pihole_disable: !secret pi_hole_disable
@@ -37,11 +35,6 @@ binary_sensor:
          {{'OFF'}}
       {% endif %}
 
-synology_dsm:
-  host: !secret synology_host        
-  username: !secret synology_username
-  password: !secret synology_password
-
 switch:
   - platform: template
     switches:
@@ -76,26 +69,6 @@ switch:
 
 homeassistant:
   customize:
-    binary_sensor.diskstation_security_status:
-      friendly_name: Sicherheitsstatus
-    sensor.diskstation_cpu_load_total:
-      friendly_name: CPU Leistung
-    sensor.diskstation_memory_usage_real:
-      friendly_name: Auslastung Arbeitsspeicher
-    sensor.diskstation_network_up:
-      friendly_name: Netzwerk Upload
-    sensor.diskstation_network_down:
-      friendly_name: Netzwerk Download
-    sensor.diskstation_volume_1_status:
-      friendly_name: Volume Status
-    sensor.diskstation_volume_1_volume_used:
-      friendly_name: Belegter Speicherplatz
-
-    sensor.speedtest_download:
-      icon: mdi:download-network
-    sensor.speedtest_upload:
-      icon: mdi:upload-network
-
     sensor.pi_hole_ads_blocked_today:
       friendly_name: Anfragen blockiert
     sensor.pi_hole_ads_percentage_blocked_today:

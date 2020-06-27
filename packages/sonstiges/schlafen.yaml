@@ -256,6 +256,9 @@ automation:
         entity_id: input_boolean.schlafen_aktiv
         state: 'on'
       - condition: state
+        entity_id: input_boolean.wecker_erinnerung_morgen
+        state: 'off'                
+      - condition: state
         entity_id: binary_sensor.arbeitstag_morgen
         state: 'on'         
       - condition: state
@@ -265,38 +268,54 @@ automation:
         entity_id: sensor.tablet_weckzeit
         state: '-'                
     action:
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.wecker_erinnerung_morgen      
       - service: !secret tts_service
         data_template:
           echo: "schlafzimmer"
           message: "Für morgen ist noch kein Wecker gestellt."
 
-#  - alias: "Schlafen gehen - Wecker gestellt"
-#    trigger:
-#      - platform: state
-#        entity_id: binary_sensor.bewegungsmelder_schlafzimmer
-#        to: 'on'
-#    condition:
-#      - condition: state
-#        entity_id: input_boolean.schlafen_aktiv
-#        state: 'on'     
-#      - condition: not
-#        conditions:
-#          - condition: state
-#            entity_id: sensor.tablet_weckzeit
-#            state: '-'
-#      - condition: or
-#        conditions:
-#          - condition: state
-#            entity_id: binary_sensor.arbeitstag_morgen
-#            state: 'off'         
-#          - condition: state
-#            entity_id: binary_sensor.urlaub_morgen
-#            state: 'on'          
-#    action:
-#      - service: !secret tts_service
-#        data_template:
-#          echo: "schlafzimmer"
-#          message: "Der Wecker für morgen ist noch gestellt."
+  - alias: "Schlafen gehen - Wecker gestellt"
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.bewegungsmelder_schlafzimmer
+        to: 'on'
+    condition:
+      - condition: state
+        entity_id: input_boolean.schlafen_aktiv
+        state: 'on'     
+      - condition: state
+        entity_id: input_boolean.wecker_erinnerung_morgen
+        state: 'off'        
+      - condition: or
+        conditions:
+          - condition: state
+            entity_id: binary_sensor.arbeitstag_morgen
+            state: 'off'         
+          - condition: state
+            entity_id: binary_sensor.urlaub_morgen
+            state: 'on'            
+      - condition: template
+        value_template: >-
+          {% set wecker_zeit = states('sensor.tablet_weckzeit') %}          
+          {% set wecker_tag = state_attr('sensor.tablet_weckzeit', 'day') %}
+          {% set heute_tag = now().today().day %}
+          {% set nach_mitternacht = now().today().hour < 6 %}
+          
+          {% if wecker_zeit == None or wecker_zeit == '-' or wecker_zeit == 'unknown' %}
+            False
+          {% elif nach_mitternacht == False and wecker_tag == heute_tag + 1 %}
+            True
+          {% elif nach_mitternacht == True and wecker_tag == heute_tag %}    
+            True
+          {% endif %}      
+    action:
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.wecker_erinnerung_morgen
+      - service: !secret tts_service
+        data_template:
+          echo: "schlafzimmer"
+          message: "Der Wecker für morgen ist noch gestellt."
 
   - alias: 'Sleeptimer starten'
     trigger:

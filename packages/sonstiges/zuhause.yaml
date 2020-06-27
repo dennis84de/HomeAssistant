@@ -234,7 +234,7 @@ automation:
     action:
       - service: script.zu_hause_home_office
 
-  - alias: "Zu Hause - Geräte einschalten - abends"
+  - alias: "Zu Hause - Geräte einschalten - Abends"
     trigger:
       - platform: state
         entity_id: binary_sensor.zu_hause

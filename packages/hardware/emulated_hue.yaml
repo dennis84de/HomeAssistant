@@ -1,5 +1,5 @@
 emulated_hue:
-  host_ip: 192.168.2.75
+  host_ip: !secret homeassistant_host
   listen_port: 80
   exposed_domains:
     - switch

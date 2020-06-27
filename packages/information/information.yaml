@@ -6,10 +6,6 @@ tankerkoenig:
   stations:
     - !secret tankerkoenig_id_real
     - !secret tankerkoenig_id_jet
-
-ourgroceries:
-  username: !secret our_groceries_username
-  password: !secret our_groceries_password
   
 sensor:
   - platform: imap
@@ -29,13 +25,6 @@ sensor:
     name: 'Einkaufen'
     labels:
       - 'Einkaufen'
-      
-#  - platform: seventeentrack
-#    username: !secret 17track_name
-#    password: !secret 17track_password
-
-#  - platform: aftership  
-#    api_key: !secret aftership_apikey    
     
   - platform: template
     sensors:
@@ -68,21 +57,6 @@ sensor:
           {% else %}
             {{ price }}
           {% endif %}
-          
-      kommende_pakete:
-        friendly_name: 'Kommende Pakete'
-        entity_id:
-          - sensor.aftership
-        value_template: >-
-          {% set pakete = states('sensor.aftership') | int %}
-
-          {% if pakete == 0 %}
-            -
-          {% else %}
-            {{ pakete }}
-          {% endif %}
-        icon_template: >-
-          mdi:truck-delivery
 
 binary_sensor:
   - platform: workday
@@ -165,7 +139,7 @@ panel_iframe:
   infoscreen:
     title: Infoscreen
     icon: mdi:information
-    url: http://192.168.2.74/infoscreen/
+    url: http://192.168.2.100/infoscreen/
 
 homeassistant:
   customize:

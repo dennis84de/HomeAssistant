@@ -641,8 +641,6 @@ homeassistant:
 
     sensor.co2_intensity_51_49_7_36:
       friendly_name: CO2 Belastung
-    sensor.gdacs_51_485918_7_361026:
-      friendly_name: Katastrophenalarm
     
     sensor.pollen_41_today_birke:
       friendly_name: Birke
@@ -650,3 +648,14 @@ homeassistant:
       friendly_name: Gräser
     sensor.pollen_41_today_roggen:
       friendly_name: Roggen
+      
+  customize_glob:
+    sensor.*_absolutehumidity:
+      friendly_name: Luftfeuchtigkeit absolut
+    sensor.*_dewpoint:
+      friendly_name: Taupunkt
+    sensor.*_heatindex:
+      friendly_name: Wärme Index
+    sensor.*_perception:
+      friendly_name: Wahrnehmung
+      icon: mdi:weather-cloudy    

@@ -2,7 +2,8 @@ input_boolean:
   nicht_stoeren:
     name: Nicht stören
     initial: off
-
+    icon: mdi:do-not-disturb
+    
 sensor:
   - platform: mqtt
     name: "Handy Batterie"
@@ -80,12 +81,7 @@ automation:
           payload: '{{ state_attr(trigger.entity_id, "number") }}'          
           topic: phone/last_call
           retain: true
-#          payload: >-
-#            {% set date = state_attr(trigger.entity_id, "date") %}
-#            {% set time = state_attr(trigger.entity_id, "time") %}
-#   
-#            {{ '{"number": "{{ state_attr(trigger.entity_id, "number") }}", "name": "{{ state_attr(trigger.entity_id, "name") }}", "date": "{{ date }} {{ time }}"}' }}
-          
+
   - alias: 'Handy aktiv - Kodi pausieren'
     trigger:
       - platform: state
@@ -416,5 +412,3 @@ homeassistant:
       friendly_name: Handy
     sensor.handy:
       friendly_name: Handy Status
-    input_boolean.nicht_stoeren:
-      icon: mdi:do-not-disturb

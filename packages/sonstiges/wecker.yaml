@@ -37,6 +37,10 @@ input_boolean:
     name: Wecker überspringen
     initial: off
     icon: mdi:alarm-off
+    
+  wecker_erinnerung_morgen:
+    name: Erinnerung morgen
+    initial: off
 
 binary_sensor:
   - platform: template
@@ -216,7 +220,7 @@ automation:
                       {% endif %}
     action:
       - service: input_boolean.turn_off
-        entity_id: input_boolean.schlafen_aktiv, input_boolean.alarm_aktiv
+        entity_id: input_boolean.schlafen_aktiv, input_boolean.alarm_aktiv, input_boolean.wecker_erinnerung_morgen
       - service: light.turn_off
         entity_id: light.bett
 
@@ -317,7 +321,7 @@ script:
           effect: colorloop
       - service: switch.turn_on
         entity_id: switch.schlafzimmer_radio               
-      - delay: 00:{{ states('input_number.alarmdelay') | int }}:00
+      - delay: "00:{{ states('input_number.alarmdelay') | int }}:00"
       - service: switch.turn_on
         entity_id: switch.computer      
       - service: script.wohnung_radios_einschalten

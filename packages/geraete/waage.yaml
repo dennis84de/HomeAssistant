@@ -30,8 +30,3 @@ sensor:
   - platform: statistics
     entity_id: sensor.gewicht
     name: "Gewicht Durchschnitt"
-
-homeassistant:
-  customize:
-    sensor.gewicht_durchschnitt:
-      friendly_name: Durchschnitt

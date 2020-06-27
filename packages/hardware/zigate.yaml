@@ -2,6 +2,7 @@ zigate:
   port: /dev/ttyUSB0
   channel: 24
   enable_led : false
+  admin_panel: true
 
 input_number:
   zigate_offline_puffer:
@@ -127,3 +128,17 @@ automation:
                 Unbekannt
               {% endif %}               
             {% endif %}
+            
+
+homeassistant:
+  customize:
+    binary_sensor.tuersensor:
+      device_class: door
+      
+  customize_glob:
+    binary_sensor.bewegungsmelder_*:
+      device_class: motion
+      
+    sensor.helligkeit_*:
+      device_class: illuminance
+    

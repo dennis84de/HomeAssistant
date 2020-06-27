@@ -13,6 +13,11 @@ device_tracker:
     payload_not_home: 'OFF'
     source_type: router
 
+sensor:
+  - platform: openhardwaremonitor
+    host: !secret computer_host
+    port: 8580
+    
 switch:
   - platform: template
     switches:
@@ -21,6 +26,7 @@ switch:
         entity_id:
           - device_tracker.pc
         value_template: "{{ is_state('device_tracker.pc', 'home') }}"
+        icon_template: mdi:desktop-tower
         turn_on:
           service: wake_on_lan.send_magic_packet
           data:
@@ -35,8 +41,8 @@ switch:
         friendly_name: Computer
         entity_id:
           - device_tracker.pc
-        value_template: >-
-          {{ is_state('switch.pc', 'on') and is_state('switch.monitor', 'on') }}
+        value_template: "{{ is_state('switch.pc', 'on') and is_state('switch.monitor', 'on') }}"
+        icon_template: mdi:desktop-classic
         turn_on:
           service: switch.turn_on
           entity_id: switch.monitor, switch.pc
@@ -81,13 +87,65 @@ automation:
           target: '{{ trigger.event.data.chat_id }}'
           message: "Der Computer wird ausgeschaltet."
           
+
 homeassistant:
   customize:
-    switch.computer:
-      icon: mdi:desktop-classic
-    switch.pc:
-      friendly_name: PC
-      icon: mdi:desktop-tower
+    sensor.computer_generic_hard_disk_load_used_space:
+      friendly_name: SSD Speicherplatz
+      icon: mdi:nas
+    sensor.computer_generic_memory_data_available_memory:
+      friendly_name: Arbeitsspeicher verfügbar
+    sensor.computer_generic_memory_data_used_memory:
+      friendly_name: Arbeitsspeicher genutzt   
+    sensor.computer_generic_memory_load_memory:
+      friendly_name: RAM Auslastung
+      icon: mdi:speedometer-medium
+      
+    sensor.computer_intel_core_i5_8259u_clocks_bus_speed:
+      friendly_name: CPU Bus Speed
+    sensor.computer_intel_core_i5_8259u_clocks_cpu_core_1:
+      friendly_name: CPU Bus Speed Core 1
+    sensor.computer_intel_core_i5_8259u_clocks_cpu_core_2:
+      friendly_name: CPU Bus Speed Core 2
+    sensor.computer_intel_core_i5_8259u_clocks_cpu_core_3:
+      friendly_name: CPU Bus Speed Core 3
+    sensor.computer_intel_core_i5_8259u_clocks_cpu_core_4:
+      friendly_name: CPU Bus Speed Core 4
+      
+    sensor.computer_intel_core_i5_8259u_load_cpu_total:
+      friendly_name: CPU Auslastung
+      icon: mdi:speedometer-slow
+    sensor.computer_intel_core_i5_8259u_load_cpu_core_1:
+      friendly_name: CPU Load Core 1
+    sensor.computer_intel_core_i5_8259u_load_cpu_core_2:
+      friendly_name: CPU Load Core 2
+    sensor.computer_intel_core_i5_8259u_load_cpu_core_3:
+      friendly_name: CPU Load Core 3
+    sensor.computer_intel_core_i5_8259u_load_cpu_core_4:
+      friendly_name: CPU Load Core 4
 
-    binary_sensor.computer_status:
-      friendly_name: Computer
+    sensor.computer_intel_core_i5_8259u_powers_cpu_cores:
+      friendly_name: Leistung Cores
+    sensor.computer_intel_core_i5_8259u_powers_cpu_dram:
+      friendly_name: Leistung DRAM
+    sensor.computer_intel_core_i5_8259u_powers_cpu_graphics:
+      friendly_name: Leistung Grafik
+    sensor.computer_intel_core_i5_8259u_powers_cpu_package:
+      friendly_name: Leistung CPU
+
+    sensor.computer_intel_core_i5_8259u_temperatures_cpu_package:
+      friendly_name: CPU Temperatur
+    sensor.computer_intel_core_i5_8259u_temperatures_cpu_core_1:
+      friendly_name: CPU Temperatur Core 1
+    sensor.computer_intel_core_i5_8259u_temperatures_cpu_core_2:
+      friendly_name: CPU Temperatur Core 2
+    sensor.computer_intel_core_i5_8259u_temperatures_cpu_core_3:
+      friendly_name: CPU Temperatur Core 3
+    sensor.computer_intel_core_i5_8259u_temperatures_cpu_core_4:
+      friendly_name: CPU Temperatur Core 4
+        
+    sensor.computer_wdc_wd20spzx_22ua7t0_load_used_space:
+      icon: mdi:harddisk
+      friendly_name: HDD Speicherplatz      
+    sensor.computer_wdc_wd20spzx_22ua7t0_temperatures_temperature:      
+      friendly_name: HDD Temperatur

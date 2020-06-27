@@ -308,7 +308,7 @@ automation:
       - service: vacuum.return_to_base
         entity_id: vacuum.xiaomi_vacuum_cleaner
         
-  - alias: "Staubsauger - Raum reinigen"    
+  - alias: "Staubsaugen - Raum reinigen"    
     trigger:
       - platform: state
         entity_id: input_select.staubsauger_raumauswahl
@@ -338,7 +338,7 @@ automation:
           entity_id: input_select.staubsauger_raumauswahl
           option: "Raum auswählen"        
         
-  - alias: "Staubsauger - Bereits aktiv"    
+  - alias: "Staubsaugen - Bereits aktiv"    
     trigger:
       - platform: state
         entity_id: input_select.staubsauger_raumauswahl

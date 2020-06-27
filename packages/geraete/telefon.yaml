@@ -34,9 +34,7 @@ sensor:
         -
       {% else %}
         {{ value }}
-      {% endif %}
-#    json_attributes_topic: "phone/last_call"
-#    json_attributes_template: "{{ value_json | tojson }}"            
+      {% endif %}        
     icon: mdi:phone-classic
     
   - platform: phonebook
@@ -44,6 +42,10 @@ sensor:
       werbeanruf:
         entity_id: sensor.letzter_anruf
         friendly_name: "Werbeanruf"
+   
+input_boolean:
+  licht_aktiv:
+    name: Licht aktiv
     
 script:
   eingehender_anruf_licht_start:
@@ -85,12 +87,7 @@ automation:
           payload: '{{ state_attr(trigger.entity_id, "from") }}'          
           topic: phone/last_call
           retain: true
-#          payload: >-
-#            {% set date = state_attr(trigger.entity_id, "initiated") %}           
-#            {% set timestamp = as_timestamp(date) | timestamp_custom("%d.%m.%Y %H:%M") | string %}
-#
-#            {{ '{"number": "{{ state_attr(trigger.entity_id, "from") }}", "name": "{{ state_attr(trigger.entity_id, "from_name") }}", "date": "{{ timestamp }}"}' }}
-          
+
   - alias: 'Eingehender Anruf - Licht starten'
     trigger:
       - platform: state
@@ -115,7 +112,9 @@ automation:
           scene_id: eingehender_anruf_licht_status
           entities:
             light.strahler:
-              state: "{{ states('light.strahler') }}"      
+              state: "{{ states('light.strahler') }}"     
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.licht_aktiv
       - service: script.eingehender_anruf_licht_start
 
   - alias: 'Eingehender Anruf - Licht beenden'
@@ -136,7 +135,12 @@ automation:
       - condition: state
         entity_id: binary_sensor.zu_hause
         state: 'on'     
+      - condition: state
+        entity_id: input_boolean.licht_aktiv
+        state: 'on'             
     action:
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.licht_aktiv
       - service: scene.turn_on
         entity_id: scene.eingehender_anruf_licht_status
 

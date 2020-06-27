@@ -113,7 +113,6 @@ input_boolean:
     icon: mdi:motion-sensor-off
   musik_pausiert:
     name: Musik pausiert
-    initial: off
 
 binary_sensor:
   - platform: template
@@ -139,7 +138,7 @@ binary_sensor:
           {% endif %}
 
 automation:
-  - alias: "Radio Balkon - Einschalten"
+  - alias: 'Radio Balkon - Einschalten'
     trigger:
       - platform: state
         entity_id: binary_sensor.zu_hause
@@ -228,7 +227,7 @@ automation:
         data:
           entity_id: media_player.balkon
 
-  - alias: 'Radio Balkon - Einschalten'
+  - alias: 'Radio Balkon - Starten'
     trigger:
       - platform: state
         entity_id: sensor.schalter_balkon

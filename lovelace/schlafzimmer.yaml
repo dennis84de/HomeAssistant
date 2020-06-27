@@ -71,6 +71,7 @@ cards:
     show_header_toggle: false
     entities:
       - entity: switch.schlafzimmer_fernseher
+        name: Fernseher
       - entity: switch.schlafzimmer_radio
 
   - type: entities

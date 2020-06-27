@@ -1,9 +1,0 @@
-sensor.*_absolutehumidity:
-  friendly_name: Luftfeuchtigkeit absolut
-sensor.*_dewpoint:
-  friendly_name: Taupunkt
-sensor.*_heatindex:
-  friendly_name: Wärme Index
-sensor.*_perception:
-  friendly_name: Wahrnehmung
-  icon: mdi:weather-cloudy

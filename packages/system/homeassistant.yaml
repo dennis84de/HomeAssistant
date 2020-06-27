@@ -1,6 +1,4 @@
 http:
-#  ssl_certificate: /home/homeassistant/.homeassistant/ha_certificate.pem
-#  ssl_key: /home/homeassistant/.homeassistant/ha_privatekey.pem  
 config:
 websocket_api:
 api:
@@ -8,7 +6,12 @@ frontend:
 mobile_app:
 scene:
 saver:
-
+discovery:
+wake_on_lan:
+system_health:
+python_script:
+map:
+  
 lovelace:
   mode: yaml
   resources:
@@ -43,24 +46,12 @@ lovelace:
       
 browser_mod:
   prefix: "browser_"
-  devices:
-    cdc4e312_9eb8b4c5:
-      name: Firefox
-      disable:
-        - light
-        - media_player
   disable:
     - all  
   
-discovery:
-wake_on_lan:
-system_health:
-
 breaking_changes:
   name: Wichtige Änderungen
 
-python_script:
-map:
 zone:
   - name: Zu Hause
     latitude: !secret home_latitude
@@ -119,10 +110,6 @@ sensor:
       - type: memory_use_percent
       - type: processor_use
       - type: last_boot
-
-  - platform: openhardwaremonitor
-    host: !secret computer_host
-    port: 8580
 
   - platform: template
     sensors:
@@ -196,7 +183,7 @@ automation:
           echo: "wohnzimmer"
           message: "Während des Neustarts ist ein Fehler aufgetreten."
 
-  - alias: "Home Assistant neugestartet - Handy"
+  - alias: "Home Assistant neugestartet - Telegram"
     trigger:
       - platform: homeassistant
         event: start
@@ -249,6 +236,7 @@ homeassistant:
     sensor.database_size:
       friendly_name: Größe Datenbank
       icon: mdi:database
+      
     sensor.hass_installed_version:
       friendly_name: Installierte Version
       icon: mdi:shield-check
@@ -263,63 +251,3 @@ homeassistant:
     sensor.rpi_power_status:
       friendly_name: Power Status
       icon: mdi:power-plug
-
-    sensor.computer_generic_hard_disk_load_used_space:
-      friendly_name: SSD Speicherplatz
-      icon: mdi:nas
-    sensor.computer_generic_memory_data_available_memory:
-      friendly_name: Arbeitsspeicher verfügbar
-    sensor.computer_generic_memory_data_used_memory:
-      friendly_name: Arbeitsspeicher genutzt   
-    sensor.computer_generic_memory_load_memory:
-      friendly_name: RAM Auslastung
-      icon: mdi:speedometer-medium
-      
-    sensor.computer_intel_core_i5_8259u_clocks_bus_speed:
-      friendly_name: CPU Bus Speed
-    sensor.computer_intel_core_i5_8259u_clocks_cpu_core_1:
-      friendly_name: CPU Bus Speed Core 1
-    sensor.computer_intel_core_i5_8259u_clocks_cpu_core_2:
-      friendly_name: CPU Bus Speed Core 2
-    sensor.computer_intel_core_i5_8259u_clocks_cpu_core_3:
-      friendly_name: CPU Bus Speed Core 3
-    sensor.computer_intel_core_i5_8259u_clocks_cpu_core_4:
-      friendly_name: CPU Bus Speed Core 4
-      
-    sensor.computer_intel_core_i5_8259u_load_cpu_total:
-      friendly_name: CPU Auslastung
-      icon: mdi:speedometer-slow
-    sensor.computer_intel_core_i5_8259u_load_cpu_core_1:
-      friendly_name: CPU Load Core 1
-    sensor.computer_intel_core_i5_8259u_load_cpu_core_2:
-      friendly_name: CPU Load Core 2
-    sensor.computer_intel_core_i5_8259u_load_cpu_core_3:
-      friendly_name: CPU Load Core 3
-    sensor.computer_intel_core_i5_8259u_load_cpu_core_4:
-      friendly_name: CPU Load Core 4
-
-    sensor.computer_intel_core_i5_8259u_powers_cpu_cores:
-      friendly_name: Leistung Cores
-    sensor.computer_intel_core_i5_8259u_powers_cpu_dram:
-      friendly_name: Leistung DRAM
-    sensor.computer_intel_core_i5_8259u_powers_cpu_graphics:
-      friendly_name: Leistung Grafik
-    sensor.computer_intel_core_i5_8259u_powers_cpu_package:
-      friendly_name: Leistung CPU
-
-    sensor.computer_intel_core_i5_8259u_temperatures_cpu_package:
-      friendly_name: CPU Temperatur
-    sensor.computer_intel_core_i5_8259u_temperatures_cpu_core_1:
-      friendly_name: CPU Temperatur Core 1
-    sensor.computer_intel_core_i5_8259u_temperatures_cpu_core_2:
-      friendly_name: CPU Temperatur Core 2
-    sensor.computer_intel_core_i5_8259u_temperatures_cpu_core_3:
-      friendly_name: CPU Temperatur Core 3
-    sensor.computer_intel_core_i5_8259u_temperatures_cpu_core_4:
-      friendly_name: CPU Temperatur Core 4
-        
-    sensor.computer_wdc_wd20spzx_22ua7t0_load_used_space:
-      icon: mdi:harddisk
-      friendly_name: HDD Speicherplatz      
-    sensor.computer_wdc_wd20spzx_22ua7t0_temperatures_temperature:      
-      friendly_name: HDD Temperatur     

@@ -4,10 +4,6 @@ calendar:
     username: !secret nextcloud_username
     password: !secret nextcloud_password
 
-#  - platform: microsoft_todo
-#    client_id: !secret microsoft_todo_clientid
-#    client_secret: !secret microsoft_todo_secret
-    
 google:
   client_id: !secret google_clientid
   client_secret: !secret google_apikey
@@ -26,11 +22,6 @@ binary_sensor:
           {{ nextVacation.strftime('%j')|int - now().strftime('%j')|int == 1 }}
 
 sensor:
-#  - platform: myepisodes
-#    name: "Serien"
-#    username: !secret myepisodes_username
-#    password: !secret myepisodes_password
-
   - platform: template
     sensors:
       edg_restmuell:
@@ -138,7 +129,7 @@ sensor:
           {% elif location != None and location != '' %}
             {{ location[1] }} ({{ location[0].strip() }})
           {% else %}
-            --
+            -
           {% endif %}
         icon_template: mdi:car-sports
 

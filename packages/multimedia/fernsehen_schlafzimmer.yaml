@@ -152,4 +152,3 @@ homeassistant:
       icon: mdi:television-classic
     switch.schlafzimmer_fernseher:
       icon: mdi:television
-      friendly_name: Fernseher

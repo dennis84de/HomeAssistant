@@ -23,11 +23,6 @@ homeassistant:
     switch.trockner:
       icon: mdi:tumble-dryer
 
-    switch.badezimmer_radio:
-      icon: mdi:radio
-    switch.kuche_radio:
-      icon: mdi:radio
-    switch.flur_radio:
-      icon: mdi:radio
-    switch.arbeitszimmer_radio:
+  customize_glob:
+    switch.*_radio:
       icon: mdi:radio
