@@ -491,36 +491,74 @@ automation:
 
             Die Balkontür sollte geschlossen werden. Auf dem Balkon ist es {{ temperaturBalkon | round() }} Grad warm und damit {{ difference }} Grad wärmer als im Wohnzimmer.
 
-  - alias: 'Wetterwarnung'
+  - alias: 'Wetterwarnung - TTS'
     trigger:
       - entity_id: sensor.wetterwarnungen_current_warning_level
         platform: state
+      - entity_id: sensor.wetterwarnungen_advance_warning_level
+        platform: state        
     condition:
       - condition: state
         entity_id: binary_sensor.zu_hause
         state: 'on'
       - condition: template
-        value_template: '{{ is_state("sensor.wetterwarnungen_current_warning_level", "0") == False }}'
+        value_template: >-
+            {% set current_count = state_attr("sensor.wetterwarnungen_current_warning_level", "warning_count") %}
+            {% set advance_count = state_attr("sensor.wetterwarnungen_advance_warning_level", "warning_count") %}
+            
+            {{ True if current_count != 0 or advance_count != 0 else False }} 
       - condition: template     
         value_template: '{{ trigger.from_state.state != trigger.to_state.state }}'
     action:
       - service: !secret tts_service
         data_template:
           message: >-
-            {% if state_attr('sensor.wetterwarnungen_current_warning_level','warning_count') | int == 0 or state_attr('sensor.wetterwarnungen_current_warning_level','warning_1_headline') == None %}
+            {% set current_count = state_attr("sensor.wetterwarnungen_current_warning_level", "warning_count") %}
+            {% set advance_count = state_attr("sensor.wetterwarnungen_advance_warning_level", "warning_count") %}
+            
+            {% if current_count == 0 and advance_count == 0 %}
               Aktuell liegt keine Wetterwarnung vor.
             {% else %}
-              {% set headline1 = state_attr('sensor.wetterwarnungen_current_warning_level','warning_1_headline') %}
-              {% set description1 = state_attr('sensor.wetterwarnungen_current_warning_level','warning_1_description') | replace('°C', 'Grad') %}
-              {% set instruction1 = state_attr('sensor.wetterwarnungen_current_warning_level','warning_1_instruction') %}
+              Achtung!
+              {% for i in range(current_count) %}
+                {% set headline = state_attr("sensor.wetterwarnungen_current_warning_level", "warning_" ~ loop.index ~ "_headline") %}
+                {% set description = state_attr("sensor.wetterwarnungen_current_warning_level", "warning_" ~ loop.index ~ "_description") %}
+                         
+                {% if headline != None %} {{ headline }}. {% endif %} {% if description != None %} {{ description }} {% endif %}
+              {% endfor %}
               
-              {% set headline2 = state_attr('sensor.wetterwarnungen_current_warning_level','warning_2_headline') %}
-              {% set description2 = state_attr('sensor.wetterwarnungen_current_warning_level','warning_2_description') | replace('°C', 'Grad') %}
-              {% set instruction2 = state_attr('sensor.wetterwarnungen_current_warning_level','warning_2_instruction') %}
-                            
-              Achtung! {{ headline1 }}. {{ description1 }} {% if instruction1 != None %} {{ instruction1 }} {% endif %} {% if headline2 != None and description2 != None %} {{ headline2 }}. {{ description2 }} {% if instruction2 != None %} {{ instruction2 }} {% endif %} {% endif %}
-            {% endif %}
+              {% for i in range(current_count) %}
+                {% set headline = state_attr("sensor.wetterwarnungen_advance_warning_level", "warning_" ~ loop.index ~ "_headline") %}
+                {% set description = state_attr("sensor.wetterwarnungen_advance_warning_level", "warning_" ~ loop.index ~ "_description") %}
+          
+                {% if headline != None %} {{ headline }}. {% endif %} {% if description != None %} {{ description }} {% endif %}
+              {% endfor %}              
+            {% endif %}             
 
+  - alias: 'Wetterwarnung - Telegram'
+    trigger:
+      - entity_id: sensor.wetterwarnungen_current_warning_level
+        platform: state
+      - entity_id: sensor.wetterwarnungen_advance_warning_level
+        platform: state        
+    condition:
+      - condition: state
+        entity_id: binary_sensor.zu_hause
+        state: 'off'
+      - condition: template
+        value_template: >-
+            {% set current_count = state_attr("sensor.wetterwarnungen_current_warning_level", "warning_count") %}
+            {% set advance_count = state_attr("sensor.wetterwarnungen_advance_warning_level", "warning_count") %}
+            
+            {{ True if current_count != 0 or advance_count != 0 else False }}       
+      - condition: template     
+        value_template: '{{ trigger.from_state.state != trigger.to_state.state }}'
+    action:
+      - service: telegram_bot.send_photo
+        data_template:
+          caption: 'Wetterwarnung'
+          url: 'http://192.168.2.75:8123/api/camera_proxy/camera.dortmund?token={{ state_attr("camera.dortmund", "access_token") }}'
+          
 homeassistant:
   customize:
     sun.sun:
