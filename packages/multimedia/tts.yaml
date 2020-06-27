@@ -102,20 +102,7 @@ automation:
         data_template:
           entity_id: media_player.smarthome
           volume_level: >-
-            {{ states('input_number.sprache_lautstaerke') | int / 100 }}
-
-  - alias: "Lautstärke Multimedia einstellen"
-    trigger:
-      - platform: homeassistant
-        event: start
-    action:
-      - service: input_number.set_value
-        data_template:
-          entity_id: input_number.sprache_lautstaerke
-          value: >-
-            {% set volumeLevel = state_attr('media_player.smarthome', 'volume_level') %}
-
-            {{ (volumeLevel * 100 | int) if volumeLevel else 0 }}            
+            {{ states('input_number.sprache_lautstaerke') | int / 100 }}       
 
   - alias: "Uhr - Glocke starten"
     trigger:
