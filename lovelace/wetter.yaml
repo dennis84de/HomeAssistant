@@ -105,7 +105,7 @@ cards:
   - type: markdown
     title: Wetterwarnungen
     content: >-
-      {% set level_colors = ["#c5e566", "#ffeb3b", "#fb8c00", "#e53935", "#880e4f"] %}
+      {% set level_colors = {0:'#c5e566', 1:'#ffeb3b', 2:'#fb8c00', 3:'#e53935', 4:'#880e4f', 20:'#fe68fe'} %}
       {% set current_count = state_attr("sensor.wetterwarnungen_current_warning_level", "warning_count") %}
       {% set advance_count = state_attr("sensor.wetterwarnungen_advance_warning_level", "warning_count") %}
       {% if ((current_count == 0 or current_count == None) and (advance_count == 0 or advance_count == None)) %}
@@ -119,7 +119,7 @@ cards:
           {% set weekday_start = as_timestamp(time_start) | timestamp_custom("%w", True) | int %}
           {% set time_end = state_attr("sensor.wetterwarnungen_current_warning_level", "warning_" ~ loop.index ~ "_end") %}
           {% set weekday_end = as_timestamp(time_end) | timestamp_custom("%w", True) | int %}
-        **<font color={{ level_colors[level] }}>{{ headline }}</font>**
+        **<font color={{ level_colors[level] if level_colors[level] is defined else level_colors[1] }}>{{ headline }}</font>**
         {{ ['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'][weekday_start-1] }}, {{ time_start.strftime("%H:%M") }} - {{ ['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'][weekday_end-1] }}, {{ time_end.strftime("%H:%M") }}        
         *{{ description }}*
         {% if not loop.last %}***{% endif %}
@@ -133,7 +133,7 @@ cards:
           {% set weekday_start = as_timestamp(time_start) | timestamp_custom("%w", True) | int %}
           {% set time_end = state_attr("sensor.sensor.wetterwarnungen_advance_warning_level", "warning_" ~ loop.index ~ "_end") %}
           {% set weekday_end = as_timestamp(time_end) | timestamp_custom("%w", True) | int %}
-        **<font color={{ level_colors[level] }}>{{ headline }}</font>**
+        **<font color={{ level_colors[level] if level_colors[level] is defined else level_colors[1]  }}>{{ headline }}</font>**
         {{ ['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'][weekday_start-1] }}, {{ time_start.strftime("%H:%M") }} - {{ ['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'][weekday_end-1] }}, {{ time_end.strftime("%H:%M") }}
         *{{ description }}*
         {% if not loop.last %}***{% endif %}
