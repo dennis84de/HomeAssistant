@@ -1,3 +1,4 @@
+import logging
 import hashlib
 import homeassistant.helpers.config_validation as cv
 import voluptuous as vol
@@ -7,10 +8,19 @@ from homeassistant.const import CONF_NAME, CONF_USERNAME, CONF_PASSWORD
 from homeassistant.helpers.entity import Entity
 from homeassistant.helpers.entity import async_generate_entity_id
 
+_LOGGER = logging.getLogger(__name__)
+
 DEFAULT_NAME = 'Google Keep'
 CONF_TITLES = 'titles'
 CONF_LABELS = 'labels'
 CONF_PINNED = 'pinned'
+
+DOMAIN = "google_keep"
+
+DEFAULT_LIST_NAME = 'Grocery'
+
+ATTR_ITEM_TITLE = "item_title"
+ATTR_ITEM_CHECKED = "item_checked"
 
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
     vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
@@ -21,6 +31,21 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
     vol.Optional(CONF_PINNED, default=False): cv.boolean
 })
 
+# Service constants and validation
+SERVICE_LIST_NAME = 'list'
+SERVICE_LIST_ITEM = 'items'
+
+SERVICE_LIST_SCHEMA = vol.Schema({
+    vol.Optional(SERVICE_LIST_NAME): cv.string,
+    vol.Required(SERVICE_LIST_ITEM): cv.ensure_list_csv,
+})
+
+CHECKED_ITEM_SCHEMA = vol.Schema(
+    {
+        vol.Required(ATTR_ITEM_TITLE): cv.string,
+        vol.Required(ATTR_ITEM_CHECKED): cv.boolean,
+    }
+)
 
 def replace_leading_spaces(s):
     stripped = s.lstrip()
@@ -34,18 +59,78 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
     titles = config.get(CONF_TITLES)
     labels = config.get(CONF_LABELS)
     pinned = config.get(CONF_PINNED)
+
     import gkeepapi
     keep = gkeepapi.Keep()
     login_success = keep.login(username, password)
+
     if not login_success:
         raise Exception('Invalid username or password')
+
     dev = []
     hash_value = hashlib.md5(str((username, str(titles), str(labels), pinned)).encode()).hexdigest()[-10:]
     uid = '{}_{}'.format(sensor_name, hash_value)
     entity_id = async_generate_entity_id(ENTITY_ID_FORMAT, uid, hass=hass)
+
     dev.append(GoogleKeepSensor(entity_id, sensor_name, username, keep, titles, labels, pinned))
     add_entities(dev, True)
 
+    def item_checked(call):
+        item_title = call.data.get(ATTR_ITEM_TITLE)
+        item_checked = call.data.get(ATTR_ITEM_CHECKED)
+
+        try:
+            for item in keep.list.items:
+                if item.text == item_title:
+                    item.checked = item_checked
+                    break
+            keep.sync()
+        except Exception as e:
+            _LOGGER.exception(e)
+
+    def add_to_list(call):
+        """Add things to a Google Keep list."""
+
+        list_name = call.data.get(SERVICE_LIST_NAME, DEFAULT_LIST_NAME)
+        things = call.data.get(SERVICE_LIST_ITEM)
+
+        # Split any things in the list separated by ' , '
+        things = [x for thing in things for x in thing.split(', ')]
+
+        keep.sync()
+
+        # Find the target list amongst all the Keep notes/lists
+        for l in keep.all():
+            if l.title == list_name:
+                _LOGGER.info("List with name {} found on Keep.".format(list_name))
+                list_to_update = l
+                break
+        else:
+            _LOGGER.info("List with name {} not found on Keep. Creating new list.".format(list_name))
+            list_to_update = keep.createList(list_name)
+
+        _LOGGER.info("Things to add: {}".format(things))
+
+        for thing in things:
+            _LOGGER.debug("Adding element: {}".format(thing))
+
+            for old_thing in list_to_update.items:                
+                if old_thing.text.lower() == thing:
+                    _LOGGER.debug("Element '{}' already on list.".format(thing))
+                    old_thing.checked = False
+                    break            
+            else:                
+                list_to_update.add(thing, False)
+
+        keep.sync()
+
+    # Register the service google_keep.add_to_list with Home Assistant.
+    hass.services.register(DOMAIN, 'add_to_list', add_to_list, schema=SERVICE_LIST_SCHEMA)
+
+    #Register "item_checked" service
+    hass.services.async_register(
+        DOMAIN, 'item_checked', item_checked, schema=CHECKED_ITEM_SCHEMA
+    )
 
 class GoogleKeepSensor(Entity):
     def __init__(self, entity_id, name, username, keep, titles, labels, pinned):

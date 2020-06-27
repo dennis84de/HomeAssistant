@@ -161,17 +161,6 @@ cards:
       - entity: sensor.fahrzeit_zur_arbeit
       - entity: sensor.fahrzeit_nach_hause
 
-  - type: entities
-    title: Waage
-    show_header_toggle: false
-    entities:
-      - entity: sensor.gewicht
-        type: "custom:secondaryinfo-entity-row"
-        secondary_info: "Durchschnitt: [[ sensor.gewicht_durchschnitt ]] kg"       
-      - entity: sensor.bmi
-      - entity: sensor.wasser
-      - entity: sensor.fett
-
   - type: glance
     title: Tanken
     show_header_toggle: false
@@ -204,16 +193,18 @@ cards:
       - entity: sensor.arbeitszimmer_temperatur
         name: Arbeitszimmer
       - entity: sensor.sportzimmer_temperatur
-        name: Sportzimmer
-
-  - type: custom:atomic-calendar-revive
-    name: Serien
-    maxDaysToShow: 30
-    maxEventCount: 10
-    showLocation: false
-    disableEventLink: true
+        name: Sportzimmer           
+           
+  - type: entities
+    title: Waage
+    show_header_toggle: false
     entities:
-      - entity: calendar.serien
+      - entity: sensor.gewicht
+        type: "custom:secondaryinfo-entity-row"
+        secondary_info: "Durchschnitt: [[ sensor.gewicht_durchschnitt ]] kg"       
+      - entity: sensor.bmi
+      - entity: sensor.wasser
+      - entity: sensor.fett
               
   - type: conditional
     conditions:
@@ -227,3 +218,27 @@ cards:
         - entity: sensor.formel1_rennen
         - entity: sensor.formel1_datum
         - entity: sensor.formel1_qualifikation     
+        
+  - type: custom:atomic-calendar-revive
+    name: Serien
+    maxDaysToShow: 30
+    maxEventCount: 10
+    showLocation: false
+    disableEventLink: true
+    entities:
+      - entity: calendar.serien      
+        
+  - type: custom:stack-in-card
+    title: Einkaufen
+    cards:
+      - type: entities
+        show_header_toggle: false
+        entities:
+          - entity: input_text.einkaufen
+          - entity: input_select.einkaufsliste
+      - type: custom:google-keep-card
+        entity: sensor.einkaufen_499e4d2310
+        hide_if_empty: true
+        show:
+          - unchecked
+          - checked            

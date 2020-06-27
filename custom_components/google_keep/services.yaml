@@ -1,0 +1,19 @@
+add_to_list:
+  description: Add things to a Google Keep list.
+  fields:
+    list:
+      description: Name of the Google Keep list to create or update
+      example: 'Grocery'
+    items:
+      description: Items(s) to add to the list
+      example: 'spinach and mushrooms'
+
+item_checked:
+  description: Check/Uncheck an item in your list
+  fields:
+    item_title:
+      description: "The item title"
+      example: 'Cookies'
+    item_checked:
+      example: 'True'
+      

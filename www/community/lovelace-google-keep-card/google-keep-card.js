@@ -119,7 +119,7 @@ class GoogleKeepCard extends LitElement {
               }
               p.noteTitle {
                 font-weight: bold;
-                margin: 0 0 10px 10px;
+                margin: 0 0 10px 0;
                 font-size: 120%;
                 color: ${this.getTextColor()};
               }

@@ -7,6 +7,18 @@ tankerkoenig:
     - !secret tankerkoenig_id_real
     - !secret tankerkoenig_id_jet
   
+input_text:
+  einkaufen:
+    name: Einkaufen    
+    
+input_select:
+  einkaufsliste:
+    name: Einkaufsliste
+    options:
+      - 'Liste auswählen'
+      - 'Lebensmittel'
+      - 'Sonstiges'
+      
 sensor:
   - platform: imap
     server: !secret email_server
@@ -135,6 +147,47 @@ automation:
             Es sind {{ mailCount }} neue E-Mails eingegangen.
           {% endif %}
 
+  - alias: "Einkaufen - Artikel hinzufügen"
+    trigger:
+      - platform: state
+        entity_id: input_select.einkaufsliste
+        from: 'Liste auswählen'
+    condition:
+      - condition: template
+        value_template: >-
+          {{ states('input_text.einkaufen') != '' }}
+    action:
+      - service: !secret tts_service
+        data_template:
+          message: >-
+            {{ states('input_text.einkaufen') }} wird der Einkaufsliste hinzugefügt.
+      - service: google_keep.add_to_list
+        data_template:
+          list: "{{ states('input_select.einkaufsliste') }}"
+          items: "{{ states('input_text.einkaufen') }}"        
+      - service: input_text.set_value
+        data_template:
+          entity_id: input_text.einkaufen
+          value: ""
+      - service: input_select.select_option
+        data_template:
+          entity_id: input_select.einkaufsliste          
+          option: 'Liste auswählen'
+               
+  - alias: "Einkaufen - Zurücksetzen"
+    trigger:
+      - platform: state
+        entity_id: input_select.einkaufsliste
+    condition:
+      - condition: template
+        value_template: >-
+          {{ states('input_text.einkaufen') == '' }}
+    action:
+      - service: input_select.select_option
+        data_template:
+          entity_id: input_select.einkaufsliste          
+          option: 'Liste auswählen'
+          
 panel_iframe:
   infoscreen:
     title: Infoscreen
