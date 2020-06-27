@@ -366,7 +366,7 @@ automation:
         state: 'on'
       - condition: numeric_state
         entity_id: sensor.laufzeit_minuten
-        above: 1        
+        above: 5        
     action:
       - service: media_player.volume_set
         data_template:
