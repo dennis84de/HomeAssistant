@@ -31,8 +31,6 @@ lovelace:
       type: module
     - url: /hacsfiles/atomic-calendar-revive/atomic-calendar-revive.js
       type: module
-    - url: /hacsfiles/our-groceries-card/our-groceries-card.js
-      type: module
     - url: /hacsfiles/lovelace-card-tools/card-tools.js
       type: js
     - url: /hacsfiles/lovelace-layout-card/layout-card.js
