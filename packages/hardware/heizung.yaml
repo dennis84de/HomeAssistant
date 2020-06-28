@@ -1,9 +1,3 @@
-fritzbox:
-  devices:
-    - host: !secret fritzbox_host
-      username: !secret fritzbox_username
-      password: !secret fritzbox_password
-
 input_boolean:
   heizung_ausgeschaltet_wohnzimmer:
     name: Heizung ausgeschaltet - Wohnzimmer
