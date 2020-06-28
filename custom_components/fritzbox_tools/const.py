@@ -1,7 +1,7 @@
 """Constants for the FRITZ!Box Tools integration."""
 
 DOMAIN = "fritzbox_tools"
-SUPPORTED_DOMAINS = ["switch", "binary_sensor"]
+SUPPORTED_DOMAINS = ["switch", "binary_sensor", "sensor"]
 
 CONF_PROFILE_ON = "profile_on"
 CONF_PROFILE_OFF = "profile_off"
@@ -15,7 +15,6 @@ CONF_GUEST_WIFI_PASSWORD = "wlan_password"
 DEFAULT_HOST = "192.168.178.1"  # set to fritzbox default
 DEFAULT_PORT = 49000  # set to fritzbox default
 DEFAULT_USERNAME = ""  # set to fritzbox default?!
-DEFAULT_GUEST_WIFI_PASSWORD = 'password'
 
 DEFAULT_USE_WIFI = True
 DEFAULT_USE_PORT = True

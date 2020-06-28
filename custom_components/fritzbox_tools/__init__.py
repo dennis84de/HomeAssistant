@@ -160,6 +160,7 @@ class FritzBoxTools(object):
         # pylint: disable=import-error
         from fritzconnection import FritzConnection
         from fritzconnection.lib.fritzstatus import FritzStatus
+        from fritzconnection.lib.fritzcall import FritzCall
         from fritz_switch_profiles import FritzProfileSwitch
 
         # general timeout for all requests to the router. Some calls need quite some time.
@@ -173,6 +174,7 @@ class FritzBoxTools(object):
             )
 
         self.fritzstatus = FritzStatus(fc=self.connection)
+        self.fritzcalllist = FritzCall(fc=self.connection)
         self.ha_ip = get_local_ip()
         self.profile_on = profile_on
         self.profile_off = profile_off
