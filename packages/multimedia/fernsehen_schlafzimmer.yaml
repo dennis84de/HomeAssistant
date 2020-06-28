@@ -102,7 +102,7 @@ script:
         entity_id: switch.schlafzimmer_fernseher
       - delay: '00:00:05'
       - service: light.turn_on
-        entity_id: light.licht_fernseher_schlafzimmer
+        entity_id: light.fernseher_schlafzimmer
       - service: switch.turn_on
         entity_id: switch.fernseher_schlafzimmer_remote
       - service: media_player.turn_on
@@ -120,7 +120,7 @@ script:
       - service: switch.turn_off
         entity_id: switch.schlafzimmer_fernseher, switch.fernseher_schlafzimmer_remote
       - service: light.turn_off
-        entity_id: light.licht_fernseher_schlafzimmer
+        entity_id: light.fernseher_schlafzimmer
       - service: input_boolean.turn_off
         entity_id: input_boolean.timer_schlafzimmer_aktiv
 
