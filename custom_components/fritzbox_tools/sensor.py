@@ -59,9 +59,7 @@ class FritzBoxCallSensor(RestoreEntity):
         self._state = 0
         try:
             status = self.fritzbox_tools.fritzstatus
-            fritzCalllist = self.fritzbox_tools.fritzcalllist
-
-            callListResult = fritzCalllist.get_calls(days=7)
+            callListResult = self.fritzbox_tools.fritzcalllist
             callDict = []
             
             for call in callListResult:                                                
