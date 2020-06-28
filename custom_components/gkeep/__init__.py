@@ -28,6 +28,7 @@ from .const import (
     ATTR_ITEM_CHECKED,
     SERVICE_NEW_ITEM,
     SERVICE_ITEM_CHECKED,
+    SERVICE_ITEM_DELETE,
     DEFAULT_NAME,
     SENSOR_NAME,
     DOMAIN_DATA,
@@ -52,6 +53,12 @@ CHECKED_ITEM_SCHEMA = vol.Schema(
     {
         vol.Required(ATTR_ITEM_TITLE): cv.string,
         vol.Required(ATTR_ITEM_CHECKED): cv.boolean,
+    }
+)
+
+DELETE_ITEM_SCHEMA = vol.Schema(
+    {
+        vol.Required(ATTR_ITEM_TITLE): cv.string,
     }
 )
 
@@ -152,8 +159,8 @@ async def async_setup_entry(hass, config_entry):
                     break
             gkeep.gkeep.sync()
         except Exception as e:
-            _LOGGER.exception(e)
-        
+            _LOGGER.exception(e)      
+
     #Register "item_checked" service
     hass.services.async_register(
         DOMAIN, SERVICE_ITEM_CHECKED, item_checked, schema=CHECKED_ITEM_SCHEMA
@@ -177,6 +184,24 @@ async def async_setup_entry(hass, config_entry):
     #Register "new_item" service
     hass.services.async_register(
         DOMAIN, SERVICE_NEW_ITEM, new_item, schema=NEW_ITEM_SCHEMA
+    )
+
+    @callback
+    def item_delete(call):
+        item_title = call.data.get(ATTR_ITEM_TITLE)
+        gkeep = hass.data[DOMAIN_DATA]["gkeep"]
+        try:
+            for item in gkeep.list.items:
+                if item.text == item_title:
+                    item.delete()
+                    break
+            gkeep.gkeep.sync()
+        except Exception as e:
+            _LOGGER.exception(e)
+
+    #Register "item_delete" service
+    hass.services.async_register(
+        DOMAIN, SERVICE_ITEM_DELETE, item_delete, schema=DELETE_ITEM_SCHEMA
     )
 
     def handle_sensor_change(entity_id, old_state, new_state):

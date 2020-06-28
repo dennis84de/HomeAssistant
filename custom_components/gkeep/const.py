@@ -39,4 +39,5 @@ ATTR_ITEM_CHECKED = "item_checked"
 #Services names
 SERVICE_NEW_ITEM = "new_item"
 SERVICE_ITEM_CHECKED = "item_checked"
+SERVICE_ITEM_DELETE = "item_delete"
 

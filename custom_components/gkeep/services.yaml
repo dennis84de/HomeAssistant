@@ -14,3 +14,9 @@ item_checked:
     item_checked:
       example: 'True'
       
+item_delete:
+  description: Delete an item in your list
+  fields:
+    item_title:
+      description: "The item title"
+      example: 'Cookies'
