@@ -605,6 +605,7 @@ class FritzBoxWifiSwitch(SwitchEntity):
         self._is_available = (
             True  # set to False if an error happend during toggling the switch
         )
+        self._attributes = defaultdict(str)
         super().__init__()
 
     @property
@@ -627,6 +628,10 @@ class FritzBoxWifiSwitch(SwitchEntity):
     def available(self) -> bool:
         return self._is_available
 
+    @property
+    def device_state_attributes(self) -> dict:
+        return self._attributes
+
     async def _async_fetch_update(self):
         from fritzconnection.core.exceptions import FritzConnectionException
 
@@ -638,6 +643,8 @@ class FritzBoxWifiSwitch(SwitchEntity):
             _LOGGER.debug(wifi_info)
             self._is_on = True if wifi_info["NewStatus"] == "Up" else False
             self._is_available = True
+
+            self._attributes['ssid'] = wifi_info["NewSSID"]
         except FritzConnectionException:
             _LOGGER.error(
                 "Authorization Error: Please check the provided credentials and verify that you can log "

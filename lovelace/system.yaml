@@ -114,7 +114,8 @@ cards:
     title: Gäste Wlan
     show_header_toggle: false
     entities:
-      - entity: switch.gaste_wlan
+      - entity: switch.fritzbox_guest_wifi
+        name: Gastzugang
         tap_action:
            action: toggle
       - entity: sensor.gaeste_wlan_ssid

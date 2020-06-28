@@ -1,3 +1,5 @@
+speedtestdotnet:
+  
 device_tracker:
   - platform: fritz
     host: !secret fritzbox_host
@@ -16,7 +18,11 @@ device_tracker:
     consider_home: 60
     new_device_defaults:
       track_new_devices: false
-      
+    
+input_text:
+  guest_wifi_password:
+    name: Gäste Wlan - Password
+
 sensor:
   - platform: fritzbox_callmonitor
     name: Telefon
@@ -37,7 +43,7 @@ sensor:
   - platform: template
     sensors:
       netmonitor_uptime:
-        friendly_name: "Fritzbox Uptime"
+        friendly_name: "Fritzbox - Laufzeit"
         entity_id:
           - sensor.netmonitor        
         value_template: >-
@@ -56,7 +62,7 @@ sensor:
           mdi:calendar-range        
            
       netmonitor_data_sent:
-        friendly_name: "Fritzbox Daten gesendet"
+        friendly_name: "Fritzbox - Daten gesendet"
         entity_id:
           - sensor.netmonitor       
         unit_of_measurement: GB
@@ -67,7 +73,7 @@ sensor:
           mdi:upload-network
           
       netmonitor_data_received:
-        friendly_name: "Fritzbox Daten empfangen"
+        friendly_name: "Fritzbox - Daten empfangen"
         entity_id:
           - sensor.netmonitor       
         unit_of_measurement: GB
@@ -80,9 +86,9 @@ sensor:
       gaeste_wlan_ssid:
         friendly_name: "Gäste-Wlan SSID"
         value_template: >-
-          {{ state_attr('switch.gaste_wlan', 'SSID')}}
+          {{ state_attr('switch.fritzbox_guest_wifi', 'ssid')}}
         icon_template: >-
-            {% if is_state('switch.gaste_wlan', 'on') == True %}
+            {% if is_state('switch.fritzbox_guest_wifi', 'on') == True %}
               mdi:wifi
             {% else %}
               mdi:wifi-off
@@ -91,9 +97,9 @@ sensor:
       gaeste_wlan_password:
         friendly_name: "Gäste-Wlan Passwort"
         value_template: >-
-          {{ state_attr('switch.gaste_wlan', 'Password')}}
+          {{ states('input_text.guest_wifi_password')}}
         icon_template: >-
-            {% if is_state('switch.gaste_wlan', 'on') == True %}
+            {% if is_state('switch.fritzbox_guest_wifi', 'on') == True %}
               mdi:wifi-strength-4-lock
             {% else %}
               mdi:wifi-strength-lock-outline
@@ -132,33 +138,24 @@ sensor:
           {%- endfor %}
 
           {{ ns.found | int }}            
-
-switch:
-  - platform: fritzbox_guestwifi
-    name: "Gäste Wlan"
-    wlan_password: !secret fritzbox_guest_password
-    host: !secret fritzbox_host
-    username: !secret fritzbox_username
-    password: !secret fritzbox_password
-    interface: 2
     
 automation:
   - alias: "Gäste-Wlan eingeschaltet - TTS"
     trigger:
       - platform: state
-        entity_id: switch.gaste_wlan
+        entity_id: switch.fritzbox_guest_wifi
         to: 'on'
     action:
       service: !secret tts_service
       data_template:
         echo: "wohnzimmer"
         message: >-
-          Der Gastzugang wurde eingeschaltet. Der Name lautet "{{ state_attr('switch.gaste_wlan', 'SSID') }}". Das Passwort ist "{{ state_attr('switch.gaste_wlan', 'Password') }}".
+          Der Gastzugang wurde eingeschaltet. Der Name lautet "{{ states('sensor.gaeste_wlan_ssid') }}". Das Passwort ist "{{ states('sensor.gaeste_wlan_password') }}".
 
   - alias: "Gäste-Wlan ausgeschaltet - TTS"
     trigger:
       - platform: state
-        entity_id: switch.gaste_wlan
+        entity_id: switch.fritzbox_guest_wifi
         to: 'off'
     action:
       service: !secret tts_service
@@ -172,8 +169,10 @@ homeassistant:
     sensor.netmonitor:
       friendly_name: Fritzbox
       icon: mdi:router-wireless
-    switch.gaste_wlan:
-      icon: mdi:wifi
+    switch.fritzbox_wifi:
+      friendly_name: Wlan
+    switch.fritzbox_guest_wifi:
+      friendly_name: Gäste Wlan
 
     device_tracker.edimaxwohnzimmerradio:
       icon: mdi:power-socket-eu
@@ -332,3 +331,8 @@ homeassistant:
       icon: mdi:wifi-star
     device_tracker.briefkasten:
       icon: mdi:wifi-star      
+      
+    sensor.speedtest_download:
+      icon: mdi:download-network
+    sensor.speedtest_upload:
+      icon: mdi:upload-network      
