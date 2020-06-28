@@ -154,7 +154,7 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
     try:
         ipaddr = socket.gethostbyname(host)
     except OSError as error:
-        _LOGGER.error("Could not communicate with %s:%d: %s", host, port, error)
+        _LOGGER.info("Could not communicate with %s:%d: %s", host, port, error)
         raise PlatformNotReady from error
 
     if ipaddr in known_servers:
@@ -270,7 +270,7 @@ class LogitechMediaServer:
                 data = await response.json()
 
         except (asyncio.TimeoutError, aiohttp.ClientError) as error:
-            _LOGGER.warning("Failed communicating with LMS: %s", type(error))
+            _LOGGER.info("Failed communicating with LMS: %s", type(error))
             return False
 
         try:
