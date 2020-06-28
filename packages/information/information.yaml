@@ -11,13 +11,9 @@ input_text:
   einkaufen:
     name: Einkaufen    
     
-input_select:
-  einkaufsliste:
+input_boolean:
+  einkaufen:
     name: Einkaufsliste
-    options:
-      - 'Liste auswählen'
-      - 'Lebensmittel'
-      - 'Sonstiges'
       
 sensor:
   - platform: imap
@@ -31,13 +27,6 @@ sensor:
     display_options:
       - 'time'
 
-  - platform: google_keep
-    username: !secret google_keep_username
-    password: !secret google_keep_password
-    name: 'Einkaufen'
-    labels:
-      - 'Einkaufen'
-    
   - platform: template
     sensors:
       tankstelle_real:
@@ -150,8 +139,8 @@ automation:
   - alias: "Einkaufen - Artikel hinzufügen"
     trigger:
       - platform: state
-        entity_id: input_select.einkaufsliste
-        from: 'Liste auswählen'
+        entity_id: input_boolean.einkaufen
+        to: 'on'
     condition:
       - condition: template
         value_template: >-
@@ -161,32 +150,27 @@ automation:
         data_template:
           message: >-
             {{ states('input_text.einkaufen') }} wird der Einkaufsliste hinzugefügt.
-      - service: google_keep.add_to_list
-        data_template:
-          list: "{{ states('input_select.einkaufsliste') }}"
-          items: "{{ states('input_text.einkaufen') }}"        
+      - service: gkeep.new_item
+        data_template:          
+          item_title: "{{ states('input_text.einkaufen') }}"        
       - service: input_text.set_value
         data_template:
           entity_id: input_text.einkaufen
           value: ""
-      - service: input_select.select_option
-        data_template:
-          entity_id: input_select.einkaufsliste          
-          option: 'Liste auswählen'
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.einkaufen
                
   - alias: "Einkaufen - Zurücksetzen"
     trigger:
       - platform: state
-        entity_id: input_select.einkaufsliste
+        entity_id: input_boolean.einkaufen
     condition:
       - condition: template
         value_template: >-
           {{ states('input_text.einkaufen') == '' }}
     action:
-      - service: input_select.select_option
-        data_template:
-          entity_id: input_select.einkaufsliste          
-          option: 'Liste auswählen'
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.einkaufen
           
 panel_iframe:
   infoscreen:

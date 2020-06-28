@@ -1,0 +1,15 @@
+{
+  "domain": "gkeep",
+  "name": "Gkeep",
+  "documentation": "https://github.com/BlueBlueBlob/gkeep",
+  "dependencies": [],
+  "config_flow": true,
+  "codeowners": [
+    "@BlueBlueBlob"
+  ],
+  "requirements": [
+    "gkeepapi",
+    "integrationhelper"
+  ],
+  "homeassistant": "0.96.0"
+}

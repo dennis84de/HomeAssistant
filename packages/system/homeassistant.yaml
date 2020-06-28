@@ -27,8 +27,6 @@ lovelace:
       type: module
     - url: /hacsfiles/lovelace-auto-entities/auto-entities.js
       type: module      
-    - url: /hacsfiles/lovelace-google-keep-card/google-keep-card.js
-      type: module
     - url: /hacsfiles/atomic-calendar-revive/atomic-calendar-revive.js
       type: module
     - url: /hacsfiles/lovelace-card-tools/card-tools.js

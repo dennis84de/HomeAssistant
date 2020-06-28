@@ -1,0 +1,16 @@
+new_item:
+  description: Adds a new item to your list
+  fields:
+    item_title:
+      description: "The item title"
+      example: 'Cookies'
+      
+item_checked:
+  description: Check/Uncheck an item in your list
+  fields:
+    item_title:
+      description: "The item title"
+      example: 'Cookies'
+    item_checked:
+      example: 'True'
+      
