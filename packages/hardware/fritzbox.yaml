@@ -144,7 +144,8 @@ automation:
       data_template:
         echo: "wohnzimmer"
         message: >-
-          Der Gastzugang wurde eingeschaltet. Der Name lautet "{{ states('sensor.gaeste_wlan_ssid') }}". Das Passwort ist "{{ states('sensor.gaeste_wlan_password') }}".
+          Der Gastzugang wurde eingeschaltet. Der Name lautet "{{ states('sensor.gaeste_wlan_ssid') }}".
+          Das Passwort ist "{{ states('sensor.gaeste_wlan_password') }}".
 
   - alias: "Gäste-Wlan ausgeschaltet - TTS"
     trigger:
