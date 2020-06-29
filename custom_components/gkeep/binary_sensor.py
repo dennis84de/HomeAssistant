@@ -1,5 +1,5 @@
 """Binary sensor platform for grocy."""
-from homeassistant.components.binary_sensor import BinarySensorDevice
+from homeassistant.components.binary_sensor import BinarySensorEntity
 from homeassistant import config_entries
 from uuid import getnode as get_mac
 
@@ -18,7 +18,7 @@ async def async_setup_entry(hass, config_entry, async_add_devices):
     """Setup sensor platform."""
     async_add_devices([GkeepBinarySensor(hass, config_entry)], True)
 
-class GkeepBinarySensor(BinarySensorDevice):
+class GkeepBinarySensor(BinarySensorEntity):
     """grocy binary_sensor class."""
 
     def __init__(self, hass, config):

@@ -1,0 +1,22 @@
+{
+    "config": {
+        "title": "Google Keep",
+        "step": {
+            "user": {
+                "title": "Connection",
+                "description": "Enter your Google account and Application password",
+                "data": {
+                    "username": "Username",
+                    "password": "Password",
+                    "default_list": "Default List"
+                }
+            }
+        },
+        "error": {
+            "auth": "Username/Password is wrong."
+        },
+        "abort": {
+            "single_instance_allowed": "Only a single configuration of Blueprint is allowed."
+        }
+    }
+}
