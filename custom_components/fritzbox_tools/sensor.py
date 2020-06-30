@@ -64,7 +64,7 @@ class FritzBoxCallSensor(RestoreEntity):
             
             for call in callListResult:                                                
                 callType = None
-
+                
                 if (call.Type == "1"):
                   callType = "incoming"
                 elif (call.Type == "2"):
@@ -76,7 +76,7 @@ class FritzBoxCallSensor(RestoreEntity):
 
                 callElement = {                    
                     'name': call.Name,                    
-                    'number': call.CallerNumber if call.Type == "3" else call.Caller,
+                    'number': call.Called if call.Type == "3" else call.Caller,
                     'date': getattr(call, 'date'),
                     'duration': durationTimedelta.seconds,
                     'calltype': callType
