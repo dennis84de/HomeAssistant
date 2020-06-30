@@ -331,13 +331,21 @@ automation:
 
   - alias: 'Sleeptimer endet'
     trigger:
-      - platform: numeric_state
-        entity_id: sensor.timer_schlafzimmer_zeit
-        below: 6
+      - platform: state
+        entity_id: sensor.timer_schlafzimmer_zeit        
     condition:
       - condition: state
         entity_id: media_player.kodi_schlafzimmer
         state: 'playing'
+      - condition: template
+        value_template: >-        
+          {% set timer = states('sensor.timer_schlafzimmer_zeit') %}
+          
+          {% if timer == 0 or timer > 5 %}
+            False
+          {% else %}
+            True
+          {% endif %}
     action:
       - service: notify.kodi_schlafzimmer
         data:
