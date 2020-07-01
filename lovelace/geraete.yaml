@@ -23,6 +23,8 @@ cards:
       - entity: sensor.diskstation_volume_1_status
       - entity: sensor.diskstation_network_up
       - entity: sensor.diskstation_network_down
+      - entity: binary_sensor.diskstation
+        name: Verfügbarkeit
 
   - type: entities
     title: Computer

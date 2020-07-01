@@ -5,6 +5,8 @@ synology_dsm:
 
 homeassistant:
   customize:
+    binary_sensor.diskstation:
+      friendly_name: Diskstation Healthchecks.io
     binary_sensor.diskstation_security_status:
       friendly_name: Sicherheitsstatus
     sensor.diskstation_cpu_load_total:
