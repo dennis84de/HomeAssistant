@@ -501,14 +501,12 @@ automation:
       - condition: state
         entity_id: binary_sensor.zu_hause
         state: 'on'
-      - condition: template
-        value_template: >-
-            {% set current_count = state_attr("sensor.wetterwarnungen_current_warning_level", "warning_count") %}
-            {% set advance_count = state_attr("sensor.wetterwarnungen_advance_warning_level", "warning_count") %}
-            
-            {{ True if current_count != 0 or advance_count != 0 else False }} 
       - condition: template     
-        value_template: '{{ trigger.from_state.state != trigger.to_state.state }}'
+        value_template: >-
+          {% set oldWarningCount = trigger.to_state.attributes.warning_count | int %}
+          {% set newWarningCount = trigger.to_state.attributes.warning_count | int %}
+          
+          {{ newWarningCount > oldWarningCount }}
     action:
       - service: !secret tts_service
         data_template:
