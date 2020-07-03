@@ -10,9 +10,9 @@ heimnetz:
     - device_tracker.xiaomifan
     - device_tracker.brematic_gateway
     - device_tracker.tplinkwohnzimmermonitor
-    - device_tracker.edimaxwohnzimmerradio
+    - device_tracker.tplinkwohnzimmerradio
     - device_tracker.tplinkarbeitszimmerradio
-    - device_tracker.edimaxschlafzimmerradio
+    - device_tracker.tplinkschlafzimmerradio
     - device_tracker.tplinkflurradio
     - device_tracker.tplinkbadezimmerradio
     - device_tracker.tplinkkuecheradio

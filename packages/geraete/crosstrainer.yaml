@@ -1,3 +1,8 @@
+switch:
+  - platform: edimax
+    host: 192.168.2.36
+    name: Crosstrainer
+    
 homeassistant:
   customize:
     switch.crosstrainer:

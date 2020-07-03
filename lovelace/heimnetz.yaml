@@ -60,16 +60,16 @@ cards:
     show_header_toggle: false
     entities:
       - entity: device_tracker.tplinkwohnzimmermonitor
-      - entity: device_tracker.edimaxwohnzimmerradio
+      - entity: device_tracker.tplinkwohnzimmerradio
       - entity: device_tracker.tplinkarbeitszimmerradio
-      - entity: device_tracker.edimaxschlafzimmerradio
+      - entity: device_tracker.tplinkschlafzimmerradio
       - entity: device_tracker.tplinkflurradio
       - entity: device_tracker.tplinkbadezimmerradio
       - entity: device_tracker.tplinkkuecheradio
       - entity: device_tracker.tplinkschlafzimmerfernseher
       - entity: device_tracker.tplinksportzimmerfernseher
-      - entity: device_tracker.tplinksportzimmerlicht
-      - entity: device_tracker.tplinkcrosstrainer
+      - entity: device_tracker.edimaxsportzimmerlicht
+      - entity: device_tracker.edimaxcrosstrainer
       - entity: device_tracker.tplinkwaschmaschine
       - entity: device_tracker.tplinktrockner
 

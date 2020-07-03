@@ -169,10 +169,10 @@ homeassistant:
     switch.fritzbox_guest_wifi:
       friendly_name: Gäste Wlan
 
-    device_tracker.edimaxwohnzimmerradio:
+    device_tracker.tplinkwohnzimmerradio:
       icon: mdi:power-socket-eu
       friendly_name: Wohnzimmer Radio
-    device_tracker.edimaxschlafzimmerradio:
+    device_tracker.tplinkschlafzimmerradio:
       icon: mdi:power-socket-eu
       friendly_name: Schlafzimmer Radio
 
@@ -203,10 +203,10 @@ homeassistant:
     device_tracker.tplinksportzimmerfernseher:
       icon: mdi:power-socket-eu
       friendly_name: Sportzimmer Fernseher
-    device_tracker.tplinksportzimmerlicht:
+    device_tracker.edimaxsportzimmerlicht:
       icon: mdi:power-socket-eu
       friendly_name: Sportzimmer Licht
-    device_tracker.tplinkcrosstrainer:
+    device_tracker.edimaxcrosstrainer:
       icon: mdi:power-socket-eu
       friendly_name: Crosstrainer
     device_tracker.fritz_repeater:

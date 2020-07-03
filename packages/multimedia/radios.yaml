@@ -1,12 +1,4 @@
 switch:
-  - platform: edimax
-    host: 192.168.2.36
-    name: Wohnzimmer Radio
-
-  - platform: edimax
-    host: 192.168.2.30
-    name: Schlafzimmer Radio
-
   - platform: brematic
     host: !secret brematic_host
     system_code: '11100'
