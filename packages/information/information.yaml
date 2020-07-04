@@ -15,6 +15,12 @@ input_boolean:
   einkaufen:
     name: Einkaufsliste
       
+input_select:
+  einkaufen:
+    name: Einkaufsliste
+    options:
+      - Artikel auswählen
+      
 sensor:
   - platform: imap
     server: !secret email_server
@@ -152,13 +158,34 @@ automation:
             {{ states('input_text.einkaufen') }} wird der Einkaufsliste hinzugefügt.
       - service: gkeep.new_item
         data_template:          
-          item_title: "{{ states('input_text.einkaufen') }}"        
+          item_title: "{{ states('input_text.einkaufen') }}"     
       - service: input_text.set_value
         data_template:
           entity_id: input_text.einkaufen
           value: ""
       - service: input_boolean.turn_off
         entity_id: input_boolean.einkaufen
+          
+  - alias: "Einkaufen - Liste aktualisieren"
+    trigger:
+      - platform: state
+        entity_id: sensor.gkeep_einkaufen
+    action:
+      - service: python_script.input_select_set_options        
+        data_template:
+          entity_inputselect: input_select.einkaufen
+#          empty_value: "Artikel auswählen"
+          data_source: >-
+            {% set items = state_attr('sensor.gkeep_einkaufen', 'items') %}
+            {% set data = namespace(items = []) -%}
+
+            {% for item in items %}
+              {% if item.checked == False %}
+                {%- set data.items = data.items + [item.name] -%}
+              {% endif %}
+            {% endfor %}
+
+            {{ data.items|join(",") }}        
                
   - alias: "Einkaufen - Zurücksetzen"
     trigger:

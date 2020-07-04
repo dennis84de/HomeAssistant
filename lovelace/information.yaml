@@ -314,3 +314,5 @@ cards:
             name: Artikel
           - entity: input_boolean.einkaufen
             name: Hinzufügen
+          - entity: input_select.einkaufen
+            name: Artikel entfernen
