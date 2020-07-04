@@ -32,6 +32,7 @@ switch:
           data:
             mac: !secret computer_mac
             broadcast_address: !secret fritzbox_broadcast
+            broadcast_port: 9
         turn_off:
           service: mqtt.publish
           data:
