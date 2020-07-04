@@ -1,118 +1,55 @@
 emulated_hue:
   host_ip: !secret homeassistant_host
   listen_port: 80
+  expose_by_default: false
   exposed_domains:
     - switch
     - light
-    - fan
-
+    
   entities:
     switch.wohnzimmer_radio:
       name: Raspberry Wohnzimmer
+      hidden: false
     switch.balkon_radio:
       name: Raspberry Balkon
+      hidden: false
     switch.flur_radio:
       name: Raspberry Flur
+      hidden: false
     switch.badezimmer_radio:
       name: Raspberry Badezimmer
+      hidden: false
     switch.kuche_radio:
       name: Raspberry Küche
+      hidden: false
     switch.schlafzimmer_radio:
       name: Raspberry Schlafzimmer
+      hidden: false
     switch.arbeitszimmer_radio:
       name: Raspberry Arbeitszimmer
-
-    switch.watchtv_wohnzimmer:
-      name: Fernsehen Wohnzimmer
-    switch.play_wohnzimmer:
-      name: Wiedergabe TV    
-
-    switch.crosstrainer:
-      name: Crosstrainer
-    switch.watchtv_schlafzimmer:
-      name: Fernsehen Schlafzimmer
+      hidden: false
 
     light.bett:
       name: Licht Bett
+      hidden: false
     light.kleiderschrank:
       name: Licht Kleiderschrank
+      hidden: false
     light.arbeitszimmer_lampe:
-      name: Lampe
+      name: Licht Arbeitszimmer
+      hidden: false
     light.sportzimmer_regal:
       name: Licht Sportzimmer      
+      hidden: false
     light.sideboard:
       name: Licht Sideboard
+      hidden: false
     light.schrank:
       name: Licht Schrank
+      hidden: false
     light.balkon_licht:
       name: Licht Balkon
+      hidden: false
     light.fernseher_schlafzimmer:
       name: Licht Fernseher
-
-    switch.sportzimmer_fernseher:
-      hidden: true
-    switch.wohnzimmer_fernseher:
-      hidden: true
-    switch.pc:
-      hidden: true
-    switch.fernseher_schlafzimmer_remote:
-      hidden: true
-    switch.schlafzimmer_fernseher:
-      hidden: true
-    switch.couch:
-      hidden: true
-    switch.strahler:
-      hidden: true
-    switch.arbeitszimmer_lampe:
-      hidden: true
-    switch.sportzimmer_regal:
-      hidden: true      
-    switch.licht_fernseher_schlafzimmer:
-      hidden: true
-    switch.kodi_schlafzimmer:
-      hidden: true
-    switch.kodi_sportzimmer:
-      hidden: true
-    switch.kodi_badezimmer:
-      hidden: true
-    switch.wiedergabe_aktiv:
-      hidden: true
-    switch.pi_hole:
-      hidden: true
-    switch.ventilator_natuerlicher_wind:
-      hidden: true       
-      
-    switch.echo_badezimmer_do_not_disturb_switch:
-      hidden: true      
-    switch.echo_flur_do_not_disturb_switch:
-      hidden: true
-    switch.echo_kuche_do_not_disturb_switch:
-      hidden: true
-    switch.echo_schlafzimmer_do_not_disturb_switch:
-      hidden: true
-    switch.echo_wohnzimmer_do_not_disturb_switch:
-      hidden: true
-    switch.musik_tablet_balkon_s_alexa_apps_do_not_disturb_switch:
-      hidden: true
-      
-    switch.echo_badezimmer_repeat_switch:
-      hidden: true      
-    switch.echo_flur_repeat_switch:
-      hidden: true
-    switch.echo_kuche_repeat_switch:
-      hidden: true
-    switch.echo_schlafzimmer_repeat_switch:
-      hidden: true
-    switch.echo_wohnzimmer_repeat_switch:
-      hidden: true
-      
-    switch.echo_badezimmer_shuffle_switch:
-      hidden: true
-    switch.echo_flur_shuffle_switch:
-      hidden: true
-    switch.echo_kuche_shuffle_switch:
-      hidden: true
-    switch.echo_schlafzimmer_shuffle_switch:
-      hidden: true
-    switch.echo_wohnzimmer_shuffle_switch:
-      hidden: true      
+      hidden: false
