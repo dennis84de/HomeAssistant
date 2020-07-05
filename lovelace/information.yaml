@@ -312,7 +312,7 @@ cards:
         entities:
           - entity: input_text.einkaufen
             name: Artikel
-          - entity: input_boolean.einkaufen
+          - entity: script.einkaufen_artikel_hinzu
             name: Hinzufügen
           - entity: input_select.einkaufen
             name: Artikel entfernen

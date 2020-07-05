@@ -10,10 +10,6 @@ tankerkoenig:
 input_text:
   einkaufen:
     name: Einkaufen    
-    
-input_boolean:
-  einkaufen:
-    name: Einkaufsliste
       
 input_select:
   einkaufen:
@@ -95,6 +91,25 @@ binary_sensor:
         value_template: >-
           {{ is_state_attr('sensor.tankerkoenig_jet_muelheim_strassburger_allee_75_e10', 'is_open', True) }}
        
+script:
+  einkaufen_artikel_hinzu:
+    alias: "Einkaufen - Artikel hinzufügen"
+    sequence:
+      - condition: template
+        value_template: >-
+          {{ states('input_text.einkaufen') != '' }}      
+      - service: !secret tts_service
+        data_template:
+          message: >-
+            {{ states('input_text.einkaufen') }} wird der Einkaufsliste hinzugefügt.
+      - service: gkeep.new_item
+        data_template:          
+          item_title: "{{ states('input_text.einkaufen') }}"     
+      - service: input_text.set_value
+        data_template:
+          entity_id: input_text.einkaufen
+          value: ""
+          
 automation:
   - alias: 'Neue E-Mail - Kodi'
     trigger:
@@ -141,30 +156,6 @@ automation:
           {% else %}
             Es sind {{ mailCount }} neue E-Mails eingegangen.
           {% endif %}
-
-  - alias: "Einkaufen - Artikel hinzufügen"
-    trigger:
-      - platform: state
-        entity_id: input_boolean.einkaufen
-        to: 'on'
-    condition:
-      - condition: template
-        value_template: >-
-          {{ states('input_text.einkaufen') != '' }}
-    action:
-      - service: !secret tts_service
-        data_template:
-          message: >-
-            {{ states('input_text.einkaufen') }} wird der Einkaufsliste hinzugefügt.
-      - service: gkeep.new_item
-        data_template:          
-          item_title: "{{ states('input_text.einkaufen') }}"     
-      - service: input_text.set_value
-        data_template:
-          entity_id: input_text.einkaufen
-          value: ""
-      - service: input_boolean.turn_off
-        entity_id: input_boolean.einkaufen
           
   - alias: "Einkaufen - Liste aktualisieren"
     trigger:
@@ -186,18 +177,6 @@ automation:
             {% endfor %}
 
             {{ data.items|join(",") }}        
-               
-  - alias: "Einkaufen - Zurücksetzen"
-    trigger:
-      - platform: state
-        entity_id: input_boolean.einkaufen
-    condition:
-      - condition: template
-        value_template: >-
-          {{ states('input_text.einkaufen') == '' }}
-    action:
-      - service: input_boolean.turn_off
-        entity_id: input_boolean.einkaufen
           
 panel_iframe:
   infoscreen:
