@@ -503,7 +503,7 @@ automation:
         state: 'on'
       - condition: template     
         value_template: >-
-          {% set oldWarningCount = trigger.to_state.attributes.warning_count | int %}
+          {% set oldWarningCount = trigger.from_state.attributes.warning_count | int %}
           {% set newWarningCount = trigger.to_state.attributes.warning_count | int %}
           
           {{ newWarningCount > oldWarningCount }}
