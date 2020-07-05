@@ -39,6 +39,13 @@ cards:
           source: true
           progress: true
           volume: true
+      - type: custom:mini-media-player
+        entity: media_player.tablet_schlafzimmer
+        name: Tablet
+        hide:
+          source: true
+          progress: true
+          volume: true                    
 
   - type: entities
     title: Schlafen

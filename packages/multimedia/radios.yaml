@@ -354,19 +354,4 @@ homeassistant:
       icon: mdi:radio   
     switch.balkon_radio:
       icon: mdi:radio
-      assumed_state: false
-      
-    media_player.badezimmer:
-      friendly_name: Radio Badezimmer
-    media_player.arbeitszimmer:
-      friendly_name: Radio Arbeitszimmer
-    media_player.flur:
-      friendly_name: Radio Flur
-    media_player.kuche:
-      friendly_name: Radio Küche
-    media_player.schlafzimmer:
-      friendly_name: Radio Schlafzimmer
-    media_player.wohnzimmer:
-      friendly_name: Radio Wohnzimmer
-    media_player.balkon:
-      friendly_name: Radio Balkon
+      assumed_state: false     

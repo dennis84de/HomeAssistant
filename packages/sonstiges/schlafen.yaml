@@ -394,37 +394,56 @@ automation:
     action:
       - service: timer.cancel
         entity_id: timer.sleeptimer
-
-  - alias: "Schlafzimmer - Kodi gestartet"
+        
+  - alias: "Schlafzimmer - Musik Tablet - Schalter"
     trigger:
-      platform: state
-      entity_id: media_player.kodi_schlafzimmer
-      to: 'playing'
+      - platform: state        
+        entity_id: binary_sensor.schalter_schlafzimmer
+        to: 'on'
+      - platform: state        
+        entity_id: sensor.schalter_schlafzimmer
+        to: '2'   
+    condition:
+      - condition: or
+        conditions:
+        - condition: state
+          entity_id: media_player.tablet_schlafzimmer
+          state: 'playing'
+        - condition: state
+          entity_id: media_player.tablet_schlafzimmer
+          state: 'paused'
+    action:
+      - service: media_player.media_play_pause
+        entity_id: media_player.tablet_schlafzimmer  
+        
+  - alias: "Schlafzimmer - Tablet - Wiedergabe gestartet"
+    trigger:
+      - platform: state
+        entity_id: media_player.tablet_schlafzimmer
+        to: 'playing'      
     condition:
       - condition: state
         entity_id: timer.sleeptimer
-        state: 'active'
+        state: 'active'  
     action:
       - service: light.turn_off
         entity_id: light.bett, light.kleiderschrank, light.sideboard, light.schrank, light.badezimmerschrank, light.schreibtisch, light.kuche_regal, light.arbeitszimmer_lampe, light.sportzimmer_regal
 
-  - alias: "Schlafzimmer - Kodi pausiert"
+  - alias: "Schlafzimmer - Tablet - Wiedergabe pausiert"
     trigger:
       platform: state
       entity_id: binary_sensor.bewegungsmelder_schlafzimmer
       to: 'on'
     condition:
-      condition: and
-      conditions:
-        - condition: state
-          entity_id: media_player.kodi_schlafzimmer
-          state: 'playing'
-        - condition: state
-          entity_id: timer.sleeptimer
-          state: 'active'
+      - condition: state
+        entity_id: media_player.tablet_schlafzimmer
+        state: 'playing'
+      - condition: state
+        entity_id: binary_sensor.schlafen_aktiv
+        state: 'on'   
     action:
       - service: media_player.media_pause
-        entity_id: media_player.kodi_schlafzimmer
+        entity_id: media_player.tablet_schlafzimmer        
 
 homeassistant:
   customize:
