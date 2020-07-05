@@ -30,15 +30,15 @@ lovelace:
     - url: /hacsfiles/atomic-calendar-revive/atomic-calendar-revive.js
       type: module
     - url: /hacsfiles/lovelace-card-tools/card-tools.js
-      type: js
+      type: module
     - url: /hacsfiles/lovelace-layout-card/layout-card.js
-      type: js
+      type: module
     - url: /hacsfiles/lovelace-fold-entity-row/fold-entity-row.js
-      type: js
-    - url: /hacsfiles/zha-network-card/zha-network-card.js
-      type: js
+      type: module
     - url: /hacsfiles/secondaryinfo-entity-row/secondaryinfo-entity-row.js
-      type: js
+      type: module
+    - url: /hacsfiles/zha-network-card/zha-network-card.js
+      type: js      
       
 browser_mod:
   prefix: "browser_"
