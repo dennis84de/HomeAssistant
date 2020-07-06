@@ -41,6 +41,10 @@ input_boolean:
   wecker_erinnerung_morgen:
     name: Erinnerung morgen
     initial: off
+    
+  wecker_zeit_geaendert:
+    name: Zeit geändert
+    initial: off    
 
 binary_sensor:
   - platform: template
@@ -167,6 +171,51 @@ automation:
     action:
       - service: script.wecker_einschalten
 
+  - alias: "Weckzeit geändert - Schlafen"
+    trigger:
+      - platform: state
+        entity_id: sensor.tablet_weckzeit  
+    condition:
+      - condition: state
+        entity_id: binary_sensor.alarm_aktiv
+        state: 'on'
+      - condition: state
+        entity_id: input_boolean.wecker_zeit_geaendert
+        state: 'off'        
+    action:
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.wecker_zeit_geaendert
+
+  - alias: "Weckzeit geändert - Erinnerung"
+    trigger:
+      - platform: state
+        entity_id: input_boolean.wecker_zeit_geaendert
+        to: 'on'
+        for:
+          minutes: 5
+    condition:
+      - condition: state
+        entity_id: binary_sensor.alarm_aktiv
+        state: 'on'
+    action:
+      - service: !secret tts_service
+        data_template:
+          echo: "schlafzimmer"
+          message: >-
+            {% set currentTime = states('sensor.time') %}
+            
+            {% if '00:00' <= currentTime < '05:00' %}
+              {% set message = 'Gute Nacht!' %}
+            {% elif '05:00' <= currentTime < '12:00' %}
+              {% set message = 'Guten Morgen!.' %}
+            {% elif '12:00' <= currentTime < '19:00' %}
+              {% set message = 'Guten Tag!' %}
+            {% else %}
+              {% set message = 'Guten Abend!' %}
+            {% endif %}
+            
+            {{ message }} Der Wecker ist ausgeschaltet. Du solltest jetzt aufstehen!
+
   - alias: "Wecker überspringen zurücksetzen"
     trigger:
       - platform: state
@@ -220,7 +269,7 @@ automation:
                       {% endif %}
     action:
       - service: input_boolean.turn_off
-        entity_id: input_boolean.schlafen_aktiv, input_boolean.alarm_aktiv, input_boolean.wecker_erinnerung_morgen
+        entity_id: input_boolean.schlafen_aktiv, input_boolean.alarm_aktiv, input_boolean.wecker_erinnerung_morgen, input_boolean.wecker_zeit_geaendert
       - service: light.turn_off
         entity_id: light.bett
 
