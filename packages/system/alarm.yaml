@@ -69,10 +69,22 @@ automation:
         data_template:
           echo: "flur"
           message: >-
-            {% if is_state('binary_sensor.reinigung_heute', 'on') %}
-              "Die Wohnung wird heute gesaugt. Alle Geräte werden ausgeschaltet. Auf Wiedersehen."
+            {% set currentTime = states('sensor.time') %}
+            
+            {% if '00:00' <= currentTime < '05:00' %}
+              {% set message = 'Gute Nacht' %}
+            {% elif '05:00' <= currentTime < '10:00' %}
+              {% set message = 'Guten Morgen' %}
+            {% elif '12:00' <= currentTime < '18:00' %}
+              {% set message = 'Guten Tag' %}
             {% else %}
-              "Alle Geräte werden ausgeschaltet. Auf Wiedersehen."
+              {% set message = 'Guten Abend' %}
+            {% endif %}
+            
+            {% if is_state('binary_sensor.reinigung_heute', 'on') %}
+              "Die Wohnung wird heute gesaugt. Alle Geräte werden ausgeschaltet. {{ message }} und auf Wiedersehen."
+            {% else %}
+              "Alle Geräte werden ausgeschaltet. {{ message }} und auf Wiedersehen.
             {% endif %}            
       - service: timer.cancel
         entity_id: timer.alles_auschalten
