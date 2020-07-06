@@ -22,7 +22,9 @@ cards:
     show_header_toggle: false
     entities:
       - entity: light.kuche_regal
-      - entity: light.kuche_schrank
+        name: Regal
+      - entity: light.kuechenschrank
+        name: Schrank
 
   - type: glance
     title: Thermometer

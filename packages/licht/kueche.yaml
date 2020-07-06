@@ -6,8 +6,25 @@ light:
         mode: "rgb"
       192.168.2.68:
         name: Küche Schrank
-        mode: "w"
+        mode: "rgbw"
 
+  - platform: template
+    lights:
+      kuechenschrank:
+        friendly_name: Küchenschrank
+        value_template: >-
+          {{ 'on' if is_state('light.kuche_schrank', 'on') else 'off' }}
+        icon_template: >-
+          {{ 'mdi:lightbulb-on' if is_state('light.kuche_schrank', 'on') else 'mdi:lightbulb-off' }}
+        turn_on:
+          - service: light.turn_on
+            data:
+              entity_id: light.kuche_schrank
+              brightness: 255              
+        turn_off:
+          - service: light.turn_off
+            entity_id: light.kuche_schrank       
+        
 input_boolean:
   bewegungsmelder_kueche_deaktiviert:
     name: Bewegungsmelder deaktiviert
@@ -24,17 +41,8 @@ binary_sensor:
         value_template: >-
           {% set hour = now().strftime("%H") | int %}
           
-          {% if hour > 8 or hour < 22 %}
+          {% if hour < 8 or hour > 19 %}
             True
           {% else %}
-            True
+            False
           {% endif %}
-          
-homeassistant:
-  customize:
-    light.kuche_regal:
-      icon: mdi:led-strip
-      friendly_name: Regal
-    light.kuche_schrank:
-      icon: mdi:led-strip
-      friendly_name: Schrank      
