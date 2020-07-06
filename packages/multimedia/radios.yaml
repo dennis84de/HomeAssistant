@@ -82,7 +82,7 @@ input_boolean:
     name: Radio Balkon aktiv
   radio_balkon_bewegungsmelder_deaktiviert:
     name: Radio Balkon Bewegungsmelder deaktiviert  
-    icon: mdi:motion-sensor-off
+    icon: mdi:voice-off
   musik_pausiert:
     name: Musik pausiert
 
