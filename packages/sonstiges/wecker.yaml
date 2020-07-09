@@ -174,7 +174,7 @@ automation:
   - alias: "Weckzeit geändert - Schlafen"
     trigger:
       - platform: state
-        entity_id: sensor.tablet_weckzeit  
+        entity_id: sensor.wecker_startdatum  
     condition:
       - condition: state
         entity_id: binary_sensor.alarm_aktiv
@@ -269,7 +269,9 @@ automation:
                       {% endif %}
     action:
       - service: input_boolean.turn_off
-        entity_id: input_boolean.schlafen_aktiv, input_boolean.alarm_aktiv, input_boolean.wecker_erinnerung_morgen, input_boolean.wecker_zeit_geaendert
+        entity_id: input_boolean.schlafen_aktiv, input_boolean.alarm_aktiv, input_boolean.wecker_erinnerung_morgen, input_boolean.wecker_zeit_geaendert, input_boolean.schlafen_fernseher_einschalten
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.computer_ausschalten
       - service: light.turn_off
         entity_id: light.bett
 
