@@ -8,14 +8,13 @@ import time
 import voluptuous as vol
 
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import CONF_LATITUDE, CONF_LONGITUDE
+from homeassistant.const import CONF_LATITUDE, CONF_LONGITUDE, CONF_NAME
 from homeassistant.core import HomeAssistant
-from homeassistant.helpers import aiohttp_client
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
 from .mqtt import MQTT
 from .geohash_utils import geohash_overlap
 from . import const
-from .const import DOMAIN, PLATFORMS
+from .const import DOMAIN, PLATFORMS, CONF_RADIUS
 from .version import __version__
 
 
@@ -29,40 +28,56 @@ async def async_setup(hass: HomeAssistant, config: dict):
     return True
 
 
-async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
+async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry):
     """Set up blitzortung from a config entry."""
     hass.data.setdefault(DOMAIN, {})
+
+    latitude = config_entry.options.get(CONF_LATITUDE, hass.config.latitude)
+    longitude = config_entry.options.get(CONF_LONGITUDE, hass.config.longitude)
+    radius = config_entry.options.get(const.CONF_RADIUS, const.DEFAULT_RADIUS)
+
     coordinator = BlitzortungDataUpdateCoordinator(
         hass,
-        entry.data[CONF_LATITUDE],
-        entry.data[CONF_LONGITUDE],
-        entry.data[const.CONF_RADIUS],
+        latitude,
+        longitude,
+        radius,
         const.DEFAULT_UPDATE_INTERVAL,
     )
 
-    hass.data[DOMAIN][entry.entry_id] = coordinator
-    await coordinator.connect()
-    await coordinator.async_refresh()
+    hass.data[DOMAIN][config_entry.entry_id] = coordinator
 
     async def start_platforms():
         await asyncio.gather(
             *[
-                hass.config_entries.async_forward_entry_setup(entry, component)
+                hass.config_entries.async_forward_entry_setup(config_entry, component)
                 for component in PLATFORMS
             ]
         )
+        await coordinator.connect()
 
     hass.async_create_task(start_platforms())
+
+    if not config_entry.update_listeners:
+        config_entry.add_update_listener(async_update_options)
+
     return True
 
 
-async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry):
+async def async_update_options(hass, config_entry):
+    """Update options."""
+    _LOGGER.info("async_update_options")
+    await hass.config_entries.async_reload(config_entry.entry_id)
+
+
+async def async_unload_entry(hass: HomeAssistant, config_entry: ConfigEntry):
     """Unload a config entry."""
+    coordinator = hass.data[DOMAIN][config_entry.entry_id]
+
     # cleanup platforms
     unload_ok = all(
         await asyncio.gather(
             *[
-                hass.config_entries.async_forward_entry_unload(entry, component)
+                hass.config_entries.async_forward_entry_unload(config_entry, component)
                 for component in PLATFORMS
             ]
         )
@@ -70,9 +85,33 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry):
     if not unload_ok:
         return False
 
-    hass.data[DOMAIN].pop(entry.entry_id)
+    await coordinator.disconnect()
+    _LOGGER.info("disconnected")
+
+    hass.data[DOMAIN].pop(config_entry.entry_id)
 
     return True
+
+
+async def async_migrate_entry(hass, entry):
+    _LOGGER.debug("Migrating Blitzortung entry from Version %s", entry.version)
+    if entry.version == 1:
+        latitude = entry.data[CONF_LATITUDE]
+        longitude = entry.data[CONF_LONGITUDE]
+        radius = entry.data[CONF_RADIUS]
+        name = entry.data[CONF_NAME]
+
+        entry.unique_id = f"{latitude}-{longitude}-{name}-lightning"
+        entry.data = {
+            CONF_NAME: name
+        }
+        entry.options = {
+            CONF_LATITUDE: latitude,
+            CONF_LONGITUDE: longitude,
+            CONF_RADIUS: radius,
+        }
+        entry.version = 2
+        return True
 
 
 class BlitzortungDataUpdateCoordinator(DataUpdateCoordinator):
@@ -82,13 +121,13 @@ class BlitzortungDataUpdateCoordinator(DataUpdateCoordinator):
         self.latitude = latitude
         self.longitude = longitude
         self.radius = radius
-        self.http_client = aiohttp_client.async_get_clientsession(hass)
-        self.host_nr = 1
         self.last_time = 0
         self.sensors = []
         self.geohash_overlap = geohash_overlap(
             self.latitude, self.longitude, self.radius
         )
+        self._unlisten = None
+
         _LOGGER.info(
             "lat: %s, lon: %s, radius: %skm, geohashes: %s",
             self.latitude,
@@ -144,6 +183,12 @@ class BlitzortungDataUpdateCoordinator(DataUpdateCoordinator):
         await self.mqtt_client.async_subscribe(
             "component/hello", self.on_hello_message, qos=0
         )
+        self._unlisten = self.async_add_listener(lambda *args: None)
+
+    async def disconnect(self):
+        await self.mqtt_client.async_disconnect()
+        if self._unlisten:
+            self._unlisten()
 
     def on_hello_message(self, message, *args):
         def parse_version(version_str):
@@ -171,7 +216,7 @@ class BlitzortungDataUpdateCoordinator(DataUpdateCoordinator):
     def on_mqtt_message(self, message, *args):
         for sensor in self.sensors:
             sensor.on_message(message)
-        if message.topic.startswith("blitzortung/1.0"):
+        if message.topic.startswith("blitzortung/1.1"):
             lightning = json.loads(message.payload)
             self.compute_polar_coords(lightning)
             if lightning[const.ATTR_LIGHTNING_DISTANCE] < self.radius:
@@ -197,5 +242,5 @@ class BlitzortungDataUpdateCoordinator(DataUpdateCoordinator):
         if not self.is_connected or is_inactive:
             for sensor in self.sensors:
                 if is_inactive:
-                    sensor.update_sensor(None)
+                    sensor.update_lightning(None)
                 sensor.async_write_ha_state()
