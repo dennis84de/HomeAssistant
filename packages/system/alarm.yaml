@@ -72,20 +72,38 @@ automation:
             {% set currentTime = states('sensor.time') %}
             
             {% if '00:00' <= currentTime < '05:00' %}
-              {% set message = 'Gute Nacht' %}
+              {% set dayMessage = 'Gute Nacht' %}
             {% elif '05:00' <= currentTime < '10:00' %}
-              {% set message = 'Guten Morgen' %}
+              {% set dayMessage = 'Guten Morgen' %}
             {% elif '12:00' <= currentTime < '18:00' %}
-              {% set message = 'Guten Tag' %}
+              {% set dayMessage = 'Guten Tag' %}
             {% else %}
-              {% set message = 'Guten Abend' %}
+              {% set dayMessage = 'Guten Abend' %}
             {% endif %}
             
             {% if is_state('binary_sensor.reinigung_heute', 'on') %}
-              "Die Wohnung wird heute gesaugt. Alle Geräte werden ausgeschaltet. {{ message }} und auf Wiedersehen."
+              {% set vacuumMessage = 'Die Wohnung wird heute gesaugt.' %}
             {% else %}
-              "Alle Geräte werden ausgeschaltet. {{ message }} und auf Wiedersehen.
-            {% endif %}            
+              {% set vacuumMessage = '' %}
+            {% endif %}
+            
+            {% set windowEntities = state_attr('group.fenster', 'entity_id') %}   
+
+            {% set openWindows = states.binary_sensor 
+              | selectattr('entity_id', 'in', windowEntities)
+              | selectattr('state','eq','on') 
+              | map(attribute='name')
+              | list %}
+            
+            {% if openWindows | length == 0 %}
+              {% set windowMessage = '' %}
+            {% elif openWindows | length == 1 %}
+              {% set windowMessage = 'Das folgende Fenster ist noch geöffnet: ' + openWindows[0] + '.' %}
+            {% else %}
+              {% set windowMessage = 'Die folgenden Fenster sind noch geöffnet: ' + openWindows | join(', ')  + '.' %}
+            {% endif %}
+            
+            {{ vacuumMessage }} {{ windowMessage }} Alle Geräte werden ausgeschaltet. {{ dayMessage }} und auf Wiedersehen.        
       - service: timer.cancel
         entity_id: timer.alles_auschalten
       - service: automation.turn_off
