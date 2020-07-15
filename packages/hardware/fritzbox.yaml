@@ -138,6 +138,7 @@ automation:
     trigger:
       - platform: state
         entity_id: switch.fritzbox_guest_wifi
+        from: 'off'
         to: 'on'
     action:
       service: !secret tts_service
@@ -151,6 +152,7 @@ automation:
     trigger:
       - platform: state
         entity_id: switch.fritzbox_guest_wifi
+        from: 'on'
         to: 'off'
     action:
       service: !secret tts_service
