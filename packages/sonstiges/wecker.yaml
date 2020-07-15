@@ -138,11 +138,9 @@ automation:
       - platform: state
         entity_id: binary_sensor.alarm_aktiv        
     condition:
-      condition: and
-      conditions:
-        - condition: state
-          entity_id: binary_sensor.alarm_aktiv
-          state: 'off'
+      - condition: state
+        entity_id: binary_sensor.alarm_aktiv
+        state: 'off'  
     action:
       - service: script.weckzeit_einstellen
 
@@ -178,10 +176,19 @@ automation:
     condition:
       - condition: state
         entity_id: binary_sensor.alarm_aktiv
-        state: 'on'
+        state: 'on'        
       - condition: state
         entity_id: input_boolean.wecker_zeit_geaendert
-        state: 'off'        
+        state: 'off'
+      - condition: template
+        value_template: >-
+          {% set weckzeitSekunden = state_attr('sensor.tablet_weckzeit', 'seconds') %}
+
+          {% if weckzeitSekunden == None %}
+            False
+          {% else %}
+            {{ weckzeitSekunden.split(',')[0] | int >= 600 }}
+          {% endif %}
     action:
       - service: input_boolean.turn_on
         entity_id: input_boolean.wecker_zeit_geaendert
@@ -215,6 +222,12 @@ automation:
             {% endif %}
             
             {{ message }} Der Wecker ist ausgeschaltet. Du solltest jetzt aufstehen!
+      - delay: "00:00:10"
+      - service: media_player.play_media
+        data:
+          entity_id: media_player.echo_schlafzimmer
+          media_content_type: sound
+          media_content_id: amzn_sfx_scifi_alarm_04   
 
   - alias: "Wecker überspringen zurücksetzen"
     trigger:
@@ -269,9 +282,9 @@ automation:
                       {% endif %}
     action:
       - service: input_boolean.turn_off
-        entity_id: input_boolean.schlafen_aktiv, input_boolean.alarm_aktiv, input_boolean.wecker_erinnerung_morgen, input_boolean.wecker_zeit_geaendert, input_boolean.schlafen_fernseher_einschalten
+        entity_id: input_boolean.schlafen_aktiv, input_boolean.alarm_aktiv, input_boolean.wecker_erinnerung_morgen, input_boolean.wecker_zeit_geaendert
       - service: input_boolean.turn_on
-        entity_id: input_boolean.computer_ausschalten
+        entity_id: input_boolean.computer_ausschalten, input_boolean.schlafen_fernseher_einschalten
       - service: light.turn_off
         entity_id: light.bett
 
