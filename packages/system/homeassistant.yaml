@@ -39,6 +39,13 @@ lovelace:
       type: module
     - url: /hacsfiles/zha-network-card/zha-network-card.js
       type: js      
+  dashboards:      
+    lovelace-rooms:
+      mode: yaml
+      filename: lovelace-rooms.yaml
+      title: Zimmer
+      icon: mdi:home-assistant
+      show_in_sidebar: true  
       
 browser_mod:
   prefix: "browser_"
