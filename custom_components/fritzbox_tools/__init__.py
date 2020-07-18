@@ -175,8 +175,8 @@ class FritzBoxTools(object):
 
         self.fritzstatus = FritzStatus(fc=self.connection)
 
-        fritzcall = FritzCall(fc=self.connection)
-        self.fritzcalllist = fritzcall.get_calls(days=7)
+        self.fritzcall = FritzCall(fc=self.connection)
+        # self.fritzcalllist = fritzcall.get_calls(days=7)
 
         self.ha_ip = get_local_ip()
         self.profile_on = profile_on

@@ -58,8 +58,9 @@ class FritzBoxCallSensor(RestoreEntity):
     async def _async_fetch_update(self):
         self._state = 0
         try:
-            status = self.fritzbox_tools.fritzstatus
-            callListResult = self.fritzbox_tools.fritzcalllist
+            fritzcall = self.fritzbox_tools.fritzcall
+            callListResult = fritzcall.get_calls(days=7)
+            # callListResult = self.fritzbox_tools.fritzcalllist
             callDict = []
             
             for call in callListResult:                                                
@@ -75,7 +76,7 @@ class FritzBoxCallSensor(RestoreEntity):
                 durationTimedelta = getattr(call, 'duration')
 
                 callElement = {                    
-                    'name': call.Name,                    
+                    'name': call.Name if call.Name else call.Caller,                    
                     'number': call.Called if call.Type == "3" else call.Caller,
                     'date': getattr(call, 'date'),
                     'duration': durationTimedelta.seconds,
