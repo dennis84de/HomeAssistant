@@ -111,10 +111,11 @@ sensor:
           - vacuum.xiaomi_vacuum_cleaner
         icon_template: mdi:clock-end
         value_template: >-
-          {% if is_state("vacuum.xiaomi_vacuum_cleaner", "unavailable") or state_attr("vacuum.xiaomi_vacuum_cleaner", "clean_stop") == None %}
+          {% set lastClean = state_attr("automation.staubsaugen_beendet", "last_triggered") %}
+          
+          {% if lastClean == None %}
             -
-          {% else %}
-            {% set lastClean = state_attr("vacuum.xiaomi_vacuum_cleaner", "clean_stop") %}
+          {% else %}            
             {% set weekday = as_timestamp(lastClean) | timestamp_custom("%w", True) | int %}
 
             {{ ['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'][weekday-1] }}, {{ as_timestamp(lastClean) | timestamp_custom("%d.%m.%Y", True) | string }}              
