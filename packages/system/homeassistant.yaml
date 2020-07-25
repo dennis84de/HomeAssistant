@@ -15,7 +15,7 @@ map:
 lovelace:
   mode: yaml
   resources:
-    - url: /hacsfiles/lovelace-darksky-card/darksky-card.js
+    - url: /hacsfiles/lovelace-darksky-card/lovelace-darksky-card.js
       type: module
     - url: /hacsfiles/mini-media-player/mini-media-player-bundle.js
       type: module

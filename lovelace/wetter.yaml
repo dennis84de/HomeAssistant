@@ -34,7 +34,7 @@ popup_cards:
           name: Tote    
           
 cards:
-  - type: 'custom:dark-sky-weather-card'
+  - type: 'custom:lovelace-darksky-card'
     locale: de
     static_icons: true
     tooltips: true
