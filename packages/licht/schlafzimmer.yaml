@@ -6,7 +6,7 @@ light:
         mode: "rgb"
         
   - platform: mqtt
-    name: "Schlafzimmer Kleiderschrank"
+    name: "Kleiderschrank"
     state_topic: "stat/schlafzimmerkleiderschrank/POWER"
     command_topic: "cmnd/schlafzimmerkleiderschrank/POWER"
     availability_topic: "tele/schlafzimmerkleiderschrank/LWT"
