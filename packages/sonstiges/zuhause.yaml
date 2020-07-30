@@ -281,6 +281,9 @@ automation:
       - platform: state
         entity_id: binary_sensor.tuersensor
         to: 'off' 
+      - platform: state
+        entity_id: binary_sensor.zu_hause
+        to: 'on'         
     condition:
       - condition: state
         entity_id: input_boolean.zu_hause_begruessung
@@ -296,7 +299,7 @@ automation:
               "Der Staubsaugerbehälter muss geleert werden."
             {% endif %}
 
-            {% set count_heimnetz_entities = states('sensor.heimnetz_offline') | int -%}
+            {% set count_heimnetz_entities = 0 -%}
             {% set count_zigate_entities = states('sensor.zigate_offline') | int -%}
             {% set count_complete = count_heimnetz_entities + count_zigate_entities | int -%}
             
