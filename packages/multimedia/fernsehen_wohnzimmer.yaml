@@ -277,6 +277,30 @@ automation:
       - service: input_boolean.turn_on
         entity_id: input_boolean.kodi_pausiert
 
+  - alias: "Kodi - Wiedergabe pausieren - Schalter Balkon"
+    trigger:
+      - platform: state
+        entity_id: sensor.schalter_balkon
+        to: '2'
+    condition:
+      - condition: state
+        entity_id: binary_sensor.fenster_balkontuer
+        state: 'on'      
+      - condition: state
+        entity_id: media_player.kodi_wohnzimmer
+        state: 'playing'
+      - condition: state
+        entity_id: input_boolean.kodi_pausieren
+        state: 'on'
+      - condition: state
+        entity_id: binary_sensor.besuch
+        state: 'off'                    
+    action:
+      - service: media_player.media_pause
+        entity_id: media_player.kodi_wohnzimmer        
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.kodi_pausiert
+
   - alias: "Kodi - Wiedergabe starten - Bewegung Wohnzimmer"
     trigger:
       - platform: state
@@ -299,35 +323,6 @@ automation:
         entity_id: media_player.kodi_wohnzimmer
       - service: input_boolean.turn_off
         entity_id: input_boolean.kodi_pausiert
-
-  - alias: "Kodi - Folge zu Ende - Nächster Titel"
-    trigger:
-      - platform: template
-        value_template: >-
-          {% set kodiSensor = 'binary_sensor.kodi_wohnzimmer_mqtt' %}
-          {% set timeTotal = state_attr(kodiSensor, 'kodi_totaltime') or '10:00:00' %}
-          {% set timeCurrent = state_attr(kodiSensor, 'kodi_time') or '00:00:00' %}
-
-          {% set totalHour, totalMinute, totalSeconds = timeTotal.split(':') %}
-          {% set currentHour, currentMinute, currentSeconds = timeCurrent.split(':') %}
-
-          {% set totalSeconds = (totalHour | int * 3600) + (totalMinute | int * 60) + (totalSeconds | int) %}       
-          {% set currentSeconds = (currentHour | int * 3600) + (currentMinute | int * 60) + (currentSeconds | int) %}
-          {% set remainingSeconds = totalSeconds - currentSeconds %}
-          
-          {{
-          remainingSeconds < 15 or
-          remainingSeconds < 30
-          }}
-    condition:   
-      - condition: state
-        entity_id: media_player.kodi_wohnzimmer
-        state: 'playing'
-      - condition: template
-        value_template: '{{ is_state_attr("media_player.kodi_wohnzimmer", "media_content_type", "tvshow") }}'
-    action:
-      - service: media_player.media_next_track
-        entity_id: media_player.kodi_wohnzimmer
 
   - alias: "Kodi - Cube - Nächster Titel"
     trigger:
