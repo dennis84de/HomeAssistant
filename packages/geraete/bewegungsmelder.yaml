@@ -151,7 +151,7 @@ entity_controller:
     friendly_name: "Bewegung Balkon"
     sensor: binary_sensor.bewegungsmelder_balkon
     entity: light.balkon_licht
-    delay: 600
+    delay: 1200
     overrides:  
       - binary_sensor.sonne_tagsueber
       - binary_sensor.bewegungsmelder_inaktiv_unterwegs
