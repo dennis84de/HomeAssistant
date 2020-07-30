@@ -5,24 +5,22 @@ light:
         name: Schreibtisch
         mode: "rgb"
 
-  - platform: switch
-    name: Arbeitszimmer Lampe
-    entity_id: switch.arbeitszimmer_lampe
-
+  - platform: mqtt
+    name: "Arbeitszimmer Lampe"
+    state_topic: "stat/arbeitszimmerlampe/POWER"
+    command_topic: "cmnd/arbeitszimmerlampe/POWER"
+    availability_topic: "tele/arbeitszimmerlampe/LWT"
+    qos: 1
+    payload_on: "ON"
+    payload_off: "OFF"
+    payload_available: "Online"
+    payload_not_available: "Offline"
+    
 input_boolean:
   bewegungsmelder_arbeitszimmer_deaktiviert:
     name: Bewegungsmelder deaktiviert
     initial: off
     icon: mdi:sync-off
-
-switch:
-  - platform: brematic
-    host: !secret brematic_host
-    system_code: '10000'
-    switches:
-      arbeitszimmer_lampe:
-        unit_code: '00100'
-        friendly_name: Lampe
         
 homeassistant:
   customize:

@@ -1,0 +1,20 @@
+switch:
+  - platform: mqtt
+    name: "Spülmaschine"
+    state_topic: "stat/spuelmaschine/POWER"
+    command_topic: "cmnd/spuelmaschine/POWER"
+    availability_topic: "tele/spuelmaschine/LWT"
+    qos: 1
+    payload_on: "ON"
+    payload_off: "OFF"
+    payload_available: "Online"
+    payload_not_available: "Offline"
+    icon: "mdi:dishwasher"
+    
+sensor:
+  - platform: mqtt
+    name: "Spülmaschine Verbrauch"
+    unit_of_measurement: "W"
+    icon: "mdi:power-cycle"
+    state_topic: "tele/spuelmaschine/SENSOR" 
+    value_template: "{{ value_json['ENERGY']['Power'] }}"

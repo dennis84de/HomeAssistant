@@ -1,26 +1,24 @@
-switch:
-  - platform: brematic
-    host: !secret brematic_host
-    system_code: '00100'
-    switches:      
-      schlafzimmer_kleiderschrank:
-        unit_code: '10000'
-        friendly_name: Schlafzimmer Kleiderschrank
-
 light:
   - platform: flux_led
     devices:
       192.168.2.61:
         name: Bett
         mode: "rgb"
-
+        
+  - platform: mqtt
+    name: "Schlafzimmer Kleiderschrank"
+    state_topic: "stat/schlafzimmerkleiderschrank/POWER"
+    command_topic: "cmnd/schlafzimmerkleiderschrank/POWER"
+    availability_topic: "tele/schlafzimmerkleiderschrank/LWT"
+    qos: 1
+    payload_on: "ON"
+    payload_off: "OFF"
+    payload_available: "Online"
+    payload_not_available: "Offline"
+    
   - platform: switch
     name: Fernseher Schlafzimmer
     entity_id: switch.licht_fernseher_schlafzimmer
-
-  - platform: switch
-    name: Kleiderschrank
-    entity_id: switch.schlafzimmer_kleiderschrank
 
 input_boolean:
   bewegungsmelder_schlafzimmer_deaktiviert:

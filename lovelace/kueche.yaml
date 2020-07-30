@@ -16,6 +16,14 @@ cards:
     show_header_toggle: false
     entities:
       - entity: switch.kuche_radio
+      
+  - type: entities
+    title: Spülmaschine
+    show_header_toggle: false
+    entities:      
+      - entity: switch.spulmaschine  
+      - entity: sensor.spulmaschine_verbrauch
+        name: Verbrauch        
 
   - type: entities
     title: Licht

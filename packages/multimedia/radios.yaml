@@ -1,11 +1,14 @@
 switch:
-  - platform: brematic
-    host: !secret brematic_host
-    system_code: '11100'
-    switches:
-      balkon_radio:
-        unit_code: '01000'
-        friendly_name: Balkon Radio
+  - platform: mqtt
+    name: "Balkon Radio"
+    state_topic: "stat/balkonradio/POWER"
+    command_topic: "cmnd/balkonradio/POWER"
+    availability_topic: "tele/balkonradio/LWT"
+    qos: 1
+    payload_on: "ON"
+    payload_off: "OFF"
+    payload_available: "Online"
+    payload_not_available: "Offline"
         
   - platform: template
     switches:
@@ -168,9 +171,9 @@ automation:
       - condition: state
         entity_id: 'input_boolean.radio_balkon_bewegungsmelder_deaktiviert'
         state: 'off'        
-      - condition: state
-        entity_id: 'device_tracker.pibalcony'
-        state: 'home'
+#      - condition: state
+#        entity_id: 'device_tracker.pibalcony'
+#        state: 'home'
       - condition: template
         value_template: '{{ is_state("sensor.handy", "incoming") == False and is_state("sensor.handy", "outgoing") == False }}'
       - condition: state
@@ -208,9 +211,9 @@ automation:
       - condition: state
         entity_id: switch.balkon_radio
         state: 'on'
-      - condition: state
-        entity_id: 'device_tracker.pibalcony'
-        state: 'home'   
+#      - condition: state
+#        entity_id: 'device_tracker.pibalcony'
+#        state: 'home'   
       - condition: state
         entity_id: 'switch.wiedergabe_aktiv'
         state: 'on'        
