@@ -17,12 +17,8 @@ automation:
       - platform: state
         entity_id: binary_sensor.schalter_balkon
         to: 'off'
-    condition:
-      - condition: state
-        entity_id: light.balkon_licht
-        state: 'off'
     action:
-      - service: light.turn_on
+      - service: light.toggle
         entity_id: light.balkon_licht
       
   - alias: "Licht Balkon - Ausschalten"
