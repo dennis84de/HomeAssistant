@@ -9,7 +9,7 @@ device_tracker:
     consider_home: 60
     new_device_defaults:
       track_new_devices: false
-
+    
   - platform: fritz
     host: !secret repeater_host
     username: !secret fritzbox_username
@@ -177,10 +177,6 @@ homeassistant:
     device_tracker.tplinkschlafzimmerradio:
       icon: mdi:power-socket-eu
       friendly_name: Schlafzimmer Radio
-
-    device_tracker.tplinkarbeitszimmerradio:
-      icon: mdi:power-socket-eu
-      friendly_name: Arbeitszimmer Radio
     device_tracker.tplinkkuecheradio:
       icon: mdi:power-socket-eu
       friendly_name: Küche Radio
@@ -199,6 +195,9 @@ homeassistant:
     device_tracker.tplinktrockner:
       icon: mdi:power-socket-eu
       friendly_name: Trockner
+    device_tracker.tplinkarbeitszimmerfigur:
+      icon: mdi:power-socket-eu
+      friendly_name: Arbeitszimmer Figur      
     device_tracker.tplinkschlafzimmerfernseher:
       icon: mdi:power-socket-eu
       friendly_name: Schlafzimmer Fernseher
@@ -289,8 +288,6 @@ homeassistant:
     device_tracker.magichomeschlafzimmer:
       icon: mdi:lightbulb-on-outline
     device_tracker.magichomekueche:
-      icon: mdi:lightbulb-on-outline
-    device_tracker.magichomekuechenschraenke:
       icon: mdi:lightbulb-on-outline
     device_tracker.magichomearbeitszimmer:
       icon: mdi:lightbulb-on-outline
