@@ -128,3 +128,10 @@ cards:
           source: true
           progress: true
           volume: true      
+          
+  - type: picture-glance
+    title: Kamera
+    entities:
+      - binary_sensor.kamera_bewegung
+      - switch.kamera_wohnzimmer
+    camera_image: camera.wohnzimmer

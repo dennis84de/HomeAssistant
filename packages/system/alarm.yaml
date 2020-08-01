@@ -162,11 +162,15 @@ automation:
         entity_id: alarm_control_panel.alarm
         to: 'triggered'
     action:
-      service: notify.telegram
-      data_template:
-        title: "Alarm"
-        message: "Der Alarm in der Wohnung wurde ausgelöst."
-
+      - service: notify.telegram
+        data_template:
+          title: "Alarm"
+          message: "Der Alarm in der Wohnung wurde ausgelöst."
+      - service: telegram_bot.send_photo
+        data_template:
+          caption: 'Kamera'
+          url: 'http://192.168.2.75:8123/api/camera_proxy/camera.wohnzimmer?token={{ state_attr("camera.wohnzimmer", "access_token") }}'
+                    
   - alias: "Alarm - Nachricht Bewegungsmelder"
     trigger:
       - platform: state
