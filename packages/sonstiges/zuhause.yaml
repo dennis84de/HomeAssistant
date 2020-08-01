@@ -355,6 +355,15 @@ automation:
       - service: input_boolean.turn_off
         entity_id: input_boolean.zu_hause_begruessung                           
             
+  - alias: "Zu Hause - Kamera ausschalten"
+    trigger:
+      - platform: state
+        entity_id: alarm_control_panel.alarm
+        to: 'disarmed'
+    action:
+      - service: switch.turn_off
+        entity_id: switch.kamera_wohnzimmer
+        
 script:
   zu_hause:
     alias: "Zu Hause"

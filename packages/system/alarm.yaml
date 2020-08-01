@@ -156,6 +156,15 @@ automation:
       service: alarm_control_panel.alarm_trigger
       entity_id: alarm_control_panel.alarm
 
+  - alias: "Alarm - Kamera einschalten"
+    trigger:
+      - platform: state
+        entity_id: alarm_control_panel.alarm
+        to: 'armed_away'
+    action:
+      - service: switch.turn_on
+        entity_id: switch.kamera_wohnzimmer
+
   - alias: "Alarm - Nachricht Telegram"
     trigger:
       - platform: state
@@ -166,6 +175,9 @@ automation:
         data_template:
           title: "Alarm"
           message: "Der Alarm in der Wohnung wurde ausgelöst."
+      - condition: state
+        entity_id: switch.kamera_wohnzimmer
+        state: 'on'
       - service: telegram_bot.send_photo
         data_template:
           caption: 'Kamera'
