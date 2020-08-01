@@ -218,7 +218,7 @@ entity_controller:
   bewegung_kuechenschrank:
     friendly_name: "Bewegung Küchenschrank"
     sensor: binary_sensor.bewegungsmelder_kueche
-    entity: light.kuechenschrank
+    entity: light.kuche_schrank
     delay: 120    
     overrides:      
       - binary_sensor.schlafen_inaktiv
@@ -314,7 +314,7 @@ automation:
           - light.sideboard
           - light.schrank
           - light.kuche_regal
-          - light.kuechenschrank
+          - light.kuche_schrank
           - light.bett
           - light.kleiderschrank
           - light.couch             

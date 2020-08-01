@@ -66,6 +66,42 @@ binary_sensor:
           
           {{ True if (istHomeOffice and istArbeitstag and keinUrlaub and nachArbeitsBeginn and vorArbeitsEnde) else False }}
           
+switch:
+  - platform: mqtt
+    name: "Arbeitszimmer Monitor links"
+    state_topic: "stat/arbeitszimmermonitorlinks/POWER"
+    command_topic: "cmnd/arbeitszimmermonitorlinks/POWER"
+    availability_topic: "tele/arbeitszimmermonitorlinks/LWT"
+    qos: 1
+    payload_on: "ON"
+    payload_off: "OFF"
+    payload_available: "Online"
+    payload_not_available: "Offline"  
+          
+  - platform: mqtt
+    name: "Arbeitszimmer Monitor rechts"
+    state_topic: "stat/arbeitszimmermonitorrechts/POWER"
+    command_topic: "cmnd/arbeitszimmermonitorrechts/POWER"
+    availability_topic: "tele/arbeitszimmermonitorrechts/LWT"
+    qos: 1
+    payload_on: "ON"
+    payload_off: "OFF"
+    payload_available: "Online"
+    payload_not_available: "Offline"  
+    
+  - platform: template
+    switches:
+      arbeitszimmer_monitore:
+        value_template: "{{ is_state('switch.arbeitszimmer_monitor_links', 'on') or is_state('switch.arbeitszimmer_monitor_rechts', 'on')}}"
+        turn_on:
+          service: switch.turn_on
+          data:
+            entity_id: switch.arbeitszimmer_monitor_links, switch.arbeitszimmer_monitor_rechts
+        turn_off:
+          service: switch.turn_off
+          data:
+            entity_id: switch.arbeitszimmer_monitor_links, switch.arbeitszimmer_monitor_rechts
+            
 input_boolean:
   home_office:
     name: Home Office
@@ -112,19 +148,35 @@ input_select:
       - 30
     icon: mdi:timelapse
 
+script:
+  home_office_start:
+    alias: 'Home Office - Start'
+    sequence:
+      - service: switch.turn_off
+        entity_id: switch.schlafzimmer_radio
+      - service: switch.turn_on
+        entity_id: switch.arbeitszimmer_radio, switch.arbeitszimmer_monitor_links, switch.arbeitszimmer_monitor_rechts
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.bewegungsmelder_arbeitszimmer_deaktiviert
+          
+  home_office_ende:
+    alias: 'Home Office - Ende'
+    sequence:
+      - service: switch.turn_off
+        entity_id: switch.arbeitszimmer_radio, switch.arbeitszimmer_monitor_links, switch.arbeitszimmer_monitor_rechts
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.bewegungsmelder_arbeitszimmer_deaktiviert
+      - service: switch.turn_on
+        entity_id: switch.computer
+        
 automation:
   - alias: 'Home Office - Start'
     trigger:
       - platform: state
         entity_id: binary_sensor.home_office
         to: 'on'
-    action:
-      - service: switch.turn_off
-        entity_id: switch.schlafzimmer_radio
-      - service: switch.turn_on
-        entity_id: switch.arbeitszimmer_radio      
-      - service: input_boolean.turn_on
-        entity_id: input_boolean.bewegungsmelder_arbeitszimmer_deaktiviert
+    action:      
+      - service: script.home_office_start
       
   - alias: 'Home Office - Ende'
     trigger:
@@ -132,19 +184,21 @@ automation:
         entity_id: device_tracker.pc_arbeit
         to: 'not_home'  
         for:
-          minutes: 1        
+          minutes: 1
+      - platform: state
+        entity_id: sensor.schalter_wohnzimmer
+        to: '2'           
     condition:
-      - condition: state
-        entity_id: binary_sensor.home_office
-        state: 'off'        
-    action:
-      - service: switch.turn_off
-        entity_id: switch.arbeitszimmer_radio      
-      - service: input_boolean.turn_off
-        entity_id: input_boolean.bewegungsmelder_arbeitszimmer_deaktiviert
-      - service: switch.turn_on
-        entity_id: switch.computer
-        
+      - condition: template
+        value_template: >-         
+          {% if trigger.entity_id == "sensor.schalter_wohnzimmer" %}
+            {{ is_state('device_tracker.pc_arbeit', 'home') }}
+          {% else %}
+            True
+          {% endif %}
+    action:      
+      - service: script.home_office_ende
+
   - alias: 'Benachrichtigung Arbeit'
     trigger:
       - platform: template
@@ -188,3 +242,7 @@ homeassistant:
       icon: mdi:car-estate
     sensor.fahrzeit_nach_hause:
       icon: mdi:car-sports
+    device_tracker.pc_arbeit:
+      icon: mdi:desktop-classic   
+    switch.arbeitszimmer_monitore:
+      icon: mdi:monitor-dashboard

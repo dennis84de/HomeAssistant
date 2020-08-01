@@ -16,6 +16,10 @@ light:
     payload_available: "Online"
     payload_not_available: "Offline"
     
+  - platform: switch
+    name: Arbeitszimmer Figur
+    entity_id: switch.arbeitszimmer_figur    
+        
 input_boolean:
   bewegungsmelder_arbeitszimmer_deaktiviert:
     name: Bewegungsmelder deaktiviert
@@ -24,6 +28,11 @@ input_boolean:
         
 homeassistant:
   customize:
+    light.schreibtisch:
+      icon: mdi:desk
     light.arbeitszimmer_lampe:
       friendly_name: Lampe
       icon: mdi:lamp
+    light.arbeitszimmer_figur:
+      friendly_name: Figur
+      icon: mdi:track-light      

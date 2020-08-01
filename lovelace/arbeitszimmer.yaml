@@ -15,7 +15,7 @@ cards:
     title: Geräte
     show_header_toggle: false
     entities:
-      - entity: switch.ladegeraet
+      - entity: switch.ladegerat
       - entity: switch.arbeitszimmer_radio
 
   - type: entities
@@ -24,6 +24,7 @@ cards:
     entities:
       - entity: light.schreibtisch
       - entity: light.arbeitszimmer_lampe
+      - entity: light.arbeitszimmer_figur
 
   - type: glance
     title: Thermometer
@@ -49,6 +50,15 @@ cards:
         name: Fenster
       - entity: climate.arbeitszimmer
         name: Heizung
+
+  - type: entities
+    title: Arbeit
+    show_header_toggle: false
+    entities:
+      - entity: device_tracker.pc_arbeit
+        name: Computer
+      - entity: switch.arbeitszimmer_monitore
+        name: Monitore
 
   - type: entities
     title: Staubsauger

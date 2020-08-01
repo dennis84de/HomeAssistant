@@ -60,8 +60,7 @@ cards:
     show_header_toggle: false
     entities:
       - entity: device_tracker.tplinkwohnzimmermonitor
-      - entity: device_tracker.tplinkwohnzimmerradio
-      - entity: device_tracker.tplinkarbeitszimmerradio
+      - entity: device_tracker.tplinkwohnzimmerradio      
       - entity: device_tracker.tplinkschlafzimmerradio
       - entity: device_tracker.tplinkflurradio
       - entity: device_tracker.tplinkbadezimmerradio
@@ -72,6 +71,7 @@ cards:
       - entity: device_tracker.edimaxcrosstrainer
       - entity: device_tracker.tplinkwaschmaschine
       - entity: device_tracker.tplinktrockner
+      - entity: device_tracker.tplinkarbeitszimmerfigur
 
   - type: entities
     title: Amazon Echo
@@ -124,8 +124,6 @@ cards:
         name: Flur hinten
       - entity: device_tracker.magichomekueche
         name: Küche
-      - entity: device_tracker.magichomekuechenschraenke
-        name: Küchenschränke
       - entity: device_tracker.magichomebadezimmer
         name: Badezimmer
       - entity: device_tracker.magichomeschlafzimmer

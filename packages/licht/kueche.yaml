@@ -4,26 +4,17 @@ light:
       192.168.2.46:
         name: Küche Regal
         mode: "rgb"
-      192.168.2.68:
-        name: Küche Schrank
-        mode: "rgbw"
 
-  - platform: template
-    lights:
-      kuechenschrank:
-        friendly_name: Küchenschrank
-        value_template: >-
-          {{ 'on' if is_state('light.kuche_schrank', 'on') else 'off' }}
-        icon_template: >-
-          {{ 'mdi:lightbulb-on' if is_state('light.kuche_schrank', 'on') else 'mdi:lightbulb-off' }}
-        turn_on:
-          - service: light.turn_on
-            data:
-              entity_id: light.kuche_schrank
-              brightness: 255              
-        turn_off:
-          - service: light.turn_off
-            entity_id: light.kuche_schrank       
+  - platform: mqtt
+    name: "Küche Schrank"
+    state_topic: "stat/kuechenschrank/POWER"
+    command_topic: "cmnd/kuechenschrank/POWER"
+    availability_topic: "tele/kuechenschrank/LWT"
+    qos: 1
+    payload_on: "ON"
+    payload_off: "OFF"
+    payload_available: "Online"
+    payload_not_available: "Offline"
         
 input_boolean:
   bewegungsmelder_kueche_deaktiviert:

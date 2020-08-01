@@ -10,8 +10,7 @@ heimnetz:
     - device_tracker.xiaomifan
     - device_tracker.brematic_gateway
     - device_tracker.tplinkwohnzimmermonitor
-    - device_tracker.tplinkwohnzimmerradio
-    - device_tracker.tplinkarbeitszimmerradio
+    - device_tracker.tplinkwohnzimmerradio    
     - device_tracker.tplinkschlafzimmerradio
     - device_tracker.tplinkflurradio
     - device_tracker.tplinkbadezimmerradio
@@ -19,6 +18,7 @@ heimnetz:
     - device_tracker.tplinkschlafzimmerfernseher
     - device_tracker.tplinkwaschmaschine
     - device_tracker.tplinktrockner    
+    - device_tracker.tplinkarbeitszimmerfigur
     - device_tracker.echoflur
     - device_tracker.echokueche
     - device_tracker.echobadezimmer
@@ -27,7 +27,6 @@ heimnetz:
     - device_tracker.magichomeflurvorne
     - device_tracker.magichomeflurhinten
     - device_tracker.magichomekueche
-    - device_tracker.magichomekuechenschraenke
     - device_tracker.magichomebadezimmer
     - device_tracker.magichomeschlafzimmer
     - device_tracker.magichomearbeitszimmer

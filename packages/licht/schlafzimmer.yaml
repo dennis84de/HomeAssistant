@@ -3,18 +3,11 @@ light:
     devices:
       192.168.2.61:
         name: Bett
-        mode: "rgb"
-        
-  - platform: mqtt
-    name: "Kleiderschrank"
-    state_topic: "stat/schlafzimmerkleiderschrank/POWER"
-    command_topic: "cmnd/schlafzimmerkleiderschrank/POWER"
-    availability_topic: "tele/schlafzimmerkleiderschrank/LWT"
-    qos: 1
-    payload_on: "ON"
-    payload_off: "OFF"
-    payload_available: "Online"
-    payload_not_available: "Offline"
+        mode: "rgb"       
+    
+  - platform: switch
+    name: Kleiderschrank
+    entity_id: switch.kleiderschrank
     
   - platform: switch
     name: Fernseher Schlafzimmer

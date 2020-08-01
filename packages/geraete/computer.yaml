@@ -51,7 +51,7 @@ switch:
         turn_off:
           service: switch.turn_off
           entity_id: switch.monitor, switch.pc
-
+    
 automation:
   - alias: 'Unterwegs - Computer ausschalten'
     trigger:

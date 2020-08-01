@@ -31,7 +31,7 @@ cards:
     entities:
       - entity: light.kuche_regal
         name: Regal
-      - entity: light.kuechenschrank
+      - entity: light.kuche_schrank
         name: Schrank
 
   - type: glance
