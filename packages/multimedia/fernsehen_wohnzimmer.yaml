@@ -152,14 +152,6 @@ script:
         entity_id: input_select.dreamscreen_modus
         option: "Aus"
 
-  sky_starten:
-    alias: "Sky starten"
-    sequence:
-      - service: mqtt.publish
-        data_template:
-          topic: "iotlink/workgroup/computer/commands/run"
-          payload: '{ "command": "C:\\Users\\Dennis\\AppData\\Roaming\\Sky\\Sky Go\\Sky Go.exe", "path": "C:\\Users\\Dennis\\AppData\\Roaming\\Sky\\Sky Go", "user": "", "visible": true, "fallback": true }'      
-
 automation:
   - alias: "Kodi - Musik ausschalten"
     trigger:
@@ -392,6 +384,3 @@ homeassistant:
       icon: mdi:television-classic
     switch.wohnzimmer_fernseher:
       icon: mdi:television
-      
-    script.sky_starten:
-      icon: mdi:soccer
