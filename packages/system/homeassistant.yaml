@@ -124,7 +124,43 @@ sensor:
           mdi:av-timer
         value_template: >-
           {{ as_timestamp(states('sensor.last_boot')) | timestamp_custom("%d.%m.%Y") | string }}
+          
+      neustart_dauer:
+        friendly_name: "Neustart Dauer"
+        icon_template: mdi:cached
+        entity_id:
+          - input_datetime.letzter_neustart_start
+          - input_datetime.letzter_neustart_ende
+        unit_of_measurement: 'Sekunden'
+        value_template: >-
+          {% set start = as_timestamp(states('input_datetime.letzter_neustart_start')) | int %}
+          {% set ende = as_timestamp(states('input_datetime.letzter_neustart_ende')) | int %}
 
+          {{ (ende - start) | int }}
+          
+  - platform: average
+    name: "Neustart Dauer - Durchschnitt"
+    entities:
+      - sensor.neustart_dauer
+      
+input_datetime:
+  letzter_neustart_start:
+    name: Letzter Neustart - Start
+    has_time: true
+    has_date: true
+    icon: mdi:clock-start
+    
+  letzter_neustart_ende:
+    name: Letzter Neustart - Ende
+    has_time: true
+    has_date: true
+    icon: mdi:clock-end
+
+counter:
+  neustart_anzahl:
+    name: Anzahl Neustarts
+    icon: mdi:cog-counterclockwise
+    
 shell_command:
   upgrade_homeassistant: /home/homeassistant/.homeassistant/bash_scripts/upgrade-hass.sh
 
@@ -135,24 +171,32 @@ script:
       - service: !secret tts_service
         data_template:
           echo: "wohnzimmer"
-          message: "Home Assistant wird neugestartet."
+          message: "Home Assistant wird neugestartet."       
       - service: homeassistant.restart
 
   upgrade_homeassistant:
     alias: Home Assistant aktualisieren
     sequence:
-      - condition: template
-        value_template: >-
-          {% if is_state('sensor.hass_current_version', None) or is_state('sensor.hass_installed_version', None) %}
-            False
-          {% else %}
-            {{ states('sensor.hass_current_version') != states('sensor.hass_installed_version') }}
-          {% endif %}
-      - service: !secret tts_service
-        data_template:
-          echo: "wohnzimmer"
-          message: "Home Assistant wird aktualisiert."
-      - service: shell_command.upgrade_homeassistant
+      - choose:
+          - conditions:
+            - condition: template
+              value_template: >-
+                {% if is_state('sensor.hass_current_version', None) or is_state('sensor.hass_installed_version', None) %}
+                  True
+                {% else %}
+                  {{ states('sensor.hass_current_version') == states('sensor.hass_installed_version') }}
+                {% endif %}
+            sequence:
+              - service: !secret tts_service
+                data_template:
+                  echo: "wohnzimmer"
+                  message: "Es ist keine neue Version vorhanden."
+        default:
+          - service: !secret tts_service
+            data_template:
+              echo: "wohnzimmer"
+              message: "Home Assistant wird aktualisiert."
+          - service: shell_command.upgrade_homeassistant
 
 automation:
   - alias: "Update verfügbar"
@@ -175,6 +219,31 @@ automation:
         title: 'Neue Version'
         message: "Home Assistant {{ states('sensor.hass_current_version') }} ist jetzt verfügbar."
 
+  - alias: "Home Assistant - Neustart"
+    trigger:   
+      - platform: event
+        event_type: call_service
+        event_data:
+          service: restart
+    action:
+      - service: input_datetime.set_datetime
+        entity_id: input_datetime.letzter_neustart_start
+        data_template:
+          datetime: "{{ now().strftime('%Y-%m-%d %H:%M:%S') }}"
+      - service: counter.increment
+        entity_id: counter.neustart_anzahl      
+        
+  - alias: "Home Assistant - Neustarts zurücksetzen"
+    trigger:
+      - platform: time    
+        at: "00:00:00"         
+    condition:
+      - condition: template
+        value_template: "{{ states('sensor.date').split('-')[2] | int == 1 }}"     
+    action:
+      - service: counter.reset
+        entity_id: counter.neustart_anzahl
+                
   - alias: "Home Assistant - Fehler Neustart"
     trigger:
       - platform: state
@@ -205,6 +274,12 @@ automation:
       - platform: homeassistant
         event: start
     action:
+      - service: input_datetime.set_datetime
+        entity_id: input_datetime.letzter_neustart_ende
+        data_template:
+          datetime: "{{ now().strftime('%Y-%m-%d %H:%M:%S') }}"  
+      - service: counter.increment
+        entity_id: counter.neustart_anzahl
       - service: !secret tts_service
         data_template:
           echo: "wohnzimmer"
@@ -254,3 +329,6 @@ homeassistant:
     sensor.rpi_power_status:
       friendly_name: Power Status
       icon: mdi:power-plug
+    
+    sensor.neustart_dauer_durchschnitt:
+      icon: mdi:chart-line-variant

@@ -25,7 +25,6 @@ cards:
       - entity: device_tracker.netzwerkdj
       - entity: device_tracker.fritz_repeater
       - entity: device_tracker.pihole
-      - entity: device_tracker.brematic_gateway
 
   - type: entities
     title: Multimedia
@@ -33,6 +32,7 @@ cards:
     entities:
       - entity: device_tracker.soundbar
       - entity: device_tracker.dreamscreen
+      - entity: device_tracker.kamerawohnzimmer
 
   - type: entities
     title: Haushalt
@@ -142,6 +142,27 @@ cards:
       - entity: device_tracker.broadlinkschlafzimmer
         name: Schlafzimmer
       
+  - type: entities
+    title: Tasmota
+    show_header_toggle: false
+    entities:
+      - entity: device_tracker.tasmotaarbeitszimmerlampe
+        name: Arbeitszimmer Lampe
+      - entity: device_tracker.tasmotaarbeitszimmerradio
+        name: Arbeitszimmer Radio
+      - entity: device_tracker.tasmotabalkonradio
+        name: Balkon Radio
+      - entity: device_tracker.tasmotakuechenschrank
+        name: Küchenschrank
+      - entity: device_tracker.tasmotaladegeraet
+        name: Ladegerät
+      - entity: device_tracker.tasmotamonitorlinks
+        name: Monitor links
+      - entity: device_tracker.tasmotamonitorrechts
+        name: Monitor rechts
+      - entity: device_tracker.tasmotaspuelmaschine
+        name: Spülmaschine
+          
   - type: entities
     title: ESPHome
     show_header_toggle: false
