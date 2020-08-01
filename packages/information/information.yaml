@@ -7,6 +7,12 @@ tankerkoenig:
     - !secret tankerkoenig_id_real
     - !secret tankerkoenig_id_jet
   
+bring_shopping_list:
+  lists:
+    - id: !secret bring_list_id_einkaufen
+      name: Einkaufen
+      locale: de-DE
+      
 input_text:
   einkaufen:
     name: Einkaufen    
