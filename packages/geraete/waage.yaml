@@ -26,7 +26,8 @@ sensor:
     value_template: "{{ value_json['body_fat'] }}"    
     unit_of_measurement: "kg"
     icon: mdi:scale-balance
-
-  - platform: statistics
-    entity_id: sensor.gewicht
-    name: "Gewicht Durchschnitt"
+    
+  - platform: average
+    name: 'Gewicht Durchschnitt'
+    entities:
+      - sensor.gewicht
