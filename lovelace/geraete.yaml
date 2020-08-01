@@ -139,7 +139,7 @@ cards:
     entities:
       - entity: zigate.tuersensor
       - entity: zigate.tuer_kuehlschrank      
-      - entity: zigate.tuer_gefrierschrank
+      - entity: zigate.bett
       - entity: zigate.cube_wohnzimmer
       - entity: zigate.vibration_wohnzimmer
       - entity: zigate.vibration_schlafzimmer

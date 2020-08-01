@@ -51,8 +51,6 @@ cards:
       - entity: sensor.helligkeit_kueche
       - entity: binary_sensor.tuer_kuehlschrank
         name: Kühlschrank
-      - entity: binary_sensor.tuer_gefrierschrank
-        name: Gefrierschrank
 
   - type: glance
     title: Heizung

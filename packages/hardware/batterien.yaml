@@ -34,7 +34,7 @@ sensor:
       - zigate.thermometer_hardware
       - zigate.tuersensor
       - zigate.tuer_kuehlschrank      
-      - zigate.tuer_gefrierschrank
+      - zigate.bett
       - zigate.schalter_wohnzimmer
       - zigate.schalter_schlafzimmer
       - zigate.schalter_flur
@@ -85,8 +85,8 @@ homeassistant:
       friendly_name: "Türsensor"
     sensor.tuer_kuehlschrank_battery_level:
       friendly_name: "Tür Kühlschrank"
-    sensor.tuer_gefrierschrank_battery_level:
-      friendly_name: "Tür Gefrierschrank"
+    sensor.bett_battery_level:
+      friendly_name: "Bett"
     sensor.cube_wohnzimmer_battery_level:
       friendly_name: "Cube Wohnzimmer"
     sensor.vibration_wohnzimmer_battery_level:

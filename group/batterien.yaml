@@ -9,7 +9,7 @@ batteriestand:
     - sensor.tablet_schlafzimmer_batterie
     - sensor.tuersensor_battery_level
     - sensor.tuer_kuehlschrank_battery_level
-    - sensor.tuer_gefrierschrank_battery_level
+    - sensor.bett_battery_level
     - sensor.cube_wohnzimmer_battery_level
     - sensor.vibration_wohnzimmer_battery_level
     - sensor.vibration_schlafzimmer_battery_level
