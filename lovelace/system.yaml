@@ -69,6 +69,16 @@ popup_cards:
             progress: true
             controls: true
 
+  sensor.laufzeit: 
+    title: Neustarts
+    card:
+      type: entities
+      entities:
+        - entity: sensor.neustart_dauer_durchschnitt
+          name: Dauer
+        - entity: counter.neustart_anzahl
+          name: Anzahl
+
 cards:
   - type: entities
     title: Home Assistant
@@ -81,6 +91,7 @@ cards:
       - entity: sensor.wichtige_anderungen
       - entity: sensor.hacs
       - entity: script.restart_homeassistant
+      - entity: script.upgrade_homeassistant
 
   - type: entities
     title: Benachrichtigungen
