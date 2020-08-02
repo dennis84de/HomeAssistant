@@ -214,3 +214,35 @@ sensor:
             -
           {% endif %}
         icon_template: mdi:calendar-star
+        
+automation:
+  - alias: "Formel 1 - Wiedergabe pausieren"
+    trigger:
+      - platform: state
+        entity_id:
+          - calendar.formel1_rennen
+          - calendar.formel1_qualifikation
+    condition:
+      - condition: state
+        entity_id: binary_sensor.zu_hause
+        state: 'on'
+      - condition: state
+        entity_id: binary_sensor.besuch
+        state: 'off'        
+    action:
+      - choose:
+          - conditions:
+              - condition: or
+                conditions:
+                  - condition: state                   
+                    entity_id: calendar.formel1_rennen
+                    state: "on"
+                  - condition: state                   
+                    entity_id: calendar.formel1_qualifikation
+                    state: "on"
+            sequence:
+              - service: input_boolean.turn_off
+                entity_id: input_boolean.kodi_pausieren
+        default:
+          - service: input_boolean.turn_on
+            entity_id: input_boolean.kodi_pausieren
