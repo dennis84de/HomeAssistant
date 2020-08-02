@@ -211,6 +211,7 @@ entity_controller:
       end_time: '05:00:00'      
     overrides:
       - binary_sensor.sonne_tagsueber
+      - binary_sensor.kuechelregal_abends
       - binary_sensor.bewegungsmelder_inaktiv_unterwegs
       - binary_sensor.bewegungsmelder_inaktiv_staubsauger
       - input_boolean.bewegungsmelder_kueche_deaktiviert
@@ -220,8 +221,7 @@ entity_controller:
     sensor: binary_sensor.bewegungsmelder_kueche
     entity: light.kuche_schrank
     delay: 120    
-    overrides:      
-      - binary_sensor.schlafen_inaktiv
+    overrides:            
       - binary_sensor.sonne_tagsueber
       - binary_sensor.kuechenschrank_tagsueber
       - binary_sensor.bewegungsmelder_inaktiv_unterwegs

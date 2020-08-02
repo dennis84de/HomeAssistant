@@ -25,6 +25,15 @@ input_boolean:
 binary_sensor:
   - platform: template
     sensors:
+      kuechelregal_abends:
+        friendly_name: "Küchenregal abends"
+        entity_id:
+          - sensor.time        
+        value_template: >-
+          {% set hour = now().strftime("%H") | int %}
+          
+          {{ True if hour < 20 else False }}
+          
       kuechenschrank_tagsueber:
         friendly_name: "Küchenschrank tagsüber"
         entity_id:
@@ -32,8 +41,4 @@ binary_sensor:
         value_template: >-
           {% set hour = now().strftime("%H") | int %}
           
-          {% if hour < 8 or hour > 19 %}
-            True
-          {% else %}
-            False
-          {% endif %}
+          {{ True if hour > 20 else False }}
