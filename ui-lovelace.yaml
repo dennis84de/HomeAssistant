@@ -6,3 +6,4 @@ views:
   - !include lovelace/geraete.yaml
   - !include lovelace/batterien.yaml
   - !include lovelace/wetter.yaml
+  - !include lovelace/sonstiges.yaml
