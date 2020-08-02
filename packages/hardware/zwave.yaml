@@ -1,5 +1,5 @@
 zwave:
-  usb_path: /dev/ttyACM1
+  usb_path: /dev/ttyACM0
 
 homeassistant:
   customize:

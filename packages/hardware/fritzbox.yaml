@@ -1,23 +1,23 @@
 speedtestdotnet:
-  
-device_tracker:
-  - platform: fritz
-    host: !secret fritzbox_host
-    username: !secret fritzbox_username
-    password: !secret fritzbox_password
-    interval_seconds: 5
-    consider_home: 60
-    new_device_defaults:
-      track_new_devices: false
-    
-  - platform: fritz
-    host: !secret repeater_host
-    username: !secret fritzbox_username
-    password: !secret fritzbox_password
-    interval_seconds: 5
-    consider_home: 60
-    new_device_defaults:
-      track_new_devices: false
+
+#device_tracker:
+#  - platform: fritz
+#    host: !secret fritzbox_host
+#    username: !secret fritzbox_username
+#    password: !secret fritzbox_password
+#    interval_seconds: 5
+#    consider_home: 60
+#    new_device_defaults:
+#      track_new_devices: false
+#    
+#  - platform: fritz
+#    host: !secret repeater_host
+#    username: !secret fritzbox_username
+#    password: !secret fritzbox_password
+#    interval_seconds: 5
+#    consider_home: 60
+#    new_device_defaults:
+#      track_new_devices: false
     
 input_text:
   guest_wifi_password:
@@ -195,9 +195,9 @@ homeassistant:
     device_tracker.tplinktrockner:
       icon: mdi:power-socket-eu
       friendly_name: Trockner
-    device_tracker.tplinkarbeitszimmerfigur:
+    device_tracker.tplinkwohnzimmerfernseher:
       icon: mdi:power-socket-eu
-      friendly_name: Arbeitszimmer Figur      
+      friendly_name: Wohnzimmer Fernseher
     device_tracker.tplinkschlafzimmerfernseher:
       icon: mdi:power-socket-eu
       friendly_name: Schlafzimmer Fernseher
@@ -233,8 +233,6 @@ homeassistant:
       icon: mdi:router-wireless
     device_tracker.epsondrucker:
       icon: mdi:printer
-    device_tracker.brematic_gateway:
-      icon: mdi:signal-variant
     device_tracker.maxheizung:
       icon: mdi:radiator
     device_tracker.xiaomivacuum:
@@ -298,7 +296,10 @@ homeassistant:
       icon: mdi:music-note
     device_tracker.dreamscreen:
       icon: mdi:track-light
-
+    device_tracker.kamerawohnzimmer:
+      icon: mdi:cctv
+      friendly_name: Kamera
+      
     device_tracker.piliving:
       icon: mdi:raspberry-pi
       friendly_name: Wohnzimmer
@@ -320,6 +321,23 @@ homeassistant:
     device_tracker.pibalcony:
       icon: mdi:raspberry-pi
       friendly_name: Balkon
+      
+    device_tracker.tasmotaarbeitszimmerlampe:
+      icon: mdi:developer-board
+    device_tracker.tasmotaarbeitszimmerradio:
+      icon: mdi:developer-board
+    device_tracker.tasmotabalkonradio:
+      icon: mdi:developer-board
+    device_tracker.tasmotakuechenschrank:
+      icon: mdi:developer-board
+    device_tracker.tasmotaladegeraet:
+      icon: mdi:developer-board
+    device_tracker.tasmotamonitorlinks:
+      icon: mdi:developer-board
+    device_tracker.tasmotamonitorrechts:
+      icon: mdi:developer-board
+    device_tracker.tasmotaspuelmaschine:
+      icon: mdi:developer-board
       
     device_tracker.tuerklingel:
       icon: mdi:wifi-star

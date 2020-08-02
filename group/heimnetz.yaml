@@ -14,10 +14,10 @@ heimnetz:
     - device_tracker.tplinkflurradio
     - device_tracker.tplinkbadezimmerradio
     - device_tracker.tplinkkuecheradio
+    - device_tracker.tplinkwohnzimmerfernseher    
     - device_tracker.tplinkschlafzimmerfernseher
     - device_tracker.tplinkwaschmaschine
-    - device_tracker.tplinktrockner    
-    - device_tracker.tplinkarbeitszimmerfigur
+    - device_tracker.tplinktrockner        
     - device_tracker.echoflur
     - device_tracker.echokueche
     - device_tracker.echobadezimmer

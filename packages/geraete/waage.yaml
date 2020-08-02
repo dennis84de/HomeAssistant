@@ -29,5 +29,7 @@ sensor:
     
   - platform: average
     name: 'Gewicht Durchschnitt'
+    duration:
+      days: 30    
     entities:
       - sensor.gewicht

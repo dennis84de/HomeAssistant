@@ -1,7 +1,0 @@
-zha:
-  database_path: /home/homeassistant/.homeassistant/zigbee.db
-
-homeassistant:
-  customize:
-    switch.ladegeraet:
-      icon: mdi:battery-charging-60

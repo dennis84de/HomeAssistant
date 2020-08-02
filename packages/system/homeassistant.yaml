@@ -141,6 +141,8 @@ sensor:
           
   - platform: average
     name: "Neustart Dauer - Durchschnitt"
+    duration:
+      days: 30
     entities:
       - sensor.neustart_dauer
       
@@ -156,11 +158,6 @@ input_datetime:
     has_time: true
     has_date: true
     icon: mdi:clock-end
-
-counter:
-  neustart_anzahl:
-    name: Anzahl Neustarts
-    icon: mdi:cog-counterclockwise
     
 shell_command:
   upgrade_homeassistant: /home/homeassistant/.homeassistant/bash_scripts/upgrade-hass.sh
@@ -231,19 +228,6 @@ automation:
         entity_id: input_datetime.letzter_neustart_start
         data_template:
           datetime: "{{ now().strftime('%Y-%m-%d %H:%M:%S') }}"
-      - service: counter.increment
-        entity_id: counter.neustart_anzahl      
-        
-  - alias: "Home Assistant - Neustarts zurücksetzen"
-    trigger:
-      - platform: time    
-        at: "00:00:00"         
-    condition:
-      - condition: template
-        value_template: "{{ states('sensor.date').split('-')[2] | int == 1 }}"     
-    action:
-      - service: counter.reset
-        entity_id: counter.neustart_anzahl
                 
   - alias: "Home Assistant - Fehler Neustart"
     trigger:
@@ -279,8 +263,6 @@ automation:
         entity_id: input_datetime.letzter_neustart_ende
         data_template:
           datetime: "{{ now().strftime('%Y-%m-%d %H:%M:%S') }}"  
-      - service: counter.increment
-        entity_id: counter.neustart_anzahl
       - service: !secret tts_service
         data_template:
           echo: "wohnzimmer"
