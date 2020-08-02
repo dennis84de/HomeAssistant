@@ -11,6 +11,7 @@ wake_on_lan:
 system_health:
 python_script:
 map:
+config_check:
   
 lovelace:
   mode: yaml
@@ -164,14 +165,14 @@ counter:
 shell_command:
   upgrade_homeassistant: /home/homeassistant/.homeassistant/bash_scripts/upgrade-hass.sh
 
-script:
+script:  
   restart_homeassistant:
     alias: Home Assistant neustarten
     sequence:
       - service: !secret tts_service
         data_template:
           echo: "wohnzimmer"
-          message: "Home Assistant wird neugestartet."       
+          message: "Home Assistant wird neugestartet."
       - service: homeassistant.restart
 
   upgrade_homeassistant:
