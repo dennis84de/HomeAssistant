@@ -20,7 +20,6 @@ cards:
     show_header_toggle: false
     entities:
       - entity: device_tracker.computer
-      - entity: device_tracker.pihomeassistant
       - entity: device_tracker.diskstation
       - entity: device_tracker.netzwerkdj
       - entity: device_tracker.fritz_repeater

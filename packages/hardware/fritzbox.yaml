@@ -1,5 +1,14 @@
 speedtestdotnet:
 
+device_tracker:
+  - platform: nmap_tracker
+    scan_options: " --privileged -sn "
+    hosts:
+      - !secret nmap_hosts
+      - !secret repeater_host    
+    exclude:
+      - !secret homeassistant_host      
+      
 #device_tracker:
 #  - platform: fritz
 #    host: !secret fritzbox_host
