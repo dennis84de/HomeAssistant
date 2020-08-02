@@ -33,13 +33,13 @@ sensor:
       - zigate.thermometer_parkplatz
       - zigate.thermometer_hardware
       - zigate.tuersensor
-      - zigate.tuer_kuehlschrank      
+      - zigate.kuehlschranktuer
       - zigate.bett
+      - zigate.cube
       - zigate.schalter_wohnzimmer
       - zigate.schalter_schlafzimmer
       - zigate.schalter_flur
-      - zigate.schalter_balkon
-      - zigate.cube_wohnzimmer
+      - zigate.schalter_balkon      
 
   - platform: template
     sensors:
@@ -81,12 +81,12 @@ homeassistant:
   customize:
     sensor.tuersensor_battery_level:
       friendly_name: "Türsensor"
-    sensor.tuer_kuehlschrank_battery_level:
-      friendly_name: "Tür Kühlschrank"
+    sensor.kuehlschranktuer_battery_level:
+      friendly_name: "Kühlschranktür"
     sensor.bett_battery_level:
       friendly_name: "Bett"
-    sensor.cube_wohnzimmer_battery_level:
-      friendly_name: "Cube Wohnzimmer"
+    sensor.cube_battery_level:
+      friendly_name: "Cube"
     sensor.schalter_wohnzimmer_battery_level:
       friendly_name: "Schalter Wohnzimmer"
     sensor.schalter_flur_battery_level:

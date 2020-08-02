@@ -36,9 +36,9 @@ cards:
     show_header_toggle: false
     entities:
       - entity: sensor.tuersensor_battery_level
-      - entity: sensor.tuer_kuehlschrank_battery_level      
+      - entity: sensor.kuehlschranktuer_battery_level      
       - entity: sensor.bett_battery_level      
-      - entity: sensor.cube_wohnzimmer_battery_level
+      - entity: sensor.cube_battery_level
 
   - type: entities
     title: Schalter

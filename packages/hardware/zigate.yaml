@@ -41,7 +41,7 @@ binary_sensor:
 sensor:
   - platform: template
     sensors:
-      cube_wohnzimmer_status:
+      cube_status:
         friendly_name: Xiaomi Cube
         entity_id:
           - input_select.cube_letzte_aktion

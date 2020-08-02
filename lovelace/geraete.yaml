@@ -60,16 +60,6 @@ cards:
       - entity: zigate.zigate
       - entity: sensor.zigate_offline
 
-  - type: custom:zha-network-card
-    title: ZHA
-    columns:
-      - prop: name
-        name: Name
-      - attr: rssi
-        name: RSSI
-      - attr: last_seen
-        name: Zuletzt Online
-
   - type: entities
     title: MQTT
     show_header_toggle: false
@@ -138,9 +128,9 @@ cards:
     show_header_toggle: false
     entities:
       - entity: zigate.tuersensor
-      - entity: zigate.tuer_kuehlschrank      
+      - entity: zigate.kuehlschranktuer
       - entity: zigate.bett
-      - entity: zigate.cube_wohnzimmer
+      - entity: zigate.cube
       
   - type: entities
     title: Schalter
@@ -154,3 +144,14 @@ cards:
         name: Flur
       - entity: zigate.schalter_balkon
         name: Balkon        
+
+  - type: entities
+    title: Steckdosen
+    show_header_toggle: false
+    entities:
+      - entity: zigate.steckdose_kleiderschrank
+        name: Kleiderschrank
+      - entity: zigate.steckdose_strahler
+        name: Strahler        
+      - entity: zigate.steckdose_couch
+        name: Couch

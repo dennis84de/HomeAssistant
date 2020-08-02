@@ -8,9 +8,9 @@ batteriestand:
     - sensor.tablet_balkon_batterie
     - sensor.tablet_schlafzimmer_batterie
     - sensor.tuersensor_battery_level
-    - sensor.tuer_kuehlschrank_battery_level
+    - sensor.kuehlschranktuer_battery_level
     - sensor.bett_battery_level
-    - sensor.cube_wohnzimmer_battery_level
+    - sensor.cube_battery_level
     - sensor.schalter_wohnzimmer_battery_level
     - sensor.schalter_flur_battery_level
     - sensor.schalter_balkon_battery_level

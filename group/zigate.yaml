@@ -22,5 +22,8 @@ zigate:
     - zigate.thermometer_kueche    
     - zigate.thermometer_hardware
     - zigate.tuersensor
-    - zigate.tuer_kuehlschrank
+    - zigate.kuehlschranktuer
     - zigate.bett
+    - zigate.steckdose_kleiderschrank
+    - zigate.steckdose_strahler
+    - zigate.steckdose_couch
