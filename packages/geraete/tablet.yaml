@@ -121,6 +121,22 @@ sensor:
           {% endif %}
         device_class: timestamp           
 
+binary_sensor:
+  - platform: template
+    sensors:
+      wlan_aktiv:
+        friendly_name: "Wlan aktiv"
+        entity_id:
+          - binary_sensor.zu_hause
+          - vacuum.xiaomi_vacuum_cleaner
+        device_class: occupancy
+        value_template: >-
+          {% if is_state('binary_sensor.zu_hause', 'on') or is_state('binary_sensor.schlafen_aktiv', 'off') %}
+            True
+          {% else %}
+            False
+          {% endif %}
+          
 automation:
   - alias: "Tablet Wohnzimmer - Batteriestand niedrig"
     trigger:
