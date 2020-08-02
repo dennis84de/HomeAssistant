@@ -156,3 +156,16 @@ cards:
             name: Hinzufügen
           - entity: input_select.einkaufen
             name: Artikel entfernen        
+                          
+  - type: conditional
+    conditions:
+      - entity: sensor.formel1_datum
+        state_not: "-"
+    card:
+      type: entities
+      title: Formel 1
+      show_header_toggle: false
+      entities:
+        - entity: sensor.formel1_rennen
+        - entity: sensor.formel1_datum
+        - entity: sensor.formel1_qualifikation            

@@ -24,7 +24,6 @@ cards:
     entities:
       - entity: light.schreibtisch
       - entity: light.arbeitszimmer_lampe
-      - entity: light.arbeitszimmer_figur
 
   - type: glance
     title: Thermometer
