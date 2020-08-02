@@ -39,8 +39,6 @@ cards:
       - entity: sensor.tuer_kuehlschrank_battery_level      
       - entity: sensor.bett_battery_level      
       - entity: sensor.cube_wohnzimmer_battery_level
-      - entity: sensor.vibration_wohnzimmer_battery_level
-      - entity: sensor.vibration_schlafzimmer_battery_level
 
   - type: entities
     title: Schalter

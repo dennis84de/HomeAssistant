@@ -11,8 +11,6 @@ batteriestand:
     - sensor.tuer_kuehlschrank_battery_level
     - sensor.bett_battery_level
     - sensor.cube_wohnzimmer_battery_level
-    - sensor.vibration_wohnzimmer_battery_level
-    - sensor.vibration_schlafzimmer_battery_level
     - sensor.schalter_wohnzimmer_battery_level
     - sensor.schalter_flur_battery_level
     - sensor.schalter_balkon_battery_level

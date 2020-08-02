@@ -141,8 +141,6 @@ cards:
       - entity: zigate.tuer_kuehlschrank      
       - entity: zigate.bett
       - entity: zigate.cube_wohnzimmer
-      - entity: zigate.vibration_wohnzimmer
-      - entity: zigate.vibration_schlafzimmer
       
   - type: entities
     title: Schalter
