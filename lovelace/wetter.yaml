@@ -197,47 +197,12 @@ cards:
       - entity: binary_sensor.sommerzeit
 
   - type: entities
-    title: Sonstiges
-    show_header_toggle: false
-    entities:
-      - entity: sensor.flugzeuge
-      - entity: binary_sensor.iss
-#      - entity: sensor.weltuntergangsuhr
-      - entity: sensor.strommix
-      - entity: sensor.schimmelindikator
-      - entity: binary_sensor.auto_waschen
-      - entity: sensor.katastrophenalarm
-
-  - type: entities
     title: Pollen
     show_header_toggle: false
     entities:
       - entity: sensor.pollen_graeser_today
       - entity: sensor.pollen_birke_today
       - entity: sensor.pollen_roggen_today
-
-  - type: entities
-    title: SpaceX
-    show_header_toggle: false
-    entities:
-      - entity: sensor.spacex_next_rocket
-      - entity: sensor.spacex_next_mission_name
-      - entity: sensor.spacex_next_launch_day
-      - entity: sensor.spacex_next_launch_time
-      - entity: sensor.spacex_next_launch_site
-
-  - type: entities
-    title: Corona Virus
-    show_header_toggle: false
-    entities:
-      - entity: sensor.germany_coronavirus_confirmed
-        name: Bestätigt
-      - entity: sensor.germany_coronavirus_current
-        name: Aktuell
-      - entity: sensor.germany_coronavirus_recovered
-        name: Geheilt
-      - entity: sensor.germany_coronavirus_deaths
-        name: Tote
 
   - type: picture-glance
     title: Wetter
