@@ -76,8 +76,6 @@ popup_cards:
       entities:
         - entity: sensor.neustart_dauer_durchschnitt
           name: Dauer
-        - entity: counter.neustart_anzahl
-          name: Anzahl
 
 cards:
   - type: entities
