@@ -1,3 +1,12 @@
+input_select:
+  status_spuelmaschine:
+    name: Status Spülmaschine
+    options:
+      - Ausgeschaltet
+      - Stillstand
+      - Aktiv
+    icon: mdi:dishwasher
+
 switch:
   - platform: mqtt
     name: "Spülmaschine"
@@ -18,3 +27,65 @@ sensor:
     icon: "mdi:power-cycle"
     state_topic: "tele/spuelmaschine/SENSOR" 
     value_template: "{{ value_json['ENERGY']['Power'] }}"
+    
+  - platform: template
+    sensors:
+      spuelmaschine_status:
+        friendly_name: Status Spülmaschine
+        entity_id:
+          - input_select.status_spuelmaschine
+        value_template: >-
+          {{ states('input_select.status_spuelmaschine') }}
+        icon_template: 'mdi:dishwasher'    
+    
+automation:
+  - alias: 'Spülmaschine - Ausgeschaltet'
+    trigger:
+      - platform: state
+        entity_id: switch.spulmaschine
+        from: 'on'
+        to: 'off'
+    action:
+      - service: input_select.select_option
+        data:
+          entity_id: input_select.status_spuelmaschine
+          option: 'Ausgeschaltet'
+
+  - alias: 'Spülmaschine - Stillstand'
+    trigger:
+      - platform: numeric_state
+        entity_id: sensor.spulmaschine_verbrauch
+        below: 2
+        for: '00:03:00'
+      - platform: state
+        entity_id: switch.spulmaschine
+        from: 'off'
+        to: 'on'
+    condition:
+      - condition: state
+        entity_id: switch.spulmaschine
+        state: 'on'
+    action:
+      - service: input_select.select_option
+        data:
+          entity_id: input_select.status_spuelmaschine
+          option: 'Stillstand'
+
+  - alias: 'Spülmaschine - Aktiv'
+    trigger:
+      - platform: numeric_state
+        entity_id: sensor.spulmaschine_verbrauch
+        above: 20
+        for: '00:01:00'
+    condition:
+      - condition: state
+        entity_id: switch.spulmaschine
+        state: 'on'
+      - condition: state
+        entity_id: input_select.status_spuelmaschine
+        state: 'Stillstand'
+    action:
+      - service: input_select.select_option
+        data:
+          entity_id: input_select.status_spuelmaschine
+          option: 'Aktiv'    
