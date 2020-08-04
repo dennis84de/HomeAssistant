@@ -8,6 +8,7 @@ device_tracker:
       - !secret repeater_host    
     exclude:
       - !secret homeassistant_host      
+      - !secret handy_host
       
 #device_tracker:
 #  - platform: fritz

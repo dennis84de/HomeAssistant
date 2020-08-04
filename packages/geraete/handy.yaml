@@ -1,3 +1,10 @@
+device_tracker:
+  - platform: ping
+    interval_seconds: 30
+    consider_home: 60
+    hosts:
+      handy: !secret handy_host
+      
 input_boolean:
   nicht_stoeren:
     name: Nicht stören
