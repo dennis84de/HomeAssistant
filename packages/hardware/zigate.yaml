@@ -34,7 +34,7 @@ binary_sensor:
         friendly_name: "Im Bett"
         value_template: >-
           {{not is_state("binary_sensor.bett",'on')}}
-        device_class: motion
+        device_class: vibration
         icon_template: >-
             mdi:bed-king        
         
