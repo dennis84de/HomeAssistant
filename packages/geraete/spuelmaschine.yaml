@@ -88,4 +88,28 @@ automation:
       - service: input_select.select_option
         data:
           entity_id: input_select.status_spuelmaschine
-          option: 'Aktiv'    
+          option: 'Aktiv'              
+
+  - alias: 'Spülmaschine fertig'
+    trigger:      
+      - platform: state
+        entity_id: input_select.status_spuelmaschine
+        from: 'Aktiv'
+        to: 'Stillstand'   
+    action:
+      - choose:
+          - conditions:
+              - condition: state
+                entity_id: binary_sensor.zu_hause
+                state: 'off'
+            sequence:
+              - service: notify.telegram
+                data_template:
+                  title: "Spülmaschine fertig"
+                  message: >-
+                    Die Spülmaschine ist fertig
+        default:
+          - service: !secret tts_service
+            data_template:
+              message: >-
+                Die Spülmaschine ist fertig.

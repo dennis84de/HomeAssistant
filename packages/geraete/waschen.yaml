@@ -180,52 +180,34 @@ automation:
           message: >-
             Die Waschmaschine wurde gestartet.
 
-  - alias: 'Waschmaschine fertig - Trockner einschalten'
-    trigger:
-      - platform: state
-        entity_id: input_select.status_waschmaschine
-        from: 'Waschen'
-        to: 'Stillstand'
-    condition:
-      - condition: state
-        entity_id: switch.trockner
-        state: 'off'
-    action:
-      - service: switch.turn_on
-        entity_id: switch.trockner
-
-  - alias: 'Waschmaschine fertig - TTS'
+  - alias: 'Waschmaschine fertig'
     trigger:      
       - platform: state
         entity_id: input_select.status_waschmaschine
         from: 'Waschen'
-        to: 'Stillstand'
-    condition:
-      - condition: state
-        entity_id: binary_sensor.zu_hause
-        state: 'on'        
+        to: 'Stillstand'      
     action:
-      - service: !secret tts_service
-        data_template:
-          message: >-
-            Die Waschmaschine ist fertig.
-
-  - alias: 'Waschmaschine fertig - Telegram'
-    trigger:
-      - platform: state
-        entity_id: input_select.status_waschmaschine
-        from: 'Waschen'
-        to: 'Stillstand'
-    condition:
+      - choose:
+          - conditions:
+              - condition: state
+                entity_id: binary_sensor.zu_hause
+                state: 'off'
+            sequence:
+              - service: notify.telegram
+                data_template:
+                  title: "Waschmaschine fertig"
+                  message: >-
+                    Die Waschmaschine ist fertig
+        default:
+          - service: !secret tts_service
+            data_template:
+              message: >-
+                Die Waschmaschine ist fertig.      
       - condition: state
-        entity_id: binary_sensor.zu_hause
+        entity_id: switch.trockner
         state: 'off'
-    action:
-      - service: notify.telegram
-        data_template:
-          title: "Waschmaschine fertig"
-          message: >-
-            Die Waschmaschine ist fertig.
+      - service: switch.turn_on
+        entity_id: switch.trockner
 
   - alias: 'Trockner gestartet - Telegram'
     trigger:
@@ -244,35 +226,26 @@ automation:
           message: >-
             Der Trockner wurde gestartet.
 
-  - alias: 'Trockner fertig - TTS'
+  - alias: 'Trockner fertig'
     trigger:
       - platform: state
         entity_id: input_select.status_trockner
         from: 'Trocknen'
-        to: 'Stillstand'
-    condition:
-      - condition: state
-        entity_id: binary_sensor.zu_hause
-        state: 'on'        
+        to: 'Stillstand'    
     action:
-      - service: !secret tts_service
-        data_template:
-          message: >-
-            Der Trockner ist fertig.
-
-  - alias: 'Trockner fertig - Telegram'
-    trigger:
-      - platform: state
-        entity_id: input_select.status_trockner
-        from: 'Trocknen'
-        to: 'Stillstand'
-    condition:
-      - condition: state
-        entity_id: binary_sensor.zu_hause
-        state: 'off'
-    action:
-      - service: notify.telegram
-        data_template:
-          title: "Trockner fertig"
-          message: >-
-            Der Trockner ist fertig.
+      - choose:
+          - conditions:
+              - condition: state
+                entity_id: binary_sensor.zu_hause
+                state: 'off'
+            sequence:
+              - service: notify.telegram
+                data_template:
+                  title: "Trockner fertig"
+                  message: >-
+                    Der Trockner ist fertig
+        default:
+          - service: !secret tts_service
+            data_template:
+              message: >-
+                Der Trockner ist fertig.     
