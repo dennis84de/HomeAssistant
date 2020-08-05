@@ -712,8 +712,8 @@ class Places(Entity):
                 if devicetracker_zone == "home":
                     new_state = "Zu Hause"
                 else:
-                  new_state = devicetracker_zone
-                  _LOGGER.debug( "(" + self._name + ") New State from DeviceTracker set to: " + new_state)
+                    new_state = devicetracker_zone
+                    _LOGGER.debug( "(" + self._name + ") New State from DeviceTracker set to: " + new_state)
 
             current_time = "%02d:%02d" % (now.hour, now.minute)
             
