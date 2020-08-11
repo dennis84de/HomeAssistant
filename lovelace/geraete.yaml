@@ -89,7 +89,7 @@ cards:
     title: Fenster
     show_header_toggle: false
     entities:
-      - entity: zigate.fenster_balkontuer
+      - entity: zigate.balkontuer
         name: Balkontür      
       - entity: zigate.fenster_wohnzimmer
         name: Wohnzimmer

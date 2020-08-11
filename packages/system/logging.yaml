@@ -23,7 +23,12 @@ logbook:
       - switch.sportzimmer_regal
       - switch.couch
       - switch.strahler
-
+      - switch.kleiderschrank
+      - switch.arbeitszimmer_monitor_links
+      - switch.arbeitszimmer_monitor_rechts
+      - switch.monitor
+      - switch.pc
+      
 history:
   include:
     domains:
@@ -51,4 +56,5 @@ history:
       - switch.licht_fernseher_schlafzimmer
       - switch.sportzimmer_regal
       - switch.couch
-      - switch.strahler      
+      - switch.strahler
+      - switch.kleiderschrank

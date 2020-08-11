@@ -114,13 +114,18 @@ script:
 automation:
   - alias: 'Neue E-Mail - Kodi'
     trigger:
-      - platform: numeric_state
+      - platform: state
         entity_id: sensor.ungelesene_mails
-        above: 0
     condition:
       - condition: state
         entity_id: media_player.kodi_wohnzimmer
         state: 'playing'
+      - condition: template     
+        value_template: >-
+          {% set oldMailCount = trigger.from_state.state | int %}
+          {% set newMailCount = trigger.to_state.state | int %}
+          
+          {{ newMailCount > oldMailCount }}
     action:
       - service: notify.kodi_wohnzimmer
         data:

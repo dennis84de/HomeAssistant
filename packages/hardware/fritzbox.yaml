@@ -4,11 +4,17 @@ device_tracker:
   - platform: nmap_tracker
     scan_options: " --privileged -sn "
     hosts:
-      - !secret nmap_hosts
-      - !secret repeater_host    
+      - !secret nmap_hosts  
     exclude:
       - !secret homeassistant_host      
       - !secret handy_host
+      - !secret repeater_host
+
+  - platform: ping
+    interval_seconds: 30
+    consider_home: 60
+    hosts:
+      fritz_repeater: !secret repeater_host
       
 #device_tracker:
 #  - platform: fritz
@@ -285,7 +291,7 @@ homeassistant:
       icon: mdi:cellphone
     device_tracker.handymqtt:
       icon: mdi:cellphone
-      friendly_name: Handy MQTT
+      friendly_name: Handy
 
     device_tracker.magichomeflurvorne:
       icon: mdi:lightbulb-on-outline
@@ -349,11 +355,10 @@ homeassistant:
     device_tracker.tasmotaspuelmaschine:
       icon: mdi:developer-board
       
-    device_tracker.tuerklingel:
+    device_tracker.esptuerklingel:
       icon: mdi:wifi-star
-    device_tracker.briefkasten:
-      icon: mdi:wifi-star      
-      
+      friendly_name: Türklingel
+
     sensor.speedtest_download:
       icon: mdi:download-network
     sensor.speedtest_upload:

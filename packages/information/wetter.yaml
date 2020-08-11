@@ -9,11 +9,6 @@ camera:
     still_image_url: http://www.grueninger.com/webcam/current.jpg
     name: Dortmund
 
-weather:
-  - platform: darksky
-    name: Wetter
-    api_key: !secret darksky_key
-
 gdacs:
   radius: 100
   
@@ -21,7 +16,7 @@ binary_sensor:
   - platform: car_wash
     name: Auto waschen
     days: 5
-    weather: weather.wetter
+    weather: weather.dwd_weather_dortmund
 
   - platform: iss
 
@@ -468,7 +463,7 @@ automation:
       - condition: or
         conditions:
           - condition: state
-            entity_id: binary_sensor.fenster_balkontuer
+            entity_id: binary_sensor.balkontuer
             state: 'on'
           - condition: state
             entity_id: binary_sensor.fenster_wohnzimmer

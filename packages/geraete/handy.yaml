@@ -1,17 +1,56 @@
-device_tracker:
-  - platform: ping
-    interval_seconds: 30
-    consider_home: 60
-    hosts:
-      handy: !secret handy_host
-      
 input_boolean:
   nicht_stoeren:
     name: Nicht stören
     initial: off
     icon: mdi:do-not-disturb
     
+device_tracker:
+  - platform: phonetrack
+    url: !secret phonetrack_url
+    token: !secret phonetrack_token
+    devices:
+      - HandyGPS
+
+  - platform: mqtt
+    source_type: 'router'
+    devices:
+      handymqtt: 'location/handy'   
+    
+person:
+  - name: Dennis
+    id: dennis
+    device_trackers:
+      - device_tracker.handygps
+      - device_tracker.handymqtt
+
+proximity:
+  home:
+    devices:
+      - device_tracker.handymqtt
+      - device_tracker.handygps
+    tolerance: 50
+    
+binary_sensor:
+  - platform: template
+    sensors:
+      zu_hause:
+        friendly_name: "zu Hause"
+        device_class: presence
+        value_template: >-
+          {% if is_state('person.dennis', 'home') or is_state('device_tracker.handymqtt', 'home') %}
+            true
+          {% else %}
+            false
+          {% endif %}
+       
 sensor:
+  - platform: places
+    name: Aufenthaltsort Handy
+    devicetracker_id: device_tracker.handygps
+    options: street_street_number,city
+    api_key: !secret openstreetmap_email
+    map_provider: google
+    
   - platform: mqtt
     name: "Handy Batterie"
     device_class: battery
@@ -73,7 +112,7 @@ sensor:
           {% endif %}
         device_class: timestamp
         
-automation:
+automation: 
   - alias: 'Eingehender Anruf - Handy'
     trigger:
       - platform: state
@@ -104,6 +143,12 @@ automation:
       - condition: state
         entity_id: input_boolean.nicht_stoeren
         state: 'off'
+      - condition: state
+        entity_id: binary_sensor.besuch
+        state: 'off'           
+      - condition: state
+        entity_id: binary_sensor.formeleins_aktiv
+        state: 'off'        
     action:
       - service: input_boolean.turn_on
         entity_id: input_boolean.kodi_pausiert

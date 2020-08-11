@@ -48,6 +48,7 @@ binary_sensor:
           - input_boolean.schlafen_aktiv
         value_template: >
           {{ is_state('input_boolean.schlafen_aktiv', 'on') }}
+          
       schlafen_inaktiv:
         friendly_name: Schlafen inaktiv
         entity_id:

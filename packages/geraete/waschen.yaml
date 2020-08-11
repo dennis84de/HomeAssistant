@@ -35,8 +35,7 @@ sensor:
         friendly_name: Status Waschmaschine
         entity_id:
           - input_select.status_waschmaschine
-        value_template: >-
-          {{ states('input_select.status_waschmaschine') }}
+        value_template: "{{ states('input_select.status_waschmaschine') }}"
         icon_template: 'mdi:washing-machine'
 
       trockner_verbrauch:
@@ -56,8 +55,7 @@ sensor:
         friendly_name: Status Trockner
         entity_id:
           - input_select.status_trockner
-        value_template: >-
-          {{ states('input_select.status_trockner') }}
+        value_template: "{{ states('input_select.status_trockner') }}"
         icon_template: 'mdi:tumble-dryer'
 
 automation:
@@ -177,8 +175,7 @@ automation:
       - service: notify.telegram
         data_template:
           title: "Waschmaschine gestartet"
-          message: >-
-            Die Waschmaschine wurde gestartet.
+          message: "Die Waschmaschine wurde gestartet."
 
   - alias: 'Waschmaschine fertig'
     trigger:      
@@ -196,13 +193,11 @@ automation:
               - service: notify.telegram
                 data_template:
                   title: "Waschmaschine fertig"
-                  message: >-
-                    Die Waschmaschine ist fertig
+                  message: "Die Waschmaschine ist fertig."
         default:
           - service: !secret tts_service
             data_template:
-              message: >-
-                Die Waschmaschine ist fertig.      
+              message: "Die Waschmaschine ist fertig."
       - condition: state
         entity_id: switch.trockner
         state: 'off'
@@ -242,10 +237,8 @@ automation:
               - service: notify.telegram
                 data_template:
                   title: "Trockner fertig"
-                  message: >-
-                    Der Trockner ist fertig
+                  message: "Der Trockner ist fertig."
         default:
           - service: !secret tts_service
             data_template:
-              message: >-
-                Der Trockner ist fertig.     
+              message: "Der Trockner ist fertig."

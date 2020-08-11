@@ -247,7 +247,7 @@ automation:
         to: 'on'
     condition:
       - condition: state
-        entity_id: binary_sensor.fenster_balkontuer
+        entity_id: binary_sensor.balkontuer
         state: 'on'      
       - condition: state
         entity_id: media_player.kodi_wohnzimmer
@@ -276,7 +276,7 @@ automation:
         to: '2'
     condition:
       - condition: state
-        entity_id: binary_sensor.fenster_balkontuer
+        entity_id: binary_sensor.balkontuer
         state: 'on'      
       - condition: state
         entity_id: media_player.kodi_wohnzimmer

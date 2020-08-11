@@ -211,7 +211,7 @@ entity_controller:
       end_time: '05:00:00'      
     overrides:
       - binary_sensor.sonne_tagsueber
-      - binary_sensor.kuechelregal_abends
+      - binary_sensor.kuechelregal_inaktiv
       - binary_sensor.bewegungsmelder_inaktiv_unterwegs
       - binary_sensor.bewegungsmelder_inaktiv_staubsauger
       - input_boolean.bewegungsmelder_kueche_deaktiviert
@@ -223,7 +223,7 @@ entity_controller:
     delay: 120    
     overrides:            
       - binary_sensor.sonne_tagsueber
-      - binary_sensor.kuechenschrank_tagsueber
+      - binary_sensor.kuechenschrank_inaktiv
       - binary_sensor.bewegungsmelder_inaktiv_unterwegs
       - binary_sensor.bewegungsmelder_inaktiv_staubsauger
       - input_boolean.bewegungsmelder_kueche_deaktiviert
@@ -242,8 +242,8 @@ entity_controller:
       start_time: '23:00:00'
       end_time: '05:00:00'      
     overrides:
-      - binary_sensor.schlafen_inaktiv
       - binary_sensor.sonne_tagsueber
+      - light.kleiderschrank
       - binary_sensor.bewegungsmelder_inaktiv_unterwegs
       - binary_sensor.bewegungsmelder_inaktiv_staubsauger
       - input_boolean.bewegungsmelder_schlafzimmer_deaktiviert
@@ -256,6 +256,7 @@ entity_controller:
     overrides:
       - binary_sensor.schlafen_aktiv
       - binary_sensor.sonne_tagsueber
+      - binary_sensor.fenster_schlafzimmer
       - binary_sensor.bewegungsmelder_inaktiv_unterwegs
       - binary_sensor.bewegungsmelder_inaktiv_staubsauger
       - input_boolean.bewegungsmelder_schlafzimmer_deaktiviert      
@@ -287,6 +288,7 @@ automation:
           - binary_sensor.bewegungsmelder_balkon
           - binary_sensor.bewegungsmelder_wohnzimmer
           - binary_sensor.bewegungsmelder_badezimmer
+        from: 'off'
         to: 'on'
     action:
       - service: input_select.select_option
@@ -317,4 +319,19 @@ automation:
           - light.kuche_schrank
           - light.bett
           - light.kleiderschrank
-          - light.couch             
+          - light.couch
+          
+  - alias: 'Fenster Schlafzimmer - Licht ausschalten'
+    trigger:
+      - platform: state
+        entity_id:
+          - binary_sensor.fenster_schlafzimmer
+        to: 'on'
+    condition:
+      - condition: state
+        entity_id: light.kleiderschrank
+        state: 'on'      
+    action:
+      - service: light.turn_off
+        entity_id:
+          - light.kleiderschrank          

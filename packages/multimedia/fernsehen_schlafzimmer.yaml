@@ -133,6 +133,9 @@ automation:
       - platform: state        
         entity_id: sensor.schalter_schlafzimmer
         to: '2'
+      - platform: state        
+        entity_id: binary_sensor.im_bett
+        to: 'on'
     condition:
       - condition: or
         conditions:

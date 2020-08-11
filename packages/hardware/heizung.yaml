@@ -42,7 +42,7 @@ automation:
   - alias: "Heizung Wohnzimmer - Fenster geöffnet"
     trigger:
       - platform: state
-        entity_id: binary_sensor.fenster_balkontuer
+        entity_id: binary_sensor.balkontuer
         to: 'on'
         for:
           seconds: 30      
@@ -68,7 +68,7 @@ automation:
   - alias: "Heizung Wohnzimmer - Fenster geschlossen"
     trigger:
       - platform: state
-        entity_id: binary_sensor.fenster_balkontuer
+        entity_id: binary_sensor.balkontuer
         to: 'off'      
       - platform: state
         entity_id: binary_sensor.fenster_wohnzimmer
@@ -94,7 +94,7 @@ automation:
         value_template: '{{ state_attr("climate.wohnzimmer", "preset_mode") == "comfort" }}'
     condition:
       - condition: state
-        entity_id: binary_sensor.fenster_balkontuer
+        entity_id: binary_sensor.balkontuer
         state: 'on'
       - condition: state
         entity_id: binary_sensor.fenster_wohnzimmer

@@ -163,8 +163,7 @@ cards:
         name: Spülmaschine
           
   - type: entities
-    title: ESPHome
+    title: ESP8266
     show_header_toggle: false
     entities:
-      - entity: device_tracker.tuerklingel
-      - entity: device_tracker.briefkasten
+      - entity: device_tracker.esptuerklingel

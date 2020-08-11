@@ -18,7 +18,7 @@ sensor:
       - zigate.bewegungsmelder_schlafzimmer
       - zigate.bewegungsmelder_kueche
       - zigate.bewegungsmelder_balkon
-      - zigate.fenster_balkontuer
+      - zigate.balkontuer
       - zigate.fenster_wohnzimmer
       - zigate.fenster_schlafzimmer
       - zigate.fenster_kueche
@@ -111,7 +111,7 @@ homeassistant:
       friendly_name: "Thermometer Sportzimmer"
     sensor.thermometer_hardware_battery_level:
       friendly_name: "Thermometer Hardware"
-    sensor.fenster_balkontuer_battery_level:
+    sensor.balkontuer_battery_level:
       friendly_name: "Balkontür"
     sensor.fenster_wohnzimmer_battery_level:
       friendly_name: "Fenster Wohnzimmer"

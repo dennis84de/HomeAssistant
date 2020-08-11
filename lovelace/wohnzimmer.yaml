@@ -85,7 +85,7 @@ cards:
     title: Heizung
     show_header_toggle: false
     entities:
-      - entity: binary_sensor.fenster_balkontuer
+      - entity: binary_sensor.balkontuer
         name: Balkontür      
       - entity: binary_sensor.fenster_wohnzimmer
         name: Fenster

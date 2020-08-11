@@ -39,7 +39,10 @@ lovelace:
     - url: /hacsfiles/secondaryinfo-entity-row/secondaryinfo-entity-row.js
       type: module
     - url: /hacsfiles/zha-network-card/zha-network-card.js
-      type: js      
+      type: js   
+    - url: /hacsfiles/weather-card/weather-card.js
+      type: module
+    
   dashboards:      
     lovelace-rooms:
       mode: yaml
@@ -57,12 +60,12 @@ breaking_changes:
   name: Wichtige Änderungen
 
 zone:
-  - name: Zu Hause
+  - name: home
     latitude: !secret home_latitude
     longitude: !secret home_longitude
     radius: 60
     icon: mdi:home-account
-  - name: Arbeit
+  - name: work
     latitude: !secret work_latitude
     longitude: !secret work_longitude
     radius: 70
@@ -270,6 +273,11 @@ automation:
 
 homeassistant:
   customize:
+    zone.home:
+      friendy_name: Zu Hause
+    zone.work:
+      friendy_name: Arbeit
+  
     script.restart_homeassistant:
       icon: mdi:home-assistant
 

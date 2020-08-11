@@ -180,7 +180,10 @@ automation:
         state: 'off'
       - condition: state
         entity_id: binary_sensor.besuch
-        state: 'off'        
+        state: 'off'   
+      - condition: state
+        entity_id: binary_sensor.formeleins_aktiv
+        state: 'off'           
     action:
       - service: input_boolean.turn_on
         entity_id: input_boolean.kodi_pausiert

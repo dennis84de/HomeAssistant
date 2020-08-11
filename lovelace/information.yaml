@@ -67,11 +67,9 @@ popup_cards:
       entities:
         - entity: person.dennis          
           secondary_info: last-changed
-        - entity: device_tracker.handy
+        - entity: device_tracker.handymqtt
           secondary_info: last-changed
         - entity: device_tracker.handygps
-          secondary_info: last-changed
-        - entity: device_tracker.handymqtt
           secondary_info: last-changed
 
 cards:

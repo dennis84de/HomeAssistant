@@ -89,7 +89,6 @@ automation:
           target: '{{ trigger.event.data.chat_id }}'
           message: "Der Computer wird ausgeschaltet."
           
-
 homeassistant:
   customize:
     sensor.computer_generic_hard_disk_load_used_space:

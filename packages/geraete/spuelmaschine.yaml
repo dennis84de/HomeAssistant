@@ -34,8 +34,7 @@ sensor:
         friendly_name: Status Spülmaschine
         entity_id:
           - input_select.status_spuelmaschine
-        value_template: >-
-          {{ states('input_select.status_spuelmaschine') }}
+        value_template: "{{ states('input_select.status_spuelmaschine') }}"
         icon_template: 'mdi:dishwasher'    
     
 automation:
@@ -106,10 +105,8 @@ automation:
               - service: notify.telegram
                 data_template:
                   title: "Spülmaschine fertig"
-                  message: >-
-                    Die Spülmaschine ist fertig
+                  message: "Die Spülmaschine ist fertig"
         default:
           - service: !secret tts_service
             data_template:
-              message: >-
-                Die Spülmaschine ist fertig.
+              message: "Die Spülmaschine ist fertig."

@@ -36,7 +36,7 @@ cards:
     show_header_toggle: false
     entities:
       - entity: binary_sensor.tuersensor
-      - entity: binary_sensor.tuerklingel
+      - entity: binary_sensor.turklingel
 
   - type: glance
     title: Thermometer

@@ -1,68 +1,21 @@
-device_tracker:
-  - platform: phonetrack
-    url: !secret phonetrack_url
-    token: !secret phonetrack_token
-    devices:
-      - HandyGPS
-
-  - platform: mqtt
-    devices:
-      handymqtt: 'location/handy'
-    
-person:
-  - name: Dennis
-    id: dennis
-    device_trackers:
-      - device_tracker.handy
-      - device_tracker.handymqtt
-
 input_boolean:
   zu_hause_begruessung:
     name: "Begrüßung"
   besuch:
     name: "Besuch"
-    icon: mdi:account-multiple
-    
-proximity:
-  home:
-    devices:
-      - device_tracker.handy
-      - device_tracker.handygps
-    tolerance: 50
+    icon: mdi:account-multiple   
 
 shell_command:
-  send_position: "curl -X POST '{{ url }}?lat={{ state_attr('device_tracker.netzwerkdj', 'latitude') }}&lon={{ state_attr('device_tracker.netzwerkdj', 'longitude') }}&timestamp={{ as_timestamp(now()) | int }}'"
-
-sensor:
-  - platform: places
-    name: Aufenthaltsort Handy
-    devicetracker_id: device_tracker.handygps
-    options: street_street_number,city
-    api_key: !secret openstreetmap_email
-    map_provider: google
+  send_position: "curl -X POST '{{ url }}?lat={{ state_attr('zone.home', 'latitude') }}&lon={{ state_attr('zone.home', 'longitude') }}&timestamp={{ as_timestamp(now()) | int }}'"
 
 binary_sensor:
   - platform: template
     sensors:
-      zu_hause:
-        friendly_name: "zu Hause"
-        device_class: presence
-        value_template: >-
-          {% if is_state('person.dennis', 'home') or is_state('device_tracker.handy', 'home') or is_state('device_tracker.handymqtt', 'home') %}
-            true
-          {% else %}
-            false
-          {% endif %}
-          
       besuch:
         friendly_name: "Besuch"
         device_class: presence        
         value_template: >-
-          {% if is_state('input_boolean.besuch', 'on') %}
-            true
-          {% else %}
-            false
-          {% endif %}          
+          {{ True if is_state('input_boolean.besuch', 'on') else False }}     
 
 automation:
   - alias: 'Unterwegs - Geräte eingeschaltet'
@@ -154,100 +107,48 @@ automation:
       - service: homeassistant.turn_off
         entity_id: group.licht_unterwegs
 
-  - alias: "Zu Hause - Standort aktualisieren"
-    trigger:
-      - platform: state
-        entity_id: device_tracker.handy
-        to: 'home'
-      - platform: state
-        entity_id: device_tracker.handymqtt
-        to: 'home'        
-    action:
-      - service: mqtt.publish
-        data:
-           topic: 'location/handy'
-           payload: 'home'
-           retain: true
-      - service: shell_command.send_position
-        data:
-          url: !secret phonetracker_send_position_url
-      - service: device_tracker.see
-        data_template:
-          dev_id: handygps
-          location_name: 'home'
-          gps: ["{{ state_attr('zone.zu_hause', 'latitude') }}", "{{ state_attr('zone.zu_hause', 'longitude') }}"]
-
-  - alias: "Zu Hause - Manuell geschaltet"
-    trigger:
-      - platform: state
-        entity_id: binary_sensor.schalter_flur
-        to: 'off'
-    condition:
-      - condition: state
-        entity_id: device_tracker.handymqtt
-        state: 'not_home'
-    action:
-      - service: mqtt.publish
-        data:
-           topic: 'location/handy'
-           payload: 'home'
-           retain: true
-      - service: shell_command.send_position
-        data:
-          url: !secret phonetracker_send_position_url
-      - service: device_tracker.see
-        data_template:
-          dev_id: handygps
-          location_name: 'home'
-          gps: ["{{ state_attr('zone.zu_hause', 'latitude') }}", "{{ state_attr('zone.zu_hause', 'longitude') }}"]
-
-  - alias: "Zu Hause - Geräte einschalten"
+  - alias: "Zu Hause"
     trigger:
       - platform: state
         entity_id: binary_sensor.zu_hause
-        to: 'on'
-    condition:
-      - condition: state
-        entity_id: binary_sensor.home_office
-        state: 'off'          
-      - condition: time
-        after: '08:00'
-        before: '20:00'
-      - condition: numeric_state
-        entity_id: sensor.laufzeit_minuten
-        above: 5
-    action:
-      - service: script.zu_hause
-
-  - alias: "Zu Hause - Geräte einschalten - Home Office"
-    trigger:
-      - platform: state
-        entity_id: binary_sensor.zu_hause
-        to: 'on'
-    condition:
-      - condition: state
-        entity_id: binary_sensor.home_office
-        state: 'on'      
-      - condition: numeric_state
-        entity_id: sensor.laufzeit_minuten
-        above: 5
-    action:
-      - service: script.zu_hause_home_office
-
-  - alias: "Zu Hause - Geräte einschalten - Abends"
-    trigger:
-      - platform: state
-        entity_id: binary_sensor.zu_hause
-        to: 'on'
-    condition:
-      - condition: time
-        after: '20:00'
-        before: '23:30'
-      - condition: numeric_state
-        entity_id: sensor.laufzeit_minuten
-        above: 5
-    action:
-      - service: script.zu_hause_abends
+        to: 'on'    
+    action:     
+      - service: script.zu_hause_standort
+      - service: alarm_control_panel.alarm_disarm
+        entity_id: alarm_control_panel.alarm
+      - service: switch.turn_off
+        entity_id: switch.kamera_wohnzimmer      
+      - choose:
+          - conditions:
+              - condition: state
+                entity_id: binary_sensor.home_office
+                state: 'off'          
+              - condition: time
+                after: '08:00'
+                before: '20:00'
+              - condition: numeric_state
+                entity_id: sensor.laufzeit_minuten
+                above: 5
+            sequence:          
+              - service: script.zu_hause
+          - conditions:
+              - condition: state
+                entity_id: binary_sensor.home_office
+                state: 'on'          
+              - condition: numeric_state
+                entity_id: sensor.laufzeit_minuten
+                above: 5
+            sequence:              
+              - service: script.zu_hause_home_office
+          - conditions:
+              - condition: time
+                after: '20:00'
+                before: '23:30'
+              - condition: numeric_state
+                entity_id: sensor.laufzeit_minuten
+                above: 5   
+            sequence:           
+              - service: script.zu_hause_abends      
 
   - alias: "Zu Hause - Begrüßung aktivieren"
     trigger:
@@ -288,7 +189,59 @@ automation:
       - condition: state
         entity_id: input_boolean.zu_hause_begruessung
         state: 'on'       
-    action:
+    action:      
+      - service: script.zu_hause_begruessung
+          
+script:
+  zu_hause:
+    alias: "Zu Hause"
+    sequence:
+      - service: script.wohnung_radios_einschalten
+      - service: switch.turn_on
+        entity_id: switch.computer, switch.watchtv_wohnzimmer      
+      - condition: state
+        entity_id: binary_sensor.sonne_tagsueber
+        state: 'off'
+      - service: light.turn_on
+        entity_id: light.couch, light.strahler
+
+  zu_hause_home_office:
+    alias: "Zu Hause - Home Office"
+    sequence:
+      - service: script.wohnung_radios_einschalten 
+      - service: switch.turn_on
+        entity_id: switch.arbeitszimmer_radio, switch.arbeitszimmer_monitore
+        
+  zu_hause_abends:
+    alias: "Zu Hause - abends"
+    sequence:
+      - service: light.turn_on
+        entity_id: light.couch, light.strahler
+      - service: switch.turn_on
+        entity_id: switch.computer, switch.watchtv_wohnzimmer
+      - service: switch.turn_on
+        entity_id: switch.badezimmer_radio
+
+  zu_hause_standort:
+    alias: "Zu Hause - Standort"
+    sequence:
+      - service: mqtt.publish
+        data:
+           topic: 'location/handy'
+           payload: 'home'
+           retain: true
+      - service: shell_command.send_position
+        data:
+          url: !secret phonetracker_send_position_url
+      - service: device_tracker.see
+        data_template:
+          dev_id: handygps
+          location_name: 'home'
+          gps: ["{{ state_attr('zone.home', 'latitude') }}", "{{ state_attr('zone.home', 'longitude') }}"]
+        
+  zu_hause_begruessung:
+    alias: "Zu Hause - Begrüßung"
+    sequence:
       - delay: '00:00:30'
       - service: !secret tts_service
         data_template:
@@ -353,68 +306,8 @@ automation:
               {%- endfor -%}              
             {% endif %}
       - service: input_boolean.turn_off
-        entity_id: input_boolean.zu_hause_begruessung                           
-            
-  - alias: "Zu Hause - Kamera ausschalten"
-    trigger:
-      - platform: state
-        entity_id: alarm_control_panel.alarm
-        to: 'disarmed'
-    action:
-      - service: switch.turn_off
-        entity_id: switch.kamera_wohnzimmer
+        entity_id: input_boolean.zu_hause_begruessung
         
-script:
-  zu_hause:
-    alias: "Zu Hause"
-    sequence:
-      - service: alarm_control_panel.alarm_disarm
-        entity_id: alarm_control_panel.alarm
-      - service: input_boolean.turn_on
-        entity_id: input_boolean.zu_hause_begruessung
-      - service: script.wohnung_radios_einschalten
-      - service: switch.turn_on
-        entity_id: switch.computer, switch.watchtv_wohnzimmer      
-      - condition: state
-        entity_id: binary_sensor.sonne_tagsueber
-        state: 'off'
-      - service: light.turn_on
-        entity_id: light.couch, light.strahler
-
-  zu_hause_home_office:
-    alias: "Zu Hause - Home Office"
-    sequence:
-      - service: alarm_control_panel.alarm_disarm
-        entity_id: alarm_control_panel.alarm
-      - service: input_boolean.turn_on
-        entity_id: input_boolean.zu_hause_begruessung
-      - service: script.wohnung_radios_einschalten 
-      - service: switch.turn_on
-        entity_id: switch.arbeitszimmer_radio  
-        
-  zu_hause_abends:
-    alias: "Zu Hause - abends"
-    sequence:
-      - service: alarm_control_panel.alarm_disarm
-        entity_id: alarm_control_panel.alarm
-      - service: input_boolean.turn_on
-        entity_id: input_boolean.zu_hause_begruessung
-      - service: light.turn_on
-        entity_id: light.couch, light.strahler
-      - service: switch.turn_on
-        entity_id: switch.computer, switch.watchtv_wohnzimmer
-      - service: switch.turn_on
-        entity_id: switch.badezimmer_radio
-      - wait_template: >-
-          {% if is_state('media_player.badezimmer', 'playing') %}
-            True
-          {% else %}
-            False
-          {% endif %}      
-        timeout: '00:02:00'
-      - service: media_player.media_pause
-        entity_id: media_player.badezimmer
-
 homeassistant:
   customize:
     sensor.aufenthaltsort_handy:

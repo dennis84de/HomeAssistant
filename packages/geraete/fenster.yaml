@@ -11,44 +11,8 @@ automation:
         entity_id: binary_sensor.fenster_arbeitszimmer
       - platform: state
         entity_id: binary_sensor.fenster_sportzimmer
-    condition:
-      - condition: state
-        entity_id: 'media_player.kodi_wohnzimmer'
-        state: 'playing'
-      - condition: numeric_state
-        entity_id: sensor.laufzeit_minuten
-        above: 1
-    action:
-      service: notify.kodi_wohnzimmer
-      data_template:
-        title: "Fenster"
-        message: >-
-          {% if trigger.to_state.state == 'on' %}
-            {% set status = "geöffnet" %}
-          {% else %}
-            {% set status = "geschlossen" %}
-          {% endif %}
-
-          {% if trigger.entity_id == "binary_sensor.fenster_wohnzimmer" %}
-            {% set zimmer = "im Wohnzimmer" %}
-          {% elif trigger.entity_id == "binary_sensor.fenster_schlafzimmer" %}
-            {% set zimmer = "im Schlafzimmer" %}
-          {% elif trigger.entity_id == "binary_sensor.fenster_kueche" %}
-            {% set zimmer = "in der Küche" %}
-          {% elif trigger.entity_id == "binary_sensor.fenster_arbeitszimmer" %}
-            {% set zimmer = "im Arbeitszimmer" %}
-          {% elif trigger.entity_id == "binary_sensor.fenster_sportzimmer" %}
-            {% set zimmer = "im Sportzimmer" %}
-          {% endif %}
-
-          Das Fenster {{ zimmer }} wurde {{ status }}.
-        data:
-          displaytime: 5000
-
-  - alias: "Benachrichtigung Balkontür"
-    trigger:
       - platform: state
-        entity_id: binary_sensor.fenster_balkontuer
+        entity_id: binary_sensor.balkontuer        
     condition:
       - condition: state
         entity_id: 'media_player.kodi_wohnzimmer'
@@ -57,31 +21,48 @@ automation:
         entity_id: sensor.laufzeit_minuten
         above: 1
     action:
-      service: notify.kodi_wohnzimmer
-      data_template:
-        title: "Balkontür"
-        message: >-
-          {% if trigger.to_state.state == 'on' %}
-            {% set status = "geöffnet" %}
-          {% else %}
-            {% set status = "geschlossen" %}
-          {% endif %}
+      - choose:
+          - conditions:
+              - condition: template
+                value_template: "{{ True if trigger.entity_id == 'binary_sensor.balkontuer' else False }}"
+            sequence:
+              - service: notify.kodi_wohnzimmer
+                data_template:
+                  title: "Balkontür"
+                  message: "Die Balkontür wurde {{ 'geöffnet' if trigger.to_state.state == 'on' else 'geschlossen' }}."                    
+                  data:
+                    displaytime: 5000
+        default:
+          - service: notify.kodi_wohnzimmer
+            data_template:
+              title: "Fenster"
+              message: >-
+                {% if trigger.to_state.state == 'on' %}
+                  {% set status = "geöffnet" %}
+                {% else %}
+                  {% set status = "geschlossen" %}
+                {% endif %}
 
-          Die Balkontür wurde {{ status }}.
-        data:
-          displaytime: 5000
+                {% if trigger.entity_id == "binary_sensor.fenster_wohnzimmer" %}
+                  {% set zimmer = "im Wohnzimmer" %}
+                {% elif trigger.entity_id == "binary_sensor.fenster_schlafzimmer" %}
+                  {% set zimmer = "im Schlafzimmer" %}
+                {% elif trigger.entity_id == "binary_sensor.fenster_kueche" %}
+                  {% set zimmer = "in der Küche" %}
+                {% elif trigger.entity_id == "binary_sensor.fenster_arbeitszimmer" %}
+                  {% set zimmer = "im Arbeitszimmer" %}
+                {% elif trigger.entity_id == "binary_sensor.fenster_sportzimmer" %}
+                  {% set zimmer = "im Sportzimmer" %}
+                {% endif %}
+
+                Das Fenster {{ zimmer }} wurde {{ status }}.
+              data:
+                displaytime: 5000
           
 homeassistant:
   customize:
-    binary_sensor.fenster_balkontuer:
-      device_class: door    
-    binary_sensor.fenster_wohnzimmer:
-      device_class: window
-    binary_sensor.fenster_schlafzimmer:
-      device_class: window
-    binary_sensor.fenster_kueche:
-      device_class: window
-    binary_sensor.fenster_arbeitszimmer:
-      device_class: window
-    binary_sensor.fenster_sportzimmer:
-      device_class: window
+    binary_sensor.balkontuer:
+      device_class: door
+  customize_glob:
+    binary_sensor.fenster_*:
+      device_class: window      

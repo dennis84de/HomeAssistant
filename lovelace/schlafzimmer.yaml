@@ -103,5 +103,5 @@ cards:
       - entity: binary_sensor.bewegungsmelder_schlafzimmer
         name: Bewegungsmelder
       - entity: sensor.helligkeit_schlafzimmer
-      - entity: binary_sensor.im_bett        
+      - entity: binary_sensor.im_bett
 

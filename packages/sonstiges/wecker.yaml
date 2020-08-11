@@ -291,46 +291,31 @@ automation:
   - alias: "Aufstehen - Geräte einschalten"
     trigger:
       - platform: state
-        entity_id: input_boolean.schlafen_aktiv
+        entity_id: binary_sensor.schlafen_aktiv
         to: 'off'
-    condition:
-      - condition: template
-        value_template: >-
-          {% set weckerGestartet = as_timestamp(state_attr("automation.wecker_starten", "last_triggered")) | timestamp_custom("%s", True) | int  %}
-          {% set weckerVerzoegerung = states('input_number.alarmdelay') | int %}
-          {% set now = now().strftime("%s") | int %}
-          {% set abstandMinuten = ((now - weckerGestartet | timestamp_custom("%s") | int)) / 60 | int %}         
-          
-          {{ True if abstandMinuten < weckerVerzoegerung else False }}
     action:
       - service: script.wohnung_radios_einschalten
       - service: switch.turn_on
-        entity_id: switch.computer
+        entity_id: switch.computer         
+      - choose:
+          - conditions:
+            - condition: template
+              value_template: >-
+                {% set nowDate = now().strftime("%Y-%m-%d") %}
+                {% set lastTriggeredDate = as_timestamp(state_attr("automation.wecker_starten", "last_triggered")) | timestamp_custom("%Y-%m-%d", True) %}
 
-  - alias: "Aufstehen - Kein Wecker gestellt"
-    trigger:
-      - platform: state
-        entity_id: input_boolean.schlafen_aktiv
-        to: 'off'
-    condition:
-      - condition: template
-        value_template: >-
-          {% set nowDate = now().strftime("%Y-%m-%d") %}
-          {% set lastTriggeredDate = as_timestamp(state_attr("automation.wecker_starten", "last_triggered")) | timestamp_custom("%Y-%m-%d", True) %}
-          
-          {% if is_state('sensor.tablet_weckzeit', None) or is_state_attr('sensor.tablet_weckzeit', 'day', None) %}
-            True
-          {% elif is_state('binary_sensor.wecker_ueberspringen', 'on') %}          
-            True
-          {% elif nowDate != lastTriggeredDate %}
-            True
-          {% else %}
-            False
-          {% endif %}
-    action:
-      - service: script.wohnung_radios_einschalten
-      - service: switch.turn_on
-        entity_id: switch.computer, switch.watchtv_wohnzimmer
+                {% if is_state('sensor.tablet_weckzeit', None) or is_state_attr('sensor.tablet_weckzeit', 'day', None) %}
+                  True
+                {% elif is_state('binary_sensor.wecker_ueberspringen', 'on') %}          
+                  True
+                {% elif nowDate != lastTriggeredDate %}
+                  True
+                {% else %}
+                  False
+                {% endif %}
+            sequence:
+              - service: switch.turn_on
+                entity_id: switch.watchtv_wohnzimmer
         
 script:
   weckzeit_einstellen:
@@ -385,9 +370,7 @@ script:
           effect: colorloop
       - service: switch.turn_on
         entity_id: switch.schlafzimmer_radio               
-      - delay: "00:{{ states('input_number.alarmdelay') | int }}:00"
-      - service: switch.turn_on
-        entity_id: switch.computer      
+      - delay: "00:{{ states('input_number.alarmdelay') | int }}:00" 
       - service: script.wohnung_radios_einschalten
   
 homeassistant:
