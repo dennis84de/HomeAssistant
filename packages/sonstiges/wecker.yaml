@@ -294,9 +294,9 @@ automation:
         entity_id: binary_sensor.schlafen_aktiv
         to: 'off'
     action:
-      - service: script.wohnung_radios_einschalten
       - service: switch.turn_on
-        entity_id: switch.computer         
+        entity_id: switch.computer        
+      - service: script.wohnung_radios_einschalten       
       - choose:
           - conditions:
             - condition: template

@@ -18,11 +18,10 @@ cards:
   - type: entities
     title: Netzwerk
     show_header_toggle: false
-    entities:
-      - entity: device_tracker.computer
+    entities:      
       - entity: device_tracker.diskstation
       - entity: device_tracker.netzwerkdj
-      - entity: device_tracker.fritz_repeater
+      - entity: device_tracker.fritzrepeater
       - entity: device_tracker.pihole
 
   - type: entities
@@ -46,13 +45,13 @@ cards:
     title: Radios
     show_header_toggle: false
     entities:
-      - entity: device_tracker.piliving
-      - entity: device_tracker.picorridor
-      - entity: device_tracker.pibath
-      - entity: device_tracker.pikitchen
-      - entity: device_tracker.pisleeping
-      - entity: device_tracker.piworking
-      - entity: device_tracker.pibalcony
+      - entity: device_tracker.radiowohnzimmer
+      - entity: device_tracker.radioflur
+      - entity: device_tracker.radiobadezimmer
+      - entity: device_tracker.radiokueche
+      - entity: device_tracker.radioschlafzimmer
+      - entity: device_tracker.radioarbeitszimmer
+      - entity: device_tracker.radiobalkon
 
   - type: entities
     title: Steckdosen

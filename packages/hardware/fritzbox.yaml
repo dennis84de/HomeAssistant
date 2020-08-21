@@ -1,39 +1,30 @@
 speedtestdotnet:
 
 device_tracker:
-  - platform: nmap_tracker
-    scan_options: " --privileged -sn "
-    hosts:
-      - !secret nmap_hosts  
-    exclude:
-      - !secret homeassistant_host      
-      - !secret handy_host
-      - !secret repeater_host
-
-  - platform: ping
-    interval_seconds: 30
+  - platform: fritz
+    host: !secret fritzbox_host
+    username: !secret fritzbox_username
+    password: !secret fritzbox_password
+    interval_seconds: 5
     consider_home: 60
-    hosts:
-      fritz_repeater: !secret repeater_host
+    new_device_defaults:
+      track_new_devices: false
       
-#device_tracker:
-#  - platform: fritz
-#    host: !secret fritzbox_host
-#    username: !secret fritzbox_username
-#    password: !secret fritzbox_password
-#    interval_seconds: 5
-#    consider_home: 60
-#    new_device_defaults:
-#      track_new_devices: false
-#    
-#  - platform: fritz
-#    host: !secret repeater_host
-#    username: !secret fritzbox_username
-#    password: !secret fritzbox_password
-#    interval_seconds: 5
-#    consider_home: 60
-#    new_device_defaults:
-#      track_new_devices: false
+  - platform: fritz
+    host: !secret repeater_host
+    username: !secret fritzbox_username
+    password: !secret fritzbox_password
+    interval_seconds: 5
+    consider_home: 60
+    new_device_defaults:
+      track_new_devices: false      
+      
+#  - platform: nmap_tracker
+#    scan_options: " --privileged -sn "
+#    hosts:
+#      - !secret nmap_hosts  
+#    exclude:
+#      - !secret homeassistant_host
     
 input_text:
   guest_wifi_password:
@@ -226,7 +217,7 @@ homeassistant:
     device_tracker.edimaxcrosstrainer:
       icon: mdi:power-socket-eu
       friendly_name: Crosstrainer
-    device_tracker.fritz_repeater:
+    device_tracker.fritzrepeater:
       icon: mdi:wifi
       friendly_name: Repeater
     device_tracker.pihole:
@@ -237,6 +228,9 @@ homeassistant:
     device_tracker.pc:
       icon: mdi:desktop-classic
       friendly_name: Computer
+    device_tracker.computerarbeit:
+      icon: mdi:desktop-classic
+      friendly_name: Computer Arbeit
     device_tracker.pihomeassistant:
       icon: mdi:home-assistant
     device_tracker.broadlinkwohnzimmer:
@@ -247,6 +241,7 @@ homeassistant:
       icon: mdi:server-network
     device_tracker.netzwerkdj:
       icon: mdi:router-wireless
+      friendly_name: Netzwerk
     device_tracker.epsondrucker:
       icon: mdi:printer
     device_tracker.maxheizung:
@@ -316,25 +311,25 @@ homeassistant:
       icon: mdi:cctv
       friendly_name: Kamera
       
-    device_tracker.piliving:
+    device_tracker.radiowohnzimmer:
       icon: mdi:raspberry-pi
       friendly_name: Wohnzimmer
-    device_tracker.pibath:
+    device_tracker.radiobadezimmer:
       icon: mdi:raspberry-pi
       friendly_name: Badezimmer
-    device_tracker.pikitchen:
+    device_tracker.radiokueche:
       icon: mdi:raspberry-pi
       friendly_name: Küche
-    device_tracker.pisleeping:
+    device_tracker.radioschlafzimmer:
       icon: mdi:raspberry-pi
       friendly_name: Schlafzimmer
-    device_tracker.picorridor:
+    device_tracker.radioflur:
       icon: mdi:raspberry-pi
       friendly_name: Flur
-    device_tracker.piworking:
+    device_tracker.radioarbeitszimmer:
       icon: mdi:raspberry-pi
       friendly_name: Arbeitszimmer
-    device_tracker.pibalcony:
+    device_tracker.radiobalkon:
       icon: mdi:raspberry-pi
       friendly_name: Balkon
       

@@ -70,6 +70,9 @@ zone:
     longitude: !secret work_longitude
     radius: 70
     icon: mdi:wan 
+    
+binary_sensor:  
+  - platform: rpi_power
 
 sensor:
   - platform: sql
@@ -108,8 +111,6 @@ sensor:
     command: vcgencmd measure_temp | sed "s/temp=//;s/'C//"
     unit_of_measurement: "°C"
 
-  - platform: rpi_power
-
   - platform: systemmonitor
     resources:
       - type: disk_use_percent
@@ -141,13 +142,6 @@ sensor:
           {% set ende = as_timestamp(states('input_datetime.letzter_neustart_ende')) | int %}
 
           {{ (ende - start) | int }}
-          
-  - platform: average
-    name: "Neustart Dauer - Durchschnitt"
-    duration:
-      days: 30
-    entities:
-      - sensor.neustart_dauer
       
 input_datetime:
   letzter_neustart_start:
@@ -317,9 +311,6 @@ homeassistant:
       icon: mdi:update
       can_cancel: false
 
-    sensor.rpi_power_status:
+    binary_sensor.rpi_power_status:
       friendly_name: Power Status
       icon: mdi:power-plug
-    
-    sensor.neustart_dauer_durchschnitt:
-      icon: mdi:chart-line-variant

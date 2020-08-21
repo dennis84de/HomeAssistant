@@ -10,7 +10,7 @@ cards:
       - entity: sensor.disk_use_percent
       - entity: sensor.memory_use_percent
       - entity: sensor.processor_use
-      - entity: sensor.rpi_power_status
+      - entity: binary_sensor.rpi_power_status
       - entity: sensor.letzter_neustart
 
   - type: entities

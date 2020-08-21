@@ -46,31 +46,6 @@ sensor:
 input_boolean:
   licht_aktiv:
     name: Licht aktiv
-    
-script:
-  eingehender_anruf_licht_start:
-    alias: Eingehender Anruf - Licht einschalten
-    sequence:                 
-      - service: light.toggle
-        entity_id: light.strahler
-      - delay:
-          seconds: 1        
-      - service: script.turn_on
-        entity_id: script.eingehender_anruf_licht_wiederholen
-        
-  eingehender_anruf_licht_wiederholen:
-    alias: Eingehender Anruf - Licht wiederholen
-    sequence:        
-      - condition: or
-        conditions:
-          - condition: state
-            entity_id: sensor.telefon
-            state: 'ringing'
-          - condition: state
-            entity_id: sensor.handy
-            state: 'incoming'      
-      - service: script.turn_on
-        entity_id: script.eingehender_anruf_licht_start         
         
 automation:
   - alias: 'Eingehender Anruf - Telefon'
@@ -115,7 +90,22 @@ automation:
               state: "{{ states('light.strahler') }}"     
       - service: input_boolean.turn_on
         entity_id: input_boolean.licht_aktiv
-      - service: script.eingehender_anruf_licht_start
+      - alias: 'Eingehender Anruf - Licht schalten'
+        repeat:
+          while:
+            - condition: or
+              conditions:                
+                - condition: state
+                  entity_id: sensor.telefon
+                  state: 'ringing'
+                - condition: state
+                  entity_id: sensor.handy
+                  state: 'incoming'              
+          sequence:
+            - service: light.toggle
+              entity_id: light.strahler
+            - delay:
+                seconds: 1
 
   - alias: 'Eingehender Anruf - Licht beenden'
     trigger:
@@ -132,9 +122,6 @@ automation:
         entity_id: sensor.handy
         to: 'talking'           
     condition:
-      - condition: state
-        entity_id: binary_sensor.zu_hause
-        state: 'on'     
       - condition: state
         entity_id: input_boolean.licht_aktiv
         state: 'on'             

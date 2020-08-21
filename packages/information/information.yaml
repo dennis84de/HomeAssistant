@@ -201,7 +201,7 @@ homeassistant:
       unit_of_measurement: Tage
       
     binary_sensor.arbeitstag:
-      icon: mdi:worker
+      icon: mdi:account-hard-hat
       
     sensor.time:
       friendly_name: Uhrzeit
