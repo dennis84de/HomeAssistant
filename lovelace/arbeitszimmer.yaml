@@ -54,7 +54,7 @@ cards:
     title: Arbeit
     show_header_toggle: false
     entities:
-      - entity: device_tracker.pc_arbeit
+      - entity: switch.pc_arbeit
         name: Computer
       - entity: switch.arbeitszimmer_monitore
 

@@ -1,9 +1,11 @@
 device_tracker:
-  - platform: ping
-    interval_seconds: 30
-    consider_home: 60
-    hosts:
-      pc_arbeit: !secret computerarbeit_host
+  - platform: mqtt
+    devices:
+      pc_arbeit: 'iotlink/schenck/jaeschke-pc/lwt'
+    qos: 1
+    payload_home: 'ON'
+    payload_not_home: 'OFF'
+    source_type: router      
       
 sensor:
   - platform: here_travel_time
@@ -67,6 +69,26 @@ binary_sensor:
           {{ True if (istHomeOffice and istArbeitstag and keinUrlaub and nachArbeitsBeginn and vorArbeitsEnde) else False }}
           
 switch:
+  - platform: template
+    switches:
+      pc_arbeit:
+        friendly_name: PC Arbeit
+        entity_id:
+          - device_tracker.pc_arbeit
+        value_template: "{{ is_state('device_tracker.pc_arbeit', 'home') }}"
+        icon_template: mdi:desktop-tower
+        turn_on:
+          service: wake_on_lan.send_magic_packet
+          data:
+            mac: !secret computerarbeit_mac
+            broadcast_address: !secret fritzbox_broadcast
+            broadcast_port: 9
+        turn_off:
+          service: mqtt.publish
+          data:
+            topic: "iotlink/schenck/jaeschke-pc/commands/hibernate"
+            payload: ""
+            
   - platform: mqtt
     name: "Arbeitszimmer Monitor links"
     state_topic: "stat/arbeitszimmermonitorlinks/POWER"
@@ -157,7 +179,7 @@ script:
       - service: switch.turn_off
         entity_id: switch.schlafzimmer_radio
       - service: switch.turn_on
-        entity_id: switch.arbeitszimmer_radio, switch.arbeitszimmer_monitore
+        entity_id: switch.arbeitszimmer_radio, switch.pc_arbeit, switch.arbeitszimmer_monitore
       - service: input_boolean.turn_on
         entity_id: input_boolean.bewegungsmelder_arbeitszimmer_deaktiviert
           
@@ -165,7 +187,7 @@ script:
     alias: 'Home Office - Ende'
     sequence:
       - service: switch.turn_off
-        entity_id: switch.arbeitszimmer_radio, switch.arbeitszimmer_monitore
+        entity_id: switch.arbeitszimmer_radio, switch.pc_arbeit, switch.arbeitszimmer_monitore
       - service: input_boolean.turn_off
         entity_id: input_boolean.bewegungsmelder_arbeitszimmer_deaktiviert
       - service: switch.turn_on
@@ -200,11 +222,11 @@ automation:
                   
   - alias: 'Home Office - Ende'
     trigger:
-      - platform: state
-        entity_id: device_tracker.pc_arbeit
-        to: 'not_home'  
-        for:
-          minutes: 1
+#      - platform: state
+#        entity_id: device_tracker.pc_arbeit
+#        to: 'not_home'  
+#        for:
+#          minutes: 1
       - platform: state
         entity_id: sensor.schalter_wohnzimmer
         to: '2'           
@@ -262,5 +284,3 @@ homeassistant:
       icon: mdi:car-estate
     sensor.fahrzeit_nach_hause:
       icon: mdi:car-sports
-    device_tracker.pc_arbeit:
-      icon: mdi:desktop-classic   
