@@ -26,3 +26,4 @@ DEFAULT_PROFILE_OFF = "Gesperrt"
 DEFAULT_DEVICES = []
 
 SERVICE_RECONNECT = "reconnect"
+SERVICE_REBOOT = "reboot"
