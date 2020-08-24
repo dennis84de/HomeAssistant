@@ -110,10 +110,11 @@ entity_controller:
       - light.arbeitszimmer_lampe
     delay: 120
     overrides:
-      - binary_sensor.sonne_tagsueber
+      - device_tracker.pc_arbeit
+      - binary_sensor.sonne_tagsueber      
       - binary_sensor.bewegungsmelder_inaktiv_unterwegs  
       - binary_sensor.bewegungsmelder_inaktiv_staubsauger
-      - input_boolean.bewegungsmelder_arbeitszimmer_deaktiviert
+      - input_boolean.bewegungsmelder_arbeitszimmer_deaktiviert      
 
   bewegung_sportzimmer:
     friendly_name: "Bewegung Sportzimmer"
@@ -320,6 +321,7 @@ automation:
           - light.bett
           - light.kleiderschrank
           - light.couch
+          - light.strahler
           
   - alias: 'Fenster Schlafzimmer - Licht ausschalten'
     trigger:

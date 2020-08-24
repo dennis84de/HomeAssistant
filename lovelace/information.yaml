@@ -9,16 +9,6 @@ popup_cards:
         - entity: input_select.arbeit_stunden
         - entity: input_select.arbeit_minuten
         - entity: input_select.arbeit_puffer
-
-  input_boolean.home_office:
-    title: Arbeitszeiten
-    card:
-      type: entities
-      entities:
-        - entity: input_datetime.arbeit_beginn
-          name: Beginn
-        - entity: input_datetime.arbeit_ende
-          name: Ende
         
   sensor.wecker_startzeit:
     title: Einstellungen
@@ -133,17 +123,21 @@ cards:
         - entity: sensor.bvb_uhrzeit
         - entity: sensor.bvb_ort
 
-  - type: entities
-    title: Arbeit
-    show_header_toggle: false
-    entities:
+  - type: conditional
+    conditions:
+      - entity: input_boolean.home_office 
+        state: "off"
+    card:
+      type: entities
+      title: Arbeit
+      show_header_toggle: false
+      entities:
       - entity: sensor.fahrzeit_zur_arbeit
       - entity: sensor.fahrzeit_nach_hause
       - entity: sensor.abfahrzeit      
       - entity: binary_sensor.schlechtes_wetter      
       - entity: binary_sensor.arbeitstag
-      - entity: input_boolean.home_office
-      
+
   - type: custom:mini-graph-card
     name: Fahrzeit
     line_width: 2

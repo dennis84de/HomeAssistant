@@ -9,7 +9,17 @@ popup_cards:
         - entity: sensor.arbeitszimmer_absolutehumidity
         - entity: sensor.arbeitszimmer_heatindex
         - entity: sensor.arbeitszimmer_dewpoint
-        - entity: sensor.arbeitszimmer_perception
+        - entity: sensor.arbeitszimmer_perception       
+
+  input_boolean.home_office:
+    title: Arbeitszeiten
+    card:
+      type: entities
+      entities:
+        - entity: input_datetime.arbeit_beginn
+          name: Beginn
+        - entity: input_datetime.arbeit_ende
+          name: Ende        
 cards:
   - type: entities
     title: Geräte
@@ -57,6 +67,9 @@ cards:
       - entity: switch.pc_arbeit
         name: Computer
       - entity: switch.arbeitszimmer_monitore
+      - entity: input_boolean.computer_arbeit_ausschalten
+        name: Computer ausschalten
+      - entity: input_boolean.home_office        
 
   - type: entities
     title: Staubsauger

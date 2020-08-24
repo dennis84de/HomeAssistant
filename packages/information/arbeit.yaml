@@ -131,6 +131,11 @@ input_boolean:
     name: Home Office
     icon: mdi:home-city-outline
   
+  computer_arbeit_ausschalten:
+    name: Computer Arbeit ausschalten
+    initial: on
+    icon: mdi:desktop-classic
+    
 input_datetime:
   arbeit_beginn:
     name: Arbeitsbeginn    
@@ -177,68 +182,62 @@ script:
     alias: 'Home Office - Start'
     sequence:
       - service: switch.turn_off
-        entity_id: switch.schlafzimmer_radio
+        entity_id: switch.schlafzimmer_radio, switch.monitor
       - service: switch.turn_on
         entity_id: switch.arbeitszimmer_radio, switch.pc_arbeit, switch.arbeitszimmer_monitore
-      - service: input_boolean.turn_on
-        entity_id: input_boolean.bewegungsmelder_arbeitszimmer_deaktiviert
+      - condition: state
+        entity_id: input_boolean.computer_ausschalten
+        state: 'on'
+      - service: switch.turn_off
+        entity_id: switch.pc           
           
   home_office_ende:
     alias: 'Home Office - Ende'
     sequence:
       - service: switch.turn_off
-        entity_id: switch.arbeitszimmer_radio, switch.pc_arbeit, switch.arbeitszimmer_monitore
-      - service: input_boolean.turn_off
-        entity_id: input_boolean.bewegungsmelder_arbeitszimmer_deaktiviert
+        entity_id: switch.arbeitszimmer_radio, switch.arbeitszimmer_monitore
       - service: switch.turn_on
         entity_id: switch.computer
+      - condition: state
+        entity_id: input_boolean.computer_arbeit_ausschalten
+        state: 'on'
+      - service: switch.turn_off
+        entity_id: switch.pc_arbeit               
         
 automation:
   - alias: 'Home Office - Start'
     trigger:
       - platform: state
-        entity_id: binary_sensor.home_office
-        to: 'on'
-    action:      
-      - service: script.home_office_start
-      
-  - alias: 'Home Office - Computer ausschalten'
-    trigger:
-      - platform: state
-        entity_id: device_tracker.pc_arbeit
-        to: 'home'
-        for:
-          minutes: 1
+        entity_id: sensor.schalter_flur
+        to: '2'
     condition:
       - condition: state
         entity_id: binary_sensor.home_office
         state: 'on'
       - condition: state
-        entity_id: switch.computer
-        state: 'on'            
-    action:      
-      - service: switch.turn_off
-        entity_id: switch.computer 
+        entity_id: device_tracker.pc_arbeit
+        state: 'not_home'        
+    action:
+      - service: !secret tts_service
+        data_template:
+          echo: "flur"
+          message: "Der Computer im Arbeitszimmer wird jetzt eingeschaltet."
+      - service: script.home_office_start      
                   
   - alias: 'Home Office - Ende'
     trigger:
-#      - platform: state
-#        entity_id: device_tracker.pc_arbeit
-#        to: 'not_home'  
-#        for:
-#          minutes: 1
       - platform: state
-        entity_id: sensor.schalter_wohnzimmer
+        entity_id: sensor.schalter_flur
         to: '2'           
     condition:
-      - condition: template
-        value_template: >-         
-          {% if trigger.entity_id == "sensor.schalter_wohnzimmer" %}
-            {{ is_state('device_tracker.pc_arbeit', 'home') }}
-          {% else %}
-            True
-          {% endif %}
+      - condition: state
+        entity_id: device_tracker.pc_arbeit
+        state: 'home'  
     action:      
+      - service: !secret tts_service
+        data_template:
+          echo: "flur"
+          message: "Der Computer im Arbeitszimmer wird jetzt ausgeschaltet."      
       - service: script.home_office_ende
 
   - alias: 'Benachrichtigung Arbeit'
