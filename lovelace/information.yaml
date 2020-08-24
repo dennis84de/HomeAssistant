@@ -79,7 +79,8 @@ cards:
     entities:
       - entity: sensor.countdown_sudtirol
       - entity: binary_sensor.zu_hause
-        name: Dennis      
+        name: Dennis
+        secondary_info: last-changed
       - entity: sensor.aufenthaltsort_handy
       - entity: proximity.home
       - entity: sensor.letzte_bewegung
