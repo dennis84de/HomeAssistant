@@ -18,6 +18,18 @@ sensor:
     host: !secret computer_host
     port: 8580
     
+  - platform: rest
+    resource: http://192.168.2.81:1234/activewindow
+    name: 'Computer - Aktives Fenster'
+    verify_ssl: false
+    scan_interval: 20
+    headers: 
+      accept: 'application/json'    
+    json_attributes:
+      - ProcessName
+      - StartTime
+    value_template: '{{ value_json["WindowName"] }}'    
+    
 switch:
   - platform: template
     switches:
@@ -50,7 +62,7 @@ switch:
           entity_id: switch.monitor, switch.pc
         turn_off:
           service: switch.turn_off
-          entity_id: switch.monitor, switch.pc
+          entity_id: switch.monitor, switch.pc   
     
 automation:
   - alias: 'Unterwegs - Computer ausschalten'
