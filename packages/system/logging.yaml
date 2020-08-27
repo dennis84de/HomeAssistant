@@ -1,7 +1,8 @@
 logger:
   default: error
-  logs:
-    homeassistant.components.rest.sensor: fatal
+#  logs:
+#    homeassistant.core: debug  
+#    homeassistant.components.rest.sensor: fatal
     
 recorder:
   purge_keep_days: 14
