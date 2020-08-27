@@ -39,7 +39,8 @@ sensor:
       - zigate.schalter_wohnzimmer
       - zigate.schalter_schlafzimmer
       - zigate.schalter_flur
-      - zigate.schalter_balkon      
+      - zigate.schalter_balkon
+      - zigate.schalter_arbeitszimmer
 
   - platform: template
     sensors:
@@ -91,6 +92,8 @@ homeassistant:
       friendly_name: "Schalter Wohnzimmer"
     sensor.schalter_flur_battery_level:
       friendly_name: "Schalter Flur"
+    sensor.schalter_arbeitszimmer_battery_level:
+      friendly_name: "Schalter Arbeitszimmer"      
     sensor.schalter_balkon_battery_level:
       friendly_name: "Schalter Balkon"
     sensor.schalter_schlafzimmer_battery_level:

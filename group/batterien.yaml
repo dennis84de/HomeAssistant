@@ -15,6 +15,7 @@ batteriestand:
     - sensor.schalter_flur_battery_level
     - sensor.schalter_balkon_battery_level
     - sensor.schalter_schlafzimmer_battery_level
+    - sensor.schalter_arbeitszimmer_battery_level
     - sensor.thermometer_flur_battery_level
     - sensor.thermometer_balkon_battery_level
     - sensor.thermometer_parkplatz_battery_level

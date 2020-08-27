@@ -52,6 +52,8 @@ cards:
         name: Balkon
       - entity: sensor.schalter_schlafzimmer_battery_level
         name: Schlafzimmer
+      - entity: sensor.schalter_arbeitszimmer_battery_level
+        name: Arbeitszimmer        
 
   - type: entities
     title: Thermometer

@@ -190,6 +190,8 @@ script:
         state: 'on'
       - service: switch.turn_off
         entity_id: switch.pc           
+      - service: light.turn_off
+        entity_id: light.schreibtisch, light.arbeitszimmer_lampe           
           
   home_office_ende:
     alias: 'Home Office - Ende'
@@ -205,40 +207,29 @@ script:
         entity_id: switch.pc_arbeit               
         
 automation:
-  - alias: 'Home Office - Start'
+  - alias: 'Home Office - Schalter'
     trigger:
       - platform: state
-        entity_id: sensor.schalter_flur
-        to: '2'
-    condition:
-      - condition: state
-        entity_id: binary_sensor.home_office
-        state: 'on'
-      - condition: state
-        entity_id: device_tracker.pc_arbeit
-        state: 'not_home'        
+        entity_id: sensor.schalter_arbeitszimmer
+        to: '2'     
     action:
-      - service: !secret tts_service
-        data_template:
-          echo: "flur"
-          message: "Der Computer im Arbeitszimmer wird jetzt eingeschaltet."
-      - service: script.home_office_start      
-                  
-  - alias: 'Home Office - Ende'
-    trigger:
-      - platform: state
-        entity_id: sensor.schalter_flur
-        to: '2'           
-    condition:
-      - condition: state
-        entity_id: device_tracker.pc_arbeit
-        state: 'home'  
-    action:      
-      - service: !secret tts_service
-        data_template:
-          echo: "flur"
-          message: "Der Computer im Arbeitszimmer wird jetzt ausgeschaltet."      
-      - service: script.home_office_ende
+      - choose:
+          - conditions:
+              - condition: state
+                entity_id: binary_sensor.home_office
+                state: 'on'
+              - condition: state
+                entity_id: device_tracker.pc_arbeit
+                state: 'not_home'   
+            sequence:
+              - service: script.home_office_start
+      - choose:
+          - conditions:
+              - condition: state
+                entity_id: device_tracker.pc_arbeit
+                state: 'home'  
+            sequence:
+              - service: script.home_office_ende
 
   - alias: 'Benachrichtigung Arbeit'
     trigger:
