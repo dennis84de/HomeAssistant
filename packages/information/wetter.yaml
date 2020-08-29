@@ -46,6 +46,10 @@ binary_sensor:
 sensor:
   - platform: moon
 
+  - platform: buienradar
+    monitored_conditions:
+      - irradiance
+      
   - platform: darksky
     api_key: !secret darksky_key
     name: Darksky
@@ -214,9 +218,12 @@ sensor:
           - sun.sun
           - sensor.darksky_cloud_coverage
         value_template: >-
+          {%- set irradiance = states('sensor.br_irradiance') | float %} 
+          {%- set irradiance_pct = irradiance / 10 %}
           {%- set elevation = state_attr('sun.sun','elevation') | float %}
           {%- set cloud_coverage = states('sensor.darksky_cloud_coverage') | float %}
-          {%- set cloud_factor = (1 - (0.75 * ( cloud_coverage / 100) ** 3 )) %}
+          {%- set adjusted_clouds = cloud_coverage -  irradiance_pct %}
+          {%- set cloud_factor = (1 - (0.75 * ( adjusted_clouds / 100) ** 3 )) %}
           {%- set min_elevation = -6 %}
           {%- set max_elevation = 45 %}
           {%- set adjusted_elevation = elevation - min_elevation %}
@@ -226,6 +233,7 @@ sensor:
           {%- set adjusted_elevation = adjusted_elevation %}
           {%- set adjusted_elevation = adjusted_elevation * 100 %}
           {%- set brightness = adjusted_elevation * cloud_factor %}
+
           {{ brightness | round }}
         unit_of_measurement: '%'
         device_class: 'illuminance'
