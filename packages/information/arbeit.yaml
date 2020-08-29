@@ -7,6 +7,11 @@ device_tracker:
     payload_not_home: 'OFF'
     source_type: router      
       
+timer:
+  home_office_ende:
+    name: "Home Office beenden"
+    duration: 7
+    
 sensor:
   - platform: here_travel_time
     name: Fahrzeit zur Arbeit
@@ -207,29 +212,80 @@ script:
         entity_id: switch.pc_arbeit               
         
 automation:
-  - alias: 'Home Office - Schalter'
+  - alias: 'Home Office - Start'
     trigger:
       - platform: state
         entity_id: sensor.schalter_arbeitszimmer
         to: '2'     
+    condition:
+      - condition: state
+        entity_id: binary_sensor.home_office
+        state: 'on'
+      - condition: state
+        entity_id: device_tracker.pc_arbeit
+        state: 'not_home'        
     action:
-      - choose:
-          - conditions:
-              - condition: state
-                entity_id: binary_sensor.home_office
-                state: 'on'
-              - condition: state
-                entity_id: device_tracker.pc_arbeit
-                state: 'not_home'   
-            sequence:
-              - service: script.home_office_start
-      - choose:
-          - conditions:
-              - condition: state
-                entity_id: device_tracker.pc_arbeit
-                state: 'home'  
-            sequence:
-              - service: script.home_office_ende
+      - service: script.home_office_start
+
+  - alias: "Home Office - Countdown starten"
+    trigger:
+      - platform: state
+        entity_id: sensor.schalter_arbeitszimmer
+        to: '2'      
+    condition:
+      - condition: state
+        entity_id: device_tracker.pc_arbeit
+        state: 'home'  
+      - condition: state
+        entity_id: timer.home_office_ende
+        state: 'idle'
+    action:
+      - service: !secret tts_service
+        data_template:
+          echo: "flur"
+          message: "Der Computer wird Arbeitszimmer wird gleich ausgeschaltet."
+      - delay: '00:00:02'
+      - service: timer.start
+        entity_id: timer.home_office_ende
+      - service: media_player.play_media
+        data_template:
+          entity_id:
+            - media_player.smarthome
+          media_content_id: >-
+            http://192.168.2.75:8123/local/countdown/countdown_5.mp3
+          media_content_type: music
+
+  - alias: "Home Office - Countdown abbrechen"
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.schalter_arbeitszimmer
+        to: 'off'
+    condition:
+      - condition: state
+        entity_id: timer.home_office_ende
+        state: 'active'
+    action:
+      - service: media_player.media_pause
+        entity_id: media_player.smarthome
+      - service: !secret tts_service
+        data_template:
+          echo: "flur"
+          message: "Der Vorgang wurde abgebrochen."
+      - service: timer.cancel
+        entity_id: timer.home_office_ende
+
+  - alias: "Home Office - Ende"
+    trigger:
+      - platform: event
+        event_type: timer.finished
+        event_data:
+          entity_id: timer.home_office_ende
+    action:
+      - service: !secret tts_service
+        data_template:
+          echo: "flur"
+          message: "Der Computer im Arbeitszimmer wird jetzt ausgeschaltet."
+      - service: script.home_office_ende
 
   - alias: 'Benachrichtigung Arbeit'
     trigger:
