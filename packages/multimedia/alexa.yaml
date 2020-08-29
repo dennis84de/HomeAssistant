@@ -1,3 +1,12 @@
+device_tracker:
+  - platform: ping
+    hosts:
+      echobadezimmer: !secret echo_badezimmer_host
+      echoflur: !secret echo_flur_host
+      echokueche: !secret echo_kueche_host
+      echoschlafzimmer: !secret echo_schlafzimmer_host
+      echowohnzimmmer: !secret echo_wohnzimmer_host
+
 alexa_media:
   accounts:
     - email: !secret amazon_email
