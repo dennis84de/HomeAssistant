@@ -1,18 +1,3 @@
-tplink:
-  discovery: false
-  switch:
-    - host: 192.168.2.50
-    - host: 192.168.2.56
-    - host: 192.168.2.73
-    - host: 192.168.2.60
-    - host: 192.168.2.44
-    - host: 192.168.2.51
-    - host: 192.168.2.41
-    - host: 192.168.2.69
-    - host: 192.168.2.31
-    - host: 192.168.2.83
-    - host: 192.168.2.39
-
 homeassistant:
   customize:
     switch.monitor:

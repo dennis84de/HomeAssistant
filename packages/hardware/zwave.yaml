@@ -1,6 +1,3 @@
-zwave:
-  usb_path: /dev/ttyACM0
-
 homeassistant:
   customize:
     zwave.aeotec_zw090_zstick_gen5_eu:
