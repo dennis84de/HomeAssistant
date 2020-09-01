@@ -44,9 +44,9 @@ cards:
         name: Rakete
       - entity: sensor.spacex_next_launch_mission
         name: Mission
-      - entity: sensor.spacex_next_launch_day
+      - entity: sensor.spacex_next_launch_day_de
         name: Datum
-      - entity: sensor.spacex_next_launch_time
+      - entity: sensor.spacex_next_launch_time_de
         name: Uhrzeit
       - entity: sensor.spacex_next_launch_site
         name: Startplatz
