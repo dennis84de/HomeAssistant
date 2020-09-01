@@ -18,18 +18,6 @@ sensor:
     host: !secret computer_host
     port: 8580
     
-  - platform: rest
-    resource: http://192.168.2.81:1234/activewindow
-    name: 'Computer - Aktives Fenster'
-    verify_ssl: false
-    scan_interval: 20
-    headers: 
-      accept: 'application/json'    
-    json_attributes:
-      - ProcessName
-      - StartTime
-    value_template: '{{ value_json["WindowName"] }}'    
-    
 switch:
   - platform: template
     switches:
