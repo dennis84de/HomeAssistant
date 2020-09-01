@@ -5,13 +5,11 @@ api:
 frontend:
 mobile_app:
 scene:
-saver:
 discovery:
 wake_on_lan:
 system_health:
 python_script:
 map:
-config_check:
   
 lovelace:
   mode: yaml
