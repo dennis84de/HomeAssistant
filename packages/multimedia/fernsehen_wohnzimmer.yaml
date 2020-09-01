@@ -353,7 +353,14 @@ automation:
         state: 'on'
       - condition: numeric_state
         entity_id: sensor.laufzeit_minuten
-        above: 5        
+        above: 5       
+      - condition: template
+        value_template: >-
+          {% set now = as_timestamp(now()) | int %}
+          {% set last = as_timestamp(state_attr("automation.soundbar_lautstarke_cube", "last_triggered")) | int %}
+          {% set diff = ((now - last)) | int %}
+
+          {{ diff >= 5 }}        
     action:
       - service: media_player.volume_set
         data_template:
