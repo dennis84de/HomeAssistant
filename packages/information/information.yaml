@@ -7,16 +7,6 @@ tankerkoenig:
     - !secret tankerkoenig_id_real
     - !secret tankerkoenig_id_jet
       
-input_text:
-  einkaufen:
-    name: Einkaufen    
-      
-input_select:
-  einkaufen:
-    name: Einkaufsliste
-    options:
-      - Artikel auswählen
-      
 sensor:
   - platform: imap
     server: !secret email_server
@@ -91,26 +81,7 @@ binary_sensor:
           - sensor.tankerkoenig_jet_muelheim_strassburger_allee_75_e10
         value_template: >-
           {{ is_state_attr('sensor.tankerkoenig_jet_muelheim_strassburger_allee_75_e10', 'is_open', True) }}
-       
-script:
-  einkaufen_artikel_hinzu:
-    alias: "Einkaufen - Artikel hinzufügen"
-    sequence:
-      - condition: template
-        value_template: >-
-          {{ states('input_text.einkaufen') != '' }}      
-      - service: !secret tts_service
-        data_template:
-          message: >-
-            {{ states('input_text.einkaufen') }} wird der Einkaufsliste hinzugefügt.
-      - service: gkeep.new_item
-        data_template:          
-          item_title: "{{ states('input_text.einkaufen') }}"     
-      - service: input_text.set_value
-        data_template:
-          entity_id: input_text.einkaufen
-          value: ""
-          
+                
 automation:
   - alias: 'Neue E-Mail - Kodi'
     trigger:
@@ -166,28 +137,7 @@ automation:
             Eine neue E-Mail ist eingegangen.
           {% else %}
             Es sind {{ mailCount }} neue E-Mails eingegangen.
-          {% endif %}
-          
-  - alias: "Einkaufen - Liste aktualisieren"
-    trigger:
-      - platform: state
-        entity_id: sensor.gkeep_einkaufen
-    action:
-      - service: python_script.input_select_set_options        
-        data_template:
-          entity_inputselect: input_select.einkaufen
-#          empty_value: "Artikel auswählen"
-          data_source: >-
-            {% set items = state_attr('sensor.gkeep_einkaufen', 'items') %}
-            {% set data = namespace(items = []) -%}
-
-            {% for item in items %}
-              {% if item.checked == False %}
-                {%- set data.items = data.items + [item.name] -%}
-              {% endif %}
-            {% endfor %}
-
-            {{ data.items|join(",") }}        
+          {% endif %}          
           
 panel_iframe:
   infoscreen:
