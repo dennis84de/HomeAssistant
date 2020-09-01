@@ -47,7 +47,7 @@ cards:
       - entity: sensor.spacex_next_launch_day
         name: Datum
       - entity: sensor.spacex_next_launch_time
-        name: Zeit
+        name: Uhrzeit
       - entity: sensor.spacex_next_launch_site
         name: Startplatz
 
