@@ -40,11 +40,25 @@ cards:
     title: SpaceX
     show_header_toggle: false
     entities:
-      - entity: sensor.spacex_next_rocket
-      - entity: sensor.spacex_next_mission_name
+      - entity: sensor.spacex_next_launch_rocket
+        name: Rakete
+      - entity: sensor.spacex_next_launch_mission
+        name: Mission
       - entity: sensor.spacex_next_launch_day
+        name: Datum
       - entity: sensor.spacex_next_launch_time
+        name: Zeit
       - entity: sensor.spacex_next_launch_site
+        name: Startplatz
+
+  - type: entities
+    title: Starman
+    show_header_toggle: false
+    entities:
+      - entity: sensor.spacex_starman_distance
+        name: Entfernung
+      - entity: sensor.spacex_starman_speed 
+        name: Geschwindigkeit
 
   - type: entities
     title: Corona Virus
@@ -112,50 +126,7 @@ cards:
         *{{ ['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'][weekday-1] }}, {{ date }} Uhr*
         *Dauer: {{ duration }}*
         {% endfor %}
-      {% endif %}          
-        
-  - type: custom:stack-in-card
-    title: Einkaufen
-    cards:
-      - type: markdown        
-        content: >-
-          {% set items = state_attr('sensor.gkeep_einkaufen', 'items') %}
-          
-          {% if (states('sensor.gkeep_einkaufen') == 0) %}
-          *Keine Artikel auf der Einkaufsliste vorhanden.*
-          {% else %}
-            {% set items = state_attr('sensor.gkeep_einkaufen', 'items') %}
-            {% set data = namespace(checked = [], unChecked = []) -%}
-
-            {% for item in items %}
-              {% if item.checked == True %}
-                {%- set data.checked = data.checked + [item.name] -%}
-              {% else %}
-                {%- set data.unChecked = data.unChecked + [item.name] -%}
-              {% endif %}
-            {% endfor %}
-
-            {% for item in data.unChecked %}
-            <ha-icon icon="mdi:checkbox-blank-outline"></ha-icon> {{ item }}
-            {% endfor %}            
-            
-            {% if data.checked | length > 0 %}
-            ***
-            {% for item in data.checked %}
-            <font color="#999999"><ha-icon icon="mdi:check-box-outline"></ha-icon> {{ item }}</font>            
-            {% endfor %}            
-            {% endif %}            
-          ***
-          {% endif %}              
-      - type: entities
-        show_header_toggle: false
-        entities:
-          - entity: input_text.einkaufen
-            name: Artikel
-          - entity: script.einkaufen_artikel_hinzu
-            name: Hinzufügen
-          - entity: input_select.einkaufen
-            name: Artikel entfernen        
+      {% endif %}
                           
   - type: conditional
     conditions:

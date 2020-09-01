@@ -141,15 +141,6 @@ sensor:
       - today
 
   - platform: rest
-    name: SpaceX
-    json_attributes:
-      - mission_name
-      - launch_site
-      - rocket
-    value_template: '{{ value_json["launch_date_unix"] }}'
-    resource: 'https://api.spacexdata.com/v2/launches/next'
-
-  - platform: rest
     name: Strommix
     resource: !secret strommix_url
     unit_of_measurement: '%'
@@ -337,56 +328,6 @@ sensor:
             /local/mond/LastQuarter.jpg
           {% elif is_state('sensor.moon', 'waning_crescent') %}
             /local/mond/WaningCrescent.jpg
-          {% endif %}
-
-      spacex_next_launch_day:
-        friendly_name: 'Nächstes Startdatum'
-        entity_id:
-          - sensor.spacex
-        value_template: '{{ states("sensor.spacex") | int | timestamp_custom("%d.%m.%Y")}}'
-
-      spacex_next_launch_time:
-        friendly_name: 'Startzeit'
-        entity_id:
-          - sensor.spacex
-        value_template: '{{ states("sensor.spacex") | int | timestamp_custom("%H:%M")}}'
-        unit_of_measurement: 'Uhr'
-
-      spacex_next_rocket:
-        friendly_name: 'Nächste Rakete'
-        entity_id:
-          - sensor.spacex
-        value_template: >-
-          {% set rocket = state_attr('sensor.spacex', 'rocket') %}
-
-          {% if rocket == None %}
-            -
-          {% else %}
-            {{ rocket.rocket_name }}
-          {% endif %}
-
-      spacex_next_launch_site:
-        friendly_name: 'Abflugsort'
-        value_template: >-
-          {% set launchSite = state_attr('sensor.spacex', 'launch_site') %}
-
-          {% if launchSite == None %}
-            -
-          {% else %}
-            {{ launchSite.site_name_long }}
-          {% endif %}
-
-      spacex_next_mission_name:
-        friendly_name: 'Mission'
-        entity_id:
-          - sensor.spacex
-        value_template: >-
-          {% set MissionName = state_attr('sensor.spacex', 'mission_name') %}
-
-          {% if launchSite == None %}
-            -
-          {% else %}
-            {{ MissionName }}
           {% endif %}
 
       uv_index_current:
@@ -626,17 +567,6 @@ homeassistant:
 
     binary_sensor.iss:
       icon: mdi:earth
-    
-    sensor.spacex_next_rocket:
-      icon: mdi:rocket
-    sensor.spacex_next_launch_day:
-      icon: mdi:calendar
-    sensor.spacex_next_launch_time:
-      icon: mdi:clock-outline
-    sensor.spacex_next_launch_site:
-      icon: mdi:map-marker-radius
-    sensor.spacex_next_mission_name:
-      icon: mdi:information-outline
 
     binary_sensor.protection_window:
       friendly_name: Sonnenschutz
