@@ -210,7 +210,7 @@ script:
     sequence:
       - service: script.wohnung_radios_einschalten 
       - service: switch.turn_on
-        entity_id: switch.arbeitszimmer_radio, switch.arbeitszimmer_monitore
+        entity_id: switch.arbeitszimmer_radio, switch.pc_arbeit, switch.arbeitszimmer_monitore
         
   zu_hause_abends:
     alias: "Zu Hause - abends"
