@@ -55,7 +55,6 @@ binary_sensor:
       bewegungsmelder_inaktiv_unterwegs:
         friendly_name: Bewegungmelder inaktiv - Unterwegs
         entity_id:
-          - sensor.time
           - binary_sensor.zu_hause
         device_class: occupancy
         value_template: >-
@@ -68,7 +67,6 @@ binary_sensor:
       bewegungsmelder_inaktiv_staubsauger:
         friendly_name: Bewegungmelder inaktiv - Staubsauger
         entity_id:
-          - sensor.time
           - vacuum.xiaomi_vacuum_cleaner
         device_class: occupancy
         value_template: >-

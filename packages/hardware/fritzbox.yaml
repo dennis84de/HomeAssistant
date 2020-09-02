@@ -109,7 +109,6 @@ sensor:
         friendly_name: Geräte offline
         entity_id:
           - sensor.time
-          - sensor.laufzeit_minuten
         icon_template: >
           {% set ns = namespace(found=false) -%}
 

@@ -48,8 +48,6 @@ sensor:
         friendly_name: Batteriestand niedrig
         entity_id:
           - sensor.time
-          - input_number.batteriestand_warnlevel
-          - sensor.laufzeit_minuten
         icon_template: >
           {% set min_battery_level = states('input_number.batteriestand_warnlevel') | int -%}
           {% set ns = namespace(found=false) -%}
