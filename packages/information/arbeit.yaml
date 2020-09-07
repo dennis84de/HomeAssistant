@@ -187,13 +187,13 @@ script:
         entity_id: switch.schlafzimmer_radio, switch.monitor
       - service: switch.turn_on
         entity_id: switch.arbeitszimmer_radio, switch.pc_arbeit, switch.arbeitszimmer_monitore
+      - service: light.turn_off
+        entity_id: light.schreibtisch, light.arbeitszimmer_lampe        
       - condition: state
         entity_id: input_boolean.computer_ausschalten
         state: 'on'
       - service: switch.turn_off
-        entity_id: switch.pc           
-      - service: light.turn_off
-        entity_id: light.schreibtisch, light.arbeitszimmer_lampe           
+        entity_id: switch.pc
           
   home_office_ende:
     alias: 'Home Office - Ende'
