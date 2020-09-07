@@ -2,13 +2,13 @@ light:
   - platform: flux_led
     devices:
       192.168.2.54:
-        name: Sideboard
+        name: Flur vorne
         mode: "rgb"
 
   - platform: flux_led
     devices:
       192.168.2.71:
-        name: Schrank
+        name: Flur hinten
         mode: "rgb"
 
 input_boolean:
@@ -19,7 +19,7 @@ input_boolean:
 
 homeassistant:
   customize:
-    light.sideboard:
+    light.flur_vorne:
       icon: mdi:led-strip
-    light.schrank:
+    light.flur_hinten:
       icon: mdi:led-strip

@@ -21,8 +21,8 @@ cards:
     title: Licht
     show_header_toggle: false
     entities:
-      - entity: light.sideboard
-      - entity: light.schrank
+      - entity: light.flur_vorne
+      - entity: light.flur_hinten
 
   - type: glance
     title: Bewegungsmelder

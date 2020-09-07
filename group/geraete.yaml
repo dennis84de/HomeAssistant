@@ -16,8 +16,8 @@ alles_ausschalten:
     - light.arbeitszimmer_lampe
     - light.sportzimmer_regal
     - light.schreibtisch
-    - light.sideboard
-    - light.schrank
+    - light.flur_vorne
+    - light.flur_hinten
     - light.badezimmerschrank
     - light.bett
     - light.kleiderschrank

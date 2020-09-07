@@ -160,7 +160,7 @@ automation:
         state: 'on'
     action:
       - service: light.turn_off
-        entity_id: light.bett, light.kleiderschrank, light.sideboard, light.schrank, light.badezimmerschrank, light.schreibtisch, light.kuche_regal, light.arbeitszimmer_lampe, light.sportzimmer_regal
+        entity_id: light.bett, light.kleiderschrank, light.flur_vorne, light.flur_hinten, light.badezimmerschrank, light.schreibtisch, light.kuche_regal, light.arbeitszimmer_lampe, light.sportzimmer_regal
 
   - alias: "Schlafzimmer - Kodi pausiert"
     trigger:

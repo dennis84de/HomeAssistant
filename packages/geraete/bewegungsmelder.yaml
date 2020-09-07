@@ -151,7 +151,7 @@ entity_controller:
   bewegung_flur_vorne:
     friendly_name: "Bewegung Flur vorne"
     sensor: binary_sensor.bewegungsmelder_flur_vorne
-    entity: light.sideboard
+    entity: light.flur_vorne
     delay: 120
     overrides:
       - binary_sensor.sonne_tagsueber
@@ -162,7 +162,7 @@ entity_controller:
   bewegung_flur_hinten:
     friendly_name: "Bewegung Flur hinten"
     sensor: binary_sensor.bewegungsmelder_flur_hinten
-    entity: light.schrank
+    entity: light.flur_hinten
     delay: 120  
     overrides:
       - binary_sensor.sonne_tagsueber
@@ -278,8 +278,8 @@ automation:
           - light.arbeitszimmer_lampe    
           - light.badezimmerschrank
           - light.balkon_licht
-          - light.sideboard
-          - light.schrank
+          - light.flur_vorne
+          - light.flur_hinten
           - light.kuche_regal
           - light.kuche_schrank
           - light.bett

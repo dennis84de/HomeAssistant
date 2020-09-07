@@ -41,11 +41,11 @@ emulated_hue:
     light.sportzimmer_regal:
       name: Licht Sportzimmer      
       hidden: false
-    light.sideboard:
-      name: Licht Sideboard
+    light.flur_vorne:
+      name: Licht Flur vorne
       hidden: false
-    light.schrank:
-      name: Licht Schrank
+    light.flur_hinten:
+      name: Licht Flur hinten
       hidden: false
     light.balkon_licht:
       name: Licht Balkon

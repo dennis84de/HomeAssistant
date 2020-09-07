@@ -159,7 +159,7 @@ script:
       - service: switch.turn_off
         entity_id: switch.badezimmer_radio
       - service: light.turn_off
-        entity_id: light.couch, light.sideboard, light.schrank                
+        entity_id: light.couch, light.flur_vorne, light.flur_hinten                
 
   sleeptimer_turn_off_tv:
     alias: Sleeptimer aktivieren
@@ -387,7 +387,7 @@ automation:
         state: 'on'  
     action:
       - service: light.turn_off
-        entity_id: light.bett, light.kleiderschrank, light.sideboard, light.schrank, light.badezimmerschrank, light.schreibtisch, light.kuche_regal, light.arbeitszimmer_lampe, light.sportzimmer_regal, light.strahler, light.couch
+        entity_id: light.bett, light.kleiderschrank, light.flur_vorne, light.flur_hinten, light.badezimmerschrank, light.schreibtisch, light.kuche_regal, light.arbeitszimmer_lampe, light.sportzimmer_regal, light.strahler, light.couch
 
   - alias: "Schlafzimmer - Tablet - Wiedergabe pausiert"
     trigger:
