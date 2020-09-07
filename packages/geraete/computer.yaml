@@ -3,6 +3,8 @@ input_boolean:
     name: Computer ausschalten
     initial: on
     icon: mdi:desktop-classic
+  youtube_pausiert:
+    name: Youtube pausiert    
 
 device_tracker:
   - platform: mqtt
@@ -13,11 +15,34 @@ device_tracker:
     payload_not_home: 'OFF'
     source_type: router
 
-sensor:
+sensor:   
   - platform: openhardwaremonitor
     host: !secret computer_host
-    port: 8580
+    port: 8580  
     
+  - platform: mqtt
+    name: "Firefox Status"
+    state_topic: "iotlink/workgroup/computer/process-monitor/processes/firefox/sensor"
+    value_template: "{{ '-' if value_json == None else value_json.MainWindowTitle }}"
+    qos: 1
+    json_attributes_topic: "iotlink/workgroup/computer/process-monitor/processes/firefox/sensor"
+    json_attributes_template: "{{ value_json | tojson }}"
+    
+binary_sensor:
+  - platform: mqtt
+    name: "Firefox Vollbild"
+    state_topic: "iotlink/workgroup/computer/process-monitor/processes/firefox/sensor"
+    value_template: '{{ value_json.FullScreen }}'    
+    payload_on: "True"
+    payload_off: "False"
+    qos: 1
+
+  - platform: template
+    sensors:
+      firefox_youtube:
+        friendly_name: "Firefox Youtube"        
+        value_template: "{{ True if 'YouTube - Mozilla Firefox' in states('sensor.firefox_status') and is_state('binary_sensor.firefox_vollbild', 'on') else False }}"
+
 switch:
   - platform: template
     switches:

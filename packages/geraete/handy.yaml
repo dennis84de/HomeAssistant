@@ -220,6 +220,9 @@ automation:
         entity_id: media_player.soundbar
         state: 'on'
       - condition: state
+        entity_id: binary_sensor.firefox_youtube
+        state: 'off'
+      - condition: state
         entity_id: input_boolean.nicht_stoeren
         state: 'off'      
       - condition: state
@@ -301,6 +304,58 @@ automation:
         data:
           entity_id: media_player.kuche, media_player.badezimmer, media_player.wohnzimmer, media_player.schlafzimmer, media_player.arbeitszimmer, media_player.flur, media_player.balkon
           is_volume_muted: false
+          
+  - alias: 'Handy aktiv - Youtube pausieren'
+    trigger:
+      - platform: state
+        entity_id: sensor.handy
+        to: 'incoming'
+      - platform: state
+        entity_id: sensor.handy
+        to: 'outgoing'
+    condition:
+      - condition: state
+        entity_id: binary_sensor.firefox_youtube
+        state: 'on'
+      - condition: state
+        entity_id: input_boolean.youtube_pausiert
+        state: 'off'        
+      - condition: state
+        entity_id: input_boolean.nicht_stoeren
+        state: 'off'
+      - condition: state
+        entity_id: binary_sensor.besuch
+        state: 'off'        
+    action:
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.youtube_pausiert
+      - service: mqtt.publish
+        data_template:
+          topic: "iotlink/workgroup/computer/commands/send-keys"
+          payload: '[" "]'
+
+  - alias: 'Handy inaktiv - Youtube wiedergeben'
+    trigger:
+      - platform: state
+        entity_id: sensor.handy
+        to: 'idle'
+    condition:
+      - condition: state
+        entity_id: binary_sensor.firefox_youtube
+        state: 'on'
+      - condition: state
+        entity_id: input_boolean.youtube_pausiert
+        state: 'on'
+      - condition: state
+        entity_id: sensor.telefon
+        state: 'idle'
+    action:
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.youtube_pausiert      
+      - service: mqtt.publish
+        data_template:
+          topic: "iotlink/workgroup/computer/commands/send-keys"
+          payload: '[" "]'
 
   - alias: "Handy - Eingehender Anruf - TTS"
     trigger:
