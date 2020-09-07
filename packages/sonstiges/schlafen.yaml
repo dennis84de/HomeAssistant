@@ -126,24 +126,40 @@ script:
         entity_id: switch.watchtv_wohnzimmer, switch.monitor
       - service: light.turn_off
         entity_id: light.strahler, light.balkon_licht
-      - service: input_boolean.turn_on
-        entity_id: input_boolean.timer_schlafzimmer_aktiv
+      - choose:
+          - conditions:
+              - condition: state
+                entity_id: input_boolean.computer_ausschalten
+                state: 'on'
+            sequence:
+              - service: switch.turn_off
+                entity_id: switch.pc    
+      - choose:
+          - conditions:
+              - condition: state
+                entity_id: input_boolean.schlafen_fernseher_einschalten
+                state: 'on'
+            sequence:
+              - service: switch.turn_on
+                entity_id: switch.watchtv_schlafzimmer   
+              - service: input_boolean.turn_on
+                entity_id: input_boolean.timer_schlafzimmer_aktiv                
+      - choose:
+          - conditions:
+              - condition: state
+                entity_id: binary_sensor.fenster_schlafzimmer
+                state: 'off'
+            sequence:
+              - service: light.turn_on
+                entity_id: light.kleiderschrank       
+        default:
+              - service: light.turn_on
+                entity_id: light.bett
       - delay: '00:05:00'
       - service: switch.turn_off
         entity_id: switch.badezimmer_radio
       - service: light.turn_off
-        entity_id: light.couch, light.sideboard, light.schrank
-      - condition: state
-        entity_id: input_boolean.computer_ausschalten
-        state: 'on'
-      - service: switch.turn_off
-        entity_id: switch.pc
-
-  schlafen_gehen_fernseher:
-    alias: Schlafen gehen - Fernseher einschalten
-    sequence:
-      - service: switch.turn_on
-        entity_id: switch.watchtv_schlafzimmer
+        entity_id: light.couch, light.sideboard, light.schrank                
 
   sleeptimer_turn_off_tv:
     alias: Sleeptimer aktivieren
@@ -216,33 +232,6 @@ automation:
           echo: "wohnzimmer"
           message: "Alle Geräte werden jetzt ausgeschaltet. Gute Nacht."
       - service: script.schlafen_gehen
-
-  - alias: "Schlafen gehen - Licht einschalten"
-    trigger:
-      - platform: event
-        event_type: timer.finished
-        event_data:
-          entity_id: timer.schlafen_einschalten
-    condition:
-      - condition: state
-        entity_id: binary_sensor.fenster_schlafzimmer
-        state: 'off'          
-    action:
-      - service: light.turn_on
-        entity_id: light.kleiderschrank
-      
-  - alias: "Schlafen gehen - Fernseher einschalten"
-    trigger:
-      - platform: event
-        event_type: timer.finished
-        event_data:
-          entity_id: timer.schlafen_einschalten
-    condition:
-      - condition: state
-        entity_id: input_boolean.schlafen_fernseher_einschalten
-        state: 'on'
-    action:
-      - service: script.schlafen_gehen_fernseher
 
   - alias: "Schlafen gehen - Kein Wecker gestellt"
     trigger:
@@ -327,39 +316,6 @@ automation:
           duration: >
             {{ states('input_select.timer_schlafzimmer_dauer')  | int * 60 | int }}
 
-  - alias: 'Sleeptimer endet'
-    trigger:
-      - platform: state
-        entity_id: sensor.timer_schlafzimmer_zeit        
-    condition:
-      - condition: state
-        entity_id: media_player.kodi_schlafzimmer
-        state: 'playing'
-      - condition: template
-        value_template: >-        
-          {% set timer = states('sensor.timer_schlafzimmer_zeit') %}
-          
-          {% if timer == 0 or timer > 5 %}
-            False
-          {% else %}
-            True
-          {% endif %}
-    action:
-      - service: notify.kodi_schlafzimmer
-        data:
-          title: 'Sleeptimer'
-          message: >-
-            {% set restzeit = states('sensor.timer_schlafzimmer_zeit') | default(0) | int %}
-
-            {% if restzeit > 1 %}
-              Der Sleeptimer endet in {{ restzeit }} Minuten.
-            {% else %}
-              Der Sleeptimer endet in weniger als einer Minute.
-            {% endif %}
-          data:
-            displaytime: 10000
-            icon: "info"
-
   - alias: 'Sleeptimer geändert'
     trigger:
       platform: state
@@ -373,7 +329,7 @@ automation:
       - service: input_boolean.turn_on
         entity_id: input_boolean.timer_schlafzimmer_aktiv
 
-  - alias: 'Sleeptimer aktiviert'
+  - alias: 'Sleeptimer endet'
     trigger:
       platform: event
       event_type: timer.finished
@@ -401,7 +357,13 @@ automation:
       - platform: state        
         entity_id: sensor.schalter_schlafzimmer
         to: '2'   
+      - platform: state        
+        entity_id: binary_sensor.im_bett
+        to: 'on'        
     condition:
+      - condition: state
+        entity_id: binary_sensor.schlafen_aktiv
+        state: 'on'      
       - condition: or
         conditions:
         - condition: state
@@ -421,11 +383,11 @@ automation:
         to: 'playing'      
     condition:
       - condition: state
-        entity_id: timer.sleeptimer
-        state: 'active'  
+        entity_id: binary_sensor.schlafen_aktiv
+        state: 'on'  
     action:
       - service: light.turn_off
-        entity_id: light.bett, light.kleiderschrank, light.sideboard, light.schrank, light.badezimmerschrank, light.schreibtisch, light.kuche_regal, light.arbeitszimmer_lampe, light.sportzimmer_regal
+        entity_id: light.bett, light.kleiderschrank, light.sideboard, light.schrank, light.badezimmerschrank, light.schreibtisch, light.kuche_regal, light.arbeitszimmer_lampe, light.sportzimmer_regal, light.strahler, light.couch
 
   - alias: "Schlafzimmer - Tablet - Wiedergabe pausiert"
     trigger:
