@@ -117,8 +117,7 @@ entity_controller:
   bewegung_sportzimmer:
     friendly_name: "Bewegung Sportzimmer"
     sensor: binary_sensor.bewegungsmelder_sportzimmer
-    entities:      
-      - light.sportzimmer_regal
+    entities: light.sportzimmer_regal
     delay: 120
     overrides:
       - binary_sensor.sonne_tagsueber
@@ -131,15 +130,7 @@ entity_controller:
     sensor: binary_sensor.bewegungsmelder_badezimmer
     entity: light.badezimmerschrank
     sensor_type_duration: True
-    delay: 120
-    service_data:
-      brightness: 100
-    night_mode:
-      delay: 120
-      service_data:
-        brightness: 80
-      start_time: '23:00:00'
-      end_time: '05:00:00'      
+    delay: 120  
     overrides:
       - binary_sensor.sonne_tagsueber
       - binary_sensor.bewegungsmelder_inaktiv_unterwegs      
@@ -162,14 +153,6 @@ entity_controller:
     sensor: binary_sensor.bewegungsmelder_flur_vorne
     entity: light.sideboard
     delay: 120
-    service_data:
-      brightness: 100
-    night_mode:
-      delay: 120
-      service_data:
-        brightness: 80
-      start_time: '23:00:00'
-      end_time: '05:00:00'      
     overrides:
       - binary_sensor.sonne_tagsueber
       - binary_sensor.bewegungsmelder_inaktiv_unterwegs
@@ -180,15 +163,7 @@ entity_controller:
     friendly_name: "Bewegung Flur hinten"
     sensor: binary_sensor.bewegungsmelder_flur_hinten
     entity: light.schrank
-    delay: 120
-    service_data:
-      brightness: 100
-    night_mode:
-      delay: 120
-      service_data:
-        brightness: 60
-      start_time: '23:00:00'
-      end_time: '05:00:00'      
+    delay: 120  
     overrides:
       - binary_sensor.sonne_tagsueber
       - binary_sensor.bewegungsmelder_inaktiv_unterwegs
@@ -199,15 +174,7 @@ entity_controller:
     friendly_name: "Bewegung Küchenregal"
     sensor: binary_sensor.bewegungsmelder_kueche
     entity: light.kuche_regal
-    delay: 120
-    service_data:
-      brightness: 100
-    night_mode:
-      delay: 120
-      service_data:
-        brightness: 70
-      start_time: '23:00:00'
-      end_time: '05:00:00'      
+    delay: 120   
     overrides:
       - binary_sensor.sonne_tagsueber
       - binary_sensor.kuechelregal_inaktiv
@@ -263,8 +230,7 @@ entity_controller:
   bewegung_wohnzimmer:
     friendly_name: "Bewegung Wohnzimmer"
     sensor: binary_sensor.bewegungsmelder_wohnzimmer
-    entities:
-      - light.couch
+    entities: light.couch
     delay: 60
     overrides:
       - binary_sensor.sonne_tagsueber
