@@ -13,7 +13,13 @@ import logging
 from datetime import datetime
 
 import voluptuous as vol
-from homeassistant.components.binary_sensor import BinarySensorEntity
+
+try:
+    from homeassistant.components.binary_sensor import BinarySensorEntity
+except ImportError:
+    from homeassistant.components.binary_sensor import (
+        BinarySensorDevice as BinarySensorEntity,
+    )
 from homeassistant.components.weather import (
     ATTR_FORECAST_PRECIPITATION,
     ATTR_FORECAST_TIME,
@@ -31,9 +37,11 @@ from homeassistant.helpers.event import async_track_state_change
 from homeassistant.util import dt as dt_util
 from homeassistant.util.temperature import convert as convert_temperature
 
-from .const import (
+from . import (
     VERSION,
     ISSUE_URL,
+)
+from .const import (
     CONF_WEATHER,
     DEFAULT_NAME,
     DEFAULT_DAYS,
