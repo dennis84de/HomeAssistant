@@ -131,6 +131,8 @@ cards:
       - entity: zigate.kuehlschranktuer
       - entity: zigate.bett
       - entity: zigate.cube
+      - entity: zigate.helligkeit_wohnzimmer
+        name: Helligkeit
       
   - type: entities
     title: Schalter

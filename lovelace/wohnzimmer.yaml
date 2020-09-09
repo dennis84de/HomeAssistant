@@ -106,7 +106,9 @@ cards:
       - entity: binary_sensor.bewegungsmelder_wohnzimmer
         name: Bewegungsmelder
       - entity: sensor.cube_status
-      - entity: sensor.wohnzimmer_helligkeit
+        name: Cube
+      - entity: sensor.helligkeit_wohnzimmer
+        name: Helligkeit
 
   - type: entities
     title: Balkon
