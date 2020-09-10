@@ -107,6 +107,9 @@ entity_controller:
       - light.schreibtisch
       - light.arbeitszimmer_lampe
     delay: 120
+    grace_period: 15
+    behaviours:
+      on_enter_overidden: off
     overrides:
       - device_tracker.pc_arbeit
       - binary_sensor.sonne_tagsueber      
@@ -119,6 +122,8 @@ entity_controller:
     sensor: binary_sensor.bewegungsmelder_sportzimmer
     entities: light.sportzimmer_regal
     delay: 120
+    behaviours:
+      on_enter_overidden: off
     overrides:
       - binary_sensor.sonne_tagsueber
       - binary_sensor.bewegungsmelder_inaktiv_unterwegs  
@@ -130,7 +135,9 @@ entity_controller:
     sensor: binary_sensor.bewegungsmelder_badezimmer
     entity: light.badezimmerschrank
     sensor_type_duration: True
-    delay: 120  
+    delay: 120
+    behaviours:
+      on_enter_overidden: off
     overrides:
       - binary_sensor.sonne_tagsueber
       - binary_sensor.bewegungsmelder_inaktiv_unterwegs      
@@ -141,7 +148,9 @@ entity_controller:
     friendly_name: "Bewegung Balkon"
     sensor: binary_sensor.bewegungsmelder_balkon
     entity: light.balkon_licht
-    delay: 1200
+    delay: 1200    
+    behaviours:
+      on_enter_overidden: off
     overrides:  
       - binary_sensor.sonne_tagsueber
       - binary_sensor.bewegungsmelder_inaktiv_unterwegs
@@ -152,7 +161,9 @@ entity_controller:
     friendly_name: "Bewegung Flur vorne"
     sensor: binary_sensor.bewegungsmelder_flur_vorne
     entity: light.flur_vorne
-    delay: 120
+    delay: 120    
+    behaviours:
+      on_enter_overidden: off
     overrides:
       - binary_sensor.sonne_tagsueber
       - binary_sensor.bewegungsmelder_inaktiv_unterwegs
@@ -164,6 +175,9 @@ entity_controller:
     sensor: binary_sensor.bewegungsmelder_flur_hinten
     entity: light.flur_hinten
     delay: 120  
+    grace_period: 15
+    behaviours:
+      on_enter_overidden: off
     overrides:
       - binary_sensor.sonne_tagsueber
       - binary_sensor.bewegungsmelder_inaktiv_unterwegs
@@ -174,7 +188,8 @@ entity_controller:
     friendly_name: "Bewegung Küchenregal"
     sensor: binary_sensor.bewegungsmelder_kueche
     entity: light.kuche_regal
-    delay: 120   
+    delay: 120     
+    on_enter_overidden: "off"
     overrides:
       - binary_sensor.sonne_tagsueber
       - binary_sensor.kuechelregal_inaktiv
@@ -186,7 +201,9 @@ entity_controller:
     friendly_name: "Bewegung Küchenschrank"
     sensor: binary_sensor.bewegungsmelder_kueche
     entity: light.kuche_schrank
-    delay: 120    
+    delay: 120
+    behaviours:
+      on_enter_overidden: off
     overrides:            
       - binary_sensor.sonne_tagsueber
       - binary_sensor.kuechenschrank_inaktiv
@@ -198,7 +215,7 @@ entity_controller:
     friendly_name: "Bewegung Schlafzimmer Bett"
     sensor: binary_sensor.bewegungsmelder_schlafzimmer
     entity: light.bett
-    delay: 120
+    delay: 120    
     service_data:
       brightness: 100
     night_mode:
@@ -206,7 +223,9 @@ entity_controller:
       service_data:
         brightness: 60
       start_time: '23:00:00'
-      end_time: '05:00:00'      
+      end_time: '05:00:00'     
+    behaviours:
+      on_enter_overidden: off
     overrides:
       - binary_sensor.sonne_tagsueber
       - light.kleiderschrank
@@ -218,7 +237,9 @@ entity_controller:
     friendly_name: "Bewegung Schlafzimmer Kleiderschrank"
     sensor: binary_sensor.bewegungsmelder_schlafzimmer
     entity: light.kleiderschrank
-    delay: 120  
+    delay: 120 
+    behaviours:
+      on_enter_overidden: off
     overrides:
       - binary_sensor.schlafen_aktiv
       - binary_sensor.sonne_tagsueber
@@ -232,6 +253,8 @@ entity_controller:
     sensor: binary_sensor.bewegungsmelder_wohnzimmer
     entities: light.couch
     delay: 60
+    behaviours:
+      on_enter_overidden: "off"
     overrides:
       - binary_sensor.sonne_tagsueber
       - binary_sensor.bewegungsmelder_inaktiv_unterwegs
@@ -259,45 +282,4 @@ automation:
       - service: input_select.select_option
         data_template:
           entity_id: input_select.letzte_bewegung          
-          option: '{{ trigger.to_state.attributes.friendly_name }}'
-          
-  - alias: 'Sonne scheint - Licht ausschalten'
-    trigger:
-      - platform: state
-        entity_id:
-          - binary_sensor.sonne_tagsueber
-        to: 'on'
-    condition:
-      - condition: state
-        entity_id: binary_sensor.bewegungsmelder_aktiv
-        state: 'on'      
-    action:
-      - service: light.turn_off
-        entity_id:
-          - light.schreibtisch
-          - light.arbeitszimmer_lampe    
-          - light.badezimmerschrank
-          - light.balkon_licht
-          - light.flur_vorne
-          - light.flur_hinten
-          - light.kuche_regal
-          - light.kuche_schrank
-          - light.bett
-          - light.kleiderschrank
-          - light.couch
-          - light.strahler
-          
-  - alias: 'Fenster Schlafzimmer - Licht ausschalten'
-    trigger:
-      - platform: state
-        entity_id:
-          - binary_sensor.fenster_schlafzimmer
-        to: 'on'
-    condition:
-      - condition: state
-        entity_id: light.kleiderschrank
-        state: 'on'      
-    action:
-      - service: light.turn_off
-        entity_id:
-          - light.kleiderschrank          
+          option: '{{ trigger.to_state.attributes.friendly_name }}'           
