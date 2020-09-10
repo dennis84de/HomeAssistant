@@ -125,7 +125,7 @@ script:
         entity_id: input_boolean.timer_schlafzimmer_aktiv
 
 automation:       
-  - alias: "Wiedergabe Schlafzimmer - Schalter"
+  - alias: "Schlafzimmer Kodi - Wiedergabe"
     trigger:
       - platform: state        
         entity_id: binary_sensor.schalter_schlafzimmer

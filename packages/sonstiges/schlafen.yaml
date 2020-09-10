@@ -151,15 +151,13 @@ script:
                 state: 'off'
             sequence:
               - service: light.turn_on
-                entity_id: light.kleiderschrank       
+                entity_id: light.kleiderschrank
         default:
               - service: light.turn_on
                 entity_id: light.bett
       - delay: '00:05:00'
       - service: switch.turn_off
-        entity_id: switch.badezimmer_radio
-      - service: light.turn_off
-        entity_id: light.couch, light.flur_vorne, light.flur_hinten                
+        entity_id: switch.badezimmer_radio             
 
   sleeptimer_turn_off_tv:
     alias: Sleeptimer aktivieren
@@ -349,7 +347,7 @@ automation:
       - service: timer.cancel
         entity_id: timer.sleeptimer
         
-  - alias: "Schlafzimmer - Musik Tablet - Schalter"
+  - alias: "Schlafzimmer Tablet - Wiedergabe"
     trigger:
       - platform: state        
         entity_id: binary_sensor.schalter_schlafzimmer

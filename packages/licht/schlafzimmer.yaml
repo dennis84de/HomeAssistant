@@ -20,7 +20,7 @@ input_boolean:
     icon: mdi:sync-off
 
 automation:
-  - alias: "Licht Schlafzimmer - ausschalten"
+  - alias: "Schlafzimmer Bett - Licht ausschalten"
     trigger:
       - platform: state        
         entity_id: binary_sensor.schalter_schlafzimmer
@@ -57,6 +57,21 @@ automation:
     action:
       - service: light.turn_off
         entity_id: light.bett, light.kleiderschrank, light.flur_vorne, light.flur_hinten, light.badezimmerschrank, light.schreibtisch, light.kuche_regal, light.arbeitszimmer_lampe, light.sportzimmer_regal, light.couch, light.strahler
+
+  - alias: 'Schlafzimmer Schrank - Licht ausschalten'
+    trigger:
+      - platform: state
+        entity_id:
+          - binary_sensor.fenster_schlafzimmer
+        to: 'on'
+    condition:
+      - condition: state
+        entity_id: light.kleiderschrank
+        state: 'on'      
+    action:
+      - service: light.turn_off
+        entity_id:
+          - light.kleiderschrank       
 
 homeassistant:
   customize:
