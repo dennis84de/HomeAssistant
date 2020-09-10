@@ -107,7 +107,7 @@ entity_controller:
       - light.schreibtisch
       - light.arbeitszimmer_lampe
     delay: 120
-    grace_period: 15
+    grace_period: 30
     behaviours:
       on_enter_overidden: off
     overrides:
@@ -148,7 +148,8 @@ entity_controller:
     friendly_name: "Bewegung Balkon"
     sensor: binary_sensor.bewegungsmelder_balkon
     entity: light.balkon_licht
-    delay: 1200    
+    delay: 1200
+    grace_period: 30
     behaviours:
       on_enter_overidden: off
     overrides:  
@@ -175,7 +176,7 @@ entity_controller:
     sensor: binary_sensor.bewegungsmelder_flur_hinten
     entity: light.flur_hinten
     delay: 120  
-    grace_period: 15
+    grace_period: 30
     behaviours:
       on_enter_overidden: off
     overrides:
