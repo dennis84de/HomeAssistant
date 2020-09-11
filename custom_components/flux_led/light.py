@@ -1,6 +1,10 @@
 """Support for Flux lights."""
 import logging
 import random
+###
+# Added for MagicLight hack
+import time
+   
 
 from flux_led import BulbScanner, WifiLedBulb
 import voluptuous as vol
@@ -185,9 +189,16 @@ class FluxLight(LightEntity):
         self._ipaddr = device["ipaddr"]
         self._protocol = device[CONF_PROTOCOL]
         self._mode = device[ATTR_MODE]
+        if self._mode == MODE_WHITE:
+            self._mode = MODE_RGBW
+        elif self._mode == MODE_RGBW:
+            self._mode = MODE_RGB
         self._custom_effect = device[CONF_CUSTOM_EFFECT]
         self._bulb = None
         self._error_reported = False
+        self._old_brightness = 255
+        self._is_on = None
+        self._time = -1
 
     def _connect(self):
         """Connect to Flux light."""
@@ -221,7 +232,15 @@ class FluxLight(LightEntity):
     @property
     def is_on(self):
         """Return true if device is on."""
-        return self._bulb.isOn()
+        if time.time() - self._time < 1:
+            is_on = self._is_on and self._old_brightness > 0
+            if is_on:
+                self._bulb.turnOn()
+            else:
+                self._bulb.turnOff()
+            return is_on
+        else:
+            return self._bulb.isOn() and self.brightness > 0
 
     @property
     def brightness(self):
@@ -275,9 +294,6 @@ class FluxLight(LightEntity):
         return None
 
     def turn_on(self, **kwargs):
-        """Turn the specified or all lights on."""
-        if not self.is_on:
-            self._bulb.turnOn()
 
         hs_color = kwargs.get(ATTR_HS_COLOR)
 
@@ -331,8 +347,10 @@ class FluxLight(LightEntity):
 
         # Preserve current brightness on color/white level change
         if brightness is None:
-            brightness = self.brightness
-
+            brightness = self._old_brightness
+            
+        self._old_brightness = brightness
+            
         # Preserve color on brightness/white level change
         if rgb is None:
             rgb = self._bulb.getRgb()
@@ -352,9 +370,27 @@ class FluxLight(LightEntity):
         else:
             self._bulb.setRgb(*tuple(rgb), brightness=brightness)
 
+        self._is_on = True
+        self._time = time.time()
+
     def turn_off(self, **kwargs):
-        """Turn the specified or all lights off."""
-        self._bulb.turnOff()
+        
+        rgb = self._bulb.getRgb()
+        
+        # handle W only mode (use brightness instead of white value)
+        if self._mode == MODE_WHITE:
+            self._bulb.setRgbw(0, 0, 0, w=0)
+        
+        # handle RGBW mode
+        elif self._mode == MODE_RGBW:
+            self._bulb.setRgbw(*tuple(rgb), w=0, brightness=0)
+            
+        # handle RGB mode
+        else:
+            self._bulb.setRgb(*tuple(rgb), brightness=0)
+        
+        self._is_on = False
+        self._time = time.time()
 
     def update(self):
         """Synchronize state with bulb."""
