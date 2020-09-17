@@ -136,6 +136,8 @@ automation:
       - platform: state        
         entity_id: binary_sensor.im_bett
         to: 'on'
+        for:
+          seconds: 1        
     condition:
       - condition: or
         conditions:
