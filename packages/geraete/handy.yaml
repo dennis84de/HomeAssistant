@@ -29,19 +29,6 @@ proximity:
       - device_tracker.handymqtt
       - device_tracker.handygps
     tolerance: 50
-    
-binary_sensor:
-  - platform: template
-    sensors:
-      zu_hause:
-        friendly_name: "zu Hause"
-        device_class: presence
-        value_template: >-
-          {% if is_state('person.dennis', 'home') or is_state('device_tracker.handymqtt', 'home') %}
-            true
-          {% else %}
-            false
-          {% endif %}
        
 sensor:
   - platform: places

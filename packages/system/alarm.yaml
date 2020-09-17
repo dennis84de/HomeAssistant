@@ -227,6 +227,12 @@ script:
            topic: 'location/handy'
            payload: 'not_home'
            retain: true
+      - service: device_tracker.see
+        data_template:
+          dev_id: handygps
+          location_name: 'not_home'
+          gps: ["{{ state_attr('zone.home', 'latitude') }}", "{{ state_attr('zone.home', 'longitude') }}"]
+                   
       - choose:
           - conditions:
               - condition: state
