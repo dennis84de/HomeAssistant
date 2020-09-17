@@ -14,19 +14,6 @@ cards:
       - entity: sensor.letzter_neustart
 
   - type: entities
-    title: Synology Diskstation
-    show_header_toggle: false
-    entities:     
-      - entity: sensor.diskstation_cpu_load_total
-      - entity: sensor.diskstation_memory_usage_real
-      - entity: sensor.diskstation_volume_1_volume_used
-      - entity: sensor.diskstation_volume_1_status
-      - entity: sensor.diskstation_network_up
-      - entity: sensor.diskstation_network_down
-      - entity: binary_sensor.diskstation
-        name: Verfügbarkeit
-
-  - type: entities
     title: Computer
     show_header_toggle: false
     entities:
@@ -45,6 +32,19 @@ cards:
       - entity: sensor.hardware_luftfeuchtigkeit
       - entity: sensor.hardware_luftdruck
 
+  - type: entities
+    title: Synology Diskstation
+    show_header_toggle: false
+    entities:     
+      - entity: sensor.diskstation_cpu_load_total
+      - entity: sensor.diskstation_memory_usage_real
+      - entity: sensor.diskstation_volume_1_volume_used
+      - entity: sensor.diskstation_volume_1_status
+      - entity: sensor.diskstation_network_up
+      - entity: sensor.diskstation_network_down
+      - entity: binary_sensor.diskstation
+        name: Verfügbarkeit
+        
   - type: entities
     title: Z-Wave
     show_header_toggle: false

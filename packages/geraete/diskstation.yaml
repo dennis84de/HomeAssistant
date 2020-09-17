@@ -1,8 +1,3 @@
-synology_dsm:
-  host: !secret synology_host        
-  username: !secret synology_username
-  password: !secret synology_password
-
 homeassistant:
   customize:
     binary_sensor.diskstation:
