@@ -23,7 +23,7 @@ sensor:
   - platform: mqtt
     name: "Firefox Status"
     state_topic: "iotlink/workgroup/computer/process-monitor/processes/firefox/sensor"
-    value_template: "{{ '-' if value_json == None else value_json.MainWindowTitle }}"
+    value_template: "{{ '-' if value_json == 'ON' else value_json.MainWindowTitle }}"
     qos: 1
     json_attributes_topic: "iotlink/workgroup/computer/process-monitor/processes/firefox/sensor"
     json_attributes_template: "{{ value_json | tojson }}"
@@ -32,7 +32,7 @@ binary_sensor:
   - platform: mqtt
     name: "Firefox Vollbild"
     state_topic: "iotlink/workgroup/computer/process-monitor/processes/firefox/sensor"
-    value_template: '{{ value_json.FullScreen }}'    
+    value_template: "{{ 'off' if value_json == 'ON' else value_json.FullScreen }}"   
     payload_on: "True"
     payload_off: "False"
     qos: 1
