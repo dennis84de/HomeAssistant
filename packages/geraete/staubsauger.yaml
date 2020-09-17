@@ -27,10 +27,9 @@ binary_sensor:
     sensors:
       reinigung_heute:
         friendly_name: Reinigung heute        
-        entity_id:
-          - sensor.time
         icon_template: mdi:calendar
         value_template: >-
+          {% set time = states('sensor.time') %}
           {% set arbeitstag = is_state('binary_sensor.arbeitstag', 'on') %}
           {% set wochentag = now().isoweekday() | int %}          
           {% set heute = as_timestamp(now()) | timestamp_custom("%Y-%m-%d 00:00:00", True) %}

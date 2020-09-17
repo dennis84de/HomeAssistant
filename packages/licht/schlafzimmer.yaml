@@ -11,7 +11,7 @@ light:
     
   - platform: switch
     name: Fernseher Schlafzimmer
-    entity_id: switch.licht_fernseher_schlafzimmer
+    entity_id: switch.schlafzimmer_fernseher_licht
 
 input_boolean:
   bewegungsmelder_schlafzimmer_deaktiviert:

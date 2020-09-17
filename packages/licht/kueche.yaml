@@ -26,19 +26,17 @@ binary_sensor:
   - platform: template
     sensors:
       kuechelregal_inaktiv:
-        friendly_name: "Küchenregal inaktiv" 
-        entity_id:
-          - sensor.time        
+        friendly_name: "Küchenregal inaktiv"   
         value_template: >-
+          {% set time = states('sensor.time') %}
           {% set hour = now().strftime("%H") | int %}
           
           {{ True if (hour >= 7 and hour <= 20 ) else False }}
           
       kuechenschrank_inaktiv:
-        friendly_name: "Küchenschrank inaktiv"
-        entity_id:
-          - sensor.time        
+        friendly_name: "Küchenschrank inaktiv"    
         value_template: >-
+          {% set time = states('sensor.time') %}
           {% set hour = now().strftime("%H") | int %}
           
           {{ True if ((hour > 20 and hour <= 23 ) or (hour >= 0 and hour < 7 )) else False }}

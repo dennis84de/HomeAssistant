@@ -59,8 +59,6 @@ binary_sensor:
       home_office:
         friendly_name: Home Office
         icon_template: mdi:home-city
-        entity_id:
-          - sensor.time
         value_template: >-
           {% set istHomeOffice = is_state('input_boolean.home_office', 'on') %}
           {% set istArbeitstag = is_state('binary_sensor.arbeitstag', 'on') %}

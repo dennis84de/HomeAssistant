@@ -17,7 +17,7 @@ logbook:
   exclude:
     entities:
       - automation.letzte_bewegung
-      - switch.licht_fernseher_schlafzimmer
+      - switch.schlafzimmer_fernseher_licht
       - switch.sportzimmer_regal
       - switch.couch
       - switch.strahler
@@ -50,8 +50,8 @@ history:
       - switch.echo_wohnzimmer_do_not_disturb_switch
       - switch.echo_wohnzimmer_repeat_switch
       - switch.echo_wohnzimmer_shuffle_switch
-      - switch.fernseher_schlafzimmer_remote
-      - switch.licht_fernseher_schlafzimmer
+      - switch.schlafzimmer_fernseher_remote
+      - switch.schlafzimmer_fernseher_licht
       - switch.sportzimmer_regal
       - switch.couch
       - switch.strahler

@@ -4,10 +4,6 @@ media_player:
     name: Fire TV Badezimmer
     adbkey: '/home/homeassistant/.homeassistant/adbkey'
     
-  - platform: kodi
-    host: 192.168.2.33
-    name: Kodi Badezimmer
-    
 switch:
   - platform: template
     switches:

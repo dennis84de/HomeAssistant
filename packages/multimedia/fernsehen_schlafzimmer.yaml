@@ -4,28 +4,14 @@ media_player:
     name: Fire TV Schlafzimmer
     adbkey: '/home/homeassistant/.homeassistant/adbkey'
 
-  - platform: kodi
-    host: 192.168.2.35
-    name: Kodi Schlafzimmer
-    
-notify:
-  - platform: kodi
-    name: Kodi Schlafzimmer
-    host: 192.168.2.35
-
-switch:
+switch: 
   - platform: broadlink
-    host: 192.168.2.28
     mac: 'B4:43:0D:F9:2F:E5'
-    type: rm_mini
-    friendly_name: Broadlink Schlafzimmer
     switches:
-      fernseher_schlafzimmer_remote:
-        friendly_name: Fernseher Schlafzimmer Remote
+      - name: Schlafzimmer Fernseher Remote
         command_on: 'JgAYAZaSFDYUNRU1FBEUERQRFBAVEBQ2FDYUNRQRFBEUERQQFRAUERQ2FBEUEBUQFBEUERQRFDUUERQ2FDUVNRQ2FDUUNhQABgGWkhQ2FDUUNhQRFBEUEBUQFBEUNhQ1FDYUERQRFBAUERQRFBEUNRUQFBEUERQRFBAVEBQ2FBEUNRU1FDYUNRQ2FDUVAAYBlpIUNRU1FDYUERQQFRAUERQRFDUVNRQ2FBEUEBQRFBEUERQRFDUUERQRFBEUEBUQFRAUNhQRFDUUNhQ1FTUUNhQ1FQAGAJeSFDUUNhQ1FRAVEBQRFBEUERQ1FTUUNhQQFRAUERQRFBEUERQ1FBEUERQRFBAVEBQRFDYUEBU1FDYUNRQ2FDUVNRQADQU=='
         command_off: 'JgAYAZaSFDYUNRU1FBEUERQRFBAVEBQ2FDYUNRQRFBEUERQQFRAUERQ2FBEUEBUQFBEUERQRFDUUERQ2FDUVNRQ2FDUUNhQABgGWkhQ2FDUUNhQRFBEUEBUQFBEUNhQ1FDYUERQRFBAUERQRFBEUNRUQFBEUERQRFBAVEBQ2FBEUNRU1FDYUNRQ2FDUVAAYBlpIUNRU1FDYUERQQFRAUERQRFDUVNRQ2FBEUEBQRFBEUERQRFDUUERQRFBEUEBUQFRAUNhQRFDUUNhQ1FTUUNhQ1FQAGAJeSFDUUNhQ1FRAVEBQRFBEUERQ1FTUUNhQQFRAUERQRFBEUERQ1FBEUERQRFBAVEBQRFDYUEBU1FDYUNRQ2FDUVNRQADQU=='
-      licht_fernseher_schlafzimmer:
-        friendly_name: Fernseher
+      - name: Schlafzimmer Fernseher Licht
         command_on: 'JgBYAAABL5EWDxYQFRAVERUQFREVEBYPFTUVNRY0FjQVNBY0FTUVNRY0FjMWEBUQFhAVEBURFTQWEBURFDUVNRU1FTQUNhQSEwAFIgABLEkUAAxbAAEsSRQADQU=='
         command_off: 'JgBYAAABK5QTEhMTExMSEhMTExITEhMTEzcUNRM3EzcTNxM2EzcTNxMSEzcTEhMTExITEhMTEzcTNhMTEzYTNxM3EzcTNxMSEwAFIgABLUgUAAxbAAEsSBUADQU=='
   
@@ -70,23 +56,20 @@ cover:
         friendly_name: Fernseher Lautstärke
         position_template: 50
         open_cover:
-          service: broadlink.send
-          data:
-            host: 192.168.2.28
-            packet:
-              - "JgBeAZOVEzcRORE4EhMRFBEUERMSExI4ETgSOBITERQRFBETEhMSOBE4EjgRFBEUERQRExITEhMRFBEUETgSOBE5ETgROREABgOUlBI4ETkROBEUERQRFBETEhMSOBE4EjgRFBEUERQRExITEjgROBI4ERQRFBETEhMSExEUERQRFBE4EjgROBI4ETkRAAYDlJQSOBE5ETgSExEUERQRExITEjgRORE4EhMRFBEUERMSExI4ETkROBITERQRFBETEhMSExITERQROBI4ETkROBI4EQAGA5SUEjgRORE4EhMRFBEUERQRExI4ETkROBITERQRFBEUERMSOBE5ETgSExEUERQRFBETEhMSExEUETgSOBE5ETgSOBEABgOUlBI4ETkROBITERQRFBETEhMSOBE4EjgRFBEUERQRExITEjgROBI4ERQRFBETEhMSExEUERQRFBE4EjgROBI4ETgSAA0FAAAAAAAAAAAAAA=="
+          - service: remote.send_command
+            data:
+              entity_id: remote.broadlink_schlafzimmer_remote
+              command: "b64:JgBeAZOVEzcRORE4EhMRFBEUERMSExI4ETgSOBITERQRFBETEhMSOBE4EjgRFBEUERQRExITEhMRFBEUETgSOBE5ETgROREABgOUlBI4ETkROBEUERQRFBETEhMSOBE4EjgRFBEUERQRExITEjgROBI4ERQRFBETEhMSExEUERQRFBE4EjgROBI4ETkRAAYDlJQSOBE5ETgSExEUERQRExITEjgRORE4EhMRFBEUERMSExI4ETkROBITERQRFBETEhMSExITERQROBI4ETkROBI4EQAGA5SUEjgRORE4EhMRFBEUERQRExI4ETkROBITERQRFBEUERMSOBE5ETgSExEUERQRFBETEhMSExEUETgSOBE5ETgSOBEABgOUlBI4ETkROBITERQRFBETEhMSOBE4EjgRFBEUERQRExITEjgROBI4ERQRFBETEhMSExEUERQRFBE4EjgROBI4ETgSAA0FAAAAAAAAAAAAAA=="          
         close_cover:
-          service: broadlink.send
-          data:
-            host: 192.168.2.28
-            packet:
-              - "JgAYAZSUEjgRORE4EhMRFBEUERQRExI4ETkROBITERQRFBETEhMSOBE4EhMSOBEUERQRExITEhMRFBE4EhMSOBE4EjgROREABgOTlRI4ETgSOBITERQRFBETEhMSOBE4EzcRFBEUERQRExITEjgROBITEjgRFBEUERMSExITERQROBITEjgSNxM3EjgRAAYDlJUROBI4ETgSExITERQRFBEUETgSOBE4ExISExEUERQRExI4ETkRExI4ERQRFBETEhMSExEUETgSExI4EjcTNxE5EQAGA5SUEjgRORE4ExIRFBEUERQRExI4ETkSNxITERQRFBEUERMSOBI4EhISOBEUERQRFBETEhMSExE5ERQROBI4ETgSOBEADQU=="
+          - service: remote.send_command
+            data:
+              entity_id: remote.broadlink_schlafzimmer_remote
+              command: "b64:JgAYAZSUEjgRORE4EhMRFBEUERQRExI4ETkROBITERQRFBETEhMSOBE4EhMSOBEUERQRExITEhMRFBE4EhMSOBE4EjgROREABgOTlRI4ETgSOBITERQRFBETEhMSOBE4EzcRFBEUERQRExITEjgROBITEjgRFBEUERMSExITERQROBITEjgSNxM3EjgRAAYDlJUROBI4ETgSExITERQRFBEUETgSOBE4ExISExEUERQRExI4ETkRExI4ERQRFBETEhMSExEUETgSExI4EjcTNxE5EQAGA5SUEjgRORE4ExIRFBEUERQRExI4ETkSNxITERQRFBEUERMSOBI4EhISOBEUERQRFBETEhMSExE5ERQROBI4ETgSOBEADQU=="
         stop_cover:
-          service: broadlink.send
-          data:
-            host: 192.168.2.28
-            packet:
-              - "JgBGAJWUETgSOBI4ERMSExITERQRFBE4EjgRORISEhMSExEUERQROBI4ETgSOBEUERQRExITEhMRFBEUERQROBI4ETgSOBEADQUAAA=="
+          - service: remote.send_command
+            data:
+              entity_id: remote.broadlink_schlafzimmer_remote
+              command: "b64:JgBGAJWUETgSOBI4ERMSExITERQRFBE4EjgRORISEhMSExEUERQROBI4ETgSOBEUERQRExITEhMRFBEUERQROBI4ETgSOBEADQUAAA=="
         icon_template: >-
           {% if is_state('switch.schlafzimmer_fernseher', 'on') %}
             mdi:volume-high
@@ -104,7 +87,7 @@ script:
       - service: light.turn_on
         entity_id: light.fernseher_schlafzimmer
       - service: switch.turn_on
-        entity_id: switch.fernseher_schlafzimmer_remote
+        entity_id: switch.schlafzimmer_fernseher_remote
       - service: media_player.turn_on
         entity_id: media_player.fire_tv_schlafzimmer
       - service: switch.turn_on
@@ -118,7 +101,7 @@ script:
       - service: media_player.turn_off
         entity_id: media_player.fire_tv_schlafzimmer
       - service: switch.turn_off
-        entity_id: switch.schlafzimmer_fernseher, switch.fernseher_schlafzimmer_remote
+        entity_id: switch.schlafzimmer_fernseher, switch.schlafzimmer_fernseher_remote
       - service: light.turn_off
         entity_id: light.fernseher_schlafzimmer
       - service: input_boolean.turn_off

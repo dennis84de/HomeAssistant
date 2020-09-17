@@ -107,9 +107,8 @@ sensor:
             
       heimnetz_offline:
         friendly_name: Geräte offline
-        entity_id:
-          - sensor.time
         icon_template: >
+          {% set time = states('sensor.time') %}
           {% set ns = namespace(found=false) -%}
 
           {%- for entity_id in state_attr('group.heimnetz', 'entity_id') -%}

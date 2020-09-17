@@ -55,23 +55,20 @@ cover:
         friendly_name: "Fernseher Eingang"
         position_template: 50
         open_cover:
-          service: broadlink.send
-          data:
-            host: 192.168.2.45
-            packet:
-              - "JgCMAJWUETgTNxE5ERMSExITERQRFBE4EjgRORETEhMSExEUERQRFBE4EhMRFBE5EhITEhITEjgRFBI3EjgRFBE4EzcROBIABgOTlRE5ETgSOBEUERQSEhITEhMSOBI3EjgRFBEUERMSExEUERQROBMSEhMROREUERMSExI4ERQSNxI4ERQROBI4EjgSAA0FAAAAAAAAAAAAAAAA"
+          - service: remote.send_command
+            data:
+              entity_id: remote.broadlink_wohnzimmer_remote
+              command: "b64:JgCMAJWUETgTNxE5ERMSExITERQRFBE4EjgRORETEhMSExEUERQRFBE4EhMRFBE5EhITEhITEjgRFBI3EjgRFBE4EzcROBIABgOTlRE5ETgSOBEUERQSEhITEhMSOBI3EjgRFBEUERMSExEUERQROBMSEhMROREUERMSExI4ERQSNxI4ERQROBI4EjgSAA0FAAAAAAAAAAAAAAAA"
         close_cover:
-          service: broadlink.send
-          data:
-            host: 192.168.2.45
-            packet:
-              - "JgCMAJWTEjgSOBI3EhMSExEUERQRFBE4EjgROBMSEhMRFBEUERQRExITEhMSExE5ERMSExITETkSNxI4EjgRExI4ETkROBIABgKUlRI3EjgSOBISEhMTEhEUERQSNxM3EjgRFBETEhMRFBEUERQSExETEhMSOBITERMSExI4ETkROBI4ERQSNxI4ETgSAA0FAAAAAAAAAAAAAAAA"
+          - service: remote.send_command
+            data:
+              entity_id: remote.broadlink_wohnzimmer_remote
+              command: "b64:JgCMAJWTEjgSOBI3EhMSExEUERQRFBE4EjgROBMSEhMRFBEUERQRExITEhMSExE5ERMSExITETkSNxI4EjgRExI4ETkROBIABgKUlRI3EjgSOBISEhMTEhEUERQSNxM3EjgRFBETEhMRFBEUERQSExETEhMSOBITERMSExI4ETkROBI4ERQSNxI4ETgSAA0FAAAAAAAAAAAAAAAA"
         stop_cover:
-          service: broadlink.send
-          data:
-            host: 192.168.2.45
-            packet:
-              - "JgCMAJSVETgSOBE5ERQSEhMSEhMRFBE5ETgROREUERMSExITEhMRORETEhMSExITERQRFBETEhMSOBI4ETgSOBI4EjcSOBEABgOUlBI4ETkROBITEhMRFBEUERQROBI4ETgSExITERQSExEUETgSExITERQRFBEUERMTEhITEjgROBI4ETkROBI4ETkSAA0FAAAAAAAAAAAAAAAA"
+          - service: remote.send_command
+            data:
+              entity_id: remote.broadlink_wohnzimmer_remote
+              command: "b64:JgCMAJSVETgSOBE5ERQSEhMSEhMRFBE5ETgROREUERMSExITEhMRORETEhMSExITERQRFBETEhMSOBI4ETgSOBI4EjcSOBEABgOUlBI4ETkROBITEhMRFBEUERQROBI4ETgSExITERQSExEUETgSExITERQRFBEUERMTEhITEjgROBI4ETkROBI4ETkSAA0FAAAAAAAAAAAAAAAA"
         icon_template: >-
           mdi:television-guide
 
@@ -100,12 +97,6 @@ cover:
           mdi:message-bulleted
 
 switch:
-  - platform: broadlink
-    host: 192.168.2.45
-    mac: '34:EA:34:C7:C0:28'
-    type: rm
-    friendly_name: "Broadlink Wohnzimmer"
-
   - platform: template
     switches:
       watchtv_wohnzimmer:
