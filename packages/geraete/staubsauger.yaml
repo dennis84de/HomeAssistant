@@ -189,7 +189,7 @@ automation:
         entity_id: binary_sensor.zu_hause
         to: 'off'
         for:
-          minutes: 15
+          minutes: 5
       - platform: time
         at: '7:00:00'        
     condition:
@@ -208,6 +208,9 @@ automation:
       - condition: state
         entity_id: binary_sensor.reinigung_heute
         state: 'on'
+      - condition: state
+        entity_id:  calendar.urlaub
+        state: 'off'
     action:
       - service: vacuum.start
         entity_id: vacuum.xiaomi_vacuum_cleaner
