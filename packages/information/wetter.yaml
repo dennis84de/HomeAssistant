@@ -39,7 +39,6 @@ binary_sensor:
           
       sommerzeit:
         friendly_name: "Sommerzeit"
-        entity_id: sensor.time
         device_class: light
         value_template: >-
           {% set time = states('sensor.time') %}
@@ -207,9 +206,6 @@ sensor:
 
       helligkeit:
         friendly_name: 'Helligkeit'
-        entity_id:
-          - sun.sun
-          - sensor.darksky_cloud_coverage
         value_template: >-
           {%- set irradiance = states('sensor.br_irradiance') | float %} 
           {%- set irradiance_pct = irradiance / 10 %}
@@ -233,29 +229,21 @@ sensor:
 
       pollen_graeser_today:
         friendly_name: 'Gräser'
-        entity_id:
-          - sensor.pollen_41_today_graeser
         value_template: '{{ state_attr("sensor.pollen_41_today_graeser", "description") }}'
         icon_template: mdi:flower-outline
 
       pollen_birke_today:
         friendly_name: 'Birke'
-        entity_id:
-          - sensor.pollen_41_today_birke
         value_template: '{{ state_attr("sensor.pollen_41_today_graeser", "description") }}'
         icon_template: mdi:flower-outline
 
       pollen_roggen_today:
         friendly_name: 'Roggen'
-        entity_id:
-          - sensor.pollen_41_today_roggen
         value_template: '{{ state_attr("sensor.pollen_41_today_roggen", "description") }}'
         icon_template: mdi:flower-outline
 
       tageszeit:
         friendly_name: Tageszeit
-        entity_id:
-          - sun.sun
         value_template: >-
           {% if (as_timestamp(state_attr('sun.sun', 'next_dusk'))) - (as_timestamp(state_attr('sun.sun', 'next_setting'))) < 0 %}
             Abenddämmerung
@@ -279,22 +267,16 @@ sensor:
 
       sonnenaufgang:
         friendly_name: 'Nächster Sonnenaufgang'
-        entity_id:
-          - sun.sun
         value_template: "{{ as_timestamp(state_attr('sun.sun', 'next_rising')) | timestamp_custom('%d.%m.%Y %H:%M') }}"
         icon_template: mdi:weather-sunset-up
 
       sonnenuntergang:
         friendly_name: 'Nächster Sonnenuntergang'
-        entity_id:
-          - sun.sun
         value_template: "{{ as_timestamp(state_attr('sun.sun', 'next_setting')) | timestamp_custom('%d.%m.%Y %H:%M') }}"
         icon_template: mdi:weather-sunset-down
 
       mondphasen:
         friendly_name: Mondphase
-        entity_id:
-          - sensor.moon
         value_template: >-
           {% if is_state('sensor.moon', 'new_moon') %}
             Neumond
@@ -335,23 +317,17 @@ sensor:
       uv_index_current:
         friendly_name: 'UV Index'
         unit_of_measurement: 'UV'
-        entity_id:
-          - sensor.current_uv_index
         value_template: '{{ states("sensor.current_uv_index") | float | round(2) }}'
         icon_template: '{{ state_attr("sensor.current_uv_index","icon") }}'
 
       uv_index_max:
         friendly_name: 'Maximaler UV Index'
         unit_of_measurement: 'UV'
-        entity_id:
-          - sensor.max_uv_index
         value_template: '{{ states("sensor.max_uv_index") | float | round(2) }}'
         icon_template: '{{ state_attr("sensor.max_uv_index","icon") }}'
 
       zeit_sonne:
         friendly_name: 'Zeit in der Sonne'
-        entity_id:
-          - sensor.skin_type_3_safe_exposure_time
         value_template: >-
           {% if is_state('sensor.skin_type_3_safe_exposure_time', 'unknown') %}
             0
@@ -364,8 +340,6 @@ sensor:
       windrichtung:
         friendly_name: 'Windrichtung'
         icon_template: mdi:compass
-        entity_id:
-          - sensor.darksky_wind_bearing
         value_template: >-
           {% set wind_dir = states('sensor.darksky_wind_bearing') %}
 

@@ -40,24 +40,24 @@ cards:
     title: SpaceX
     show_header_toggle: false
     entities:
-      - entity: sensor.spacex_next_launch_rocket
+      - entity: sensor.next_launch_rocket
         name: Rakete
-      - entity: sensor.spacex_next_launch_mission
+      - entity: sensor.next_launch_mission
         name: Mission
-      - entity: sensor.spacex_next_launch_day_de
+      - entity: sensor.next_launch_day_de
         name: Datum
-      - entity: sensor.spacex_next_launch_time_de
+      - entity: sensor.next_launch_time_de
         name: Uhrzeit
-      - entity: sensor.spacex_next_launch_site
+      - entity: sensor.next_launch_site
         name: Startplatz
 
   - type: entities
     title: Starman
     show_header_toggle: false
     entities:
-      - entity: sensor.spacex_starman_distance
+      - entity: sensor.starman_distance
         name: Entfernung
-      - entity: sensor.spacex_starman_speed 
+      - entity: sensor.starman_speed 
         name: Geschwindigkeit
 
   - type: entities

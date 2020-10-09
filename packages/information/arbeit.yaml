@@ -37,12 +37,6 @@ sensor:
         friendly_name: Abfahrzeit
         icon_template: mdi:clock-start
         unit_of_measurement: 'Uhr'
-        entity_id:
-          - input_select.arbeit_stunden
-          - input_select.arbeit_minuten
-          - input_select.arbeit_puffer
-          - sensor.fahrzeit_zur_arbeit
-          - binary_sensor.schlechtes_wetter
         value_template: >-
           {% set minuten_arbeit = (states('input_select.arbeit_stunden') | int * 60) + (states('input_select.arbeit_minuten') | int) | int %}
           {% set verzoegerung_wetter = (10 if is_state('binary_sensor.schlechtes_wetter', 'on') else 0) %}
@@ -73,8 +67,6 @@ switch:
     switches:
       pc_arbeit:
         friendly_name: PC Arbeit
-        entity_id:
-          - device_tracker.pc_arbeit
         value_template: "{{ is_state('device_tracker.pc_arbeit', 'home') }}"
         icon_template: mdi:desktop-tower
         turn_on:

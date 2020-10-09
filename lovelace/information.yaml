@@ -63,6 +63,9 @@ popup_cards:
         - entity: device_tracker.handygps
           secondary_info: last-changed
           name: Handy GPS
+        - entity: device_tracker.handyping
+          secondary_info: last-changed
+          name: Handy Ping          
 
 cards:
   - type: entities

@@ -48,8 +48,6 @@ sensor:
     sensors:
       tablet_wohnzimmer_zuletzt_geladen:
         friendly_name: Tablet Wohnzimmer - Zuletzt geladen
-        entity_id:
-          - sensor.tablet_wohnzimmer_batterie
         value_template: >
           {% if is_state('sensor.tablet_wohnzimmer_batterie', None) %}
             -
@@ -63,8 +61,6 @@ sensor:
         
       tablet_badezimmer_zuletzt_geladen:
         friendly_name: Tablet Badezimmer - Zuletzt geladen
-        entity_id:
-          - sensor.tablet_badezimmer_batterie
         value_template: >
           {% if is_state('sensor.tablet_badezimmer_batterie', None) %}
             -
@@ -78,8 +74,6 @@ sensor:
         
       tablet_kueche_zuletzt_geladen:
         friendly_name: Tablet Küche - Zuletzt geladen
-        entity_id:
-          - sensor.tablet_kuche_batterie
         value_template: >
           {% if is_state('sensor.tablet_kuche_batterie', None) %}
             -
@@ -93,8 +87,6 @@ sensor:
         
       tablet_schlafzimmer_zuletzt_geladen:
         friendly_name: Tablet Schlafzimmer - Zuletzt geladen
-        entity_id:
-          - sensor.tablet_schlafzimmer_batterie
         value_template: >
           {% if is_state('sensor.tablet_schlafzimmer_batterie', None) %}
             -
@@ -108,8 +100,6 @@ sensor:
         
       tablet_balkon_zuletzt_geladen:
         friendly_name: Tablet Balkon - Zuletzt geladen
-        entity_id:
-          - sensor.tablet_balkon_batterie
         value_template: >
           {% if is_state('sensor.tablet_balkon_batterie', None) %}
             -

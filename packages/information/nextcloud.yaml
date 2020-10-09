@@ -10,8 +10,6 @@ sensor:
     sensors:  
       nextcloud_datenbank:
         friendly_name: "Datenbankgröße"
-        entity_id:
-          - sensor.nextcloud_server_database_size       
         unit_of_measurement: MB
         value_template: >-
           {% set bytesSent = (states('sensor.nextcloud_server_database_size') | int / 1024 / 1024) | round() %}

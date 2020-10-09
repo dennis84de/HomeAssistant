@@ -44,15 +44,11 @@ binary_sensor:
     sensors:
       schlafen_aktiv:
         friendly_name: Schlafen aktiv
-        entity_id:
-          - input_boolean.schlafen_aktiv
         value_template: >
           {{ is_state('input_boolean.schlafen_aktiv', 'on') }}
           
       schlafen_inaktiv:
         friendly_name: Schlafen inaktiv
-        entity_id:
-          - binary_sensor.schlafen_aktiv
         value_template: >
           {{ is_state('binary_sensor.schlafen_aktiv', 'off') }}
 
@@ -100,8 +96,6 @@ sensor:
 
       schlafen_dauer_durchschnitt:
         friendly_name: Durchschnittliche Dauer
-        entity_id:
-          - sensor.schlafdauer
         value_template: >
           {% if states.sensor.schlafdauer == None %}
             0

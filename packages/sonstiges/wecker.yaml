@@ -53,9 +53,6 @@ binary_sensor:
         friendly_name: Wecker überspringen
         icon_template: mdi:alarm-off
         device_class: power
-        entity_id:
-          - sensor.tablet_weckzeit
-          - input_boolean.wecker_ueberspringen
         value_template: >-
           {% if is_state('input_boolean.wecker_ueberspringen', 'on') %}
             True
@@ -71,8 +68,6 @@ binary_sensor:
         friendly_name: Alarm aktiv
         icon_template: mdi:alarm-multiple
         device_class: sound
-        entity_id:
-          - input_boolean.alarm_aktiv
         value_template: >-
           {{ True if is_state('input_boolean.alarm_aktiv', 'on') else False }}
 
@@ -101,17 +96,12 @@ sensor:
       wecker_startzeit:
         friendly_name: Wecker Startzeit
         icon_template: mdi:alarm-bell
-        entity_id:
-          - input_number.alarmhour
-          - input_number.alarmminutes
         value_template: '{{ "%0.02d:%0.02d" | format(states("input_number.alarmhour") | int, states("input_number.alarmminutes") | int) }}'
         unit_of_measurement: 'Uhr'
         
       wecker_startdatum:
         friendly_name: Wecker Startdatum
         icon_template: mdi:calendar-clock
-        entity_id:
-          - sensor.tablet_weckzeit
         value_template: >-
           {% set alarmState = states('sensor.tablet_weckzeit') %}
           

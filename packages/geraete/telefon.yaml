@@ -3,8 +3,6 @@ sensor:
     sensors:
       telefon_status:
         friendly_name: Telefon
-        entity_id:
-          - sensor.telefon
         value_template: >
           {% if is_state('sensor.telefon', 'ringing') %}
             Eingehender Anruf

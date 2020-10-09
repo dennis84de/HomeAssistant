@@ -12,29 +12,21 @@ binary_sensor:
       heizung_arbeitszimmer_batterie:
         friendly_name: Arbeitszimmer
         device_class: battery
-        entity_id:
-          - climate.arbeitszimmer
         value_template: >
           {{ state_attr('climate.arbeitszimmer', 'battery_low') }}
       heizung_badezimmer_batterie:
         friendly_name: Badezimmer
         device_class: battery
-        entity_id:
-          - climate.badezimmer
         value_template: >
           {{ state_attr('climate.badezimmer', 'battery_low') }}
       heizung_kueche_batterie:
         friendly_name: Küche
         device_class: battery
-        entity_id:
-          - climate.kuche
         value_template: >
           {{ state_attr('climate.kuche', 'battery_low') }}
       heizung_wohnzimmer_batterie:
         friendly_name: Wohnzimmer
         device_class: battery
-        entity_id:
-          - climate.wohnzimmer
         value_template: >
           {{ state_attr('climate.wohnzimmer', 'battery_low') }}
 

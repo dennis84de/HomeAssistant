@@ -64,8 +64,6 @@ sensor:
     sensors:
       handy_status:
         friendly_name: Handy
-        entity_id:
-          - sensor.handy
         value_template: >-
           {% if is_state('sensor.handy', 'incoming') %}
             Eingehender Anruf

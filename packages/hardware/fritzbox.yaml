@@ -43,9 +43,7 @@ sensor:
   - platform: template
     sensors:
       netmonitor_uptime:
-        friendly_name: "Fritzbox - Laufzeit"
-        entity_id:
-          - sensor.netmonitor        
+        friendly_name: "Fritzbox - Laufzeit"    
         value_template: >-
           {% set onlineSeconds = state_attr('sensor.netmonitor','uptime') | int %}
           
@@ -62,9 +60,7 @@ sensor:
           mdi:calendar-range        
            
       netmonitor_data_sent:
-        friendly_name: "Fritzbox - Daten gesendet"
-        entity_id:
-          - sensor.netmonitor       
+        friendly_name: "Fritzbox - Daten gesendet" 
         unit_of_measurement: GB
         value_template: >-
           {% set bytesSent = (state_attr('sensor.netmonitor','bytes_sent') / 1024 / 1024 / 1024) | round() %}
@@ -73,9 +69,7 @@ sensor:
           mdi:upload-network
           
       netmonitor_data_received:
-        friendly_name: "Fritzbox - Daten empfangen"
-        entity_id:
-          - sensor.netmonitor       
+        friendly_name: "Fritzbox - Daten empfangen"   
         unit_of_measurement: GB
         value_template: >-        
           {% set bytesSent = (state_attr('sensor.netmonitor','bytes_received') / 1024 / 1024 / 1024) | round() %}

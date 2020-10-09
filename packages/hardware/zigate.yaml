@@ -43,8 +43,6 @@ sensor:
     sensors:
       cube_status:
         friendly_name: Xiaomi Cube
-        entity_id:
-          - input_select.cube_letzte_aktion
         value_template: >-
           {{ states("input_select.cube_letzte_aktion") }}
         icon_template: >

@@ -18,44 +18,14 @@ sensor:
       letzte_bewegung:
         friendly_name: 'Letzte Bewegung'
         icon_template: mdi:run
-        entity_id:
-          - input_select.letzte_bewegung
         value_template: >-
           {{ states('input_select.letzte_bewegung') }}
 
 binary_sensor:
   - platform: template
-    sensors:
-      bewegungsmelder_aktiv:
-        friendly_name: Bewegungsmelder aktiv
-        entity_id:
-          - entity_controller.bewegung_arbeitszimmer
-          - entity_controller.bewegung_badezimmer
-          - entity_controller.bewegung_balkon
-          - entity_controller.bewegung_flur_hinten
-          - entity_controller.bewegung_flur_vorne
-          - entity_controller.bewegung_kuchenregal
-          - entity_controller.bewegung_kuchenschrank
-          - entity_controller.bewegung_schlafzimmer_bett
-          - entity_controller.bewegung_schlafzimmer_kleiderschrank
-          - entity_controller.bewegung_sportzimmer
-        device_class: motion
-        value_template: >
-          {% set ns = namespace(found=false) -%}
-          
-          {% for entity_id in state_attr('group.entity_controller', 'entity_id') -%}
-            {% set parts = entity_id.split('.') -%}
-            {% if (states(entity_id)) == 'active_timer' -%}
-              {% set ns.found = true -%}
-            {% endif -%}
-          {% endfor -%}
-          
-          {{ ns.found }}
-        
+    sensors:             
       bewegungsmelder_inaktiv_unterwegs:
         friendly_name: Bewegungmelder inaktiv - Unterwegs
-        entity_id:
-          - binary_sensor.zu_hause
         device_class: occupancy
         value_template: >-
           {% if is_state('binary_sensor.zu_hause', 'off') %}
@@ -66,8 +36,6 @@ binary_sensor:
 
       bewegungsmelder_inaktiv_staubsauger:
         friendly_name: Bewegungmelder inaktiv - Staubsauger
-        entity_id:
-          - vacuum.xiaomi_vacuum_cleaner
         device_class: occupancy
         value_template: >-
           {% if is_state('vacuum.xiaomi_vacuum_cleaner', 'cleaning') or is_state('vacuum.xiaomi_vacuum_cleaner', 'returning') %}
@@ -78,15 +46,11 @@ binary_sensor:
           
       bewegungsmelder_wohnzimmer:
         friendly_name: Wohnzimmer
-        entity_id:
-          - sensor.aeotec_wohnzimmer_burglar
         device_class: motion
         value_template: "{{ is_state('sensor.aeotec_wohnzimmer_burglar', '8') }}"
 
       bewegungsmelder_badezimmer:
         friendly_name: Badezimmer
-        entity_id:
-          - sensor.fibaro_badezimmer_burglar
         device_class: motion
         value_template: "{{ is_state('sensor.fibaro_badezimmer_burglar', '8') }}"   
 

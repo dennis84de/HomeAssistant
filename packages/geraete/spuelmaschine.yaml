@@ -32,8 +32,6 @@ sensor:
     sensors:
       spuelmaschine_status:
         friendly_name: Status Spülmaschine
-        entity_id:
-          - input_select.status_spuelmaschine
         value_template: "{{ states('input_select.status_spuelmaschine') }}"
         icon_template: 'mdi:dishwasher'    
     

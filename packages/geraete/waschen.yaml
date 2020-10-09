@@ -20,8 +20,6 @@ sensor:
     sensors:
       waschmaschine_verbrauch:
         friendly_name: Verbrauch Waschmaschine
-        entity_id:
-          - switch.waschmaschine
         value_template: >-
           {% if is_state('switch.waschmaschine', 'unavailable') %}
             {{ 0.00 | float }}
@@ -33,15 +31,11 @@ sensor:
 
       waschmaschine_status:
         friendly_name: Status Waschmaschine
-        entity_id:
-          - input_select.status_waschmaschine
         value_template: "{{ states('input_select.status_waschmaschine') }}"
         icon_template: 'mdi:washing-machine'
 
       trockner_verbrauch:
         friendly_name: Verbrauch Trockner
-        entity_id:
-          - switch.trockner
         value_template: >-
           {% if is_state('switch.trockner', 'unavailable') %}
             {{ 0.00 | float }}
@@ -53,8 +47,6 @@ sensor:
 
       trockner_status:
         friendly_name: Status Trockner
-        entity_id:
-          - input_select.status_trockner
         value_template: "{{ states('input_select.status_trockner') }}"
         icon_template: 'mdi:tumble-dryer'
 

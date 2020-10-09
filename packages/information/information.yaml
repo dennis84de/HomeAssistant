@@ -26,8 +26,6 @@ sensor:
         friendly_name: 'Tankstelle Real'        
         unit_of_measurement: €
         icon_template: mdi:gas-station
-        entity_id:
-          - sensor.tankerkoenig_supermarkt_tankstelle_am_real_markt_dortmund_wulfshofstr_e10
         value_template: >-
           {% set price = states('sensor.tankerkoenig_supermarkt_tankstelle_am_real_markt_dortmund_wulfshofstr_e10') %}
 
@@ -41,8 +39,6 @@ sensor:
         friendly_name: 'Tankstelle Jet'    
         unit_of_measurement: €
         icon_template: mdi:gas-station
-        entity_id:
-          - sensor.tankerkoenig_jet_muelheim_strassburger_allee_75_e10
         value_template: >-
           {% set price = states('sensor.tankerkoenig_jet_muelheim_strassburger_allee_75_e10') %}
 
@@ -80,16 +76,12 @@ binary_sensor:
       tankstelle_real_status:
         friendly_name: 'Status'
         device_class: door
-        entity_id:
-          - sensor.tankerkoenig_supermarkt_tankstelle_am_real_markt_dortmund_wulfshofstr_e10
         value_template: >-
           {{ is_state_attr('sensor.tankerkoenig_supermarkt_tankstelle_am_real_markt_dortmund_wulfshofstr_e10', 'is_open', True) }}
 
       tankstelle_jet_status:
         friendly_name: 'Status'
         device_class: door
-        entity_id:
-          - sensor.tankerkoenig_jet_muelheim_strassburger_allee_75_e10
         value_template: >-
           {{ is_state_attr('sensor.tankerkoenig_jet_muelheim_strassburger_allee_75_e10', 'is_open', True) }}
                 

@@ -9,8 +9,6 @@ switch:
     switches:
       kodi_sportzimmer:
         friendly_name: Kodi
-        entity_id:
-          - media_player.fire_tv_sportzimmer
         icon_template: >-
           mdi:kodi
         value_template: >-
