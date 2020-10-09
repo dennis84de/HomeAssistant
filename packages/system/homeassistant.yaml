@@ -68,9 +68,6 @@ zone:
     longitude: !secret work_longitude
     radius: 70
     icon: mdi:wan 
-    
-binary_sensor:  
-  - platform: rpi_power
 
 sensor:
   - platform: sql
@@ -121,8 +118,6 @@ sensor:
     sensors:
       letzter_neustart:
         friendly_name: "Letzter Neustart"
-        entity_id:
-          - sensor.last_boot
         icon_template: >-
           mdi:av-timer
         value_template: >-
@@ -131,9 +126,6 @@ sensor:
       neustart_dauer:
         friendly_name: "Neustart Dauer"
         icon_template: mdi:cached
-        entity_id:
-          - input_datetime.letzter_neustart_start
-          - input_datetime.letzter_neustart_ende
         unit_of_measurement: 'Sekunden'
         value_template: >-
           {% set start = as_timestamp(states('input_datetime.letzter_neustart_start')) | int %}
@@ -308,7 +300,3 @@ homeassistant:
     script.upgrade_homeassistant:
       icon: mdi:update
       can_cancel: false
-
-    binary_sensor.rpi_power_status:
-      friendly_name: Power Status
-      icon: mdi:power-plug
