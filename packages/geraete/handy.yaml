@@ -15,13 +15,19 @@ device_tracker:
     source_type: 'router'
     devices:
       handymqtt: 'location/handy'   
-    
+
+  - platform: ping
+    hosts:
+      handyping: !secret handy_host
+      
 person:
   - name: Dennis
     id: dennis
     device_trackers:
+      - device_tracker.handy
       - device_tracker.handygps
       - device_tracker.handymqtt
+      - device_tracker.handyping
 
 proximity:
   home:

@@ -282,6 +282,14 @@ automation:
           message: "Der Computer im Arbeitszimmer wird jetzt ausgeschaltet."
       - service: script.home_office_ende
 
+  - alias: "Home Office - Status geändert"
+    trigger:
+      - platform: state
+        entity_id: calendar.arbeit_buero
+    action:
+      - service: input_boolean.turn_{{ trigger.to_state.state }}
+        entity_id: input_boolean.home_office
+
   - alias: 'Benachrichtigung Arbeit'
     trigger:
       - platform: template

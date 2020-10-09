@@ -1,20 +1,3 @@
-media_player:
-  - platform: kodi
-    host: !secret computer_host
-    username: !secret kodi_username
-    password: !secret kodi_password
-    name: Kodi Wohnzimmer
-    turn_on_action:
-      service: mqtt.publish
-      data_template:
-        topic: "iotlink/workgroup/computer/commands/run"
-        payload: '{ "command": "C:\\Program Files\\Kodi\\kodi.exe", "path": "C:\\Program Files\\Kodi", "user": "", "visible": true, "fallback": true }'
-    turn_off_action:
-      service: kodi.call_method
-      data:
-        entity_id: media_player.kodi_wohnzimmer
-        method: Application.Quit
-        
 songpal:
     name: Soundbar
     endpoint: !secret songpal_endpoint_url
@@ -107,7 +90,7 @@ switch:
         turn_off:
           service: script.watchtv_wohnzimmer_off
 
-script:
+script:  
   watchtv_wohnzimmer_on:
     alias: "Fernsehen Wohnzimmer einschalten"
     sequence:

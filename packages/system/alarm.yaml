@@ -231,7 +231,7 @@ script:
         data_template:
           dev_id: handygps
           location_name: 'not_home'
-          gps: ["{{ state_attr('zone.home', 'latitude') }}", "{{ state_attr('zone.home', 'longitude') }}"]
+          gps: ["{{ state_attr('zone.home', 'latitude') }}", "{{ state_attr('zone.home', 'longitude') }}"] 
                    
       - choose:
           - conditions:

@@ -52,18 +52,14 @@ sensor:
             {{ price }}
           {% endif %}
           
-      spacex_next_launch_day_de:
+      next_launch_day_de:
         friendly_name: 'Nächster Start - Datum'
-        entity_id:
-          - sensor.spacex_next_launch_day
         icon_template: mdi:calendar
-        value_template: '{{ state_attr("sensor.spacex_next_launch_day", "launch_date_unix") | int | timestamp_custom("%d.%m.%Y")}}'
+        value_template: '{{ state_attr("sensor.next_launch_day", "launch_date_unix") | int | timestamp_custom("%d.%m.%Y")}}'
 
-      spacex_next_launch_time_de:
+      next_launch_time_de:
         friendly_name: 'Nächster Start - Uhrzeit'
-        entity_id:
-          - sensor.spacex_next_launch_day
-        value_template: '{{ state_attr("sensor.spacex_next_launch_day", "launch_date_unix") | int | timestamp_custom("%H:%M")}}'
+        value_template: '{{ state_attr("sensor.next_launch_day", "launch_date_unix") | int | timestamp_custom("%H:%M")}}'
         icon_template: mdi:clock-outline
         unit_of_measurement: 'Uhr'          
 

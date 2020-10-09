@@ -107,9 +107,8 @@ entity_controller:
       - light.schreibtisch
       - light.arbeitszimmer_lampe
     delay: 120
-    grace_period: 30
     behaviours:
-      on_enter_overidden: off
+      on_enter_overridden: off
     overrides:
       - device_tracker.pc_arbeit
       - binary_sensor.sonne_tagsueber      
@@ -123,7 +122,7 @@ entity_controller:
     entities: light.sportzimmer_regal
     delay: 120
     behaviours:
-      on_enter_overidden: off
+      on_enter_overridden: off
     overrides:
       - binary_sensor.sonne_tagsueber
       - binary_sensor.bewegungsmelder_inaktiv_unterwegs  
@@ -137,7 +136,7 @@ entity_controller:
     sensor_type_duration: True
     delay: 120
     behaviours:
-      on_enter_overidden: off
+      on_enter_overridden: off
     overrides:
       - binary_sensor.sonne_tagsueber
       - binary_sensor.bewegungsmelder_inaktiv_unterwegs      
@@ -149,9 +148,8 @@ entity_controller:
     sensor: binary_sensor.bewegungsmelder_balkon
     entity: light.balkon_licht
     delay: 1200
-    grace_period: 30
     behaviours:
-      on_enter_overidden: off
+      on_enter_overridden: off
     overrides:  
       - binary_sensor.sonne_tagsueber
       - binary_sensor.bewegungsmelder_inaktiv_unterwegs
@@ -164,7 +162,7 @@ entity_controller:
     entity: light.flur_vorne
     delay: 120    
     behaviours:
-      on_enter_overidden: off
+      on_enter_overridden: off
     overrides:
       - binary_sensor.sonne_tagsueber
       - binary_sensor.bewegungsmelder_inaktiv_unterwegs
@@ -175,10 +173,9 @@ entity_controller:
     friendly_name: "Bewegung Flur hinten"
     sensor: binary_sensor.bewegungsmelder_flur_hinten
     entity: light.flur_hinten
-    delay: 120  
-    grace_period: 30
+    delay: 120
     behaviours:
-      on_enter_overidden: off
+      on_enter_overridden: off
     overrides:
       - binary_sensor.sonne_tagsueber
       - binary_sensor.bewegungsmelder_inaktiv_unterwegs
@@ -190,7 +187,8 @@ entity_controller:
     sensor: binary_sensor.bewegungsmelder_kueche
     entity: light.kuche_regal
     delay: 120     
-    on_enter_overidden: "off"
+    behaviours:
+      on_enter_overridden: off
     overrides:
       - binary_sensor.sonne_tagsueber
       - binary_sensor.kuechelregal_inaktiv
@@ -204,7 +202,7 @@ entity_controller:
     entity: light.kuche_schrank
     delay: 120
     behaviours:
-      on_enter_overidden: off
+      on_enter_overridden: off
     overrides:            
       - binary_sensor.sonne_tagsueber
       - binary_sensor.kuechenschrank_inaktiv
@@ -226,7 +224,7 @@ entity_controller:
       start_time: '23:00:00'
       end_time: '05:00:00'     
     behaviours:
-      on_enter_overidden: off
+      on_enter_overridden: off
     overrides:
       - binary_sensor.sonne_tagsueber
       - light.kleiderschrank
@@ -240,7 +238,7 @@ entity_controller:
     entity: light.kleiderschrank
     delay: 120 
     behaviours:
-      on_enter_overidden: off
+      on_enter_overridden: off
     overrides:
       - binary_sensor.schlafen_aktiv
       - binary_sensor.sonne_tagsueber
@@ -255,7 +253,7 @@ entity_controller:
     entities: light.couch
     delay: 60
     behaviours:
-      on_enter_overidden: "off"
+      on_enter_overridden: "off"
     overrides:
       - binary_sensor.sonne_tagsueber
       - binary_sensor.bewegungsmelder_inaktiv_unterwegs
