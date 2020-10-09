@@ -6,6 +6,7 @@
     "transitions==0.6.9"
   ],
   "dependencies": [
+    "light", "sensor", "binary_sensor", "cover", "fan", "media_player", "input_boolean"
   ],
   "codeowners": ["@danobot"],
   "homeassistant": "0.102.3"
