@@ -30,6 +30,7 @@ entity_controller:
       - light.schreibtisch
       - light.arbeitszimmer_lampe
     delay: 120
+    grace_period: 60
     behaviours:
       on_enter_overridden: off
     overrides:
