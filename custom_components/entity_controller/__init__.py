@@ -18,7 +18,7 @@ along with Entity Controller.  If not, see <https://www.gnu.org/licenses/>.
 """
 Entity controller component for Home Assistant.
 Maintainer:       Daniel Mason
-Version:          v9.0.1
+Version:          v9.0.2
 Project Page:     https://danielbkr.net/projects/entity-controller/
 Documentation:    https://github.com/danobot/entity-controller
 """
@@ -42,7 +42,6 @@ from transitions.extensions import HierarchicalMachine as Machine
 from homeassistant.helpers.service import async_call_from_config
 
 DEPENDENCIES = ["light", "sensor", "binary_sensor", "cover", "fan", "media_player"]
-
 from .const import (
     DOMAIN,
     STATES,
@@ -91,7 +90,9 @@ from .const import (
     CONF_STATE_ATTRIBUTES_IGNORE,
     CONF_IGNORED_EVENT_SOURCES,
     CONSTRAIN_START,
-    CONSTRAIN_END
+    CONSTRAIN_END,
+    CONF_IGNORE_STATE_CHANGES_UNTIL,
+    CONTEXT_ID_CHARACTER_LIMIT
 )
 
 from .entity_services import (
@@ -100,7 +101,7 @@ from .entity_services import (
 
 
 
-VERSION = '9.0.1'
+VERSION = '9.0.2'
 
 
 _LOGGER = logging.getLogger(__name__)
@@ -140,7 +141,7 @@ ENTITY_SCHEMA = vol.Schema(
         vol.Optional(CONF_TRIGGER_ON_DEACTIVATE, default=None): cv.entity_ids,
         vol.Optional(CONF_STATE_ENTITIES, default=[]): cv.entity_ids,
         vol.Optional(CONF_BLOCK_TIMEOUT, default=None): cv.positive_int,
-        # vol.Optional(CONF_IGNORE_STATE_CHANGES_UNTIL, default=None): cv.positive_int,
+        vol.Optional(CONF_IGNORE_STATE_CHANGES_UNTIL, default=None): cv.positive_int,
         vol.Optional(CONF_NIGHT_MODE, default=None): MODE_SCHEMA,
         vol.Optional(CONF_STATE_ATTRIBUTES_IGNORE, default=[]): cv.ensure_list,
         vol.Optional(CONF_IGNORED_EVENT_SOURCES, default=[]): cv.ensure_list,
@@ -164,14 +165,11 @@ async def async_setup(hass, config):
 
     component = EntityComponent(_LOGGER, DOMAIN, hass)
 
-    myconfig = config[DOMAIN][0]
-
     _LOGGER.info(
         "If you have ANY issues with EntityController (v"
         + VERSION
         + "), please enable DEBUG logging under the logger component and kindly report the issue on Github. https://github.com/danobot/entity-controller/issues"
     )
-    _LOGGER.info("Domain Configuration: " + str(myconfig))
 
     async_setup_entity_services(component)
 
@@ -330,17 +328,19 @@ async def async_setup(hass, config):
     # Enter blocked state when component is enabled and entity is on
     machine.add_transition(trigger="blocked", source="constrained", dest="blocked")
 
-    for key, config in myconfig.items():
-        if not config:
-            config = {}
+    for myconfig in config[DOMAIN]:
+        _LOGGER.info("Domain Configuration: " + str(myconfig))
+        for key, config in myconfig.items():
+            if not config:
+                config = {}
 
-        # _LOGGER.info("Config Item %s: %s", str(key), str(config))
-        config["name"] = key
-        m = None
-        m = EntityController(hass, config, machine)
-        # machine.add_model(m.model)
-        # m.model.after_model(config)
-        devices.append(m)
+            # _LOGGER.info("Config Item %s: %s", str(key), str(config))
+            config["name"] = key
+            m = None
+            m = EntityController(hass, config, machine)
+            # machine.add_model(m.model)
+            # m.model.after_model(config)
+            devices.append(m)
 
     await component.async_add_entities(devices)
 
@@ -491,8 +491,8 @@ class Model:
         )
         self.name = config.get(CONF_NAME, "Unnamed Entity Controller")
         self.ignored_event_sources = [self.name]
-
-        self.context = Context(parent_id=DOMAIN, id="%s.%s" % (DOMAIN, self.name))
+        id = "ec.%s" % (self.name)
+        self.context = Context(parent_id=DOMAIN, id=id[:CONTEXT_ID_CHARACTER_LIMIT])
 
 
         machine.add_model(
@@ -626,9 +626,13 @@ class Model:
                 "state_entity_state_change :: Most likely one of the states, either new or old, is 'off', so there's no attributes dict attached to the state object: "
                 + str(a)
             )
+
         if self.is_active_timer():
-            self.log.debug("state_entity_state_change :: We are in active timer and the state of observed state entities changed.")
-            self.control()
+            if self.is_within_grace_period(): # check if we are within the grace period after making a service call (this avoids EC blocking itself)
+                self.log.debug("state_entity_state_change :: This state change is within %i seconds of calling a service. Ignoring this state change because its probably caused by EC itself." % self.config.get(CONF_IGNORE_STATE_CHANGES_UNTIL, 2))
+            else:
+                self.log.debug("state_entity_state_change :: We are in active timer and the state of observed state entities changed.")
+                self.control()
 
         if self.is_blocked() or self.is_active_stay_on(): # if statement required to avoid MachineErrors, cleaner than adding transitions to all possible states.
             self.enable()
@@ -711,10 +715,10 @@ class Model:
     def is_override_state_off(self):
         return self._override_entity_state() is None
 
-    # def is_within_grace_period(self):
-    #     """ Dtermines if the last service call EC made was within the last 2 seconds. 
-    #     This is important or else EC will react to state changes caused by EC itself which results in going into blocked state."""
-    #     return datetime.now() < self.ignore_state_changes_until
+    def is_within_grace_period(self):
+        """ Dtermines if the last service call EC made was within the last 2 seconds. 
+        This is important or else EC will react to state changes caused by EC itself which results in going into blocked state."""
+        return datetime.now() < self.ignore_state_changes_until
 
     def is_override_state_on(self):
         return self._override_entity_state() is not None
@@ -1457,8 +1461,8 @@ class Model:
     def call_service(self, entity, service, **service_data):
         """ Helper for calling HA services with the correct parameters """
         self.log.debug("call_service :: Calling service " + service + " on " + entity)
-        # self.ignore_state_changes_until = datetime.now() + timedelta(seconds=self.config.get(CONF_IGNORE_STATE_CHANGES_UNTIL, 2))
-        # self.log.debug("call_service :: Setting ignore_state_changes_until to " + str(self.ignore_state_changes_until))
+        self.ignore_state_changes_until = datetime.now() + timedelta(seconds=self.config.get(CONF_IGNORE_STATE_CHANGES_UNTIL, 2))
+        self.log.debug("call_service :: Setting ignore_state_changes_until to " + str(self.ignore_state_changes_until))
 
         domain, e = entity.split(".")
         if service in ['turn_on','turn_off'] and domain in self.homeassistant_turn_on_domains:

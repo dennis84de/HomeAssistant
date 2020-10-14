@@ -123,6 +123,16 @@ binary_sensor:
             false
           {% endif %}
 
+entity_controller:
+  radio_badezimmer:
+    friendly_name: "Radio Badezimmer - Bewegung"
+    sensor: binary_sensor.bewegungsmelder_badezimmer
+    sensor_type_duration: True
+    entity: switch.wiedergabe_badezimmer
+    delay: 120
+    overrides:
+      - binary_sensor.radio_badezimmer_inaktiv
+      
 automation:
   - alias: 'Radio Balkon - Einschalten'
     trigger:
@@ -186,7 +196,10 @@ automation:
         value_template: '{{ is_state("sensor.handy", "incoming") == False and is_state("sensor.handy", "outgoing") == False }}'
       - condition: state
         entity_id: 'sensor.telefon'
-        state: 'idle'            
+        state: 'idle'
+      - condition: state
+        entity_id: binary_sensor.besuch
+        state: 'off'
     action:
       - service: input_boolean.turn_on
         entity_id: input_boolean.radio_balkon_aktiv

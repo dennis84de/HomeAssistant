@@ -13,7 +13,21 @@ input_boolean:
     name: Bewegungsmelder deaktiviert
     initial: off
     icon: mdi:sync-off
-                
+              
+entity_controller:
+  bewegung_sportzimmer:
+    friendly_name: "Bewegung Sportzimmer"
+    sensor: binary_sensor.bewegungsmelder_sportzimmer
+    entities: light.sportzimmer_regal
+    delay: 120
+    behaviours:
+      on_enter_overridden: off
+    overrides:
+      - binary_sensor.sonne_tagsueber
+      - binary_sensor.bewegungsmelder_inaktiv_unterwegs  
+      - binary_sensor.bewegungsmelder_inaktiv_staubsauger
+      - input_boolean.bewegungsmelder_sportzimmer_deaktiviert
+      
 homeassistant:
   customize:
     light.sportzimmer_regal:

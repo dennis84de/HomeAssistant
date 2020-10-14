@@ -13,6 +13,21 @@ light:
     name: Strahler
     entity_id: switch.strahler
 
+entity_controller:           
+  bewegung_wohnzimmer:
+    friendly_name: "Bewegung Wohnzimmer"
+    sensor: binary_sensor.bewegungsmelder_wohnzimmer
+    entities: light.couch
+    delay: 60
+    behaviours:
+      on_enter_overridden: "off"
+    overrides:
+      - binary_sensor.sonne_tagsueber
+      - binary_sensor.bewegungsmelder_inaktiv_unterwegs
+      - binary_sensor.bewegungsmelder_inaktiv_staubsauger
+      - input_boolean.bewegungsmelder_wohnzimmer_deaktiviert
+      - switch.computer
+      
 automation:
   - alias: "Wohnzimmer - Licht Abends"
     trigger:

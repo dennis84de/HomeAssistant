@@ -21,7 +21,24 @@ input_boolean:
     name: Bewegungsmelder deaktiviert
     initial: off
     icon: mdi:sync-off
-        
+   
+entity_controller:
+  bewegung_arbeitszimmer:
+    friendly_name: "Bewegung Arbeitszimmer"
+    sensor: binary_sensor.bewegungsmelder_arbeitszimmer
+    entities:
+      - light.schreibtisch
+      - light.arbeitszimmer_lampe
+    delay: 120
+    behaviours:
+      on_enter_overridden: off
+    overrides:
+      - device_tracker.pc_arbeit
+      - binary_sensor.sonne_tagsueber      
+      - binary_sensor.bewegungsmelder_inaktiv_unterwegs  
+      - binary_sensor.bewegungsmelder_inaktiv_staubsauger
+      - input_boolean.bewegungsmelder_arbeitszimmer_deaktiviert    
+      
 homeassistant:
   customize:
     light.schreibtisch:

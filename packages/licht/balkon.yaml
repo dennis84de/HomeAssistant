@@ -11,6 +11,21 @@ input_boolean:
     initial: off
     icon: mdi:sync-off
 
+entity_controller:      
+  bewegung_balkon:
+    friendly_name: "Bewegung Balkon"
+    sensor: binary_sensor.bewegungsmelder_balkon
+    entity: light.balkon_licht
+    delay: 1200
+    grace_period: 20
+    behaviours:
+      on_enter_overridden: off
+    overrides:  
+      - binary_sensor.sonne_tagsueber
+      - binary_sensor.bewegungsmelder_inaktiv_unterwegs
+      - binary_sensor.bewegungsmelder_inaktiv_staubsauger
+      - input_boolean.bewegungsmelder_balkon_deaktiviert
+
 automation:
   - alias: 'Licht Balkon - Einschalten'
     trigger:

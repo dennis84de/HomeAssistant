@@ -16,34 +16,23 @@ sensor:
   - platform: template
     sensors:
       letzte_bewegung:
-        friendly_name: 'Letzte Bewegung'
+        friendly_name: "Letzte Bewegung"
         icon_template: mdi:run
-        value_template: >-
-          {{ states('input_select.letzte_bewegung') }}
+        value_template: "{{ states('input_select.letzte_bewegung') }}"
 
 binary_sensor:
   - platform: template
     sensors:             
       bewegungsmelder_inaktiv_unterwegs:
-        friendly_name: Bewegungmelder inaktiv - Unterwegs
+        friendly_name: "Bewegungmelder inaktiv - Unterwegs"
         device_class: occupancy
-        value_template: >-
-          {% if is_state('binary_sensor.zu_hause', 'off') %}
-            True
-          {% else %}
-            False
-          {% endif %}
+        value_template: "{{ True if is_state('binary_sensor.zu_hause', 'off') else False }}"
 
       bewegungsmelder_inaktiv_staubsauger:
-        friendly_name: Bewegungmelder inaktiv - Staubsauger
+        friendly_name: "Bewegungmelder inaktiv - Staubsauger"
         device_class: occupancy
-        value_template: >-
-          {% if is_state('vacuum.xiaomi_vacuum_cleaner', 'cleaning') or is_state('vacuum.xiaomi_vacuum_cleaner', 'returning') %}
-            True
-          {% else %}
-            False
-          {% endif %}
-          
+        value_template: "{{ True if is_state('vacuum.xiaomi_vacuum_cleaner', 'cleaning') or is_state('vacuum.xiaomi_vacuum_cleaner', 'returning') else False }}"
+
       bewegungsmelder_wohnzimmer:
         friendly_name: Wohnzimmer
         device_class: motion
@@ -53,177 +42,6 @@ binary_sensor:
         friendly_name: Badezimmer
         device_class: motion
         value_template: "{{ is_state('sensor.fibaro_badezimmer_burglar', '8') }}"   
-
-entity_controller:
-  radio_badezimmer:
-    friendly_name: "Radio Badezimmer - Bewegung"
-    sensor: binary_sensor.bewegungsmelder_badezimmer
-    sensor_type_duration: True
-    entity: switch.wiedergabe_badezimmer
-    delay: 120
-    overrides:
-      - binary_sensor.radio_badezimmer_inaktiv
-
-  bewegung_arbeitszimmer:
-    friendly_name: "Bewegung Arbeitszimmer"
-    sensor: binary_sensor.bewegungsmelder_arbeitszimmer
-    entities:
-      - light.schreibtisch
-      - light.arbeitszimmer_lampe
-    delay: 120
-    behaviours:
-      on_enter_overridden: off
-    overrides:
-      - device_tracker.pc_arbeit
-      - binary_sensor.sonne_tagsueber      
-      - binary_sensor.bewegungsmelder_inaktiv_unterwegs  
-      - binary_sensor.bewegungsmelder_inaktiv_staubsauger
-      - input_boolean.bewegungsmelder_arbeitszimmer_deaktiviert      
-
-  bewegung_sportzimmer:
-    friendly_name: "Bewegung Sportzimmer"
-    sensor: binary_sensor.bewegungsmelder_sportzimmer
-    entities: light.sportzimmer_regal
-    delay: 120
-    behaviours:
-      on_enter_overridden: off
-    overrides:
-      - binary_sensor.sonne_tagsueber
-      - binary_sensor.bewegungsmelder_inaktiv_unterwegs  
-      - binary_sensor.bewegungsmelder_inaktiv_staubsauger
-      - input_boolean.bewegungsmelder_sportzimmer_deaktiviert
-      
-  bewegung_badezimmer:
-    friendly_name: "Bewegung Badezimmer"
-    sensor: binary_sensor.bewegungsmelder_badezimmer
-    entity: light.badezimmerschrank
-    sensor_type_duration: True
-    delay: 120
-    behaviours:
-      on_enter_overridden: off
-    overrides:
-      - binary_sensor.sonne_tagsueber
-      - binary_sensor.bewegungsmelder_inaktiv_unterwegs      
-      - binary_sensor.bewegungsmelder_inaktiv_staubsauger
-      - input_boolean.bewegungsmelder_badezimmer_deaktiviert
-      
-  bewegung_balkon:
-    friendly_name: "Bewegung Balkon"
-    sensor: binary_sensor.bewegungsmelder_balkon
-    entity: light.balkon_licht
-    delay: 1200
-    behaviours:
-      on_enter_overridden: off
-    overrides:  
-      - binary_sensor.sonne_tagsueber
-      - binary_sensor.bewegungsmelder_inaktiv_unterwegs
-      - binary_sensor.bewegungsmelder_inaktiv_staubsauger
-      - input_boolean.bewegungsmelder_balkon_deaktiviert
-
-  bewegung_flur_vorne:
-    friendly_name: "Bewegung Flur vorne"
-    sensor: binary_sensor.bewegungsmelder_flur_vorne
-    entity: light.flur_vorne
-    delay: 120    
-    behaviours:
-      on_enter_overridden: off
-    overrides:
-      - binary_sensor.sonne_tagsueber
-      - binary_sensor.bewegungsmelder_inaktiv_unterwegs
-      - binary_sensor.bewegungsmelder_inaktiv_staubsauger
-      - input_boolean.bewegungsmelder_flur_deaktiviert
-
-  bewegung_flur_hinten:
-    friendly_name: "Bewegung Flur hinten"
-    sensor: binary_sensor.bewegungsmelder_flur_hinten
-    entity: light.flur_hinten
-    delay: 120
-    behaviours:
-      on_enter_overridden: off
-    overrides:
-      - binary_sensor.sonne_tagsueber
-      - binary_sensor.bewegungsmelder_inaktiv_unterwegs
-      - binary_sensor.bewegungsmelder_inaktiv_staubsauger
-      - input_boolean.bewegungsmelder_flur_deaktiviert
-
-  bewegung_kuechenregal:
-    friendly_name: "Bewegung Küchenregal"
-    sensor: binary_sensor.bewegungsmelder_kueche
-    entity: light.kuche_regal
-    delay: 120     
-    behaviours:
-      on_enter_overridden: off
-    overrides:
-      - binary_sensor.sonne_tagsueber
-      - binary_sensor.kuechelregal_inaktiv
-      - binary_sensor.bewegungsmelder_inaktiv_unterwegs
-      - binary_sensor.bewegungsmelder_inaktiv_staubsauger
-      - input_boolean.bewegungsmelder_kueche_deaktiviert
-
-  bewegung_kuechenschrank:
-    friendly_name: "Bewegung Küchenschrank"
-    sensor: binary_sensor.bewegungsmelder_kueche
-    entity: light.kuche_schrank
-    delay: 120
-    behaviours:
-      on_enter_overridden: off
-    overrides:            
-      - binary_sensor.sonne_tagsueber
-      - binary_sensor.kuechenschrank_inaktiv
-      - binary_sensor.bewegungsmelder_inaktiv_unterwegs
-      - binary_sensor.bewegungsmelder_inaktiv_staubsauger
-      - input_boolean.bewegungsmelder_kueche_deaktiviert
-      
-  bewegung_schlafzimmer_bett:
-    friendly_name: "Bewegung Schlafzimmer Bett"
-    sensor: binary_sensor.bewegungsmelder_schlafzimmer
-    entity: light.bett
-    delay: 120    
-    service_data:
-      brightness: 100
-    night_mode:
-      delay: 120
-      service_data:
-        brightness: 60
-      start_time: '23:00:00'
-      end_time: '05:00:00'     
-    behaviours:
-      on_enter_overridden: off
-    overrides:
-      - binary_sensor.sonne_tagsueber
-      - light.kleiderschrank
-      - binary_sensor.bewegungsmelder_inaktiv_unterwegs
-      - binary_sensor.bewegungsmelder_inaktiv_staubsauger
-      - input_boolean.bewegungsmelder_schlafzimmer_deaktiviert
-
-  bewegung_schlafzimmer_kleiderschrank:
-    friendly_name: "Bewegung Schlafzimmer Kleiderschrank"
-    sensor: binary_sensor.bewegungsmelder_schlafzimmer
-    entity: light.kleiderschrank
-    delay: 120 
-    behaviours:
-      on_enter_overridden: off
-    overrides:
-      - binary_sensor.schlafen_aktiv
-      - binary_sensor.sonne_tagsueber
-      - binary_sensor.fenster_schlafzimmer
-      - binary_sensor.bewegungsmelder_inaktiv_unterwegs
-      - binary_sensor.bewegungsmelder_inaktiv_staubsauger
-      - input_boolean.bewegungsmelder_schlafzimmer_deaktiviert      
-
-  bewegung_wohnzimmer:
-    friendly_name: "Bewegung Wohnzimmer"
-    sensor: binary_sensor.bewegungsmelder_wohnzimmer
-    entities: light.couch
-    delay: 60
-    behaviours:
-      on_enter_overridden: "off"
-    overrides:
-      - binary_sensor.sonne_tagsueber
-      - binary_sensor.bewegungsmelder_inaktiv_unterwegs
-      - binary_sensor.bewegungsmelder_inaktiv_staubsauger
-      - input_boolean.bewegungsmelder_wohnzimmer_deaktiviert
-      - switch.computer     
 
 automation:
   - alias: 'Letzte Bewegung'

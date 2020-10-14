@@ -17,6 +17,35 @@ input_boolean:
     initial: off
     icon: mdi:sync-off
 
+entity_controller:
+  bewegung_flur_vorne:
+    friendly_name: "Bewegung Flur vorne"
+    sensor: binary_sensor.bewegungsmelder_flur_vorne
+    entity: light.flur_vorne
+    delay: 120    
+    behaviours:
+      on_enter_overridden: off
+    overrides:
+      - binary_sensor.sonne_tagsueber
+      - binary_sensor.bewegungsmelder_inaktiv_unterwegs
+      - binary_sensor.bewegungsmelder_inaktiv_staubsauger
+      - input_boolean.bewegungsmelder_flur_deaktiviert
+
+  bewegung_flur_hinten:
+    friendly_name: "Bewegung Flur hinten"
+    sensor: binary_sensor.bewegungsmelder_flur_hinten
+    entity: light.flur_hinten
+    delay: 120
+    grace_period: 20
+    behaviours:
+      on_enter_overridden: off
+#      on_enter_blocked: off
+    overrides:
+      - binary_sensor.sonne_tagsueber
+      - binary_sensor.bewegungsmelder_inaktiv_unterwegs
+      - binary_sensor.bewegungsmelder_inaktiv_staubsauger
+      - input_boolean.bewegungsmelder_flur_deaktiviert  
+
 homeassistant:
   customize:
     light.flur_vorne:
