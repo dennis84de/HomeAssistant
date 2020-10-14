@@ -36,7 +36,7 @@ entity_controller:
     sensor: binary_sensor.bewegungsmelder_flur_hinten
     entity: light.flur_hinten
     delay: 120
-    grace_period: 20
+    grace_period: 60
     behaviours:
       on_enter_overridden: off
     overrides:
