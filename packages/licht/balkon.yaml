@@ -17,7 +17,7 @@ entity_controller:
     sensor: binary_sensor.bewegungsmelder_balkon
     entity: light.balkon_licht
     delay: 1200
-    grace_period: 20
+    grace_period: 60
     behaviours:
       on_enter_overridden: off
     overrides:  

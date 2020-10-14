@@ -39,7 +39,6 @@ entity_controller:
     grace_period: 20
     behaviours:
       on_enter_overridden: off
-#      on_enter_blocked: off
     overrides:
       - binary_sensor.sonne_tagsueber
       - binary_sensor.bewegungsmelder_inaktiv_unterwegs
