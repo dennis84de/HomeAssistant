@@ -277,9 +277,7 @@ homeassistant:
       icon: mdi:cellphone
     device_tracker.handymqtt:
       icon: mdi:cellphone
-    device_tracker.handyping:
-      icon: mdi:cellphone
-      
+
     device_tracker.magichomeflurvorne:
       icon: mdi:lightbulb-on-outline
     device_tracker.magichomeflurhinten:

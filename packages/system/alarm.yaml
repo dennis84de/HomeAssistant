@@ -218,21 +218,15 @@ script:
   alles_ausschalten:
     alias: "Alles ausschalten"
     sequence:
-      - service: switch.turn_off
-        entity_id: switch.alle_radios, switch.monitor, switch.schlafzimmer_fernseher, switch.watchtv_wohnzimmer, switch.watchtv_schlafzimmer, switch.arbeitszimmer_monitore
-      - service: light.turn_off
-        entity_id: light.couch, light.strahler, light.flur_vorne, light.flur_hinten, light.badezimmerschrank, light.bett, light.kleiderschrank, light.kuche_regal, light.schreibtisch, light.balkon_licht, light.arbeitszimmer_lampe, light.sportzimmer_regal
       - service: mqtt.publish
         data:
            topic: 'location/handy'
            payload: 'not_home'
            retain: true
-      - service: device_tracker.see
-        data_template:
-          dev_id: handygps
-          location_name: 'not_home'
-          gps: ["{{ state_attr('zone.home', 'latitude') }}", "{{ state_attr('zone.home', 'longitude') }}"] 
-                   
+      - service: switch.turn_off
+        entity_id: switch.alle_radios, switch.monitor, switch.schlafzimmer_fernseher, switch.watchtv_wohnzimmer, switch.watchtv_schlafzimmer, switch.arbeitszimmer_monitore
+      - service: light.turn_off
+        entity_id: light.couch, light.strahler, light.flur_vorne, light.flur_hinten, light.badezimmerschrank, light.bett, light.kleiderschrank, light.kuche_regal, light.schreibtisch, light.balkon_licht, light.arbeitszimmer_lampe, light.sportzimmer_regal               
       - choose:
           - conditions:
               - condition: state

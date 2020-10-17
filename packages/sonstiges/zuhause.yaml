@@ -15,7 +15,7 @@ binary_sensor:
         friendly_name: "zu Hause"
         device_class: presence
         value_template: >-
-          {% if is_state('device_tracker.handyping', 'home') and is_state('device_tracker.handymqtt', 'home') %}
+          {% if is_state('device_tracker.handy', 'home') and is_state('device_tracker.handymqtt', 'home') %}
             true
           {% else %}
             false
