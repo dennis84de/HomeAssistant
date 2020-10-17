@@ -636,8 +636,8 @@ class Model:
             if self.is_within_grace_period(): # check if we are within the grace period after making a service call (this avoids EC blocking itself)
                 self.log.debug("state_entity_state_change :: This state change is within %i seconds of calling a service. Ignoring this state change because its probably caused by EC itself." % self.config.get(CONF_IGNORE_STATE_CHANGES_UNTIL, 2))
             else:
-            self.log.debug("state_entity_state_change :: We are in active timer and the state of observed state entities changed.")
-            self.control()
+                self.log.debug("state_entity_state_change :: We are in active timer and the state of observed state entities changed.")
+                self.control()
 
         if self.is_blocked() or self.is_active_stay_on(): # if statement required to avoid MachineErrors, cleaner than adding transitions to all possible states.
             self.enable()
