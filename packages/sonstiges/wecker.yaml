@@ -289,20 +289,50 @@ automation:
       - service: script.wohnung_radios_einschalten       
       - choose:
           - conditions:
-            - condition: template
-              value_template: >-
-                {% set nowDate = now().strftime("%Y-%m-%d") %}
-                {% set lastTriggeredDate = as_timestamp(state_attr("automation.wecker_starten", "last_triggered")) | timestamp_custom("%Y-%m-%d", True) %}
+              - condition: state
+                entity_id: calendar.arbeit_buero
+                state: 'on'
+              - condition: or
+                conditions:
+                  - condition: numeric_state
+                    entity_id: input_text.corona_dortmund_gestern
+                    above: input_number.corona_grenzwert       
+                  - condition: numeric_state
+                    entity_id: input_text.corona_mulheim_gestern
+                    above: input_number.corona_grenzwert                        
+            sequence:
+              - service: !secret tts_service
+                data_template:                  
+                  message: >-
+                    {% set coronaDortmundGestern = states('input_text.corona_dortmund_gestern') | float %}
+                    {% set coronaMuelheimGestern = states('input_text.corona_mulheim_gestern') | float %}
+                    {% set coronaGrenzwert = states('input_number.corona_grenzwert') | float %}
+                    
+                    {% if coronaDortmundGestern >= coronaGrenzwert and coronaMuelheimGestern >= coronaGrenzwert %}
+                      Die Corona-Werte in Dortmund und Mülheim waren gestern zu hoch.
+                    {% elif coronaMuelheimGestern >= coronaGrenzwert %}          
+                      Der Corona-Wert in Mülheim war gestern zu hoch.
+                    {% elif coronaDortmundGestern >= coronaGrenzwert  %}
+                      Der Corona-Wert in Dortmund war gestern zu hoch.
+                    {% else %}
+                      Die Corona-Werte waren gestern unter dem Grenzwert.
+                    {% endif %}                    
+      - choose:
+          - conditions:
+              - condition: template
+                value_template: >-
+                  {% set nowDate = now().strftime("%Y-%m-%d") %}
+                  {% set lastTriggeredDate = as_timestamp(state_attr("automation.wecker_starten", "last_triggered")) | timestamp_custom("%Y-%m-%d", True) %}
 
-                {% if is_state('sensor.tablet_weckzeit', None) or is_state_attr('sensor.tablet_weckzeit', 'day', None) %}
-                  True
-                {% elif is_state('binary_sensor.wecker_ueberspringen', 'on') %}          
-                  True
-                {% elif nowDate != lastTriggeredDate %}
-                  True
-                {% else %}
-                  False
-                {% endif %}
+                  {% if is_state('sensor.tablet_weckzeit', None) or is_state_attr('sensor.tablet_weckzeit', 'day', None) %}
+                    True
+                  {% elif is_state('binary_sensor.wecker_ueberspringen', 'on') %}          
+                    True
+                  {% elif nowDate != lastTriggeredDate %}
+                    True
+                  {% else %}
+                    False
+                  {% endif %}
             sequence:
               - service: switch.turn_on
                 entity_id: switch.watchtv_wohnzimmer
