@@ -35,13 +35,7 @@ cards:
   - type: entities
     title: Synology Diskstation
     show_header_toggle: false
-    entities:     
-      - entity: sensor.diskstation_cpu_load_total
-      - entity: sensor.diskstation_memory_usage_real
-      - entity: sensor.diskstation_volume_1_volume_used
-      - entity: sensor.diskstation_volume_1_status
-      - entity: sensor.diskstation_network_up
-      - entity: sensor.diskstation_network_down
+    entities:
       - entity: binary_sensor.diskstation
         name: Verfügbarkeit
         

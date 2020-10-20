@@ -18,8 +18,7 @@ cards:
   - type: entities
     title: Netzwerk
     show_header_toggle: false
-    entities:      
-      - entity: device_tracker.diskstation
+    entities:
       - entity: device_tracker.netzwerkdj
       - entity: device_tracker.fritzrepeater
       - entity: device_tracker.pihole

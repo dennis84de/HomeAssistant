@@ -1,7 +1,6 @@
 heimnetz:
   name: Heimnetz
   entities:
-    - device_tracker.diskstation
     - device_tracker.pihole
     - device_tracker.soundbar
     - device_tracker.dreamscreen

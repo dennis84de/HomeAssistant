@@ -1,30 +1,13 @@
 speedtestdotnet:
 
-#device_tracker:
-#  - platform: fritz
-#    host: !secret fritzbox_host
-#    username: !secret fritzbox_username
-#    password: !secret fritzbox_password
-#    interval_seconds: 5
-#    consider_home: 60
-#    new_device_defaults:
-#      track_new_devices: false
-#      
-#  - platform: fritz
-#    host: !secret repeater_host
-#    username: !secret fritzbox_username
-#    password: !secret fritzbox_password
-#    interval_seconds: 5
-#    consider_home: 60
-#    new_device_defaults:
-#      track_new_devices: false      
-
 device_tracker:
   - platform: nmap_tracker
     scan_options: " --privileged -sn "
     hosts:
       - !secret nmap_hosts                
-    
+    exclude:
+     - !secret synology_host
+     
 input_text:
   guest_wifi_password:
     name: Gäste Wlan - Password
