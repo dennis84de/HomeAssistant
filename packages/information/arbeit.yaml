@@ -10,8 +10,16 @@ device_tracker:
 timer:
   home_office_ende:
     name: "Home Office beenden"
-    duration: 7
-    
+    duration: 7   
+
+input_text:
+  alarm_standard_office:
+    name: Wecker Büro
+    initial: '05:15'
+  alarm_standard_homeoffice:
+    name: Wecker Home Office 
+    initial: '06:00'    
+            
 sensor:
   - platform: here_travel_time
     name: Fahrzeit zur Arbeit
@@ -51,7 +59,7 @@ binary_sensor:
   - platform: template
     sensors:
       home_office:
-        friendly_name: Home Office
+        friendly_name: 'Home Office'
         icon_template: mdi:home-city
         value_template: >-
           {% set istHomeOffice = is_state('input_boolean.home_office', 'on') %}
@@ -61,6 +69,20 @@ binary_sensor:
           {% set vorArbeitsEnde = states('sensor.time') <= (state_attr('input_datetime.arbeit_ende', 'timestamp') | int | timestamp_custom('%H:%M', False)) %}
           
           {{ True if (istHomeOffice and istArbeitstag and keinUrlaub and nachArbeitsBeginn and vorArbeitsEnde) else False }}
+          
+      office_morgen:
+        friendly_name: 'Büro heute'
+        device_class: opening
+        value_template: >-
+          {% set NextOffice = state_attr('calendar.arbeit_buero', 'start_time') %}
+          
+          {% if NextOffice == None %}
+            False
+          {% else %}
+            {% set NextOfficeTime = strptime(state_attr('calendar.arbeit_buero', 'start_time'),'%Y-%m-%d %H:%M:%S') %}
+
+            {{ NextOfficeTime.strftime('%j')|int - now().strftime('%j')|int == 1 }}          
+          {% endif %}
           
 switch:
   - platform: template
@@ -176,9 +198,7 @@ script:
       - service: switch.turn_off
         entity_id: switch.schlafzimmer_radio, switch.monitor
       - service: switch.turn_on
-        entity_id: switch.arbeitszimmer_radio, switch.pc_arbeit, switch.arbeitszimmer_monitore
-      - service: light.turn_off
-        entity_id: light.schreibtisch, light.arbeitszimmer_lampe        
+        entity_id: switch.arbeitszimmer_radio, switch.pc_arbeit, switch.arbeitszimmer_monitore  
       - condition: state
         entity_id: input_boolean.computer_ausschalten
         state: 'on'
@@ -279,9 +299,17 @@ automation:
       - platform: state
         entity_id: calendar.arbeit_buero
     action:
-      - service: input_boolean.turn_{{ trigger.to_state.state }}
-        entity_id: input_boolean.home_office
-
+      - choose:
+          - conditions:
+              - condition: template
+                value_template: "{{ True if trigger.to_state.state == 'on' else False }}"
+            sequence:
+              - service: input_boolean.turn_off
+                entity_id: input_boolean.home_office
+        default:
+          - service: input_boolean.turn_on
+            entity_id: input_boolean.home_office
+            
   - alias: 'Benachrichtigung Arbeit'
     trigger:
       - platform: template
