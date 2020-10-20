@@ -178,18 +178,6 @@ script:
         data_template:
           echo: "flur"          
           message: >-
-            {% set currentTime = states('sensor.time') %}
-            
-            {% if '00:00' <= currentTime < '05:00' %}
-              {% set dayMessage = 'Gute Nacht' %}
-            {% elif '05:00' <= currentTime < '10:00' %}
-              {% set dayMessage = 'Guten Morgen' %}
-            {% elif '12:00' <= currentTime < '18:00' %}
-              {% set dayMessage = 'Guten Tag' %}
-            {% else %}
-              {% set dayMessage = 'Guten Abend' %}
-            {% endif %}
-            
             {% if is_state('binary_sensor.reinigung_heute', 'on') %}
               {% set vacuumMessage = 'Die Wohnung wird heute gesaugt.' %}
             {% else %}
@@ -212,7 +200,7 @@ script:
               {% set windowMessage = 'Die folgenden Fenster sind noch geöffnet: ' + openWindows | join(', ')  + '.' %}
             {% endif %}
             
-            {{ vacuumMessage }} {{ windowMessage }} Alle Geräte werden ausgeschaltet. {{ dayMessage }} und auf Wiedersehen.               
+            {{ vacuumMessage }} {{ windowMessage }} Alle Geräte werden ausgeschaltet. Auf Wiedersehen.               
       - service: script.alles_ausschalten   
       
   alles_ausschalten:
