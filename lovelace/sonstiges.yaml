@@ -64,6 +64,14 @@ cards:
     title: Corona Virus
     show_header_toggle: false
     entities:
+      - entity: sensor.corona_dortmund
+        name: Dortmund
+        type: "custom:secondaryinfo-entity-row"
+        secondary_info: "[[ sensor.corona_dortmund.attributes.last_update ]]"
+      - entity: sensor.corona_mulheim
+        name: Mülheim an der Ruhr
+        type: "custom:secondaryinfo-entity-row"
+        secondary_info: "[[ sensor.corona_mulheim.attributes.last_update ]]"
       - entity: sensor.germany_coronavirus_confirmed
         name: Bestätigt
       - entity: sensor.germany_coronavirus_current

@@ -20,6 +20,34 @@ sensor:
       - 'time'
       - 'date'
 
+  - platform: rest
+    name: Corona Dortmund
+    resource: !secret corona_dortmund_rest    
+    scan_interval: 3600
+    value_template: "{{ value_json['features'][0]['attributes'].cases7_per_100k | round(1) }}"
+    json_attributes_path: "$['features'][0]['attributes']"
+    json_attributes:
+      - last_update
+      - cases
+      - cases_per_100k
+      - deaths
+      - EWZ
+      - cases7_bl_per_100k
+      
+  - platform: rest
+    name: Corona Mülheim
+    resource: !secret corona_muelheim_rest    
+    scan_interval: 3600
+    value_template: "{{ value_json['features'][0]['attributes'].cases7_per_100k | round(1) }}"
+    json_attributes_path: "$['features'][0]['attributes']"
+    json_attributes:
+      - last_update
+      - cases
+      - cases_per_100k
+      - deaths
+      - EWZ
+      - cases7_bl_per_100k
+      
   - platform: template
     sensors:
       tankstelle_real:
@@ -165,3 +193,8 @@ homeassistant:
       friendly_name: Tankstelle Jet
     sensor.tankerkoenig_supermarkt_tankstelle_am_real_markt_dortmund_wulfshofstr_e10:
       friendly_name: Tankstelle Real
+      
+    sensor.corona_dortmund:
+      icon: mdi:home-analytics
+    sensor.corona_mulheim:
+      icon: mdi:briefcase      
