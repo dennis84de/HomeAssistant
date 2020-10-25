@@ -117,7 +117,8 @@ class SpaceXBinarySensor(BinarySensorEntity):
         """Return the attributes."""
         launch_data = self.coordinator.data["next_launch"]
 
-        self.attrs["last_updated"] = launch_data["last_date_update"]
+        if "last_date_update" in launch_data:
+            self.attrs["last_updated"] = launch_data["last_date_update"]
 
         return self.attrs
 
