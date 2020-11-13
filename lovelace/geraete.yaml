@@ -125,7 +125,7 @@ cards:
       - entity: zigate.kuehlschranktuer
       - entity: zigate.bett
       - entity: zigate.cube
-      - entity: zigate.helligkeit_wohnzimmer
+      - entity: zigate.helligkeit_balkon
         name: Helligkeit
       
   - type: entities

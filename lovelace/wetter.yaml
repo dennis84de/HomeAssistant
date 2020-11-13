@@ -142,7 +142,8 @@ cards:
     title: Sonne
     show_header_toggle: false
     entities:
-      - entity: sensor.helligkeit
+      - entity: sensor.helligkeit_wetter
+        name: Helligkeit
       - entity: sensor.uv_index_current
       - entity: sensor.uv_index_max
       - entity: sensor.zeit_sonne

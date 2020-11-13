@@ -1,6 +1,6 @@
 media_player:
   - platform: androidtv
-    host: 192.168.2.27
+    host: 192.168.2.35
     name: Fire TV Sportzimmer   
     adbkey: '/home/homeassistant/.homeassistant/adbkey'
    

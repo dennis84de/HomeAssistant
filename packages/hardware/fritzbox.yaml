@@ -9,6 +9,9 @@ device_tracker:
      - !secret synology_host
      
 input_text:
+  guest_wifi_ssid:
+    name: Gäste Wlan - SSID
+    
   guest_wifi_password:
     name: Gäste Wlan - Password
 
@@ -63,9 +66,9 @@ sensor:
       gaeste_wlan_ssid:
         friendly_name: "Gäste-Wlan SSID"
         value_template: >-
-          {{ state_attr('switch.fritzbox_guest_wifi', 'ssid')}}
+          {{ states('input_text.guest_wifi_ssid')}}
         icon_template: >-
-            {% if is_state('switch.fritzbox_guest_wifi', 'on') == True %}
+            {% if is_state('switch.fritzbox_7272_guest_wifi', 'on') == True %}
               mdi:wifi
             {% else %}
               mdi:wifi-off
@@ -76,7 +79,7 @@ sensor:
         value_template: >-
           {{ states('input_text.guest_wifi_password')}}
         icon_template: >-
-            {% if is_state('switch.fritzbox_guest_wifi', 'on') == True %}
+            {% if is_state('switch.fritzbox_7272_guest_wifi', 'on') == True %}
               mdi:wifi-strength-4-lock
             {% else %}
               mdi:wifi-strength-lock-outline
@@ -118,7 +121,7 @@ automation:
   - alias: "Gäste-Wlan eingeschaltet - TTS"
     trigger:
       - platform: state
-        entity_id: switch.fritzbox_guest_wifi
+        entity_id: switch.fritzbox_7272_guest_wifi
         from: 'off'
         to: 'on'
     action:
@@ -132,7 +135,7 @@ automation:
   - alias: "Gäste-Wlan ausgeschaltet - TTS"
     trigger:
       - platform: state
-        entity_id: switch.fritzbox_guest_wifi
+        entity_id: switch.fritzbox_7272_guest_wifi
         from: 'on'
         to: 'off'
     action:
@@ -149,7 +152,7 @@ homeassistant:
       icon: mdi:router-wireless
     switch.fritzbox_wifi:
       friendly_name: Wlan
-    switch.fritzbox_guest_wifi:
+    switch.fritzbox_7272_guest_wifi:
       friendly_name: Gäste Wlan
 
     device_tracker.tplinkwohnzimmerradio:

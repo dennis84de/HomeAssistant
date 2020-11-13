@@ -65,10 +65,11 @@ binary_sensor:
           {% set istHomeOffice = is_state('input_boolean.home_office', 'on') %}
           {% set istArbeitstag = is_state('binary_sensor.arbeitstag', 'on') %}
           {% set keinUrlaub = is_state('calendar.urlaub', 'off') %}
+          {% set nichtKrank = is_state('calendar.arbeit_krank', 'off') %}
           {% set nachArbeitsBeginn = states('sensor.time') >= (state_attr('input_datetime.arbeit_beginn', 'timestamp') | int | timestamp_custom('%H:%M', False)) %}
           {% set vorArbeitsEnde = states('sensor.time') <= (state_attr('input_datetime.arbeit_ende', 'timestamp') | int | timestamp_custom('%H:%M', False)) %}
           
-          {{ True if (istHomeOffice and istArbeitstag and keinUrlaub and nachArbeitsBeginn and vorArbeitsEnde) else False }}
+          {{ True if (istHomeOffice and istArbeitstag and keinUrlaub and nichtKrank and nachArbeitsBeginn and vorArbeitsEnde) else False }}
           
       office_morgen:
         friendly_name: 'Büro heute'
@@ -102,28 +103,6 @@ switch:
           data:
             topic: "iotlink/schenck/jaeschke-pc/commands/hibernate"
             payload: ""
-            
-  - platform: mqtt
-    name: "Arbeitszimmer Monitor links"
-    state_topic: "stat/arbeitszimmermonitorlinks/POWER"
-    command_topic: "cmnd/arbeitszimmermonitorlinks/POWER"
-    availability_topic: "tele/arbeitszimmermonitorlinks/LWT"
-    qos: 1
-    payload_on: "ON"
-    payload_off: "OFF"
-    payload_available: "Online"
-    payload_not_available: "Offline"  
-          
-  - platform: mqtt
-    name: "Arbeitszimmer Monitor rechts"
-    state_topic: "stat/arbeitszimmermonitorrechts/POWER"
-    command_topic: "cmnd/arbeitszimmermonitorrechts/POWER"
-    availability_topic: "tele/arbeitszimmermonitorrechts/LWT"
-    qos: 1
-    payload_on: "ON"
-    payload_off: "OFF"
-    payload_available: "Online"
-    payload_not_available: "Offline"  
     
   - platform: template
     switches:

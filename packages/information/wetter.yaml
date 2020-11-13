@@ -31,10 +31,10 @@ binary_sensor:
       sonne_tagsueber:
         friendly_name: "Sonne tagsüber"
         value_template: >-
-          {% if is_state('sensor.helligkeit', None) or is_state('sensor.helligkeit', 'unknown') %}
+          {% if is_state('sensor.helligkeit_balkon', None) or is_state('sensor.helligkeit_balkon', 'unknown') %}
             False
           {% else %}
-            {{ states('sensor.helligkeit') | float > 20 }}
+            {{ states('sensor.helligkeit_balkon') | float > 23000 }}
           {% endif %}
           
       sommerzeit:
@@ -204,8 +204,8 @@ sensor:
           {% elif (states('sensor.darksky_precip_intensity') | int > 7) %} Regen
           {% else %} Klar {% endif %}
 
-      helligkeit:
-        friendly_name: 'Helligkeit'
+      helligkeit_wetter:
+        friendly_name: 'Helligkeit Wetter'
         value_template: >-
           {%- set irradiance = states('sensor.br_irradiance') | float %} 
           {%- set irradiance_pct = irradiance / 10 %}
@@ -547,7 +547,8 @@ homeassistant:
     binary_sensor.protection_window:
       friendly_name: Sonnenschutz
 
-    sensor.helligkeit:
+    sensor.helligkeit_wetter:
+      name: Helligkeit
       icon: mdi:theme-light-dark
 
     sensor.strommix:

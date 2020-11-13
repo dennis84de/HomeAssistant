@@ -1,26 +1,4 @@
-switch:
-  - platform: mqtt
-    name: "Balkon Radio"
-    state_topic: "stat/balkonradio/POWER"
-    command_topic: "cmnd/balkonradio/POWER"
-    availability_topic: "tele/balkonradio/LWT"
-    qos: 1
-    payload_on: "ON"
-    payload_off: "OFF"
-    payload_available: "Online"
-    payload_not_available: "Offline"
-        
-  - platform: mqtt
-    name: "Arbeitszimmer Radio"
-    state_topic: "stat/arbeitszimmerradio/POWER"
-    command_topic: "cmnd/arbeitszimmerradio/POWER"
-    availability_topic: "tele/arbeitszimmerradio/LWT"
-    qos: 1
-    payload_on: "ON"
-    payload_off: "OFF"
-    payload_available: "Online"
-    payload_not_available: "Offline"
-    
+switch:   
   - platform: template
     switches:
       wiedergabe_badezimmer:
@@ -266,7 +244,7 @@ automation:
         to: 'on'
       - platform: state
         entity_id: binary_sensor.schalter_arbeitszimmer
-        to: 'off'        
+        to: 'off'    
     condition:
       - condition: state
         entity_id: switch.wiedergabe_aktiv

@@ -32,6 +32,10 @@ automation:
       - platform: state
         entity_id: binary_sensor.schalter_balkon
         to: 'off'
+    condition:
+      - condition: state
+        entity_id: calendar.borussia_dortmund
+        state: 'off'      
     action:
       - service: light.toggle
         entity_id: light.balkon_licht

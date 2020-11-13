@@ -75,6 +75,11 @@ automation:
       - condition: state
         entity_id: binary_sensor.schlafen_aktiv
         state: 'on'
+      - condition: state        
+        entity_id: binary_sensor.im_bett
+        state: 'on'   
+        for:
+          seconds: 1   
       - condition: or
         conditions:
           - condition: state

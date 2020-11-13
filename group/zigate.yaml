@@ -28,4 +28,4 @@ zigate:
     - zigate.steckdose_strahler
     - zigate.steckdose_couch
     - zigate.cube
-    - zigate.helligkeit_wohnzimmer
+    - zigate.helligkeit_balkon

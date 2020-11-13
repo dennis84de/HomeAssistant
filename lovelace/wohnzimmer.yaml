@@ -117,6 +117,7 @@ cards:
       - entity: binary_sensor.bewegungsmelder_balkon
         name: Bewegungsmelder
       - entity: sensor.helligkeit_balkon
+        name: Helligkeit
       - entity: light.balkon_licht
         name: Licht      
       - entity: switch.balkon_radio

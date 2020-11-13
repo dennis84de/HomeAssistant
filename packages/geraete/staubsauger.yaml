@@ -37,7 +37,7 @@ binary_sensor:
           {% set letzteReinigung = as_timestamp(state_attr("automation.staubsaugen_beendet", "last_triggered")) | timestamp_custom("%Y-%m-%d 00:00:00", True) %}
           {% set abstandTage = ((as_timestamp(heute) - as_timestamp(letzteReinigung)) / 60 / 60 / 24) | int %}
           
-          {% if (keinUrlaub and wochentag != 7 and (arbeitstag or wochentag == 6) and abstandTage >= 1) and
+          {% if (keinUrlaub and wochentag != 7 and (arbeitstag or wochentag == 6) and abstandTage > 1) and
             ((wochentag == 1 or wochentag == 4) or abstandTage >= 3)
           %}
             True

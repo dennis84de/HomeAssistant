@@ -5,16 +5,9 @@ light:
         name: Schreibtisch
         mode: "rgb"
 
-  - platform: mqtt
-    name: "Arbeitszimmer Lampe"
-    state_topic: "stat/arbeitszimmerlampe/POWER"
-    command_topic: "cmnd/arbeitszimmerlampe/POWER"
-    availability_topic: "tele/arbeitszimmerlampe/LWT"
-    qos: 1
-    payload_on: "ON"
-    payload_off: "OFF"
-    payload_available: "Online"
-    payload_not_available: "Offline"
+  - platform: switch
+    name: Arbeitszimmer Lampe
+    entity_id: switch.arbeitszimmer_lampe
         
 input_boolean:
   bewegungsmelder_arbeitszimmer_deaktiviert:

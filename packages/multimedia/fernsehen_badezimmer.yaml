@@ -1,6 +1,6 @@
 media_player:
   - platform: androidtv
-    host: 192.168.2.33
+    host: 192.168.2.59
     name: Fire TV Badezimmer
     adbkey: '/home/homeassistant/.homeassistant/adbkey'
     

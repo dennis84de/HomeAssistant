@@ -187,6 +187,7 @@ automation:
           - condition: state
             entity_id: binary_sensor.zu_hause
             state: 'off'
+            for: '00:05:00'
           - condition: state
             entity_id: binary_sensor.tuersensor
             state: 'off'

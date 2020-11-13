@@ -5,16 +5,9 @@ light:
         name: Küche Regal
         mode: "rgb"
 
-  - platform: mqtt
-    name: "Küche Schrank"
-    state_topic: "stat/kuechenschrank/POWER"
-    command_topic: "cmnd/kuechenschrank/POWER"
-    availability_topic: "tele/kuechenschrank/LWT"
-    qos: 1
-    payload_on: "ON"
-    payload_off: "OFF"
-    payload_available: "Online"
-    payload_not_available: "Offline"
+  - platform: switch
+    name: Küche Schrank
+    entity_id: switch.kuchenschrank
         
 input_boolean:
   bewegungsmelder_kueche_deaktiviert:

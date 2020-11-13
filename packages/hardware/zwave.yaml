@@ -3,9 +3,9 @@ homeassistant:
     zwave.aeotec_zw090_zstick_gen5_eu:
       friendly_name: Z-Wave Stick
 
-    sensor.badezimmer_helligkeit:
+    sensor.helligkeit_badezimmer:
       device_class: illuminance
-    sensor.wohnzimmer_helligkeit:
+    sensor.helligkeit_wohnzimmer:
       device_class: illuminance
     sensor.wohnzimmer_luftfeuchtigkeit:
       device_class: humidity
