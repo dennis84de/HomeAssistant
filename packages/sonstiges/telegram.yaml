@@ -147,3 +147,20 @@ automation:
           caption: 'Kamera'
           url: 'http://192.168.2.75:8123/api/camera_proxy/camera.wohnzimmer?token={{ state_attr("camera.wohnzimmer", "access_token") }}'
                
+  - alias: 'Telegram - Lichtsimulation einschalten'
+    trigger:
+      - platform: event
+        event_type: telegram_command
+        event_data:
+          command: '/licht_ein'
+    action:
+      - service: presence_simulation.start
+               
+  - alias: 'Telegram - Lichtsimulation ausschalten'
+    trigger:
+      - platform: event
+        event_type: telegram_command
+        event_data:
+          command: '/licht_aus'
+    action:
+      - service: presence_simulation.stop               

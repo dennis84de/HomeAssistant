@@ -1,0 +1,14 @@
+{
+    "title": "Simulation de présence",
+    "config": {
+        "step": {
+		"user":{
+			"description": "Configuration",
+			"data": {
+				"entities": "Entitée ou groupe d'entitées",
+				"delta": "Delta (nombre de jours)"
+			}
+		}
+	}
+    }
+}

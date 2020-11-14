@@ -79,43 +79,18 @@ automation:
             inline_keyboard:
               - 'Alles Ausschalten:/alles_ausschalten'
 
-  - alias: "Unterwegs - Lichtsimulation starten"
+  - alias: "Urlaub - Lichtsimulation einschalten"
     trigger:
-      - platform: time_pattern
-        minutes: '/10'
-    condition:
-      - condition: state
+      - platform: state
         entity_id: binary_sensor.zu_hause
-        state: 'off'
-      - condition: state
-        entity_id: calendar.urlaub
-        state: 'on'
-      - condition: sun
-        after: sunset
-        after_offset: '-00:30:00'
-      - condition: time
-        before: '22:30:00'
-    action:
-      - delay: "00:{{ '{:02}'.format(range(0, 30) | random | int) }}:00"
-      - service: homeassistant.toggle
-        data_template:
-          entity_id: "{{ state_attr('group.licht_unterwegs','entity_id') | random }}"
-
-  - alias: "Unterwegs - Lichtsimulation beenden"
-    trigger:
-      - platform: time
-        at: '22:30:00'
+        to: 'off'
     condition:
-      - condition: state
-        entity_id: binary_sensor.zu_hause
-        state: 'off'
       - condition: state
         entity_id: calendar.urlaub
         state: 'on'        
     action:
-      - delay: '00:{{ range(15,59) | random | int }}:00'
-      - service: homeassistant.turn_off
-        entity_id: group.licht_unterwegs
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.licht_simulaton
 
   - alias: "Zu Hause"
     trigger:
@@ -166,7 +141,13 @@ automation:
                 entity_id: sensor.laufzeit_minuten
                 above: 5   
             sequence:           
-              - service: script.zu_hause_abends      
+              - service: script.zu_hause_abends     
+          - conditions:
+              - condition: state
+                entity_id: sensor.presence_simulation
+                state: 'on'
+            sequence:
+              - service: presence_simulation.stop
 
   - alias: "Zu Hause - Begrüßung aktivieren"
     trigger:

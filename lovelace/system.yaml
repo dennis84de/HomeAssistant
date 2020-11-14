@@ -93,6 +93,7 @@ cards:
       - entity: input_boolean.besuch
       - entity: input_boolean.nicht_stoeren
       - entity: script.alexa_witz_gestartet
+      - entity: input_boolean.licht_simulaton
       
   - type: entities
     title: Radios
