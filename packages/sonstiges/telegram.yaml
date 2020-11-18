@@ -155,6 +155,10 @@ automation:
           command: '/licht_ein'
     action:
       - service: presence_simulation.start
+      - service: telegram_bot.send_message
+        data_template:
+          target: '{{ trigger.event.data.chat_id }}'
+          message: "Die Lichtsimulation wird gestartet."
                
   - alias: 'Telegram - Lichtsimulation ausschalten'
     trigger:
@@ -163,4 +167,8 @@ automation:
         event_data:
           command: '/licht_aus'
     action:
-      - service: presence_simulation.stop               
+      - service: presence_simulation.stop    
+      - service: telegram_bot.send_message
+        data_template:
+          target: '{{ trigger.event.data.chat_id }}'
+          message: "Die Lichtsimulation wird beendet."

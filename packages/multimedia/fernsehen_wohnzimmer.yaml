@@ -96,41 +96,47 @@ script:
     sequence:
       - service: switch.turn_on
         entity_id: switch.wohnzimmer_fernseher
-      - service: media_player.turn_on
-        entity_id: media_player.soundbar        
-      - wait_template: "{{is_state('media_player.soundbar', 'on')}}"
-      - service: media_player.select_source
-        entity_id: media_player.soundbar
-        data:
-          source: TV
+      - choose:
+          - conditions:
+              - condition: state
+                entity_id: media_player.soundbar
+                state: 'off'
+            sequence:  
+              - service: media_player.turn_on
+                entity_id: media_player.soundbar        
+              - wait_template: "{{is_state('media_player.soundbar', 'on')}}"
+              - service: media_player.select_source
+                entity_id: media_player.soundbar
+                data:
+                  source: TV
 
   watchtv_wohnzimmer_off:
     alias: "Fernsehen Wohnzimmer ausschalten"
     sequence:
-    - service: media_player.media_stop
-      entity_id: media_player.kodi_wohnzimmer
-    - wait_template: "{{is_state('media_player.kodi_wohnzimmer', 'idle')}}"
-      timeout: '00:00:05'
-      continue_on_timeout: 'true'
-    - service: media_player.turn_off
-      entity_id: media_player.kodi_wohnzimmer
-    - wait_template: "{{is_state('media_player.kodi_wohnzimmer', 'off')}}"
-      timeout: '00:00:05'
-      continue_on_timeout: 'true'       
-    - service: switch.turn_off
-      entity_id: switch.wohnzimmer_fernseher
-    - service: input_select.select_option
-      data:
-        entity_id: input_select.dreamscreen_modus
-        option: "Aus"
-    - choose:
-        - conditions:
-            - condition: state
-              entity_id: media_player.soundbar
-              state: 'off'
-          sequence:
-            - service: media_player.turn_off
-              entity_id: media_player.soundbar
+      - service: media_player.media_stop
+        entity_id: media_player.kodi_wohnzimmer
+      - wait_template: "{{is_state('media_player.kodi_wohnzimmer', 'idle')}}"
+        timeout: '00:00:05'
+        continue_on_timeout: 'true'
+      - service: media_player.turn_off
+        entity_id: media_player.kodi_wohnzimmer
+      - wait_template: "{{is_state('media_player.kodi_wohnzimmer', 'off')}}"
+        timeout: '00:00:05'
+        continue_on_timeout: 'true'       
+      - service: switch.turn_off
+        entity_id: switch.wohnzimmer_fernseher
+      - service: input_select.select_option
+        data:
+          entity_id: input_select.dreamscreen_modus
+          option: "Aus"
+      - choose:
+          - conditions:
+              - condition: state
+                entity_id: media_player.soundbar
+                state: 'on'
+            sequence:
+              - service: media_player.turn_off
+                entity_id: media_player.soundbar
 automation:      
   - alias: "Kodi - Musik ausschalten"
     trigger:

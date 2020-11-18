@@ -17,7 +17,7 @@ alarm_control_panel:
     armed_away:
       arming_time: 0
 
-automation:
+automation:      
   - alias: "Alarm - Aktiviert"
     trigger:
       - platform: state

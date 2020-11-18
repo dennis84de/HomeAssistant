@@ -414,6 +414,33 @@ automation:
             Ein eingehender Anruf von {{ state_attr('sensor.telefon', 'from_name') }}.
           {% endif %}
 
+  - alias: "Telefon aktiv - Anruf verpasst"
+    trigger:
+      - platform: state
+        entity_id: sensor.telefon
+        from: 'ringing'
+        to: 'idle'
+    condition:
+      - condition: state
+        entity_id: binary_sensor.zu_hause
+        state: 'on'
+    action:
+      - service: persistent_notification.create
+        data:
+          title: "Anruf verpasst"
+          notification_id: anruf_verpasst
+          message: >-
+            {% set from = trigger.from_state.attributes.from %}
+            {% set from_name = trigger.from_state.attributes.from_name %}
+            
+            {% if name == None or name == '' %}
+              Ein verpasster Anruf ohne Rufnummer.
+            {% elif from_name == None or from_name == 'unknown' %}
+              Ein verpasster Anruf von einer unbekannten Rufnummer.
+            {% else %}
+              Ein verpasster Anruf von {{ from_name }}.
+            {% endif %}            
+          
 homeassistant:
   customize:
     sensor.telefon:

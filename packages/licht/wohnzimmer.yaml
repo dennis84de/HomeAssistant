@@ -39,7 +39,10 @@ automation:
         after: '15:00'
       - condition: state
         entity_id: binary_sensor.zu_hause
-        state: 'on'  
+        state: 'on'
+      - condition: state
+        entity_id: binary_sensor.home_office
+        state: 'off'
       - condition: state
         entity_id: light.couch
         state: 'off'

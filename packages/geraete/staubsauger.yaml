@@ -35,7 +35,12 @@ binary_sensor:
           {% set keinUrlaub = is_state('calendar.urlaub', 'off') %}
           {% set heute = as_timestamp(now()) | timestamp_custom("%Y-%m-%d 00:00:00", True) %}
           {% set letzteReinigung = as_timestamp(state_attr("automation.staubsaugen_beendet", "last_triggered")) | timestamp_custom("%Y-%m-%d 00:00:00", True) %}
-          {% set abstandTage = ((as_timestamp(heute) - as_timestamp(letzteReinigung)) / 60 / 60 / 24) | int %}
+          
+          {% if letzteReinigung %}
+            {% set abstandTage = ((as_timestamp(heute) - as_timestamp(letzteReinigung)) / 60 / 60 / 24) | int %}
+          {% else %}
+            {% set abstandTage = 0 %}
+          {% endif %}
           
           {% if (keinUrlaub and wochentag != 7 and (arbeitstag or wochentag == 6) and abstandTage > 1) and
             ((wochentag == 1 or wochentag == 4) or abstandTage >= 3)
