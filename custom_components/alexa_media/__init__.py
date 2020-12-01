@@ -1058,8 +1058,7 @@ async def test_login_status(hass, config_entry, login) -> bool:
     _LOGGER.debug("Testing login status: %s", login.status)
     if login.status and login.status.get("login_successful"):
         return True
-    account = config_entry.data
-    _LOGGER.debug("Logging in: %s %s", obfuscate(account), in_progess_instances(hass))
+    account = config_entry.data   
     _LOGGER.debug("Login stats: %s", login.stats)
     message: Text = (
         "Reauthenticate on the [Integrations](/config/integrations) page. "
