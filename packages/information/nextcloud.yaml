@@ -16,7 +16,7 @@ sensor:
           {{ bytesSent }}          
         icon_template: >-
           mdi:server
-       
+            
 nextcloud:
     url: !secret nextcloud_url_https
     username: !secret nextcloud_username

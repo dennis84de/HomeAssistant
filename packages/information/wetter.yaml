@@ -9,6 +9,8 @@ camera:
     still_image_url: http://www.grueninger.com/webcam/current.jpg
     name: Dortmund
 
+ble_monitor:
+
 gdacs:
   radius: 100
   

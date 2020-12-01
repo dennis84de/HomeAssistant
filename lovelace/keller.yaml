@@ -1,0 +1,33 @@
+title: Keller
+path: keller 
+cards:     
+  - type: entities
+    title: Radio
+    show_header_toggle: false
+    entities:
+      - type: custom:mini-media-player
+        entity: media_player.keller
+        group: true
+        hide:
+          source: true
+          progress: true
+        
+  - type: glance
+    title: Waschmaschine
+    show_header_toggle: false
+    entities:
+      - entity: switch.waschmaschine
+      - entity: sensor.waschmaschine_status
+        name: Status
+      - entity: sensor.waschmaschine_verbrauch
+        name: Verbrauch
+
+  - type: glance
+    title: Trockner
+    show_header_toggle: false
+    entities:
+      - entity: switch.trockner
+      - entity: sensor.trockner_status
+        name: Status
+      - entity: sensor.trockner_verbrauch
+        name: Verbrauch

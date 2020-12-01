@@ -362,4 +362,3 @@ homeassistant:
       icon: mdi:radio   
     switch.balkon_radio:
       icon: mdi:radio
-      assumed_state: false     

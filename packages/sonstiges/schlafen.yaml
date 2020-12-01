@@ -448,7 +448,7 @@ automation:
 homeassistant:
   customize:
     script.schlafen_gehen:
-      icon: mdi:hotel
+      icon: mdi:power-sleep
       can_cancel: false
     sensor.schlafen_letzte_uhrzeit:
       friendly_name: "Letzte Uhrzeit"

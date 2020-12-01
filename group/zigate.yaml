@@ -19,7 +19,7 @@ zigate:
     - zigate.thermometer_schlafzimmer
     - zigate.thermometer_arbeitszimmer
     - zigate.thermometer_sportzimmer
-    - zigate.thermometer_kueche    
+    - zigate.thermometer_kueche
     - zigate.thermometer_hardware
     - zigate.tuersensor
     - zigate.kuehlschranktuer

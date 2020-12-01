@@ -24,7 +24,23 @@ alles_ausschalten:
     - light.kuche_regal
     - light.balkon_licht
     - fan.ventilator
-
+    
+licht_wohnung:
+  name: Licht Wohnung
+  entities:
+    - light.couch
+    - light.strahler
+    - light.arbeitszimmer_lampe
+    - light.sportzimmer_regal
+    - light.schreibtisch
+    - light.flur_vorne
+    - light.flur_hinten
+    - light.badezimmerschrank
+    - light.bett
+    - light.kleiderschrank
+    - light.kuche_regal
+    - light.balkon_licht
+    
 licht_unterwegs:
   name: Licht unterwegs
   entities:

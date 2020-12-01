@@ -25,7 +25,7 @@ sensor:
   - platform: fritzbox_netmonitor
     name: Netmonitor
     host: !secret fritzbox_host
-
+    
   - platform: template
     sensors:
       netmonitor_uptime:
@@ -49,19 +49,19 @@ sensor:
         friendly_name: "Fritzbox - Daten gesendet" 
         unit_of_measurement: GB
         value_template: >-
-          {% set bytesSent = (state_attr('sensor.netmonitor','bytes_sent') / 1024 / 1024 / 1024) | round() %}
-          {{ bytesSent }}          
+          {% set bytesSent = (state_attr('sensor.netmonitor','bytes_sent')) | round() %}
+          {{ (bytesSent / 1024 / 1024 / 1024) if bytesSent else '-' }}         
         icon_template: >-
           mdi:upload-network
           
       netmonitor_data_received:
         friendly_name: "Fritzbox - Daten empfangen"   
         unit_of_measurement: GB
-        value_template: >-        
-          {% set bytesSent = (state_attr('sensor.netmonitor','bytes_received') / 1024 / 1024 / 1024) | round() %}
-          {{ bytesSent }}          
+        value_template: >-               
+          {% set bytesReceived = (state_attr('sensor.netmonitor','bytes_received')) | round() %}
+          {{ (bytesReceived / 1024 / 1024 / 1024) if bytesReceived else '-' }}              
         icon_template: >-
-          mdi:download-network
+          mdi:download-network          
           
       gaeste_wlan_ssid:
         friendly_name: "Gäste-Wlan SSID"
@@ -308,6 +308,9 @@ homeassistant:
     device_tracker.radiobalkon:
       icon: mdi:raspberry-pi
       friendly_name: Balkon
+    device_tracker.radiokeller:
+      icon: mdi:raspberry-pi
+      friendly_name: Keller
       
     device_tracker.tasmotaarbeitszimmerlampe:
       icon: mdi:developer-board

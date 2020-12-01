@@ -51,6 +51,7 @@ cards:
       - entity: device_tracker.radioschlafzimmer
       - entity: device_tracker.radioarbeitszimmer
       - entity: device_tracker.radiobalkon
+      - entity: device_tracker.radiokeller
 
   - type: entities
     title: Steckdosen

@@ -6,22 +6,6 @@ device_tracker:
       echokueche: !secret echo_kueche_host
       echoschlafzimmer: !secret echo_schlafzimmer_host
       echowohnzimmmer: !secret echo_wohnzimmer_host
-
-alexa_media:
-  accounts:
-    - email: !secret amazon_email
-      password: !secret amazon_password
-      url: amazon.de
-      exclude_devices:
-        - "Überall"
-        - "Echo Simon"
-        - "Echo Brigitte"
-        - "FireTablet Badezimmer"
-        - "FireTablet Balkon" 
-        - "FireTablet Balkon's Alexa Apps"        
-        - "FireTV Schlafzimmer"
-        - "FireTV Badezimmer"
-        - "FireTV Sportzimmer"
     
 input_boolean:
   alexa_witz_gestartet:

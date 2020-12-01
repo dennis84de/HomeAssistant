@@ -37,7 +37,7 @@ entity_controller:
       on_enter_overridden: off
     overrides:
       - binary_sensor.sonne_tagsueber
-      - light.kleiderschrank
+      - light.kleiderschrank      
       - binary_sensor.bewegungsmelder_inaktiv_unterwegs
       - binary_sensor.bewegungsmelder_inaktiv_staubsauger
       - input_boolean.bewegungsmelder_schlafzimmer_deaktiviert
@@ -75,6 +75,9 @@ automation:
       - condition: state
         entity_id: binary_sensor.schlafen_aktiv
         state: 'on'
+      - condition: state
+        entity_id: binary_sensor.alarm_aktiv
+        state: 'off'        
       - condition: state        
         entity_id: binary_sensor.im_bett
         state: 'on'   
@@ -103,8 +106,8 @@ automation:
             entity_id: media_player.tablet_schlafzimmer
             state: 'idle'               
     action:
-      - service: light.turn_off
-        entity_id: light.bett, light.kleiderschrank, light.flur_vorne, light.flur_hinten, light.badezimmerschrank, light.schreibtisch, light.kuche_regal, light.arbeitszimmer_lampe, light.sportzimmer_regal, light.couch, light.strahler
+      - service: homeassistant.turn_off
+        entity_id: group.licht_wohnung
 
   - alias: 'Schlafzimmer Schrank - Licht ausschalten'
     trigger:

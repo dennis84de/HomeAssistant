@@ -13,7 +13,7 @@ cards:
     entities:
       - entity: switch.kodi_badezimmer
       - type: custom:mini-media-player
-        entity: media_player.fire_tv_badezimmer
+        entity: media_player.firetv_badezimmer
         name: Fire TV
         hide:
           source: true

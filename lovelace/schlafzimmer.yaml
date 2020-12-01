@@ -26,7 +26,7 @@ cards:
           volume: true
           progress: true
       - type: custom:mini-media-player
-        entity: media_player.fire_tv_schlafzimmer
+        entity: media_player.firetv_schlafzimmer
         name: Fire TV
         hide:
           source: true
