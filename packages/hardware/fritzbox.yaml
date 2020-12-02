@@ -210,8 +210,6 @@ homeassistant:
       friendly_name: Computer Arbeit
     device_tracker.pihomeassistant:
       icon: mdi:home-assistant
-    device_tracker.broadlinkwohnzimmer:
-      icon: mdi:remote
     device_tracker.broadlinkschlafzimmer:
       icon: mdi:remote
     device_tracker.diskstation:

@@ -34,27 +34,6 @@ binary_sensor:
 cover:
   - platform: template
     covers:
-      fernseher_eingang:
-        friendly_name: "Fernseher Eingang"
-        position_template: 50
-        open_cover:
-          - service: remote.send_command
-            data:
-              entity_id: remote.broadlink_wohnzimmer_remote
-              command: "b64:JgCMAJWUETgTNxE5ERMSExITERQRFBE4EjgRORETEhMSExEUERQRFBE4EhMRFBE5EhITEhITEjgRFBI3EjgRFBE4EzcROBIABgOTlRE5ETgSOBEUERQSEhITEhMSOBI3EjgRFBEUERMSExEUERQROBMSEhMROREUERMSExI4ERQSNxI4ERQROBI4EjgSAA0FAAAAAAAAAAAAAAAA"
-        close_cover:
-          - service: remote.send_command
-            data:
-              entity_id: remote.broadlink_wohnzimmer_remote
-              command: "b64:JgCMAJWTEjgSOBI3EhMSExEUERQRFBE4EjgROBMSEhMRFBEUERQRExITEhMSExE5ERMSExITETkSNxI4EjgRExI4ETkROBIABgKUlRI3EjgSOBISEhMTEhEUERQSNxM3EjgRFBETEhMRFBEUERQSExETEhMSOBITERMSExI4ETkROBI4ERQSNxI4ETgSAA0FAAAAAAAAAAAAAAAA"
-        stop_cover:
-          - service: remote.send_command
-            data:
-              entity_id: remote.broadlink_wohnzimmer_remote
-              command: "b64:JgCMAJSVETgSOBE5ERQSEhMSEhMRFBE5ETgROREUERMSExITEhMRORETEhMSExITERQRFBETEhMSOBI4ETgSOBI4EjcSOBEABgOUlBI4ETkROBITEhMRFBEUERQROBI4ETgSExITERQSExEUETgSExITERQRFBEUERMTEhITEjgROBI4ETkROBI4ETkSAA0FAAAAAAAAAAAAAAAA"
-        icon_template: >-
-          mdi:television-guide
-
       kodi_untertitel:
         friendly_name: "Untertitel"
         position_template: 50

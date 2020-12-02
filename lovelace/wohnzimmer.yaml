@@ -27,7 +27,14 @@ cards:
       - entity: input_boolean.musik_ausschalten
       - entity: input_boolean.kodi_pausieren
       - entity: cover.kodi_untertitel      
-      - entity: cover.fernseher_eingang     
+      - type: custom:mini-media-player
+        entity: media_player.fernseher_wohnzimmer
+        hide:
+          progress: true
+          controls: true
+          volume: true
+          volume_level: true
+          mute: true          
       - type: custom:mini-media-player
         entity: media_player.soundbar
         hide:
