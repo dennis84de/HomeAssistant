@@ -27,8 +27,8 @@ cards:
     title: Multimedia
     show_header_toggle: false
     entities:
-      - entity: device_tracker.soundbar
-      - entity: device_tracker.dreamscreen
+      - entity: device_tracker.fernseherwohnzimmer
+      - entity: device_tracker.soundbar      
       - entity: device_tracker.kamerawohnzimmer
 
   - type: entities

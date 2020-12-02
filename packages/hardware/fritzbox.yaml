@@ -281,8 +281,8 @@ homeassistant:
 
     device_tracker.soundbar:
       icon: mdi:music-note
-    device_tracker.dreamscreen:
-      icon: mdi:track-light
+    device_tracker.fernseherwohnzimmer:
+      icon: mdi:television
     device_tracker.kamerawohnzimmer:
       icon: mdi:cctv
       friendly_name: Kamera

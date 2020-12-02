@@ -125,10 +125,6 @@ script:
         continue_on_timeout: 'true'       
       - service: switch.turn_off
         entity_id: switch.wohnzimmer_fernseher
-      - service: input_select.select_option
-        data:
-          entity_id: input_select.dreamscreen_modus
-          option: "Aus"
       - choose:
           - conditions:
               - condition: state
