@@ -157,7 +157,7 @@ script:
         data_template:
           echo: "wohnzimmer"
           message: "Home Assistant wird neugestartet."
-      - delay: '00:00:02'      
+      - delay: '00:00:03'      
       - service: media_player.play_media
         data:
           entity_id:
@@ -166,6 +166,8 @@ script:
             http://192.168.2.75:8123/local/neustart/winxp_shutdown.mp3
           media_content_type: music
       - wait_template: "{{is_state('media_player.smarthome', 'idle')}}"
+        timeout: '00:00:02'
+        continue_on_timeout: 'true'      
       - service: homeassistant.restart
 
   upgrade_homeassistant:
@@ -255,10 +257,10 @@ automation:
       - platform: homeassistant
         event: start
     action:
-      - service: input_datetime.set_datetime
-        entity_id: input_datetime.letzter_neustart_ende
-        data_template:
-          datetime: "{{ now().strftime('%Y-%m-%d %H:%M:%S') }}"       
+#      - service: input_datetime.set_datetime
+#        entity_id: input_datetime.letzter_neustart_ende
+#        data_template:
+#          datetime: "{{ now().strftime('%Y-%m-%d %H:%M:%S') }}"       
       - service: media_player.play_media
         data_template:
           entity_id:
@@ -266,7 +268,7 @@ automation:
           media_content_id: >-
             http://192.168.2.75:8123/local/neustart/winxp_start.mp3
           media_content_type: music
-      - wait_template: "{{is_state('media_player.smarthome', 'idle')}}"
+      - delay: '00:00:02'
       - service: !secret tts_service
         data_template:
           echo: "wohnzimmer"
