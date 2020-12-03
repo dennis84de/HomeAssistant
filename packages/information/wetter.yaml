@@ -33,10 +33,10 @@ binary_sensor:
       sonne_tagsueber:
         friendly_name: "Sonne tagsüber"
         value_template: >-
-          {% if is_state('sensor.helligkeit_balkon', None) or is_state('sensor.helligkeit_balkon', 'unknown') %}
+          {% if is_state('sensor.helligkeit_durchschnitt', None) or is_state('sensor.helligkeit_durchschnitt', 'unknown') %}
             False
           {% else %}
-            {{ states('sensor.helligkeit_balkon') | float > 23000 }}
+            {{ states('sensor.helligkeit_durchschnitt') | float > 23000 }}
           {% endif %}
           
       sommerzeit:
@@ -49,6 +49,13 @@ binary_sensor:
 sensor:
   - platform: moon
 
+  - platform: average
+    name: 'Helligkeit Durchschnitt'
+    duration:
+      minutes: 2
+    entities:
+      - sensor.helligkeit_balkon
+      
   - platform: buienradar
     monitored_conditions:
       - irradiance
