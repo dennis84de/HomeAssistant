@@ -63,6 +63,9 @@ popup_cards:
         - entity: device_tracker.handygps
           secondary_info: last-changed
           name: Handy GPS      
+        - entity: device_tracker.handyfritzbox
+          secondary_info: last-changed
+          name: Handy Fritzbox               
 
 cards:
   - type: entities
