@@ -17,7 +17,23 @@ cards:
     entities:
       - entity: light.couch
       - entity: light.strahler
-
+      
+  - type: entities
+    title: Computer
+    show_header_toggle: false
+    entities:
+      - entity: switch.pc
+      - entity: switch.monitor
+      - entity: input_boolean.computer_ausschalten
+      
+  - type: entities
+    title: Geräte
+    show_header_toggle: false
+    entities:
+      - entity: switch.wohnzimmer_fernseher
+        name: Fernseher
+      - entity: switch.wohnzimmer_radio
+      
   - type: entities
     title: Multimedia
     show_header_toggle: false
@@ -26,9 +42,12 @@ cards:
       - entity: switch.watchtv_wohnzimmer
       - entity: input_boolean.musik_ausschalten
       - entity: input_boolean.kodi_pausieren
-      - entity: cover.kodi_untertitel      
+      - entity: cover.kodi_untertitel
+      - entity: cover.fernseher_sender
+        name: Sender
       - type: custom:mini-media-player
         entity: media_player.fernseher_wohnzimmer
+        name: Fernseher
         hide:
           progress: true
           controls: true
@@ -54,22 +73,7 @@ cards:
         hide:
           source: true
           progress: true
-          volume: true
-
-  - type: entities
-    title: Geräte
-    show_header_toggle: false
-    entities:
-      - entity: switch.wohnzimmer_fernseher
-        name: Fernseher
-      - entity: switch.wohnzimmer_radio
-  - type: entities
-    title: Computer
-    show_header_toggle: false
-    entities:
-      - entity: switch.pc
-      - entity: switch.monitor
-      - entity: input_boolean.computer_ausschalten
+          volume: true      
 
   - type: entities
     title: Ventilator

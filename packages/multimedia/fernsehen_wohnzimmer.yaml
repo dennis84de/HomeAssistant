@@ -56,7 +56,31 @@ cover:
             method: Input.ExecuteAction
             action: showsubtitles
         icon_template: >-
-          mdi:message-bulleted
+          mdi:message-bulleted      
+
+      fernseher_sender:
+        friendly_name: "Fernseher Sender"
+        position_template: 50
+        open_cover:
+          - service: media_player.play_media
+            data:
+              entity_id: media_player.fernseher_wohnzimmer
+              media_content_id: "KEY_CHUP"
+              media_content_type: "send_key"
+        close_cover:
+          - service: media_player.play_media
+            data:
+              entity_id: media_player.fernseher_wohnzimmer
+              media_content_id: "KEY_CHDOWN"
+              media_content_type: "send_key"
+        stop_cover:
+          - service: media_player.play_media
+            data:
+              entity_id: media_player.fernseher_wohnzimmer
+              media_content_id: "KEY_PRECH"
+              media_content_type: "send_key"
+        icon_template: >-
+          mdi:remote-tv
 
 switch:
   - platform: template
@@ -75,6 +99,9 @@ script:
     sequence:
       - service: switch.turn_on
         entity_id: switch.wohnzimmer_fernseher
+      - wait_template: "{{is_state('device_tracker.fernseherwohnzimmer', 'home')}}"
+      - service: media_player.turn_on
+        entity_id: media_player.fernseher_wohnzimmer  
       - choose:
           - conditions:
               - condition: state
@@ -95,13 +122,18 @@ script:
       - service: media_player.media_stop
         entity_id: media_player.kodi_wohnzimmer
       - wait_template: "{{is_state('media_player.kodi_wohnzimmer', 'idle')}}"
-        timeout: '00:00:05'
+        timeout: '00:00:02'
         continue_on_timeout: 'true'
       - service: media_player.turn_off
         entity_id: media_player.kodi_wohnzimmer
       - wait_template: "{{is_state('media_player.kodi_wohnzimmer', 'off')}}"
-        timeout: '00:00:05'
-        continue_on_timeout: 'true'       
+        timeout: '00:00:02'
+        continue_on_timeout: 'true'          
+      - service: media_player.turn_off
+        entity_id: media_player.fernseher_wohnzimmer          
+      - wait_template: "{{is_state('media_player.fernseher_wohnzimmer ', 'off')}}"
+        timeout: '00:00:02'
+        continue_on_timeout: 'true'      
       - service: switch.turn_off
         entity_id: switch.wohnzimmer_fernseher
       - choose:
