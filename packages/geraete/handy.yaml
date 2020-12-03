@@ -15,14 +15,6 @@ device_tracker:
     source_type: 'router'
     devices:
       handymqtt: 'location/handy'   
-
-  - platform: composite
-    name: Handy
-    time_as: local
-    require_movement: true
-    entity_id:
-      - device_tracker.handygps
-      - device_tracker.handymqtt
       
 person:
   - name: Dennis

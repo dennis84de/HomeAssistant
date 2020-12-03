@@ -62,10 +62,7 @@ popup_cards:
           name: Handy MQTT
         - entity: device_tracker.handygps
           secondary_info: last-changed
-          name: Handy GPS
-        - entity: device_tracker.handy
-          secondary_info: last-changed
-          name: Handy Composite          
+          name: Handy GPS      
 
 cards:
   - type: entities
