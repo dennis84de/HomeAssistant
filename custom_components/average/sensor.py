@@ -425,7 +425,7 @@ class AverageSensor(Entity):
             entity = self._hass.states.get(entity_id)
 
             if entity is None:
-                _LOGGER.error('Unable to find an entity "%s"', entity_id)
+                _LOGGER.warn('Unable to find an entity "%s"', entity_id)
                 continue
 
             if self._temperature_mode is None:
