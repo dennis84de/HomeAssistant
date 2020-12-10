@@ -23,7 +23,8 @@ switch:
         turn_on:
           service: script.watchtv_schlafzimmer_on
         turn_off:
-          service: script.watchtv_schlafzimmer_off      
+          service: script.watchtv_schlafzimmer_off
+          
       kodi_schlafzimmer:
         friendly_name: Kodi
         icon_template: >-

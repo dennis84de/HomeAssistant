@@ -6,8 +6,12 @@ device_tracker:
     hosts:
       - !secret nmap_hosts                
     exclude:
-     - !secret synology_host
+      - !secret synology_host
      
+  - platform: ping
+    hosts:
+      handyping: !secret handy_host
+      
 input_text:
   guest_wifi_ssid:
     name: Gäste Wlan - SSID
@@ -260,9 +264,11 @@ homeassistant:
     device_tracker.handygps:
       icon: mdi:cellphone
     device_tracker.handymqtt:
-      icon: mdi:cellphone
+      icon: mdi:cellphone 
     device_tracker.handyfritzbox:
       icon: mdi:cellphone      
+    device_tracker.handyping:
+      icon: mdi:cellphone           
 
     device_tracker.magichomeflurvorne:
       icon: mdi:lightbulb-on-outline

@@ -125,7 +125,9 @@ cards:
     show_header_toggle: false
     entities:
       - entity: sensor.wohnzimmer_temperatur
+        name: Temperatur
       - entity: sensor.wohnzimmer_luftfeuchtigkeit
+        name: Luftfeuchtigkeit
 
   - type: glance
     title: Sensoren
@@ -135,7 +137,7 @@ cards:
         name: Bewegungsmelder
       - entity: sensor.cube_status
         name: Cube
-      - entity: sensor.helligkeit_wohnzimmer
+      - entity: sensor.wohnzimmer_helligkeit
         name: Helligkeit
 
   - type: entities

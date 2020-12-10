@@ -36,8 +36,8 @@ entity_controller:
     behaviours:
       on_enter_overridden: off
     overrides:
-      - binary_sensor.sonne_tagsueber
-      - light.kleiderschrank      
+      - binary_sensor.schlafen_inaktiv
+      - binary_sensor.sonne_tagsueber    
       - binary_sensor.bewegungsmelder_inaktiv_unterwegs
       - binary_sensor.bewegungsmelder_inaktiv_staubsauger
       - input_boolean.bewegungsmelder_schlafzimmer_deaktiviert

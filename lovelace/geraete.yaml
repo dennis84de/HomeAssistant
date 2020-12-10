@@ -121,8 +121,7 @@ cards:
     title: Sensoren
     show_header_toggle: false
     entities:
-      - entity: zigate.tuersensor
-      - entity: zigate.kuehlschranktuer
+      - entity: zigate.tuersensor      
       - entity: zigate.bett
       - entity: zigate.cube
       - entity: zigate.helligkeit_balkon

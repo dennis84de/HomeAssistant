@@ -32,8 +32,7 @@ sensor:
       - zigate.thermometer_sportzimmer
       - zigate.thermometer_parkplatz
       - zigate.thermometer_hardware
-      - zigate.tuersensor
-      - zigate.kuehlschranktuer
+      - zigate.tuersensor      
       - zigate.bett
       - zigate.cube
       - zigate.schalter_wohnzimmer
@@ -79,8 +78,6 @@ homeassistant:
   customize:
     sensor.tuersensor_battery_level:
       friendly_name: "Türsensor"
-    sensor.kuehlschranktuer_battery_level:
-      friendly_name: "Kühlschranktür"
     sensor.bett_battery_level:
       friendly_name: "Bett"
     sensor.cube_battery_level:

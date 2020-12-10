@@ -22,11 +22,11 @@ entity_controller:
     behaviours:
       on_enter_overridden: "off"
     overrides:
+      - binary_sensor.schlafen_inaktiv
       - binary_sensor.sonne_tagsueber
       - binary_sensor.bewegungsmelder_inaktiv_unterwegs
       - binary_sensor.bewegungsmelder_inaktiv_staubsauger
-      - input_boolean.bewegungsmelder_wohnzimmer_deaktiviert
-      - switch.computer
+      - input_boolean.bewegungsmelder_wohnzimmer_deaktiviert      
       
 automation:
   - alias: "Wohnzimmer - Licht Abends"

@@ -51,8 +51,6 @@ cards:
       - entity: binary_sensor.bewegungsmelder_kueche
         name: Bewegungsmelder
       - entity: sensor.helligkeit_kueche
-      - entity: binary_sensor.kuehlschranktuer
-        name: Kühlschranktür
 
   - type: glance
     title: Heizung

@@ -62,17 +62,20 @@ popup_cards:
           name: Handy MQTT
         - entity: device_tracker.handygps
           secondary_info: last-changed
-          name: Handy GPS      
-        - entity: device_tracker.handyfritzbox
+          name: Handy GPS   
+        - entity: device_tracker.handyping
           secondary_info: last-changed
-          name: Handy Fritzbox               
+          name: Handy Ping             
+        - entity: device_tracker.handy
+          secondary_info: last-changed
+          name: Handy App               
 
 cards:
   - type: entities
     title: Infos
     show_header_toggle: false
     entities:
-      - entity: sensor.countdown_sudtirol
+      - entity: sensor.countdown_neuhaus
       - entity: binary_sensor.zu_hause
         name: Dennis
         secondary_info: last-changed

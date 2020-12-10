@@ -193,3 +193,17 @@ sensor:
             -
           {% endif %}
         icon_template: mdi:calendar-star   
+    
+automation:        
+  - alias: "Besuch - Schalter"
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.schalter_flur
+        to: 'off'            
+    condition:
+      - condition: state
+        entity_id: binary_sensor.zu_hause
+        state: 'on'
+    action:
+      - service: input_boolean.toggle
+        entity_id: input_boolean.besuch  
