@@ -533,7 +533,7 @@ class XiaomiFan(XiaomiGenericDevice):
                 )
             else:
                 self._available = False
-                _LOGGER.error(
+                _LOGGER.warning(
                     "Got exception while fetching the state: %s , _retry=%s",
                     ex,
                     self._retry,
@@ -728,7 +728,7 @@ class XiaomiFanP5(XiaomiFan):
                 )
             else:
                 self._available = False
-                _LOGGER.error(
+                _LOGGER.warning(
                     "Got exception while fetching the state: %s , _retry=%s",
                     ex,
                     self._retry,
