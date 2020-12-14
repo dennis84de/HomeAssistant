@@ -9,8 +9,6 @@ camera:
     still_image_url: http://www.grueninger.com/webcam/current.jpg
     name: Dortmund
 
-ble_monitor:
-
 gdacs:
   radius: 100
   
@@ -40,8 +38,7 @@ binary_sensor:
           {% endif %}
           
       sommerzeit:
-        friendly_name: "Sommerzeit"
-        device_class: light
+        friendly_name: "Sommerzeit"       
         value_template: >-
           {% set time = states('sensor.time') %}
           {{ now().timetuple().tm_isdst > 0 }}
@@ -139,16 +136,16 @@ sensor:
         temperature_sensor: sensor.sportzimmer_temperatur
         humidity_sensor: sensor.sportzimmer_luftfeuchtigkeit
 
-  - platform: dwd_pollen
-    name: Pollen
-    partregion_ids:
-      - 41
-    include_pollen:
-      - graeser
-      - birke
-      - roggen
-    include_days:
-      - today
+#  - platform: dwd_pollen
+#    name: Pollen
+#    partregion_ids:
+#      - 41
+#    include_pollen:
+#      - graeser
+#      - birke
+#      - roggen
+#    include_days:
+#      - today
 
   - platform: rest
     name: Strommix
@@ -565,14 +562,7 @@ homeassistant:
 
     sensor.co2_intensity_51_49_7_36:
       friendly_name: CO2 Belastung
-    
-    sensor.pollen_41_today_birke:
-      friendly_name: Birke
-    sensor.pollen_41_today_graeser:
-      friendly_name: Gräser
-    sensor.pollen_41_today_roggen:
-      friendly_name: Roggen
-      
+
   customize_glob:
     sensor.*_absolutehumidity:
       friendly_name: Luftfeuchtigkeit absolut

@@ -17,7 +17,7 @@ entity_controller:
     sensor: binary_sensor.bewegungsmelder_badezimmer
     entity: light.badezimmerschrank
     sensor_type_duration: True
-    delay: 120
+    delay: 180
     behaviours:
       on_enter_overridden: off
     overrides:

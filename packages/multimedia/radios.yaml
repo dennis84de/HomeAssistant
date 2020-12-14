@@ -107,7 +107,7 @@ entity_controller:
     sensor: binary_sensor.bewegungsmelder_badezimmer
     sensor_type_duration: True
     entity: switch.wiedergabe_badezimmer
-    delay: 120
+    delay: 180
     overrides:
       - binary_sensor.radio_badezimmer_inaktiv
       

@@ -23,6 +23,7 @@ sensor:
   - platform: fritzbox_callmonitor
     name: Telefon
     phonebook: 0
+    host: !secret fritzbox_host
     username: !secret fritzbox_username
     password: !secret fritzbox_password
 
@@ -53,8 +54,8 @@ sensor:
         friendly_name: "Fritzbox - Daten gesendet" 
         unit_of_measurement: GB
         value_template: >-
-          {% set bytesSent = (state_attr('sensor.netmonitor','bytes_sent')) | round() %}
-          {{ (bytesSent / 1024 / 1024 / 1024) if bytesSent else '-' }}         
+          {% set bytesSent = (state_attr('sensor.netmonitor','bytes_sent')) %}
+          {{ (bytesSent / 1024 / 1024 / 1024) | round(2) if bytesSent else '-' }}         
         icon_template: >-
           mdi:upload-network
           
@@ -62,8 +63,8 @@ sensor:
         friendly_name: "Fritzbox - Daten empfangen"   
         unit_of_measurement: GB
         value_template: >-               
-          {% set bytesReceived = (state_attr('sensor.netmonitor','bytes_received')) | round() %}
-          {{ (bytesReceived / 1024 / 1024 / 1024) if bytesReceived else '-' }}              
+          {% set bytesReceived = (state_attr('sensor.netmonitor','bytes_received')) %}
+          {{ (bytesReceived / 1024 / 1024 / 1024) | round(2) if bytesReceived else '-' }}
         icon_template: >-
           mdi:download-network          
           

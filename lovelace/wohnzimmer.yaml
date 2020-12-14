@@ -94,20 +94,25 @@ cards:
           progress: true
           volume: true      
 
-  - type: entities
-    title: Ventilator
-    show_header_toggle: false
-    entities:
-      - entity: fan.ventilator
-      - entity: switch.ventilator_natuerlicher_wind
-      - entity: input_number.ventilator_geschwindigkeit
-      - entity: input_select.ventilator_drehungswinkel
-      - entity: sensor.ventilator_batterie
-        name: Batteriestand
-      - type: divider
-      - entity: sensor.ventilator_timer
-      - entity: input_boolean.ventilator_timer_aktiv
-      - entity: input_select.ventilator_timer
+  - type: conditional
+    conditions:
+      - entity: device_tracker.xiaomifan
+        state: "home"
+    card:
+      type: entities
+      title: Ventilator
+      show_header_toggle: false
+      entities:
+        - entity: fan.ventilator
+        - entity: switch.ventilator_natuerlicher_wind
+        - entity: input_number.ventilator_geschwindigkeit
+        - entity: input_select.ventilator_drehungswinkel
+        - entity: sensor.ventilator_batterie
+          name: Batteriestand
+        - type: divider
+        - entity: sensor.ventilator_timer
+        - entity: input_boolean.ventilator_timer_aktiv
+        - entity: input_select.ventilator_timer
 
   - type: glance
     title: Heizung
@@ -163,9 +168,14 @@ cards:
           progress: true
           volume: true      
           
-  - type: picture-glance
-    title: Kamera
-    entities:
-      - binary_sensor.kamera_bewegung
-      - switch.kamera_wohnzimmer
-    camera_image: camera.wohnzimmer
+  - type: conditional
+    conditions:
+      - entity: switch.kamera_wohnzimmer
+        state: "on"
+    card:
+      type: picture-glance
+      title: Kamera
+      entities:
+        - binary_sensor.kamera_bewegung
+        - switch.kamera_wohnzimmer
+      camera_image: camera.wohnzimmer           

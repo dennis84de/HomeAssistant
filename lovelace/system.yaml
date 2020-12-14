@@ -75,7 +75,7 @@ cards:
     show_header_toggle: false
     entities:
       - entity: sensor.database_size
-      - entity: sensor.laufzeit
+      - entity: sensor.laufzeit_stunden
       - entity: sensor.hass_installed_version
       - entity: sensor.hass_current_version
       - entity: sensor.wichtige_anderungen

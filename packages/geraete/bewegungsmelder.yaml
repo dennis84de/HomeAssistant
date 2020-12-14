@@ -40,7 +40,7 @@ binary_sensor:
 
       bewegungsmelder_badezimmer:
         friendly_name: Badezimmer
-        device_class: motion
+        device_class: motion       
         value_template: "{{ is_state('sensor.fibaro_badezimmer_burglar', '8') }}"   
 
 automation:

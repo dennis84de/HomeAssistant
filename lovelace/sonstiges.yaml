@@ -96,7 +96,7 @@ cards:
       {% set callTypeColors = {'incoming':'#268dda', 'outgoing':'#8bbf68', 'missed':'#e45f3b'} %}
       {% set callList = state_attr('sensor.fritzbox_call_list', 'calls') %}
       
-      {% if (states('sensor.fritzbox_call_list') == 0) %}
+      {% if states('sensor.fritzbox_call_list') == 0 or states('sensor.fritzbox_call_list') == 'unknown' %}
       **<font color={{ callTypeColors['incoming'] }}>Keine Anrufe vorhanden.</font>**
       {% else %}
         {% for call in callList %}

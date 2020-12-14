@@ -16,7 +16,15 @@ sensor:
           {{ bytesSent }}          
         icon_template: >-
           mdi:server
-            
+          
+      nextcloud_zertifikat_tage:
+        friendly_name: "Nextcloud Zertifikat"
+        value_template: >-
+          {% set nextcloudTimestamp = as_timestamp(states("sensor.nextcloud_zertifikat")) %}
+        
+          {{ '-' if nextcloudTimestamp == None else ((nextcloudTimestamp - as_timestamp(now())) | int /60/1440) | round(0) }}
+        unit_of_measurement: 'Tage'
+                              
 nextcloud:
     url: !secret nextcloud_url_https
     username: !secret nextcloud_username

@@ -22,7 +22,7 @@ automation:
         data_template:
           title: "Status Home Assistant"
           message: >-
-            Das System ist seit {{ states('sensor.laufzeit') }} Stunden online.
+            Das System ist seit {{ states('sensor.laufzeit_stunden') }} Stunden online.
             {%- if is_state('group.alles_ausschalten', 'off') %}
             Alle Geräte sind ausgeschaltet.
             {% endif %}

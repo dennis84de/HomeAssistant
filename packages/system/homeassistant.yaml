@@ -79,12 +79,7 @@ sensor:
         unit_of_measurement: MB
 
   - platform: uptime
-    name: Laufzeit
-    unit_of_measurement: hours
-
-  - platform: uptime
-    name: Laufzeit Minuten
-    unit_of_measurement: minutes
+    name: Letzter Neustart
 
   - platform: version
     name: HASS Current Version
@@ -116,7 +111,7 @@ sensor:
 
   - platform: template
     sensors:
-      letzter_neustart:
+      rpi_letzter_neustart:
         friendly_name: "Letzter Neustart"
         icon_template: >-
           mdi:av-timer
@@ -132,19 +127,24 @@ sensor:
           {% set ende = as_timestamp(states('input_datetime.letzter_neustart_ende')) | int %}
 
           {{ (ende - start) | int }}
-      
-input_datetime:
-  letzter_neustart_start:
-    name: Letzter Neustart - Start
-    has_time: true
-    has_date: true
-    icon: mdi:clock-start
-    
-  letzter_neustart_ende:
-    name: Letzter Neustart - Ende
-    has_time: true
-    has_date: true
-    icon: mdi:clock-end
+          
+      laufzeit_minuten:
+        friendly_name: "Laufzeit Minuten"
+        icon_template: mdi:clock
+        unit_of_measurement: 'Minuten'
+        value_template: >-
+          {% set up_time =  states('sensor.letzter_neustart') %}
+     
+          {{ '-' if up_time == 'unknown' else ((as_timestamp(now()) - as_timestamp(up_time)) / 60) | int }}
+              
+      laufzeit_stunden:
+        friendly_name: "Laufzeit Stunden"
+        icon_template: mdi:clock
+        unit_of_measurement: 'Stunden'
+        value_template: >-
+          {% set up_time =  states('sensor.letzter_neustart') %}
+     
+          {{ '-' if up_time == 'unknown' else ((as_timestamp(now()) - as_timestamp(up_time)) / 60 / 60) | round(2) }}
     
 shell_command:
   upgrade_homeassistant: /home/homeassistant/.homeassistant/bash_scripts/upgrade-hass.sh
@@ -287,11 +287,6 @@ homeassistant:
     sensor.hacs:
       friendly_name: HACS
       unit_of_measurement: Update(s)
-
-    sensor.laufzeit:
-      unit_of_measurement: Stunden
-    sensor.laufzeit_minuten:
-      unit_of_measurement: Minuten
       
     sensor.disk_use_percent:
       friendly_name: Belegter Speicherplatz

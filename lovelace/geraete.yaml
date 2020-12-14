@@ -11,7 +11,7 @@ cards:
       - entity: sensor.memory_use_percent
       - entity: sensor.processor_use
       - entity: binary_sensor.rpi_power_status
-      - entity: sensor.letzter_neustart
+      - entity: sensor.rpi_letzter_neustart
 
   - type: entities
     title: Computer

@@ -63,7 +63,7 @@ cards:
       - entity: sensor.thermometer_balkon_battery_level
         name: Balkon      
       - entity: sensor.thermometer_parkplatz_battery_level
-        name: Parkplatz      
+        name: Parkplatz               
       - entity: sensor.thermometer_schlafzimmer_battery_level
         name: Schlafzimmer
       - entity: sensor.thermometer_arbeitszimmer_battery_level

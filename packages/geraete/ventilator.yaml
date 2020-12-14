@@ -2,7 +2,7 @@ fan:
   - platform: xiaomi_miio_fan
     name: Ventilator
     host: !secret xiaomi_fan_host
-    token: !secret xiaomi_fan_token
+    token: !secret xiaomi_fan_token   
 
 input_number:
   ventilator_geschwindigkeit:
