@@ -15,6 +15,13 @@ input_number:
     step: 5
     initial: 50  
     
+  alexa_timer:
+    name: Alexa Timer
+    min: 1
+    max: 120
+    step: 1
+    initial: 5      
+    
 input_text:
   corona_dortmund_gestern:
     name: Corona Dortmund gestern   
@@ -34,34 +41,6 @@ sensor:
       - 'time'
       - 'date'
 
-  - platform: rest
-    name: Corona Dortmund
-    resource: !secret corona_dortmund_rest    
-    scan_interval: 3600
-    value_template: "{{ value_json['features'][0]['attributes'].cases7_per_100k | round(1) }}"
-    json_attributes_path: "$['features'][0]['attributes']"
-    json_attributes:
-      - last_update
-      - cases
-      - cases_per_100k
-      - deaths
-      - EWZ
-      - cases7_bl_per_100k
-      
-  - platform: rest
-    name: Corona Mülheim
-    resource: !secret corona_muelheim_rest    
-    scan_interval: 3600
-    value_template: "{{ value_json['features'][0]['attributes'].cases7_per_100k | round(1) }}"
-    json_attributes_path: "$['features'][0]['attributes']"
-    json_attributes:
-      - last_update
-      - cases
-      - cases_per_100k
-      - deaths
-      - EWZ
-      - cases7_bl_per_100k
-      
   - platform: template
     sensors:
       tankstelle_real:
@@ -187,16 +166,16 @@ automation:
   - alias: "Corona-Werte geändert"
     trigger:
       - platform: state
-        entity_id: sensor.corona_dortmund
+        entity_id: sensor.sk_dortmund_weekincidence
         attribute: last_update
       - platform: state
-        entity_id: sensor.corona_mulheim
+        entity_id: sensor.sk_mulheim_a_d_ruhr_weekincidence
         attribute: last_update          
     action:
       - choose:
           - conditions:
               - condition: template
-                value_template: "{{ True if trigger.entity_id == 'sensor.corona_dortmund' else False }}"
+                value_template: "{{ True if trigger.entity_id == 'sensor.sk_dortmund_weekincidence' else False }}"
             sequence:
               - service: input_text.set_value
                 data:
@@ -204,13 +183,27 @@ automation:
                   value: "{{ trigger.from_state.state }}" 
           - conditions:
               - condition: template
-                value_template: "{{ True if trigger.entity_id == 'sensor.corona_mulheim' else False }}"
+                value_template: "{{ True if trigger.entity_id == 'sensor.sk_mulheim_a_d_ruhr_weekincidence' else False }}"
             sequence:
               - service: input_text.set_value
                 data:
                   entity_id: input_text.corona_mulheim_gestern
                   value: "{{ trigger.from_state.state }}" 
                 
+#  - alias: "Alexa Timer"
+#    trigger:
+#      - platform: state
+#        entity_id: input_number.alexa_timer
+#    condition:
+#      - condition: state
+#        entity_id: binary_sensor.zu_hause
+#        state: 'on'        
+#    action:
+#      - service: media_player.play_media
+#        entity_id: media_player.echo_wohnzimmer
+#        media_content_id: "Stell einen Timer auf {{ input_number.alexa_timer }} Minuten."
+#        media_content_type: custom
+                  
 panel_iframe:
   infoscreen:
     title: Infoscreen
@@ -235,7 +228,9 @@ homeassistant:
     sensor.tankerkoenig_supermarkt_tankstelle_am_real_markt_dortmund_wulfshofstr_e10:
       friendly_name: Tankstelle Real
       
-    sensor.corona_dortmund:
+    sensor.sk_dortmund_weekincidence:
       icon: mdi:home-analytics
-    sensor.corona_mulheim:
-      icon: mdi:briefcase      
+      friendly_name: "Dortmund"
+    sensor.sk_mulheim_a_d_ruhr_weekincidence:
+      icon: mdi:briefcase
+      friendly_name: "Mülheim an der Ruhr"

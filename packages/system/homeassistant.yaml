@@ -69,6 +69,17 @@ zone:
     radius: 70
     icon: mdi:wan 
 
+input_datetime:
+  home_assistant_start:
+    name: Home Assistant gestartet    
+    has_time: true
+    has_date: true
+    
+  home_assistant_stop:
+    name: Home Assistant gestoppt    
+    has_time: true
+    has_date: true
+    
 sensor:
   - platform: sql
     db_url: !secret mariadb_url
@@ -215,18 +226,26 @@ automation:
         title: 'Neue Version'
         message: "Home Assistant {{ states('sensor.hass_current_version') }} ist jetzt verfügbar."
 
-  - alias: "Home Assistant - Neustart"
+  - alias: "Home Assistant - Gestoppt"
     trigger:   
-      - platform: event
-        event_type: call_service
-        event_data:
-          service: restart
+      - platform: homeassistant
+        event: shutdown     
     action:
       - service: input_datetime.set_datetime
-        entity_id: input_datetime.letzter_neustart_start
-        data_template:
+        entity_id: input_datetime.home_assistant_stop
+        data:
           datetime: "{{ now().strftime('%Y-%m-%d %H:%M:%S') }}"
                 
+  - alias: "Home Assistant - Gestartet"
+    trigger:
+      - platform: homeassistant
+        event: start
+    action:
+      - service: input_datetime.set_datetime
+        entity_id: input_datetime.home_assistant_start
+        data:
+          datetime: "{{ now().strftime('%Y-%m-%d %H:%M:%S') }}"     
+          
   - alias: "Home Assistant - Fehler Neustart"
     trigger:
       - platform: state
@@ -256,11 +275,7 @@ automation:
     trigger:
       - platform: homeassistant
         event: start
-    action:
-#      - service: input_datetime.set_datetime
-#        entity_id: input_datetime.letzter_neustart_ende
-#        data_template:
-#          datetime: "{{ now().strftime('%Y-%m-%d %H:%M:%S') }}"       
+    action:  
       - service: media_player.play_media
         data_template:
           entity_id:

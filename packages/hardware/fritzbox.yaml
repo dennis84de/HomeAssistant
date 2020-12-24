@@ -21,11 +21,12 @@ input_text:
 
 sensor:
   - platform: fritzbox_callmonitor
-    name: Telefon
-    phonebook: 0
+    name: Telefon    
     host: !secret fritzbox_host
     username: !secret fritzbox_username
     password: !secret fritzbox_password
+#    port: 49000
+#    phonebook: 0
 
   - platform: fritzbox_netmonitor
     name: Netmonitor

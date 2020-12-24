@@ -1,28 +1,5 @@
 title: Wetter
 path: wetter
-popup_cards:
-  sensor.germany_coronavirus_confirmed:
-    title: Corona Virus
-    card:
-      type: custom:mini-graph-card
-      line_width: 2
-      animate: true
-      hours_to_show: 168
-      points_per_hour: 5
-      hour24: true
-      show:
-        icon: false
-        points: false
-        state: false      
-      entities:
-        - entity: sensor.germany_coronavirus_confirmed
-          name: Bestätigt
-        - entity: sensor.germany_coronavirus_current
-          name: Aktuell
-        - entity: sensor.germany_coronavirus_recovered
-          name: Geheilt
-        - entity: sensor.germany_coronavirus_deaths
-          name: Tote    
           
 cards:
   - type: custom:weather-card

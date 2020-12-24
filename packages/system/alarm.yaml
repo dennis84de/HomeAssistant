@@ -183,7 +183,7 @@ script:
         data_template:
           echo: "flur"          
           message: >-
-            {% if is_state('binary_sensor.reinigung_heute', 'on') %}
+            {% if is_state('binary_sensor.reinigung_heute', 'on') and is_state('input_boolean.staubsauger_automatische_reinigung', 'on') %}
               {% set vacuumMessage = 'Die Wohnung wird heute gesaugt.' %}
             {% else %}
               {% set vacuumMessage = '' %}
