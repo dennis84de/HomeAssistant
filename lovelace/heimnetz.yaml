@@ -63,15 +63,15 @@ cards:
       - entity: device_tracker.tplinkschlafzimmerradio
       - entity: device_tracker.tplinkflurradio
       - entity: device_tracker.tplinkbadezimmerradio
-      - entity: device_tracker.tplinkkuecheradio
-      - entity: device_tracker.tplinkwohnzimmerfernseher
+      - entity: device_tracker.tplinkkuecheradio   
+      - entity: device_tracker.tplinkkellerradio
       - entity: device_tracker.tplinkschlafzimmerfernseher
       - entity: device_tracker.tplinksportzimmerfernseher
       - entity: device_tracker.edimaxsportzimmerlicht
       - entity: device_tracker.edimaxcrosstrainer
       - entity: device_tracker.tplinkwaschmaschine
       - entity: device_tracker.tplinktrockner      
-
+      
   - type: entities
     title: Amazon Echo
     show_header_toggle: false

@@ -167,10 +167,8 @@ automation:
     trigger:
       - platform: state
         entity_id: sensor.sk_dortmund_weekincidence
-        attribute: last_update
       - platform: state
-        entity_id: sensor.sk_mulheim_a_d_ruhr_weekincidence
-        attribute: last_update          
+        entity_id: sensor.sk_mulheim_a_d_ruhr_weekincidence        
     action:
       - choose:
           - conditions:

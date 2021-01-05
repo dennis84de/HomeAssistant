@@ -13,6 +13,17 @@ light:
     name: Strahler
     entity_id: switch.strahler
 
+binary_sensor:
+  - platform: template
+    sensors:
+      bewegungsmelder_inaktiv_tagsueber:
+        friendly_name: Bewegungsmelder inaktiv tagsüber
+        value_template: >
+          {% set homeOfficeAktiv = is_state('binary_sensor.home_office', 'on') %}
+          {% set schlafenAktiv = is_state('binary_sensor.schlafen_aktiv', 'on') %}
+        
+          {{ False if homeOfficeAktiv or homeOfficeAktiv else True }}
+          
 entity_controller:           
   bewegung_wohnzimmer:
     friendly_name: "Bewegung Wohnzimmer"
@@ -22,8 +33,8 @@ entity_controller:
     behaviours:
       on_enter_overridden: "off"
     overrides:
-      - binary_sensor.schlafen_inaktiv
-      - binary_sensor.sonne_tagsueber
+      - binary_sensor.sonne_tagsueber  
+      - binary_sensor.bewegungsmelder_inaktiv_tagsueber         
       - binary_sensor.bewegungsmelder_inaktiv_unterwegs
       - binary_sensor.bewegungsmelder_inaktiv_staubsauger
       - input_boolean.bewegungsmelder_wohnzimmer_deaktiviert      

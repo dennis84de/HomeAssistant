@@ -35,7 +35,7 @@ popup_cards:
           name: Gewicht
           line_width: 2
           animate: true
-          hours_to_show: 336
+          hours_to_show: 168
           hour24: true
           show:
             icon: false

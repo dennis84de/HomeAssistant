@@ -39,9 +39,7 @@ binary_sensor:
           
       sommerzeit:
         friendly_name: "Sommerzeit"       
-        value_template: >-
-          {% set time = states('sensor.time') %}
-          {{ now().timetuple().tm_isdst > 0 }}
+        value_template: "{{ now().timetuple().tm_isdst > 0 }}"
         
 sensor:
   - platform: moon

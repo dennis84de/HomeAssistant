@@ -5,6 +5,7 @@ cards:
     title: Radio
     show_header_toggle: false
     entities:
+      - entity: switch.keller_radio
       - type: custom:mini-media-player
         entity: media_player.keller
         group: true

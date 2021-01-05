@@ -25,8 +25,6 @@ sensor:
     host: !secret fritzbox_host
     username: !secret fritzbox_username
     password: !secret fritzbox_password
-#    port: 49000
-#    phonebook: 0
 
   - platform: fritzbox_netmonitor
     name: Netmonitor
@@ -185,9 +183,9 @@ homeassistant:
     device_tracker.tplinktrockner:
       icon: mdi:power-socket-eu
       friendly_name: Trockner
-    device_tracker.tplinkwohnzimmerfernseher:
+    device_tracker.tplinkkellerradio:
       icon: mdi:power-socket-eu
-      friendly_name: Wohnzimmer Fernseher
+      friendly_name: Keller Radio
     device_tracker.tplinkschlafzimmerfernseher:
       icon: mdi:power-socket-eu
       friendly_name: Schlafzimmer Fernseher

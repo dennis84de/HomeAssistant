@@ -87,63 +87,45 @@ switch:
     switches:
       watchtv_wohnzimmer:
         friendly_name: "Fernsehen"
-        value_template: "{{ is_state('switch.wohnzimmer_fernseher', 'on') }}"
+        value_template: "{{ is_state('media_player.fernseher_wohnzimmer', 'on') }}"
         turn_on:
-          service: script.watchtv_wohnzimmer_on
+          - service: media_player.turn_on
+            entity_id: media_player.fernseher_wohnzimmer  
+          - choose:
+              - conditions:
+                  - condition: state
+                    entity_id: media_player.soundbar
+                    state: 'off'
+                sequence:  
+                  - service: media_player.turn_on
+                    entity_id: media_player.soundbar        
+                  - wait_template: "{{is_state('media_player.soundbar', 'on')}}"
+                  - service: media_player.select_source
+                    entity_id: media_player.soundbar
+                    data:
+                      source: TV
         turn_off:
-          service: script.watchtv_wohnzimmer_off
+          - service: media_player.media_stop
+            entity_id: media_player.kodi_wohnzimmer
+          - wait_template: "{{is_state('media_player.kodi_wohnzimmer', 'idle')}}"
+            timeout: '00:00:02'
+            continue_on_timeout: 'true'
+          - service: media_player.turn_off
+            entity_id: media_player.kodi_wohnzimmer
+          - wait_template: "{{is_state('media_player.kodi_wohnzimmer', 'off')}}"
+            timeout: '00:00:02'
+            continue_on_timeout: 'true'          
+          - service: media_player.turn_off
+            entity_id: media_player.fernseher_wohnzimmer
+          - choose:
+              - conditions:
+                  - condition: state
+                    entity_id: media_player.soundbar
+                    state: 'on'
+                sequence:
+                  - service: media_player.turn_off
+                    entity_id: media_player.soundbar
 
-script:  
-  watchtv_wohnzimmer_on:
-    alias: "Fernsehen Wohnzimmer einschalten"
-    sequence:
-      - service: switch.turn_on
-        entity_id: switch.wohnzimmer_fernseher
-      - wait_template: "{{is_state('device_tracker.fernseherwohnzimmer', 'home')}}"
-      - service: media_player.turn_on
-        entity_id: media_player.fernseher_wohnzimmer  
-      - choose:
-          - conditions:
-              - condition: state
-                entity_id: media_player.soundbar
-                state: 'off'
-            sequence:  
-              - service: media_player.turn_on
-                entity_id: media_player.soundbar        
-              - wait_template: "{{is_state('media_player.soundbar', 'on')}}"
-              - service: media_player.select_source
-                entity_id: media_player.soundbar
-                data:
-                  source: TV
-
-  watchtv_wohnzimmer_off:
-    alias: "Fernsehen Wohnzimmer ausschalten"
-    sequence:
-      - service: media_player.media_stop
-        entity_id: media_player.kodi_wohnzimmer
-      - wait_template: "{{is_state('media_player.kodi_wohnzimmer', 'idle')}}"
-        timeout: '00:00:02'
-        continue_on_timeout: 'true'
-      - service: media_player.turn_off
-        entity_id: media_player.kodi_wohnzimmer
-      - wait_template: "{{is_state('media_player.kodi_wohnzimmer', 'off')}}"
-        timeout: '00:00:02'
-        continue_on_timeout: 'true'          
-      - service: media_player.turn_off
-        entity_id: media_player.fernseher_wohnzimmer          
-      - wait_template: "{{is_state('media_player.fernseher_wohnzimmer ', 'off')}}"
-        timeout: '00:00:02'
-        continue_on_timeout: 'true'      
-      - service: switch.turn_off
-        entity_id: switch.wohnzimmer_fernseher
-      - choose:
-          - conditions:
-              - condition: state
-                entity_id: media_player.soundbar
-                state: 'on'
-            sequence:
-              - service: media_player.turn_off
-                entity_id: media_player.soundbar
 automation:      
   - alias: "Kodi - Musik ausschalten"
     trigger:
@@ -381,5 +363,5 @@ homeassistant:
           
     switch.watchtv_wohnzimmer:
       icon: mdi:television-classic
-    switch.wohnzimmer_fernseher:
-      icon: mdi:television
+#    switch.wohnzimmer_fernseher:
+#      icon: mdi:television
