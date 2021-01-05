@@ -33,28 +33,16 @@ from .const import (
     DOMAIN,
     DEFAULT_PORT,
     DEFAULT_TIMEOUT,
-    DEFAULT_UPDATE_METHOD,
     CONF_APP_LIST,
-    CONF_APP_LOAD_METHOD,
     CONF_DEVICE_NAME,
-    CONF_DEVICE_MODEL,
     CONF_LOAD_ALL_APPS,
-    CONF_POWER_ON_DELAY,
     CONF_SOURCE_LIST,
     CONF_SHOW_CHANNEL_NR,
-    CONF_USE_ST_CHANNEL_INFO,
-    CONF_USE_ST_STATUS_INFO,
-    CONF_USE_MUTE_CHECK,
-    CONF_SYNC_TURN_OFF,
-    CONF_SYNC_TURN_ON,
     CONF_WS_NAME,
     CONF_UPDATE_METHOD,
     CONF_UPDATE_CUSTOM_PING_URL,
     CONF_SCAN_APP_HTTP,
-    DATA_LISTENER,
-    DEFAULT_POWER_ON_DELAY,
     DEFAULT_SOURCE_LIST,
-    UPDATE_METHODS,
     WS_PREFIX,
     RESULT_NOT_SUCCESSFUL,
     RESULT_NOT_SUPPORTED,
@@ -65,16 +53,11 @@ from .const import (
 )
 
 SAMSMART_SCHEMA = {
-    vol.Optional(CONF_MAC): cv.string,
     vol.Optional(CONF_SOURCE_LIST, default=DEFAULT_SOURCE_LIST): cv.string,
     vol.Optional(CONF_APP_LIST): cv.string,
     vol.Optional(CONF_TIMEOUT, default=DEFAULT_TIMEOUT): cv.positive_int,
-    vol.Optional(CONF_SHOW_CHANNEL_NR, default=False): cv.boolean,
+    vol.Optional(CONF_MAC): cv.string,
     vol.Optional(CONF_BROADCAST_ADDRESS): cv.string,
-    vol.Optional(CONF_LOAD_ALL_APPS, default=True): cv.boolean,
-    vol.Optional(CONF_UPDATE_METHOD): vol.In(UPDATE_METHODS.values()),
-    vol.Optional(CONF_UPDATE_CUSTOM_PING_URL): cv.string,
-    vol.Optional(CONF_SCAN_APP_HTTP, default=True): cv.boolean,
 }
 
 
@@ -104,6 +87,11 @@ CONFIG_SCHEMA = vol.Schema(
                         vol.Optional(CONF_API_KEY): cv.string,
                         vol.Optional(CONF_DEVICE_NAME): cv.string,
                         vol.Optional(CONF_DEVICE_ID): cv.string,
+                        vol.Optional(CONF_LOAD_ALL_APPS, default=True): cv.boolean,
+                        vol.Optional(CONF_UPDATE_METHOD): cv.string,
+                        vol.Optional(CONF_UPDATE_CUSTOM_PING_URL): cv.string,
+                        vol.Optional(CONF_SCAN_APP_HTTP, default=True): cv.boolean,
+                        vol.Optional(CONF_SHOW_CHANNEL_NR, default=False): cv.boolean,
                         vol.Optional(CONF_WS_NAME): cv.string,
                     }
                 ).extend(SAMSMART_SCHEMA),
@@ -113,6 +101,8 @@ CONFIG_SCHEMA = vol.Schema(
     },
     extra=vol.ALLOW_EXTRA,
 )
+
+DATA_LISTENER = "listener"
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -275,19 +265,30 @@ async def async_setup(hass: HomeAssistantType, config: ConfigEntry):
     if DOMAIN in config:
         hass.data[DOMAIN] = {}
         for entry_config in config[DOMAIN]:
-            ip_address = await hass.async_add_executor_job(
-                socket.gethostbyname, entry_config[CONF_HOST]
-            )
+
+            # get ip address
+            ip_address = entry_config[CONF_HOST]
+
+            # check if already configured
+            entry_found = False
+            entries_list = hass.config_entries.async_entries(DOMAIN)
+            for entry in entries_list:
+                if entry.unique_id == ip_address:
+                    entry_found = True
+                    break
+
+            if not entry_found:
+                _LOGGER.warning(
+                    "Found yaml configuration for not configured device %s. Please use UI to configure",
+                    ip_address
+                )
+                continue
+
+            hass.data[DOMAIN].setdefault(ip_address, {})
             for key in SAMSMART_SCHEMA:
-                hass.data[DOMAIN].setdefault(ip_address, {})[key] = entry_config.get(
-                    key
-                )
-            entry_config[SOURCE_IMPORT] = True
-            hass.async_create_task(
-                hass.config_entries.flow.async_init(
-                    DOMAIN, context={"source": SOURCE_IMPORT}, data=entry_config
-                )
-            )
+                value = entry_config.get(key)
+                if value:
+                    hass.data[DOMAIN][ip_address][key] = value
 
     return True
 
@@ -300,29 +301,7 @@ async def async_setup_entry(hass: HomeAssistantType, entry: ConfigEntry):
     hass.data[DOMAIN].setdefault(
         entry.entry_id,
         {
-            "options": {
-                CONF_APP_LOAD_METHOD: entry.options.get(
-                    CONF_APP_LOAD_METHOD, AppLoadMethod.All.value
-                ),
-                CONF_USE_ST_STATUS_INFO: entry.options.get(
-                    CONF_USE_ST_STATUS_INFO, True
-                ),
-                CONF_USE_ST_CHANNEL_INFO: entry.options.get(
-                    CONF_USE_ST_CHANNEL_INFO, True
-                ),
-                CONF_USE_MUTE_CHECK: entry.options.get(
-                    CONF_USE_MUTE_CHECK, True
-                ),
-                CONF_POWER_ON_DELAY: entry.options.get(
-                    CONF_POWER_ON_DELAY, DEFAULT_POWER_ON_DELAY
-                ),
-                CONF_SYNC_TURN_OFF: entry.options.get(
-                    CONF_SYNC_TURN_OFF, ""
-                ),
-                CONF_SYNC_TURN_ON: entry.options.get(
-                    CONF_SYNC_TURN_ON, ""
-                ),
-            },
+            "options": entry.options.copy(),
             DATA_LISTENER: [entry.add_update_listener(update_listener)],
         }
     )
@@ -351,16 +330,4 @@ async def async_unload_entry(hass, config_entry):
 async def update_listener(hass, config_entry):
     """Update when config_entry options update."""
     entry_id = config_entry.entry_id
-    for key, old_value in hass.data[DOMAIN][entry_id][
-        "options"
-    ].items():
-        hass.data[DOMAIN][entry_id]["options"][
-            key
-        ] = new_value = config_entry.options.get(key)
-        if new_value != old_value:
-            _LOGGER.debug(
-                "Changing option %s from %s to %s",
-                key,
-                old_value,
-                hass.data[DOMAIN][entry_id]["options"][key],
-            )
+    hass.data[DOMAIN][entry_id]["options"] = config_entry.options.copy()

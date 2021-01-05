@@ -65,7 +65,9 @@ from .const import (
     DEFAULT_TIMEOUT,
     DEFAULT_SOURCE_LIST,
     DEFAULT_APP,
+    DEFAULT_POWER_ON_DELAY,
     CONF_APP_LIST,
+    CONF_APP_LAUNCH_METHOD,
     CONF_APP_LOAD_METHOD,
     CONF_DEVICE_NAME,
     CONF_DEVICE_MODEL,
@@ -82,10 +84,7 @@ from .const import (
     STD_APP_LIST,
     WS_PREFIX,
     AppLoadMethod,
-    CONF_LOAD_ALL_APPS,
-    CONF_SCAN_APP_HTTP,
-    CONF_UPDATE_METHOD,
-    CONF_UPDATE_CUSTOM_PING_URL,
+    AppLaunchMethod,
 )
 
 try:
@@ -97,6 +96,12 @@ ATTR_ART_MODE_STATUS = "art_mode_status"
 ATTR_DEVICE_NAME = "device_name"
 ATTR_DEVICE_MODEL = "device_model"
 ATTR_IP_ADDRESS = "ip_address"
+
+CMD_OPEN_BROWSER = "open_browser"
+CMD_RUN_APP = "run_app"
+CMD_RUN_APP_REMOTE = "run_app_remote"
+CMD_RUN_APP_REST = "run_app_rest"
+CMD_SEND_KEY = "send_key"
 
 KEYHOLD_MAX_DELAY = 5.0
 KEYPRESS_DEFAULT_DELAY = 0.5
@@ -132,8 +137,9 @@ SUPPORT_SAMSUNGTV_SMART = (
     | SUPPORT_TURN_OFF
 )
 
-_LOGGER = logging.getLogger(__name__)
 SCAN_INTERVAL = timedelta(seconds=15)
+
+_LOGGER = logging.getLogger(__name__)
 
 
 async def async_setup_platform(
@@ -182,15 +188,8 @@ class SamsungTVDevice(MediaPlayerEntity):
         self._device_name = config.get(CONF_DEVICE_NAME)
         self._device_model = config.get(CONF_DEVICE_MODEL)
         self._device_os = config.get(CONF_DEVICE_OS)
-        self._show_channel_number = config.get(CONF_SHOW_CHANNEL_NR, False)
         self._broadcast = config.get(CONF_BROADCAST_ADDRESS)
         self._timeout = config.get(CONF_TIMEOUT, DEFAULT_TIMEOUT)
-
-        # obsolete
-        self._update_method = config.get(CONF_UPDATE_METHOD)
-        self._update_custom_ping_url = config.get(CONF_UPDATE_CUSTOM_PING_URL)
-        self._scan_app_http = config.get(CONF_SCAN_APP_HTTP, True)
-        self._load_all_apps = config.get(CONF_LOAD_ALL_APPS, True)
 
         port = config.get(CONF_PORT)
         api_key = config.get(CONF_API_KEY, None)
@@ -298,6 +297,10 @@ class SamsungTVDevice(MediaPlayerEntity):
 
         return retval
 
+    def _get_option(self, param, default=None):
+        options = self.hass.data[DOMAIN][self._entry_id].get("options", {})
+        return options.get(param, default)
+
     def _gen_token_file(self):
         self._token_file = (
             os.path.dirname(os.path.realpath(__file__))
@@ -360,9 +363,9 @@ class SamsungTVDevice(MediaPlayerEntity):
     def _delay_power_on(self, result):
         if result and self._state == STATE_OFF:
 
-            power_on_delay = self.hass.data[DOMAIN][self._entry_id][
-                "options"
-            ][CONF_POWER_ON_DELAY]
+            power_on_delay = self._get_option(
+                CONF_POWER_ON_DELAY, DEFAULT_POWER_ON_DELAY
+            )
 
             if power_on_delay > 0:
                 if not self._power_on_detected:
@@ -393,9 +396,7 @@ class SamsungTVDevice(MediaPlayerEntity):
 
         result = self._ws.ping_device()
         if result and self._st:
-            use_st_status = self.hass.data[DOMAIN][self._entry_id][
-                "options"
-            ][CONF_USE_ST_STATUS_INFO]
+            use_st_status = self._get_option(CONF_USE_ST_STATUS_INFO, True)
             if (
                 self._st.state == STStatus.STATE_OFF and
                 self._st.prev_state != STStatus.STATE_OFF and
@@ -486,9 +487,7 @@ class SamsungTVDevice(MediaPlayerEntity):
             return
 
         app_load_method = AppLoadMethod(
-            self.hass.data[DOMAIN][self._entry_id][
-                "options"
-            ][CONF_APP_LOAD_METHOD]
+            self._get_option(CONF_APP_LOAD_METHOD, AppLoadMethod.All.value)
         )
 
         # app_list is a list of dict
@@ -607,11 +606,9 @@ class SamsungTVDevice(MediaPlayerEntity):
         if self._update_forced():
             return
 
-        options = self.hass.data[DOMAIN][self._entry_id]["options"]
-
         """Required to get source and media title"""
         if self._st:
-            use_channel_info = options[CONF_USE_ST_CHANNEL_INFO]
+            use_channel_info = self._get_option(CONF_USE_ST_CHANNEL_INFO, True)
             try:
                 with timeout(ST_UPDATE_TIMEOUT):
                     await self._st.async_device_update(use_channel_info)
@@ -630,7 +627,7 @@ class SamsungTVDevice(MediaPlayerEntity):
 
         result = await self.hass.async_add_executor_job(self._ping_device)
 
-        use_mute_check = options[CONF_USE_MUTE_CHECK]
+        use_mute_check = self._get_option(CONF_USE_MUTE_CHECK, True)
         if not result:
             self._fake_on = None
         elif self._state == STATE_OFF and use_mute_check:
@@ -640,7 +637,7 @@ class SamsungTVDevice(MediaPlayerEntity):
                 self._fake_on = is_muted or not self._upnp.connected
                 if self._fake_on:
                     if first_detect:
-                        _LOGGER.warning("SamsungTV Smart - Detected fake power on, status not updated")
+                        _LOGGER.debug("SamsungTV Smart - Detected fake power on, status not updated")
                     result = False
 
         result = self._delay_power_on(result)
@@ -670,25 +667,28 @@ class SamsungTVDevice(MediaPlayerEntity):
             self._end_of_power_off = None
 
     def send_command(
-        self, payload, command_type="send_key", key_press_delay: float = 0, press=False
+        self, payload, command_type=CMD_SEND_KEY, key_press_delay: float = 0, press=False
     ):
         """Send a key to the tv and handles exceptions."""
         if key_press_delay < 0:
             key_press_delay = None  # means "default" provided with constructor
 
         try:
-            if command_type == "run_app":
+            if command_type == CMD_RUN_APP:
                 self._ws.run_app(payload)
-            elif command_type == "run_app_remote":
+            elif command_type == CMD_RUN_APP_REMOTE:
                 app_cmd = payload.split(",")
                 app_id = app_cmd[0]
                 action_type = ""
                 if len(app_cmd) > 1:
                     action_type = app_cmd[1]
                 self._ws.run_app(app_id, action_type, "", use_remote=True)
-            elif command_type == "open_browser":
+            elif command_type == CMD_RUN_APP_REST:
+                result = self._ws.rest_app_run(payload)
+                _LOGGER.debug("Rest API result launching app %s: %s", payload, result)
+            elif command_type == CMD_OPEN_BROWSER:
                 self._ws.open_browser(payload)
-            else:
+            elif command_type == CMD_SEND_KEY:
                 hold_delay = 0
                 source_keys = payload.split(",")
                 key_code = source_keys[0]
@@ -711,6 +711,8 @@ class SamsungTVDevice(MediaPlayerEntity):
                     self._ws.send_key(
                         key_code, key_press_delay, "Press" if press else "Click"
                     )
+            else:
+                _LOGGER.debug("Send command: invalid command type -> %s", command_type)
 
         except (ConnectionResetError, AttributeError, BrokenPipeError):
             _LOGGER.debug(
@@ -731,7 +733,7 @@ class SamsungTVDevice(MediaPlayerEntity):
         return True
 
     async def async_send_command(
-        self, payload, command_type="send_key", key_press_delay: float = 0, press=False
+        self, payload, command_type=CMD_SEND_KEY, key_press_delay: float = 0, press=False
     ):
         return await self.hass.async_add_executor_job(
             self.send_command, payload, command_type, key_press_delay, press
@@ -763,8 +765,9 @@ class SamsungTVDevice(MediaPlayerEntity):
                 return None
             elif self._running_app == DEFAULT_APP:
                 if self._st.source in ["digitalTv", "TV"]:
+                    show_channel_number = self._get_option(CONF_SHOW_CHANNEL_NR, False)
                     if self._st.channel_name != "":
-                        if self._show_channel_number and self._st.channel != "":
+                        if show_channel_number and self._st.channel != "":
                             return self._st.channel_name + " (" + self._st.channel + ")"
                         return self._st.channel_name
                     elif self._st.channel != "":
@@ -1032,6 +1035,26 @@ class SamsungTVDevice(MediaPlayerEntity):
 
         return True
 
+    async def _async_launch_app(self, app_data):
+        """Launch app with different methods."""
+
+        method = CMD_RUN_APP
+        app_cmd = app_data.split("@")
+        app_id = app_cmd[0]
+        if len(app_cmd) > 1:
+            method = app_cmd[1]
+        else:
+            app_launch_method = AppLaunchMethod(
+                self._get_option(CONF_APP_LAUNCH_METHOD, AppLaunchMethod.Standard.value)
+            )
+
+            if app_launch_method == AppLaunchMethod.Remote:
+                method = CMD_RUN_APP_REMOTE
+            elif app_launch_method == AppLaunchMethod.Rest:
+                method = CMD_RUN_APP_REST
+
+        await self.async_send_command(app_id, method)
+
     async def async_play_media(self, media_type, media_id, **kwargs):
         """Support changing a channel."""
 
@@ -1052,7 +1075,7 @@ class SamsungTVDevice(MediaPlayerEntity):
 
         # Launch an app
         elif media_type == MEDIA_TYPE_APP:
-            await self.async_send_command(media_id, "run_app_remote")
+            await self._async_launch_app(media_id)
 
         # Send custom key
         elif media_type == MEDIA_TYPE_KEY:
@@ -1082,7 +1105,7 @@ class SamsungTVDevice(MediaPlayerEntity):
             self._playing = True
 
         elif media_type == MEDIA_TYPE_BROWSER:
-            await self.async_send_command(media_id, "open_browser")
+            await self.async_send_command(media_id, CMD_OPEN_BROWSER)
 
         else:
             _LOGGER.error("Unsupported media type")
@@ -1098,9 +1121,9 @@ class SamsungTVDevice(MediaPlayerEntity):
             if not result:
                 return
         elif source in self._app_list:
-            source_key = self._app_list[source]
+            app_id = self._app_list[source]
             running_app = source
-            await self.async_send_command(source_key, "run_app")
+            await self._async_launch_app(app_id)
             if self._st:
                 self._st.set_application(self._app_list_ST[source])
         else:
@@ -1161,10 +1184,7 @@ class SamsungTVDevice(MediaPlayerEntity):
             service_name = SERVICE_TURN_OFF
             conf_entity = CONF_SYNC_TURN_OFF
 
-        entity_list = self.hass.data[DOMAIN][self._entry_id][
-            "options"
-        ][conf_entity]
-
+        entity_list = self._get_option(conf_entity)
         if not entity_list:
             return
 

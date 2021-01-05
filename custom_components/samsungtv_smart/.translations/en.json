@@ -14,6 +14,7 @@
         },
         "error": {
             "auth_missing": "Home Assistant is not authorized to connect to this Samsung TV. Please check your TV's settings to authorize Home Assistant.",
+            "invalid_host": "Invalid host.",
             "not_successful": "Unable to connect to this Samsung TV device.",
             "not_supported": "This Samsung TV device is currently not supported.",
             "wrong_api_key": "Wrong SmartThings token.",
@@ -58,8 +59,10 @@
             "init": {
                 "data": {
                     "app_load_method": "Applications list load mode at startup",
+                    "app_launch_method": "Applications launch method used",
                     "use_st_status_info": "Use SmartThings TV Status information",
                     "use_st_channel_info": "Use SmartThings TV Channels information",
+                    "show_channel_number": "Use SmartThings TV Channels number information",
                     "use_mute_check": "Use volume mute status to detect fake power ON",
                     "power_on_delay": "Seconds to delay power ON status (0-60)",
                     "sync_turn_off": "List of entity to Power OFF with TV (comma separated)",

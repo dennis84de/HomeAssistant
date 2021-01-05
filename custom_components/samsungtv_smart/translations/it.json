@@ -14,6 +14,7 @@
         },
         "error": {
             "auth_missing": "Home Assistant non \u00e8 autorizzato a connettersi a questo Samsung TV. Controlla le impostazioni del tuo TV per autorizzare Home Assistant.",
+            "invalid_host": "Nome host non valido.",
             "not_successful": "Impossibile connettersi a questo dispositivo Samsung TV.",
             "not_supported": "Questo dispositivo Samsung TV non \u00e8 attualmente supportato.",
             "wrong_api_key": "SmartThings token errato.",
@@ -58,8 +59,10 @@
             "init": {
                 "data": {
                     "app_load_method": "Modalità caricamento lista applicazioni all'avvio",
+                    "app_launch_method": "Metodo usato per lanciare le applicazioni",
                     "use_st_status_info": "Usa informazioni Stato TV da SmartThings",
                     "use_st_channel_info": "Usa informazioni Canale TV da SmartThings",
+                    "show_channel_number": "Usa informazioni Numero Canale TV da SmartThings",
                     "use_mute_check": "Utilizza lo stato di volume muto per identificare false accensioni",
                     "power_on_delay": "Secondi di ritardo per passaggio allo stato ON (0-60)",
                     "sync_turn_off": "Elenco entit\u00e0 da Spegnere con la TV (separate da virgola)",

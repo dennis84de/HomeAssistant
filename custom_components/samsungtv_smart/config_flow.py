@@ -1,6 +1,5 @@
 """Config flow for Samsung TV."""
 import socket
-# from urllib.parse import urlparse
 from typing import Any, Dict
 import logging
 
@@ -9,13 +8,6 @@ import voluptuous as vol
 from homeassistant import config_entries
 from homeassistant.core import callback
 from homeassistant.config_entries import SOURCE_IMPORT
-
-# from homeassistant.components.ssdp import (
-#     ATTR_SSDP_LOCATION,
-#     ATTR_UPNP_MANUFACTURER,
-#     ATTR_UPNP_MODEL_NAME,
-#     ATTR_UPNP_UDN,
-# )
 
 from homeassistant.const import (
     CONF_API_KEY,
@@ -32,14 +24,16 @@ from . import SamsungTVInfo
 
 from .const import (
     DOMAIN,
+    CONF_APP_LAUNCH_METHOD,
+    CONF_APP_LOAD_METHOD,
     CONF_DEVICE_NAME,
     CONF_DEVICE_MODEL,
     CONF_DEVICE_OS,
-    CONF_APP_LOAD_METHOD,
     CONF_POWER_ON_DELAY,
     CONF_USE_ST_CHANNEL_INFO,
     CONF_USE_ST_STATUS_INFO,
     CONF_USE_MUTE_CHECK,
+    CONF_SHOW_CHANNEL_NR,
     CONF_SYNC_TURN_OFF,
     CONF_SYNC_TURN_ON,
     CONF_WS_NAME,
@@ -50,9 +44,21 @@ from .const import (
     RESULT_ST_MULTI_DEVICES,
     RESULT_SUCCESS,
     RESULT_WRONG_APIKEY,
-    APP_LOAD_METHODS,
+    AppLaunchMethod,
     AppLoadMethod,
 )
+
+APP_LAUNCH_METHODS = {
+    AppLaunchMethod.Standard.value: "Standard Web Socket Channel",
+    AppLaunchMethod.Remote.value: "Remote Web Socket Channel",
+    AppLaunchMethod.Rest.value: "Rest API Call",
+}
+
+APP_LOAD_METHODS = {
+    AppLoadMethod.All.value: "All Apps",
+    AppLoadMethod.Default.value: "Default Apps",
+    AppLoadMethod.NotLoad.value: "Not Load",
+}
 
 CONFIG_RESULTS = {
     RESULT_NOT_SUCCESSFUL: "Local connection to TV failed.",
@@ -66,21 +72,16 @@ CONF_ST_DEVICE = "st_devices"
 CONF_USE_HA_NAME = "use_ha_name_for_ws"
 DEFAULT_TV_NAME = "Samsung TV"
 
-DATA_SCHEMA = vol.Schema(
-    {
-        vol.Required(CONF_HOST): str,
-        vol.Required(CONF_NAME): str,
-        vol.Optional(CONF_USE_HA_NAME, default=False): bool,
-        vol.Optional(CONF_API_KEY): str,
-    }
-)
 _LOGGER = logging.getLogger(__name__)
 
 
 def _get_ip(host):
     if host is None:
         return None
-    return socket.gethostbyname(host)
+    try:
+        return socket.gethostbyname(host)
+    except socket.gaierror:
+        return None
 
 
 class SamsungTVConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
@@ -93,6 +94,9 @@ class SamsungTVConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
     def __init__(self):
         """Initialize flow."""
+        self._user_data = None
+        self._st_devices_schema = None
+
         self._tvinfo = None
         self._host = None
         self._api_key = None
@@ -102,17 +106,13 @@ class SamsungTVConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         self._ws_name = None
         self._use_default_name = False
 
-        self._st_devices_schema = None
-
     def _get_entry(self):
         """Generate new entry."""
         data = {
             CONF_HOST: self._host,
             CONF_NAME: self._name,
             CONF_ID: self._tvinfo._uuid,
-            CONF_MAC: self._mac
-            if not self._tvinfo._macaddress
-            else self._tvinfo._macaddress,
+            CONF_MAC: self._tvinfo._macaddress or self._mac,
             CONF_DEVICE_NAME: self._tvinfo._device_name,
             CONF_DEVICE_MODEL: self._tvinfo._device_model,
             CONF_PORT: self._tvinfo._port,
@@ -203,54 +203,57 @@ class SamsungTVConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
     async def async_step_user(self, user_input=None):
         """Handle a flow initialized by the user."""
-        if user_input is not None:
-            ip_address = await self.hass.async_add_executor_job(
-                _get_ip, user_input[CONF_HOST]
-            )
+        if user_input is None:
+            return self._show_form()
 
-            await self.async_set_unique_id(ip_address)
-            self._abort_if_unique_id_configured()
+        self._user_data = user_input
+        ip_address = await self.hass.async_add_executor_job(
+            _get_ip, user_input[CONF_HOST]
+        )
+        if not ip_address:
+            return self._show_form(errors={"base": "invalid_host"})
 
-            self._host = ip_address
-            self._api_key = user_input.get(CONF_API_KEY)
-            self._name = user_input.get(CONF_NAME)
-            if not self._name:
-                self._name = DEFAULT_TV_NAME
-                self._use_default_name = True
+        await self.async_set_unique_id(ip_address)
+        self._abort_if_unique_id_configured()
 
-            self._device_id = user_input.get(CONF_DEVICE_ID) if self._api_key else None
-            self._mac = user_input.get(CONF_MAC, "")
+        self._host = ip_address
+        self._api_key = user_input.get(CONF_API_KEY)
+        self._name = user_input.get(CONF_NAME)
+        if not self._name:
+            self._name = DEFAULT_TV_NAME
+            self._use_default_name = True
 
-            use_ha_name = user_input.get(CONF_USE_HA_NAME, False)
-            if use_ha_name:
-                ha_conf = self.hass.config
-                if hasattr(ha_conf, "location_name"):
-                    self._ws_name = ha_conf.location_name
-            if not self._ws_name:
-                self._ws_name = self._name
+        self._device_id = user_input.get(CONF_DEVICE_ID) if self._api_key else None
+        self._mac = user_input.get(CONF_MAC, "")
 
-            st_device_label = user_input.get(CONF_DEVICE_NAME, "")
-            is_import = user_input.get(SOURCE_IMPORT, False)
+        use_ha_name = user_input.get(CONF_USE_HA_NAME, False)
+        if use_ha_name:
+            ha_conf = self.hass.config
+            if hasattr(ha_conf, "location_name"):
+                self._ws_name = ha_conf.location_name
+        if not self._ws_name:
+            self._ws_name = self._name
 
-            result = RESULT_SUCCESS
-            if self._api_key and not self._device_id:
-                result = await self._get_st_deviceid(st_device_label)
+        st_device_label = user_input.get(CONF_DEVICE_NAME, "")
+        is_import = user_input.get(SOURCE_IMPORT, False)
 
-                if result == RESULT_SUCCESS and not self._device_id:
-                    if self._st_devices_schema:
-                        if not is_import:
-                            return self._show_form(errors=None, step_id="stdevice")
-                        result = RESULT_ST_MULTI_DEVICES
-                    else:
-                        if not is_import:
-                            return self._show_form(errors=None, step_id="stdeviceid")
-                        result = RESULT_ST_DEVICE_NOT_FOUND
-            elif self._device_id and self._stdev_already_used(self._device_id):
-                result = RESULT_ST_DEVICE_USED
+        result = RESULT_SUCCESS
+        if self._api_key and not self._device_id:
+            result = await self._get_st_deviceid(st_device_label)
 
-            return await self._async_save_entry(result, is_import)
+            if result == RESULT_SUCCESS and not self._device_id:
+                if self._st_devices_schema:
+                    if not is_import:
+                        return self._show_form(errors=None, step_id="stdevice")
+                    result = RESULT_ST_MULTI_DEVICES
+                else:
+                    if not is_import:
+                        return self._show_form(errors=None, step_id="stdeviceid")
+                    result = RESULT_ST_DEVICE_NOT_FOUND
+        elif self._device_id and self._stdev_already_used(self._device_id):
+            result = RESULT_ST_DEVICE_USED
 
-        return self._show_form()
+        return await self._async_save_entry(result, is_import)
 
     async def async_step_stdevice(self, user_input=None):
         """Handle a flow to select ST device."""
@@ -290,14 +293,30 @@ class SamsungTVConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
         return self._get_entry()
 
+    def _get_init_schema(self):
+        data = self._user_data or {}
+        init_schema = vol.Schema(
+            {
+                vol.Required(CONF_HOST, default=data.get(CONF_HOST, "")): str,
+                vol.Required(CONF_NAME, default=data.get(CONF_NAME, "")): str,
+                vol.Optional(
+                    CONF_USE_HA_NAME, default=data.get(CONF_USE_HA_NAME, False)
+                ): bool,
+                vol.Optional(CONF_API_KEY, default=data.get(CONF_API_KEY, "")): str,
+            }
+        )
+
+        return init_schema
+
     @callback
     def _show_form(self, errors=None, step_id="user"):
         """Show the form to the user."""
-        data_schema = DATA_SCHEMA
         if step_id == "stdevice":
             data_schema = self._st_devices_schema
         elif step_id == "stdeviceid":
             data_schema = vol.Schema({vol.Required(CONF_DEVICE_ID): str})
+        else:
+            data_schema = self._get_init_schema()
 
         return self.async_show_form(
             step_id=step_id, data_schema=data_schema, errors=errors if errors else {},
@@ -308,65 +327,6 @@ class SamsungTVConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     def async_get_options_flow(config_entry):
         """Get the options flow for this handler."""
         return OptionsFlowHandler(config_entry)
-
-    # async def async_step_ssdp(self, user_input=None):
-    # """Handle a flow initialized by discovery."""
-    # host = urlparse(user_input[ATTR_SSDP_LOCATION]).hostname
-    # ip_address = await self.hass.async_add_executor_job(_get_ip, host)
-
-    # self._host = host
-    # self._ip = self.context[CONF_IP_ADDRESS] = ip_address
-    # self._manufacturer = user_input.get(ATTR_UPNP_MANUFACTURER)
-    # self._model = user_input.get(ATTR_UPNP_MODEL_NAME)
-    # self._name = f"Samsung {self._model}"
-    # self._id = user_input.get(ATTR_UPNP_UDN)
-    # self._title = self._model
-
-    # # probably access denied
-    # if self._id is None:
-    # return self.async_abort(reason=RESULT_AUTH_MISSING)
-    # if self._id.startswith("uuid:"):
-    # self._id = self._id[5:]
-
-    # await self.async_set_unique_id(ip_address)
-    # self._abort_if_unique_id_configured(
-    # {
-    # CONF_ID: self._id,
-    # CONF_MANUFACTURER: self._manufacturer,
-    # CONF_MODEL: self._model,
-    # }
-    # )
-
-    # self.context["title_placeholders"] = {"model": self._model}
-    # return await self.async_step_confirm()
-
-    # async def async_step_confirm(self, user_input=None):
-    # """Handle user-confirmation of discovered node."""
-    # if user_input is not None:
-    # result = await self.hass.async_add_executor_job(self._try_connect)
-
-    # if result != RESULT_SUCCESS:
-    # return self.async_abort(reason=result)
-    # return self._get_entry()
-
-    # return self.async_show_form(
-    # step_id="confirm", description_placeholders={"model": self._model}
-    # )
-
-    # async def async_step_reauth(self, user_input=None):
-    # """Handle configuration by re-auth."""
-    # self._host = user_input[CONF_HOST]
-    # self._id = user_input.get(CONF_ID)
-    # self._ip = user_input[CONF_IP_ADDRESS]
-    # self._manufacturer = user_input.get(CONF_MANUFACTURER)
-    # self._model = user_input.get(CONF_MODEL)
-    # self._name = user_input.get(CONF_NAME)
-    # self._title = self._model or self._name
-
-    # await self.async_set_unique_id(self._ip)
-    # self.context["title_placeholders"] = {"model": self._title}
-
-    # return await self.async_step_confirm()
 
 
 class OptionsFlowHandler(config_entries.OptionsFlow):
@@ -390,6 +350,12 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
                     ),
                 ): vol.In(APP_LOAD_METHODS),
                 vol.Optional(
+                    CONF_APP_LAUNCH_METHOD,
+                    default=self.config_entry.options.get(
+                        CONF_APP_LAUNCH_METHOD, AppLaunchMethod.Standard.value
+                    ),
+                ): vol.In(APP_LAUNCH_METHODS),
+                vol.Optional(
                     CONF_USE_ST_STATUS_INFO,
                     default=self.config_entry.options.get(
                         CONF_USE_ST_STATUS_INFO, True
@@ -399,6 +365,12 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
                     CONF_USE_ST_CHANNEL_INFO,
                     default=self.config_entry.options.get(
                         CONF_USE_ST_CHANNEL_INFO, True
+                    ),
+                ): bool,
+                vol.Optional(
+                    CONF_SHOW_CHANNEL_NR,
+                    default=self.config_entry.options.get(
+                        CONF_SHOW_CHANNEL_NR, False
                     ),
                 ): bool,
                 vol.Optional(

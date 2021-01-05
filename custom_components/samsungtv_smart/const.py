@@ -8,32 +8,18 @@ class AppLoadMethod(Enum):
     NotLoad = 3
 
 
-APP_LOAD_METHODS = {
-    AppLoadMethod.All.value: "All Apps",
-    AppLoadMethod.Default.value: "Default Apps",
-    AppLoadMethod.NotLoad.value: "Not Load",
-}
+class AppLaunchMethod(Enum):
+    Standard = 1
+    Remote = 2
+    Rest = 3
+
 
 DOMAIN = "samsungtv_smart"
 
-UPDATE_METHODS = {
-    "SmartThings": "smartthings",
-    "Ping": "ping",
-    "WebSockets": "websockets",
-}
+WS_PREFIX = "[Home Assistant]"
 
-RESULT_NOT_SUCCESSFUL = "not_successful"
-RESULT_NOT_SUPPORTED = "not_supported"
-RESULT_ST_DEVICE_USED = "st_device_used"
-RESULT_ST_DEVICE_NOT_FOUND = "st_device_not_found"
-RESULT_ST_MULTI_DEVICES = "st_multiple_device"
-RESULT_SUCCESS = "success"
-RESULT_WRONG_APIKEY = "wrong_api_key"
-
-DEFAULT_PORT = 8001
-DEFAULT_TIMEOUT = 5
-DEFAULT_UPDATE_METHOD = UPDATE_METHODS["Ping"]
 CONF_APP_LIST = "app_list"
+CONF_APP_LAUNCH_METHOD = "app_launch_method"
 CONF_APP_LOAD_METHOD = "app_load_method"
 CONF_DEVICE_NAME = "device_name"
 CONF_DEVICE_MODEL = "device_model"
@@ -54,13 +40,19 @@ CONF_UPDATE_METHOD = "update_method"
 CONF_UPDATE_CUSTOM_PING_URL = "update_custom_ping_url"
 CONF_SCAN_APP_HTTP = "scan_app_http"
 
-DATA_LISTENER = "listener"
+DEFAULT_PORT = 8001
+DEFAULT_TIMEOUT = 5
 DEFAULT_POWER_ON_DELAY = 30.0
-
-WS_PREFIX = "[Home Assistant]"
-
 DEFAULT_SOURCE_LIST = {"TV": "KEY_TV", "HDMI": "KEY_HDMI"}
 DEFAULT_APP = "TV/HDMI"
+
+RESULT_NOT_SUCCESSFUL = "not_successful"
+RESULT_NOT_SUPPORTED = "not_supported"
+RESULT_ST_DEVICE_USED = "st_device_used"
+RESULT_ST_DEVICE_NOT_FOUND = "st_device_not_found"
+RESULT_ST_MULTI_DEVICES = "st_multiple_device"
+RESULT_SUCCESS = "success"
+RESULT_WRONG_APIKEY = "wrong_api_key"
 
 STD_APP_LIST = {
     # app_id: smartthings app id (if different and available)
