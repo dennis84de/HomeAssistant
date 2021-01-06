@@ -15,16 +15,9 @@ popup_cards:
     card:
       type: entities
       entities:
-        - entity: sensor.tablet_weckzeit
+        - entity: input_datetime.wecker
         - entity: input_number.alarmadvance
         - entity: input_number.alarmdelay
-
-  binary_sensor.wecker_ueberspringen:
-    title: Wecker überspringen
-    card:
-      type: entities
-      entities:
-        - entity: input_boolean.wecker_ueberspringen
 
   sensor.gewicht:
     title: Gewicht
@@ -95,8 +88,7 @@ cards:
       - entity: sensor.wecker_startzeit
         type: "custom:secondaryinfo-entity-row"              
         secondary_info: "[[ sensor.wecker_startdatum ]]"       
-      - entity: binary_sensor.alarm_aktiv      
-      - entity: binary_sensor.wecker_ueberspringen
+      - entity: binary_sensor.alarm_aktiv
 
   - type: entities
     title: Kalender

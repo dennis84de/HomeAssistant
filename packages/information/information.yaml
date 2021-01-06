@@ -40,6 +40,7 @@ sensor:
     display_options:
       - 'time'
       - 'date'
+      - 'date_time'
 
   - platform: template
     sensors:
