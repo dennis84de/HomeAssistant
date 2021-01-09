@@ -52,7 +52,9 @@ cards:
       - entity: sensor.schalter_schlafzimmer_battery_level
         name: Schlafzimmer
       - entity: sensor.schalter_arbeitszimmer_battery_level
-        name: Arbeitszimmer        
+        name: Arbeitszimmer
+      - entity: sensor.schalter_badezimmer_battery_level
+        name: Badezimmer           
 
   - type: entities
     title: Thermometer

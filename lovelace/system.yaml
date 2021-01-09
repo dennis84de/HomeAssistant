@@ -106,7 +106,8 @@ cards:
         hide:
           source: true
           progress: true
-          volume: true           
+          controls: true  
+          info: true
 
   - type: entities
     title: Nextcloud

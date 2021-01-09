@@ -1,0 +1,62 @@
+input_boolean:
+  baden_aktiv:
+    name: "Baden aktiv"
+    
+automation:
+  - alias: "Baden - Schalter"
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.schalter_badezimmer
+        to: 'off'            
+    condition:
+      - condition: state
+        entity_id: binary_sensor.besuch
+        state: 'off'
+    action:
+      - choose:
+          - conditions:
+              - condition: state
+                entity_id: input_boolean.baden_aktiv
+                state: 'off'
+            sequence:
+              - service: input_boolean.turn_on
+                entity_id: input_boolean.baden_aktiv, input_boolean.bewegungsmelder_badezimmer_deaktiviert
+              - service: light.turn_on
+                entity_id: light.badezimmerschrank
+              - service: switch.turn_off
+                entity_id: switch.watchtv_wohnzimmer, switch.monitor
+              - service: script.radios_ausschalten
+              - service: light.turn_off
+                entity_id: light.couch, light.strahler   
+              - choose:
+                  conditions:
+                    - condition: state
+                      entity_id: input_boolean.computer_ausschalten
+                      state: 'on'
+                  sequence:
+                    - service: switch.turn_off
+                      entity_id: switch.pc
+        default:
+          - service: input_boolean.turn_off
+            entity_id: input_boolean.baden_aktiv, input_boolean.bewegungsmelder_badezimmer_deaktiviert
+          - service: light.turn_off
+            entity_id: light.badezimmerschrank
+          - service: switch.turn_on
+            entity_id: switch.watchtv_wohnzimmer, switch.monitor
+          - service: script.wohnung_radios_einschalten
+          - choose:
+              conditions:
+                - condition: state
+                  entity_id: binary_sensor.sonne_tagsueber
+                  state: 'off'
+              sequence:
+                - service: light.turn_on
+                  entity_id: light.couch, light.strahler
+          - choose:
+              conditions:
+                - condition: state
+                  entity_id: switch.pc
+                  state: 'off'
+              sequence:
+                - service: switch.turn_on
+                  entity_id: switch.pc       

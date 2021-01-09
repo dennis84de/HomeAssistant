@@ -139,6 +139,8 @@ cards:
         name: Flur
       - entity: zigate.schalter_arbeitszimmer
         name: Arbeitszimmer            
+      - entity: zigate.schalter_badezimmer
+        name: Badezimmer           
       - entity: zigate.schalter_balkon
         name: Balkon        
 

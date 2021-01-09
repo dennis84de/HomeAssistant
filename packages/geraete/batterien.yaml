@@ -40,6 +40,7 @@ sensor:
       - zigate.schalter_flur
       - zigate.schalter_balkon
       - zigate.schalter_arbeitszimmer
+      - zigate.schalter_badezimmer
 
   - platform: template
     sensors:
