@@ -10,23 +10,11 @@ notify:
   - platform: alexa_media
     name: Alexa
 
-input_number:
-  sprache_lautstaerke:
-    name: Lautstärke
-    min: 0
-    max: 100
-    step: 5
-    icon: mdi:volume-high
-
 input_boolean:
   sprachausgabe:
     name: Sprachausgabe
     icon: mdi:message-bulleted
     initial: true
-
-  uhr_einschalten:
-    name: Uhr einschalten
-    icon: mdi:alarm-multiple
 
 script:
   alexa_tts:
@@ -36,9 +24,6 @@ script:
         conditions:
           - condition: state
             entity_id: binary_sensor.zu_hause
-            state: 'on'
-          - condition: state
-            entity_id: input_boolean.sprachausgabe
             state: 'on'
           - condition: state
             entity_id: binary_sensor.schlafen_aktiv
@@ -76,9 +61,6 @@ script:
         conditions:
           - condition: state
             entity_id: binary_sensor.zu_hause
-            state: 'on'
-          - condition: state
-            entity_id: input_boolean.sprachausgabe
             state: 'on'
           - condition: state
             entity_id: binary_sensor.schlafen_aktiv

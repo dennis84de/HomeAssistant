@@ -230,9 +230,6 @@ automation:
         entity_id: media_player.soundbar
         state: 'on'
       - condition: state
-        entity_id: binary_sensor.firefox_youtube
-        state: 'off'
-      - condition: state
         entity_id: input_boolean.nicht_stoeren
         state: 'off'      
       - condition: state
@@ -314,57 +311,6 @@ automation:
           entity_id: media_player.kuche, media_player.badezimmer, media_player.wohnzimmer, media_player.schlafzimmer, media_player.arbeitszimmer, media_player.flur, media_player.balkon
           is_volume_muted: false
          
-  - alias: 'Telefon aktiv - Youtube pausieren'
-    trigger:
-      - platform: state
-        entity_id: sensor.telefon
-        to: 'ringing'
-      - platform: state
-        entity_id: sensor.telefon
-        to: 'dialing'
-    condition:
-      - condition: state
-        entity_id: binary_sensor.firefox_youtube
-        state: 'on'
-      - condition: state
-        entity_id: input_boolean.youtube_pausiert
-        state: 'off'        
-      - condition: state
-        entity_id: input_boolean.nicht_stoeren
-        state: 'off'
-      - condition: state
-        entity_id: binary_sensor.besuch
-        state: 'off'            
-    action:
-      - service: input_boolean.turn_on
-        entity_id: input_boolean.youtube_pausiert      
-      - service: mqtt.publish
-        data_template:
-          topic: "iotlink/workgroup/computer/commands/send-keys"
-          payload: '[" "]'
-          
-  - alias: 'Telefon inaktiv - Youtube wiedergeben'
-    trigger:
-      platform: state
-      entity_id: sensor.telefon
-      to: 'idle'
-    condition:
-      - condition: state
-        entity_id: binary_sensor.firefox_youtube
-        state: 'on'
-      - condition: state
-        entity_id: input_boolean.youtube_pausiert
-        state: 'on'
-      - condition: template
-        value_template: '{{ is_state("sensor.handy", "incoming") == False and is_state("sensor.handy", "outgoing") == False }}' 
-    action:
-      - service: input_boolean.turn_off
-        entity_id: input_boolean.youtube_pausiert      
-      - service: mqtt.publish
-        data_template:
-          topic: "iotlink/workgroup/computer/commands/send-keys"
-          payload: '[" "]'
-
   - alias: 'Telefon aktiv - Nachricht an Handy'
     trigger:
       - platform: state

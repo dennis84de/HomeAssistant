@@ -1,15 +1,9 @@
-automation:
-  - alias: "Lautstärke Multimedia ändern"
-    trigger:
-      - platform: state
-        entity_id: input_number.sprache_lautstaerke
-    action:
-      - service: media_player.volume_set
-        data_template:
-          entity_id: media_player.smarthome
-          volume_level: >-
-            {{ states('input_number.sprache_lautstaerke') | int / 100 }}       
+input_boolean:
+  uhr_einschalten:
+    name: Uhr einschalten
+    icon: mdi:alarm-multiple
 
+automation:
   - alias: "Uhr - Glocke starten"
     trigger:
       - platform: time_pattern

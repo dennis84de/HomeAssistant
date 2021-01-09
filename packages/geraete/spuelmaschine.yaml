@@ -40,7 +40,7 @@ automation:
       - platform: numeric_state
         entity_id: sensor.spulmaschine_verbrauch
         below: 2
-        for: '00:01:00'
+        for: '00:00:30'
       - platform: state
         entity_id: switch.spulmaschine
         from: 'off'

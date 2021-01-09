@@ -42,6 +42,14 @@ timer:
 binary_sensor:
   - platform: template
     sensors:
+      im_bett:
+        friendly_name: "Im Bett"
+        value_template: >-
+          {{not is_state("binary_sensor.bett",'on')}}
+        device_class: vibration
+        icon_template: >-
+            mdi:bed-king    
+            
       schlafen_aktiv:
         friendly_name: Schlafen aktiv
         value_template: "{{ is_state('input_boolean.schlafen_aktiv', 'on') }}"

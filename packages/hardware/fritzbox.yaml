@@ -1,23 +1,9 @@
-speedtestdotnet:
-
-device_tracker:
-  - platform: nmap_tracker
-    scan_options: " --privileged -sn "
-    hosts:
-      - !secret nmap_hosts                
-    exclude:
-      - !secret synology_host
-     
-  - platform: ping
-    hosts:
-      handyping: !secret handy_host
-      
 input_text:
   guest_wifi_ssid:
-    name: Gäste Wlan - SSID
+    name: 'Gäste Wlan - SSID'
     
   guest_wifi_password:
-    name: Gäste Wlan - Password
+    name: 'Gäste Wlan - Password'
 
 sensor:
   - platform: fritzbox_callmonitor

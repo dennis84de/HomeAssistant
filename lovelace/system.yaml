@@ -86,9 +86,7 @@ cards:
   - type: entities
     title: Benachrichtigungen
     show_header_toggle: false
-    entities:
-      - entity: input_boolean.sprachausgabe
-      - entity: input_number.sprache_lautstaerke
+    entities:          
       - entity: input_boolean.uhr_einschalten
       - entity: input_boolean.besuch
       - entity: input_boolean.nicht_stoeren
@@ -102,6 +100,13 @@ cards:
       - entity: switch.alle_radios      
       - entity: switch.wiedergabe_aktiv      
       - entity: script.sync_radios
+      - type: custom:mini-media-player
+        entity: media_player.smarthome
+        name: Smarthome
+        hide:
+          source: true
+          progress: true
+          volume: true           
 
   - type: entities
     title: Nextcloud
@@ -109,8 +114,7 @@ cards:
     entities:
       - entity: binary_sensor.nextcloud
       - entity: sensor.nextcloud_zertifikat
-      - entity: sensor.nextcloud_system_version
-      - entity: sensor.nextcloud_datenbank
+      - entity: sensor.nextcloud_system_version     
 
   - type: glance
     title: Gäste Wlan

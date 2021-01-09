@@ -1,0 +1,15 @@
+speedtestdotnet:
+
+device_tracker:
+  - platform: nmap_tracker
+    scan_options: " --privileged -sn "
+    hosts:
+      - !secret nmap_hosts                
+    exclude:
+      - !secret synology_host
+      - !secret echo_badezimmer_host
+      - !secret echo_flur_host
+      - !secret echo_kueche_host
+      - !secret echo_schlafzimmer_host
+      - !secret echo_wohnzimmer_host         
+      

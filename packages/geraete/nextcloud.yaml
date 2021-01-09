@@ -7,16 +7,7 @@ sensor:
     host: !secret nextcloud_url
 
   - platform: template
-    sensors:  
-      nextcloud_datenbank:
-        friendly_name: "Datenbankgröße"
-        unit_of_measurement: MB
-        value_template: >-
-          {% set bytesSent = (states('sensor.nextcloud_server_database_size') | int / 1024 / 1024) | round() %}
-          {{ bytesSent }}          
-        icon_template: >-
-          mdi:server
-          
+    sensors:            
       nextcloud_zertifikat_tage:
         friendly_name: "Nextcloud Zertifikat"
         value_template: >-

@@ -15,7 +15,7 @@ binary_sensor:
         friendly_name: "zu Hause"
         device_class: presence
         value_template: >-
-          {% if is_state('device_tracker.handyping', 'home') and is_state('device_tracker.handymqtt', 'home') %}
+          {% if is_state('device_tracker.handyping', 'home') or is_state('device_tracker.handymqtt', 'home') %}
             true
           {% else %}
             false
@@ -28,133 +28,6 @@ binary_sensor:
           {{ True if is_state('input_boolean.besuch', 'on') else False }}     
 
 automation:
-  - alias: 'Unterwegs - Geräte eingeschaltet'
-    trigger:
-      - platform: state
-        entity_id: binary_sensor.zu_hause
-        to: 'off'
-        for:
-          minutes: 60
-    condition:
-      - condition: template
-        value_template: >-
-          {% set ns = namespace(found=0) -%}
-          {% set computerEingeschaltet = is_state('switch.computer', 'on') %}
-          {% set computerEingeschaltetLassen = is_state('input_boolean.computer_ausschalten', 'on') %}
-
-          {% for entity_id in state_attr('group.alles_ausschalten', 'entity_id') -%}
-            {% set parts = entity_id.split('.') -%}
-            {% if (states(entity_id) == 'on') -%}
-              {% set ns.found = ns.found + 1 -%}
-            {% endif -%}
-          {% endfor -%}
-          
-          {% if ns.found > 1 %}
-            True
-          {% elif ns.found == 0 or (ns.found == 1 and computerEingeschaltet == True and computerEingeschaltetLassen == True) %}
-            False
-          {% else %}
-            True
-          {% endif %}  
-          
-    action:
-      - service: notify.telegram
-        data_template:
-          title: "Es sind noch Geräte eingeschaltet"
-          message: >-
-            {%- set comma = joiner(",") -%}
-            {%- set deviceFound = false -%}
-
-            {% for entity_id in state_attr('group.alles_ausschalten', 'entity_id') -%}              
-              {%- if states(entity_id) == 'on' -%}
-                {%- set deviceFound = true -%}
-                {{ comma() }} {{ state_attr(entity_id, 'friendly_name') }}
-              {%- endif -%}
-            {%- endfor -%}
-
-            {%- if deviceFound == true -%}
-              Alle Geräte sind ausgeschaltet.
-            {%- endif -%}
-          data:
-            inline_keyboard:
-              - 'Alles Ausschalten:/alles_ausschalten'
-
-  - alias: "Urlaub - Lichtsimulation einschalten"
-    trigger:
-      - platform: state
-        entity_id: binary_sensor.zu_hause
-        to: 'off'
-    condition:
-      - condition: state
-        entity_id: calendar.urlaub
-        state: 'on'        
-    action:
-      - service: input_boolean.turn_on
-        entity_id: input_boolean.licht_simulaton
-
-  - alias: "Zu Hause"
-    trigger:
-      - platform: state
-        entity_id: binary_sensor.zu_hause
-        to: 'on'    
-      - platform: state
-        entity_id: sensor.schalter_flur
-        to: '2'            
-    condition:
-      - condition: template
-        value_template: >-
-          {{ is_state('binary_sensor.zu_hause', 'off') if trigger.entity_id == "sensor.schalter_flur" else True }}        
-      - condition: template
-        value_template: >-
-          {% set now = as_timestamp(now()) | int %}
-          {% set last = as_timestamp(state_attr("script.alles_ausschalten", "last_triggered")) | int %}
-          {% set diff = ((now - last) / 60) | int %}
-
-          {{ diff >= 10 }}
-    action:       
-      - service: script.zu_hause_standort
-      - service: alarm_control_panel.alarm_disarm
-        entity_id: alarm_control_panel.alarm
-      - service: switch.turn_off
-        entity_id: switch.kamera_wohnzimmer      
-      - choose:
-          - conditions:
-              - condition: state
-                entity_id: binary_sensor.home_office
-                state: 'off'          
-              - condition: time
-                after: '08:00'
-                before: '20:00'
-              - condition: numeric_state
-                entity_id: sensor.laufzeit_minuten
-                above: 5
-            sequence:          
-              - service: script.zu_hause
-          - conditions:
-              - condition: state
-                entity_id: binary_sensor.home_office
-                state: 'on'          
-              - condition: numeric_state
-                entity_id: sensor.laufzeit_minuten
-                above: 5
-            sequence:              
-              - service: script.zu_hause_home_office
-          - conditions:
-              - condition: time
-                after: '20:00'
-                before: '23:30'
-              - condition: numeric_state
-                entity_id: sensor.laufzeit_minuten
-                above: 5   
-            sequence:           
-              - service: script.zu_hause_abends     
-          - conditions:
-              - condition: state
-                entity_id: sensor.presence_simulation
-                state: 'on'
-            sequence:
-              - service: presence_simulation.stop
-
   - alias: "Zu Hause - Begrüßung aktivieren"
     trigger:
       - platform: state
@@ -198,6 +71,19 @@ automation:
     action:      
       - service: script.zu_hause_begruessung
           
+  - alias: "Zu Hause - Besuch Schalter"
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.schalter_flur
+        to: 'off'            
+    condition:
+      - condition: state
+        entity_id: binary_sensor.zu_hause
+        state: 'on'
+    action:
+      - service: input_boolean.toggle
+        entity_id: input_boolean.besuch  
+        
 script:
   zu_hause:
     alias: "Zu Hause"

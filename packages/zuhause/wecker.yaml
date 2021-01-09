@@ -33,6 +33,14 @@ input_boolean:
     name: Zeit geändert
     initial: off    
 
+input_text:
+  alarm_standard_office:
+    name: Wecker Büro
+    initial: '05:15'
+  alarm_standard_homeoffice:
+    name: Wecker Home Office 
+    initial: '06:00'    
+    
 binary_sensor:
   - platform: template
     sensors:

@@ -81,18 +81,7 @@ sensor:
         icon_template: mdi:clock-outline
         unit_of_measurement: 'Uhr'          
 
-binary_sensor:
-  - platform: workday
-    name: Arbeitstag
-    country: DE
-    province: NW
-    
-  - platform: workday
-    name: Arbeitstag morgen
-    country: DE
-    province: NW
-    days_offset: 1    
-    
+binary_sensor:   
   - platform: template
     sensors:
       tankstelle_real_status:
@@ -188,20 +177,21 @@ automation:
                 data:
                   entity_id: input_text.corona_mulheim_gestern
                   value: "{{ trigger.from_state.state }}" 
-                
-#  - alias: "Alexa Timer"
-#    trigger:
-#      - platform: state
-#        entity_id: input_number.alexa_timer
-#    condition:
-#      - condition: state
-#        entity_id: binary_sensor.zu_hause
-#        state: 'on'        
-#    action:
-#      - service: media_player.play_media
-#        entity_id: media_player.echo_wohnzimmer
-#        media_content_id: "Stell einen Timer auf {{ input_number.alexa_timer }} Minuten."
-#        media_content_type: custom
+
+  - alias: 'Telegram - Tanken'
+    trigger:
+      platform: event
+      event_type: telegram_command
+      event_data:
+        command: '/tanken'
+    action:
+      - service: notify.telegram
+        data_template:
+          title: "Aktuelle Benzinpreise"
+          message: >
+            Real: {% if states('sensor.tankstelle_real') != 'unknown' %}{{ states('sensor.tankstelle_real') }}€{% else %}{%if states('sensor.tankstelle_real_status') == 'off' %}geschlossen{% else %}-{% endif %}{% endif %}
+
+            Jet: {% if states('sensor.tankstelle_jet') != 'unknown' %}{{ states('sensor.tankstelle_jet') }}€{% else %}{%if states('sensor.tankstelle_jet_status') == 'off' %}geschlossen{% else %}-{% endif %}{% endif %}
                   
 panel_iframe:
   infoscreen:

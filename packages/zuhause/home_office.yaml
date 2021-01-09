@@ -1,0 +1,198 @@
+device_tracker:
+  - platform: mqtt
+    devices:
+      pc_arbeit: 'iotlink/schenck/jaeschke-pc/lwt'
+    qos: 1
+    payload_home: 'ON'
+    payload_not_home: 'OFF'
+    source_type: router
+    
+timer:
+  home_office_ende:
+    name: "Home Office beenden"
+    duration: 7
+             
+input_boolean:
+  home_office:
+    name: Home Office
+    icon: mdi:home-city-outline
+  
+  home_office_aktiv:
+    name: Home Office aktiv
+    
+  computer_arbeit_ausschalten:
+    name: Computer Arbeit ausschalten
+    initial: on
+    icon: mdi:desktop-classic
+    
+binary_sensor:
+  - platform: template
+    sensors:
+      home_office:
+        friendly_name: 'Home Office'
+        icon_template: mdi:home-city
+        value_template: >-
+          {% set istHomeOffice = is_state('input_boolean.home_office', 'on') %}
+          {% set istArbeitstag = is_state('binary_sensor.arbeitstag', 'on') %}
+          {% set keinUrlaub = is_state('calendar.urlaub', 'off') %}
+          {% set nichtKrank = is_state('calendar.arbeit_krank', 'off') %}
+          {% set homeOfficeAktiv = is_state('input_boolean.home_office_aktiv', 'on') %}
+
+          {{ True if (istHomeOffice and istArbeitstag and keinUrlaub and nichtKrank and homeOfficeAktiv) else False }}
+          
+switch:
+  - platform: template
+    switches:
+      pc_arbeit:
+        friendly_name: PC Arbeit
+        value_template: "{{ is_state('device_tracker.pc_arbeit', 'home') }}"
+        icon_template: mdi:desktop-tower
+        turn_on:
+          service: wake_on_lan.send_magic_packet
+          data:
+            mac: !secret computerarbeit_mac
+            broadcast_address: !secret fritzbox_broadcast
+            broadcast_port: 9
+        turn_off:
+          service: mqtt.publish
+          data:
+            topic: "iotlink/schenck/jaeschke-pc/commands/hibernate"
+            payload: ""
+    
+  - platform: template
+    switches:
+      arbeitszimmer_monitore:
+        friendly_name: Monitore
+        icon_template: "mdi:monitor-dashboard"
+        value_template: "{{ is_state('switch.arbeitszimmer_monitor_links', 'on') or is_state('switch.arbeitszimmer_monitor_rechts', 'on')}}"
+        turn_on:
+          service: switch.turn_on
+          data:
+            entity_id: switch.arbeitszimmer_monitor_links, switch.arbeitszimmer_monitor_rechts
+        turn_off:
+          service: switch.turn_off
+          data:
+            entity_id: switch.arbeitszimmer_monitor_links, switch.arbeitszimmer_monitor_rechts
+            
+script:
+  home_office_start:
+    alias: 'Home Office - Start'
+    sequence:
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.home_office_aktiv
+      - service: switch.turn_off
+        entity_id: switch.schlafzimmer_radio, switch.monitor
+      - service: switch.turn_on
+        entity_id: switch.arbeitszimmer_radio, switch.pc_arbeit, switch.arbeitszimmer_monitore  
+      - condition: state
+        entity_id: input_boolean.computer_ausschalten
+        state: 'on'
+      - service: switch.turn_off
+        entity_id: switch.pc
+          
+  home_office_ende:
+    alias: 'Home Office - Ende'
+    sequence:
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.home_office_aktiv
+      - service: switch.turn_off
+        entity_id: switch.arbeitszimmer_radio, switch.arbeitszimmer_monitore
+      - service: switch.turn_on
+        entity_id: switch.computer
+      - condition: state
+        entity_id: input_boolean.computer_arbeit_ausschalten
+        state: 'on'
+      - service: switch.turn_off
+        entity_id: switch.pc_arbeit      
+        
+automation:
+  - alias: 'Home Office - Start'
+    trigger:
+      - platform: state
+        entity_id: sensor.schalter_arbeitszimmer
+        to: '2'     
+    condition:
+      - condition: state
+        entity_id: binary_sensor.home_office
+        state: 'on'
+      - condition: state
+        entity_id: device_tracker.pc_arbeit
+        state: 'not_home'        
+    action:
+      - service: script.home_office_start
+
+  - alias: "Home Office - Countdown starten"
+    trigger:
+      - platform: state
+        entity_id: sensor.schalter_arbeitszimmer
+        to: '2'      
+    condition:
+      - condition: state
+        entity_id: device_tracker.pc_arbeit
+        state: 'home'  
+      - condition: state
+        entity_id: timer.home_office_ende
+        state: 'idle'
+    action:
+      - service: !secret tts_service
+        data_template:
+          echo: "flur"
+          message: "Der Computer wird Arbeitszimmer wird gleich ausgeschaltet."
+      - delay: '00:00:02'
+      - service: timer.start
+        entity_id: timer.home_office_ende
+      - service: media_player.play_media
+        data_template:
+          entity_id:
+            - media_player.smarthome
+          media_content_id: >-
+            http://192.168.2.75:8123/local/countdown/countdown_5.mp3
+          media_content_type: music
+
+  - alias: "Home Office - Countdown abbrechen"
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.schalter_arbeitszimmer
+        to: 'off'
+    condition:
+      - condition: state
+        entity_id: timer.home_office_ende
+        state: 'active'
+    action:
+      - service: media_player.media_pause
+        entity_id: media_player.smarthome
+      - service: !secret tts_service
+        data_template:
+          echo: "flur"
+          message: "Der Vorgang wurde abgebrochen."
+      - service: timer.cancel
+        entity_id: timer.home_office_ende
+
+  - alias: "Home Office - Ende"
+    trigger:
+      - platform: event
+        event_type: timer.finished
+        event_data:
+          entity_id: timer.home_office_ende
+    action:
+      - service: !secret tts_service
+        data_template:
+          echo: "flur"
+          message: "Der Computer im Arbeitszimmer wird jetzt ausgeschaltet."
+      - service: script.home_office_ende
+
+  - alias: "Home Office - Status geändert"
+    trigger:
+      - platform: state
+        entity_id: calendar.arbeit_buero
+    action:
+      - choose:
+          - conditions:
+              - condition: template
+                value_template: "{{ True if trigger.to_state.state == 'on' else False }}"
+            sequence:
+              - service: input_boolean.turn_off
+                entity_id: input_boolean.home_office
+        default:
+          - service: input_boolean.turn_on
+            entity_id: input_boolean.home_office                        

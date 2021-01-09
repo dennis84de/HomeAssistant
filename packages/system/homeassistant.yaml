@@ -50,7 +50,6 @@ lovelace:
       show_in_sidebar: true  
       
 browser_mod:
-  prefix: "browser_"
   disable:
     - all  
   
@@ -225,17 +224,7 @@ automation:
       data_template:
         title: 'Neue Version'
         message: "Home Assistant {{ states('sensor.hass_current_version') }} ist jetzt verfügbar."
-
-  - alias: "Home Assistant - Gestoppt"
-    trigger:   
-      - platform: homeassistant
-        event: shutdown     
-    action:
-      - service: input_datetime.set_datetime
-        entity_id: input_datetime.home_assistant_stop
-        data:
-          datetime: "{{ now().strftime('%Y-%m-%d %H:%M:%S') }}"
-                
+               
   - alias: "Home Assistant - Gestartet"
     trigger:
       - platform: homeassistant
@@ -244,7 +233,17 @@ automation:
       - service: input_datetime.set_datetime
         entity_id: input_datetime.home_assistant_start
         data:
-          datetime: "{{ now().strftime('%Y-%m-%d %H:%M:%S') }}"     
+          datetime: "{{ now().strftime('%Y-%m-%d %H:%M:%S') }}"    
+          
+  - alias: "Home Assistant - Gestoppt"
+    trigger:   
+      - platform: homeassistant
+        event: shutdown     
+    action:
+      - service: input_datetime.set_datetime
+        entity_id: input_datetime.home_assistant_stop
+        data:
+          datetime: "{{ now().strftime('%Y-%m-%d %H:%M:%S') }}" 
           
   - alias: "Home Assistant - Fehler Neustart"
     trigger:
@@ -257,37 +256,34 @@ automation:
           echo: "wohnzimmer"
           message: "Während des Neustarts ist ein Fehler aufgetreten."
 
-  - alias: "Home Assistant neugestartet - Telegram"
+  - alias: "Home Assistant neugestartet"
     trigger:
       - platform: homeassistant
         event: start
-    condition:
-      - condition: state
-        entity_id: binary_sensor.zu_hause
-        state: 'off'
     action:
-      - service: notify.telegram
-        data_template:
-          title: 'Home Assistant gestartet'
-          message: "Home Assistant wurde neugestartet."
-
-  - alias: "Home Assistant neugestartet - TTS"
-    trigger:
-      - platform: homeassistant
-        event: start
-    action:  
-      - service: media_player.play_media
-        data_template:
-          entity_id:
-            - media_player.smarthome
-          media_content_id: >-
-            http://192.168.2.75:8123/local/neustart/winxp_start.mp3
-          media_content_type: music
-      - delay: '00:00:02'
-      - service: !secret tts_service
-        data_template:
-          echo: "wohnzimmer"
-          message: "Home Assistant wurde neugestartet."
+      - choose:
+          - conditions:
+            - condition: state
+              entity_id: binary_sensor.zu_hause
+              state: 'off'
+            sequence:
+              - service: notify.telegram
+                data_template:
+                  title: 'Home Assistant gestartet'
+                  message: "Home Assistant wurde neugestartet."
+        default:
+          - service: media_player.play_media
+            data_template:
+              entity_id:
+                - media_player.smarthome
+              media_content_id: >-
+                http://192.168.2.75:8123/local/neustart/winxp_start.mp3
+              media_content_type: music
+          - delay: '00:00:02'
+          - service: !secret tts_service
+            data_template:
+              echo: "wohnzimmer"
+              message: "Home Assistant wurde neugestartet."
 
 homeassistant:
   customize:
