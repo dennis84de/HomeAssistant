@@ -28,17 +28,25 @@ input_boolean:
 binary_sensor:
   - platform: template
     sensors:
-      home_office:
-        friendly_name: 'Home Office'
+      home_office_heute:
+        friendly_name: 'Home Office heute'
         icon_template: mdi:home-city
         value_template: >-
           {% set istHomeOffice = is_state('input_boolean.home_office', 'on') %}
           {% set istArbeitstag = is_state('binary_sensor.arbeitstag', 'on') %}
           {% set keinUrlaub = is_state('calendar.urlaub', 'off') %}
           {% set nichtKrank = is_state('calendar.arbeit_krank', 'off') %}
+
+          {{ True if (istHomeOffice and istArbeitstag and keinUrlaub and nichtKrank) else False }}
+          
+      home_office:
+        friendly_name: 'Home Office'
+        icon_template: mdi:home-city
+        value_template: >-
+          {% set homeOfficeHeute = is_state('binary_sensor.home_office_heute', 'on') %}
           {% set homeOfficeAktiv = is_state('input_boolean.home_office_aktiv', 'on') %}
 
-          {{ True if (istHomeOffice and istArbeitstag and keinUrlaub and nichtKrank and homeOfficeAktiv) else False }}
+          {{ True if (homeOfficeHeute and homeOfficeAktiv) else False }}
           
 switch:
   - platform: template
@@ -84,6 +92,10 @@ script:
         entity_id: switch.schlafzimmer_radio, switch.monitor
       - service: switch.turn_on
         entity_id: switch.arbeitszimmer_radio, switch.pc_arbeit, switch.arbeitszimmer_monitore  
+      - service: climate.set_preset_mode
+        data:
+          entity_id: climate.arbeitszimmer
+          preset_mode: 'comfort'
       - condition: state
         entity_id: input_boolean.computer_ausschalten
         state: 'on'
@@ -99,6 +111,10 @@ script:
         entity_id: switch.arbeitszimmer_radio, switch.arbeitszimmer_monitore
       - service: switch.turn_on
         entity_id: switch.computer
+      - service: climate.set_preset_mode
+        data:
+          entity_id: climate.arbeitszimmer
+          preset_mode: 'eco'        
       - condition: state
         entity_id: input_boolean.computer_arbeit_ausschalten
         state: 'on'
@@ -113,7 +129,7 @@ automation:
         to: '2'     
     condition:
       - condition: state
-        entity_id: binary_sensor.home_office
+        entity_id: input_boolean.home_office
         state: 'on'
       - condition: state
         entity_id: device_tracker.pc_arbeit
