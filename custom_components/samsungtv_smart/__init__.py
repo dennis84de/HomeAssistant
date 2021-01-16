@@ -34,6 +34,7 @@ from .const import (
     DEFAULT_PORT,
     DEFAULT_TIMEOUT,
     CONF_APP_LIST,
+    CONF_CHANNEL_LIST,
     CONF_DEVICE_NAME,
     CONF_LOAD_ALL_APPS,
     CONF_SOURCE_LIST,
@@ -55,6 +56,7 @@ from .const import (
 SAMSMART_SCHEMA = {
     vol.Optional(CONF_SOURCE_LIST, default=DEFAULT_SOURCE_LIST): cv.string,
     vol.Optional(CONF_APP_LIST): cv.string,
+    vol.Optional(CONF_CHANNEL_LIST): cv.string,
     vol.Optional(CONF_TIMEOUT, default=DEFAULT_TIMEOUT): cv.positive_int,
     vol.Optional(CONF_MAC): cv.string,
     vol.Optional(CONF_BROADCAST_ADDRESS): cv.string,

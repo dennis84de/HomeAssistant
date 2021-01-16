@@ -36,6 +36,7 @@ from .const import (
     CONF_SHOW_CHANNEL_NR,
     CONF_SYNC_TURN_OFF,
     CONF_SYNC_TURN_ON,
+    CONF_WOL_REPEAT,
     CONF_WS_NAME,
     DEFAULT_POWER_ON_DELAY,
     RESULT_NOT_SUCCESSFUL,
@@ -384,7 +385,11 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
                     default=self.config_entry.options.get(
                         CONF_POWER_ON_DELAY, DEFAULT_POWER_ON_DELAY
                     ),
-                ): vol.All(vol.Coerce(float), vol.Clamp(min=0, max=60)),
+                ): vol.All(vol.Coerce(int), vol.Clamp(min=0, max=60)),
+                vol.Optional(
+                    CONF_WOL_REPEAT,
+                    default=self.config_entry.options.get(CONF_WOL_REPEAT, 1),
+                ): vol.All(vol.Coerce(int), vol.Clamp(min=1, max=20)),
                 vol.Optional(
                     CONF_SYNC_TURN_OFF,
                     default=self.config_entry.options.get(

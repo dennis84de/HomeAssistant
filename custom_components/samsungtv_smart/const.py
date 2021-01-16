@@ -21,6 +21,7 @@ WS_PREFIX = "[Home Assistant]"
 CONF_APP_LIST = "app_list"
 CONF_APP_LAUNCH_METHOD = "app_launch_method"
 CONF_APP_LOAD_METHOD = "app_load_method"
+CONF_CHANNEL_LIST = "channel_list"
 CONF_DEVICE_NAME = "device_name"
 CONF_DEVICE_MODEL = "device_model"
 CONF_SOURCE_LIST = "source_list"
@@ -34,6 +35,7 @@ CONF_USE_ST_STATUS_INFO = "use_st_status_info"
 CONF_USE_MUTE_CHECK = "use_mute_check"
 CONF_SYNC_TURN_OFF = "sync_turn_off"
 CONF_SYNC_TURN_ON = "sync_turn_on"
+CONF_WOL_REPEAT = "wol_repeat"
 
 # obsolete
 CONF_UPDATE_METHOD = "update_method"
@@ -42,7 +44,7 @@ CONF_SCAN_APP_HTTP = "scan_app_http"
 
 DEFAULT_PORT = 8001
 DEFAULT_TIMEOUT = 5
-DEFAULT_POWER_ON_DELAY = 30.0
+DEFAULT_POWER_ON_DELAY = 30
 DEFAULT_SOURCE_LIST = {"TV": "KEY_TV", "HDMI": "KEY_HDMI"}
 DEFAULT_APP = "TV/HDMI"
 

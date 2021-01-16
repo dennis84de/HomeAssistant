@@ -65,6 +65,7 @@
                     "show_channel_number": "Use SmartThings TV Channels number information",
                     "use_mute_check": "Use volume mute status to detect fake power ON",
                     "power_on_delay": "Seconds to delay power ON status (0-60)",
+                    "wol_repeat": "Number of time WOL packet is sent to turn on TV (1-20)",
                     "sync_turn_off": "List of entity to Power OFF with TV (comma separated)",
                     "sync_turn_on": "List of entity to power ON with TV (comma separated)"
                 }

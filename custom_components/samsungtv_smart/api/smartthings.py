@@ -72,6 +72,8 @@ COMMAND_SET_CHANNEL = (
 )
 ARGS_SET_CHANNEL = "['{}']}}]}}"
 
+DIGITAL_TV = "digitalTv"
+
 MIN_TIME_BETWEEN_UPDATES = timedelta(seconds=10)
 _LOGGER = logging.getLogger(__name__)
 
@@ -354,6 +356,9 @@ class SmartThingsTV:
 
         self._is_forced_val = False
         self._forced_count = 0
+        if device_source:
+            if device_source.upper() == DIGITAL_TV.upper():
+                device_source = DIGITAL_TV
         self._source = device_source
         # if the status is not refreshed this info may become not reliable
         if self._use_channel_info:

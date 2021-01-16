@@ -4,6 +4,7 @@ import logging
 import json
 import os
 from datetime import datetime, timedelta
+from socket import error as socketError
 from time import sleep
 from wakeonlan import send_magic_packet
 from websocket import WebSocketTimeoutException
@@ -69,6 +70,7 @@ from .const import (
     CONF_APP_LIST,
     CONF_APP_LAUNCH_METHOD,
     CONF_APP_LOAD_METHOD,
+    CONF_CHANNEL_LIST,
     CONF_DEVICE_NAME,
     CONF_DEVICE_MODEL,
     CONF_DEVICE_OS,
@@ -80,6 +82,7 @@ from .const import (
     CONF_USE_ST_STATUS_INFO,
     CONF_SYNC_TURN_OFF,
     CONF_SYNC_TURN_ON,
+    CONF_WOL_REPEAT,
     CONF_WS_NAME,
     STD_APP_LIST,
     WS_PREFIX,
@@ -142,13 +145,6 @@ SCAN_INTERVAL = timedelta(seconds=15)
 _LOGGER = logging.getLogger(__name__)
 
 
-async def async_setup_platform(
-    hass, config, add_entities, discovery_info=None
-):  # pragma: no cover
-    """Set up the Samsung TV platform."""
-    pass
-
-
 async def async_setup_entry(hass, config_entry, async_add_entities):
     """Set up the Samsung TV from a config entry."""
 
@@ -195,6 +191,7 @@ class SamsungTVDevice(MediaPlayerEntity):
         api_key = config.get(CONF_API_KEY, None)
         device_id = config.get(CONF_DEVICE_ID, None)
 
+        # load sources list
         self._default_source_used = False
         source_list = SamsungTVDevice._load_param_list(
             config.get(CONF_SOURCE_LIST, {})
@@ -204,6 +201,7 @@ class SamsungTVDevice(MediaPlayerEntity):
             self._default_source_used = True
         self._source_list = source_list
 
+        # load apps list
         app_list = SamsungTVDevice._load_param_list(
             config.get(CONF_APP_LIST)
         )
@@ -214,6 +212,11 @@ class SamsungTVDevice(MediaPlayerEntity):
         else:
             self._app_list = None
             self._app_list_ST = None
+
+        # load channels list
+        self._channel_list = SamsungTVDevice._load_param_list(
+            config.get(CONF_CHANNEL_LIST)
+        )
 
         self._source = None
         self._running_app = None
@@ -846,8 +849,16 @@ class SamsungTVDevice(MediaPlayerEntity):
         source_list.extend(list(self._source_list))
         if self._app_list:
             source_list.extend(list(self._app_list))
-
+        if self._channel_list:
+            source_list.extend(list(self._channel_list))
         return source_list
+
+    @property
+    def channel_list(self):
+        """List of available channels."""
+        if self._channel_list is None:
+            return None
+        return list(self._channel_list)
 
     @property
     def source(self):
@@ -876,15 +887,25 @@ class SamsungTVDevice(MediaPlayerEntity):
 
         elif self._state == STATE_OFF:
             if self._mac:
-                if self._broadcast:
-                    send_magic_packet(self._mac, ip_address=self._broadcast)
-                else:
-                    send_magic_packet(self._mac)
+                wol_repeat = self._get_option(CONF_WOL_REPEAT, 1)
+                ip_address = self._broadcast or "255.255.255.255"
+                for i in range(wol_repeat):
+                    if i > 0:
+                        sleep(0.25)
+                    try:
+                        send_magic_packet(self._mac, ip_address=ip_address)
+                    except (socketError, TypeError, ValueError) as exc:
+                        _LOGGER.error("Error sending WOL packet: %s", exc)
+                        return False
                 self._ws.set_power_on_request()
+
+        return True
 
     async def async_turn_on(self):
         """Turn the media player on."""
-        await self.hass.async_add_executor_job(self._turn_on)
+        result = await self.hass.async_add_executor_job(self._turn_on)
+        if not result:
+            return
         if self._state == STATE_OFF:
             def update_status():
                 if self._state != STATE_ON:
@@ -1035,6 +1056,59 @@ class SamsungTVDevice(MediaPlayerEntity):
 
         return True
 
+    async def _async_set_channel_source(self, channel_source=None):
+        """Select the source for a channel."""
+
+        if not channel_source:
+            if self._running_app == DEFAULT_APP:
+                return True
+            _LOGGER.error("Current source invalid for channel")
+            return False
+
+        if self._source == channel_source:
+            return True
+
+        if channel_source not in self._source_list:
+            _LOGGER.error("Invalid channel source: %s", channel_source)
+            return False
+
+        await self.async_select_source(channel_source)
+        if self._source != channel_source:
+            _LOGGER.error("Error selecting channel source: %s", channel_source)
+            return False
+        await asyncio.sleep(3)
+
+        return True
+
+    async def _async_set_channel(self, channel):
+        """Set a specific channel."""
+
+        channel_cmd = channel.split("@")
+        channel_no = channel_cmd[0]
+        channel_source = None
+        if len(channel_cmd) > 1:
+            channel_source = channel_cmd[1]
+
+        try:
+            cv.positive_int(channel_no)
+        except vol.Invalid:
+            _LOGGER.error("Channel must be positive integer")
+            return
+
+        if not await self._async_set_channel_source(channel_source):
+            return
+
+        if self._st:
+            await self._smartthings_keys(f"ST_CH{channel_no}")
+            return
+
+        def send_digit():
+            for digit in channel_no:
+                self.send_command("KEY_" + digit)
+                sleep(KEYPRESS_DEFAULT_DELAY)
+            self.send_command("KEY_ENTER")
+        await self.hass.async_add_executor_job(send_digit)
+
     async def _async_launch_app(self, app_data):
         """Launch app with different methods."""
 
@@ -1060,18 +1134,7 @@ class SamsungTVDevice(MediaPlayerEntity):
 
         # Type channel
         if media_type == MEDIA_TYPE_CHANNEL:
-            try:
-                cv.positive_int(media_id)
-            except vol.Invalid:
-                _LOGGER.error("Media ID must be positive integer")
-                return
-
-            def send_digit():
-                for digit in media_id:
-                    self.send_command("KEY_" + digit)
-                    sleep(KEYPRESS_DEFAULT_DELAY)
-                self.send_command("KEY_ENTER")
-            await self.hass.async_add_executor_job(send_digit)
+            await self._async_set_channel(media_id)
 
         # Launch an app
         elif media_type == MEDIA_TYPE_APP:
@@ -1126,6 +1189,10 @@ class SamsungTVDevice(MediaPlayerEntity):
             await self._async_launch_app(app_id)
             if self._st:
                 self._st.set_application(self._app_list_ST[source])
+        elif source in self._channel_list:
+            source_key = self._channel_list[source]
+            await self._async_set_channel(source_key)
+            return
         else:
             _LOGGER.error("Unsupported source")
             return
