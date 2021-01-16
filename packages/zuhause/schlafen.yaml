@@ -47,6 +47,7 @@ binary_sensor:
         value_template: >-
           {{not is_state("binary_sensor.bett",'on')}}
         device_class: vibration
+        delay_off: 2
         icon_template: >-
             mdi:bed-king    
             
@@ -144,10 +145,7 @@ script:
               - service: switch.turn_on
                 entity_id: switch.watchtv_schlafzimmer   
               - service: input_boolean.turn_on
-                entity_id: input_boolean.timer_schlafzimmer_aktiv
-      - delay: '00:05:00'
-      - service: switch.turn_off
-        entity_id: switch.badezimmer_radio             
+                entity_id: input_boolean.timer_schlafzimmer_aktiv        
 
   sleeptimer_turn_off_tv:
     alias: Sleeptimer aktivieren

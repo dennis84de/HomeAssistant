@@ -237,6 +237,22 @@ automation:
     action:
       - service: script.sync_radios
 
+  - alias: 'Radio Badezimmer - Schlafen'
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.in_bett
+        to: 'on'
+    condition:
+      - condition: state
+        entity_id: binary_sensor.schlafen_aktiv
+        state: 'on'
+      - condition: state
+        entity_id: switch.badezimmer_radio
+        state: 'on'        
+    action:
+      - service: switch.turn_off
+        entity_id: switch.badezimmer_radio
+      
   - alias: 'Radios pausieren'
     trigger:
       - platform: state
