@@ -62,11 +62,30 @@ cards:
         name: Geschwindigkeit
 
   - type: entities
+    title: Sateliten
+    show_header_toggle: false
+    entities:
+      - entity: sensor.home_assistant_overhead_satellites
+        name: Sateliten
+
+  - type: entities
     title: Corona Virus
     show_header_toggle: false
     entities:
-      - entity: sensor.sk_dortmund_weekincidence
-      - entity: sensor.sk_mulheim_a_d_ruhr_weekincidence            
+      - type: custom:mini-graph-card
+        line_width: 2
+        animate: true
+        hours_to_show: 168
+        points_per_hour: 1
+        hour24: true
+        show:
+          icon: false
+          points: false
+        entities:
+          - entity: sensor.sk_dortmund_weekincidence
+            name: Dortmund
+          - entity: sensor.sk_mulheim_a_d_ruhr_weekincidence
+            name: Mülheim an der Ruhr
       - entity: sensor.germany_coronavirus_confirmed
         name: Bestätigt
       - entity: sensor.germany_coronavirus_current
