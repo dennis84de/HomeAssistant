@@ -28,6 +28,69 @@ binary_sensor:
           {{ True if is_state('input_boolean.besuch', 'on') else False }}     
 
 automation:
+  - alias: "Zu Hause"
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.zu_hause
+        to: 'on'    
+      - platform: state
+        entity_id: sensor.schalter_flur
+        to: '2'            
+    condition:
+      - condition: template
+        value_template: >-
+          {{ is_state('binary_sensor.zu_hause', 'off') if trigger.entity_id == "sensor.schalter_flur" else True }}        
+      - condition: template
+        value_template: >-
+          {% set now = as_timestamp(now()) | int %}
+          {% set last = as_timestamp(state_attr("script.alles_ausschalten", "last_triggered")) | int %}
+          {% set diff = ((now - last) / 60) | int %}
+
+          {{ diff >= 10 }}
+    action:       
+      - service: script.zu_hause_standort
+      - service: alarm_control_panel.alarm_disarm
+        entity_id: alarm_control_panel.alarm
+      - service: switch.turn_off
+        entity_id: switch.kamera_wohnzimmer      
+      - choose:
+          - conditions:
+              - condition: state
+                entity_id: binary_sensor.home_office
+                state: 'off'          
+              - condition: time
+                after: '08:00'
+                before: '20:00'
+              - condition: numeric_state
+                entity_id: sensor.laufzeit_minuten
+                above: 5
+            sequence:          
+              - service: script.zu_hause
+          - conditions:
+              - condition: state
+                entity_id: binary_sensor.home_office
+                state: 'on'          
+              - condition: numeric_state
+                entity_id: sensor.laufzeit_minuten
+                above: 5
+            sequence:              
+              - service: script.zu_hause_home_office
+          - conditions:
+              - condition: time
+                after: '20:00'
+                before: '23:30'
+              - condition: numeric_state
+                entity_id: sensor.laufzeit_minuten
+                above: 5   
+            sequence:           
+              - service: script.zu_hause_abends     
+          - conditions:
+              - condition: state
+                entity_id: sensor.presence_simulation
+                state: 'on'
+            sequence:
+              - service: presence_simulation.stop
+                
   - alias: "Zu Hause - Begrüßung aktivieren"
     trigger:
       - platform: state
