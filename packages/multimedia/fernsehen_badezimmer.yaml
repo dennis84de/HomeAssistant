@@ -12,11 +12,11 @@ switch:
         icon_template: >-
           mdi:kodi
         value_template: >-
-          {{ state_attr('media_player.firetv_badezimmer', 'source') == "Kodi" }}
+          {{ state_attr('media_player.fire_tv_badezimmer', 'source') == "Kodi" }}
         turn_on:
           - service: media_player.select_source
             data:
-              entity_id: media_player.firetv_badezimmer
+              entity_id: media_player.fire_tv_badezimmer
               source: "org.xbmc.kodi"
         turn_off:
           - service: kodi.call_method
@@ -25,5 +25,5 @@ switch:
               method: Input.Home
           - service: media_player.select_source
             data:
-              entity_id: media_player.firetv_badezimmer
+              entity_id: media_player.fire_tv_badezimmer
               source: "com.amazon.tv.launcher"

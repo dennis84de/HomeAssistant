@@ -30,11 +30,11 @@ switch:
         icon_template: >-
           mdi:kodi
         value_template: >-
-          {{ state_attr('media_player.firetv_schlafzimmer', 'source') == "Kodi" }}
+          {{ state_attr('media_player.fire_tv_schlafzimmer', 'source') == "Kodi" }}
         turn_on:
           - service: media_player.select_source
             data:
-              entity_id: media_player.firetv_schlafzimmer
+              entity_id: media_player.fire_tv_schlafzimmer
               source: "org.xbmc.kodi"
         turn_off:
           - service: kodi.call_method
@@ -43,7 +43,7 @@ switch:
               method: Input.Home
           - service: media_player.select_source
             data:
-              entity_id: media_player.firetv_schlafzimmer
+              entity_id: media_player.fire_tv_schlafzimmer
               source: "com.amazon.tv.launcher"
 
 cover:
@@ -86,7 +86,7 @@ script:
       - service: switch.turn_on
         entity_id: switch.schlafzimmer_fernseher_remote
       - service: media_player.turn_on
-        entity_id: media_player.firetv_schlafzimmer
+        entity_id: media_player.fire_tv_schlafzimmer
       - service: switch.turn_on
         entity_id: switch.kodi_schlafzimmer
 
@@ -96,7 +96,7 @@ script:
       - service: switch.turn_off
         entity_id: switch.kodi_schlafzimmer
       - service: media_player.turn_off
-        entity_id: media_player.firetv_schlafzimmer
+        entity_id: media_player.fire_tv_schlafzimmer
       - service: switch.turn_off
         entity_id: switch.schlafzimmer_fernseher, switch.schlafzimmer_fernseher_remote
       - service: light.turn_off
