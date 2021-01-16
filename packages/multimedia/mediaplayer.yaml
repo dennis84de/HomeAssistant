@@ -12,8 +12,8 @@ automation:
         minutes: 00
     condition:
       - condition: time
-        after: '08:00'
-        before: '23:00'
+        after: '07:30'
+        before: '00:30'
       - condition: state
         entity_id: input_boolean.uhr_einschalten
         state: 'on'
