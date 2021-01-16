@@ -6,10 +6,5 @@ device_tracker:
     hosts:
       - !secret nmap_hosts                
     exclude:
-      - !secret synology_host
-      - !secret echo_badezimmer_host
-      - !secret echo_flur_host
-      - !secret echo_kueche_host
-      - !secret echo_schlafzimmer_host
-      - !secret echo_wohnzimmer_host         
+      - !secret synology_host     
       
