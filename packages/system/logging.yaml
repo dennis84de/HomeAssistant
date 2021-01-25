@@ -13,9 +13,12 @@ recorder:
       - binary_sensor
       - switch
       - light     
+      - device_tracker
   exclude:
     entities:
       - sensor.home_assistant_overhead_satellites
+      - sensor.time
+      - sensor.date_time
       
 system_log:
   max_entries: 100

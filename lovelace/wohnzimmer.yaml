@@ -58,7 +58,8 @@ cards:
       - entity: switch.computer
       - entity: switch.watchtv_wohnzimmer
       - entity: input_boolean.musik_ausschalten
-      - entity: input_boolean.kodi_pausieren
+      - entity: input_boolean.kodi_wohnzimmer_pausieren
+        name: Wiedergabe pausieren
       - entity: cover.kodi_untertitel
       - entity: cover.fernseher_sender
         name: Sender
@@ -150,9 +151,7 @@ cards:
       - entity: binary_sensor.bewegungsmelder_balkon
         name: Bewegungsmelder
       - entity: sensor.helligkeit_balkon
-        name: Helligkeit
-        type: "custom:secondaryinfo-entity-row"
-        secondary_info: "Durchschnitt: [[ sensor.helligkeit_durchschnitt ]] lm"        
+        name: Helligkeit     
       - entity: light.balkon_licht
         name: Licht      
       - entity: switch.balkon_radio

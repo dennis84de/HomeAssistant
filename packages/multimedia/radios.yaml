@@ -240,7 +240,7 @@ automation:
   - alias: 'Radio Badezimmer - Schlafen'
     trigger:
       - platform: state
-        entity_id: binary_sensor.in_bett
+        entity_id: binary_sensor.im_bett
         to: 'on'
     condition:
       - condition: state

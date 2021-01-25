@@ -13,11 +13,11 @@ input_boolean:
   musik_ausschalten:
     name: Musik ausschalten
     icon: mdi:music-off
-  kodi_pausiert:
-    name: Wiedergabe pausiert
+  kodi_wohnzimmer_pausiert:
+    name: Kodi Wohnzimmer pausiert
     initial: off
-  kodi_pausieren:
-    name: Wiedergabe pausieren
+  kodi_wohnzimmer_pausieren:
+    name: Kodi Wohnzimmer pausieren
     initial: on
     icon: mdi:sync-off
 
@@ -127,7 +127,7 @@ switch:
                     entity_id: media_player.soundbar
 
 automation:      
-  - alias: "Kodi - Musik ausschalten"
+  - alias: "Kodi Wohnzimmer - Musik ausschalten"
     trigger:
       - platform: state
         entity_id: media_player.kodi_wohnzimmer
@@ -146,9 +146,27 @@ automation:
     action:
       - service: script.radios_pausieren
       - service: switch.turn_off
-        entity_id: switch.wohnzimmer_radio, switch.balkon_radio, switch.flur_radio, switch.kuche_radio, switch.schlafzimmer_radio, switch.arbeitszimmer_radio
-      
-  - alias: "Kodi - Wiedergabe Cube"
+        entity_id: switch.wohnzimmer_radio, switch.balkon_radio, switch.flur_radio, switch.kuche_radio, switch.schlafzimmer_radio, switch.arbeitszimmer_radio     
+
+  - alias: "Kodi Wohnzimmer - Wiedergabe Schalter"
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.schalter_wohnzimmer
+        to: 'off'
+    condition:
+      - condition: or
+        conditions:
+        - condition: state
+          entity_id: media_player.kodi_wohnzimmer
+          state: 'playing'
+        - condition: state
+          entity_id: media_player.kodi_wohnzimmer
+          state: 'paused'
+    action:
+      - service: media_player.media_play_pause
+        entity_id: media_player.kodi_wohnzimmer
+            
+  - alias: "Kodi Wohnzimmer - Widergabe Cube"
     trigger:
       - platform: state
         entity_id: sensor.cube_bewegung
@@ -166,26 +184,35 @@ automation:
     action:
       - service: media_player.media_play_pause
         entity_id: media_player.kodi_wohnzimmer
-
-  - alias: "Kodi - Wiedergabe Schalter"
+           
+  - alias: "Kodi Wohnzimmer - Cube - Nächster Titel"
     trigger:
       - platform: state
-        entity_id: binary_sensor.schalter_wohnzimmer
-        to: 'off'
+        entity_id: sensor.cube_bewegung
     condition:
-      - condition: or
-        conditions:
-        - condition: state
-          entity_id: media_player.kodi_wohnzimmer
-          state: 'playing'
-        - condition: state
-          entity_id: media_player.kodi_wohnzimmer
-          state: 'paused'
+      - condition: template
+        value_template: '{{ True if "drop" in trigger.to_state.state else False }}'         
+      - condition: template
+        value_template: '{{ is_state("media_player.kodi_wohnzimmer", "off") == False }}'
     action:
-      - service: media_player.media_play_pause
+      - service: media_player.media_next_track
         entity_id: media_player.kodi_wohnzimmer
 
-  - alias: "Kodi - Wiedergabe pausieren - Bewegung Flur"
+  - alias: "Kodi Wohnzimmer - Cube - Untertitel"
+    trigger:
+      - platform: state
+        entity_id: sensor.cube_bewegung
+    condition:
+      - condition: template
+        value_template: '{{ True if "shake" in trigger.to_state.state else False }}'         
+      - condition: state
+        entity_id: media_player.kodi_wohnzimmer
+        state: 'playing'        
+    action:
+      - service: cover.stop_cover
+        entity_id: cover.kodi_untertitel
+
+  - alias: "Kodi Wohnzimmer - Wiedergabe pausieren - Bewegung Flur"
     trigger:
       - platform: state
         entity_id: binary_sensor.bewegungsmelder_flur_vorne
@@ -198,7 +225,7 @@ automation:
         entity_id: media_player.kodi_wohnzimmer
         state: 'playing'
       - condition: state
-        entity_id: input_boolean.kodi_pausieren
+        entity_id: input_boolean.kodi_wohnzimmer_pausieren
         state: 'on'
       - condition: state
         entity_id: binary_sensor.besuch
@@ -212,9 +239,9 @@ automation:
       - service: media_player.media_pause
         entity_id: media_player.kodi_wohnzimmer        
       - service: input_boolean.turn_on
-        entity_id: input_boolean.kodi_pausiert
+        entity_id: input_boolean.kodi_wohnzimmer_pausiert
 
-  - alias: "Kodi - Wiedergabe pausieren - Bewegung Balkon"
+  - alias: "Kodi Wohnzimmer - Wiedergabe pausieren - Bewegung Balkon"
     trigger:
       - platform: state
         entity_id: binary_sensor.bewegungsmelder_balkon
@@ -227,7 +254,7 @@ automation:
         entity_id: media_player.kodi_wohnzimmer
         state: 'playing'
       - condition: state
-        entity_id: input_boolean.kodi_pausieren
+        entity_id: input_boolean.kodi_wohnzimmer_pausieren
         state: 'on'
       - condition: state
         entity_id: binary_sensor.besuch
@@ -241,9 +268,9 @@ automation:
       - service: media_player.media_pause
         entity_id: media_player.kodi_wohnzimmer        
       - service: input_boolean.turn_on
-        entity_id: input_boolean.kodi_pausiert
+        entity_id: input_boolean.kodi_wohnzimmer_pausiert
 
-  - alias: "Kodi - Wiedergabe pausieren - Schalter Balkon"
+  - alias: "Kodi Wohnzimmer - Wiedergabe pausieren - Schalter Balkon"
     trigger:
       - platform: state
         entity_id: sensor.schalter_balkon
@@ -256,7 +283,7 @@ automation:
         entity_id: media_player.kodi_wohnzimmer
         state: 'playing'
       - condition: state
-        entity_id: input_boolean.kodi_pausieren
+        entity_id: input_boolean.kodi_wohnzimmer_pausieren
         state: 'on'
       - condition: state
         entity_id: binary_sensor.besuch
@@ -265,9 +292,9 @@ automation:
       - service: media_player.media_pause
         entity_id: media_player.kodi_wohnzimmer        
       - service: input_boolean.turn_on
-        entity_id: input_boolean.kodi_pausiert
+        entity_id: input_boolean.kodi_wohnzimmer_pausiert
 
-  - alias: "Kodi - Wiedergabe starten - Bewegung Wohnzimmer"
+  - alias: "Kodi Wohnzimmer - Wiedergabe starten - Bewegung Wohnzimmer"
     trigger:
       - platform: state
         entity_id: binary_sensor.bewegungsmelder_wohnzimmer
@@ -277,7 +304,7 @@ automation:
         entity_id: media_player.kodi_wohnzimmer
         state: 'paused'
       - condition: state
-        entity_id: input_boolean.kodi_pausiert
+        entity_id: input_boolean.kodi_wohnzimmer_pausiert
         state: 'on'
       - condition: state
         entity_id: sensor.telefon
@@ -288,22 +315,9 @@ automation:
       - service: media_player.media_play
         entity_id: media_player.kodi_wohnzimmer
       - service: input_boolean.turn_off
-        entity_id: input_boolean.kodi_pausiert
+        entity_id: input_boolean.kodi_wohnzimmer_pausiert
 
-  - alias: "Kodi - Cube - Nächster Titel"
-    trigger:
-      - platform: state
-        entity_id: sensor.cube_bewegung
-    condition:
-      - condition: template
-        value_template: '{{ True if "drop" in trigger.to_state.state else False }}'         
-      - condition: template
-        value_template: '{{ is_state("media_player.kodi_wohnzimmer", "off") == False }}'
-    action:
-      - service: media_player.media_next_track
-        entity_id: media_player.kodi_wohnzimmer
-
-  - alias: "Kodi - Wiedergabe gestartet - Licht und Musik ausschalten"
+  - alias: "Kodi Wohnzimmer - Wiedergabe gestartet - Licht und Musik ausschalten"
     trigger:
       - platform: state
         entity_id: media_player.kodi_wohnzimmer
@@ -316,6 +330,151 @@ automation:
         state: 'playing'
       - service: media_player.media_pause
         entity_id: media_player.badezimmer
+
+  - alias: 'Telefon aktiv - Kodi Wohnzimmer pausieren'
+    trigger:
+      - platform: state
+        entity_id: sensor.telefon
+        to: 'ringing'
+      - platform: state
+        entity_id: sensor.telefon
+        to: 'dialing'
+    condition:
+      - condition: state
+        entity_id: media_player.kodi_wohnzimmer
+        state: 'playing'
+      - condition: state
+        entity_id: input_boolean.nicht_stoeren
+        state: 'off'
+      - condition: state
+        entity_id: binary_sensor.besuch
+        state: 'off'          
+    action:
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.kodi_wohnzimmer_pausiert
+      - service: media_player.media_pause
+        entity_id: media_player.kodi_wohnzimmer
+      - service: notify.kodi_wohnzimmer
+        data:
+          title: 'Telefon'
+          message: >-
+            {% if is_state("sensor.telefon", 'dialing') %}
+              {{ state_attr('sensor.telefon', 'to_name') }} ({{ state_attr('sensor.telefon', 'to') }}) wird angerufen.
+            {% elif is_state("sensor.telefon", 'ringing') %}
+              {% if state_attr('sensor.telefon', 'from') == '' %}
+                Ein Anruf ohne Rufnummer.
+              {% elif state_attr('sensor.telefon', 'from_name')  == 'unknown' %}
+                Ein Anruf von einer unbekannten Rufnummer ({{ state_attr('sensor.telefon', 'from') }}).
+              {% else %}
+                Anruf von {{ state_attr('sensor.telefon', 'from_name') }} ({{ state_attr('sensor.telefon', 'from') }}).
+              {% endif %}
+            {% endif %}
+          data:
+            displaytime: 5000
+            icon: "info"
+
+  - alias: 'Telefon inaktiv - Kodi Wohnzimmer wiedergeben'
+    trigger:
+      - platform: state
+        entity_id: sensor.telefon
+        to: 'idle'
+    condition:
+      - condition: state
+        entity_id: media_player.kodi_wohnzimmer
+        state: 'paused'
+      - condition: state
+        entity_id: input_boolean.kodi_wohnzimmer_pausiert
+        state: 'on'
+      - condition: template
+        value_template: '{{ is_state("sensor.handy", "incoming") == False and is_state("sensor.handy", "outgoing") == False }}'        
+    action:
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.kodi_wohnzimmer_pausiert
+      - service: media_player.media_play
+        entity_id: media_player.kodi_wohnzimmer
+      - service: notify.kodi_wohnzimmer
+        data:
+          title: 'Telefon'
+          message: 'Anruf beendet'
+          data:
+            displaytime: 2000
+            icon: "info"          
+
+  - alias: 'Handy aktiv - Kodi Wohnzimmer pausieren'
+    trigger:
+      - platform: state
+        entity_id: sensor.handy
+        to: 'incoming'
+      - platform: state
+        entity_id: sensor.handy
+        to: 'outgoing'
+    condition:
+      - condition: state
+        entity_id: media_player.kodi_wohnzimmer
+        state: 'playing'
+      - condition: state
+        entity_id: input_boolean.nicht_stoeren
+        state: 'off'
+      - condition: state
+        entity_id: binary_sensor.besuch
+        state: 'off'              
+    action:
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.kodi_wohnzimmer_pausiert
+      - service: media_player.media_pause
+        entity_id: media_player.kodi_wohnzimmer
+      - service: notify.kodi_wohnzimmer
+        data:
+          title: 'Handy'
+          message: >-
+            {% set name = state_attr('sensor.handy', 'name') %}
+            {% set number = state_attr('sensor.handy', 'number') %}
+            
+            {% if is_state("sensor.handy", "outgoing") %}
+              {% if name == number %}
+                {{ state_attr('sensor.handy', 'name') }} wird angerufen.
+              {% else %}
+                {{ state_attr('sensor.handy', 'name') }} ({{ state_attr('sensor.handy', 'number') }}) wird angerufen.
+              {% endif %}
+              
+            {% elif is_state("sensor.handy", "incoming") %}
+              {% if name == number %}
+                Eingehender Anruf von {{ state_attr('sensor.handy', 'name') }}.
+              {% else %}
+                Eingehender Anruf von {{ state_attr('sensor.handy', 'name') }} ({{ state_attr('sensor.handy', 'number') }}).
+              {% endif %}                          
+            {% endif %}                                 
+          data:
+            displaytime: 5000
+            icon: "info"
+
+  - alias: 'Handy inaktiv - Kodi Wohnzimmer wiedergeben'
+    trigger:
+      - platform: state
+        entity_id: sensor.handy
+        to: 'idle'
+    condition:
+      - condition: state
+        entity_id: media_player.kodi_wohnzimmer
+        state: 'paused'
+      - condition: state
+        entity_id: input_boolean.kodi_wohnzimmer_pausiert
+        state: 'on'
+      - condition: state
+        entity_id: sensor.telefon
+        state: 'idle'
+    action:
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.kodi_wohnzimmer_pausiert
+      - service: media_player.media_play
+        entity_id: media_player.kodi_wohnzimmer
+      - service: notify.kodi_wohnzimmer
+        data:
+          title: 'Handy'
+          message: 'Anruf beendet'
+          data:
+            displaytime: 2000
+            icon: "info"
 
   - alias: "Soundbar Lautstärke - Cube"
     trigger:

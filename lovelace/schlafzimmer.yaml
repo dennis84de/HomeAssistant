@@ -54,6 +54,7 @@ cards:
       - entity: script.schlafen_gehen
       - entity: binary_sensor.schlafen_aktiv
       - entity: sensor.schlafen_letzte_uhrzeit
+        name: Letzte Uhrzeit
       - entity: sensor.schlafen_dauer_durchschnitt
       - entity: input_boolean.schlafen_fernseher_einschalten
 

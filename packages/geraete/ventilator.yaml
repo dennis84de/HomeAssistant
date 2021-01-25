@@ -144,6 +144,10 @@ automation:
     trigger:
       - platform: state
         entity_id: sensor.ventilator_geschwindigkeit
+    condition:
+      - condition: state
+        entity_id: fan.ventilator
+        state: 'on'        
     action:
       - service: input_number.set_value
         data_template:
@@ -154,6 +158,10 @@ automation:
     trigger:
       - platform: state
         entity_id: input_select.ventilator_drehungswinkel
+    condition:
+      - condition: state
+        entity_id: fan.ventilator
+        state: 'on'        
     action:
       - service: fan.xiaomi_miio_set_oscillation_angle
         data_template:
@@ -164,6 +172,10 @@ automation:
     trigger:
       - platform: state
         entity_id: sensor.ventilator_drehungswinkel
+    condition:
+      - condition: state
+        entity_id: fan.ventilator
+        state: 'on'        
     action:
       - service: input_select.select_option
         data_template:

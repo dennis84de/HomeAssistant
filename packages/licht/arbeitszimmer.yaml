@@ -26,8 +26,7 @@ entity_controller:
     grace_period: 60
     behaviours:
       on_enter_overridden: off
-    overrides:
-      - device_tracker.pc_arbeit
+    overrides:     
       - binary_sensor.home_office
       - binary_sensor.sonne_tagsueber      
       - binary_sensor.bewegungsmelder_inaktiv_unterwegs  

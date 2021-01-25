@@ -82,7 +82,7 @@ automation:
         value_template: '{{ is_state("media_player.smarthome", "playing") == False }}'           
     action:
       - service: light.toggle
-        entity_id: light.couch
+        entity_id: light.couch, light.strahler
 
 homeassistant:
   customize:

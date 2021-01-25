@@ -129,11 +129,11 @@ automation:
         to: '2'     
     condition:
       - condition: state
-        entity_id: input_boolean.home_office
-        state: 'on'
+        entity_id: binary_sensor.home_office_heute
+        state: 'on'       
       - condition: state
-        entity_id: device_tracker.pc_arbeit
-        state: 'not_home'        
+        entity_id: input_boolean.home_office_aktiv
+        state: 'off'     
     action:
       - service: script.home_office_start
 
@@ -144,8 +144,8 @@ automation:
         to: '2'      
     condition:
       - condition: state
-        entity_id: device_tracker.pc_arbeit
-        state: 'home'  
+        entity_id: input_boolean.home_office_aktiv
+        state: 'on'
       - condition: state
         entity_id: timer.home_office_ende
         state: 'idle'

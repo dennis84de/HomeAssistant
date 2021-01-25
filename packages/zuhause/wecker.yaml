@@ -84,10 +84,10 @@ automation:
       - platform: template
         value_template: >-
           {% set jetzt = as_timestamp(states('sensor.date_time').replace(',','')) | int %}         
-          {% set vorlauf = (states('input_number.alarmadvance' ) | int) * 60  %}        
-          {% set wecker = state_attr('input_datetime.wecker', 'timestamp') | int %}
+          {% set vorlauf = (states('input_number.alarmadvance' ) | int) * 60  %}
+          {% set wecker = as_timestamp(states('input_datetime.wecker')) | int %}
           
-          {{ jetzt + vorlauf == wecker }}
+          {{ wecker == jetzt + vorlauf }}
     condition:
       condition: and
       conditions:
@@ -160,81 +160,4 @@ automation:
         data:
           entity_id: media_player.echo_schlafzimmer
           media_content_type: sound
-          media_content_id: amzn_sfx_scifi_alarm_04   
-
-  - alias: "Aufstehen - Schlafen ausschalten"
-    trigger:
-      - platform: state
-        entity_id: binary_sensor.bewegungsmelder_kueche
-        to: 'on'
-      - platform: state
-        entity_id: binary_sensor.bewegungsmelder_flur_vorne
-        to: 'on'
-      - platform: state
-        entity_id: binary_sensor.bewegungsmelder_wohnzimmer
-        to: 'on'
-    condition:
-      - condition: and
-        conditions:
-          - condition: state
-            entity_id: binary_sensor.schlafen_aktiv
-            state: 'on'
-          - condition: or
-            conditions:
-              - condition: state
-                entity_id: binary_sensor.alarm_aktiv
-                state: 'on'
-              - condition: and
-                conditions:
-                  - condition: time
-                    after: '06:00'
-                    before: '20:00'
-                  - condition: template
-                    value_template: "{{ False if is_state_attr('input_datetime.wecker', 'day', now().today().day) else True }}"
-    action:
-      - service: input_boolean.turn_off
-        entity_id: input_boolean.schlafen_aktiv, input_boolean.alarm_aktiv, input_boolean.wecker_erinnerung_morgen, input_boolean.wecker_zeit_geaendert
-      - service: input_boolean.turn_on
-        entity_id: input_boolean.computer_ausschalten, input_boolean.schlafen_fernseher_einschalten
-      - service: light.turn_off
-        entity_id: light.bett
-
-  - alias: "Aufstehen - Geräte einschalten"
-    trigger:
-      - platform: state
-        entity_id: binary_sensor.schlafen_aktiv
-        to: 'off'
-    action:
-      - service: switch.turn_on
-        entity_id: switch.computer        
-      - service: script.wohnung_radios_einschalten       
-      - choose:
-          - conditions:
-              - condition: state
-                entity_id: calendar.arbeit_buero
-                state: 'on'
-              - condition: or
-                conditions:
-                  - condition: numeric_state
-                    entity_id: input_text.corona_dortmund_gestern
-                    above: input_number.corona_grenzwert       
-                  - condition: numeric_state
-                    entity_id: input_text.corona_mulheim_gestern
-                    above: input_number.corona_grenzwert                        
-            sequence:
-              - service: !secret tts_service
-                data_template:                  
-                  message: >-
-                    {% set coronaDortmundGestern = states('input_text.corona_dortmund_gestern') | float %}
-                    {% set coronaMuelheimGestern = states('input_text.corona_mulheim_gestern') | float %}
-                    {% set coronaGrenzwert = states('input_number.corona_grenzwert') | float %}
-                    
-                    {% if coronaDortmundGestern >= coronaGrenzwert and coronaMuelheimGestern >= coronaGrenzwert %}
-                      Die Corona-Werte in Dortmund und Mülheim waren gestern zu hoch.
-                    {% elif coronaMuelheimGestern >= coronaGrenzwert %}          
-                      Der Corona-Wert in Mülheim war gestern zu hoch.
-                    {% elif coronaDortmundGestern >= coronaGrenzwert  %}
-                      Der Corona-Wert in Dortmund war gestern zu hoch.
-                    {% else %}
-                      Die Corona-Werte waren gestern unter dem Grenzwert.
-                    {% endif %}
+          media_content_id: amzn_sfx_scifi_alarm_04

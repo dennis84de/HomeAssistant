@@ -19,6 +19,10 @@ automation:
                 entity_id: input_boolean.baden_aktiv
                 state: 'off'
             sequence:
+              - service: !secret tts_service
+                data_template:
+                  echo: "badezimmer"
+                  message: "Baden wird eingeschaltet"
               - service: input_boolean.turn_on
                 entity_id: input_boolean.baden_aktiv, input_boolean.bewegungsmelder_badezimmer_deaktiviert
               - service: light.turn_on
@@ -37,6 +41,10 @@ automation:
                     - service: switch.turn_off
                       entity_id: switch.pc
         default:
+          - service: !secret tts_service
+            data_template:
+              echo: "badezimmer"
+              message: "Baden wird ausgeschaltet"          
           - service: input_boolean.turn_off
             entity_id: input_boolean.baden_aktiv, input_boolean.bewegungsmelder_badezimmer_deaktiviert
           - service: light.turn_off

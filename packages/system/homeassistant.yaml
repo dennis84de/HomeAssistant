@@ -49,9 +49,9 @@ lovelace:
       icon: mdi:home-assistant
       show_in_sidebar: true  
       
-browser_mod:
-  disable:
-    - all  
+#browser_mod:
+#  disable:
+#    - all  
   
 breaking_changes:
   name: Wichtige Änderungen
@@ -220,10 +220,22 @@ automation:
             {{ states('sensor.hass_current_version') != states('sensor.hass_installed_version') }}
           {% endif %}
     action:
-      service: notify.telegram
-      data_template:
-        title: 'Neue Version'
-        message: "Home Assistant {{ states('sensor.hass_current_version') }} ist jetzt verfügbar."
+      - choose:
+          - conditions:
+            - condition: state
+              entity_id: binary_sensor.zu_hause
+              state: 'off'
+            sequence:
+              - service: notify.telegram
+                data:
+                  title: 'Neue Version'
+                  message: "Home Assistant {{ states('sensor.hass_current_version') }} ist jetzt verfügbar."
+        default:
+          - service: persistent_notification.create
+            data:
+              title: "Update verfügbar"
+              message: "Home Assistant {{ states('sensor.hass_current_version') }} ist jetzt verfügbar."
+              notification_id: neue_version
                
   - alias: "Home Assistant - Gestartet"
     trigger:

@@ -16,6 +16,12 @@ input_boolean:
     initial: on
     icon: mdi:television
 
+input_datetime:
+  schlafen_uhrzeit:
+    name: Schlafen Uhrzeit   
+    has_time: true
+    has_date: true
+    
 input_select:
   timer_schlafzimmer_dauer:
     name: Timer Schlafzimmer
@@ -54,6 +60,7 @@ binary_sensor:
       schlafen_aktiv:
         friendly_name: Schlafen aktiv
         value_template: "{{ is_state('input_boolean.schlafen_aktiv', 'on') }}"
+        icon_template: mdi:sleep
           
       schlafen_inaktiv:
         friendly_name: Schlafen inaktiv
@@ -68,15 +75,6 @@ sensor:
     end: '{{ now() }}'
     duration:
       days: 7
-
-  - platform: sql
-    db_url: !secret mariadb_url
-    queries:
-      - name: Schlafen Letzte Uhrzeit
-        query: "SELECT CONVERT_TZ(last_changed,'+00:00','+01:00') as last_changed FROM states WHERE entity_id = 'script.schlafen_gehen' AND state = 'on' ORDER BY created DESC LIMIT 1;"
-        column: 'last_changed'
-        unit_of_measurement: 'Uhr'
-        value_template: '{{ as_timestamp(value) | timestamp_custom("%H:%M", True) | string }}'
 
   - platform: template
     sensors:
@@ -101,6 +99,12 @@ sensor:
               -
           {%- endif %}
 
+      schlafen_letzte_uhrzeit:
+        friendly_name: Schlafen Letzte Uhrzeit       
+        value_template: "{{ '%02d' % (state_attr('input_datetime.schlafen_uhrzeit', 'hour') | int) ~ ':' ~ '%02d' % (state_attr('input_datetime.schlafen_uhrzeit', 'minute') | int) }}"
+        icon_template: mdi:av-timer
+        unit_of_measurement: 'Uhr'
+
       schlafen_dauer_durchschnitt:
         friendly_name: Durchschnittliche Dauer
         value_template: >
@@ -120,6 +124,10 @@ script:
     sequence:
       - service: input_boolean.turn_on
         entity_id: input_boolean.schlafen_aktiv
+      - service: input_datetime.set_datetime
+        entity_id: input_datetime.schlafen_uhrzeit
+        data:
+          datetime: "{{ now().strftime('%Y-%m-%d %H:%M:%S') }}"
       - service: switch.turn_off
         entity_id: switch.wohnzimmer_radio, switch.balkon_radio, switch.flur_radio, switch.kuche_radio, switch.schlafzimmer_radio, switch.arbeitszimmer_radio
       - service: switch.turn_off
@@ -435,13 +443,108 @@ automation:
       - service: media_player.media_pause
         entity_id: media_player.tablet_schlafzimmer        
 
+  - alias: "Aufstehen - Schlafen ausschalten"
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.bewegungsmelder_kueche
+        to: 'on'
+      - platform: state
+        entity_id: binary_sensor.bewegungsmelder_flur_vorne
+        to: 'on'
+      - platform: state
+        entity_id: binary_sensor.bewegungsmelder_wohnzimmer
+        to: 'on'
+    condition:
+      - condition: and
+        conditions:
+          - condition: state
+            entity_id: binary_sensor.schlafen_aktiv
+            state: 'on'
+          - condition: or
+            conditions:
+              - condition: state
+                entity_id: binary_sensor.alarm_aktiv
+                state: 'on'
+              - condition: and
+                conditions:
+                  - condition: time
+                    after: '06:00'
+                    before: '20:00'
+                  - condition: template
+                    value_template: "{{ False if is_state_attr('input_datetime.wecker', 'day', now().today().day) else True }}"
+    action:
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.schlafen_aktiv, input_boolean.alarm_aktiv, input_boolean.wecker_erinnerung_morgen, input_boolean.wecker_zeit_geaendert
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.computer_ausschalten, input_boolean.schlafen_fernseher_einschalten
+      - service: light.turn_off
+        entity_id: light.bett
+
+  - alias: "Aufstehen - Geräte einschalten"
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.schlafen_aktiv
+        to: 'off'
+    action:      
+      - service: switch.turn_on
+        entity_id: switch.computer
+      - service: script.wohnung_radios_einschalten
+      - service: !secret tts_service
+        data_template:                  
+          message: >-
+            {%- set word_for_and = 'und' %}
+            {%- set up_time = as_timestamp(now()) - state_attr('input_datetime.schlafen_uhrzeit', 'timestamp') | int %}
+
+            {%- macro phrase(name, plural_name, divisor, mod=None) %}
+              {%- set value = ((up_time // divisor) % (mod if mod else divisor)) | int %}
+              {%- set name = plural_name if value > 1 else name %}
+              {{- '{} {}'.format(value, name) if value | int > 0 else '' }}
+            {%- endmacro %}
+
+            {%- set values = [ 
+                       phrase('Woche', 'Wochen', 60*60*24*7), 
+                       phrase('Tag', 'Tage', 60*60*24, 7),
+                       phrase('Stunde', 'Stunden', 60*60, 24),
+                       phrase('Minute', 'Minuten', 60)
+                   ] | select('!=','') | list %}
+
+            {% set schlafenSatz = values[:-1] | join(', ') ~ ' ' ~ word_for_and ~ ' ' ~ values[-1] if values | length > 1 else values | first %}
+            {% set uhrzeitSatz = as_timestamp(now()) | timestamp_custom('%H:%M') %}         
+             
+            {{ 'Guten Morgen. Es ist ' ~ uhrzeitSatz ~ ' Uhr. Du hast ' ~ schlafenSatz ~ ' geschlafen.' }}             
+      - choose:
+          - conditions:
+              - condition: state
+                entity_id: calendar.arbeit_buero
+                state: 'on'
+              - condition: or
+                conditions:
+                  - condition: numeric_state
+                    entity_id: input_text.corona_dortmund_gestern
+                    above: input_number.corona_grenzwert       
+                  - condition: numeric_state
+                    entity_id: input_text.corona_mulheim_gestern
+                    above: input_number.corona_grenzwert                        
+            sequence:
+              - service: !secret tts_service
+                data_template:                  
+                  message: >-
+                    {% set coronaDortmundGestern = states('input_text.corona_dortmund_gestern') | float %}
+                    {% set coronaMuelheimGestern = states('input_text.corona_mulheim_gestern') | float %}
+                    {% set coronaGrenzwert = states('input_number.corona_grenzwert') | float %}
+                    
+                    {% if coronaDortmundGestern >= coronaGrenzwert and coronaMuelheimGestern >= coronaGrenzwert %}
+                      Die Corona-Werte in Dortmund und Mülheim waren gestern zu hoch.
+                    {% elif coronaMuelheimGestern >= coronaGrenzwert %}          
+                      Der Corona-Wert in Mülheim war gestern zu hoch.
+                    {% elif coronaDortmundGestern >= coronaGrenzwert  %}
+                      Der Corona-Wert in Dortmund war gestern zu hoch.
+                    {% else %}
+                      Die Corona-Werte waren gestern unter dem Grenzwert.
+                    {% endif %}
+                    
 homeassistant:
   customize:
     script.schlafen_gehen:
       icon: mdi:power-sleep
-      can_cancel: false
-    sensor.schlafen_letzte_uhrzeit:
-      friendly_name: "Letzte Uhrzeit"
-      icon: mdi:av-timer
-    binary_sensor.schlafen_aktiv:
-      icon: mdi:sleep
+      can_cancel: false      
