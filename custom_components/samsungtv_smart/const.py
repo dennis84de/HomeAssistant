@@ -14,6 +14,11 @@ class AppLaunchMethod(Enum):
     Rest = 3
 
 
+class PowerOnMethod(Enum):
+    WOL = 1
+    SmartThings = 2
+
+
 DOMAIN = "samsungtv_smart"
 
 WS_PREFIX = "[Home Assistant]"
@@ -30,6 +35,7 @@ CONF_WS_NAME = "ws_name"
 CONF_DEVICE_OS = "device_os"
 CONF_LOAD_ALL_APPS = "load_all_apps"
 CONF_POWER_ON_DELAY = "power_on_delay"
+CONF_POWER_ON_METHOD = "power_on_method"
 CONF_USE_ST_CHANNEL_INFO = "use_st_channel_info"
 CONF_USE_ST_STATUS_INFO = "use_st_status_info"
 CONF_USE_MUTE_CHECK = "use_mute_check"

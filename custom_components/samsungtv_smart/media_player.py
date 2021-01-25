@@ -75,6 +75,7 @@ from .const import (
     CONF_DEVICE_MODEL,
     CONF_DEVICE_OS,
     CONF_POWER_ON_DELAY,
+    CONF_POWER_ON_METHOD,
     CONF_SHOW_CHANNEL_NR,
     CONF_SOURCE_LIST,
     CONF_USE_MUTE_CHECK,
@@ -88,6 +89,7 @@ from .const import (
     WS_PREFIX,
     AppLoadMethod,
     AppLaunchMethod,
+    PowerOnMethod,
 )
 
 try:
@@ -447,27 +449,35 @@ class SamsungTVDevice(MediaPlayerEntity):
         st_source_list = {}
         source_list = self._st.source_list
         if source_list:
+
+            def get_next_name(index):
+                if index >= len(source_list):
+                    return ""
+                next_input = source_list[index]
+                if not (
+                        next_input.upper() in ["DIGITALTV", "TV"]
+                        or next_input.startswith("HDMI")
+                ):
+                    return next_input
+                return ""
+
             for i in range(len(source_list)):
                 try:
                     # SmartThings source list is an array that may contain the input or the assigned name,
                     # if we found a name that is not an input we use it as input name
                     input_name = source_list[i]
-                    is_tv = input_name in ["digitalTv", "TV"]
+                    is_tv = input_name.upper() in ["DIGITALTV", "TV"]
                     is_hdmi = input_name.startswith("HDMI")
                     if is_tv or is_hdmi:
                         input_type = "ST_TV" if is_tv else "ST_" + input_name
                         if input_type in st_source_list.values():
                             continue
 
-                        index = i + 1
-                        if index < len(source_list):
-                            next_input = source_list[index]
-                            if not (
-                                next_input in ["digitalTv", "TV"]
-                                or next_input.startswith("HDMI")
-                            ):
-                                input_name = next_input
-                        st_source_list[input_name] = input_type
+                        name = self._st.get_source_name(input_name)
+                        if not name:
+                            name = get_next_name(i + 1)
+                        st_source_list[name or input_name] = input_type
+
                 except Exception:
                     pass
 
@@ -875,35 +885,66 @@ class SamsungTVDevice(MediaPlayerEntity):
         """Set the device class to TV."""
         return DEVICE_CLASS_TV
 
-    def _turn_on(self):
+    def _send_wol_packet(self):
+        if not self._mac:
+            _LOGGER.error(
+                "MAC address not configured, impossible send WOL packet"
+            )
+            return False
+
+        wol_repeat = self._get_option(CONF_WOL_REPEAT, 1)
+        ip_address = self._broadcast or "255.255.255.255"
+        send_success = False
+        for i in range(wol_repeat):
+            if i > 0:
+                sleep(0.25)
+            try:
+                send_magic_packet(self._mac, ip_address=ip_address)
+                send_success = True
+            except socketError as exc:
+                _LOGGER.warning(
+                    "Failed tentative n.%s to send WOL packet: %s",
+                    i,
+                    exc,
+                )
+            except (TypeError, ValueError) as exc:
+                _LOGGER.error("Error sending WOL packet: %s", exc)
+                return False
+
+        return send_success
+
+    async def _async_turn_on(self):
         """Turn the media player on."""
+        result = True
+
         if self._power_off_in_progress():
             self._end_of_power_off = None
-            self.send_command("KEY_POWER")
+            await self.async_send_command("KEY_POWER")
 
         elif self._ws.artmode_status == ArtModeStatus.On:
             # power on from art mode
-            self.send_command("KEY_POWER")
+            await self.async_send_command("KEY_POWER")
 
         elif self._state == STATE_OFF:
-            if self._mac:
-                wol_repeat = self._get_option(CONF_WOL_REPEAT, 1)
-                ip_address = self._broadcast or "255.255.255.255"
-                for i in range(wol_repeat):
-                    if i > 0:
-                        sleep(0.25)
-                    try:
-                        send_magic_packet(self._mac, ip_address=ip_address)
-                    except (socketError, TypeError, ValueError) as exc:
-                        _LOGGER.error("Error sending WOL packet: %s", exc)
-                        return False
+            turn_on_method = PowerOnMethod(
+                self._get_option(CONF_POWER_ON_METHOD, PowerOnMethod.WOL.value)
+            )
+
+            if turn_on_method == PowerOnMethod.SmartThings and self._st:
+                await self._st.async_send_command("turn_on")
+            else:
+                result = await self.hass.async_add_executor_job(
+                    self._send_wol_packet
+                )
+
+            if result:
                 self._ws.set_power_on_request()
 
-        return True
+        return result
 
     async def async_turn_on(self):
         """Turn the media player on."""
-        result = await self.hass.async_add_executor_job(self._turn_on)
+        result = await self._async_turn_on()
         if not result:
             return
         if self._state == STATE_OFF:

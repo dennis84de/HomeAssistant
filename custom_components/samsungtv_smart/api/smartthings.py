@@ -118,6 +118,7 @@ class SmartThingsTV:
         self._muted = False
         self._volume = 10
         self._source_list = None
+        self._source_list_map = None
         self._source = ""
         self._channel = ""
         self._channel_name = ""
@@ -185,6 +186,17 @@ class SmartThingsTV:
     def source_list(self):
         """Return currently source list."""
         return self._source_list
+
+    def get_source_name(self, source_id: str) -> str:
+        if not self._source_list_map:
+            return ""
+        if source_id.upper() == DIGITAL_TV.upper():
+            source_id = "dtv"
+        for map_value in self._source_list_map:
+            map_id = map_value.get("id")
+            if map_id and map_id == source_id:
+                return map_value.get("name", "")
+        return ""
 
     def set_application(self, app_id):
         if self._use_channel_info:
@@ -326,36 +338,44 @@ class SmartThingsTV:
 
         dev_data = data.get("main", {})
         # device_state = data['main']['switch']['value']
+
         device_volume = dev_data.get("volume", {}).get("value", 0)
-        device_muted = dev_data.get("mute", {}).get("value", "")
-        device_source = dev_data.get("inputSource", {}).get("value", "")
-        device_tv_chan = dev_data.get("tvChannel", {}).get("value", "")
-        device_tv_chan_name = dev_data.get("tvChannelName", {}).get("value", "")
-        device_all_sources = {}
-
-        json_sources = dev_data.get("supportedInputSources", {}).get("value")
-        if json_sources:
-            try:
-                device_all_sources = json.loads(json_sources)
-            except (TypeError, ValueError):
-                pass
-
         if device_volume and device_volume.isdigit():
             self._volume = int(device_volume) / 100
         else:
             self._volume = 0
-        self._source_list = device_all_sources
-        if device_muted == "mute":
-            self._muted = True
-        else:
-            self._muted = False
+
+        device_muted = dev_data.get("mute", {}).get("value", "")
+        self._muted = (device_muted == "mute")
+
+        load_list = []
+        json_list = dev_data.get("supportedInputSources", {}).get("value")
+        if json_list:
+            try:
+                load_list = json.loads(json_list)
+            except (TypeError, ValueError):
+                pass
+        self._source_list = load_list
+
+        load_list = []
+        json_list = dev_data.get("supportedInputSourcesMap", {}).get("value")
+        if json_list:
+            try:
+                load_list = json.loads(json_list)
+            except (TypeError, ValueError):
+                pass
+        self._source_list_map = load_list
 
         if self._is_forced_val and self._forced_count <= 0:
             self._forced_count += 1
             return
-
         self._is_forced_val = False
         self._forced_count = 0
+
+        device_source = dev_data.get("inputSource", {}).get("value", "")
+        device_tv_chan = dev_data.get("tvChannel", {}).get("value", "")
+        device_tv_chan_name = dev_data.get("tvChannelName", {}).get("value", "")
+
         if device_source:
             if device_source.upper() == DIGITAL_TV.upper():
                 device_source = DIGITAL_TV
