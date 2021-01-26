@@ -40,6 +40,7 @@ from .const import (
     CONF_WOL_REPEAT,
     CONF_WS_NAME,
     DEFAULT_POWER_ON_DELAY,
+    MAX_WOL_REPEAT,
     RESULT_NOT_SUCCESSFUL,
     RESULT_ST_DEVICE_NOT_FOUND,
     RESULT_ST_DEVICE_USED,
@@ -404,8 +405,11 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
             {
                 vol.Optional(
                     CONF_WOL_REPEAT,
-                    default=self.config_entry.options.get(CONF_WOL_REPEAT, 1),
-                ): vol.All(vol.Coerce(int), vol.Clamp(min=1, max=20)),
+                    default=min(
+                        self.config_entry.options.get(CONF_WOL_REPEAT, 1),
+                        MAX_WOL_REPEAT,
+                    ),
+                ): vol.All(vol.Coerce(int), vol.Clamp(min=1, max=MAX_WOL_REPEAT)),
                 vol.Optional(
                     CONF_POWER_ON_DELAY,
                     default=self.config_entry.options.get(

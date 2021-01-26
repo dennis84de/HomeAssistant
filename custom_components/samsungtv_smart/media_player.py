@@ -63,10 +63,6 @@ from homeassistant.const import (
 
 from .const import (
     DOMAIN,
-    DEFAULT_TIMEOUT,
-    DEFAULT_SOURCE_LIST,
-    DEFAULT_APP,
-    DEFAULT_POWER_ON_DELAY,
     CONF_APP_LIST,
     CONF_APP_LAUNCH_METHOD,
     CONF_APP_LOAD_METHOD,
@@ -85,6 +81,11 @@ from .const import (
     CONF_SYNC_TURN_ON,
     CONF_WOL_REPEAT,
     CONF_WS_NAME,
+    DEFAULT_TIMEOUT,
+    DEFAULT_SOURCE_LIST,
+    DEFAULT_APP,
+    DEFAULT_POWER_ON_DELAY,
+    MAX_WOL_REPEAT,
     STD_APP_LIST,
     WS_PREFIX,
     AppLoadMethod,
@@ -885,14 +886,16 @@ class SamsungTVDevice(MediaPlayerEntity):
         """Set the device class to TV."""
         return DEVICE_CLASS_TV
 
-    def _send_wol_packet(self):
+    def _send_wol_packet(self, wol_repeat=None):
         if not self._mac:
             _LOGGER.error(
                 "MAC address not configured, impossible send WOL packet"
             )
             return False
 
-        wol_repeat = self._get_option(CONF_WOL_REPEAT, 1)
+        if not wol_repeat:
+            wol_repeat = self._get_option(CONF_WOL_REPEAT, 1)
+        wol_repeat = max(1, min(wol_repeat, MAX_WOL_REPEAT))
         ip_address = self._broadcast or "255.255.255.255"
         send_success = False
         for i in range(wol_repeat):
