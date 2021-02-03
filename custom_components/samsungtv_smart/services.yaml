@@ -1,0 +1,6 @@
+set_art_mode:
+  description: Set art mode.
+  fields:
+    entity_id:
+      description: Name of the target entity
+      example: "media_player.tv"

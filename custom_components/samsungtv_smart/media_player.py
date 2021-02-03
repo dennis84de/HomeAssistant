@@ -18,8 +18,8 @@ from .api.samsungws import SamsungTVWS, ArtModeStatus
 from .api.smartthings import SmartThingsTV, STStatus
 from .api.upnp import upnp
 
-import homeassistant.helpers.config_validation as cv
 from homeassistant.exceptions import HomeAssistantError
+from homeassistant.helpers import config_validation as cv, entity_platform
 from homeassistant.helpers.device_registry import CONNECTION_NETWORK_MAC
 from homeassistant.helpers.service import async_call_from_config, CONF_SERVICE_ENTITY_ID
 from homeassistant.util import dt as dt_util, Throttle
@@ -86,6 +86,7 @@ from .const import (
     DEFAULT_APP,
     DEFAULT_POWER_ON_DELAY,
     MAX_WOL_REPEAT,
+    SERVICE_SET_ART_MODE,
     STD_APP_LIST,
     WS_PREFIX,
     AppLoadMethod,
@@ -163,6 +164,14 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     _LOGGER.debug(config)
 
     async_add_entities([SamsungTVDevice(config, entry_id, session)], True)
+
+    platform = entity_platform.current_platform.get()
+    platform.async_register_entity_service(
+        SERVICE_SET_ART_MODE,
+        None,
+        "async_set_art_mode",
+    )
+
     _LOGGER.info(
         "Samsung TV %s:%d added as '%s'",
         config.get(CONF_HOST),
@@ -236,6 +245,7 @@ class SamsungTVDevice(MediaPlayerEntity):
         self._set_update_forced = False
         self._update_forced_time = None
         self._fake_on = None
+        self._delayed_set_source = None
         self._st_conn_error_count = 0
 
         self._token_file = None
@@ -553,36 +563,30 @@ class SamsungTVDevice(MediaPlayerEntity):
 
     def _get_source(self):
         """Return the current input source."""
-        if self._state == STATE_ON:
-
-            if self._st:
-                if self._st.state != STStatus.STATE_ON:
-                    self._source = self._running_app
-                else:
-                    if self._running_app == DEFAULT_APP:
-
-                        if self._st.source in ["digitalTv", "TV"]:
-                            cloud_key = "ST_TV"
-                        else:
-                            cloud_key = "ST_" + self._st.source
-
-                        found_source = ""
-
-                        for attr, value in self._source_list.items():
-                            if value == cloud_key:
-                                found_source = attr
-
-                        if found_source != "":
-                            self._source = found_source
-                        else:
-                            self._source = self._running_app
-                    else:
-                        self._source = self._running_app
-            else:
-                self._source = self._running_app
-        else:
+        if self.state != STATE_ON:
             self._source = None
+            return self._source
 
+        if self._running_app != DEFAULT_APP or not self._st:
+            self._source = self._running_app
+            return self._source
+
+        if self._st.state != STStatus.STATE_ON:
+            self._source = self._running_app
+            return self._source
+
+        if self._st.source in ["digitalTv", "TV"]:
+            cloud_key = "ST_TV"
+        else:
+            cloud_key = "ST_" + self._st.source
+
+        found_source = self._running_app
+        for attr, value in self._source_list.items():
+            if value == cloud_key:
+                found_source = attr
+                break
+
+        self._source = found_source
         return self._source
 
     async def _smartthings_keys(self, source_key):
@@ -673,7 +677,9 @@ class SamsungTVDevice(MediaPlayerEntity):
 
         self._state = STATE_ON if result else STATE_OFF
 
-        if self._state == STATE_ON and not self._power_off_in_progress():
+        if self.state == STATE_ON:
+            if self._delayed_set_source:
+                await self.async_select_source(self._delayed_set_source)
             await self._update_volume_info()
             await self._get_running_app()
 
@@ -687,9 +693,11 @@ class SamsungTVDevice(MediaPlayerEntity):
         if key_press_delay < 0:
             key_press_delay = None  # means "default" provided with constructor
 
+        ret_val = False
         try:
             if command_type == CMD_RUN_APP:
                 self._ws.run_app(payload)
+                ret_val = True
             elif command_type == CMD_RUN_APP_REMOTE:
                 app_cmd = payload.split(",")
                 app_id = app_cmd[0]
@@ -697,11 +705,14 @@ class SamsungTVDevice(MediaPlayerEntity):
                 if len(app_cmd) > 1:
                     action_type = app_cmd[1]
                 self._ws.run_app(app_id, action_type, "", use_remote=True)
+                ret_val = True
             elif command_type == CMD_RUN_APP_REST:
                 result = self._ws.rest_app_run(payload)
                 _LOGGER.debug("Rest API result launching app %s: %s", payload, result)
+                ret_val = True
             elif command_type == CMD_OPEN_BROWSER:
                 self._ws.open_browser(payload)
+                ret_val = True
             elif command_type == CMD_SEND_KEY:
                 hold_delay = 0
                 source_keys = payload.split(",")
@@ -720,9 +731,9 @@ class SamsungTVDevice(MediaPlayerEntity):
                     hold_delay = get_hold_time()
 
                 if hold_delay > 0:
-                    self._ws.hold_key(key_code, hold_delay)
+                    ret_val = self._ws.hold_key(key_code, hold_delay)
                 else:
-                    self._ws.send_key(
+                    ret_val = self._ws.send_key(
                         key_code, key_press_delay, "Press" if press else "Click"
                     )
             else:
@@ -744,7 +755,7 @@ class SamsungTVDevice(MediaPlayerEntity):
         except OSError:
             _LOGGER.debug("Error in send_command() -> OSError")
 
-        return True
+        return ret_val
 
     async def async_send_command(
         self, payload, command_type=CMD_SEND_KEY, key_press_delay: float = 0, press=False
@@ -853,9 +864,6 @@ class SamsungTVDevice(MediaPlayerEntity):
             if self._ws.installed_app:
                 self._gen_installed_app_list()
 
-        if self._power_off_in_progress() or self._state != STATE_ON:
-            return None
-
         source_list = []
         source_list.extend(list(self._source_list))
         if self._app_list:
@@ -916,19 +924,27 @@ class SamsungTVDevice(MediaPlayerEntity):
 
         return send_success
 
-    async def _async_turn_on(self):
+    async def _async_power_on(self, set_art_mode=False):
         """Turn the media player on."""
-        result = True
+        if set_art_mode:
+            if self._ws.artmode_status == ArtModeStatus.Off:
+                # art mode from on
+                await self.async_send_command("KEY_POWER")
+                self._state = STATE_OFF
+                return True
 
-        if self._power_off_in_progress():
-            self._end_of_power_off = None
-            await self.async_send_command("KEY_POWER")
-
-        elif self._ws.artmode_status == ArtModeStatus.On:
+        if self._ws.artmode_status == ArtModeStatus.On:
+            if set_art_mode:
+                return False
             # power on from art mode
             await self.async_send_command("KEY_POWER")
+            return True
 
-        elif self._state == STATE_OFF:
+        if self.state != STATE_OFF:
+            return False
+
+        result = True
+        if not await self.async_send_command("KEY_POWER"):
             turn_on_method = PowerOnMethod(
                 self._get_option(CONF_POWER_ON_METHOD, PowerOnMethod.WOL.value)
             )
@@ -940,14 +956,16 @@ class SamsungTVDevice(MediaPlayerEntity):
                     self._send_wol_packet
                 )
 
-            if result:
-                self._ws.set_power_on_request()
+        if result:
+            self._state = STATE_OFF
+            self._end_of_power_off = None
+            self._ws.set_power_on_request(set_art_mode)
 
         return result
 
-    async def async_turn_on(self):
+    async def _async_turn_on(self, set_art_mode=False):
         """Turn the media player on."""
-        result = await self._async_turn_on()
+        result = await self._async_power_on(set_art_mode)
         if not result:
             return
         if self._state == STATE_OFF:
@@ -958,13 +976,22 @@ class SamsungTVDevice(MediaPlayerEntity):
 
             self.hass.loop.call_later(POWER_ON_DELAY, update_status)
             self._power_on_detected = datetime.min
-            await self._async_switch_entity(True)
+            await self._async_switch_entity(not set_art_mode)
+
+    async def async_turn_on(self):
+        """Turn the media player on."""
+        await self._async_turn_on()
+
+    async def async_set_art_mode(self):
+        """Turn the media player on setting in art mode."""
+        await self._async_turn_on(True)
 
     def _turn_off(self):
         """Turn off media player."""
         if self._power_off_in_progress():
             return False
 
+        self._ws.set_power_off_request()
         if self._state == STATE_ON:
             if self._ws.artmode_status == ArtModeStatus.Unsupported:
                 self.send_command("KEY_POWER")
@@ -1221,6 +1248,12 @@ class SamsungTVDevice(MediaPlayerEntity):
     async def async_select_source(self, source):
         """Select input source."""
         running_app = DEFAULT_APP
+        self._delayed_set_source = None
+
+        if self.state != STATE_ON:
+            await self.async_turn_on()
+            self._delayed_set_source = source
+            return
 
         if source in self._source_list:
             source_key = self._source_list[source]
@@ -1229,8 +1262,8 @@ class SamsungTVDevice(MediaPlayerEntity):
                 return
         elif source in self._app_list:
             app_id = self._app_list[source]
-            running_app = source
             await self._async_launch_app(app_id)
+            running_app = source
             if self._st:
                 self._st.set_application(self._app_list_ST[source])
         elif source in self._channel_list:

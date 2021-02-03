@@ -64,14 +64,16 @@ RESULT_ST_MULTI_DEVICES = "st_multiple_device"
 RESULT_SUCCESS = "success"
 RESULT_WRONG_APIKEY = "wrong_api_key"
 
+SERVICE_SET_ART_MODE = "set_art_mode"
+
 STD_APP_LIST = {
     # app_id: smartthings app id (if different and available)
-    "org.tizen.browser": "",                    #Internet
-    "11101200001": "org.tizen.netflix-app",     #Netflix
-    "111299001912": "9Ur5IzDKqV.TizenYouTube",  #YouTube
-    "3201512006785": "org.tizen.ignition",      #Prime Video
-    "3201901017640": "MCmYXNxgcu.DisneyPlus",   #Disney+
-    "11091000000": "4ovn894vo9.Facebook",       #Facebook
-    "3201601007250": "QizQxC7CUf.PlayMovies",   #Google Play
-    "3201606009684": "rJeHak5zRg.Spotify",      #Spotify
+    "org.tizen.browser": "",                    # Internet
+    "11101200001": "RN1MCdNq8t.Netflix",        # Netflix
+    "111299001912": "9Ur5IzDKqV.TizenYouTube",  # YouTube
+    "3201512006785": "org.tizen.ignition",      # Prime Video
+    "3201901017640": "MCmYXNxgcu.DisneyPlus",   # Disney+
+    "11091000000": "4ovn894vo9.Facebook",       # Facebook
+    "3201601007250": "QizQxC7CUf.PlayMovies",   # Google Play
+    "3201606009684": "rJeHak5zRg.Spotify",      # Spotify
 }
