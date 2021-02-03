@@ -22,7 +22,7 @@ automation:
               - service: !secret tts_service
                 data_template:
                   echo: "badezimmer"
-                  message: "Baden wird eingeschaltet"
+                  message: "Alle Geräte werden ausgeschaltet. Viel Spaß beim Baden."
               - service: input_boolean.turn_on
                 entity_id: input_boolean.baden_aktiv, input_boolean.bewegungsmelder_badezimmer_deaktiviert
               - service: light.turn_on
@@ -44,7 +44,7 @@ automation:
           - service: !secret tts_service
             data_template:
               echo: "badezimmer"
-              message: "Baden wird ausgeschaltet"          
+              message: "Alle Geräte werden wieder eingeschaltet."          
           - service: input_boolean.turn_off
             entity_id: input_boolean.baden_aktiv, input_boolean.bewegungsmelder_badezimmer_deaktiviert
           - service: light.turn_off

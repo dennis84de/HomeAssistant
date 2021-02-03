@@ -89,9 +89,11 @@ script:
       - service: input_boolean.turn_on
         entity_id: input_boolean.home_office_aktiv
       - service: switch.turn_off
-        entity_id: switch.schlafzimmer_radio, switch.monitor
+        entity_id: switch.schlafzimmer_radio, switch.monitor        
       - service: switch.turn_on
         entity_id: switch.arbeitszimmer_radio, switch.pc_arbeit, switch.arbeitszimmer_monitore  
+      - service: light.turn_off
+        entity_id: light.schreibtisch, light.arbeitszimmer_lampe
       - service: climate.set_preset_mode
         data:
           entity_id: climate.arbeitszimmer

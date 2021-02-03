@@ -16,7 +16,6 @@ cards:
     show_header_toggle: false
     entities:
       - entity: binary_sensor.fenster_sportzimmer
-        name: Fenster
 
   - type: entities
     title: Sensoren
@@ -24,6 +23,7 @@ cards:
     entities:
       - entity: binary_sensor.bewegungsmelder_sportzimmer
         name: Bewegungsmelder
+      - entity: binary_sensor.training_aktiv           
       
   - type: entities
     title: Licht

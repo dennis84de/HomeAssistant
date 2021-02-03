@@ -1,8 +1,8 @@
-media_player:
-  - platform: androidtv
-    host: !secret firetv_schlafzimmer_host
-    name: Fire TV Schlafzimmer
-    adbkey: '/home/homeassistant/.homeassistant/adbkey'
+#media_player:
+#  - platform: androidtv
+#    host: !secret firetv_schlafzimmer_host
+#    name: Fire TV Schlafzimmer
+#    adbkey: '/home/homeassistant/.homeassistant/adbkey'
 
 switch: 
   - platform: broadlink

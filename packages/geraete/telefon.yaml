@@ -35,11 +35,11 @@ sensor:
       {% endif %}        
     icon: mdi:phone-classic
     
-  - platform: phonebook
-    sensors:
-      werbeanruf:
-        entity_id: sensor.letzter_anruf
-        friendly_name: "Werbeanruf"
+#  - platform: phonebook
+#    sensors:
+#      werbeanruf:
+#        entity_id: sensor.letzter_anruf
+#        friendly_name: "Werbeanruf"
    
 input_boolean:
   licht_aktiv:

@@ -3,6 +3,108 @@ switch:
     host: 192.168.2.36
     name: Crosstrainer
     
+input_boolean:
+  training_aktiv:
+    name: "Training aktiv"
+    
+binary_sensor:
+  - platform: template
+    sensors:         
+      training_aktiv:
+        friendly_name: "Training aktiv"        
+        value_template: "{{ True if is_state('input_boolean.training_aktiv', 'on') else False }}"
+        icon_template: "mdi:weight-lifter"
+          
+script:
+  training_einschalten:
+    alias: "Training einschalten"
+    sequence:  
+      - service: !secret tts_service
+        data_template:
+          echo: "flur"
+          message: "Training wird eingeschaltet"
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.training_aktiv, input_boolean.bewegungsmelder_sportzimmer_deaktiviert
+      - service: switch.turn_on
+        entity_id: switch.crosstrainer, switch.sportzimmer_fernseher
+      - service: switch.turn_off
+        entity_id: switch.watchtv_wohnzimmer, switch.monitor
+      - service: script.radios_ausschalten
+      - service: light.turn_off
+        entity_id: light.couch, light.strahler
+      - choose:
+          conditions:
+            - condition: state
+              entity_id: binary_sensor.sonne_tagsueber
+              state: 'off'
+          sequence:
+            - service: light.turn_on
+              entity_id: light.sportzimmer_regal
+      - choose:
+          conditions:
+            - condition: state
+              entity_id: input_boolean.computer_ausschalten
+              state: 'on'
+          sequence:
+            - service: switch.turn_off
+              entity_id: switch.pc      
+              
+  training_ausschalten:
+    alias: "Training ausschalten"
+    sequence:
+      - service: !secret tts_service
+        data_template:         
+          echo: "flur"
+          message: "Training wird ausgeschaltet"          
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.training_aktiv, input_boolean.bewegungsmelder_sportzimmer_deaktiviert
+      - service: media_player.turn_off
+        entity_id: media_player.kodi_sportzimmer
+      - service: switch.turn_off
+        entity_id: switch.crosstrainer, switch.sportzimmer_fernseher        
+      - service: light.turn_off
+        entity_id: light.sportzimmer_regal
+      - service: switch.turn_on
+        entity_id: switch.watchtv_wohnzimmer, switch.monitor
+      - service: script.wohnung_radios_einschalten
+      - choose:
+          conditions:
+            - condition: state
+              entity_id: binary_sensor.sonne_tagsueber
+              state: 'off'
+          sequence:
+            - service: light.turn_on
+              entity_id: light.couch, light.strahler
+      - choose:
+          conditions:
+            - condition: state
+              entity_id: switch.pc
+              state: 'off'
+          sequence:
+            - service: switch.turn_on
+              entity_id: switch.pc      
+
+automation:
+  - alias: "Training - Schalter"
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.schalter_flur
+        to: 'off'
+    condition:
+      - condition: state
+        entity_id: binary_sensor.besuch
+        state: 'off'
+    action:
+      - choose:
+          - conditions:
+              - condition: state
+                entity_id: input_boolean.training_aktiv
+                state: 'off'
+            sequence:
+              - service: script.training_einschalten
+        default:
+          - service: script.training_ausschalten   
+                  
 homeassistant:
   customize:
     switch.crosstrainer:

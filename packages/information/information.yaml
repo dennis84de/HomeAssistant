@@ -6,27 +6,14 @@ tankerkoenig:
   stations:
     - !secret tankerkoenig_id_real
     - !secret tankerkoenig_id_jet
-      
+
 input_number:
-  corona_grenzwert:
-    name: Corona Grenzwert
-    min: 0
-    max: 1000
-    step: 5
-    initial: 50  
-    
   alexa_timer:
     name: Alexa Timer
     min: 1
     max: 120
     step: 1
     initial: 5      
-    
-input_text:
-  corona_dortmund_gestern:
-    name: Corona Dortmund gestern   
-  corona_mulheim_gestern:
-    name: Corona Mülheim gestern
     
 sensor:
   - platform: imap
@@ -151,32 +138,7 @@ automation:
             Eine neue E-Mail ist eingegangen.
           {% else %}
             Es sind {{ mailCount }} neue E-Mails eingegangen.
-          {% endif %}          
-          
-  - alias: "Corona-Werte geändert"
-    trigger:
-      - platform: state
-        entity_id: sensor.sk_dortmund_weekincidence
-      - platform: state
-        entity_id: sensor.sk_mulheim_a_d_ruhr_weekincidence        
-    action:
-      - choose:
-          - conditions:
-              - condition: template
-                value_template: "{{ True if trigger.entity_id == 'sensor.sk_dortmund_weekincidence' else False }}"
-            sequence:
-              - service: input_text.set_value
-                data:
-                  entity_id: input_text.corona_dortmund_gestern
-                  value: "{{ trigger.from_state.state }}" 
-          - conditions:
-              - condition: template
-                value_template: "{{ True if trigger.entity_id == 'sensor.sk_mulheim_a_d_ruhr_weekincidence' else False }}"
-            sequence:
-              - service: input_text.set_value
-                data:
-                  entity_id: input_text.corona_mulheim_gestern
-                  value: "{{ trigger.from_state.state }}" 
+          {% endif %}
 
   - alias: 'Telegram - Tanken'
     trigger:

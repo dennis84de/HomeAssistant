@@ -19,13 +19,6 @@ device_tracker:
   - platform: ping
     hosts:
       handyping: !secret handy_host
-      
-person:
-  - name: Dennis
-    id: dennis
-    device_trackers:
-      - device_tracker.handygps
-      - device_tracker.handymqtt
 
 proximity:
   home:

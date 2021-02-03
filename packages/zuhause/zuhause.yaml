@@ -99,7 +99,7 @@ automation:
       - platform: state
         entity_id: binary_sensor.zu_hause
         to: 'on'
-    condition: 
+    condition:    
       - condition: time        
         before: '23:00'   
       - condition: numeric_state
@@ -126,7 +126,9 @@ automation:
         to: 'off' 
       - platform: state
         entity_id: binary_sensor.zu_hause
-        to: 'on'         
+        to: 'on'
+        for:
+          seconds: 3
     condition:
       - condition: state
         entity_id: input_boolean.zu_hause_begruessung
@@ -137,8 +139,8 @@ automation:
   - alias: "Zu Hause - Besuch Schalter"
     trigger:
       - platform: state
-        entity_id: binary_sensor.schalter_flur
-        to: 'off'            
+        entity_id: sensor.schalter_flur
+        to: '3'
     condition:
       - condition: state
         entity_id: binary_sensor.zu_hause

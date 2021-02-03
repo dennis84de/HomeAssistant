@@ -1,8 +1,8 @@
-mqtt:
-  broker: !secret mqtt_host
-  client_id: !secret mqtt_clientid
-  username: !secret mqtt_username
-  password: !secret mqtt_password
+#mqtt:
+#  broker: !secret mqtt_host
+#  client_id: !secret mqtt_clientid
+#  username: !secret mqtt_username
+#  password: !secret mqtt_password
 
 binary_sensor:
   - platform: mqtt

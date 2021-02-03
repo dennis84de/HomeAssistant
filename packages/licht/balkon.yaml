@@ -53,7 +53,7 @@ automation:
         value_template: >-
           {% set letzte_bewegung = as_timestamp(state_attr("entity_controller.bewegung_balkon", "last_triggered_at")) | timestamp_custom("%s", True) | int  %}
           {% set now = now().strftime("%s") | int %}
-          {% set abstand_sekunden = ((now - letzte_bewegung | timestamp_custom("%s") | int)) | int %}
+          {% set abstand_sekunden = (now - letzte_bewegung) | int %}
 
           {{ True if abstand_sekunden >= 10 else False }}
     action:

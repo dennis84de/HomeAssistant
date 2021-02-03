@@ -35,7 +35,7 @@ cards:
     title: Sensoren
     show_header_toggle: false
     entities:
-      - entity: sensor.tuersensor_battery_level      
+      - entity: sensor.tuersensor_battery_level
       - entity: sensor.bett_battery_level      
       - entity: sensor.cube_battery_level
 

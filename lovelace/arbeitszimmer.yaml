@@ -46,8 +46,7 @@ cards:
     title: Heizung
     show_header_toggle: false
     entities:
-      - entity: binary_sensor.fenster_arbeitszimmer
-        name: Fenster
+      - entity: binary_sensor.fenster_arbeitszimmer       
       - entity: climate.arbeitszimmer
         name: Heizung
 

@@ -48,7 +48,7 @@ cards:
     title: Sensoren
     show_header_toggle: false
     entities:
-      - entity: binary_sensor.bewegungsmelder_kueche
+      - entity: binary_sensor.bewegungsmelder_kueche       
         name: Bewegungsmelder
       - entity: sensor.helligkeit_kueche
 

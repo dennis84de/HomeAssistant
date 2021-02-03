@@ -11,7 +11,7 @@ camera:
 
 gdacs:
   radius: 100
-  
+
 binary_sensor:
   - platform: car_wash
     name: Auto waschen
@@ -30,13 +30,11 @@ binary_sensor:
 
       sonne_tagsueber:
         friendly_name: "Sonne tagsüber"
-        delay_on: 300
-        delay_off: 300
         value_template: >-
           {% if is_state('sensor.helligkeit_balkon', None) or is_state('sensor.helligkeit_balkon', 'unknown') %}
-            False
+            True
           {% else %}
-            {{ states('sensor.helligkeit_balkon') | float > 23000 }}
+            {{ states('sensor.helligkeit_balkon') | float > 21000 }}
           {% endif %}
           
       sommerzeit:
@@ -102,32 +100,32 @@ sensor:
     outdoor_temp_sensor: sensor.mold_balkon_temperatur
     calibration_factor: 1.16
 
-  - platform: thermal_comfort
-    sensors:
-      wohnzimmer:
-        friendly_name: Wohnzimmer
-        temperature_sensor: sensor.wohnzimmer_temperatur
-        humidity_sensor: sensor.wohnzimmer_luftfeuchtigkeit
-      schlafzimmer:
-        friendly_name: Schlafzimmer
-        temperature_sensor: sensor.schlafzimmer_temperatur
-        humidity_sensor: sensor.schlafzimmer_luftfeuchtigkeit
-      kueche:
-        friendly_name: Küche
-        temperature_sensor: sensor.kueche_temperatur
-        humidity_sensor: sensor.kueche_luftfeuchtigkeit
-      flur:
-        friendly_name: Flur
-        temperature_sensor: sensor.flur_temperatur
-        humidity_sensor: sensor.flur_luftfeuchtigkeit
-      arbeitszimmer:
-        friendly_name: Arbeitszimmer
-        temperature_sensor: sensor.arbeitszimmer_temperatur
-        humidity_sensor: sensor.arbeitszimmer_luftfeuchtigkeit
-      sportzimmer:
-        friendly_name: Sportzimmer
-        temperature_sensor: sensor.sportzimmer_temperatur
-        humidity_sensor: sensor.sportzimmer_luftfeuchtigkeit
+#  - platform: thermal_comfort
+#    sensors:
+#      wohnzimmer:
+#        friendly_name: Wohnzimmer
+#        temperature_sensor: sensor.wohnzimmer_temperatur
+#        humidity_sensor: sensor.wohnzimmer_luftfeuchtigkeit
+#      schlafzimmer:
+#        friendly_name: Schlafzimmer
+#        temperature_sensor: sensor.schlafzimmer_temperatur
+#        humidity_sensor: sensor.schlafzimmer_luftfeuchtigkeit
+#      kueche:
+#        friendly_name: Küche
+#        temperature_sensor: sensor.kueche_temperatur
+#        humidity_sensor: sensor.kueche_luftfeuchtigkeit
+#      flur:
+#        friendly_name: Flur
+#        temperature_sensor: sensor.flur_temperatur
+#        humidity_sensor: sensor.flur_luftfeuchtigkeit
+#      arbeitszimmer:
+#        friendly_name: Arbeitszimmer
+#        temperature_sensor: sensor.arbeitszimmer_temperatur
+#        humidity_sensor: sensor.arbeitszimmer_luftfeuchtigkeit
+#      sportzimmer:
+#        friendly_name: Sportzimmer
+#        temperature_sensor: sensor.sportzimmer_temperatur
+#        humidity_sensor: sensor.sportzimmer_luftfeuchtigkeit
 
 #  - platform: dwd_pollen
 #    name: Pollen

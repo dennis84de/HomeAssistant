@@ -1,0 +1,101 @@
+input_number:
+  corona_grenzwert:
+    name: Corona Grenzwert
+    min: 0
+    max: 1000
+    step: 5
+    initial: 50  
+        
+input_text:
+  corona_dortmund_gestern:
+    name: Corona Dortmund gestern   
+  corona_mulheim_gestern:
+    name: Corona Mülheim gestern
+    
+sensor:
+  - platform: rest
+    name: "Corona Impfungen Deutschland"
+    resource: https://rki-vaccination-data.vercel.app/api
+    json_attributes:
+      - vaccinated
+      - quote
+      - difference_to_the_previous_day
+    value_template: '{{ as_timestamp(strptime(value_json.lastUpdate,"")) | timestamp_local }}'
+    device_class: timestamp
+
+  - platform: rest
+    name: "Corona Impfungen NRW"
+    resource: https://rki-vaccination-data.vercel.app/api
+    json_attributes_path: $.states.Nordrhein-Westfalen
+    json_attributes:
+      - vaccinated
+      - quote
+      - difference_to_the_previous_day
+    value_template: '{{ as_timestamp(strptime(value_json.lastUpdate,"")) | timestamp_local }}'
+    device_class: timestamp    
+
+  - platform: template
+    sensors: 
+      coronavirus_vaccination_brd_vaccinated:
+        value_template: "{{ state_attr('sensor.corona_impfungen_deutschland', 'vaccinated') }}"
+        friendly_name: 'Geimpfte'
+        unit_of_measurement: 'Personen'
+
+  - platform: template
+    sensors: 
+      coronavirus_vaccination_brd_quote:
+        value_template: "{{ state_attr('sensor.corona_impfungen_deutschland', 'quote') }}"
+        friendly_name: 'Impfquote'
+
+  - platform: template
+    sensors: 
+      coronavirus_vaccination_brd_difference:
+        value_template: "{{ state_attr('sensor.corona_impfungen_deutschland', 'difference_to_the_previous_day') }}"
+        friendly_name: 'Neu-Geimpfte'
+        unit_of_measurement: 'Personen'
+
+  - platform: template
+    sensors: 
+      coronavirus_vaccination_nrw_vaccinated:
+        value_template: "{{ state_attr('sensor.corona_impfungen_nrw', 'vaccinated') }}"
+        friendly_name: 'Geimpfte'
+        unit_of_measurement: 'Personen'
+
+  - platform: template
+    sensors: 
+      coronavirus_vaccination_nrw_quote:
+        value_template: "{{ state_attr('sensor.corona_impfungen_nrw', 'quote') }}"
+        friendly_name: 'Impfquote'    
+    
+  - platform: template
+    sensors: 
+      coronavirus_vaccination_nrw_difference:
+        value_template: "{{ state_attr('sensor.corona_impfungen_nrw', 'difference_to_the_previous_day') }}"
+        friendly_name: 'Neu-Geimpfte'
+        unit_of_measurement: 'Personen'    
+    
+automation:        
+  - alias: "Corona-Werte geändert"
+    trigger:
+      - platform: state
+        entity_id: sensor.sk_dortmund_weekincidence
+      - platform: state
+        entity_id: sensor.sk_mulheim_a_d_ruhr_weekincidence        
+    action:
+      - choose:
+          - conditions:
+              - condition: template
+                value_template: "{{ True if trigger.entity_id == 'sensor.sk_dortmund_weekincidence' else False }}"
+            sequence:
+              - service: input_text.set_value
+                data:
+                  entity_id: input_text.corona_dortmund_gestern
+                  value: "{{ trigger.from_state.state }}" 
+          - conditions:
+              - condition: template
+                value_template: "{{ True if trigger.entity_id == 'sensor.sk_mulheim_a_d_ruhr_weekincidence' else False }}"
+            sequence:
+              - service: input_text.set_value
+                data:
+                  entity_id: input_text.corona_mulheim_gestern
+                  value: "{{ trigger.from_state.state }}"   

@@ -61,6 +61,7 @@ binary_sensor:
         friendly_name: Schlafen aktiv
         value_template: "{{ is_state('input_boolean.schlafen_aktiv', 'on') }}"
         icon_template: mdi:sleep
+        availability_template: "{{ states('input_boolean.schlafen_aktiv') not in ['unknown', 'unavailable'] }}"
           
       schlafen_inaktiv:
         friendly_name: Schlafen inaktiv
@@ -485,6 +486,8 @@ automation:
       - platform: state
         entity_id: binary_sensor.schlafen_aktiv
         to: 'off'
+        for:
+          seconds: 3
     action:      
       - service: switch.turn_on
         entity_id: switch.computer

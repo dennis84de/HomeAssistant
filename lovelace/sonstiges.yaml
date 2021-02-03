@@ -38,6 +38,69 @@ cards:
       - entity: sensor.katastrophenalarm
 
   - type: entities
+    title: Corona Virus
+    show_header_toggle: false
+    entities:
+      - entity: sensor.germany_coronavirus_confirmed
+        name: Bestätigt
+      - entity: sensor.germany_coronavirus_current
+        name: Aktuell
+      - entity: sensor.germany_coronavirus_recovered
+        name: Geheilt
+      - entity: sensor.germany_coronavirus_deaths
+        name: Tote                 
+
+  - type: custom:mini-graph-card
+    line_width: 2
+    animate: true
+    hours_to_show: 168
+    points_per_hour: 1
+    hour24: true
+    show:
+      icon: false
+      points: false
+    entities:
+      - entity: sensor.sk_dortmund_weekincidence
+        name: Dortmund
+      - entity: sensor.sk_mulheim_a_d_ruhr_weekincidence
+        name: Mülheim an der Ruhr
+
+  - type: horizontal-stack
+    cards:
+      - type: custom:mini-graph-card
+        name: Impfungen
+        unit: "P."
+        line_width: 2
+        animate: true
+        hours_to_show: 168
+        points_per_hour: 1
+        hour24: true
+        show:
+          icon: false
+          points: false          
+        entities:
+          - entity: sensor.coronavirus_vaccination_brd_vaccinated
+            name: Deutschland            
+          - entity: sensor.coronavirus_vaccination_nrw_vaccinated
+            name: NRW            
+      - type: custom:mini-graph-card
+        name: Impfquote
+        unit: "%"
+        line_width: 2
+        animate: true
+        hours_to_show: 168
+        points_per_hour: 1
+        hour24: true
+        show:
+          icon: false
+          points: false
+        entities:
+          - entity: sensor.coronavirus_vaccination_brd_quote
+            name: Deutschland
+          - entity: sensor.coronavirus_vaccination_nrw_quote
+            name: NRW
+        
+  - type: entities
     title: SpaceX
     show_header_toggle: false
     entities:
@@ -66,34 +129,7 @@ cards:
     show_header_toggle: false
     entities:
       - entity: sensor.home_assistant_overhead_satellites
-        name: Sateliten
-
-  - type: entities
-    title: Corona Virus
-    show_header_toggle: false
-    entities:
-      - type: custom:mini-graph-card
-        line_width: 2
-        animate: true
-        hours_to_show: 168
-        points_per_hour: 1
-        hour24: true
-        show:
-          icon: false
-          points: false
-        entities:
-          - entity: sensor.sk_dortmund_weekincidence
-            name: Dortmund
-          - entity: sensor.sk_mulheim_a_d_ruhr_weekincidence
-            name: Mülheim an der Ruhr
-      - entity: sensor.germany_coronavirus_confirmed
-        name: Bestätigt
-      - entity: sensor.germany_coronavirus_current
-        name: Aktuell
-      - entity: sensor.germany_coronavirus_recovered
-        name: Geheilt
-      - entity: sensor.germany_coronavirus_deaths
-        name: Tote                 
+        name: Sateliten        
         
   - type: custom:atomic-calendar-revive
     name: Serien

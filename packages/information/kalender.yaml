@@ -90,7 +90,9 @@ sensor:
         friendly_name: Uhrzeit
         value_template: >
           {% if state_attr('calendar.borussia_dortmund', 'start_time') %}
-            {{ as_timestamp(state_attr('calendar.borussia_dortmund', 'start_time')) | timestamp_custom("%H:%M Uhr", True) | string }}
+            {% set dateSplitted = state_attr('calendar.borussia_dortmund', 'start_time').split(' ') %}
+            {% set timeSplitted = dateSplitted[1].split(':') %}
+            {{ timeSplitted[0] ~ ':' ~ timeSplitted[1] ~ ' Uhr' }}            
           {% else %}
             -
           {% endif %}
@@ -133,7 +135,7 @@ sensor:
         
           {% if rennen == None %}
             -
-          {% else %}
+          {% else %}           
             {% set rennenTs = as_timestamp(state_attr('calendar.formel1_rennen', 'start_time')) %}
             {{ rennenTs | timestamp_custom("%d.%m.%Y", True) | string }}, {{ rennenTs | timestamp_custom("%H:%M Uhr", True) | string }}       
           {% endif %}         

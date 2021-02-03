@@ -1,8 +1,8 @@
-media_player:
-  - platform: androidtv
-    host: !secret firetv_sportzimmer_host
-    name: Fire TV Sportzimmer   
-    adbkey: '/home/homeassistant/.homeassistant/adbkey'
+#media_player:
+#  - platform: androidtv
+#    host: !secret firetv_sportzimmer_host
+#    name: Fire TV Sportzimmer   
+#    adbkey: '/home/homeassistant/.homeassistant/adbkey'
    
 notify:
   - platform: kodi

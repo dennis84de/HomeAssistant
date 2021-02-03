@@ -11,7 +11,7 @@ sensor:
       nextcloud_zertifikat_tage:
         friendly_name: "Nextcloud Zertifikat"
         value_template: >-
-          {% set nextcloudTimestamp = as_timestamp(states("sensor.nextcloud_zertifikat")) %}
+          {% set nextcloudTimestamp = as_timestamp(states("sensor.cert_expiry_timestamp_cloud_djaeschke_de")) %}
         
           {{ '-' if nextcloudTimestamp == None else ((nextcloudTimestamp - as_timestamp(now())) | int /60/1440) | round(0) }}
         unit_of_measurement: 'Tage'
