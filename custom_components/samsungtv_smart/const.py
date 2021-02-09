@@ -23,36 +23,36 @@ DOMAIN = "samsungtv_smart"
 
 WS_PREFIX = "[Home Assistant]"
 
-CONF_APP_LIST = "app_list"
 CONF_APP_LAUNCH_METHOD = "app_launch_method"
+CONF_APP_LIST = "app_list"
 CONF_APP_LOAD_METHOD = "app_load_method"
 CONF_CHANNEL_LIST = "channel_list"
-CONF_DEVICE_NAME = "device_name"
 CONF_DEVICE_MODEL = "device_model"
-CONF_SOURCE_LIST = "source_list"
-CONF_SHOW_CHANNEL_NR = "show_channel_number"
-CONF_WS_NAME = "ws_name"
+CONF_DEVICE_NAME = "device_name"
 CONF_DEVICE_OS = "device_os"
 CONF_LOAD_ALL_APPS = "load_all_apps"
 CONF_POWER_ON_DELAY = "power_on_delay"
 CONF_POWER_ON_METHOD = "power_on_method"
-CONF_USE_ST_CHANNEL_INFO = "use_st_channel_info"
-CONF_USE_ST_STATUS_INFO = "use_st_status_info"
-CONF_USE_MUTE_CHECK = "use_mute_check"
+CONF_SHOW_CHANNEL_NR = "show_channel_number"
+CONF_SOURCE_LIST = "source_list"
 CONF_SYNC_TURN_OFF = "sync_turn_off"
 CONF_SYNC_TURN_ON = "sync_turn_on"
+CONF_USE_MUTE_CHECK = "use_mute_check"
+CONF_USE_ST_CHANNEL_INFO = "use_st_channel_info"
+CONF_USE_ST_STATUS_INFO = "use_st_status_info"
 CONF_WOL_REPEAT = "wol_repeat"
+CONF_WS_NAME = "ws_name"
 
 # obsolete
 CONF_UPDATE_METHOD = "update_method"
 CONF_UPDATE_CUSTOM_PING_URL = "update_custom_ping_url"
 CONF_SCAN_APP_HTTP = "scan_app_http"
 
+DEFAULT_APP = "TV/HDMI"
 DEFAULT_PORT = 8001
-DEFAULT_TIMEOUT = 5
 DEFAULT_POWER_ON_DELAY = 30
 DEFAULT_SOURCE_LIST = {"TV": "KEY_TV", "HDMI": "KEY_HDMI"}
-DEFAULT_APP = "TV/HDMI"
+DEFAULT_TIMEOUT = 5
 
 MAX_WOL_REPEAT = 5
 
@@ -64,6 +64,7 @@ RESULT_ST_MULTI_DEVICES = "st_multiple_device"
 RESULT_SUCCESS = "success"
 RESULT_WRONG_APIKEY = "wrong_api_key"
 
+SERVICE_SELECT_PICTURE_MODE = "select_picture_mode"
 SERVICE_SET_ART_MODE = "set_art_mode"
 
 STD_APP_LIST = {

@@ -142,7 +142,7 @@ class SamsungTVWS:
         token_file=None,
         port=8001,
         timeout=None,
-        key_press_delay=1,
+        key_press_delay=1.0,
         name="SamsungTvRemote",
         app_list=None,
     ):
@@ -271,7 +271,8 @@ class SamsungTVWS:
             self._last_ping = datetime.now()
 
         if key_press_delay is None:
-            time.sleep(self.key_press_delay)
+            if self.key_press_delay > 0:
+                time.sleep(self.key_press_delay)
         elif key_press_delay > 0:
             time.sleep(key_press_delay)
 
@@ -790,6 +791,35 @@ class SamsungTVWS:
             return self.send_key(key, key_press_delay=0, cmd="Release")
         return False
 
+    def send_text(self, text, send_delay=None):
+        if not text:
+            return False
+
+        base64_text = self._serialize_string(text)
+        if self._ws_send(
+            {
+                "method": "ms.remote.control",
+                "params": {
+                    "Cmd": f"{base64_text}",
+                    "DataOfCmd": "base64",
+                    "TypeOfRemote": "SendInputString",
+                },
+            },
+            key_press_delay=send_delay,
+        ):
+            self._ws_send(
+                {
+                    "method": "ms.remote.control",
+                    "params": {
+                        "TypeOfRemote": "SendInputEnd",
+                    },
+                },
+                key_press_delay=0,
+            )
+            return True
+
+        return False
+
     def move_cursor(self, x, y, duration=0):
         self._ws_send(
             {
@@ -823,7 +853,7 @@ class SamsungTVWS:
         )
 
         if self._ws_control and action_type == TYPE_DEEP_LINK and not use_remote:
-            self._ws_send(
+            return self._ws_send(
                 {
                     "id": app_id,
                     "method": "ms.application.start",
@@ -833,9 +863,8 @@ class SamsungTVWS:
                 use_control=True,
                 ws_socket=self._ws_control,
             )
-            return
 
-        self._ws_send(
+        return self._ws_send(
             {
                 "method": "ms.channel.emit",
                 "params": {
@@ -855,7 +884,7 @@ class SamsungTVWS:
 
     def open_browser(self, url):
         _LOGGING.debug("Opening url in browser %s", url)
-        self.run_app("org.tizen.browser", TYPE_NATIVE_LAUNCH, url)
+        return self.run_app("org.tizen.browser", TYPE_NATIVE_LAUNCH, url)
 
     def rest_device_info(self):
         _LOGGING.debug("Get device info via rest api")
