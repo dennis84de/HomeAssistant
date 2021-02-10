@@ -1,7 +1,6 @@
 input_boolean:
   nicht_stoeren:
     name: Nicht stören
-    initial: off
     icon: mdi:do-not-disturb
     
 device_tracker:
@@ -177,10 +176,19 @@ automation:
         state: 'off'
       - condition: state
         entity_id: binary_sensor.besuch
+        state: 'off'      
+      - condition: state
+        entity_id: input_boolean.telefon_musik_pausiert
         state: 'off'        
+      - condition: state
+        entity_id: input_boolean.tuer_musik_pausiert
+        state: 'off'
+      - condition: state
+        entity_id: input_boolean.home_office_musik_pausiert
+        state: 'off'
     action:
       - service: input_boolean.turn_on
-        entity_id: input_boolean.musik_pausiert
+        entity_id: input_boolean.telefon_musik_pausiert
       - service: media_player.volume_mute
         data:
           entity_id: media_player.kuche, media_player.badezimmer, media_player.wohnzimmer, media_player.schlafzimmer, media_player.arbeitszimmer, media_player.flur, media_player.balkon
@@ -193,14 +201,14 @@ automation:
         to: 'idle'
     condition:
       - condition: state
-        entity_id: input_boolean.musik_pausiert
+        entity_id: input_boolean.telefon_musik_pausiert
         state: 'on'
       - condition: state
         entity_id: sensor.telefon
         state: 'idle'
     action:
       - service: input_boolean.turn_off
-        entity_id: input_boolean.musik_pausiert
+        entity_id: input_boolean.telefon_musik_pausiert
       - service: media_player.volume_mute
         data:
           entity_id: media_player.kuche, media_player.badezimmer, media_player.wohnzimmer, media_player.schlafzimmer, media_player.arbeitszimmer, media_player.flur, media_player.balkon

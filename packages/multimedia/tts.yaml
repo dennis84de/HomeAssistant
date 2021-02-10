@@ -13,8 +13,7 @@ notify:
 input_boolean:
   sprachausgabe:
     name: Sprachausgabe
-    icon: mdi:message-bulleted
-    initial: true
+    icon: mdi:message-bulleted    
 
 script:
   alexa_tts:

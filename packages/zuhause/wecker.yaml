@@ -21,17 +21,14 @@ input_number:
 
 input_boolean:
   alarm_aktiv:
-    name: Wecker aktiv
-    initial: off
+    name: Wecker aktiv    
     icon: mdi:alarm-multiple
 
   wecker_erinnerung_morgen:
-    name: Erinnerung morgen
-    initial: off
+    name: Erinnerung morgen    
     
   wecker_zeit_geaendert:
-    name: Zeit geändert
-    initial: off    
+    name: Zeit geändert     
 
 input_text:
   alarm_standard_office:

@@ -72,10 +72,12 @@ switch:
 input_boolean:
   radio_balkon_aktiv:
     name: Radio Balkon aktiv
+    
   radio_balkon_bewegungsmelder_deaktiviert:
     name: Radio Balkon Bewegungsmelder deaktiviert  
     icon: mdi:voice-off
-  musik_pausiert:
+    
+  tuer_musik_pausiert:
     name: Musik pausiert
 
 binary_sensor:
@@ -253,14 +255,11 @@ automation:
       - service: switch.turn_off
         entity_id: switch.badezimmer_radio
       
-  - alias: 'Radios pausieren'
+  - alias: 'Tür - Radios pausieren'
     trigger:
       - platform: state
         entity_id: binary_sensor.tuersensor
         to: 'on'
-      - platform: state
-        entity_id: binary_sensor.schalter_arbeitszimmer
-        to: 'off'    
     condition:
       - condition: state
         entity_id: switch.wiedergabe_aktiv
@@ -271,8 +270,14 @@ automation:
         entity_id: 'sensor.telefon'
         state: 'idle'          
       - condition: state
-        entity_id: input_boolean.musik_pausiert
-        state: 'off'
+        entity_id: input_boolean.telefon_musik_pausiert
+        state: 'off'    
+      - condition: state
+        entity_id: input_boolean.tuer_musik_pausiert
+        state: 'off'        
+      - condition: state
+        entity_id: input_boolean.home_office_musik_pausiert
+        state: 'off'        
       - condition: template
         value_template: >-
           {% set now = as_timestamp(now()) | int %}
@@ -282,27 +287,24 @@ automation:
           {{ diff >= 10 }}
     action:
       - service: input_boolean.turn_on
-        entity_id: input_boolean.musik_pausiert
+        entity_id: input_boolean.tuer_musik_pausiert
       - service: media_player.volume_mute
         data:
           entity_id: media_player.kuche, media_player.badezimmer, media_player.wohnzimmer, media_player.schlafzimmer, media_player.arbeitszimmer, media_player.flur, media_player.balkon
           is_volume_muted: true        
 
-  - alias: 'Radios starten'
+  - alias: 'Tür - Radios starten'
     trigger:
       - platform: state
         entity_id: binary_sensor.tuersensor
-        to: 'off'
-      - platform: state
-        entity_id: binary_sensor.schalter_arbeitszimmer
-        to: 'off'        
+        to: 'off'  
     condition:
       - condition: state
-        entity_id: input_boolean.musik_pausiert
+        entity_id: input_boolean.tuer_musik_pausiert
         state: 'on'
     action:
       - service: input_boolean.turn_off
-        entity_id: input_boolean.musik_pausiert
+        entity_id: input_boolean.tuer_musik_pausiert
       - service: media_player.volume_mute
         data:
           entity_id: media_player.kuche, media_player.badezimmer, media_player.wohnzimmer, media_player.schlafzimmer, media_player.arbeitszimmer, media_player.flur, media_player.balkon

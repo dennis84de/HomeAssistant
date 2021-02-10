@@ -1,7 +1,6 @@
 input_boolean:
   computer_ausschalten:
     name: Computer ausschalten
-    initial: on
     icon: mdi:desktop-classic 
 
 device_tracker:

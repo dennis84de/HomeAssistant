@@ -21,9 +21,11 @@ input_boolean:
     name: Home Office aktiv
     
   computer_arbeit_ausschalten:
-    name: Computer Arbeit ausschalten
-    initial: on
+    name: Computer Arbeit ausschalten    
     icon: mdi:desktop-classic
+    
+  home_office_musik_pausiert:
+    name: Musik pausiert    
     
 binary_sensor:
   - platform: template
@@ -47,6 +49,66 @@ binary_sensor:
           {% set homeOfficeAktiv = is_state('input_boolean.home_office_aktiv', 'on') %}
 
           {{ True if (homeOfficeHeute and homeOfficeAktiv) else False }}
+      
+sensor:
+  - platform: template
+    sensors:
+      teams_status:
+        friendly_name: "Microsoft Teams - Status"
+        value_template: >-
+          {% if states('sensor.teams_status') == '' -%}
+            Offline
+          {%- endif %}
+        icon_template: >-
+          {% if states('sensor.teams_status') == '' -%}
+            mdi:microsoft-teams
+          {%- endif %}
+        unique_id: sensor.teams_status
+        
+      teams_activity:
+        friendly_name: "Microsoft Teams - Aktivität"
+        value_template: >-
+          {% if states('sensor.teams_activity') == '' -%}
+            Offline
+          {%- endif %}
+        icon_template: >-
+          {% if states('sensor.teams_activity') == '' -%}
+            mdi:microsoft-teams
+          {%- endif %}
+        unique_id: sensor.teams_activity          
+          
+      teams_status_de:
+        friendly_name: "Microsoft Teams - Status"
+        value_template: >-
+          {% set teamsStatus = states('sensor.teams_status') %}
+
+          {% if teamsStatus == 'Available' %}
+            Verfügbar
+          {% elif teamsStatus == 'Busy' %}
+            Beschäftigt
+          {% elif teamsStatus == 'Away' %}
+            Abwesend
+          {% elif teamsStatus == 'Do not Disturb' %}
+            Nicht stören            
+          {% else %} 
+            Offline
+          {% endif %}
+        icon_template: "mdi:microsoft-teams"
+        
+      teams_activity_de:
+        friendly_name: "Microsoft Teams - Aktivität"
+        value_template: >-
+          {% if states('sensor.teams_activity') == 'In a call' %}
+            Am Telefon
+          {% else %} 
+            Nicht am Telefon
+          {% endif %}
+        icon_template: >-
+          {% if states('sensor.teams_activity') == 'In a call' %}
+            mdi:phone-in-talk
+          {% else %} 
+            mdi:phone-off
+          {% endif %}
           
 switch:
   - platform: template
@@ -213,4 +275,44 @@ automation:
                 entity_id: input_boolean.home_office
         default:
           - service: input_boolean.turn_on
-            entity_id: input_boolean.home_office                        
+            entity_id: input_boolean.home_office
+      
+  - alias: 'Home Office - Radios pausieren'
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.schalter_arbeitszimmer
+        to: 'off'
+      - platform: state
+        entity_id: sensor.teams_activity_de
+        to: 'Am Telefon'
+    condition:       
+      - condition: state
+        entity_id: input_boolean.home_office_musik_pausiert
+        state: 'off'
+    action:
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.home_office_musik_pausiert
+      - service: media_player.volume_mute
+        data:
+          entity_id: media_player.kuche, media_player.badezimmer, media_player.wohnzimmer, media_player.schlafzimmer, media_player.arbeitszimmer, media_player.flur, media_player.balkon
+          is_volume_muted: true        
+
+  - alias: 'Home Office - Radios starten'
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.schalter_arbeitszimmer
+        to: 'off'
+      - platform: state
+        entity_id: sensor.teams_activity_de
+        to: 'Nicht am Telefon'
+    condition:
+      - condition: state
+        entity_id: input_boolean.home_office_musik_pausiert
+        state: 'on'
+    action:
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.home_office_musik_pausiert
+      - service: media_player.volume_mute
+        data:
+          entity_id: media_player.kuche, media_player.badezimmer, media_player.wohnzimmer, media_player.schlafzimmer, media_player.arbeitszimmer, media_player.flur, media_player.balkon
+          is_volume_muted: false

@@ -1,7 +1,7 @@
 input_boolean:
   licht_simulaton:
     name: "Lichtsimulation"
-    icon: mdi:emoticon-cool-outline
+    icon: mdi:lightbulb-group-outline
 
 alarm_control_panel:
   - platform: manual

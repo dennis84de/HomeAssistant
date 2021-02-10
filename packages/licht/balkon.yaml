@@ -7,8 +7,7 @@ light:
 
 input_boolean:
   bewegungsmelder_balkon_deaktiviert:
-    name: Bewegungsmelder deaktiviert
-    initial: off
+    name: Bewegungsmelder deaktiviert    
     icon: mdi:sync-off
 
 entity_controller:      

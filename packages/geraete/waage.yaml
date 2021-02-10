@@ -1,35 +1,35 @@
 sensor:
   - platform: mqtt
     name: "Gewicht"
-    state_topic: "scale/users/Dennis"
+    state_topic: "scale/Dennis/weight"
     value_template: "{{ value_json['weight'] }}"    
-    json_attributes_topic: "scale/users/Dennis"
+    json_attributes_topic: "scale/Dennis/weight"
     unit_of_measurement: "kg"
     icon: mdi:scale-bathroom   
 
   - platform: mqtt
     name: "BMI"
-    state_topic: "scale/users/Dennis"
+    state_topic: "scale/Dennis/weight"
     value_template: "{{ value_json['bmi'] }}"
     icon: mdi:human-pregnant
-
+    
   - platform: mqtt
     name: "Wasser"
-    state_topic: "scale/users/Dennis"
+    state_topic: "scale/Dennis/weight"
     value_template: "{{ value_json['water'] }}"   
     unit_of_measurement: "kg"
     icon: mdi:water
 
   - platform: mqtt
     name: "Fett"
-    state_topic: "scale/users/Dennis"
+    state_topic: "scale/Dennis/weight"
     value_template: "{{ value_json['body_fat'] }}"    
     unit_of_measurement: "kg"
     icon: mdi:scale-balance
     
-  - platform: average
-    name: 'Gewicht Durchschnitt'
-    duration:
-      days: 30    
-    entities:
-      - sensor.gewicht
+#  - platform: average
+#    name: 'Gewicht Durchschnitt'
+#    duration:
+#      days: 30    
+#    entities:
+#      - sensor.gewicht

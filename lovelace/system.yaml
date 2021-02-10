@@ -89,9 +89,10 @@ cards:
     entities:          
       - entity: input_boolean.uhr_einschalten
       - entity: input_boolean.besuch
-      - entity: input_boolean.nicht_stoeren
-      - entity: script.alexa_witz_gestartet
+      - entity: input_boolean.nicht_stoeren  
+      - entity: input_boolean.wetter_warnungen_einschalten          
       - entity: input_boolean.licht_simulaton
+      - entity: script.alexa_witz_gestartet
       
   - type: entities
     title: Radios
@@ -142,6 +143,13 @@ cards:
       - entity: sensor.pi_hole_ads_percentage_blocked_today
       - entity: sensor.pi_hole_dns_unique_clients
       - entity: sensor.pi_hole_seen_clients
+
+  - type: entities
+    title: Backup
+    show_header_toggle: false
+    entities:
+      - entity: sensor.backup_status
+      - entity: sensor.backup_letztes_backup
 
   - type: entities
     title: Bewegungsmelder deaktivieren

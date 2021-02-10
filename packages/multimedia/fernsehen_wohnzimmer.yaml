@@ -14,11 +14,9 @@ input_boolean:
     name: Musik ausschalten
     icon: mdi:music-off
   kodi_wohnzimmer_pausiert:
-    name: Kodi Wohnzimmer pausiert
-    initial: off
+    name: Kodi Wohnzimmer pausiert    
   kodi_wohnzimmer_pausieren:
-    name: Kodi Wohnzimmer pausieren
-    initial: on
+    name: Kodi Wohnzimmer pausieren    
     icon: mdi:sync-off
 
 binary_sensor:

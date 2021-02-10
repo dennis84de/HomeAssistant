@@ -1,8 +1,7 @@
-#media_player:
-#  - platform: androidtv
-#    host: !secret firetv_badezimmer_host
-#    name: Fire TV Badezimmer
-#    adbkey: '/home/homeassistant/.homeassistant/adbkey'
+media_player:
+  - platform: androidtv
+    host: !secret firetv_badezimmer_host
+    name: Fire TV Badezimmer
     
 notify:
   - platform: kodi
@@ -11,8 +10,7 @@ notify:
     
 input_boolean:
   kodi_badezimmer_pausiert:
-    name: Kodi Badezimmer pausiert
-    initial: off
+    name: Kodi Badezimmer pausiert    
     
 switch:
   - platform: template

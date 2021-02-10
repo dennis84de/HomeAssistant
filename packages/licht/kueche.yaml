@@ -11,8 +11,7 @@ light:
         
 input_boolean:
   bewegungsmelder_kueche_deaktiviert:
-    name: Bewegungsmelder deaktiviert
-    initial: off
+    name: Bewegungsmelder deaktiviert    
     icon: mdi:sync-off
     
 binary_sensor:

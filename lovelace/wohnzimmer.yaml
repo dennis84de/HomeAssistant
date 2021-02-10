@@ -90,8 +90,7 @@ cards:
         name: Radio
         hide:
           source: true
-          progress: true
-          volume: true      
+          progress: true  
 
   - type: conditional
     conditions:
@@ -160,8 +159,7 @@ cards:
         entity: media_player.balkon
         hide:
           source: true
-          progress: true
-          volume: true      
+          progress: true  
           
   - type: conditional
     conditions:

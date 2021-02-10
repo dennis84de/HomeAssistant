@@ -1,8 +1,7 @@
-#media_player:
-#  - platform: androidtv
-#    host: !secret firetv_sportzimmer_host
-#    name: Fire TV Sportzimmer   
-#    adbkey: '/home/homeassistant/.homeassistant/adbkey'
+media_player:
+  - platform: androidtv
+    host: !secret firetv_sportzimmer_host
+    name: Fire TV Sportzimmer
    
 notify:
   - platform: kodi
@@ -12,7 +11,7 @@ notify:
 input_boolean:
   kodi_sportzimmer_pausiert:
     name: Kodi Sportzimmer pausiert
-    initial: off
+
     
 switch:
   - platform: template

@@ -44,8 +44,7 @@ cards:
         name: Tablet
         hide:
           source: true
-          progress: true
-          volume: true                    
+          progress: true                
 
   - type: entities
     title: Schlafen

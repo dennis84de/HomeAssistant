@@ -12,7 +12,6 @@ light:
 input_boolean:
   bewegungsmelder_arbeitszimmer_deaktiviert:
     name: Bewegungsmelder deaktiviert
-    initial: off
     icon: mdi:sync-off
    
 entity_controller:

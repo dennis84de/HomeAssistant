@@ -189,8 +189,8 @@ cards:
     show_header_toggle: false
     entities:
       - entity: sensor.gewicht
-        type: "custom:secondaryinfo-entity-row"
-        secondary_info: "Durchschnitt: [[ sensor.gewicht_durchschnitt ]] kg"       
+#        type: "custom:secondaryinfo-entity-row"
+#        secondary_info: "Durchschnitt: [[ sensor.gewicht_durchschnitt ]] kg"       
       - entity: sensor.bmi
       - entity: sensor.wasser
       - entity: sensor.fett

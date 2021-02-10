@@ -1,19 +1,16 @@
 input_boolean:
   timer_schlafzimmer_aktiv:
-    name: Sleeptimer aktiv
-    initial: off
+    name: Sleeptimer aktiv    
     icon: mdi:timer-off
 
   schlafen_einschalten_aktiv:
     name: "Schlafen einschalten aktiv"
 
   schlafen_aktiv:
-    name: Schlafen
-    initial: off
+    name: Schlafen    
 
   schlafen_fernseher_einschalten:
-    name: Fernseher einschalten
-    initial: on
+    name: Fernseher einschalten    
     icon: mdi:television
 
 input_datetime:
@@ -31,8 +28,7 @@ input_select:
       - 60
       - 70
       - 90
-      - 120
-    initial: 70
+      - 120    
     icon: mdi:clock-end
 
 timer:
@@ -486,8 +482,6 @@ automation:
       - platform: state
         entity_id: binary_sensor.schlafen_aktiv
         to: 'off'
-        for:
-          seconds: 3
     action:      
       - service: switch.turn_on
         entity_id: switch.computer

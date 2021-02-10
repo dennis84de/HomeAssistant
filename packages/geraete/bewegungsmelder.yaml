@@ -33,16 +33,6 @@ binary_sensor:
         device_class: occupancy
         value_template: "{{ True if is_state('vacuum.xiaomi_vacuum_cleaner', 'cleaning') or is_state('vacuum.xiaomi_vacuum_cleaner', 'returning') else False }}"
 
-      bewegungsmelder_wohnzimmer:
-        friendly_name: Wohnzimmer
-        device_class: motion
-        value_template: "{{ is_state('sensor.aeotec_wohnzimmer_burglar', '8') }}"
-
-      bewegungsmelder_badezimmer:
-        friendly_name: Badezimmer
-        device_class: motion       
-        value_template: "{{ is_state('sensor.fibaro_badezimmer_burglar', '8') }}"   
-
 automation:
   - alias: 'Letzte Bewegung'
     trigger:

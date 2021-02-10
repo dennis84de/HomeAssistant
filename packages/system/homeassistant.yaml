@@ -45,10 +45,6 @@ lovelace:
       title: Zimmer
       icon: mdi:home-assistant
       show_in_sidebar: true  
-      
-#browser_mod:
-#  disable:
-#    - all  
   
 breaking_changes:
   name: Wichtige Änderungen

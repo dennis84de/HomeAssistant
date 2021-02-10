@@ -37,14 +37,6 @@ cards:
     entities:
       - entity: binary_sensor.diskstation
         name: Verfügbarkeit
-        
-  - type: entities
-    title: Z-Wave
-    show_header_toggle: false
-    entities:
-      - entity: zwave.aeotec_zwave_stick
-      - entity: zwave.bewegungsmelder_wohnzimmer
-      - entity: zwave.bewegungsmelder_badezimmer
 
   - type: entities
     title: Zigbee
@@ -52,12 +44,6 @@ cards:
     entities:
       - entity: zigate.zigate
       - entity: sensor.zigate_offline
-
-  - type: entities
-    title: MQTT
-    show_header_toggle: false
-    entities:
-      - entity: binary_sensor.bluetooth_gateway
 
   - type: entities
     title: Bewegungsmelder

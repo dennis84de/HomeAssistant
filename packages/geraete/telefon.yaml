@@ -34,16 +34,13 @@ sensor:
         {{ value }}
       {% endif %}        
     icon: mdi:phone-classic
-    
-#  - platform: phonebook
-#    sensors:
-#      werbeanruf:
-#        entity_id: sensor.letzter_anruf
-#        friendly_name: "Werbeanruf"
    
 input_boolean:
   licht_aktiv:
     name: Licht aktiv
+        
+  telefon_musik_pausiert:
+    name: Musik pausiert            
         
 automation:
   - alias: 'Eingehender Anruf - Telefon'
@@ -214,10 +211,19 @@ automation:
         state: 'off'
       - condition: state
         entity_id: binary_sensor.besuch
-        state: 'off'            
+        state: 'off'     
+      - condition: state
+        entity_id: input_boolean.telefon_musik_pausiert
+        state: 'off'        
+      - condition: state
+        entity_id: input_boolean.tuer_musik_pausiert
+        state: 'off'
+      - condition: state
+        entity_id: input_boolean.home_office_musik_pausiert
+        state: 'off'
     action:
       - service: input_boolean.turn_on
-        entity_id: input_boolean.musik_pausiert
+        entity_id: input_boolean.telefon_musik_pausiert
       - service: media_player.volume_mute
         data:
           entity_id: media_player.kuche, media_player.badezimmer, media_player.wohnzimmer, media_player.schlafzimmer, media_player.arbeitszimmer, media_player.flur, media_player.balkon
@@ -230,13 +236,13 @@ automation:
       to: 'idle'
     condition:
       - condition: state
-        entity_id: input_boolean.musik_pausiert
+        entity_id: input_boolean.telefon_musik_pausiert
         state: 'on'
       - condition: template
         value_template: '{{ is_state("sensor.handy", "incoming") == False and is_state("sensor.handy", "outgoing") == False }}' 
     action:
       - service: input_boolean.turn_off
-        entity_id: input_boolean.musik_pausiert
+        entity_id: input_boolean.telefon_musik_pausiert
       - service: media_player.volume_mute
         data:
           entity_id: media_player.kuche, media_player.badezimmer, media_player.wohnzimmer, media_player.schlafzimmer, media_player.arbeitszimmer, media_player.flur, media_player.balkon
@@ -307,10 +313,10 @@ automation:
             {% set from = trigger.from_state.attributes.from %}
             {% set from_name = trigger.from_state.attributes.from_name %}
             
-            {% if name == None or name == '' %}
+            {% if from == None or name == '' %}
               Ein verpasster Anruf ohne Rufnummer.
             {% elif from_name == None or from_name == 'unknown' %}
-              Ein verpasster Anruf von einer unbekannten Rufnummer.
+              Ein verpasster Anruf von einer unbekannten Rufnummer ({{ from }}).
             {% else %}
               Ein verpasster Anruf von {{ from_name }}.
             {% endif %}            

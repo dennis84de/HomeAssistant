@@ -1,7 +1,6 @@
 input_boolean:
   bewegungsmelder_wohnzimmer_deaktiviert:
-    name: Bewegungsmelder deaktiviert
-    initial: off
+    name: Bewegungsmelder deaktiviert    
     icon: mdi:sync-off
 
 light:

@@ -1,0 +1,43 @@
+sensor:
+  - platform: template
+    sensors:         
+      backup_status:
+        friendly_name: "Status"
+        value_template: >-
+          {% set backupStatus = states('sensor.samba_backup') %}
+
+          {% if backupStatus == 'IDLE' %}
+            Stillstand
+          {% elif backupStatus == 'RUNNING' %}
+            Läuft
+          {% elif backupStatus == 'SUCCEEDED' %}
+            Abgeschlossen   
+          {% elif backupStatus == 'FAILED' %}
+            Fehler                  
+          {% else %} 
+            Unbekannt
+          {% endif %}
+        icon_template: "mdi:nas"
+        
+      backup_letztes_backup:
+        friendly_name: "Letztes Backup"
+        value_template: >-
+          {% if state_attr('sensor.samba_backup', 'last_backup') %}
+            {% set weekday = as_timestamp(state_attr('sensor.samba_backup', 'last_backup')) | timestamp_custom("%w", True) | int %}
+
+            {{ ['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'][weekday-1] }}, {{ as_timestamp(state_attr('sensor.samba_backup', 'last_backup')) | timestamp_custom("%d.%m.%Y", True) | string }}
+          {% else %}
+            -
+          {% endif %}
+        icon_template: "mdi:update"        
+
+automation:
+  - alias: 'Backupsensor wiederherstellen'
+    trigger:
+    - event: start
+      platform: homeassistant
+    action:
+    - service: hassio.addon_stdin
+      data:
+        addon: 15d21743_samba_backup
+        input: restore-sensor

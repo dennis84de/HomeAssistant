@@ -127,8 +127,6 @@ automation:
       - platform: state
         entity_id: binary_sensor.zu_hause
         to: 'on'
-        for:
-          seconds: 3
     condition:
       - condition: state
         entity_id: input_boolean.zu_hause_begruessung

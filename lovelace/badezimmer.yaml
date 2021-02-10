@@ -31,8 +31,7 @@ cards:
         name: Radio
         hide:
           source: true
-          progress: true
-          volume: true          
+          progress: true     
 
   - type: entities
     title: Licht
@@ -46,7 +45,7 @@ cards:
     entities:
       - entity: binary_sensor.bewegungsmelder_badezimmer
         name: Bewegungsmelder
-      - entity: sensor.helligkeit_badezimmer
+      - entity: sensor.badezimmer_helligkeit
         name: Helligkeit
 
   - type: glance

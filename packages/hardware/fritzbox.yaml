@@ -6,12 +6,6 @@ input_text:
     name: 'Gäste Wlan - Password'
 
 sensor:
-  - platform: fritzbox_callmonitor
-    name: Telefon    
-    host: !secret fritzbox_host
-    username: !secret fritzbox_username
-    password: !secret fritzbox_password
-
   - platform: fritzbox_netmonitor
     name: Netmonitor
     host: !secret fritzbox_host
