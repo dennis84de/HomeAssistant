@@ -88,8 +88,10 @@ sensor:
             Beschäftigt
           {% elif teamsStatus == 'Away' %}
             Abwesend
-          {% elif teamsStatus == 'Do not Disturb' %}
-            Nicht stören            
+          {% elif teamsStatus == 'Do not disturb' %}
+            Nicht stören
+          {% elif teamsStatus == 'In a meeting' %}
+            In einer Besprechung
           {% else %} 
             Offline
           {% endif %}
