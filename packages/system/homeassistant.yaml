@@ -148,9 +148,6 @@ sensor:
           {% set up_time =  states('sensor.letzter_neustart') %}
      
           {{ '-' if up_time == 'unknown' else ((as_timestamp(now()) - as_timestamp(up_time)) / 60 / 60) | round(2) }}
-    
-shell_command:
-  upgrade_homeassistant: /home/homeassistant/.homeassistant/bash_scripts/upgrade-hass.sh
 
 script:  
   restart_homeassistant:
@@ -163,39 +160,13 @@ script:
       - delay: '00:00:03'      
       - service: media_player.play_media
         data:
-          entity_id:
-            - media_player.smarthome
-          media_content_id: >-
-            http://192.168.2.75:8123/local/neustart/winxp_shutdown.mp3
+          entity_id: media_player.benachrichtigungen
+          media_content_id:  http://192.168.2.75:8123/local/neustart/winxp_shutdown.mp3
           media_content_type: music
-      - wait_template: "{{is_state('media_player.smarthome', 'idle')}}"
+      - wait_template: "{{is_state('media_player.benachrichtigungen', 'idle')}}"
         timeout: '00:00:02'
         continue_on_timeout: 'true'      
       - service: homeassistant.restart
-
-  upgrade_homeassistant:
-    alias: Home Assistant aktualisieren
-    sequence:
-      - choose:
-          - conditions:
-            - condition: template
-              value_template: >-
-                {% if is_state('sensor.hass_current_version', None) or is_state('sensor.hass_installed_version', None) %}
-                  True
-                {% else %}
-                  {{ states('sensor.hass_current_version') == states('sensor.hass_installed_version') }}
-                {% endif %}
-            sequence:
-              - service: !secret tts_service
-                data_template:
-                  echo: "wohnzimmer"
-                  message: "Es ist keine neue Version vorhanden."
-        default:
-          - service: !secret tts_service
-            data_template:
-              echo: "wohnzimmer"
-              message: "Home Assistant wird aktualisiert."
-          - service: shell_command.upgrade_homeassistant
 
 automation:
   - alias: "Update verfügbar"
@@ -279,10 +250,8 @@ automation:
         default:
           - service: media_player.play_media
             data_template:
-              entity_id:
-                - media_player.smarthome
-              media_content_id: >-
-                http://192.168.2.75:8123/local/neustart/winxp_start.mp3
+              entity_id: media_player.benachrichtigungen
+              media_content_id: http://192.168.2.75:8123/local/neustart/winxp_start.mp3
               media_content_type: music
           - delay: '00:00:02'
           - service: !secret tts_service
@@ -326,7 +295,3 @@ homeassistant:
     sensor.hass_current_version:
       friendly_name: Neuste Version
       icon: mdi:update
-
-    script.upgrade_homeassistant:
-      icon: mdi:update
-      can_cancel: false

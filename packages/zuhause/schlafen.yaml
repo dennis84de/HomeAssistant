@@ -64,15 +64,6 @@ binary_sensor:
         value_template: "{{ is_state('binary_sensor.schlafen_aktiv', 'off') }}"
 
 sensor:
-  - platform: history_stats
-    name: Schlafdauer
-    entity_id: binary_sensor.schlafen_aktiv
-    state: 'on'
-    type: 'ratio'
-    end: '{{ now() }}'
-    duration:
-      days: 7
-
   - platform: template
     sensors:
       timer_schlafzimmer_zeit:
@@ -101,19 +92,6 @@ sensor:
         value_template: "{{ '%02d' % (state_attr('input_datetime.schlafen_uhrzeit', 'hour') | int) ~ ':' ~ '%02d' % (state_attr('input_datetime.schlafen_uhrzeit', 'minute') | int) }}"
         icon_template: mdi:av-timer
         unit_of_measurement: 'Uhr'
-
-      schlafen_dauer_durchschnitt:
-        friendly_name: Durchschnittliche Dauer
-        value_template: >
-          {% if states.sensor.schlafdauer == None %}
-            0
-          {% else %}
-            {% set stunden = states('sensor.schlafdauer') | float * 24 / 100 | float %}
-            {{'%0.2f' % stunden | float }}
-          {% endif %}
-        icon_template: >
-          mdi:bell-sleep-outline
-        unit_of_measurement: 'Stunden'
 
 script:
   schlafen_gehen:
@@ -186,10 +164,8 @@ automation:
         entity_id: timer.schlafen_einschalten
       - service: media_player.play_media
         data_template:
-          entity_id:
-            - media_player.smarthome
-          media_content_id: >-
-            http://192.168.2.75:8123/local/countdown/countdown_5.mp3
+          entity_id: media_player.benachrichtigungen
+          media_content_id: http://192.168.2.75:8123/local/countdown/countdown_5.mp3
           media_content_type: music
 
   - alias: "Schlafen gehen - Countdown abbrechen"
@@ -203,7 +179,7 @@ automation:
         state: 'active'
     action:
       - service: media_player.media_pause
-        entity_id: media_player.smarthome
+        entity_id: media_player.benachrichtigungen
       - service: !secret tts_service
         data_template:
           echo: "wohnzimmer"

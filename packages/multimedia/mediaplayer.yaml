@@ -3,6 +3,11 @@ input_boolean:
     name: Uhr einschalten
     icon: mdi:alarm-multiple
 
+media_player:
+  - platform: mpd
+    host: !secret homeassistant_host
+    name: Benachrichtigungen
+
 automation:
   - alias: "Uhr - Glocke starten"
     trigger:
@@ -34,8 +39,7 @@ automation:
     action:
       - service: media_player.play_media
         data_template:
-          entity_id:
-            - media_player.smarthome
+          entity_id: media_player.benachrichtigungen
           media_content_id: >-
             {% if now().strftime("%M")|int == 30 %}
               http://192.168.2.75:8123/local/uhr/GrandFatherChime_half.mp3
@@ -59,12 +63,12 @@ automation:
           - condition: template
             value_template: '{{ True if trigger.entity_id == "input_boolean.uhr_einschalten" else False }}'               
       - condition: state
-        entity_id: media_player.smarthome
+        entity_id: media_player.benachrichtigungen
         state: 'playing'
     action:
       - service: media_player.media_pause
         entity_id:
-          - media_player.smarthome
+          - media_player.benachrichtigungen
       - service: input_boolean.turn_on
         entity_id: input_boolean.uhr_einschalten
 
@@ -91,10 +95,8 @@ automation:
     action:
       - service: media_player.play_media
         data_template:
-          entity_id:
-            - media_player.smarthome
-          media_content_id: >-
-            http://192.168.2.75:8123/local/bvb/torhymne.mp3
+          entity_id: media_player.benachrichtigungen
+          media_content_id: http://192.168.2.75:8123/local/bvb/torhymne.mp3
           media_content_type: music
 
   - alias: "BVB - Musik starten"
@@ -112,15 +114,13 @@ automation:
       - condition: not
         conditions:
           - condition: state
-            entity_id: media_player.smarthome
+            entity_id: media_player.benachrichtigungen
             state: 'playing'
     action:
       - service: media_player.play_media
         data_template:
-          entity_id:
-            - media_player.smarthome
-          media_content_id: >-
-            http://192.168.2.75:8123/local/bvb/heja_bvb.mp3
+          entity_id: media_player.benachrichtigungen
+          media_content_id: http://192.168.2.75:8123/local/bvb/heja_bvb.mp3
           media_content_type: music
 
   - alias: "BVB - Musik stoppen"
@@ -136,8 +136,8 @@ automation:
       - condition: template
         value_template: '{{ True if "(T.B.A.)" in state_attr("calendar.borussia_dortmund", "message") else False }}'
       - condition: state
-        entity_id: media_player.smarthome
+        entity_id: media_player.benachrichtigungen
         state: 'playing'
     action:
       - service: media_player.media_pause
-        entity_id: media_player.smarthome
+        entity_id: media_player.benachrichtigungen

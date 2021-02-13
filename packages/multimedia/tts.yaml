@@ -69,6 +69,6 @@ script:
             state: 'off'            
       - service: tts.google_translate_say
         data_template:
-          entity_id: media_player.smarthome
+          entity_id: media_player.benachrichtigungen
           message: >-
             {{ message }}            

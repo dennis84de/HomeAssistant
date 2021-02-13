@@ -225,10 +225,8 @@ automation:
         entity_id: timer.home_office_ende
       - service: media_player.play_media
         data_template:
-          entity_id:
-            - media_player.smarthome
-          media_content_id: >-
-            http://192.168.2.75:8123/local/countdown/countdown_5.mp3
+          entity_id: media_player.benachrichtigungen
+          media_content_id: http://192.168.2.75:8123/local/countdown/countdown_5.mp3
           media_content_type: music
 
   - alias: "Home Office - Countdown abbrechen"
@@ -242,7 +240,7 @@ automation:
         state: 'active'
     action:
       - service: media_player.media_pause
-        entity_id: media_player.smarthome
+        entity_id: media_player.benachrichtigungen
       - service: !secret tts_service
         data_template:
           echo: "flur"

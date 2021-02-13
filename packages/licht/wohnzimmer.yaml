@@ -78,7 +78,7 @@ automation:
           - condition: template
             value_template: '{{ True if "(T.B.A.)" in state_attr("calendar.borussia_dortmund", "message") else False }}'
       - condition: template
-        value_template: '{{ is_state("media_player.smarthome", "playing") == False }}'           
+        value_template: '{{ is_state("media_player.benachrichtigungen", "playing") == False }}'           
     action:
       - service: light.toggle
         entity_id: light.couch, light.strahler

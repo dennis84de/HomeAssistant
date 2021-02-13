@@ -81,7 +81,6 @@ cards:
       - entity: sensor.wichtige_anderungen
       - entity: sensor.hacs
       - entity: script.restart_homeassistant
-      - entity: script.upgrade_homeassistant
 
   - type: entities
     title: Benachrichtigungen
@@ -102,8 +101,8 @@ cards:
       - entity: switch.wiedergabe_aktiv      
       - entity: script.sync_radios
       - type: custom:mini-media-player
-        entity: media_player.smarthome
-        name: Smarthome
+        entity: media_player.benachrichtigungen
+        name: Benachrichtigungen
         hide:
           source: true
           progress: true
