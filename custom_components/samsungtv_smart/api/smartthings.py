@@ -33,7 +33,7 @@ COMMAND_PLAY = {"capability": "mediaPlayback", "command": "play"}
 COMMAND_STOP = {"capability": "mediaPlayback", "command": "stop"}
 COMMAND_FAST_FORWARD = {"capability": "mediaPlayback", "command": "fastForward"}
 COMMAND_REWIND = {"capability": "mediaPlayback", "command": "rewind"}
-COMMAND_AUDIO_MODE = {"capability": "custom.soundmode", "command": "setSoundMode"}
+COMMAND_SOUND_MODE = {"capability": "custom.soundmode", "command": "setSoundMode"}
 COMMAND_PICTURE_MODE = {"capability": "custom.picturemode", "command": "setPictureMode"}
 
 DIGITAL_TV = "digitalTv"
@@ -485,7 +485,7 @@ class SmartThingsTV:
             return
         if mode not in self._sound_mode_list:
             raise InvalidSmartThingsSoundMode()
-        data_cmd = _command(COMMAND_AUDIO_MODE, [mode])
+        data_cmd = _command(COMMAND_SOUND_MODE, [mode])
         await self._async_send_command(data_cmd)
         self._sound_mode = mode
 
