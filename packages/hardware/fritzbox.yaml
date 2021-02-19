@@ -72,34 +72,19 @@ sensor:
       heimnetz_offline:
         friendly_name: Geräte offline
         icon_template: >
-          {% set time = states('sensor.time') %}
-          {% set ns = namespace(found=false) -%}
+          {% set wifiOffline = expand('group.heimnetz')
+            | selectattr('state','eq','not_home') 
+            | map(attribute='name')
+            | list %}
 
-          {%- for entity_id in state_attr('group.heimnetz', 'entity_id') -%}
-            {% set parts = entity_id.split('.') -%}
-            
-            {% if states(entity_id) == 'not_home' %}
-              {% set ns.found = true -%}
-            {% endif %}
-          {%- endfor %}
-
-          {% if ns.found == True %}
-            mdi:access-point-network-off
-          {% else %}
-            mdi:access-point-network
-          {% endif %}
+          {{ 'mdi:access-point-network' if wifiOffline | length == 0 else 'mdi:access-point-network-off' }}
         value_template: >
-          {% set ns = namespace(found=0) -%}
+          {% set wifiOffline = expand('group.heimnetz')
+            | selectattr('state','eq','not_home') 
+            | map(attribute='name')
+            | list %}
 
-          {%- for entity_id in state_attr('group.heimnetz', 'entity_id') -%}
-            {% set parts = entity_id.split('.') -%}
-            
-            {% if states(entity_id) == 'not_home' %}
-              {% set ns.found = ns.found + 1 -%}
-            {% endif %}
-          {%- endfor %}
-
-          {{ ns.found | int }}            
+          {{ wifiOffline | length }}            
     
 automation:
   - alias: "Gäste-Wlan eingeschaltet - TTS"

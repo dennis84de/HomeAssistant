@@ -47,31 +47,24 @@ sensor:
       batteriestand_niedrig:
         friendly_name: Batteriestand niedrig
         icon_template: >
-          {% set time = states('sensor.time') %}  
+          {% set entities = expand('group.batteriestand') %}
           {% set min_battery_level = states('input_number.batteriestand_warnlevel') | int -%}
           {% set ns = namespace(found=false) -%}
-          {% for entity_id in state_attr('group.batteriestand', 'entity_id') -%}
-            {% set parts = entity_id.split('.') -%}
-            {% if (states(entity_id) | replace("%","") | int) <= min_battery_level -%}
-              {% set ns.found = true -%}
-            {% endif -%}
-          {% endfor -%}
-
-          {% if ns.found == True %}
-            mdi:battery-charging-10
-          {% else %}
-            mdi:battery
-          {% endif %}
-        value_template: >
-          {% set min_battery_level = states('input_number.batteriestand_warnlevel') | int -%}
-          {% set ns = namespace(found=0) -%}
           
-          {% for entity_id in state_attr('group.batteriestand', 'entity_id') -%}
-            {% set parts = entity_id.split('.') -%}
-            {% if (states(entity_id) | replace("%","") | int) <= min_battery_level -%}
-              {% set ns.found = ns.found + 1 -%}
-            {% endif -%}
-          {% endfor -%}
+          {% for x in entities if x.state|int < min_battery_level %}
+            {% set ns.found = true -%}
+          {% endfor %}  
+        
+          {{ "mdi:battery-charging-10" if ns.found == True else "mdi:battery" }}
+
+        value_template: >
+          {% set entities = expand('group.batteriestand') %}
+          {% set min_battery_level = states('input_number.batteriestand_warnlevel') | int -%}
+          {% set ns = namespace(found=false) -%}
+          
+          {% for x in entities if x.state|int < min_battery_level %}
+            {% set ns.found = ns.found + 1 -%}
+          {% endfor %}  
           
           {{ ns.found | int }}
           
@@ -80,7 +73,7 @@ homeassistant:
     sensor.tuersensor_battery_level:
       friendly_name: "Türsensor"
     sensor.bett_battery_level:
-      friendly_name: "Bett"
+      friendly_name: "Bettsensor"
     sensor.cube_battery_level:
       friendly_name: "Cube"
     sensor.schalter_wohnzimmer_battery_level:
@@ -120,7 +113,7 @@ homeassistant:
     sensor.fenster_arbeitszimmer_battery_level:
       friendly_name: "Fenster Arbeitszimmer"
     sensor.fenster_sportzimmer_battery_level:
-      friendly_name: "Fenster Sprtzimmer"
+      friendly_name: "Fenster Sportszimmer"
     sensor.bewegungsmelder_badezimmer_battery_level:
       friendly_name: "Bewegungsmelder Badezimmer"
     sensor.bewegungsmelder_flur_vorne_battery_level:

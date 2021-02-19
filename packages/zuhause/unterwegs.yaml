@@ -224,22 +224,16 @@ script:
             {% else %}
               {% set vacuumMessage = '' %}
             {% endif %}
-            
-            {% set windowEntities = state_attr('group.fenster', 'entity_id') %}   
 
-            {% set openWindows = states.binary_sensor 
-              | selectattr('entity_id', 'in', windowEntities)
+            {% set openWindows = expand('group.fenster')
               | selectattr('state','eq','on') 
               | map(attribute='name')
               | list %}
-            
-            {% if openWindows | length == 0 %}
-              {% set windowMessage = '' %}
-            {% elif openWindows | length == 1 %}
-              {% set windowMessage = 'Das folgende Fenster ist noch geöffnet: ' + openWindows[0] + '.' %}
-            {% else %}
-              {% set windowMessage = 'Die folgenden Fenster sind noch geöffnet: ' + openWindows | join(', ')  + '.' %}
-            {% endif %}
+              
+            {% set qty = openWindows | length %}  
+            {% set p1 = 'Das folgende' if qty == 1 else 'Die folgenden' %}
+            {% set p2 = 'ist' if qty == 1 else 'sind' %}
+            {% set windowMessage = '' if qty == 0 else '{} Fenster {} geöffnet: {}.'.format(p1, p2, openWindows | join(', ')) %}
             
             {{ vacuumMessage }} {{ windowMessage }} Alle Geräte werden ausgeschaltet. Auf Wiedersehen.
       - service: script.alles_ausschalten   
@@ -247,6 +241,8 @@ script:
   alles_ausschalten:
     alias: "Alles ausschalten"
     sequence:
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.zu_hause_aktiviert
       - service: mqtt.publish
         data:
            topic: 'location/handy'

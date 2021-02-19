@@ -13,11 +13,11 @@ heimnetz:
     - device_tracker.tplinkschlafzimmerfernseher
     - device_tracker.tplinkwaschmaschine
     - device_tracker.tplinktrockner        
-    - device_tracker.echoflur
-    - device_tracker.echokueche
-    - device_tracker.echobadezimmer
-    - device_tracker.echowohnzimmer
-    - device_tracker.echoschlafzimmer
+#    - device_tracker.echoflur
+#    - device_tracker.echokueche
+#    - device_tracker.echobadezimmer
+#    - device_tracker.echowohnzimmer
+#    - device_tracker.echoschlafzimmer
     - device_tracker.magichomeflurvorne
     - device_tracker.magichomeflurhinten
     - device_tracker.magichomekueche
