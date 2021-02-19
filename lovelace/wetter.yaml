@@ -131,9 +131,9 @@ cards:
     title: Pollen
     show_header_toggle: false
     entities:
-      - entity: sensor.pollen_graeser_today
-      - entity: sensor.pollen_birke_today
-      - entity: sensor.pollen_roggen_today
+      - entity: sensor.dwd_pollen_graeser
+      - entity: sensor.dwd_pollen_birke
+      - entity: sensor.dwd_pollen_roggen
 
   - type: picture-glance
     title: Wetter
