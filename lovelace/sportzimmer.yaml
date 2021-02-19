@@ -16,6 +16,7 @@ cards:
     show_header_toggle: false
     entities:
       - entity: binary_sensor.fenster_sportzimmer
+        name: Fenster
 
   - type: entities
     title: Sensoren
