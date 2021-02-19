@@ -1,9 +1,13 @@
 input_boolean:
   zu_hause_begruessung:
     name: "Begrüßung"
+    
   besuch:
     name: "Besuch"
     icon: mdi:account-multiple   
+    
+  zu_hause_aktiviert:
+    name: "Zu Hause aktiviert"
 
 shell_command:
   send_position: "curl -X POST '{{ url }}?lat={{ state_attr('zone.home', 'latitude') }}&lon={{ state_attr('zone.home', 'longitude') }}&timestamp={{ as_timestamp(now()) | int }}'"
@@ -37,6 +41,9 @@ automation:
         entity_id: sensor.schalter_flur
         to: '2'            
     condition:
+      - condition: state
+        entity_id: input_boolean.zu_hause_aktiviert
+        state: 'off'         
       - condition: template
         value_template: >-
           {{ is_state('binary_sensor.zu_hause', 'off') if trigger.entity_id == "sensor.schalter_flur" else True }}        
@@ -47,12 +54,14 @@ automation:
           {% set diff = ((now - last) / 60) | int %}
 
           {{ diff >= 10 }}
-    action:       
+    action:     
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.zu_hause_aktiviert      
       - service: script.zu_hause_standort
       - service: alarm_control_panel.alarm_disarm
         entity_id: alarm_control_panel.alarm
       - service: switch.turn_off
-        entity_id: switch.kamera_wohnzimmer      
+        entity_id: switch.kamera_wohnzimmer          
       - choose:
           - conditions:
               - condition: state
@@ -100,8 +109,6 @@ automation:
         entity_id: binary_sensor.zu_hause
         to: 'on'
     condition:    
-      - condition: time        
-        before: '23:00'   
       - condition: numeric_state
         entity_id: sensor.laufzeit_minuten
         above: 5
@@ -132,8 +139,17 @@ automation:
         entity_id: input_boolean.zu_hause_begruessung
         state: 'on'       
     action:      
-      - service: script.zu_hause_begruessung
-          
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.zu_hause_begruessung
+      - choose:
+          - conditions:
+              - condition: time        
+                after: '22:00'   
+            sequence:
+              - service: script.zu_hause_begruessung_abends
+        default:
+          - service: script.zu_hause_begruessung
+
   - alias: "Zu Hause - Besuch Schalter"
     trigger:
       - platform: state
@@ -197,7 +213,7 @@ script:
   zu_hause_begruessung:
     alias: "Zu Hause - Begrüßung"
     sequence:
-      - delay: '00:00:30'
+      - delay: '00:00:20'
       - service: !secret tts_service
         data_template:
           message: >-
@@ -207,62 +223,54 @@ script:
               "Der Staubsaugerbehälter muss geleert werden."
             {% endif %}
 
-            {% set count_heimnetz_entities = 0 -%}
+            {% set count_heimnetz_entities = states('sensor.heimnetz_offline') | int -%}
             {% set count_zigate_entities = states('sensor.zigate_offline') | int -%}
             {% set count_complete = count_heimnetz_entities + count_zigate_entities | int -%}
             
             {% if count_complete > 0 %}
-              {% if count_complete > 1 %}
-                {{ "Die folgenden Geräte sind offline. " }}
-              {% else %}
-                {{ "Das folgende Gerät ist offline. " }}
-              {% endif %}            
-            
-              {% if count_heimnetz_entities > 0 %}
-                {%- for entity_id in state_attr('group.heimnetz', 'entity_id') -%}
-                  {% set parts = entity_id.split('.') -%}
+              {{ "Die folgenden Geräte sind offline." if count_complete > 1 else "Das folgende Gerät ist offline."}}
 
-                  {% if states(entity_id) == 'not_home' %}
-                    {{ states[parts[0]][parts[1]].name }},
-                  {% endif %}
-                {%- endfor %}
-              {% endif %}
+              {% set heimnetzOffline = expand('group.heimnetz')
+                | selectattr('state','eq','not_home') 
+                | map(attribute='name')
+                | list %}              
+
+              {{ heimnetzOffline | join(', ') }}
                             
+              {% set zigateEntities = expand('group.zigate') %}
               {% set now = as_timestamp(now()) | int %}
               {% set puffer = states('input_number.zigate_offline_puffer') | int * 60 | int -%}
 
-              {% if count_zigate_entities > 0 %}
-                {%- for entity_id in state_attr('group.zigate', 'entity_id') -%}
-                  {%- set lastChange = as_timestamp(states(entity_id)) | int -%}
-                  {%- set difference = (now - lastChange ) / 60 | round() -%}
-                  {%- set parts = entity_id.split('.') -%}
-                  {%- if difference > puffer -%}
-                    {{ states[parts[0]][parts[1]].name }},
-                  {%- endif -%}
-                {%- endfor -%}            
-              {% endif %}                 
+              {% for x in zigateEntities if ((now - (as_timestamp(x.state) | int) ) / 60 | round()) > puffer %}
+                {%- if not loop.first %}, {% endif -%}
+                {{- x.name -}}
+              {% endfor %}
             {% endif %}
-           
-            {% set min_battery_level = states('input_number.batteriestand_warnlevel') | int -%}
+
             {% set count_battery_entities = states('sensor.batteriestand_niedrig') | int -%}
+            
+            {% if count_battery_entities > 0 %}
+              {{ "Der Batteriestand der folgenden Geräte ist niedrig." if count_battery_entities > 1 else "Der Batteriestand des folgenden Gerätes ist niedrig."}}
+              
+              {% set entities = expand('group.batteriestand') %}
+              {% set min_battery_level = states('input_number.batteriestand_warnlevel') | int -%}
 
-            {%if count_battery_entities > 0 %}
-              {% if count_battery_entities > 1 %}
-                {{ "Der Batteriestand der folgenden Geräte ist niedrig. " }}
-              {% else %}
-                {{ "Der Batteriestand des folgenden Gerätes ist niedrig. " }}
-              {% endif %}
-
-              {%- for entity_id in state_attr('group.batteriestand', 'entity_id') -%}
-                {%- set parts = entity_id.split('.') -%}
-                {%- if (states(entity_id) | replace("%","") | int) <= min_battery_level -%}
-                  {{ states[parts[0]][parts[1]].name }},
-                {%- endif -%}
-              {%- endfor -%}              
+              {% for x in entities if x.state|int < min_battery_level %}
+                {%- if not loop.first %}, {% endif -%}
+                {{- x.name -}}
+              {% endfor %}           
             {% endif %}
       - service: input_boolean.turn_off
         entity_id: input_boolean.zu_hause_begruessung
         
+  zu_hause_begruessung_abends:
+      alias: "Zu Hause - Begrüßung abends"
+      sequence:
+        - delay: '00:00:20'
+        - service: !secret tts_service
+          data_template:
+            message: "Hallo Dennis. Willkommen zu Hause."
+
 homeassistant:
   customize:
     sensor.aufenthaltsort_handy:

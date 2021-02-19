@@ -9,6 +9,9 @@ input_boolean:
   schlafen_aktiv:
     name: Schlafen    
 
+  aufstehen_aktiviert:
+    name: Aufstehen aktiviert
+    
   schlafen_fernseher_einschalten:
     name: Fernseher einschalten    
     icon: mdi:television
@@ -99,6 +102,8 @@ script:
     sequence:
       - service: input_boolean.turn_on
         entity_id: input_boolean.schlafen_aktiv
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.aufstehen_aktiviert        
       - service: input_datetime.set_datetime
         entity_id: input_datetime.schlafen_uhrzeit
         data:
@@ -458,10 +463,13 @@ automation:
       - platform: state
         entity_id: binary_sensor.schlafen_aktiv
         to: 'off'
+    condition:
+      - condition: state
+        entity_id: input_boolean.aufstehen_aktiviert
+        state: 'off'        
     action:      
-      - service: switch.turn_on
-        entity_id: switch.computer
-      - service: script.wohnung_radios_einschalten
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.aufstehen_aktiviert
       - service: !secret tts_service
         data_template:                  
           message: >-
@@ -484,7 +492,10 @@ automation:
             {% set schlafenSatz = values[:-1] | join(', ') ~ ' ' ~ word_for_and ~ ' ' ~ values[-1] if values | length > 1 else values | first %}
             {% set uhrzeitSatz = as_timestamp(now()) | timestamp_custom('%H:%M') %}         
              
-            {{ 'Guten Morgen. Es ist ' ~ uhrzeitSatz ~ ' Uhr. Du hast ' ~ schlafenSatz ~ ' geschlafen.' }}             
+            {{ 'Guten Morgen. Es ist ' ~ uhrzeitSatz ~ ' Uhr. Du hast ' ~ schlafenSatz ~ ' geschlafen.' }}      
+      - service: switch.turn_on
+        entity_id: switch.computer
+      - service: script.wohnung_radios_einschalten
       - choose:
           - conditions:
               - condition: state
