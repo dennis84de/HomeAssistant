@@ -21,9 +21,9 @@ binary_sensor:
           {% set homeOfficeAktiv = is_state('binary_sensor.home_office', 'on') %}
           {% set schlafenAktiv = is_state('binary_sensor.schlafen_aktiv', 'on') %}
         
-          {{ False if homeOfficeAktiv or homeOfficeAktiv else True }}
+          {{ False if homeOfficeAktiv or schlafenAktiv else True }}
           
-entity_controller:           
+entity_controller:
   bewegung_wohnzimmer:
     friendly_name: "Bewegung Wohnzimmer"
     sensor: binary_sensor.bewegungsmelder_wohnzimmer
