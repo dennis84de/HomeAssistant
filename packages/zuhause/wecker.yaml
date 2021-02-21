@@ -93,7 +93,10 @@ automation:
           above: 5
         - condition: state
           entity_id: input_boolean.alarm_aktiv
-          state: 'off'          
+          state: 'off'        
+        - condition: state
+          entity_id: binary_sensor.schlafen_aktiv
+          state: 'on'
     action:
       - service: input_boolean.turn_on
         entity_id: input_boolean.alarm_aktiv  
