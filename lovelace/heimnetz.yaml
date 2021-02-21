@@ -21,7 +21,6 @@ cards:
     entities:
       - entity: device_tracker.netzwerkdj
       - entity: device_tracker.fritzrepeater
-      - entity: device_tracker.pihole
 
   - type: entities
     title: Multimedia
