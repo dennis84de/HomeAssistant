@@ -29,6 +29,12 @@ sensor:
       - 'date'
       - 'date_time'
 
+  - platform: bitcoin
+    currency: 'EUR'
+    display_options:
+      - exchangerate
+      - trade_volume_btc
+
   - platform: template
     sensors:
       tankstelle_real:
