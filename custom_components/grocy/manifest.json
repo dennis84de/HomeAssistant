@@ -11,9 +11,10 @@
     "@isabellaalstrom"
   ],
   "requirements": [
-    "sampleclient",
-    "pygrocy==0.24.1",
+    "pygrocy==0.27.0",
     "iso8601==0.1.12",
-    "integrationhelper"
-  ]
+    "integrationhelper==0.2.2"
+  ],
+  "version": "v3.0.1",
+  "version": "1.0"
 }

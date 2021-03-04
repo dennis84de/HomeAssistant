@@ -11,5 +11,6 @@
   ],
   "codeowners": [
     "@mrk-its"
-  ]
+  ],
+  "version": "1.0"
 }
