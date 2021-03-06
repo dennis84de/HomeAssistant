@@ -166,8 +166,6 @@ homeassistant:
     device_tracker.fritzrepeater:
       icon: mdi:wifi
       friendly_name: Repeater
-    device_tracker.pihole:
-      icon: mdi:pi-hole
 
     device_tracker.computer:
       icon: mdi:desktop-classic

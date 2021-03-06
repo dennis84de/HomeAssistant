@@ -1,7 +1,6 @@
 heimnetz:
   name: Heimnetz
-  entities:
-    - device_tracker.pihole
+  entities:    
     - device_tracker.soundbar   
     - device_tracker.xiaomivacuum
     - device_tracker.tplinkwohnzimmermonitor
