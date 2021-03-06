@@ -1,8 +1,3 @@
-vacuum:
-  - platform: xiaomi_miio
-    host: !secret xiaomi_vacuum_host
-    token: !secret xiaomi_vacuum_token
-
 input_boolean:
   staubsauger_automatische_reinigung:
     name: Automatische Reinigung
@@ -56,7 +51,7 @@ script:
     sequence:
       - service: xiaomi_miio.vacuum_clean_zone
         data:
-          entity_id: vacuum.xiaomi_vacuum_cleaner
+          entity_id: vacuum.roborock_vacuum
           zone:
             - [20357,27051,25157,31151]
           repeats: 1
@@ -65,7 +60,7 @@ script:
     sequence:
       - service: xiaomi_miio.vacuum_clean_zone
         data:
-          entity_id: vacuum.xiaomi_vacuum_cleaner
+          entity_id: vacuum.roborock_vacuum
           zone:
             - [16151,27033,20051,31083]
           repeats: 1
@@ -74,7 +69,7 @@ script:
     sequence:
       - service: xiaomi_miio.vacuum_clean_zone
         data:
-          entity_id: vacuum.xiaomi_vacuum_cleaner
+          entity_id: vacuum.roborock_vacuum
           zone:
             - [22659,23908,25809,27008]
           repeats: 1
@@ -83,7 +78,7 @@ script:
     sequence:
       - service: xiaomi_miio.vacuum_clean_zone
         data:
-          entity_id: vacuum.xiaomi_vacuum_cleaner
+          entity_id: vacuum.roborock_vacuum
           zone:
             - [17951,25375,22651,26925]
             - [21342,22607,22642,25357]
@@ -93,7 +88,7 @@ script:
     sequence:
       - service: xiaomi_miio.vacuum_clean_zone
         data:
-          entity_id: vacuum.xiaomi_vacuum_cleaner
+          entity_id: vacuum.roborock_vacuum
           zone:
             - [16139,24393,18089,26993]
           repeats: 1          
@@ -127,10 +122,10 @@ sensor:
         unit_of_measurement: 'Stunden'
         icon_template: mdi:air-filter
         value_template: >-
-          {% if state_attr("vacuum.xiaomi_vacuum_cleaner", "filter_left") == None %}
+          {% if state_attr("vacuum.roborock_vacuum", "filter_left") == None %}
             -
           {% else %}
-            {{ state_attr("vacuum.xiaomi_vacuum_cleaner", "filter_left") }}
+            {{ state_attr("vacuum.roborock_vacuum", "filter_left") }}
           {% endif %}
 
       reinigung_buerste:
@@ -138,10 +133,10 @@ sensor:
         unit_of_measurement: 'Stunden'
         icon_template: mdi:broom
         value_template: >-
-          {% if state_attr("vacuum.xiaomi_vacuum_cleaner", "main_brush_left") == None %}
+          {% if state_attr("vacuum.roborock_vacuum", "main_brush_left") == None %}
             -
           {% else %}
-            {{ state_attr("vacuum.xiaomi_vacuum_cleaner", "main_brush_left") }}
+            {{ state_attr("vacuum.roborock_vacuum", "main_brush_left") }}
           {% endif %}
 
       reinigung_seitenbuerste:
@@ -149,10 +144,10 @@ sensor:
         unit_of_measurement: 'Stunden'
         icon_template: mdi:broom
         value_template: >-
-          {% if state_attr("vacuum.xiaomi_vacuum_cleaner", "side_brush_left") == None %}
+          {% if state_attr("vacuum.roborock_vacuum", "side_brush_left") == None %}
             -
           {% else %}
-            {{ state_attr("vacuum.xiaomi_vacuum_cleaner", "side_brush_left") }}
+            {{ state_attr("vacuum.roborock_vacuum", "side_brush_left") }}
           {% endif %}
 
       reinigung_sensor:
@@ -160,20 +155,20 @@ sensor:
         unit_of_measurement: 'Stunden'
         icon_template: mdi:trash-can
         value_template: >-
-          {% if state_attr("vacuum.xiaomi_vacuum_cleaner", "sensor_dirty_left") == None %}
+          {% if state_attr("vacuum.roborock_vacuum", "sensor_dirty_left") == None %}
             -
           {% else %}
-            {{ state_attr("vacuum.xiaomi_vacuum_cleaner", "sensor_dirty_left") }}
+            {{ state_attr("vacuum.roborock_vacuum", "sensor_dirty_left") }}
           {% endif %}                  
           
       xiaomi_vacuum_batterie:
         friendly_name: Batterie
         device_class: battery
         value_template: >
-          {% if is_state('vacuum.xiaomi_vacuum_cleaner', 'unknown') %}
+          {% if is_state('vacuum.roborock_vacuum', 'unknown') %}
             0
           {% else %}
-            {{ state_attr("vacuum.xiaomi_vacuum_cleaner","battery_level") | float }}
+            {{ state_attr("vacuum.roborock_vacuum","battery_level") | float }}
           {% endif %}
         unit_of_measurement: '%'
 
@@ -192,7 +187,7 @@ automation:
         after: '06:00'
         before: '22:00'
       - condition: state
-        entity_id: vacuum.xiaomi_vacuum_cleaner
+        entity_id: vacuum.roborock_vacuum
         state: 'docked'
       - condition: state
         entity_id: binary_sensor.zu_hause
@@ -208,7 +203,7 @@ automation:
         state: 'off'
     action:
       - service: vacuum.start
-        entity_id: vacuum.xiaomi_vacuum_cleaner
+        entity_id: vacuum.roborock_vacuum
       - service: input_boolean.turn_on
         entity_id: input_boolean.staubsauger_automatische_reinigung_gestartet
       - service: notify.telegram
@@ -219,7 +214,7 @@ automation:
   - alias: "Staubsaugen - Beendet"
     trigger:
       - platform: state
-        entity_id: vacuum.xiaomi_vacuum_cleaner
+        entity_id: vacuum.roborock_vacuum
         from: 'returning'
         to: 'docked'    
     condition:
@@ -242,7 +237,7 @@ automation:
   - alias: "Staubsaugen - Nachricht Telegram"
     trigger:
       - platform: state
-        entity_id: vacuum.xiaomi_vacuum_cleaner
+        entity_id: vacuum.roborock_vacuum
         from: 'returning'
         to: 'docked'
     condition:        
@@ -258,7 +253,7 @@ automation:
   - alias: "Staubsaugen - Fehler"
     trigger:
       - platform: state
-        entity_id: vacuum.xiaomi_vacuum_cleaner
+        entity_id: vacuum.roborock_vacuum
         to: 'error'
     condition:
       - condition: state
@@ -283,7 +278,7 @@ automation:
           notification_id: staubsauger_leeren
       - service: vacuum.send_command
         data:
-          entity_id: vacuum.xiaomi_vacuum_cleaner
+          entity_id: vacuum.roborock_vacuum
           command: app_goto_target
           params: [33463,24839]
         
@@ -301,7 +296,7 @@ automation:
       - service: counter.reset
         entity_id: counter.behaelter_leeren
       - service: vacuum.return_to_base
-        entity_id: vacuum.xiaomi_vacuum_cleaner
+        entity_id: vacuum.roborock_vacuum
         
   - alias: "Staubsaugen - Raum reinigen"    
     trigger:
@@ -310,7 +305,7 @@ automation:
         from: 'Raum auswählen'
     condition:
       - condition: state
-        entity_id: vacuum.xiaomi_vacuum_cleaner
+        entity_id: vacuum.roborock_vacuum
         state: 'docked'      
     action:
       - service: script.turn_on
@@ -340,7 +335,7 @@ automation:
         from: 'Raum auswählen'
     condition:
       - condition: state
-        entity_id: vacuum.xiaomi_vacuum_cleaner
+        entity_id: vacuum.roborock_vacuum
         state: 'cleaning'      
     action:
       - service: !secret tts_service
@@ -351,9 +346,4 @@ automation:
       - service: input_select.select_option
         data:
           entity_id: input_select.staubsauger_raumauswahl
-          option: "Raum auswählen"    
-          
-homeassistant:
-  customize:
-    vacuum.xiaomi_vacuum_cleaner:
-      friendly_name: Xiaomi Robot
+          option: "Raum auswählen"         

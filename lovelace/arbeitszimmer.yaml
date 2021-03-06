@@ -75,7 +75,7 @@ cards:
     title: Staubsauger
     show_header_toggle: false
     entities:
-      - entity: vacuum.xiaomi_vacuum_cleaner
+      - entity: vacuum.roborock_vacuum
       - entity: input_boolean.staubsauger_automatische_reinigung
       - entity: sensor.xiaomi_vacuum_batterie
         name: Batteriestand

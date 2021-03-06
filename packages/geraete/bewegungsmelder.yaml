@@ -31,7 +31,7 @@ binary_sensor:
       bewegungsmelder_inaktiv_staubsauger:
         friendly_name: "Bewegungmelder inaktiv - Staubsauger"
         device_class: occupancy
-        value_template: "{{ True if is_state('vacuum.xiaomi_vacuum_cleaner', 'cleaning') or is_state('vacuum.xiaomi_vacuum_cleaner', 'returning') else False }}"
+        value_template: "{{ True if is_state('vacuum.roborock_vacuum', 'cleaning') or is_state('vacuum.roborock_vacuum', 'returning') else False }}"
 
 automation:
   - alias: 'Letzte Bewegung'
