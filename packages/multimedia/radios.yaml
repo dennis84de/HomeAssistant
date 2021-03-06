@@ -249,6 +249,9 @@ automation:
         entity_id: binary_sensor.schlafen_aktiv
         state: 'on'
       - condition: state
+        entity_id: binary_sensor.alarm_aktiv
+        state: 'off'        
+      - condition: state
         entity_id: switch.badezimmer_radio
         state: 'on'        
     action:
