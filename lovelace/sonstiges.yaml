@@ -140,6 +140,15 @@ cards:
     entities:
       - entity: calendar.serien      
         
+  - type: entities
+    title: Bitcoin
+    show_header_toggle: false
+    entities:
+      - entity: sensor.exchange_rate_1_btc
+        name: Kurs (1 BTC)
+      - entity: sensor.trade_volume
+        name: Handelsvolumen
+        
   - type: markdown
     title: Anrufliste
     content: >-
