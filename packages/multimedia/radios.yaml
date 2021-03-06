@@ -136,7 +136,7 @@ automation:
         before: '20:00'
       - condition: numeric_state
         entity_id: sensor.balkon_temperatur
-        above: 15
+        above: 10
       - condition: numeric_state
         entity_id: sensor.laufzeit_minuten
         above: 5
