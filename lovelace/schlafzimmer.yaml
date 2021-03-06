@@ -80,11 +80,11 @@ cards:
         name: Fernseher
       - entity: switch.schlafzimmer_radio
 
-  - type: entities
+  - type: glance
     title: Heizung
     show_header_toggle: false
     entities:
-      - entity: binary_sensor.fenster_schlafzimmer
+      - entity: binary_sensor.fenster_arbeitszimmer   
         name: Fenster
 
   - type: glance
