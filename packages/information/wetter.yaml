@@ -23,6 +23,10 @@ binary_sensor:
     days: 5
     weather: weather.dwd_weather_dortmund
 
+  - platform: snowtire
+    name: Reifenwechsel    
+    weather: weather.dwd_weather_dortmund
+    
   - platform: iss
 
   - platform: template
