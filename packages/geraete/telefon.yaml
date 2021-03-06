@@ -162,7 +162,10 @@ automation:
         state: 'off'      
       - condition: state
         entity_id: binary_sensor.besuch
-        state: 'off'            
+        state: 'off'       
+      - condition: state
+        entity_id: binary_sensor.youtube_aktiv
+        state: 'off'        
       - condition: or
         conditions:
           - condition: state
