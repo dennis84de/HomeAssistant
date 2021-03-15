@@ -47,8 +47,9 @@ binary_sensor:
           {% endif %}
           
       sommerzeit:
-        friendly_name: "Sommerzeit"       
-        value_template: "{{ now().timetuple().tm_isdst > 0 }}"
+        friendly_name: "Sommerzeit"     
+        icon_template: "mdi:weather-sunny"          
+        value_template: "{{ now().timetuple().tm_isdst > 0 }}"  
         
 sensor:
   - platform: moon
@@ -404,7 +405,47 @@ sensor:
           {% elif 248 < (wind_dir|float) <= 293 %} /local/wind/270.png
           {% elif 293 < (wind_dir|float) <= 338 %} /local/wind/315.png
           {%- endif %}
-
+        
+      zeitumstellung:
+        friendly_name: "Zeitumstellung"       
+        device_class: timestamp
+        icon_template: "{{ 'mdi:rotate-left' if now().month > 3 else 'mdi:rotate-right' }}"       
+        value_template: >
+          {%- set ns = namespace(previous = 2, spring=none, fall=none) %}
+          {%- set today = strptime(states('sensor.date'), '%Y-%m-%d').astimezone().replace(hour=ns.previous) %}
+          {%- for i in range(365) %}
+            {%- set day = (today + timedelta(days=i)).astimezone() %}
+            {%- if ns.previous - day.hour == -1 %}
+              {%- set ns.spring = today + timedelta(days=i) | timestamp_local %}
+            {%- elif ns.previous - day.hour == 1 %}
+              {%- set ns.fall = today + timedelta(days=i) | timestamp_local %}
+            {%- endif %}
+            {%- set ns.previous = day.hour %}
+          {%- endfor %}
+          
+          {{ [ns.spring, ns.fall] | min }}
+        attribute_templates:
+          is_dst_active: >
+            {{ now().timetuple().tm_isdst > 0 }}
+          dst_change_tomorrow: >
+            {% set dt = now() + timedelta(days=1) %}
+            {{ now().astimezone().tzinfo != dt.astimezone().tzinfo }}          
+          next: >
+            {%- set ns = namespace(previous = 2, spring=none, fall=none) %}
+            {%- set today = strptime(states('sensor.date'), '%Y-%m-%d').astimezone().replace(hour=ns.previous) %}
+            {%- for i in range(365) %}
+              {%- set day = (today + timedelta(days=i)).astimezone() %}
+              {%- if ns.previous - day.hour == -1 %}
+                {%- set ns.spring = today + timedelta(days=i) %}
+              {%- elif ns.previous - day.hour == 1 %}
+                {%- set ns.fall = today + timedelta(days=i) %}
+              {%- endif %}
+              {%- set ns.previous = day.hour %}
+            {%- endfor %}
+            {%- set next = [ns.spring, ns.fall] | min %}
+            {%- set phrase = '1 Stunde vorstellen' if next == ns.spring else '1 Stunde zurückstellen' %}
+            {"Frühling": "{{ns.spring}}", "Herbst": "{{ns.fall}}", "Nächste Umstellung": "{{next}}", "Tage":{{(next-today).days}}, "Uhr": "{{phrase}}"}
+          
   - platform: dwd_weather_warnings
     region_name: Stadt Dortmund
     name: Wetterwarnungen
@@ -469,7 +510,7 @@ automation:
                 state: 'off'
             sequence:             
               - service: notify.telegram
-                data_template:
+                data:
                   title: "Wetterwarnung"
                   message: >-
                     {% set current_count = state_attr("sensor.wetterwarnungen_current_warning_level", "warning_count") %}
@@ -478,24 +519,25 @@ automation:
                     {% if current_count == 0 and advance_count == 0 %}
                       Aktuell liegt keine Wetterwarnung vor.
                     {% else %}
-                      Achtung!
-                      {% for i in range(current_count) %}
+                      {%- for i in range(current_count) -%}
                         {% set headline = state_attr("sensor.wetterwarnungen_current_warning_level", "warning_" ~ loop.index ~ "_headline") %}
                         {% set description = state_attr("sensor.wetterwarnungen_current_warning_level", "warning_" ~ loop.index ~ "_description") %}
 
-                        {% if headline != None %} {{ headline }}. {% endif %} {% if description != None %} {{ description }} {% endif %}
-                      {% endfor %}
+                        {%- if headline != None -%} {{ headline }}. {% endif -%} {%- if description != None -%} {{ description }} {% endif -%}
+                      {%- endfor -%}
 
-                      {% for i in range(current_count) %}
+                      {%- for i in range(advance_count) -%}
                         {% set headline = state_attr("sensor.wetterwarnungen_advance_warning_level", "warning_" ~ loop.index ~ "_headline") %}
                         {% set description = state_attr("sensor.wetterwarnungen_advance_warning_level", "warning_" ~ loop.index ~ "_description") %}
 
-                        {% if headline != None %} {{ headline }}. {% endif %} {% if description != None %} {{ description }} {% endif %}
-                      {% endfor %}              
-                    {% endif %}        
-                  data:
-                    photo:
-                      - url: 'http://192.168.2.75:8123/api/camera_proxy/camera.dortmund?token={{ state_attr("camera.dortmund", "access_token") }}'             
+                        {%- if headline != None -%} {{ headline }}. {% endif -%} {%- if description != None %} {{ description }} {%- endif %}
+                      {%- endfor -%}              
+                    {% endif %}
+              - service: telegram_bot.send_photo
+                data:
+                  caption: 'Kamera'
+                  url: 'http://192.168.2.75:8123/api/camera_proxy/camera.dortmund?token={{ state_attr("camera.dortmund", "access_token") }}'
+
         default:      
           - service: !secret tts_service
             data_template:
@@ -509,14 +551,14 @@ automation:
                   Achtung!
                   {% for i in range(current_count) %}
                     {% set headline = state_attr("sensor.wetterwarnungen_current_warning_level", "warning_" ~ loop.index ~ "_headline") %}
-                    {% set description = state_attr("sensor.wetterwarnungen_current_warning_level", "warning_" ~ loop.index ~ "_description") %}
+                    {% set description = state_attr("sensor.wetterwarnungen_current_warning_level", "warning_" ~ loop.index ~ "_description") | regex_replace(find=' \([^)]*\)', replace='', ignorecase=False) %}
 
                     {% if headline != None %} {{ headline }}. {% endif %} {% if description != None %} {{ description }} {% endif %}
                   {% endfor %}
 
-                  {% for i in range(current_count) %}
+                  {% for i in range(advance_count) %}
                     {% set headline = state_attr("sensor.wetterwarnungen_advance_warning_level", "warning_" ~ loop.index ~ "_headline") %}
-                    {% set description = state_attr("sensor.wetterwarnungen_advance_warning_level", "warning_" ~ loop.index ~ "_description") %}
+                    {% set description = state_attr("sensor.wetterwarnungen_advance_warning_level", "warning_" ~ loop.index ~ "_description") | regex_replace(find=' \([^)]*\)', replace='', ignorecase=False) %}
 
                     {% if headline != None %} {{ headline }}. {% endif %} {% if description != None %} {{ description }} {% endif %}
                   {% endfor %}              
