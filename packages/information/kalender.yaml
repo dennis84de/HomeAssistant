@@ -137,7 +137,7 @@ sensor:
             -
           {% else %}           
             {% set rennenTs = as_timestamp(state_attr('calendar.formel1_rennen', 'start_time')) %}
-            {{ rennenTs | timestamp_custom("%d.%m.%Y", True) | string }}, {{ rennenTs | timestamp_custom("%H:%M Uhr", True) | string }}       
+            {{ rennenTs | timestamp_custom("%d.%m.%Y", True) | string }}, {{ rennenTs | timestamp_custom("%H:%M Uhr") | string }}       
           {% endif %}         
         icon_template: mdi:calendar-alert
 
@@ -157,7 +157,7 @@ sensor:
               -
             {% else %}
               {% if state_attr('calendar.formel1_qualifikation', 'start_time') %}
-                {{ qualifikationTs | timestamp_custom("%d.%m.%Y", True) | string }}, {{ qualifikationTs | timestamp_custom("%H:%M Uhr", True) | string }}
+                {{ qualifikationTs | timestamp_custom("%d.%m.%Y", True) | string }}, {{ qualifikationTs | timestamp_custom("%H:%M Uhr") | string }}
               {% else %}
                 -
               {% endif %}
