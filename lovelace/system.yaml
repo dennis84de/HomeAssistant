@@ -98,7 +98,8 @@ cards:
     show_header_toggle: false
     entities:   
       - entity: switch.alle_radios      
-      - entity: switch.wiedergabe_aktiv      
+      - entity: switch.wiedergabe_aktiv
+      - entity: switch.radios_lautlos
       - entity: script.sync_radios
       - type: custom:mini-media-player
         entity: media_player.benachrichtigungen
@@ -136,7 +137,6 @@ cards:
     entities:
       - entity: switch.adguard_filtering
       - entity: sensor.adguard_dns_queries_blocked_ratio
-      - entity: sensor.adguard_dns_queries
       - entity: sensor.adguard_average_processing_speed
 
   - type: entities
@@ -198,3 +198,15 @@ cards:
             hours_to_show: 24
             graph: line
             detail: 1
+            
+  - type: markdown
+    title: Letzte Automationen
+    content: |
+      {% for state in (states.automation
+        | selectattr('attributes.last_triggered')
+        | sort(attribute='attributes.last_triggered', reverse=true)) [0:20] -%}
+        {% if (now() - state.attributes.last_triggered).total_seconds() < 86400 %}
+          {%- set t = (as_timestamp(state.attributes.last_triggered) | timestamp_custom('%H:%M')) -%}
+          {{t}} &nbsp;&nbsp; {{state.name}}
+        {% endif -%}
+      {% endfor %}            

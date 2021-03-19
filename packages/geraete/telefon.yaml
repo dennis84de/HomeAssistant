@@ -175,11 +175,9 @@ automation:
             entity_id: media_player.kodi_wohnzimmer
             state: 'idle'
     action:
-      - service: media_player.volume_mute
-        data:
-          entity_id: media_player.soundbar
-          is_volume_muted: true
-
+      - service: switch.turn_on
+        entity_id: switch.radios_lautlos
+        
   - alias: 'Telefon inaktiv - Soundbar aktivieren'
     trigger:
       - platform: state
@@ -192,10 +190,8 @@ automation:
       - condition: template
         value_template: '{{ state_attr("media_player.soundbar", "is_volume_muted") == True }}'
     action:
-      - service: media_player.volume_mute
-        data:
-          entity_id: media_player.soundbar
-          is_volume_muted: false
+      - service: switch.turn_off
+        entity_id: switch.radios_lautlos
           
   - alias: 'Telefon aktiv - Musik pausieren'
     trigger:
@@ -227,10 +223,8 @@ automation:
     action:
       - service: input_boolean.turn_on
         entity_id: input_boolean.telefon_musik_pausiert
-      - service: media_player.volume_mute
-        data:
-          entity_id: media_player.kuche, media_player.badezimmer, media_player.wohnzimmer, media_player.schlafzimmer, media_player.arbeitszimmer, media_player.flur, media_player.balkon
-          is_volume_muted: true
+      - service: switch.turn_on
+        entity_id: switch.radios_lautlos
 
   - alias: 'Telefon inaktiv - Musik wiedergeben'
     trigger:
@@ -246,10 +240,8 @@ automation:
     action:
       - service: input_boolean.turn_off
         entity_id: input_boolean.telefon_musik_pausiert
-      - service: media_player.volume_mute
-        data:
-          entity_id: media_player.kuche, media_player.badezimmer, media_player.wohnzimmer, media_player.schlafzimmer, media_player.arbeitszimmer, media_player.flur, media_player.balkon
-          is_volume_muted: false
+      - service: switch.turn_off
+        entity_id: switch.radios_lautlos
          
   - alias: 'Telefon aktiv - Nachricht an Handy'
     trigger:

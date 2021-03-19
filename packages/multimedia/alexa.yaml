@@ -47,10 +47,8 @@ script:
           entity_id: media_player.echo_wohnzimmer
           media_content_id: Alexa.Joke.Play
           media_content_type: sequence
-      - service: media_player.volume_mute
-        data:
-          entity_id: media_player.kuche, media_player.badezimmer, media_player.wohnzimmer, media_player.schlafzimmer, media_player.arbeitszimmer, media_player.flur, media_player.balkon
-          is_volume_muted: true          
+      - service: switch.turn_on
+        entity_id: switch.radios_lautlos     
        
   alexa_witz_beendet:
     alias: "Alexa Witz - Beendet"
@@ -59,10 +57,8 @@ script:
         entity_id: counter.alexa_witz_status
       - service: input_boolean.turn_off
         entity_id: input_boolean.alexa_witz_gestartet        
-      - service: media_player.volume_mute
-        data:
-          entity_id: media_player.kuche, media_player.badezimmer, media_player.wohnzimmer, media_player.schlafzimmer, media_player.arbeitszimmer, media_player.flur, media_player.balkon
-          is_volume_muted: false  
+      - service: switch.turn_off
+        entity_id: switch.radios_lautlos
           
 homeassistant:
   customize:
