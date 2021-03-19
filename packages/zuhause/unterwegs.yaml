@@ -180,7 +180,7 @@ automation:
         state: 'on'          
     action:
       - service: telegram_bot.send_photo
-        data_template:
+        data:
           caption: 'Kamera'
           url: 'http://192.168.2.75:8123/api/camera_proxy/camera.wohnzimmer?token={{ state_attr("camera.wohnzimmer", "access_token") }}'
                
