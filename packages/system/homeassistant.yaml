@@ -163,7 +163,7 @@ script:
       - service: media_player.play_media
         data:
           entity_id: media_player.benachrichtigungen
-          media_content_id:  http://192.168.2.75:8123/local/neustart/winxp_shutdown.mp3
+          media_content_id:  http://192.168.2.75:8123/local/sounds/winxp_shutdown.mp3
           media_content_type: music
       - wait_template: "{{is_state('media_player.benachrichtigungen', 'idle')}}"
         timeout: '00:00:02'
@@ -211,7 +211,32 @@ automation:
       - service: input_datetime.set_datetime
         entity_id: input_datetime.home_assistant_start
         data:
-          datetime: "{{ now().strftime('%Y-%m-%d %H:%M:%S') }}"    
+          datetime: "{{ now().strftime('%Y-%m-%d %H:%M:%S') }}"   
+      - service: hassio.addon_stdin
+        data:
+          addon: 15d21743_samba_backup
+          input: restore-sensor          
+      - choose:
+          - conditions:
+            - condition: state
+              entity_id: binary_sensor.zu_hause
+              state: 'off'
+            sequence:
+              - service: notify.telegram
+                data_template:
+                  title: 'Home Assistant gestartet'
+                  message: "Home Assistant wurde neugestartet."
+        default:
+          - service: media_player.play_media
+            data_template:
+              entity_id: media_player.benachrichtigungen
+              media_content_id: http://192.168.2.75:8123/local/sounds/winxp_start.mp3
+              media_content_type: music
+          - delay: '00:00:02'
+          - service: !secret tts_service
+            data_template:
+              echo: "wohnzimmer"
+              message: "Home Assistant wurde neugestartet."          
           
   - alias: "Home Assistant - Gestoppt"
     trigger:   
@@ -233,33 +258,6 @@ automation:
         data_template:
           echo: "wohnzimmer"
           message: "Während des Neustarts ist ein Fehler aufgetreten."
-
-  - alias: "Home Assistant neugestartet"
-    trigger:
-      - platform: homeassistant
-        event: start
-    action:
-      - choose:
-          - conditions:
-            - condition: state
-              entity_id: binary_sensor.zu_hause
-              state: 'off'
-            sequence:
-              - service: notify.telegram
-                data_template:
-                  title: 'Home Assistant gestartet'
-                  message: "Home Assistant wurde neugestartet."
-        default:
-          - service: media_player.play_media
-            data_template:
-              entity_id: media_player.benachrichtigungen
-              media_content_id: http://192.168.2.75:8123/local/neustart/winxp_start.mp3
-              media_content_type: music
-          - delay: '00:00:02'
-          - service: !secret tts_service
-            data_template:
-              echo: "wohnzimmer"
-              message: "Home Assistant wurde neugestartet."
 
 homeassistant:
   customize:

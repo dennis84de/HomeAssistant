@@ -29,15 +29,4 @@ sensor:
           {% else %}
             -
           {% endif %}
-        icon_template: "mdi:update"        
-
-automation:
-  - alias: 'Backupsensor wiederherstellen'
-    trigger:
-    - event: start
-      platform: homeassistant
-    action:
-    - service: hassio.addon_stdin
-      data:
-        addon: 15d21743_samba_backup
-        input: restore-sensor
+        icon_template: "mdi:update"
