@@ -24,7 +24,7 @@ binary_sensor:
     weather: weather.dwd_weather_dortmund
 
   - platform: snowtire
-    name: Winterreifen    
+    name: Autoreifen    
     weather: weather.dwd_weather_dortmund
     
   - platform: iss
