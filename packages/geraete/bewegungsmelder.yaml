@@ -1,24 +1,14 @@
-input_select:
-  letzte_bewegung:
-    name: Letzte Bewegung
-    options:
-      - 'Wohnzimmer'
-      - 'Arbeitszimmer'
-      - 'Sportzimmer'
-      - 'Badezimmer'
-      - 'Balkon'
-      - 'Flur hinten'
-      - 'Flur vorne'
-      - 'Küche'
-      - 'Schlafzimmer'
-
 sensor:
   - platform: template
     sensors:
       letzte_bewegung:
         friendly_name: "Letzte Bewegung"
         icon_template: mdi:run
-        value_template: "{{ states('input_select.letzte_bewegung') }}"
+        value_template: >-
+         {% set motionSensors = expand('group.bewegungsmelder') %}
+         {% set lastMotion = motionSensors | selectattr('last_changed','==', motionSensors | map(attribute='last_changed') | max) | first %}
+
+         {{ lastMotion.name }}        
 
 binary_sensor:
   - platform: template
@@ -32,25 +22,3 @@ binary_sensor:
         friendly_name: "Bewegungmelder inaktiv - Staubsauger"
         device_class: occupancy
         value_template: "{{ True if is_state('vacuum.roborock_vacuum', 'cleaning') or is_state('vacuum.roborock_vacuum', 'returning') else False }}"
-
-automation:
-  - alias: 'Letzte Bewegung'
-    trigger:
-      - platform: state
-        entity_id:
-          - binary_sensor.bewegungsmelder_schlafzimmer
-          - binary_sensor.bewegungsmelder_flur_vorne
-          - binary_sensor.bewegungsmelder_flur_hinten
-          - binary_sensor.bewegungsmelder_arbeitszimmer
-          - binary_sensor.bewegungsmelder_sportzimmer
-          - binary_sensor.bewegungsmelder_kueche
-          - binary_sensor.bewegungsmelder_balkon
-          - binary_sensor.bewegungsmelder_wohnzimmer
-          - binary_sensor.bewegungsmelder_badezimmer
-        from: 'off'
-        to: 'on'
-    action:
-      - service: input_select.select_option
-        data_template:
-          entity_id: input_select.letzte_bewegung          
-          option: '{{ trigger.to_state.attributes.friendly_name }}'           

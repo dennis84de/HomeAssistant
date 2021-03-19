@@ -30,8 +30,7 @@ logbook:
       - light
       - automation
   exclude:
-    entities:
-      - automation.letzte_bewegung
+    entities:     
       - switch.schlafzimmer_fernseher_licht
       - switch.sportzimmer_regal
       - switch.couch
