@@ -99,7 +99,7 @@ automation:
       - service: media_player.play_media
         data_template:
           entity_id: media_player.benachrichtigungen
-          media_content_id: http://192.168.2.75:8123/local/bvb/torhymne.mp3
+          media_content_id: http://192.168.2.75:8123/local/sounds/torhymne.mp3
           media_content_type: music
 
   - alias: "BVB - Musik starten"
@@ -123,7 +123,7 @@ automation:
       - service: media_player.play_media
         data_template:
           entity_id: media_player.benachrichtigungen
-          media_content_id: http://192.168.2.75:8123/local/bvb/heja_bvb.mp3
+          media_content_id: http://192.168.2.75:8123/local/sounds/heja_bvb.mp3
           media_content_type: music
 
   - alias: "BVB - Musik stoppen"
