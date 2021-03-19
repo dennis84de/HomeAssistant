@@ -126,6 +126,7 @@ cards:
       - entity: sensor.zeit_sonne
       - entity: binary_sensor.protection_window
       - entity: binary_sensor.sommerzeit
+      - entity: sensor.zeitumstellung
 
   - type: entities
     title: Pollen
