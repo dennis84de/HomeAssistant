@@ -61,6 +61,10 @@ cards:
       icon: false
       points: false
     entities:
+      - entity: sensor.deutschland_weekincidence
+        name: Deutschland
+      - entity: sensor.bl_nordrhein_westfalen_weekincidence
+        name: NRW             
       - entity: sensor.sk_dortmund_weekincidence
         name: Dortmund
       - entity: sensor.sk_mulheim_a_d_ruhr_weekincidence
