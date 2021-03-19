@@ -169,9 +169,6 @@ homeassistant:
 
     device_tracker.computer:
       icon: mdi:desktop-classic
-    device_tracker.pc:
-      icon: mdi:desktop-classic
-      friendly_name: Computer
     device_tracker.computerarbeit:
       icon: mdi:desktop-classic
       friendly_name: Computer Arbeit
