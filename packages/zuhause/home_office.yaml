@@ -1,12 +1,3 @@
-device_tracker:
-  - platform: mqtt
-    devices:
-      pc_arbeit: 'iotlink/schenck/jaeschke-pc/lwt'
-    qos: 1
-    payload_home: 'ON'
-    payload_not_home: 'OFF'
-    source_type: router
-    
 timer:
   home_office_ende:
     name: "Home Office beenden"
@@ -28,6 +19,12 @@ input_boolean:
     name: Musik pausiert    
     
 binary_sensor:
+  - platform: mqtt
+    name: "PC Arbeit"   
+    state_topic: "homeassistant/sensor/JAESCHKE-PC/availability"
+    payload_on: "online"
+    payload_off: "offline"    
+    
   - platform: template
     sensors:
       home_office_heute:
@@ -117,7 +114,7 @@ switch:
     switches:
       pc_arbeit:
         friendly_name: PC Arbeit
-        value_template: "{{ is_state('device_tracker.pc_arbeit', 'home') }}"
+        value_template: "{{ is_state('binary_sensor.pc_arbeit', 'on') }}"
         icon_template: mdi:desktop-tower
         turn_on:
           service: wake_on_lan.send_magic_packet
@@ -126,10 +123,8 @@ switch:
             broadcast_address: !secret fritzbox_broadcast
             broadcast_port: 9
         turn_off:
-          service: mqtt.publish
-          data:
-            topic: "iotlink/schenck/jaeschke-pc/commands/hibernate"
-            payload: ""
+          service: switch.turn_on
+          entity_id: switch.computer_arbeit_ruhezustand
     
   - platform: template
     switches:
@@ -226,7 +221,7 @@ automation:
       - service: media_player.play_media
         data_template:
           entity_id: media_player.benachrichtigungen
-          media_content_id: http://192.168.2.75:8123/local/countdown/countdown_5.mp3
+          media_content_id: http://192.168.2.75:8123/local/sounds/countdown_5.mp3
           media_content_type: music
 
   - alias: "Home Office - Countdown abbrechen"
@@ -283,8 +278,9 @@ automation:
         entity_id: binary_sensor.schalter_arbeitszimmer
         to: 'off'
       - platform: state
-        entity_id: sensor.teams_activity_de
-        to: 'Am Telefon'
+        entity_id: binary_sensor.computer_arbeit_mikrofon
+        from: 'off'
+        to: 'on'
     condition:       
       - condition: state
         entity_id: input_boolean.home_office_musik_pausiert
@@ -292,10 +288,8 @@ automation:
     action:
       - service: input_boolean.turn_on
         entity_id: input_boolean.home_office_musik_pausiert
-      - service: media_player.volume_mute
-        data:
-          entity_id: media_player.kuche, media_player.badezimmer, media_player.wohnzimmer, media_player.schlafzimmer, media_player.arbeitszimmer, media_player.flur, media_player.balkon
-          is_volume_muted: true        
+      - service: switch.turn_on
+        entity_id: switch.radios_lautlos
 
   - alias: 'Home Office - Radios starten'
     trigger:
@@ -303,8 +297,9 @@ automation:
         entity_id: binary_sensor.schalter_arbeitszimmer
         to: 'off'
       - platform: state
-        entity_id: sensor.teams_activity_de
-        to: 'Nicht am Telefon'
+        entity_id: binary_sensor.computer_arbeit_mikrofon
+        from: 'von'
+        to: 'off'
     condition:
       - condition: state
         entity_id: input_boolean.home_office_musik_pausiert
@@ -312,7 +307,5 @@ automation:
     action:
       - service: input_boolean.turn_off
         entity_id: input_boolean.home_office_musik_pausiert
-      - service: media_player.volume_mute
-        data:
-          entity_id: media_player.kuche, media_player.badezimmer, media_player.wohnzimmer, media_player.schlafzimmer, media_player.arbeitszimmer, media_player.flur, media_player.balkon
-          is_volume_muted: false
+      - service: switch.turn_off
+        entity_id: switch.radios_lautlos      
