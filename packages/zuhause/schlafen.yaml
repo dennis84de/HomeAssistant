@@ -42,7 +42,7 @@ timer:
 
   schlafen_einschalten:
     name: "Schlafen einschalten"
-    duration: 7
+    duration: 8
 
 binary_sensor:
   - platform: template
@@ -165,14 +165,14 @@ automation:
           echo: "wohnzimmer"
           message: "Alle Geräte werden gleich ausgeschaltet."
       - delay: '00:00:02'
-      - service: timer.start
-        entity_id: timer.schlafen_einschalten
       - service: media_player.play_media
         data_template:
           entity_id: media_player.benachrichtigungen
-          media_content_id: http://192.168.2.75:8123/local/countdown/countdown_5.mp3
+          media_content_id: http://192.168.2.75:8123/local/sounds/countdown_5.mp3
           media_content_type: music
-
+      - service: timer.start
+        entity_id: timer.schlafen_einschalten
+        
   - alias: "Schlafen gehen - Countdown abbrechen"
     trigger:
       - platform: state
@@ -203,6 +203,7 @@ automation:
         data_template:
           echo: "wohnzimmer"
           message: "Alle Geräte werden jetzt ausgeschaltet. Gute Nacht."
+      - delay: '00:00:06'          
       - service: script.schlafen_gehen
 
   - alias: "Schlafen gehen - Wecker Arbeit"
