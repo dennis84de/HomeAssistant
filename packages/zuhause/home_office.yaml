@@ -125,22 +125,7 @@ switch:
         turn_off:
           service: switch.turn_on
           entity_id: switch.computer_arbeit_ruhezustand
-    
-  - platform: template
-    switches:
-      arbeitszimmer_monitore:
-        friendly_name: Monitore
-        icon_template: "mdi:monitor-dashboard"
-        value_template: "{{ is_state('switch.arbeitszimmer_monitor_links', 'on') or is_state('switch.arbeitszimmer_monitor_rechts', 'on')}}"
-        turn_on:
-          service: switch.turn_on
-          data:
-            entity_id: switch.arbeitszimmer_monitor_links, switch.arbeitszimmer_monitor_rechts
-        turn_off:
-          service: switch.turn_off
-          data:
-            entity_id: switch.arbeitszimmer_monitor_links, switch.arbeitszimmer_monitor_rechts
-            
+
 script:
   home_office_start:
     alias: 'Home Office - Start'
@@ -309,3 +294,8 @@ automation:
         entity_id: input_boolean.home_office_musik_pausiert
       - service: switch.turn_off
         entity_id: switch.radios_lautlos      
+        
+homeassistant:
+  customize:
+    switch.arbeitszimmer_monitore:
+      icon: mdi:monitor-dashboard      

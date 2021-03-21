@@ -36,8 +36,6 @@ logbook:
       - switch.couch
       - switch.strahler
       - switch.kleiderschrank
-      - switch.arbeitszimmer_monitor_links
-      - switch.arbeitszimmer_monitor_rechts
       - switch.monitor
       - switch.pc
       
