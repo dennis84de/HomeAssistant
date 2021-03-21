@@ -142,6 +142,8 @@ cards:
     title: Tasmota
     show_header_toggle: false
     entities:
+      - entity: device_tracker.tasmotastrahler
+        name: Wohnzimmer Strahler      
       - entity: device_tracker.tasmotaarbeitszimmerlampe
         name: Arbeitszimmer Lampe
       - entity: device_tracker.tasmotaarbeitszimmerradio
@@ -152,12 +154,17 @@ cards:
         name: Küchenschrank
       - entity: device_tracker.tasmotaladegeraet
         name: Ladegerät
-      - entity: device_tracker.tasmotamonitorlinks
-        name: Monitor links
-      - entity: device_tracker.tasmotamonitorrechts
-        name: Monitor rechts
+      - entity: device_tracker.tasmotamonitore
+        name: Monitore
       - entity: device_tracker.tasmotaspuelmaschine
         name: Spülmaschine
+          
+  - type: entities
+    title: Shelly
+    show_header_toggle: false
+    entities:
+      - entity: device_tracker.shellycouch
+        name: Wohnzimmer Strahler                
           
   - type: entities
     title: ESP8266

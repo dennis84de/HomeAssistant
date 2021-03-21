@@ -135,7 +135,3 @@ cards:
     entities:
       - entity: zigate.steckdose_kleiderschrank
         name: Kleiderschrank
-      - entity: zigate.steckdose_strahler
-        name: Strahler        
-      - entity: zigate.steckdose_couch
-        name: Couch

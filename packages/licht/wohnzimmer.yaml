@@ -6,11 +6,11 @@ input_boolean:
 light:
   - platform: switch
     name: Couch
-    entity_id: switch.couch
+    entity_id: switch.wohnzimmer_couch
 
   - platform: switch
     name: Strahler
-    entity_id: switch.strahler
+    entity_id: switch.wohnzimmer_strahler
 
 binary_sensor:
   - platform: template

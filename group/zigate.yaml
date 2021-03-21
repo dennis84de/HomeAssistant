@@ -23,8 +23,6 @@ zigate:
     - zigate.thermometer_hardware
     - zigate.tuersensor    
     - zigate.bett
-    - zigate.steckdose_kleiderschrank
-    - zigate.steckdose_strahler
-    - zigate.steckdose_couch
+    - zigate.steckdose_kleiderschrank   
     - zigate.cube
     - zigate.helligkeit_balkon

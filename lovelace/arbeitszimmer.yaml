@@ -58,6 +58,7 @@ cards:
       - entity: switch.pc_arbeit
         name: Computer
       - entity: switch.arbeitszimmer_monitore
+        name: Monitore
       - entity: input_boolean.computer_arbeit_ausschalten
         name: Computer ausschalten
       - entity: input_boolean.home_office        

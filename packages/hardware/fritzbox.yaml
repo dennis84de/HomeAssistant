@@ -288,12 +288,15 @@ homeassistant:
       icon: mdi:developer-board
     device_tracker.tasmotaladegeraet:
       icon: mdi:developer-board
-    device_tracker.tasmotamonitorlinks:
+    device_tracker.tasmotamonitore:
       icon: mdi:developer-board
-    device_tracker.tasmotamonitorrechts:
+    device_tracker.tasmotastrahler:
       icon: mdi:developer-board
     device_tracker.tasmotaspuelmaschine:
       icon: mdi:developer-board
+      
+    device_tracker.shellycouch:
+      icon: mdi:connection
       
     device_tracker.esptuerklingel:
       icon: mdi:wifi-star
