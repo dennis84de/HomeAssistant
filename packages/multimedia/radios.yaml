@@ -383,7 +383,7 @@ script:
       sequence:
         - service: media_player.volume_set          
           data:
-            entity_id: media_player.kuche, media_player.badezimmer, media_player.wohnzimmer, media_player.schlafzimmer, media_player.arbeitszimmer, media_player.flur, media_player.balkons
+            entity_id: media_player.kuche, media_player.badezimmer, media_player.wohnzimmer, media_player.schlafzimmer, media_player.arbeitszimmer, media_player.flur, media_player.balkon
             volume_level: 0
           
   radios_laut:
@@ -391,8 +391,12 @@ script:
       sequence:
         - service: media_player.volume_set          
           data:
-            entity_id: media_player.kuche, media_player.badezimmer, media_player.wohnzimmer, media_player.schlafzimmer, media_player.arbeitszimmer, media_player.flur, media_player.balkons
+            entity_id: media_player.kuche, media_player.badezimmer, media_player.wohnzimmer, media_player.schlafzimmer, media_player.arbeitszimmer, media_player.flur, media_player.balkon
             volume_level: 0.4
+        - service: media_player.volume_set          
+          data:
+            entity_id: media_player.balkon
+            volume_level: 0.2            
           
   wohnung_radios_einschalten:
     alias: "Wohnung - Radios einschalten"
