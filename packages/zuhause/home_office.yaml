@@ -19,12 +19,6 @@ input_boolean:
     name: Musik pausiert    
     
 binary_sensor:
-  - platform: mqtt
-    name: "PC Arbeit"   
-    state_topic: "homeassistant/sensor/JAESCHKE-PC/availability"
-    payload_on: "online"
-    payload_off: "offline"    
-    
   - platform: template
     sensors:
       home_office_heute:
@@ -113,8 +107,8 @@ switch:
   - platform: template
     switches:
       pc_arbeit:
-        friendly_name: PC Arbeit
-        value_template: "{{ is_state('binary_sensor.pc_arbeit', 'on') }}"
+        friendly_name: PC Arbeit        
+        value_template: "{{ is_state('device_tracker.computerarbeit', 'home') }}"
         icon_template: mdi:desktop-tower
         turn_on:
           service: wake_on_lan.send_magic_packet
@@ -283,7 +277,7 @@ automation:
         to: 'off'
       - platform: state
         entity_id: binary_sensor.computer_arbeit_mikrofon
-        from: 'von'
+        from: 'on'
         to: 'off'
     condition:
       - condition: state

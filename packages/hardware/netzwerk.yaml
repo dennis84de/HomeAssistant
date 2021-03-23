@@ -7,4 +7,10 @@ device_tracker:
       - !secret nmap_hosts                
     exclude:
       - !secret synology_host     
-      
+      - !secret computer_host
+      - !secret computerarbeit_host
+
+  - platform: ping
+    hosts:
+      computer: !secret computer_host
+      computerarbeit: !secret computerarbeit_host

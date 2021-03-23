@@ -41,6 +41,13 @@ cards:
         name: Ventilator
 
   - type: entities
+    title: Computer
+    show_header_toggle: false
+    entities:
+      - entity: device_tracker.computer
+      - entity: device_tracker.computerarbeit
+      
+  - type: entities
     title: Radios
     show_header_toggle: false
     entities:
