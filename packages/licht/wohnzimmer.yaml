@@ -59,6 +59,9 @@ automation:
       - condition: state
         entity_id: light.strahler
         state: 'off'
+      - condition: state
+        entity_id: input_boolean.baden_aktiv
+        state: 'off'        
     action:
       - service: light.turn_on
         entity_id: light.couch, light.strahler
