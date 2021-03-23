@@ -100,6 +100,11 @@ script:
   schlafen_gehen:
     alias: Schlafen gehen
     sequence:
+      - service: !secret tts_service
+        data_template:
+          echo: "wohnzimmer"
+          message: "Alle Geräte werden jetzt ausgeschaltet. Gute Nacht."
+      - delay: '00:00:07'
       - service: input_boolean.turn_on
         entity_id: input_boolean.schlafen_aktiv
       - service: input_boolean.turn_off
@@ -198,12 +203,7 @@ automation:
         event_type: timer.finished
         event_data:
           entity_id: timer.schlafen_einschalten
-    action:
-      - service: !secret tts_service
-        data_template:
-          echo: "wohnzimmer"
-          message: "Alle Geräte werden jetzt ausgeschaltet. Gute Nacht."
-      - delay: '00:00:06'          
+    action:   
       - service: script.schlafen_gehen
 
   - alias: "Schlafen gehen - Wecker Arbeit"
