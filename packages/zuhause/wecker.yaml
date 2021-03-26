@@ -48,6 +48,22 @@ binary_sensor:
         value_template: "{{ True if is_state('input_boolean.alarm_aktiv', 'on') else False }}"
 
 sensor:     
+  - platform: mqtt
+    name: "Wecker Tablet"
+    state_topic: "tablet/schlafzimmer/wecker"
+    value_template: >-
+      {% set year = value_json.year %}
+      {% set month = value_json.month %}
+      {% set day = value_json.day %}
+      {% set hour = value_json.hour %}
+      {% set minute = value_json.minute %}
+      {% set alarmtime = year ~ '-' ~ ('%02d' % month) ~ '-' ~ ('%02d' % day) ~ ' ' ~ ('%02d' % hour) ~ ':' ~ ('%02d' % minute) ~ ':00' %}
+            
+      {{ as_timestamp(alarmtime) | int }}
+    
+    json_attributes_topic: "tablet/schlafzimmer/wecker"
+    json_attributes_template: "{{ value_json | tojson }}"
+    
   - platform: template
     sensors:
       wecker_startzeit:
@@ -109,6 +125,21 @@ automation:
       - delay: "00:{{ states('input_number.alarmdelay') | int }}:00" 
       - service: script.wohnung_radios_einschalten
 
+  - alias: "Weckzeit geändert - Tablet"
+    trigger:
+      - platform: state
+        entity_id: sensor.wecker_tablet
+    condition:
+      - condition: state
+        entity_id: binary_sensor.alarm_aktiv
+        state: 'off'        
+    action:
+      - service: input_datetime.set_datetime
+        target:
+          entity_id: input_datetime.wecker
+        data:
+          timestamp: "{{ states('sensor.wecker_tablet') }}"
+            
   - alias: "Weckzeit geändert - Schlafen"
     trigger:
       - platform: state
