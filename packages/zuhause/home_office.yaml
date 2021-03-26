@@ -235,6 +235,42 @@ automation:
           message: "Der Computer im Arbeitszimmer wird jetzt ausgeschaltet."
       - service: script.home_office_ende
 
+  - alias: "Home Office - Computer eingeschaltet"
+    trigger:
+      - platform: state
+        entity_id: switch.pc_arbeit
+        to: 'on'
+        for: '00:05:00'
+    condition:       
+      - condition: state
+        entity_id: binary_sensor.home_office
+        state: 'off'        
+    action:
+      - choose:
+          - conditions:
+              - condition: state
+                entity_id: binary_sensor.schlafen_aktiv
+                state: 'on'                
+            sequence:
+              - service: switch.turn_off
+                entity_id: switch.pc_arbeit
+          - conditions:
+              - condition: state
+                entity_id: binary_sensor.zu_hause
+                state: 'off'                
+            sequence:
+              - service: notify.telegram
+                data_template:
+                  title: 'Computer Arbeitszimmer'
+                  message: 'Der Computer im Arbeitszimmer wurde eingeschaltet und wird jetzt heruntergefahren.'
+              - service: switch.turn_off
+                entity_id: switch.pc_arbeit                  
+        default:      
+          - service: !secret tts_service
+            data_template:          
+              message: "Der Computer im Arbeitszimmer wurde eingeschaltet."
+     
+
   - alias: "Home Office - Status geändert"
     trigger:
       - platform: state
