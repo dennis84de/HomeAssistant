@@ -16,6 +16,9 @@ input_boolean:
     name: Kodi Wohnzimmer pausieren    
     icon: mdi:sync-off
 
+  youtube_wohnzimmer_aktiv:
+    name: Youtube Wohnzimmer aktiv
+    icon: mdi:youtube-tv
   youtube_wohnzimmer_pausiert:
     name: Youtube Wohnzimmer pausiert    
   youtube_wohnzimmer_pausieren:
@@ -32,15 +35,12 @@ binary_sensor:
     json_attributes_topic: "kodi_wohnzimmer/status/progress"
     json_attributes_template: "{{ value_json | tojson }}"   
 
-  - platform: mqtt
-    name: "Youtube aktiv"   
-    state_topic: "iotlink/workgroup/computer/process-monitor/processes/firefox/sensor"
-    value_template: >-    
-      {% if not value_json %}
-        {{ 'OFF' }}
-      {% else %}        
-        {{ 'ON' if value_json.FullScreen == 'True' else 'OFF' }}      
-      {% endif %}   
+  - platform: template
+    sensors:
+      youtube_wohnzimmer_aktiv:
+        friendly_name: Youtube aktiv
+        icon_template: "mdi:youtube-tv"
+        value_template: "{{ True if is_state('input_boolean.youtube_wohnzimmer_aktiv', 'on') else False }}"
     
 cover:
   - platform: template
@@ -497,7 +497,7 @@ automation:
         to: 'on'
     condition:
       - condition: state
-        entity_id: binary_sensor.youtube_aktiv
+        entity_id: binary_sensor.youtube_wohnzimmer_aktiv
         state: 'on'
       - condition: state
         entity_id: input_boolean.youtube_wohnzimmer_pausieren
@@ -516,11 +516,9 @@ automation:
     action:
       - service: input_boolean.turn_on
         entity_id: input_boolean.youtube_wohnzimmer_pausiert
-      - service: mqtt.publish
-        data:
-          topic: "iotlink/workgroup/computer/commands/media/playpause"
-          payload: ""
-
+      - service: switch.turn_on
+        entity_id: switch.computer_wiedergabe
+                
   - alias: "Youtube Wohnzimmer - Wiedergabe pausieren - Bewegung Balkon"
     trigger:
       - platform: state
@@ -528,7 +526,7 @@ automation:
         to: 'on'
     condition:
       - condition: state
-        entity_id: binary_sensor.youtube_aktiv
+        entity_id: binary_sensor.youtube_wohnzimmer_aktiv
         state: 'on'      
       - condition: state
         entity_id: binary_sensor.balkontuer
@@ -550,10 +548,8 @@ automation:
     action:
       - service: input_boolean.turn_on
         entity_id: input_boolean.youtube_wohnzimmer_pausiert
-      - service: mqtt.publish
-        data:
-          topic: "iotlink/workgroup/computer/commands/media/playpause"
-          payload: ""
+      - service: switch.turn_on
+        entity_id: switch.computer_wiedergabe
 
   - alias: "Youtube Wohnzimmer - Wiedergabe starten - Bewegung Wohnzimmer"
     trigger:
@@ -575,14 +571,12 @@ automation:
       - choose:
           - conditions:
             - condition: state
-              entity_id: binary_sensor.youtube_aktiv
+              entity_id: binary_sensor.youtube_wohnzimmer_aktiv
               state: 'on'
             sequence:
-              - service: mqtt.publish
-                data:
-                  topic: "iotlink/workgroup/computer/commands/media/playpause"
-                  payload: ""
-
+              - service: switch.turn_on
+                entity_id: switch.computer_wiedergabe
+                
   - alias: 'Telefon aktiv - Youtube Wohnzimmer pausieren'
     trigger:
       - platform: state
@@ -593,7 +587,7 @@ automation:
         to: 'dialing'
     condition:
       - condition: state
-        entity_id: binary_sensor.youtube_aktiv
+        entity_id: binary_sensor.youtube_wohnzimmer_aktiv
         state: 'on'
       - condition: state
         entity_id: input_boolean.youtube_wohnzimmer_pausieren
@@ -610,11 +604,9 @@ automation:
     action:
       - service: input_boolean.turn_on
         entity_id: input_boolean.youtube_wohnzimmer_pausiert
-      - service: mqtt.publish
-        data:
-          topic: "iotlink/workgroup/computer/commands/media/playpause"
-          payload: ""
-          
+      - service: switch.turn_on
+        entity_id: switch.computer_wiedergabe
+        
   - alias: 'Telefon inaktiv - Youtube Wohnzimmer wiedergeben'
     trigger:
       - platform: state
@@ -632,13 +624,11 @@ automation:
       - choose:
           - conditions:
             - condition: state
-              entity_id: binary_sensor.youtube_aktiv
+              entity_id: binary_sensor.youtube_wohnzimmer_aktiv
               state: 'on'
             sequence:
-              - service: mqtt.publish
-                data:
-                  topic: "iotlink/workgroup/computer/commands/media/playpause"
-                  payload: ""
+              - service: switch.turn_on
+                entity_id: switch.computer_wiedergabe
             
   - alias: 'Handy aktiv - Youtube Wohnzimmer pausieren'
     trigger:
@@ -650,7 +640,7 @@ automation:
         to: 'outgoing'
     condition:
       - condition: state
-        entity_id: binary_sensor.youtube_aktiv
+        entity_id: binary_sensor.youtube_wohnzimmer_aktiv
         state: 'on'
       - condition: state
         entity_id: input_boolean.nicht_stoeren
@@ -661,10 +651,8 @@ automation:
     action:
       - service: input_boolean.turn_on
         entity_id: input_boolean.youtube_wohnzimmer_pausiert
-      - service: mqtt.publish
-        data:
-          topic: "iotlink/workgroup/computer/commands/media/playpause"
-          payload: ""
+      - service: switch.turn_on
+        entity_id: switch.computer_wiedergabe
 
   - alias: 'Handy inaktiv - Youtube Wohnzimmer wiedergeben'
     trigger:
@@ -684,13 +672,11 @@ automation:
       - choose:
           - conditions:
             - condition: state
-              entity_id: binary_sensor.youtube_aktiv
+              entity_id: binary_sensor.youtube_wohnzimmer_aktiv
               state: 'on'
             sequence:
-              - service: mqtt.publish
-                data:
-                  topic: "iotlink/workgroup/computer/commands/media/playpause"
-                  payload: ""   
+              - service: switch.turn_on
+                entity_id: switch.computer_wiedergabe
             
   - alias: "Soundbar Lautstärke - Cube"
     trigger:

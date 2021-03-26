@@ -35,7 +35,7 @@ automation:
         entity_id: binary_sensor.schlafen_aktiv
         state: 'off'     
       - condition: state
-        entity_id: binary_sensor.youtube_aktiv
+        entity_id: binary_sensor.youtube_wohnzimmer_aktiv
         state: 'off'     
       - condition: template
         value_template: '{{ is_state("media_player.kodi_wohnzimmer", "playing") == False }}'

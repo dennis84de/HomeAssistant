@@ -129,7 +129,7 @@ automation:
         entity_id: binary_sensor.besuch
         state: 'off'
       - condition: state
-        entity_id: binary_sensor.youtube_aktiv
+        entity_id: binary_sensor.youtube_wohnzimmer_aktiv
         state: 'off'        
       - condition: or
         conditions:

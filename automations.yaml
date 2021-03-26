@@ -9,11 +9,9 @@
     type: turn_on
   condition: []
   action:
-  - service: mqtt.publish
-    data:
-      topic: iotlink/workgroup/computer/commands/run
-      payload: '{ "command": "C:\\Program Files\\Kodi\\kodi.exe", "path": "C:\\Program
-        Files\\Kodi", "user": "", "visible": true, "fallback": true }'
+  - service: switch.turn_on
+    target:
+      entity_id: switch.kodi_wohnzimmer
   mode: single
 - id: '1600374475624'
   alias: Kodi Wohnzimmer - Ausschalten
