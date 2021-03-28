@@ -156,14 +156,14 @@ script:
     alias: Home Assistant neustarten
     sequence:
       - service: !secret tts_service
-        data_template:
+        data:
           echo: "wohnzimmer"
           message: "Home Assistant wird neugestartet."
       - delay: '00:00:03'      
       - service: media_player.play_media
         data:
           entity_id: media_player.benachrichtigungen
-          media_content_id:  http://192.168.2.75:8123/local/sounds/winxp_shutdown.mp3
+          media_content_id:  sounds/winxp_shutdown.mp3
           media_content_type: music
       - wait_template: "{{is_state('media_player.benachrichtigungen', 'idle')}}"
         timeout: '00:00:02'
@@ -228,9 +228,9 @@ automation:
                   message: "Home Assistant wurde neugestartet."
         default:
           - service: media_player.play_media
-            data_template:
+            data:
               entity_id: media_player.benachrichtigungen
-              media_content_id: http://192.168.2.75:8123/local/sounds/winxp_start.mp3
+              media_content_id: sounds/winxp_start.mp3
               media_content_type: music
           - delay: '00:00:02'
           - service: !secret tts_service

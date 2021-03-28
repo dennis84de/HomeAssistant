@@ -171,9 +171,9 @@ automation:
           message: "Alle Geräte werden gleich ausgeschaltet."
       - delay: '00:00:02'
       - service: media_player.play_media
-        data_template:
+        data:
           entity_id: media_player.benachrichtigungen
-          media_content_id: http://192.168.2.75:8123/local/sounds/countdown_5.mp3
+          media_content_id: sounds/countdown_5.mp3
           media_content_type: music
       - service: timer.start
         entity_id: timer.schlafen_einschalten

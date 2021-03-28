@@ -36,18 +36,18 @@ automation:
         state: 'off'     
       - condition: state
         entity_id: binary_sensor.youtube_wohnzimmer_aktiv
-        state: 'off'     
+        state: 'off'       
       - condition: template
         value_template: '{{ is_state("media_player.kodi_wohnzimmer", "playing") == False }}'
     action:
       - service: media_player.play_media
-        data_template:
+        data:
           entity_id: media_player.benachrichtigungen
           media_content_id: >-
             {% if now().strftime("%M")|int == 30 %}
-              http://192.168.2.75:8123/local/uhr/GrandFatherChime_half.mp3
+              uhr/GrandFatherChime_half.mp3
             {% else %}
-              http://192.168.2.75:8123/local/uhr/GrandFatherChime_{{now().strftime("%I")}}.mp3
+              uhr/GrandFatherChime_{{now().strftime("%I")}}.mp3
             {% endif %}
           media_content_type: music
 
@@ -99,7 +99,7 @@ automation:
       - service: media_player.play_media
         data_template:
           entity_id: media_player.benachrichtigungen
-          media_content_id: http://192.168.2.75:8123/local/sounds/torhymne.mp3
+          media_content_id: sounds/torhymne.mp3
           media_content_type: music
 
   - alias: "BVB - Musik starten"
@@ -123,7 +123,7 @@ automation:
       - service: media_player.play_media
         data_template:
           entity_id: media_player.benachrichtigungen
-          media_content_id: http://192.168.2.75:8123/local/sounds/heja_bvb.mp3
+          media_content_id: sounds/heja_bvb.mp3
           media_content_type: music
 
   - alias: "BVB - Musik stoppen"

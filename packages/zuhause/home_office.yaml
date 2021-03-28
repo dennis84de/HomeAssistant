@@ -191,16 +191,16 @@ automation:
         state: 'idle'
     action:
       - service: !secret tts_service
-        data_template:
+        data:
           echo: "flur"
           message: "Der Computer wird Arbeitszimmer wird gleich ausgeschaltet."
       - delay: '00:00:02'
       - service: timer.start
         entity_id: timer.home_office_ende
       - service: media_player.play_media
-        data_template:
+        data:
           entity_id: media_player.benachrichtigungen
-          media_content_id: http://192.168.2.75:8123/local/sounds/countdown_5.mp3
+          media_content_id: sounds/countdown_5.mp3
           media_content_type: music
 
   - alias: "Home Office - Countdown abbrechen"
