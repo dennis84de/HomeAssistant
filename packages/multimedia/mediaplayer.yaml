@@ -36,7 +36,13 @@ automation:
         state: 'off'     
       - condition: state
         entity_id: binary_sensor.youtube_wohnzimmer_aktiv
-        state: 'off'       
+        state: 'off'     
+      - condition: state
+        entity_id: calendar.formel1_rennen
+        state: 'off'
+      - condition: state
+        entity_id: calendar.formel1_qualifikation
+        state: 'off'        
       - condition: template
         value_template: '{{ is_state("media_player.kodi_wohnzimmer", "playing") == False }}'
     action:
