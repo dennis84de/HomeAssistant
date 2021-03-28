@@ -79,6 +79,7 @@ cards:
       - entity: switch.schlafzimmer_fernseher
         name: Fernseher
       - entity: switch.schlafzimmer_radio
+        name: Radio
 
   - type: glance
     title: Heizung

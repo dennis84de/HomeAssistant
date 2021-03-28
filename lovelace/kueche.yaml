@@ -16,6 +16,7 @@ cards:
     show_header_toggle: false
     entities:
       - entity: switch.kuche_radio
+        name: Radio
       
   - type: glance
     title: Spülmaschine

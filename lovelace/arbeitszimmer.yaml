@@ -18,6 +18,7 @@ cards:
     entities:
       - entity: switch.ladegerat
       - entity: switch.arbeitszimmer_radio
+        name: Radio
 
   - type: entities
     title: Licht

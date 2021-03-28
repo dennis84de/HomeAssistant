@@ -16,6 +16,7 @@ cards:
     show_header_toggle: false
     entities:
       - entity: switch.flur_radio
+        name: Radio
 
   - type: entities
     title: Licht

@@ -6,6 +6,7 @@ cards:
     show_header_toggle: false
     entities:
       - entity: switch.badezimmer_radio
+        name: Radio
 
   - type: entities
     title: Multimedia
