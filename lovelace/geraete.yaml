@@ -127,11 +127,4 @@ cards:
       - entity: zigate.schalter_badezimmer
         name: Badezimmer           
       - entity: zigate.schalter_balkon
-        name: Balkon        
-
-  - type: entities
-    title: Steckdosen
-    show_header_toggle: false
-    entities:
-      - entity: zigate.steckdose_kleiderschrank
-        name: Kleiderschrank
+        name: Balkon
