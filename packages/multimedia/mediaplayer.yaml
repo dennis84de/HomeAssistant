@@ -8,8 +8,14 @@ media_player:
     host: !secret homeassistant_host
     name: Benachrichtigungen
 
+  - platform: vlc_telnet
+    host: !secret vlc_ha_host    
+    password: !secret vlc_ha_password
+    name: Benachrichtigungen VLC
+        
 automation:
-  - alias: "Uhr - Glocke starten"
+  - id: "uhr_glocke_starten"
+    alias: "Uhr - Glocke starten"
     trigger:
       - platform: time_pattern
         minutes: 30
@@ -57,7 +63,8 @@ automation:
             {% endif %}
           media_content_type: music
 
-  - alias: 'Uhr - Glocke abbrechen'
+  - id: "uhr_glocke_abbrechen"
+    alias: 'Uhr - Glocke abbrechen'
     trigger:
       - platform: state
         entity_id: input_boolean.uhr_einschalten
