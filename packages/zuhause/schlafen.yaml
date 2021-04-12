@@ -66,6 +66,41 @@ binary_sensor:
         friendly_name: Schlafen inaktiv
         value_template: "{{ is_state('binary_sensor.schlafen_aktiv', 'off') }}"
 
+      wecker_richtig_gestellt:
+        friendly_name: Wecker richtig gestellt
+        value_template: >-
+          {% set wecker_zeit = as_timestamp(states('sensor.tablet_schlafzimmer_nachster_wecker')) | timestamp_custom("%H:%M", True) %}
+          {% set wecker_standard_office = states('input_text.alarm_standard_office') %}
+          {% set wecker_standard_homeoffice = states('input_text.alarm_standard_homeoffice') %}     
+
+          {% set tagWecker = as_timestamp(states('sensor.tablet_schlafzimmer_nachster_wecker')) | timestamp_custom("%d", True) | int %}
+          {% set tagHeute = as_timestamp(now()) | timestamp_custom("%d", True) | int %}
+
+          {% set morgen_office = is_state('binary_sensor.office_morgen', 'on') %}
+          {% set heute_office = is_state('calendar.arbeit_buero', 'on') %}
+
+          {% if wecker_zeit == None %}
+            False
+          {% elif tagHeute + 1 == tagWecker %}
+            {% if morgen_office and wecker_zeit != wecker_standard_office %}
+              False
+            {% elif morgen_office == False and wecker_zeit != wecker_standard_homeoffice %}
+              False
+            {% else %}
+              True
+            {% endif %}
+          {% elif tagHeute == tagWecker %}
+            {% if heute_office and wecker_zeit != wecker_standard_office %}
+              False
+            {% elif heute_office == False and wecker_zeit != wecker_standard_homeoffice %}
+              False
+            {% else %}
+              True
+            {% endif %}
+          {% else %}
+            True
+          {% endif %}
+        
 sensor:
   - platform: template
     sensors:
@@ -169,7 +204,7 @@ automation:
         data_template:
           echo: "wohnzimmer"
           message: "Alle Geräte werden gleich ausgeschaltet."
-      - delay: '00:00:02'
+      - delay: '00:00:05'
       - service: media_player.play_media
         data:
           entity_id: media_player.benachrichtigungen
@@ -206,11 +241,12 @@ automation:
     action:   
       - service: script.schlafen_gehen
 
-  - alias: "Schlafen gehen - Wecker Arbeit"
+  - id: "schlafen_gehen_wecker_arbeit"
+    alias: "Schlafen gehen - Wecker Arbeit"
     trigger:
       - platform: state
         entity_id: binary_sensor.im_bett
-        to: 'on'
+        to: 'on'   
     condition:
       - condition: state
         entity_id: input_boolean.schlafen_aktiv
@@ -218,102 +254,44 @@ automation:
       - condition: state
         entity_id: input_boolean.wecker_erinnerung_morgen
         state: 'off'    
+      - condition: state
+        entity_id: binary_sensor.wecker_richtig_gestellt
+        state: 'off'
+      - condition: or
+        conditions:
+          - condition: and
+            conditions:
+              - condition: time
+                before: '00:00:00'
+              - condition: state
+                entity_id: binary_sensor.arbeitstag_morgen
+                state: 'on'         
+              - condition: state
+                entity_id: binary_sensor.urlaub_morgen
+                state: 'off'
+          - condition: and
+            conditions:
+              - condition: time
+                after: '00:00:00'
+              - condition: state
+                entity_id: binary_sensor.arbeitstag
+                state: 'on'         
+              - condition: state
+                entity_id: calendar.urlaub
+                state: 'off'          
     action:
       - service: input_boolean.turn_on
         entity_id: input_boolean.wecker_erinnerung_morgen
-      - choose:                      
-          - conditions:
-              - condition: time
-                before: '00:00:00'
-              - condition: state
-                entity_id: binary_sensor.arbeitstag_morgen
-                state: 'on'         
-              - condition: state
-                entity_id: binary_sensor.urlaub_morgen
-                state: 'off'
-              - condition: template
-                value_template: "{{ state_attr('input_datetime.wecker', 'timestamp') <= 1 }}"         
-            sequence:
-              - service: !secret tts_service
-                data_template:
-                  echo: "schlafzimmer"
-                  message: "Morgen ist ein Arbeitstag und der Wecker ist noch nicht gestellt."
-                  
-          - conditions:                  
-              - condition: time
-                before: '00:00:00'
-              - condition: state
-                entity_id: binary_sensor.arbeitstag_morgen
-                state: 'on'         
-              - condition: state
-                entity_id: binary_sensor.urlaub_morgen
-                state: 'off'
-              - condition: template
-                value_template: >-
-                  {% set wecker_zeit = '%02d' % (state_attr('input_datetime.wecker', 'hour') | int) ~ ':' ~ '%02d' % (state_attr('input_datetime.wecker', 'minute') | int) %}
-                  {% set wecker_standard_office = states('input_text.alarm_standard_office') %}
-                  {% set wecker_standard_homeoffice = states('input_text.alarm_standard_homeoffice') %}                  
-                  {% set morgen_office = states('binary_sensor.office_morgen') %}
-                  
-                  {% if morgen_office == 'on' and wecker_zeit != wecker_standard_office %}
-                    True
-                  {% elif morgen_office == 'off' and wecker_zeit != wecker_standard_homeoffice %}
-                    True                    
-                  {% else %}                            
-                    False
-                  {% endif %}   
-            sequence:
-              - service: !secret tts_service
-                data_template:
-                  echo: "schlafzimmer"
-                  message: "Morgen ist ein Arbeitstag und der Wecker ist nicht richtig gestellt."
-                
-          - conditions:
-              - condition: time
-                after: '00:00:00'
-              - condition: state
-                entity_id: binary_sensor.arbeitstag_heute
-                state: 'on'         
-              - condition: state
-                entity_id: calendar.urlaub
-                state: 'off'
-              - condition: template
-                value_template: "{{ state_attr('input_datetime.wecker', 'timestamp') <= 1 }}"   
-            sequence:
-              - service: !secret tts_service
-                data_template:
-                  echo: "schlafzimmer"
-                  message: "Heute ist ein Arbeitstag und der Wecker ist noch nicht gestellt."                  
-                  
-          - conditions:
-              - condition: time
-                after: '00:00:00'
-              - condition: state
-                entity_id: binary_sensor.arbeitstag_heute
-                state: 'on'         
-              - condition: state
-                entity_id: calendar.urlaub
-                state: 'off'
-              - condition: template
-                value_template: >-
-                  {% set wecker_zeit = '%02d' % (state_attr('input_datetime.wecker', 'hour') | int) ~ ':' ~ '%02d' % (state_attr('input_datetime.wecker', 'minute') | int) %}
-                  {% set wecker_standard_office = states('input_text.alarm_standard_office') %}
-                  {% set wecker_standard_homeoffice = states('input_text.alarm_standard_homeoffice') %}                  
-                  {% set heute_office = states('calendar.arbeit_buero') %}
-                  
-                  {% if heute_office == 'on' and wecker_zeit != wecker_standard_office %}
-                    True
-                  {% elif heute_office == 'off' and wecker_zeit != wecker_standard_homeoffice %}
-                    True                    
-                  {% else %}                            
-                    False
-                  {% endif %}   
-            sequence:
-              - service: !secret tts_service
-                data_template:
-                  echo: "schlafzimmer"
-                  message: "Heute ist ein Arbeitstag und der Wecker ist nicht richtig gestellt."
-                  
+      - service: !secret tts_service
+        data_template:
+          echo: "schlafzimmer"
+          message: >-
+            {% if states('sensor.tablet_schlafzimmer_nachster_wecker') == 'unavailable' %}
+              Der Wecker ist noch nicht gestellt.
+            {% else %}
+              Der Wecker ist noch nicht richtig gestellt.
+            {% endif %}
+                                     
   - alias: 'Sleeptimer starten'
     trigger:
       platform: state
@@ -422,7 +400,8 @@ automation:
       - service: media_player.media_pause
         entity_id: media_player.tablet_schlafzimmer        
 
-  - alias: "Aufstehen - Schlafen ausschalten"
+  - id: "aufstehen_schlafen_ausschalten"
+    alias: "Aufstehen - Schlafen ausschalten"
     trigger:
       - platform: state
         entity_id: binary_sensor.bewegungsmelder_kueche
@@ -449,15 +428,20 @@ automation:
                   - condition: time
                     after: '06:00'
                     before: '20:00'
-                  - condition: template
-                    value_template: "{{ False if is_state_attr('input_datetime.wecker', 'day', now().today().day) else True }}"
+                  - condition: template                   
+                    value_template: >-
+                      {% set alarmSensor = states('sensor.tablet_schlafzimmer_nachster_wecker') %}
+                      {% set alarmDay = as_timestamp(alarmSensor) | timestamp_custom('%d') | int %}
+                      {% set now = (as_timestamp(now()) | int) | timestamp_custom('%d') | int %}
+                      
+                      {{ alarmSensor == 'unavailable' or alarmDay != now }}
     action:
       - service: input_boolean.turn_off
         entity_id: input_boolean.schlafen_aktiv, input_boolean.alarm_aktiv, input_boolean.wecker_erinnerung_morgen, input_boolean.wecker_zeit_geaendert
       - service: input_boolean.turn_on
         entity_id: input_boolean.computer_ausschalten, input_boolean.schlafen_fernseher_einschalten
       - service: light.turn_off
-        entity_id: light.bett
+        entity_id: light.bett 
 
   - alias: "Aufstehen - Geräte einschalten"
     trigger:
@@ -496,7 +480,13 @@ automation:
             {{ 'Guten Morgen. Es ist ' ~ uhrzeitSatz ~ ' Uhr. Du hast ' ~ schlafenSatz ~ ' geschlafen.' }}      
       - service: switch.turn_on
         entity_id: switch.computer
-      - service: script.wohnung_radios_einschalten
+      - choose:
+          - conditions:
+              - condition: state
+                entity_id: switch.alle_radios
+                state: 'off'
+            sequence:                
+              - service: script.wohnung_radios_einschalten
       - choose:
           - conditions:
               - condition: state
