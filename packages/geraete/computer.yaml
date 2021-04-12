@@ -8,12 +8,20 @@ sensor:
     host: !secret computer_host
     port: 8580  
 
+binary_sensor:
+  - platform: mqtt
+    name: "Computer"
+    state_topic: "homeassistant/sensor/COMPUTER/availability"
+    payload_on: "online"
+    payload_off: "offline"
+    device_class: connectivity
+
 switch:
   - platform: template
     switches:
       pc:
         friendly_name: PC
-        value_template: "{{ is_state('device_tracker.computer', 'home') }}"
+        value_template: "{{ is_state('binary_sensor.computer', 'on') }}"
         icon_template: mdi:desktop-tower
         turn_on:
           service: wake_on_lan.send_magic_packet

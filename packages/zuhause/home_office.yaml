@@ -17,8 +17,23 @@ input_boolean:
     
   home_office_musik_pausiert:
     name: Musik pausiert    
+   
+input_text:
+  teams_status:
+    name: Microsoft Teams Status
+    icon: mdi:microsoft-teams
+  teams_activity:
+    name: Microsoft Teams Activity
+    icon: mdi:microsoft-teams    
     
 binary_sensor:
+  - platform: mqtt
+    name: "Computer Arbeit"
+    state_topic: "homeassistant/sensor/JAESCHKE-PC/availability"
+    payload_on: "online"
+    payload_off: "offline"
+    device_class: connectivity
+    
   - platform: template
     sensors:
       home_office_heute:
@@ -46,26 +61,14 @@ sensor:
     sensors:
       teams_status:
         friendly_name: "Microsoft Teams - Status"
-        value_template: >-
-          {% if states('sensor.teams_status') == '' -%}
-            Offline
-          {%- endif %}
-        icon_template: >-
-          {% if states('sensor.teams_status') == '' -%}
-            mdi:microsoft-teams
-          {%- endif %}
+        value_template: "{{states('input_text.teams_status')}}"
+        icon_template: "{{state_attr('input_text.teams_status', 'icon')}}"
         unique_id: sensor.teams_status
         
       teams_activity:
         friendly_name: "Microsoft Teams - Aktivität"
-        value_template: >-
-          {% if states('sensor.teams_activity') == '' -%}
-            Offline
-          {%- endif %}
-        icon_template: >-
-          {% if states('sensor.teams_activity') == '' -%}
-            mdi:microsoft-teams
-          {%- endif %}
+        value_template: "{{states('input_text.teams_activity')}}"
+        icon_template: "{{state_attr('input_text.teams_activity', 'icon')}}"
         unique_id: sensor.teams_activity          
           
       teams_status_de:
@@ -108,7 +111,7 @@ switch:
     switches:
       pc_arbeit:
         friendly_name: PC Arbeit        
-        value_template: "{{ is_state('device_tracker.computerarbeit', 'home') }}"
+        value_template: "{{ is_state('binary_sensor.computer_arbeit', 'on') }}"
         icon_template: mdi:desktop-tower
         turn_on:
           service: wake_on_lan.send_magic_packet

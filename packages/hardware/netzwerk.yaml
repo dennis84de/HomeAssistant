@@ -7,10 +7,16 @@ device_tracker:
       - !secret nmap_hosts                
     exclude:
       - !secret synology_host     
-      - !secret computer_host
-      - !secret computerarbeit_host
+      
+binary_sensor:
+  - platform: template
+    sensors:
+      wlan_tagsueber:
+        friendly_name: 'Wlan tagsüber'        
+        value_template: >-
+          {% set istHomeOffice = is_state('binary_sensor.home_office_heute', 'on') %}
+          {% set keinArbeitstag = is_state('binary_sensor.arbeitstag', 'off') %}
+          {% set istUrlaub = is_state('calendar.urlaub', 'on') %}
+          {% set istKrank = is_state('calendar.arbeit_krank', 'on') %}
 
-  - platform: ping
-    hosts:
-      computer: !secret computer_host
-      computerarbeit: !secret computerarbeit_host
+          {{ True if (istHomeOffice or keinArbeitstag or istUrlaub or istKrank) else False }}  

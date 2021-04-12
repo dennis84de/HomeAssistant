@@ -294,6 +294,8 @@ homeassistant:
       icon: mdi:developer-board
     device_tracker.tasmotaspuelmaschine:
       icon: mdi:developer-board
+    device_tracker.tasmotakleiderschrank:
+      icon: mdi:developer-board
       
     device_tracker.shellycouch:
       icon: mdi:connection
