@@ -61,7 +61,7 @@ cards:
       - entity: device_tracker.radiokeller
 
   - type: entities
-    title: Steckdosen
+    title: TP-Link
     show_header_toggle: false
     entities:
       - entity: device_tracker.tplinkwohnzimmermonitor
@@ -73,10 +73,15 @@ cards:
       - entity: device_tracker.tplinkkellerradio
       - entity: device_tracker.tplinkschlafzimmerfernseher
       - entity: device_tracker.tplinksportzimmerfernseher
-      - entity: device_tracker.edimaxsportzimmerlicht
-      - entity: device_tracker.edimaxcrosstrainer
       - entity: device_tracker.tplinkwaschmaschine
       - entity: device_tracker.tplinktrockner      
+      
+  - type: entities
+    title: Edimax
+    show_header_toggle: false
+    entities:      
+      - entity: device_tracker.edimaxsportzimmerlicht
+      - entity: device_tracker.edimaxcrosstrainer
       
   - type: entities
     title: Amazon Echo
@@ -159,6 +164,8 @@ cards:
         name: Balkon Radio
       - entity: device_tracker.tasmotakuechenschrank
         name: Küchenschrank
+      - entity: device_tracker.tasmotakleiderschrank
+        name: Kleiderschrank        
       - entity: device_tracker.tasmotaladegeraet
         name: Ladegerät
       - entity: device_tracker.tasmotamonitore
