@@ -126,24 +126,127 @@ automation:
       - service: scene.turn_on
         entity_id: scene.eingehender_anruf_licht_status
 
-  - alias: 'Werbeanruf - Nachricht an Handy'
+  - alias: 'Telefon aktiv - Kodi Wohnzimmer pausieren'
     trigger:
       - platform: state
-        entity_id: sensor.werbeanruf
+        entity_id: sensor.telefon
+        to: 'ringing'
+      - platform: state
+        entity_id: sensor.telefon
+        to: 'dialing'
     condition:
       - condition: state
-        entity_id: binary_sensor.zu_hause
-        state: 'off'    
-      - condition: template
-        value_template: '{{ is_state("sensor.werbeanruf", "unknown") == False }}'
+        entity_id: media_player.kodi_wohnzimmer
+        state: 'playing'
+      - condition: state
+        entity_id: input_boolean.nicht_stoeren
+        state: 'off'
+      - condition: state
+        entity_id: binary_sensor.besuch
+        state: 'off'          
     action:
-      - service: notify.telegram
-        data_template:
-          title: Werbeanruf Festnetz
-          message: >
-            Anrufer: {{ states(sensor.werbeanruf) }}
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.kodi_wohnzimmer_pausiert
+      - service: media_player.media_pause
+        entity_id: media_player.kodi_wohnzimmer
+      - service: notify.kodi_wohnzimmer
+        data:
+          title: 'Telefon'
+          message: >-
+            {% if is_state("sensor.telefon", 'dialing') %}
+              {{ state_attr('sensor.telefon', 'to_name') }} ({{ state_attr('sensor.telefon', 'to') }}) wird angerufen.
+            {% elif is_state("sensor.telefon", 'ringing') %}
+              {% if state_attr('sensor.telefon', 'from') == '' %}
+                Ein Anruf ohne Rufnummer.
+              {% elif state_attr('sensor.telefon', 'from_name')  == 'unknown' %}
+                Ein Anruf von einer unbekannten Rufnummer ({{ state_attr('sensor.telefon', 'from') }}).
+              {% else %}
+                Anruf von {{ state_attr('sensor.telefon', 'from_name') }} ({{ state_attr('sensor.telefon', 'from') }}).
+              {% endif %}
+            {% endif %}
+          data:
+            displaytime: 5000
+            icon: "info"
 
-            Rufnummer: {{ state_attr('sensor.werbeanruf', 'number') }}
+  - alias: 'Telefon inaktiv - Kodi Wohnzimmer wiedergeben'
+    trigger:
+      - platform: state
+        entity_id: sensor.telefon
+        to: 'idle'
+    condition:
+      - condition: state
+        entity_id: media_player.kodi_wohnzimmer
+        state: 'paused'
+      - condition: state
+        entity_id: input_boolean.kodi_wohnzimmer_pausiert
+        state: 'on'
+      - condition: template
+        value_template: '{{ is_state("sensor.handy", "incoming") == False and is_state("sensor.handy", "outgoing") == False }}'        
+    action:
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.kodi_wohnzimmer_pausiert
+      - service: media_player.media_play
+        entity_id: media_player.kodi_wohnzimmer
+      - service: notify.kodi_wohnzimmer
+        data:
+          title: 'Telefon'
+          message: 'Anruf beendet'
+          data:
+            displaytime: 2000
+            icon: "info"                   
+                
+  - alias: 'Telefon aktiv - Youtube Wohnzimmer pausieren'
+    trigger:
+      - platform: state
+        entity_id: sensor.telefon
+        to: 'ringing'
+      - platform: state
+        entity_id: sensor.telefon
+        to: 'dialing'
+    condition:
+      - condition: state
+        entity_id: binary_sensor.youtube_wohnzimmer_aktiv
+        state: 'on'
+      - condition: state
+        entity_id: input_boolean.youtube_wohnzimmer_pausieren
+        state: 'on'        
+      - condition: state
+        entity_id: input_boolean.youtube_wohnzimmer_pausiert
+        state: 'off'        
+      - condition: state
+        entity_id: input_boolean.nicht_stoeren
+        state: 'off'
+      - condition: state
+        entity_id: binary_sensor.besuch
+        state: 'off'          
+    action:
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.youtube_wohnzimmer_pausiert
+      - service: switch.turn_on
+        entity_id: switch.computer_wiedergabe
+        
+  - alias: 'Telefon inaktiv - Youtube Wohnzimmer wiedergeben'
+    trigger:
+      - platform: state
+        entity_id: sensor.telefon
+        to: 'idle'
+    condition:
+      - condition: state
+        entity_id: input_boolean.youtube_wohnzimmer_pausiert
+        state: 'on'
+      - condition: template
+        value_template: '{{ is_state("sensor.handy", "incoming") == False and is_state("sensor.handy", "outgoing") == False }}'        
+    action:
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.youtube_wohnzimmer_pausiert      
+      - choose:
+          - conditions:
+            - condition: state
+              entity_id: binary_sensor.youtube_wohnzimmer_aktiv
+              state: 'on'
+            sequence:
+              - service: switch.turn_on
+                entity_id: switch.computer_wiedergabe
 
   - alias: 'Telefon aktiv - Soundbar deaktivieren'
     trigger:
@@ -320,5 +423,3 @@ homeassistant:
   customize:
     sensor.telefon:
       icon: mdi:phone-classic      
-    sensor.werbeanruf:
-      icon: mdi:phone-log      

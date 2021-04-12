@@ -81,8 +81,6 @@ sensor:
           
       handy_zuletzt_geladen:
         friendly_name: Handy - Zuletzt geladen
-        entity_id:
-          - sensor.handy_batterie
         value_template: >
           {% if is_state('sensor.handy_batterie', None) %}
             -
@@ -109,6 +107,130 @@ automation:
           payload: '{{ state_attr(trigger.entity_id, "number") }}'          
           topic: phone/last_call
           retain: true
+
+  - alias: 'Handy aktiv - Kodi Wohnzimmer pausieren'
+    trigger:
+      - platform: state
+        entity_id: sensor.handy
+        to: 'incoming'
+      - platform: state
+        entity_id: sensor.handy
+        to: 'outgoing'
+    condition:
+      - condition: state
+        entity_id: media_player.kodi_wohnzimmer
+        state: 'playing'
+      - condition: state
+        entity_id: input_boolean.nicht_stoeren
+        state: 'off'
+      - condition: state
+        entity_id: binary_sensor.besuch
+        state: 'off'              
+    action:
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.kodi_wohnzimmer_pausiert
+      - service: media_player.media_pause
+        entity_id: media_player.kodi_wohnzimmer
+      - service: notify.kodi_wohnzimmer
+        data:
+          title: 'Handy'
+          message: >-
+            {% set name = state_attr('sensor.handy', 'name') %}
+            {% set number = state_attr('sensor.handy', 'number') %}
+            
+            {% if is_state("sensor.handy", "outgoing") %}
+              {% if name == number %}
+                {{ state_attr('sensor.handy', 'name') }} wird angerufen.
+              {% else %}
+                {{ state_attr('sensor.handy', 'name') }} ({{ state_attr('sensor.handy', 'number') }}) wird angerufen.
+              {% endif %}
+              
+            {% elif is_state("sensor.handy", "incoming") %}
+              {% if name == number %}
+                Eingehender Anruf von {{ state_attr('sensor.handy', 'name') }}.
+              {% else %}
+                Eingehender Anruf von {{ state_attr('sensor.handy', 'name') }} ({{ state_attr('sensor.handy', 'number') }}).
+              {% endif %}                          
+            {% endif %}                                 
+          data:
+            displaytime: 5000
+            icon: "info"
+
+  - alias: 'Handy inaktiv - Kodi Wohnzimmer wiedergeben'
+    trigger:
+      - platform: state
+        entity_id: sensor.handy
+        to: 'idle'
+    condition:
+      - condition: state
+        entity_id: media_player.kodi_wohnzimmer
+        state: 'paused'
+      - condition: state
+        entity_id: input_boolean.kodi_wohnzimmer_pausiert
+        state: 'on'
+      - condition: state
+        entity_id: sensor.telefon
+        state: 'idle'
+    action:
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.kodi_wohnzimmer_pausiert
+      - service: media_player.media_play
+        entity_id: media_player.kodi_wohnzimmer
+      - service: notify.kodi_wohnzimmer
+        data:
+          title: 'Handy'
+          message: 'Anruf beendet'
+          data:
+            displaytime: 2000
+            icon: "info"
+ 
+  - alias: 'Handy aktiv - Youtube Wohnzimmer pausieren'
+    trigger:
+      - platform: state
+        entity_id: sensor.handy
+        to: 'incoming'
+      - platform: state
+        entity_id: sensor.handy
+        to: 'outgoing'
+    condition:
+      - condition: state
+        entity_id: binary_sensor.youtube_wohnzimmer_aktiv
+        state: 'on'
+      - condition: state
+        entity_id: input_boolean.nicht_stoeren
+        state: 'off'
+      - condition: state
+        entity_id: binary_sensor.besuch
+        state: 'off'              
+    action:
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.youtube_wohnzimmer_pausiert
+      - service: switch.turn_on
+        entity_id: switch.computer_wiedergabe
+
+  - alias: 'Handy inaktiv - Youtube Wohnzimmer wiedergeben'
+    trigger:
+      - platform: state
+        entity_id: sensor.handy
+        to: 'idle'
+    condition:
+      - condition: state
+        entity_id: input_boolean.youtube_wohnzimmer_pausiert
+        state: 'on'
+      - condition: state
+        entity_id: sensor.telefon
+        state: 'idle'
+    action:
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.youtube_wohnzimmer_pausiert      
+      - choose:
+          - conditions:
+            - condition: state
+              entity_id: binary_sensor.youtube_wohnzimmer_aktiv
+              state: 'on'
+            sequence:
+              - service: switch.turn_on
+                entity_id: switch.computer_wiedergabe            
 
   - alias: 'Handy aktiv - Soundbar deaktivieren'
     trigger:
