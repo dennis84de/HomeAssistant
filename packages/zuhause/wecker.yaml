@@ -1,9 +1,3 @@
-input_datetime:
-  wecker:
-    name: Wecker
-    has_date: true
-    has_time: true
-
 input_number:
   alarmdelay:
     name: Verzögerung
@@ -47,48 +41,33 @@ binary_sensor:
         device_class: sound
         value_template: "{{ True if is_state('input_boolean.alarm_aktiv', 'on') else False }}"
 
-sensor:     
-  - platform: mqtt
-    name: "Wecker Tablet"
-    state_topic: "tablet/schlafzimmer/wecker"
-    value_template: >-
-      {% set year = value_json.year %}
-      {% set month = value_json.month %}
-      {% set day = value_json.day %}
-      {% set hour = value_json.hour %}
-      {% set minute = value_json.minute %}
-      {% set alarmtime = year ~ '-' ~ ('%02d' % month) ~ '-' ~ ('%02d' % day) ~ ' ' ~ ('%02d' % hour) ~ ':' ~ ('%02d' % minute) ~ ':00' %}
-            
-      {{ as_timestamp(alarmtime) | int }}
-    
-    json_attributes_topic: "tablet/schlafzimmer/wecker"
-    json_attributes_template: "{{ value_json | tojson }}"
-    
+sensor:
   - platform: template
     sensors:
       wecker_startzeit:
         friendly_name: Wecker Startzeit
         icon_template: mdi:alarm-bell
-        value_template: "{{ '%02d' % (state_attr('input_datetime.wecker', 'hour') | int) ~ ':' ~ '%02d' % (state_attr('input_datetime.wecker', 'minute') | int) }}"
         unit_of_measurement: 'Uhr'
+        value_template: >-
+          {% set alarmSensor = states('sensor.tablet_schlafzimmer_nachster_wecker')%}
+
+          {% if alarmSensor == 'unavailable' %}
+            -
+          {% else %}
+            {{ as_timestamp(alarmSensor) | timestamp_custom("%H:%M", True) }}
+          {% endif %}              
         
       wecker_startdatum:
         friendly_name: Wecker Startdatum
         icon_template: mdi:calendar-clock
         value_template: >-
-          {% set alarmState = state_attr('input_datetime.wecker', 'timestamp') %}
-          
-          {% if alarmState <= 1 %}
+          {% set alarmSensor = states('sensor.tablet_schlafzimmer_nachster_wecker')%}
+
+          {% if alarmSensor == 'unavailable' %}
             -
           {% else %}
-            {% set day = state_attr('input_datetime.wecker', 'day') %}
-            {% set month = state_attr('input_datetime.wecker', 'month') %}
-            {% set year = state_attr('input_datetime.wecker', 'year') %}
-
-            {% set alarmDay = "%0.02d-%0.02d-%0.02d" | format(year | int, month | int, day | int) %}
-            {% set weekday = as_timestamp(alarmDay) | timestamp_custom("%w", True) | int %}
-
-            {{ ['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'][weekday-1] }}, {{ as_timestamp(alarmDay) | timestamp_custom("%d.%m.%Y", True) | string }}          
+            {% set weekday = as_timestamp(alarmSensor) | timestamp_custom("%w", True) | int %}
+            {{ ['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'][weekday-1] }}, {{ as_timestamp(alarmSensor) | timestamp_custom("%d.%m.%Y", True) | string }}          
           {% endif %}
 
 automation:
@@ -98,7 +77,7 @@ automation:
         value_template: >-
           {% set jetzt = as_timestamp(states('sensor.date_time').replace(',','')) | int %}         
           {% set vorlauf = (states('input_number.alarmadvance' ) | int) * 60  %}
-          {% set wecker = as_timestamp(states('input_datetime.wecker')) | int %}
+          {% set wecker = as_timestamp(states('sensor.tablet_schlafzimmer_nachster_wecker')) | int %}
           
           {{ wecker == jetzt + vorlauf }}
     condition:
@@ -124,38 +103,6 @@ automation:
         entity_id: switch.schlafzimmer_radio               
       - delay: "00:{{ states('input_number.alarmdelay') | int }}:00" 
       - service: script.wohnung_radios_einschalten
-
-  - alias: "Weckzeit geändert - Tablet"
-    trigger:
-      - platform: state
-        entity_id: sensor.wecker_tablet
-    condition:
-      - condition: state
-        entity_id: binary_sensor.alarm_aktiv
-        state: 'off'        
-    action:
-      - service: input_datetime.set_datetime
-        target:
-          entity_id: input_datetime.wecker
-        data:
-          timestamp: "{{ states('sensor.wecker_tablet') }}"
-            
-  - alias: "Weckzeit geändert - Schlafen"
-    trigger:
-      - platform: state
-        entity_id: input_datetime.wecker
-    condition:
-      - condition: state
-        entity_id: binary_sensor.alarm_aktiv
-        state: 'on'        
-      - condition: state
-        entity_id: input_boolean.wecker_zeit_geaendert
-        state: 'off'
-      - condition: template
-        value_template: "{{ ((state_attr('input_datetime.wecker', 'timestamp') - as_timestamp(now())) | int) >= 600 }}"
-    action:
-      - service: input_boolean.turn_on
-        entity_id: input_boolean.wecker_zeit_geaendert
 
   - alias: "Weckzeit geändert - Erinnerung"
     trigger:
