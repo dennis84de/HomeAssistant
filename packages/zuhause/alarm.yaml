@@ -28,6 +28,8 @@ automation:
     action:
       - service: alarm_control_panel.alarm_arm_away
         entity_id: alarm_control_panel.alarm
+      - service: switch.turn_on
+        entity_id: switch.kamera_wohnzimmer
 
   - alias: "Alarm - Ausgelöst"
     trigger:
@@ -44,15 +46,6 @@ automation:
     action:
       service: alarm_control_panel.alarm_trigger
       entity_id: alarm_control_panel.alarm
-
-  - alias: "Alarm - Kamera einschalten"
-    trigger:
-      - platform: state
-        entity_id: alarm_control_panel.alarm
-        to: 'armed_away'
-    action:
-      - service: switch.turn_on
-        entity_id: switch.kamera_wohnzimmer
 
   - alias: "Alarm - Nachricht Telegram"
     trigger:
