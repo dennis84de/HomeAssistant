@@ -144,37 +144,7 @@ entity_controller:
     overrides:
       - binary_sensor.radio_badezimmer_inaktiv
       
-automation:
-  - alias: 'Radio Balkon - Einschalten'
-    trigger:
-      - platform: state
-        entity_id: binary_sensor.zu_hause
-        to: 'on'
-      - platform: state
-        entity_id: binary_sensor.home_office
-        to: 'off'
-    condition:
-      - condition: state
-        entity_id: binary_sensor.zu_hause
-        state: 'on'
-      - condition: state
-        entity_id: binary_sensor.home_office
-        state: 'off'
-      - condition: template
-        value_template: '{{ now().isoweekday() != 7 }}'        
-      - condition: time
-        after: '08:00'
-        before: '20:00'
-      - condition: numeric_state
-        entity_id: sensor.balkon_temperatur
-        above: 10
-      - condition: numeric_state
-        entity_id: sensor.laufzeit_minuten
-        above: 5
-    action:
-      - service: switch.turn_on
-        entity_id: switch.balkon_radio
-        
+automation:       
   - alias: 'Radio Balkon - Bewegung erkannt'
     trigger:
       - platform: state
@@ -358,6 +328,28 @@ script:
     sequence:
       - service: switch.turn_on
         entity_id: switch.wohnzimmer_radio, switch.balkon_radio, switch.flur_radio, switch.badezimmer_radio, switch.kuche_radio, switch.schlafzimmer_radio, switch.arbeitszimmer_radio
+      - choose:
+          - conditions:
+              - condition: state
+                entity_id: binary_sensor.zu_hause
+                state: 'on'
+              - condition: state
+                entity_id: binary_sensor.home_office
+                state: 'off'
+              - condition: template
+                value_template: '{{ now().isoweekday() != 7 }}'        
+              - condition: time
+                after: '08:00'
+                before: '20:00'
+              - condition: numeric_state
+                entity_id: sensor.balkon_temperatur
+                above: 10
+              - condition: numeric_state
+                entity_id: sensor.laufzeit_minuten
+                above: 5
+            sequence:
+              - service: switch.turn_on
+                entity_id: switch.balkon_radio
 
   radios_ausschalten:
     alias: Radios ausschalten
@@ -365,7 +357,7 @@ script:
       - service: script.radios_pausieren
       - service: switch.turn_off
         entity_id: switch.wohnzimmer_radio, switch.balkon_radio, switch.flur_radio, switch.badezimmer_radio, switch.kuche_radio, switch.schlafzimmer_radio, switch.arbeitszimmer_radio
-
+    
   radios_starten:
     alias: Radios abspielen
     sequence:
@@ -393,11 +385,7 @@ script:
           data:
             entity_id: media_player.kuche, media_player.badezimmer, media_player.wohnzimmer, media_player.schlafzimmer, media_player.arbeitszimmer, media_player.flur, media_player.balkon
             volume_level: 0.4
-        - service: media_player.volume_set          
-          data:
-            entity_id: media_player.balkon
-            volume_level: 0.2            
-          
+
   wohnung_radios_einschalten:
     alias: "Wohnung - Radios einschalten"
     sequence:

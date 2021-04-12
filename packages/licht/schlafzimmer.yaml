@@ -33,21 +33,21 @@ entity_controller:
       start_time: '23:00:00'
       end_time: '05:00:00'     
     behaviours:
-      on_enter_overridden: off
+      on_enter_overridden: 'off'
     overrides:
       - binary_sensor.schlafen_inaktiv
       - binary_sensor.sonne_tagsueber    
       - binary_sensor.bewegungsmelder_inaktiv_unterwegs
       - binary_sensor.bewegungsmelder_inaktiv_staubsauger
       - input_boolean.bewegungsmelder_schlafzimmer_deaktiviert
-
+      
   bewegung_schlafzimmer_kleiderschrank:
     friendly_name: "Bewegung Schlafzimmer Kleiderschrank"
     sensor: binary_sensor.bewegungsmelder_schlafzimmer
     entity: light.kleiderschrank
     delay: 120 
     behaviours:
-      on_enter_overridden: off
+      on_enter_overridden: 'off'
     overrides:
       - binary_sensor.schlafen_aktiv
       - binary_sensor.sonne_tagsueber

@@ -20,7 +20,7 @@ entity_controller:
     entities: light.sportzimmer_regal
     delay: 120
     behaviours:
-      on_enter_overridden: off
+      on_enter_overridden: 'off'
     overrides:
       - binary_sensor.sonne_tagsueber
       - binary_sensor.bewegungsmelder_inaktiv_unterwegs  

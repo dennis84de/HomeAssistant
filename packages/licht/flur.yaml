@@ -23,7 +23,7 @@ entity_controller:
     entity: light.flur_vorne
     delay: 120    
     behaviours:
-      on_enter_overridden: off
+      on_enter_overridden: 'off'
     overrides:
       - binary_sensor.sonne_tagsueber
       - binary_sensor.bewegungsmelder_inaktiv_unterwegs
@@ -37,7 +37,7 @@ entity_controller:
     delay: 120
     grace_period: 60
     behaviours:
-      on_enter_overridden: off
+      on_enter_overridden: 'off'
     overrides:
       - binary_sensor.sonne_tagsueber
       - binary_sensor.bewegungsmelder_inaktiv_unterwegs

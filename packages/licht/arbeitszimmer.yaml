@@ -13,7 +13,7 @@ input_boolean:
   bewegungsmelder_arbeitszimmer_deaktiviert:
     name: Bewegungsmelder deaktiviert
     icon: mdi:sync-off
-   
+
 entity_controller:
   bewegung_arbeitszimmer:
     friendly_name: "Bewegung Arbeitszimmer"
@@ -24,7 +24,7 @@ entity_controller:
     delay: 120
     grace_period: 60
     behaviours:
-      on_enter_overridden: off
+      on_enter_overridden: 'off'
     overrides:     
       - binary_sensor.home_office
       - binary_sensor.sonne_tagsueber      

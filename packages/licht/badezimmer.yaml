@@ -18,7 +18,7 @@ entity_controller:
     sensor_type_duration: True
     delay: 180
     behaviours:
-      on_enter_overridden: off
+      on_enter_overridden: 'off'
     overrides:
       - binary_sensor.sonne_tagsueber
       - binary_sensor.bewegungsmelder_inaktiv_unterwegs      

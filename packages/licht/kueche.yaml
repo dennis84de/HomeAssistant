@@ -36,7 +36,7 @@ entity_controller:
     entity: light.kuche_regal
     delay: 120     
     behaviours:
-      on_enter_overridden: off
+      on_enter_overridden: 'off'
     overrides:
       - binary_sensor.sonne_tagsueber
       - binary_sensor.kuechelregal_inaktiv
@@ -50,7 +50,7 @@ entity_controller:
     entity: light.kuche_schrank
     delay: 120
     behaviours:
-      on_enter_overridden: off
+      on_enter_overridden: 'off'
     overrides:            
       - binary_sensor.sonne_tagsueber
       - binary_sensor.kuechenschrank_inaktiv
