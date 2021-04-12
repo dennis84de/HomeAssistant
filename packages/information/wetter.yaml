@@ -380,32 +380,16 @@ sensor:
         friendly_name: 'Windrichtung'
         icon_template: mdi:compass
         value_template: >-
-          {% set wind_dir = states('sensor.darksky_wind_bearing') %}
-
-          {% if wind_dir | float <= 23 %} Nord
-          {% elif wind_dir | float > 338 %} Nord
-          {% elif 23 < (wind_dir|float) <= 68 %} NO
-          {% elif 68 < (wind_dir|float) <= 113 %} Ost
-          {% elif 113 < (wind_dir|float) <= 158 %} SO
-          {% elif 158 < (wind_dir|float) <= 203 %} Süd
-          {% elif 203 < (wind_dir|float) <= 248 %} SW
-          {% elif 248 < (wind_dir|float) <= 293 %} West
-          {% elif 293 < (wind_dir|float) <= 338 %} NW
-          {%- endif %}
+          {% set winbearing = (states('sensor.darksky_wind_bearing') | float / 45) | int | round + 1 %}
+          {% set winddir = ['Nord', 'NO','Ost','SO','Süd','SW','West','NW']%}
+          
+          {{ winddir[winbearing]}}
         entity_picture_template: >-
-          {% set wind_dir = states('sensor.darksky_wind_bearing') %}
-
-          {% if wind_dir | float <= 23 %} /local/wind/0.png
-          {% elif wind_dir | float > 338 %} /local/wind/0.png
-          {% elif 23 < (wind_dir|float) <= 68 %} /local/wind/45.png
-          {% elif 68 < (wind_dir|float) <= 113 %} /local/wind/90.png
-          {% elif 113 < (wind_dir|float) <= 158 %} /local/wind/135.png
-          {% elif 158 < (wind_dir|float) <= 203 %} /local/wind/180.png
-          {% elif 203 < (wind_dir|float) <= 248 %} /local/wind/225.png
-          {% elif 248 < (wind_dir|float) <= 293 %} /local/wind/270.png
-          {% elif 293 < (wind_dir|float) <= 338 %} /local/wind/315.png
-          {%- endif %}
-        
+          {% set winbearing = (states('sensor.darksky_wind_bearing') | float / 45) | int | round + 1 %}
+          {% set winddir = ['0', '45','90','135','180','225','270','315'] %}
+          
+          {{ "/local/wind/" ~ winddir[winbearing] ~ ".png" }}
+          
       zeitumstellung:
         friendly_name: "Zeitumstellung"       
         device_class: timestamp
