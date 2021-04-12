@@ -180,7 +180,7 @@ automation:
         value_template: >-
           {% if is_state('sensor.hass_current_version', None) or is_state('sensor.hass_installed_version', None) %}
             False
-          {% elif is_state("sensor.hass_current_version", "unavailable") == True %}
+          {% elif is_state("sensor.hass_current_version", "unavailable") %}
             False
           {% else %}
             {{ states('sensor.hass_current_version') != states('sensor.hass_installed_version') }}
