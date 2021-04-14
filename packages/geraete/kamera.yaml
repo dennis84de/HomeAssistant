@@ -19,5 +19,5 @@ switch:
         command_off: !secret kamera_url_switch_off
         command_state: !secret kamera_url_state
         value_template: >-
-          {{ value_json['SWITCH_ON'] == 'yes' }}
+          {{ value_json['SWITCH_ON'] == 'yes' if value_json is defined else False }}
         friendly_name: Kamera 
