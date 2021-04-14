@@ -4,7 +4,7 @@ from enum import Enum
 # Base component constants
 NAME = "Grocy"
 DOMAIN = "grocy"
-VERSION = "v3.0.1"
+VERSION = "v3.0.5"
 
 ISSUE_URL = "https://github.com/custom-components/grocy/issues"
 
@@ -52,7 +52,7 @@ class GrocyEntityUnit(str, Enum):
     """Unit of measurement for Grocy entities."""
 
     CHORES = "Chore(s)"
-    MEALS = "Meal(s)"
+    MEAL_PLAN = "Meal(s)"
     PRODUCTS = "Product(s)"
     TASKS = "Task(s)"
 
