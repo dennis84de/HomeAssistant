@@ -68,9 +68,9 @@ cards:
     title: Microsoft Teams
     show_header_toggle: false
     entities:
-      - entity: sensor.teams_status_de
+      - entity: sensor.teams_status
         name: Status
-      - entity: sensor.teams_activity_de
+      - entity: sensor.teams_activity
         name: Aktivität
 
   - type: entities
