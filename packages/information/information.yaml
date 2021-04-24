@@ -90,37 +90,8 @@ binary_sensor:
           {{ is_state_attr('sensor.tankerkoenig_jet_muelheim_strassburger_allee_75_e10', 'is_open', True) }}
                 
 automation:
-  - alias: 'Neue E-Mail - Kodi'
-    trigger:
-      - platform: state
-        entity_id: sensor.ungelesene_mails
-    condition:
-      - condition: state
-        entity_id: media_player.kodi_wohnzimmer
-        state: 'playing'
-      - condition: template     
-        value_template: >-
-          {% set oldMailCount = trigger.from_state.state | int %}
-          {% set newMailCount = trigger.to_state.state | int %}
-          
-          {{ newMailCount > oldMailCount }}
-    action:
-      - service: notify.kodi_wohnzimmer
-        data:
-          title: 'E-Mail'
-          message: >-
-            {% set mailCount = states('sensor.ungelesene_mails') | default(0) | int %}
-
-            {% if mailCount == 1 %}
-              Eine neue E-Mail ist eingegangen.
-            {% else %}
-              Es sind {{ mailCount }} neue E-Mails eingegangen.
-            {% endif %}
-          data:
-            displaytime: 5000
-            icon: "info"
-
-  - alias: "Neue E-Mail - TTS"
+  - alias: "Neue E-Mail"
+    id: "neue_email"
     trigger:
       - platform: state
         entity_id: sensor.ungelesene_mails
@@ -138,18 +109,39 @@ automation:
           
           {{ newMailCount > oldMailCount }}        
     action:
-      service: !secret tts_service
-      data_template:
-        message: >-
-          {% set mailCount = (trigger.to_state.state | int) - (trigger.from_state.state | int) %}
+      - service: !secret tts_service
+        data:
+          message: >-
+            {% set mailCount = (trigger.to_state.state | int) - (trigger.from_state.state | int) %}
 
-          {% if mailCount == 1 %}
-            Eine neue E-Mail ist eingegangen.
-          {% else %}
-            Es sind {{ mailCount }} neue E-Mails eingegangen.
-          {% endif %}
+            {% if mailCount == 1 %}
+              Eine neue E-Mail ist eingegangen.
+            {% else %}
+              Es sind {{ mailCount }} neue E-Mails eingegangen.
+            {% endif %}      
+      - choose:
+          - conditions:
+              - condition: state
+                entity_id: media_player.kodi_wohnzimmer
+                state: 'playing'
+            sequence:
+              - service: notify.kodi_wohnzimmer
+                data:
+                  title: 'E-Mail'
+                  message: >-
+                    {% set mailCount = states('sensor.ungelesene_mails') | default(0) | int %}
 
-  - alias: 'Telegram - Tanken'
+                    {% if mailCount == 1 %}
+                      Eine neue E-Mail ist eingegangen.
+                    {% else %}
+                      Es sind {{ mailCount }} neue E-Mails eingegangen.
+                    {% endif %}
+                  data:
+                    displaytime: 5000
+                    icon: "info"
+
+  - alias: "Telegram - Tanken"
+    id: "telegram_tanken"
     trigger:
       platform: event
       event_type: telegram_command

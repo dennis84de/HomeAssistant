@@ -8,9 +8,10 @@ counter:
     name: Alexa Witz - Statusänderungen    
     initial: 0
     step: 1      
-          
+        
 automation:
   - alias: "Alexa Witz - Aktiv"
+    id: "alexa_witz_aktiv"
     trigger:
       - platform: state
         entity_id: media_player.echo_wohnzimmer
@@ -25,6 +26,7 @@ automation:
         entity_id: counter.alexa_witz_status
        
   - alias: "Alexa Witz - Beendet"
+    id: "alexa_witz_beendet"
     trigger:
       - platform: numeric_state
         entity_id: counter.alexa_witz_status

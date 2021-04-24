@@ -105,6 +105,7 @@ script:
 
 automation:       
   - alias: "Schlafzimmer Kodi - Wiedergabe"
+    id: "schlafzimmer_kodi_wiedergabe"
     trigger:
       - platform: state        
         entity_id: binary_sensor.schalter_schlafzimmer
@@ -136,6 +137,7 @@ automation:
         entity_id: media_player.kodi_schlafzimmer  
         
   - alias: "Schlafzimmer - Kodi gestartet"
+    id: "schlafzimmer_kodi_gestartet"
     trigger:
       platform: state
       entity_id: media_player.kodi_schlafzimmer
@@ -148,7 +150,8 @@ automation:
       - service: light.turn_off
         entity_id: light.bett, light.kleiderschrank, light.flur_vorne, light.flur_hinten, light.badezimmerschrank, light.schreibtisch, light.kuche_regal, light.arbeitszimmer_lampe, light.sportzimmer_regal
 
-  - alias: "Schlafzimmer - Kodi pausiert"
+  - alias: "Schlafzimmer - Kodi pausieren"
+    id: "schlafzimmer_kodi_pausieren"
     trigger:
       platform: state
       entity_id: binary_sensor.bewegungsmelder_schlafzimmer

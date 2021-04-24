@@ -44,7 +44,8 @@ switch:
           entity_id: switch.monitor, switch.pc   
     
 automation:
-  - alias: 'Unterwegs - Computer ausschalten'
+  - alias: "Unterwegs - Computer ausschalten"
+    id: "unterwegs_computer_ausschalten"
     trigger:
       - platform: state
         entity_id: binary_sensor.zu_hause
@@ -66,7 +67,8 @@ automation:
           title: "Computer eingeschaltet"
           message: "Der Computer war noch eingeschaltet und wird jetzt heruntergefahren."
 
-  - alias: 'Telegram - Computer ausschalten'
+  - alias: "Telegram - Computer ausschalten"
+    id: "telegram_computer_ausschalten"
     trigger:
       - platform: event
         event_type: telegram_callback

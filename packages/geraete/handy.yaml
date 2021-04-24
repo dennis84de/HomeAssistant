@@ -93,7 +93,8 @@ sensor:
         device_class: timestamp
         
 automation: 
-  - alias: 'Eingehender Anruf - Handy'
+  - alias: "Eingehender Anruf - Handy"
+    id: "eingehender_anruf_handy"
     trigger:
       - platform: state
         entity_id: sensor.handy
@@ -108,7 +109,8 @@ automation:
           topic: phone/last_call
           retain: true
 
-  - alias: 'Handy aktiv - Kodi Wohnzimmer pausieren'
+  - alias: "Handy aktiv - Kodi Wohnzimmer pausieren"
+    id: "handy_aktiv_kodi_wohnzimmer_pausieren"
     trigger:
       - platform: state
         entity_id: sensor.handy
@@ -156,7 +158,8 @@ automation:
             displaytime: 5000
             icon: "info"
 
-  - alias: 'Handy inaktiv - Kodi Wohnzimmer wiedergeben'
+  - alias: "Handy inaktiv - Kodi Wohnzimmer wiedergeben"
+    id: "handy_inaktiv_kodi_wohnzimmer_wiedergeben"
     trigger:
       - platform: state
         entity_id: sensor.handy
@@ -184,7 +187,8 @@ automation:
             displaytime: 2000
             icon: "info"
  
-  - alias: 'Handy aktiv - Youtube Wohnzimmer pausieren'
+  - alias: "Handy aktiv - Youtube Wohnzimmer pausieren"
+    id: "handy_aktiv_youtube_wohnzimmer_pausieren"
     trigger:
       - platform: state
         entity_id: sensor.handy
@@ -208,7 +212,8 @@ automation:
       - service: switch.turn_on
         entity_id: switch.computer_wiedergabe
 
-  - alias: 'Handy inaktiv - Youtube Wohnzimmer wiedergeben'
+  - alias: "Handy inaktiv - Youtube Wohnzimmer wiedergeben"
+    id: "handy_inaktiv_youtube_wohnzimmer_wiedergeben"
     trigger:
       - platform: state
         entity_id: sensor.handy
@@ -232,7 +237,8 @@ automation:
               - service: switch.turn_on
                 entity_id: switch.computer_wiedergabe            
 
-  - alias: 'Handy aktiv - Soundbar deaktivieren'
+  - alias: "Handy aktiv - Soundbar deaktivieren"
+    id: "handy_aktiv_soundbar_deaktivieren"
     trigger:
       - platform: state
         entity_id: sensor.handy
@@ -265,7 +271,8 @@ automation:
       - service: switch.turn_on
         entity_id: switch.radios_lautlos
 
-  - alias: 'Handy inaktiv - Soundbar aktivieren'
+  - alias: "Handy inaktiv - Soundbar aktivieren"
+    id: "handy_inaktiv_soundbar_aktivieren"
     trigger:
       - platform: state
         entity_id: sensor.handy
@@ -280,7 +287,8 @@ automation:
       - service: switch.turn_off
         entity_id: switch.radios_lautlos
           
-  - alias: 'Handy aktiv - Musik pausieren'
+  - alias: "Handy aktiv - Musik pausieren"
+    id: "handy_aktiv_musik_pausieren"
     trigger:
       - platform: state
         entity_id: sensor.handy
@@ -313,7 +321,8 @@ automation:
       - service: switch.turn_on
         entity_id: switch.radios_lautlos
 
-  - alias: 'Handy inaktiv - Musik wiedergeben'
+  - alias: "Handy inaktiv - Musik wiedergeben"
+    id: "handy_inaktiv_musik_wiedergeben"
     trigger:
       - platform: state
         entity_id: sensor.handy
@@ -331,7 +340,8 @@ automation:
       - service: switch.turn_off
         entity_id: switch.radios_lautlos
 
-  - alias: "Handy - Eingehender Anruf - TTS"
+  - alias: "Handy - Eingehender Anruf"
+    id: "handy_eingehender_anruf"
     trigger:
       - platform: state
         entity_id: sensor.handy
@@ -347,6 +357,7 @@ automation:
           Ein eingehender Anruf von {% if state_attr('sensor.handy', 'name') != '-' and state_attr('sensor.handy', 'name').startswith('+') == False %}{{ state_attr('sensor.handy', 'name') }}{% else %}einer unbekannten Nummer{% endif %}.
 
   - alias: "Handy - Neue SMS"
+    id: "handy_neue_sms"
     trigger:
       - platform: state
         entity_id: sensor.handy
@@ -357,9 +368,7 @@ automation:
         state: 'off'
       - condition: state
         entity_id: binary_sensor.besuch
-        state: 'off'        
-      - condition: template      
-        value_template: "{{ state_attr('sensor.handy', 'text') != null }}"        
+        state: 'off'
     action:
       - service: !secret tts_service
         data:
@@ -372,49 +381,42 @@ automation:
             {% if state_attr('sensor.handy', 'name') != '-' and state_attr('sensor.handy', 'name').startswith('+') == False and state_attr('sensor.handy', 'name').startswith('0') == False %} {{ state_attr('sensor.handy', 'name') }} {% else %}Unbekannte Nummer{% endif %}
           message: >-
             {% if state_attr('sensor.handy', 'text') != null %} {{ state_attr('sensor.handy', 'text') }} {% endif %}
-          notification_id: neue_sms
+          notification_id: neue_sms                  
+      - choose:
+          - conditions:
+              - condition: state
+                entity_id: media_player.kodi_wohnzimmer
+                state: 'playing'
+            sequence:
+              - service: notify.kodi_wohnzimmer
+                data:
+                  title: 'Handy'
+                  message: >-
+                    {% set name = state_attr('sensor.handy', 'name') | string %}
 
-  - alias: 'Handy - Neue SMS - Kodi'
-    trigger:
-      - platform: state
-        entity_id: sensor.handy
-        to: 'sms'
-    condition:
-      - condition: state
-        entity_id: media_player.kodi_wohnzimmer
-        state: 'playing'
-      - condition: state
-        entity_id: input_boolean.nicht_stoeren
-        state: 'off'
-    action:
-      - service: notify.kodi_wohnzimmer
-        data:
-          title: 'Handy'
-          message: >-
-            {% set name = state_attr('sensor.handy', 'name') | string %}
-
-            {% if name.startswith('+') or name.startswith('0') or name == '-' %}
-              Eine neue SMS ist eingegangen.
-            {% else %}
-              Eine neue SMS von {{ name }} ist eingegangen.
-            {% endif %}
-          data:
-            displaytime: 3000
-            icon: "info"
-      - condition: template
-        value_template: >-
-          {{ state_attr('sensor.handy', 'text') != '-' }}
-      - delay: '00:00:03'
-      - service: notify.kodi_wohnzimmer
-        data:
-          title: 'Handy'
-          message: >-
-            {{ state_attr('sensor.handy', 'text') }}
-          data:
-            displaytime: 6000
-            icon: "info"
+                    {% if name.startswith('+') or name.startswith('0') or name == '-' %}
+                      Eine neue SMS ist eingegangen.
+                    {% else %}
+                      Eine neue SMS von {{ name }} ist eingegangen.
+                    {% endif %}
+                  data:
+                    displaytime: 3000
+                    icon: "info"
+              - condition: template
+                value_template: >-
+                  {{ state_attr('sensor.handy', 'text') != '-' }}
+              - delay: '00:00:03'
+              - service: notify.kodi_wohnzimmer
+                data:
+                  title: 'Handy'
+                  message: >-
+                    {{ state_attr('sensor.handy', 'text') }}
+                  data:
+                    displaytime: 6000
+                    icon: "info"
 
   - alias: "Handy - SMS gelesen"
+    id: "handy_sms_gelesen"  
     trigger: 
       - platform: state
         entity_id: sensor.handy
@@ -428,6 +430,7 @@ automation:
           notification_id: neue_sms
 
   - alias: "Handy - Benachrichtigung ausgeblendet"
+    id: "handy_benachrichtigung_ausgeblendet"
     trigger:
       - platform: event
         event_type: call_service
@@ -450,6 +453,7 @@ automation:
            retain: true
 
   - alias: "Handy - Batteriestand niedrig"
+    id: "handy_batteriestand_niedrig"
     trigger:
       - platform: state
         entity_id: sensor.handy_batterie
@@ -465,6 +469,7 @@ automation:
           message: "Das Handy muss aufgeladen werden. Der Batteriestand beträgt {{ states('sensor.handy_batterie') | int }} Prozent."
 
   - alias: "Handy - Aufgeladen"
+    id: "handy_aufgeladen"
     trigger:
       - platform: state
         entity_id: sensor.handy_batterie

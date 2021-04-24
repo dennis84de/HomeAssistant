@@ -43,7 +43,8 @@ input_boolean:
     name: Musik pausiert            
         
 automation:
-  - alias: 'Eingehender Anruf - Telefon'
+  - alias: "Eingehender Anruf - Telefon"
+    id: "eingehender_anruf_telefon"
     trigger:
       - platform: state
         entity_id: sensor.telefon
@@ -58,7 +59,8 @@ automation:
           topic: phone/last_call
           retain: true
 
-  - alias: 'Eingehender Anruf - Licht starten'
+  - alias: "Eingehender Anruf - Licht starten"
+    id: "eingehender_anruf_licht_starten"
     trigger:
       - platform: state
         entity_id: sensor.telefon
@@ -102,7 +104,8 @@ automation:
             - delay:
                 seconds: 1
 
-  - alias: 'Eingehender Anruf - Licht beenden'
+  - alias: "Eingehender Anruf - Licht beenden"
+    id: "eingehender_anruf_licht_beenden"
     trigger:
       - platform: state
         entity_id: sensor.telefon
@@ -126,7 +129,8 @@ automation:
       - service: scene.turn_on
         entity_id: scene.eingehender_anruf_licht_status
 
-  - alias: 'Telefon aktiv - Kodi Wohnzimmer pausieren'
+  - alias: "Telefon aktiv - Kodi Wohnzimmer pausieren"
+    id: "telefon_aktiv_kodi_wohnzimmer_pausieren"
     trigger:
       - platform: state
         entity_id: sensor.telefon
@@ -168,7 +172,8 @@ automation:
             displaytime: 5000
             icon: "info"
 
-  - alias: 'Telefon inaktiv - Kodi Wohnzimmer wiedergeben'
+  - alias: "Telefon inaktiv - Kodi Wohnzimmer wiedergeben"
+    id: "telefon_inaktiv_kodi_wohnzimmer_wiedergeben"
     trigger:
       - platform: state
         entity_id: sensor.telefon
@@ -195,7 +200,8 @@ automation:
             displaytime: 2000
             icon: "info"                   
                 
-  - alias: 'Telefon aktiv - Youtube Wohnzimmer pausieren'
+  - alias: "Telefon aktiv - Youtube Wohnzimmer pausieren"
+    id: "telefon_aktiv_youtube_wohnzimmer_pausieren"
     trigger:
       - platform: state
         entity_id: sensor.telefon
@@ -225,7 +231,8 @@ automation:
       - service: switch.turn_on
         entity_id: switch.computer_wiedergabe
         
-  - alias: 'Telefon inaktiv - Youtube Wohnzimmer wiedergeben'
+  - alias: "Telefon inaktiv - Youtube Wohnzimmer wiedergeben"
+    id: "telefon_inaktiv_youtube_wohnzimmer_wiedergeben"
     trigger:
       - platform: state
         entity_id: sensor.telefon
@@ -248,7 +255,8 @@ automation:
               - service: switch.turn_on
                 entity_id: switch.computer_wiedergabe
 
-  - alias: 'Telefon aktiv - Soundbar deaktivieren'
+  - alias: "Telefon aktiv - Soundbar deaktivieren"
+    id: "telefon_aktiv_soundbar_deaktivieren"
     trigger:
       - platform: state
         entity_id: sensor.telefon
@@ -281,7 +289,8 @@ automation:
       - service: switch.turn_on
         entity_id: switch.radios_lautlos
         
-  - alias: 'Telefon inaktiv - Soundbar aktivieren'
+  - alias: "Telefon inaktiv - Soundbar aktivieren"
+    id: "telefon_inaktiv_soundbar_aktivieren"
     trigger:
       - platform: state
         entity_id: sensor.telefon
@@ -296,7 +305,8 @@ automation:
       - service: switch.turn_off
         entity_id: switch.radios_lautlos
           
-  - alias: 'Telefon aktiv - Musik pausieren'
+  - alias: "Telefon aktiv - Musik pausieren"
+    id: "telefon_aktiv_musik_pausieren"
     trigger:
       - platform: state
         entity_id: sensor.telefon
@@ -329,7 +339,8 @@ automation:
       - service: switch.turn_on
         entity_id: switch.radios_lautlos
 
-  - alias: 'Telefon inaktiv - Musik wiedergeben'
+  - alias: "Telefon inaktiv - Musik wiedergeben"
+    id: "telefon_inaktiv_musik_widergeben"
     trigger:
       platform: state
       entity_id: sensor.telefon
@@ -346,53 +357,51 @@ automation:
       - service: switch.turn_off
         entity_id: switch.radios_lautlos
          
-  - alias: 'Telefon aktiv - Nachricht an Handy'
+  - alias: "Telefon aktiv - Benachrichtigung"
+    id: "telefon_aktiv_benachrichtigung"
     trigger:
       - platform: state
         entity_id: sensor.telefon
         to: 'ringing'
-    condition:
-      - condition: state
-        entity_id: binary_sensor.zu_hause
-        state: 'off'
     action:
-      - service: notify.telegram
-        data_template:
-          title: Anruf Festnetz
-          message: >-
-            {% if state_attr('sensor.telefon', 'from') == None or state_attr('sensor.telefon', 'from') == '' %}
-              Ein Anruf ohne Rufnummer.
-            {% elif state_attr('sensor.telefon', 'from_name') == None or state_attr('sensor.telefon', 'from_name') == 'unknown' %}
-              Ein Anruf von einer unbekannten Rufnummer ({{ state_attr('sensor.telefon', 'from') }}).
-            {% else %}
-              Anruf von {{ state_attr('sensor.telefon', 'from_name') }} ({{ state_attr('sensor.telefon', 'from') }}).
-            {% endif %}
-
-  - alias: "Telefon aktiv - TTS"
-    trigger:
-      - platform: state
-        entity_id: sensor.telefon
-        to: 'ringing'
-    condition:
-      - condition: state
-        entity_id: binary_sensor.zu_hause
-        state: 'on'      
-      - condition: state
-        entity_id: input_boolean.nicht_stoeren
-        state: 'off'
-    action:
-      service: !secret tts_service
-      data_template:
-        message: >-
-          {% if state_attr('sensor.telefon', 'from') == None or state_attr('sensor.telefon', 'from') == '' %}
-            Ein eingehender Anruf ohne Rufnummer.
-          {% elif state_attr('sensor.telefon', 'from_name') == None or state_attr('sensor.telefon', 'from_name') == 'unknown' %}
-            Ein eingehender Anruf von einer unbekannten Rufnummer.
-          {% else %}
-            Ein eingehender Anruf von {{ state_attr('sensor.telefon', 'from_name') }}.
-          {% endif %}
+      - choose:
+          - conditions:
+              - condition: state
+                entity_id: binary_sensor.zu_hause
+                state: 'off'
+            sequence:
+              - service: notify.telegram
+                data:
+                  title: Anruf Festnetz
+                  message: >-
+                    {% if state_attr('sensor.telefon', 'from') == None or state_attr('sensor.telefon', 'from') == '' %}
+                      Ein Anruf ohne Rufnummer.
+                    {% elif state_attr('sensor.telefon', 'from_name') == None or state_attr('sensor.telefon', 'from_name') == 'unknown' %}
+                      Ein Anruf von einer unbekannten Rufnummer ({{ state_attr('sensor.telefon', 'from') }}).
+                    {% else %}
+                      Anruf von {{ state_attr('sensor.telefon', 'from_name') }} ({{ state_attr('sensor.telefon', 'from') }}).
+                    {% endif %}  
+          - conditions:
+              - condition: state
+                entity_id: binary_sensor.zu_hause
+                state: 'on'      
+              - condition: state
+                entity_id: input_boolean.nicht_stoeren
+                state: 'off'
+            sequence:
+              - service: !secret tts_service
+                data:
+                  message: >-
+                    {% if state_attr('sensor.telefon', 'from') == None or state_attr('sensor.telefon', 'from') == '' %}
+                      Ein eingehender Anruf ohne Rufnummer.
+                    {% elif state_attr('sensor.telefon', 'from_name') == None or state_attr('sensor.telefon', 'from_name') == 'unknown' %}
+                      Ein eingehender Anruf von einer unbekannten Rufnummer.
+                    {% else %}
+                      Ein eingehender Anruf von {{ state_attr('sensor.telefon', 'from_name') }}.
+                    {% endif %}
 
   - alias: "Telefon aktiv - Anruf verpasst"
+    id: "telefon_aktiv_anruf_verpasst"
     trigger:
       - platform: state
         entity_id: sensor.telefon

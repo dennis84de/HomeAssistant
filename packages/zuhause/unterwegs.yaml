@@ -1,5 +1,6 @@
 automation:
-  - alias: 'Unterwegs - Geräte eingeschaltet'
+  - alias: "Unterwegs - Geräte eingeschaltet"
+    id: "unterwegs_geraete_eingeschaltet"
     trigger:
       - platform: state
         entity_id: binary_sensor.zu_hause
@@ -51,6 +52,7 @@ automation:
               - 'Alles Ausschalten:/alles_ausschalten'
               
   - alias: "Urlaub - Lichtsimulation einschalten"
+    id: "urlaub_lichtsimulation_einschalten"
     trigger:
       - platform: state
         entity_id: binary_sensor.zu_hause
@@ -63,7 +65,8 @@ automation:
       - service: input_boolean.turn_on
         entity_id: input_boolean.licht_simulaton
 
-  - alias: 'Telegram - Unterwegs Status'
+  - alias: "Telegram - Unterwegs Status"
+    id: "telegram_unterwegs_status"
     trigger:
       platform: event
       event_type: telegram_command
@@ -89,7 +92,8 @@ automation:
             inline_keyboard:
               - 'Geräte anzeigen:/geraete'
               
-  - alias: 'Telegram - Unterwegs einschalten'
+  - alias: "Telegram - Unterwegs einschalten"
+    id: "telegram_unterwegs_einschalten"
     trigger:
       - platform: event
         event_type: telegram_callback
@@ -106,7 +110,8 @@ automation:
           target: '{{ trigger.event.data.chat_id }}'
           message: "Der Status wird aktualisiert."
 
-  - alias: 'Telegram - Eingeschaltete Geräte'
+  - alias: "Telegram - Eingeschaltete Geräte"
+    id: "telegram_eingeschaltete_geraete"
     trigger:
       platform: event
       event_type: telegram_callback
@@ -138,7 +143,8 @@ automation:
           inline_keyboard:
             - 'Alles Ausschalten:/alles_ausschalten'
 
-  - alias: 'Telegram - Alles ausschalten'
+  - alias: "Telegram - Alles ausschalten"
+    id: "telegram_alles_ausschalten"
     trigger:
       - platform: event
         event_type: telegram_callback
@@ -156,7 +162,8 @@ automation:
           target: '{{ trigger.event.data.chat_id }}'
           message: "Alle Geräte werden ausgeschaltet."              
           
-  - alias: 'Telegram - Aufenthaltsort'
+  - alias: "Telegram - Aufenthaltsort"
+    id: "telegram_aufenthaltsort"
     trigger:
       - platform: event
         event_type: telegram_command
@@ -168,7 +175,8 @@ automation:
           title: "Aufenthaltsort"
           message: "{{ states('sensor.aufenthaltsort_handy') }} {% if states('proximity.home') | int > 0 %}({{ states('proximity.home') }}km von zu Hause.){% endif %}"
 
-  - alias: 'Telegram - Kamera'
+  - alias: "Telegram - Kamera"
+    id: "telegram_kamera"
     trigger:
       - platform: event
         event_type: telegram_command
@@ -184,7 +192,8 @@ automation:
           caption: 'Kamera'
           url: 'http://192.168.2.75:8123/api/camera_proxy/camera.wohnzimmer?token={{ state_attr("camera.wohnzimmer", "access_token") }}'
                
-  - alias: 'Telegram - Lichtsimulation einschalten'
+  - alias: "Telegram - Lichtsimulation einschalten"
+    id: "telegram_lichsimulation_einschalten"
     trigger:
       - platform: event
         event_type: telegram_command
@@ -197,7 +206,8 @@ automation:
           target: '{{ trigger.event.data.chat_id }}'
           message: "Die Lichtsimulation wird gestartet."
                
-  - alias: 'Telegram - Lichtsimulation ausschalten'
+  - alias: "Telegram - Lichtsimulation ausschalten"
+    id: "telegram_lichsimulation_ausschalten"
     trigger:
       - platform: event
         event_type: telegram_command

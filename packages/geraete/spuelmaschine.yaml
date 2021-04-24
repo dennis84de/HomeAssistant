@@ -23,7 +23,8 @@ sensor:
         icon_template: 'mdi:dishwasher'    
     
 automation:
-  - alias: 'Spülmaschine - Ausgeschaltet'
+  - alias: "Spülmaschine - Ausgeschaltet"
+    id: "spuelmaschine_ausgeschaltet"
     trigger:
       - platform: state
         entity_id: switch.spulmaschine
@@ -36,6 +37,7 @@ automation:
           option: 'Ausgeschaltet'
 
   - alias: 'Spülmaschine - Stillstand'
+    id: "spuelmaschine_stillstand"
     trigger:
       - platform: numeric_state
         entity_id: sensor.spulmaschine_verbrauch
@@ -56,6 +58,7 @@ automation:
           option: 'Stillstand'
 
   - alias: 'Spülmaschine - Aktiv'
+    id: "spuelmaschine_aktiv"
     trigger:
       - platform: numeric_state
         entity_id: sensor.spulmaschine_verbrauch
@@ -74,7 +77,8 @@ automation:
           entity_id: input_select.status_spuelmaschine
           option: 'Aktiv'              
 
-  - alias: 'Spülmaschine fertig'
+  - alias: 'Spülmaschine - Fertig'
+    id: "spuelmaschine_fertig"
     trigger:      
       - platform: state
         entity_id: input_select.status_spuelmaschine

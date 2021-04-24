@@ -113,6 +113,7 @@ sensor:
           
 automation:
   - alias: "Tablet Wohnzimmer - Batteriestand niedrig"
+    id: "tablet_wohnzimmer_batteriestand_niedrig"
     trigger:
       - platform: state
         entity_id: sensor.tablet_wohnzimmer_batterie
@@ -133,6 +134,7 @@ automation:
           message: "Das Tablet im Wohnzimmer muss aufgeladen werden. Der Batteriestand beträgt {{ states('sensor.tablet_wohnzimmer_batterie') | int }} Prozent."
 
   - alias: "Tablet Schlafzimmer - Batteriestand niedrig"
+    id: "tablet_schlafzimmer_batteriestand_niedrig"
     trigger:
       - platform: state
         entity_id: sensor.tablet_schlafzimmer_batterie
@@ -153,6 +155,7 @@ automation:
           message: "Das Tablet im Schlafzimmer muss aufgeladen werden. Der Batteriestand beträgt {{ states('sensor.tablet_schlafzimmer_batterie') | int }} Prozent."
 
   - alias: "Tablet Badezimmer - Batteriestand niedrig"
+    id: "tablet_badezimmer_batteriestand_niedrig"
     trigger:
       - platform: state
         entity_id: sensor.tablet_badezimmer_batterie
@@ -173,6 +176,7 @@ automation:
           message: "Das Tablet im Badezimmer muss aufgeladen werden. Der Batteriestand beträgt {{ states('sensor.tablet_badezimmer_batterie') | int }} Prozent."
 
   - alias: "Tablet Küche - Batteriestand niedrig"
+    id: "tablet_kueche_batteriestand_niedrig"
     trigger:
       - platform: state
         entity_id: sensor.tablet_kuche_batterie
@@ -193,6 +197,7 @@ automation:
           message: "Das Tablet in der Küche muss aufgeladen werden. Der Batteriestand beträgt {{ states('sensor.tablet_kuche_batterie') | int }} Prozent."
 
   - alias: "Tablet Balkon - Batteriestand niedrig"
+    id: "tablet_balkon_batteriestand_niedrig"
     trigger:
       - platform: state
         entity_id: sensor.tablet_balkon_batterie
@@ -213,6 +218,7 @@ automation:
           message: "Das Tablet auf dem Balkon muss aufgeladen werden. Der Batteriestand beträgt {{ states('sensor.tablet_balkon_batterie') | int }} Prozent."
 
   - alias: "Tablet Wohnzimmer - Aufgeladen"
+    id: "tablet_wohnzimmer_aufgeladen"
     trigger:
       - platform: state
         entity_id: sensor.tablet_wohnzimmer_batterie
@@ -228,6 +234,7 @@ automation:
           message: "Das Tablet im Wohnzimmer wurde vollständig aufgeladen."
 
   - alias: "Tablet Schlafzimmer - Aufgeladen"
+    id: "tablet_schlafzimmer_aufgeladen"
     trigger:
       - platform: state
         entity_id: sensor.tablet_schlafzimmer_batterie
@@ -243,6 +250,7 @@ automation:
           message: "Das Tablet im Schlafzimmer wurde vollständig aufgeladen."
 
   - alias: "Tablet Badezimmer - Aufgeladen"
+    id: "tablet_badezimmer_aufgeladen"
     trigger:
       - platform: state
         entity_id: sensor.tablet_badezimmer_batterie
@@ -258,6 +266,7 @@ automation:
           message: "Das Tablet im Badezimmer wurde vollständig aufgeladen."
 
   - alias: "Tablet Küche - Aufgeladen"
+    id: "tablet_kueche_aufgeladen"
     trigger:
       - platform: state
         entity_id: sensor.tablet_kuche_batterie
@@ -273,6 +282,7 @@ automation:
           message: "Das Tablet in der Küche wurde vollständig aufgeladen."
 
   - alias: "Tablet Balkon - Aufgeladen"
+    id: "tablet_balkon_aufgeladen"
     trigger:
       - platform: state
         entity_id: sensor.tablet_balkon_batterie

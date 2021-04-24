@@ -1,5 +1,6 @@
 automation:
   - alias: "Benachrichtigung Fenster"
+    id: "benachrichtigungen_fenster"
     trigger:
       - platform: state
         entity_id: binary_sensor.fenster_wohnzimmer

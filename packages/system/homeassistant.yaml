@@ -171,7 +171,8 @@ script:
       - service: homeassistant.restart
 
 automation:
-  - alias: "Update verfügbar"
+  - alias: "Home Assisant - Update verfügbar"
+    id: "home_assistant_update_verfuegbar"
     trigger:
       - platform: state
         entity_id: sensor.hass_current_version
@@ -204,6 +205,7 @@ automation:
               notification_id: neue_version
                
   - alias: "Home Assistant - Gestartet"
+    id: "home_assistant_gestartet"
     trigger:
       - platform: homeassistant
         event: start
@@ -239,6 +241,7 @@ automation:
               message: "Home Assistant wurde neugestartet."          
           
   - alias: "Home Assistant - Gestoppt"
+    id: "home_assistant_gestoppt"
     trigger:   
       - platform: homeassistant
         event: shutdown     
@@ -249,6 +252,7 @@ automation:
           datetime: "{{ now().strftime('%Y-%m-%d %H:%M:%S') }}" 
           
   - alias: "Home Assistant - Fehler Neustart"
+    id: "home_assistant_fehler_neustart"
     trigger:
       - platform: state
         entity_id: persistent_notification.homeassistant_check_config

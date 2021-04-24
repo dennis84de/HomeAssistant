@@ -110,33 +110,6 @@ sensor:
     outdoor_temp_sensor: sensor.mold_balkon_temperatur
     calibration_factor: 1.16
 
-#  - platform: thermal_comfort
-#    sensors:
-#      wohnzimmer:
-#        friendly_name: Wohnzimmer
-#        temperature_sensor: sensor.wohnzimmer_temperatur
-#        humidity_sensor: sensor.wohnzimmer_luftfeuchtigkeit
-#      schlafzimmer:
-#        friendly_name: Schlafzimmer
-#        temperature_sensor: sensor.schlafzimmer_temperatur
-#        humidity_sensor: sensor.schlafzimmer_luftfeuchtigkeit
-#      kueche:
-#        friendly_name: Küche
-#        temperature_sensor: sensor.kueche_temperatur
-#        humidity_sensor: sensor.kueche_luftfeuchtigkeit
-#      flur:
-#        friendly_name: Flur
-#        temperature_sensor: sensor.flur_temperatur
-#        humidity_sensor: sensor.flur_luftfeuchtigkeit
-#      arbeitszimmer:
-#        friendly_name: Arbeitszimmer
-#        temperature_sensor: sensor.arbeitszimmer_temperatur
-#        humidity_sensor: sensor.arbeitszimmer_luftfeuchtigkeit
-#      sportzimmer:
-#        friendly_name: Sportzimmer
-#        temperature_sensor: sensor.sportzimmer_temperatur
-#        humidity_sensor: sensor.sportzimmer_luftfeuchtigkeit
-
   - platform: rest
     name: Strommix
     resource: !secret strommix_url
@@ -439,7 +412,8 @@ sensor:
     radius: 10
 
 automation:
-  - alias: 'Balkontür schließen'
+  - alias: "Balkontür schließen"
+    id: "balkontuer_schliessen"
     trigger:
       platform: template
       value_template: >-
@@ -471,6 +445,7 @@ automation:
             Die Balkontür sollte geschlossen werden. Auf dem Balkon ist es {{ temperaturBalkon | round() }} Grad warm und damit {{ difference }} Grad wärmer als im Wohnzimmer.
 
   - alias: 'Wetterwarnungen'
+    id: "wetterwarnungen"
     trigger:
       - entity_id: sensor.wetterwarnungen_current_warning_level
         platform: state
@@ -548,7 +523,8 @@ automation:
                   {% endfor %}              
                 {% endif %}         
             
-  - alias: 'Wetterwarnungen ausschalten'
+  - alias: "Wetterwarnungen ausschalten"
+    id: "wetterwarnungen_ausschalten"
     trigger:
       - platform: state
         entity_id: input_boolean.wetter_warnungen_einschalten

@@ -34,7 +34,8 @@ sensor:
     state_topic: "printer/waste"    
     
 automation:
-  - alias: 'Drucker - Patrone Schwarz'
+  - alias: "Drucker - Patrone Schwarz"
+    id: "drucker_patrone_schwarz"
     trigger:
       - platform: state
         entity_id: sensor.ink_level_black
@@ -49,7 +50,8 @@ automation:
           retain: true
           payload: '{{ states("sensor.ink_level_black") }}'
           
-  - alias: 'Drucker - Patrone Magenta'
+  - alias: "Drucker - Patrone Magenta"
+    id: "drucker_patrone_magenta"
     trigger:
       - platform: state
         entity_id: sensor.ink_level_magenta
@@ -64,7 +66,8 @@ automation:
           retain: true
           payload: '{{ states("sensor.ink_level_magenta") }}'
           
-  - alias: 'Drucker - Patrone Gelb'
+  - alias: "Drucker - Patrone Gelb"
+    id: "drucker_patrone_gelb"
     trigger:
       - platform: state
         entity_id: sensor.ink_level_yellow
@@ -79,7 +82,8 @@ automation:
           retain: true
           payload: '{{ states("sensor.ink_level_yellow") }}'
           
-  - alias: 'Drucker - Patrone Cyan'
+  - alias: "Drucker - Patrone Cyan"
+    id: "drucker_patrone_cyan"
     trigger:
       - platform: state
         entity_id: sensor.ink_level_cyan
@@ -94,7 +98,8 @@ automation:
           retain: true
           payload: '{{ states("sensor.ink_level_cyan") }}'
           
-  - alias: 'Drucker - Patrone Abfall'
+  - alias: "Drucker - Patrone Abfall"
+    id: "drucker_patrone_abfall"
     trigger:
       - platform: state
         entity_id: sensor.cleaning_level

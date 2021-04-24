@@ -57,7 +57,8 @@ entity_controller:
       - input_boolean.bewegungsmelder_schlafzimmer_deaktiviert     
       
 automation:
-  - alias: "Schlafzimmer Bett - Licht ausschalten"
+  - alias: "Schlafzimmer - Licht ausschalten"
+    id: "schlafzimmer_licht_ausschalten"  
     trigger:
       - platform: state        
         entity_id: binary_sensor.schalter_schlafzimmer
@@ -77,6 +78,9 @@ automation:
       - condition: state
         entity_id: binary_sensor.alarm_aktiv
         state: 'off'        
+      - condition: state
+        entity_id: binary_sensor.sonne_tagsueber
+        state: 'off'             
       - condition: state        
         entity_id: binary_sensor.im_bett
         state: 'on'   
@@ -108,7 +112,8 @@ automation:
       - service: homeassistant.turn_off
         entity_id: group.licht_wohnung
 
-  - alias: 'Schlafzimmer Schrank - Licht ausschalten'
+  - alias: "Kleiderschrank - Licht ausschalten"
+    id: "kleiderschrank_licht_ausschalten"
     trigger:
       - platform: state
         entity_id:

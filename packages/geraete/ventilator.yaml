@@ -126,7 +126,8 @@ switch:
             entity_id: fan.ventilator
 
 automation:
-  - alias: 'Ventilator Geschwindigkeit - Slider geändert'
+  - alias: "Ventilator Geschwindigkeit - Slider geändert"
+    id: "ventilator_geschwindigkeit_slider_geaendert"
     trigger:
       - platform: state
         entity_id: input_number.ventilator_geschwindigkeit
@@ -140,7 +141,8 @@ automation:
           entity_id: fan.ventilator
           speed: '{{ trigger.to_state.state | int }}'
 
-  - alias: 'Ventilator Geschwindigkeit - Sensor geändert'
+  - alias: "Ventilator Geschwindigkeit - Sensor geändert"
+    id: "ventilator_geschwindigkeit_sensor_geaendert"
     trigger:
       - platform: state
         entity_id: sensor.ventilator_geschwindigkeit
@@ -154,7 +156,8 @@ automation:
           entity_id: input_number.ventilator_geschwindigkeit
           value: '{{ trigger.to_state.state }}'
 
-  - alias: 'Ventilator Winkel - Slider geändert'
+  - alias: "Ventilator Winkel - Slider geändert"
+    id: "ventilator_winkel_slider_geaendert"
     trigger:
       - platform: state
         entity_id: input_select.ventilator_drehungswinkel
@@ -168,7 +171,8 @@ automation:
           entity_id: fan.ventilator
           angle: '{{ trigger.to_state.state | int }}'
 
-  - alias: 'Ventilator Winkel - Sensor geändert'
+  - alias: "Ventilator Winkel - Sensor geändert"
+    id: "ventilator_winkel_sensor_geaendert"
     trigger:
       - platform: state
         entity_id: sensor.ventilator_drehungswinkel
@@ -182,7 +186,8 @@ automation:
           entity_id: input_select.ventilator_drehungswinkel
           option: '{{ trigger.to_state.state }}'
 
-  - alias: 'Ventilator - Timer gestartet'
+  - alias: "Ventilator - Timer gestartet"
+    id: "ventilator_timer_gestartet"
     trigger:
       - platform: state
         entity_id: input_boolean.ventilator_timer_aktiv
@@ -200,7 +205,8 @@ automation:
           duration: >
             {{ states('input_select.ventilator_timer') | int * 60 | int }}
 
-  - alias: 'Ventilator - Timer abgebrochen'
+  - alias: "Ventilator - Timer abgebrochen"
+    id: "ventilator_timer_abgebrochen"
     trigger:
       platform: state
       entity_id: input_boolean.ventilator_timer_aktiv
@@ -209,7 +215,8 @@ automation:
       - service: timer.cancel
         entity_id: timer.ventilator
 
-  - alias: 'Ventilator - Timer beendet'
+  - alias: "Ventilator - Timer beendet"
+    id: "ventilator_timer_beendet"
     trigger:
       platform: event
       event_type: timer.finished

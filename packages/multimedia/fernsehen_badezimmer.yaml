@@ -37,7 +37,8 @@ switch:
               source: "com.amazon.tv.launcher"
               
 automation:
-  - alias: 'Telefon aktiv - Kodi Badezimmer pausieren'
+  - alias: "Telefon aktiv - Kodi Badezimmer pausieren"
+    id: "telefon_aktiv_kodi_badezimmer_pausieren"
     trigger:
       - platform: state
         entity_id: sensor.telefon
@@ -73,7 +74,8 @@ automation:
             displaytime: 5000
             icon: "info"
 
-  - alias: 'Telefon inaktiv - Kodi Badezimmer wiedergeben'
+  - alias: "Telefon inaktiv - Kodi Badezimmer wiedergeben"
+    id: "telefon_inaktiv_kodi_badezimmer_wiedergeben"
     trigger:
       - platform: state
         entity_id: sensor.telefon
@@ -100,7 +102,8 @@ automation:
             displaytime: 2000
             icon: "info"         
 
-  - alias: 'Handy aktiv - Kodi Badezimmer pausieren'
+  - alias: "Handy aktiv - Kodi Badezimmer pausieren"
+    id: "handy_aktiv_kodi_badezimmer_pausieren"
     trigger:
       - platform: state
         entity_id: sensor.handy
@@ -143,6 +146,7 @@ automation:
             icon: "info"
 
   - alias: 'Handy inaktiv - Kodi Badezimmer wiedergeben'
+    id: "handy_inaktiv_kodi_badezimmer_wiedergeben"
     trigger:
       - platform: state
         entity_id: sensor.handy

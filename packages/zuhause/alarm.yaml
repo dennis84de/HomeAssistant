@@ -19,6 +19,7 @@ alarm_control_panel:
 
 automation:      
   - alias: "Alarm - Aktiviert"
+    id: "alarm_aktiviert"
     trigger:
       - platform: state
         entity_id: binary_sensor.zu_hause
@@ -32,6 +33,7 @@ automation:
         entity_id: switch.kamera_wohnzimmer
 
   - alias: "Alarm - Ausgelöst"
+    id: "alarm_ausgeloest"
     trigger:
       - platform: state
         entity_id: binary_sensor.tuersensor
@@ -48,6 +50,7 @@ automation:
       entity_id: alarm_control_panel.alarm
 
   - alias: "Alarm - Nachricht Telegram"
+    id: "alarm_nachricht_telegram"
     trigger:
       - platform: state
         entity_id: alarm_control_panel.alarm
@@ -66,6 +69,7 @@ automation:
           url: 'http://192.168.2.75:8123/api/camera_proxy/camera.wohnzimmer?token={{ state_attr("camera.wohnzimmer", "access_token") }}'
                     
   - alias: "Alarm - Nachricht Bewegungsmelder"
+    id: "alarm_nachricht_bewegungsmelder"
     trigger:
       - platform: state
         entity_id: binary_sensor.bewegungsmelder_badezimmer
@@ -122,6 +126,7 @@ automation:
           {% endif %}
 
   - alias: "Alarm - Nachricht Fenster"
+    id: "alarm_nachricht_fenster"
     trigger:
       - platform: state
         entity_id: binary_sensor.balkontuer

@@ -65,41 +65,6 @@ binary_sensor:
       schlafen_inaktiv:
         friendly_name: Schlafen inaktiv
         value_template: "{{ is_state('binary_sensor.schlafen_aktiv', 'off') }}"
-
-      wecker_richtig_gestellt:
-        friendly_name: Wecker richtig gestellt
-        value_template: >-
-          {% set wecker_zeit = as_timestamp(states('sensor.tablet_schlafzimmer_nachster_wecker')) | timestamp_custom("%H:%M", True) %}
-          {% set wecker_standard_office = states('input_text.alarm_standard_office') %}
-          {% set wecker_standard_homeoffice = states('input_text.alarm_standard_homeoffice') %}     
-
-          {% set tagWecker = as_timestamp(states('sensor.tablet_schlafzimmer_nachster_wecker')) | timestamp_custom("%d", True) | int %}
-          {% set tagHeute = as_timestamp(now()) | timestamp_custom("%d", True) | int %}
-
-          {% set morgen_office = is_state('binary_sensor.office_morgen', 'on') %}
-          {% set heute_office = is_state('calendar.arbeit_buero', 'on') %}
-
-          {% if wecker_zeit == None %}
-            False
-          {% elif tagHeute + 1 == tagWecker %}
-            {% if morgen_office and wecker_zeit != wecker_standard_office %}
-              False
-            {% elif morgen_office == False and wecker_zeit != wecker_standard_homeoffice %}
-              False
-            {% else %}
-              True
-            {% endif %}
-          {% elif tagHeute == tagWecker %}
-            {% if heute_office and wecker_zeit != wecker_standard_office %}
-              False
-            {% elif heute_office == False and wecker_zeit != wecker_standard_homeoffice %}
-              False
-            {% else %}
-              True
-            {% endif %}
-          {% else %}
-            True
-          {% endif %}
         
 sensor:
   - platform: template
@@ -185,6 +150,7 @@ script:
 
 automation:
   - alias: "Schlafen gehen - Countdown starten"
+    id: "schlafen_gehen_countdown_starten"
     trigger:
       - platform: state
         entity_id: sensor.schalter_wohnzimmer
@@ -214,6 +180,7 @@ automation:
         entity_id: timer.schlafen_einschalten
         
   - alias: "Schlafen gehen - Countdown abbrechen"
+    id: "schlafen_gehen_countdown_abbrechen"
     trigger:
       - platform: state
         entity_id: binary_sensor.schalter_wohnzimmer
@@ -233,6 +200,7 @@ automation:
         entity_id: timer.schlafen_einschalten
 
   - alias: "Schlafen gehen - Starten"
+    id: "schlafen_gehen_starten"
     trigger:
       - platform: event
         event_type: timer.finished
@@ -241,12 +209,14 @@ automation:
     action:   
       - service: script.schlafen_gehen
 
-  - id: "schlafen_gehen_wecker_arbeit"
-    alias: "Schlafen gehen - Wecker Arbeit"
+  - alias: "Schlafen gehen - Wecker Arbeit"
+    id: "schlafen_gehen_wecker_arbeit"
     trigger:
       - platform: state
         entity_id: binary_sensor.im_bett
         to: 'on'   
+        for:
+          seconds: 2        
     condition:
       - condition: state
         entity_id: input_boolean.schlafen_aktiv
@@ -281,18 +251,20 @@ automation:
                 state: 'off'          
     action:
       - service: input_boolean.turn_on
-        entity_id: input_boolean.wecker_erinnerung_morgen
+        entity_id: input_boolean.wecker_erinnerung_morgen    
       - service: !secret tts_service
         data_template:
           echo: "schlafzimmer"
+          override: true
           message: >-
             {% if states('sensor.tablet_schlafzimmer_nachster_wecker') == 'unavailable' %}
               Der Wecker ist noch nicht gestellt.
             {% else %}
               Der Wecker ist noch nicht richtig gestellt.
-            {% endif %}
-                                     
-  - alias: 'Sleeptimer starten'
+            {% endif %}            
+            
+  - alias: 'Sleeptimer - Starten'
+    id: 'sleeptimer_starten'
     trigger:
       platform: state
       entity_id: input_boolean.timer_schlafzimmer_aktiv
@@ -304,7 +276,8 @@ automation:
           duration: >
             {{ states('input_select.timer_schlafzimmer_dauer')  | int * 60 | int }}
 
-  - alias: 'Sleeptimer geändert'
+  - alias: 'Sleeptimer - Geändert'
+    id: 'sleeptimer_geaendert'
     trigger:
       platform: state
       entity_id: input_select.timer_schlafzimmer_dauer
@@ -317,7 +290,8 @@ automation:
       - service: input_boolean.turn_on
         entity_id: input_boolean.timer_schlafzimmer_aktiv
 
-  - alias: 'Sleeptimer endet'
+  - alias: 'Sleeptimer - Endet'
+    id: 'sleeptimer_endet'
     trigger:
       platform: event
       event_type: timer.finished
@@ -328,7 +302,8 @@ automation:
       - service: light.turn_off
         entity_id: light.bett
 
-  - alias: 'Sleeptimer abbrechen'
+  - alias: 'Sleeptimer - Abbrechen'
+    id: 'sleeptimer_abbrechen'
     trigger:
       platform: state
       entity_id: input_boolean.timer_schlafzimmer_aktiv
@@ -337,7 +312,22 @@ automation:
       - service: timer.cancel
         entity_id: timer.sleeptimer
         
-  - alias: "Schlafzimmer Tablet - Wiedergabe"
+  - alias: "Schlafzimmer Tablet - Licht ausschalten"
+    id: "schlafzimmer_tablet_licht_ausschalten"
+    trigger:
+      - platform: state
+        entity_id: media_player.tablet_schlafzimmer
+        to: 'playing'      
+    condition:
+      - condition: state
+        entity_id: binary_sensor.schlafen_aktiv
+        state: 'on'  
+    action:
+      - service: homeassistant.turn_off
+        entity_id: group.licht_wohnung        
+        
+  - alias: "Schlafzimmer Tablet - Wiedergabe starten"
+    id: "schlafzimmer_tablet_wiedergabe_starten"
     trigger:
       - platform: state        
         entity_id: binary_sensor.schalter_schlafzimmer
@@ -369,22 +359,10 @@ automation:
           state: 'paused'
     action:
       - service: media_player.media_play_pause
-        entity_id: media_player.tablet_schlafzimmer  
+        entity_id: media_player.tablet_schlafzimmer         
         
-  - alias: "Schlafzimmer - Tablet - Wiedergabe gestartet"
-    trigger:
-      - platform: state
-        entity_id: media_player.tablet_schlafzimmer
-        to: 'playing'      
-    condition:
-      - condition: state
-        entity_id: binary_sensor.schlafen_aktiv
-        state: 'on'  
-    action:
-      - service: light.turn_off
-        entity_id: light.bett, light.kleiderschrank, light.flur_vorne, light.flur_hinten, light.badezimmerschrank, light.schreibtisch, light.kuche_regal, light.arbeitszimmer_lampe, light.sportzimmer_regal, light.strahler, light.couch
-
-  - alias: "Schlafzimmer - Tablet - Wiedergabe pausiert"
+  - alias: "Schlafzimmer Tablet - Wiedergabe pausieren"
+    id: "schlafzimmer_tablet_wieder_pausieren"
     trigger:
       platform: state
       entity_id: binary_sensor.bewegungsmelder_schlafzimmer
@@ -398,125 +376,7 @@ automation:
         state: 'on'   
     action:
       - service: media_player.media_pause
-        entity_id: media_player.tablet_schlafzimmer        
-
-  - id: "aufstehen_schlafen_ausschalten"
-    alias: "Aufstehen - Schlafen ausschalten"
-    trigger:
-      - platform: state
-        entity_id: binary_sensor.bewegungsmelder_kueche
-        to: 'on'
-      - platform: state
-        entity_id: binary_sensor.bewegungsmelder_flur_vorne
-        to: 'on'
-      - platform: state
-        entity_id: binary_sensor.bewegungsmelder_wohnzimmer
-        to: 'on'
-    condition:
-      - condition: and
-        conditions:
-          - condition: state
-            entity_id: binary_sensor.schlafen_aktiv
-            state: 'on'
-          - condition: or
-            conditions:
-              - condition: state
-                entity_id: binary_sensor.alarm_aktiv
-                state: 'on'
-              - condition: and
-                conditions:
-                  - condition: time
-                    after: '06:00'
-                    before: '20:00'
-                  - condition: template                   
-                    value_template: >-
-                      {% set alarmSensor = states('sensor.tablet_schlafzimmer_nachster_wecker') %}
-                      {% set alarmDay = as_timestamp(alarmSensor) | timestamp_custom('%d') | int %}
-                      {% set now = (as_timestamp(now()) | int) | timestamp_custom('%d') | int %}
-                      
-                      {{ alarmSensor == 'unavailable' or alarmDay != now }}
-    action:
-      - service: input_boolean.turn_off
-        entity_id: input_boolean.schlafen_aktiv, input_boolean.alarm_aktiv, input_boolean.wecker_erinnerung_morgen, input_boolean.wecker_zeit_geaendert
-      - service: input_boolean.turn_on
-        entity_id: input_boolean.computer_ausschalten, input_boolean.schlafen_fernseher_einschalten
-      - service: light.turn_off
-        entity_id: light.bett 
-
-  - alias: "Aufstehen - Geräte einschalten"
-    trigger:
-      - platform: state
-        entity_id: binary_sensor.schlafen_aktiv
-        to: 'off'
-    condition:
-      - condition: state
-        entity_id: input_boolean.aufstehen_aktiviert
-        state: 'off'        
-    action:      
-      - service: input_boolean.turn_on
-        entity_id: input_boolean.aufstehen_aktiviert
-      - service: !secret tts_service
-        data_template:                  
-          message: >-
-            {%- set word_for_and = 'und' %}
-            {%- set up_time = as_timestamp(now()) - state_attr('input_datetime.schlafen_uhrzeit', 'timestamp') | int %}
-
-            {%- macro phrase(name, plural_name, divisor, mod=None) %}
-              {%- set value = ((up_time // divisor) % (mod if mod else divisor)) | int %}
-              {%- set name = plural_name if value > 1 else name %}
-              {{- '{} {}'.format(value, name) if value | int > 0 else '' }}
-            {%- endmacro %}
-
-            {%- set values = [ 
-                       phrase('Woche', 'Wochen', 60*60*24*7), 
-                       phrase('Tag', 'Tage', 60*60*24, 7),
-                       phrase('Stunde', 'Stunden', 60*60, 24),
-                       phrase('Minute', 'Minuten', 60)
-                   ] | select('!=','') | list %}
-
-            {% set schlafenSatz = values[:-1] | join(', ') ~ ' ' ~ word_for_and ~ ' ' ~ values[-1] if values | length > 1 else values | first %}
-            {% set uhrzeitSatz = as_timestamp(now()) | timestamp_custom('%H:%M') %}         
-             
-            {{ 'Guten Morgen. Es ist ' ~ uhrzeitSatz ~ ' Uhr. Du hast ' ~ schlafenSatz ~ ' geschlafen.' }}      
-      - service: switch.turn_on
-        entity_id: switch.computer
-      - choose:
-          - conditions:
-              - condition: state
-                entity_id: switch.alle_radios
-                state: 'off'
-            sequence:                
-              - service: script.wohnung_radios_einschalten
-      - choose:
-          - conditions:
-              - condition: state
-                entity_id: calendar.arbeit_buero
-                state: 'on'
-              - condition: or
-                conditions:
-                  - condition: numeric_state
-                    entity_id: input_text.corona_dortmund_gestern
-                    above: input_number.corona_grenzwert       
-                  - condition: numeric_state
-                    entity_id: input_text.corona_mulheim_gestern
-                    above: input_number.corona_grenzwert                        
-            sequence:
-              - service: !secret tts_service
-                data_template:                  
-                  message: >-
-                    {% set coronaDortmundGestern = states('input_text.corona_dortmund_gestern') | float %}
-                    {% set coronaMuelheimGestern = states('input_text.corona_mulheim_gestern') | float %}
-                    {% set coronaGrenzwert = states('input_number.corona_grenzwert') | float %}
-                    
-                    {% if coronaDortmundGestern >= coronaGrenzwert and coronaMuelheimGestern >= coronaGrenzwert %}
-                      Die Corona-Werte in Dortmund und Mülheim waren gestern zu hoch.
-                    {% elif coronaMuelheimGestern >= coronaGrenzwert %}          
-                      Der Corona-Wert in Mülheim war gestern zu hoch.
-                    {% elif coronaDortmundGestern >= coronaGrenzwert  %}
-                      Der Corona-Wert in Dortmund war gestern zu hoch.
-                    {% else %}
-                      Die Corona-Werte waren gestern unter dem Grenzwert.
-                    {% endif %}
+        entity_id: media_player.tablet_schlafzimmer
                     
 homeassistant:
   customize:

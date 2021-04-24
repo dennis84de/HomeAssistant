@@ -87,7 +87,8 @@ sensor:
           {{ wifiOffline | length }}            
     
 automation:
-  - alias: "Gäste-Wlan eingeschaltet - TTS"
+  - alias: "Gäste-Wlan eingeschaltet"
+    id: "gaeste_wlan_eingeschaltet"
     trigger:
       - platform: state
         entity_id: switch.fritzbox_7272_guest_wifi
@@ -101,7 +102,8 @@ automation:
           Der Gastzugang wurde eingeschaltet. Der Name lautet "{{ states('sensor.gaeste_wlan_ssid') }}".
           Das Passwort ist "{{ states('sensor.gaeste_wlan_password') }}".
 
-  - alias: "Gäste-Wlan ausgeschaltet - TTS"
+  - alias: "Gäste-Wlan ausgeschaltet"
+    id: "gaeste_wlan_ausgeschaltet"
     trigger:
       - platform: state
         entity_id: switch.fritzbox_7272_guest_wifi

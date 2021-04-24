@@ -92,6 +92,7 @@ input_select:
         
 automation:             
   - alias: 'Benachrichtigung Arbeit'
+    id: "benachrichtigung_arbeit"
     trigger:
       - platform: template
         value_template: '{{ states("sensor.time") == states("sensor.abfahrzeit") }}'
@@ -111,7 +112,8 @@ automation:
           message: >-
             "Es ist Zeit zur Arbeit zu fahren. Die aktuelle Fahrzeit beträgt {{ states('sensor.fahrzeit_zur_arbeit') }} Minuten.{% if is_state('binary_sensor.schlechtes_wetter', 'on') %} Aktuell ist mit {{ states('sensor.wetterlage') }} zu rechnen.{% endif %}"
 
-  - alias: 'Telegram - Fahrzeit nach Hause'
+  - alias: "Fahrzeit nach Hause"
+    id: "fhrzeit_nach_hause"
     trigger:
       platform: event
       event_type: telegram_command

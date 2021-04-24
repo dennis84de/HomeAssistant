@@ -33,6 +33,7 @@ binary_sensor:
 
 automation:
   - alias: "Zu Hause"
+    id: "zu_hause"
     trigger:
       - platform: state
         entity_id: binary_sensor.zu_hause
@@ -101,6 +102,7 @@ automation:
               - service: presence_simulation.stop
                 
   - alias: "Zu Hause - Begrüßung aktivieren"
+    id: "zu_hause_begruessung_aktivieren"
     trigger:
       - platform: state
         entity_id: binary_sensor.tuersensor
@@ -127,6 +129,7 @@ automation:
         entity_id: input_boolean.zu_hause_begruessung        
         
   - alias: "Zu Hause - Begrüßung starten"
+    id: "zu_hause_begruessung_starten"
     trigger:
       - platform: state
         entity_id: binary_sensor.tuersensor
@@ -151,6 +154,7 @@ automation:
           - service: script.zu_hause_begruessung
 
   - alias: "Zu Hause - Besuch Schalter"
+    id: "zu_hause_besuchh_schalter"
     trigger:
       - platform: state
         entity_id: sensor.schalter_flur

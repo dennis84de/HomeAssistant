@@ -38,7 +38,8 @@ switch:
               source: "com.amazon.tv.launcher"        
              
 automation:
-  - alias: 'Telefon aktiv - Kodi Sportzimmer pausieren'
+  - alias: "Telefon aktiv - Kodi Sportzimmer pausieren"
+    id: "telefon_aktiv_kodi_sportzimmer_pausieren"
     trigger:
       - platform: state
         entity_id: sensor.telefon
@@ -74,7 +75,8 @@ automation:
             displaytime: 5000
             icon: "info"
 
-  - alias: 'Telefon inaktiv - Kodi Sportzimmer wiedergeben'
+  - alias: "Telefon inaktiv - Kodi Sportzimmer wiedergeben"
+    id: "telefon_inaktiv_kodi_sportzimmer_wiedergeben"
     trigger:
       - platform: state
         entity_id: sensor.telefon
@@ -101,7 +103,8 @@ automation:
             displaytime: 2000
             icon: "info"         
 
-  - alias: 'Handy aktiv - Kodi Sportzimmer pausieren'
+  - alias: "Handy aktiv - Kodi Sportzimmer pausieren"
+    id: "handy_aktiv_kodi_sportzimmer_pausieren"
     trigger:
       - platform: state
         entity_id: sensor.handy
@@ -143,7 +146,8 @@ automation:
             displaytime: 5000
             icon: "info"
 
-  - alias: 'Handy inaktiv - Kodi Sportzimmer wiedergeben'
+  - alias: "Handy inaktiv - Kodi Sportzimmer wiedergeben"
+    id: "handy_inaktiv_kodi_sportzimmer_wiedergeben"
     trigger:
       - platform: state
         entity_id: sensor.handy

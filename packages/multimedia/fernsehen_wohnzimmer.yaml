@@ -138,8 +138,8 @@ switch:
                     entity_id: media_player.soundbar
           
 automation:      
-  - id: "kodi_wohnzimmer_musik_ausschalten"
-    alias: "Kodi Wohnzimmer - Musik ausschalten"
+  - alias: "Kodi Wohnzimmer - Musik ausschalten"
+    id: "kodi_wohnzimmer_musik_ausschalten"
     trigger:
       - platform: state
         entity_id: media_player.kodi_wohnzimmer
@@ -188,8 +188,8 @@ automation:
       - service: media_player.media_play_pause
         entity_id: media_player.kodi_wohnzimmer     
            
-  - id: "kodi_wohnzimmer_naechster_titel"
-    alias: "Kodi Wohnzimmer - Nächster Titel"
+  - alias: "Kodi Wohnzimmer - Nächster Titel"
+    id: "kodi_wohnzimmer_naechster_titel"
     trigger:
       - platform: state
         entity_id: sensor.cube_bewegung
@@ -217,8 +217,8 @@ automation:
       - service: cover.stop_cover
         entity_id: cover.kodi_untertitel
 
-  - id: "kodi_wohnzimmer_pausieren"
-    alias: "Kodi Wohnzimmer - Pausieren"
+  - alias: "Kodi Wohnzimmer - Pausieren"
+    id: "kodi_wohnzimmer_pausieren"
     trigger:
       - platform: state
         entity_id: binary_sensor.bewegungsmelder_flur_vorne
@@ -276,8 +276,8 @@ automation:
               - service: switch.turn_on
                 entity_id: light.balkon_licht  
 
-  - id: "kodi_wohnzimmer_starten"
-    alias: "Kodi Wohnzimmer - Starten"
+  - alias: "Kodi Wohnzimmer - Starten"
+    id: "kodi_wohnzimmer_starten"
     trigger:
       - platform: state
         entity_id: binary_sensor.bewegungsmelder_wohnzimmer
@@ -307,8 +307,8 @@ automation:
       - service: media_player.media_pause
         entity_id: media_player.badezimmer
 
-  - id: youtube_wohnzimmer_pausieren
-    alias: "Youtube Wohnzimmer - Pausieren"
+  - alias: "Youtube Wohnzimmer - Pausieren"
+    id: youtube_wohnzimmer_pausieren
     trigger:
       - platform: state
         entity_id: binary_sensor.bewegungsmelder_flur_vorne
@@ -355,8 +355,8 @@ automation:
       - service: switch.turn_on
         entity_id: switch.computer_wiedergabe                
 
-  - id: youtube_wohnzimmer_starten
-    alias: "Youtube Wohnzimmer - Starten"
+  - alias: "Youtube Wohnzimmer - Starten"
+    id: youtube_wohnzimmer_starten
     trigger:
       - platform: state
         entity_id: binary_sensor.bewegungsmelder_wohnzimmer
@@ -384,6 +384,7 @@ automation:
         entity_id: media_player.badezimmer                      
            
   - alias: "Soundbar Lautstärke - Cube"
+    id: "soundbar_laustaerke_cube"
     trigger:
       - platform: state
         entity_id: sensor.cube_drehung

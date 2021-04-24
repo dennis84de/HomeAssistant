@@ -27,6 +27,7 @@ entity_controller:
 
 automation:
   - alias: 'Licht Balkon - Einschalten'
+    id: "licht_balkon_einschalten"
     trigger:
       - platform: state
         entity_id: binary_sensor.schalter_balkon
@@ -40,6 +41,7 @@ automation:
         entity_id: light.balkon_licht
       
   - alias: "Licht Balkon - Ausschalten"
+    id: "licht_balkon_ausschalten"
     trigger:
       - platform: state
         entity_id: binary_sensor.bewegungsmelder_wohnzimmer

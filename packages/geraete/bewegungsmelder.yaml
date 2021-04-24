@@ -34,7 +34,8 @@ binary_sensor:
         value_template: "{{ True if is_state('vacuum.roborock_vacuum', 'cleaning') or is_state('vacuum.roborock_vacuum', 'returning') else False }}"
         
 automation:
-  - alias: 'Letzte Bewegung'
+  - alias: "Letzte Bewegung"
+    id: "letzte_bewegung"
     trigger:
       - platform: state
         entity_id:

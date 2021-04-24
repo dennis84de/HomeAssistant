@@ -51,7 +51,8 @@ sensor:
         icon_template: 'mdi:tumble-dryer'
 
 automation:
-  - alias: 'Waschmaschine - Ausgeschaltet'
+  - alias: "Waschmaschine - Ausgeschaltet"
+    id: "waschmaschine_ausgeschaltet"
     trigger:
       - platform: state
         entity_id: switch.waschmaschine
@@ -63,7 +64,8 @@ automation:
           entity_id: input_select.status_waschmaschine
           option: 'Ausgeschaltet'
 
-  - alias: 'Waschmaschine - Stillstand'
+  - alias: "Waschmaschine - Stillstand"
+    id: "waschmaschine_stillstand"
     trigger:
       - platform: numeric_state
         entity_id: sensor.waschmaschine_verbrauch
@@ -83,7 +85,8 @@ automation:
           entity_id: input_select.status_waschmaschine
           option: 'Stillstand'
 
-  - alias: 'Waschmaschine - Waschen'
+  - alias: "Waschmaschine - Aktiv"
+    id: "waschmaschine_aktiv"
     trigger:
       - platform: numeric_state
         entity_id: sensor.waschmaschine_verbrauch
@@ -102,7 +105,8 @@ automation:
           entity_id: input_select.status_waschmaschine
           option: 'Waschen'
 
-  - alias: 'Trockner - Ausgeschaltet'
+  - alias: "Trockner - Ausgeschaltet"
+    id: "trockner_ausgeschaltet"
     trigger:
       - platform: state
         entity_id: switch.trockner
@@ -114,7 +118,8 @@ automation:
           entity_id: input_select.status_trockner
           option: 'Ausgeschaltet'
 
-  - alias: 'Trockner - Stillstand'
+  - alias: "Trockner - Stillstand"
+    id: "trockner_stillstand"
     trigger:
       - platform: numeric_state
         entity_id: sensor.trockner_verbrauch
@@ -134,7 +139,8 @@ automation:
           entity_id: input_select.status_trockner
           option: 'Stillstand'
 
-  - alias: 'Trockner - Trocknen'
+  - alias: "Trockner - Aktiv"
+    id: "trockner_aktiv"
     trigger:
       - platform: numeric_state
         entity_id: sensor.trockner_verbrauch
@@ -153,7 +159,8 @@ automation:
           entity_id: input_select.status_trockner
           option: 'Trocknen'
 
-  - alias: 'Waschmaschine gestartet'
+  - alias: "Waschmaschine - Gestartet"
+    id: "waschmaschine_gestartet"
     trigger:
       - platform: state
         entity_id: input_select.status_waschmaschine
@@ -169,7 +176,8 @@ automation:
           title: "Waschmaschine gestartet"
           message: "Die Waschmaschine wurde gestartet."
 
-  - alias: 'Waschmaschine fertig'
+  - alias: "Waschmaschine - Fertig"
+    id: "waschmaschine_fertig"
     trigger:      
       - platform: state
         entity_id: input_select.status_waschmaschine
@@ -196,7 +204,8 @@ automation:
       - service: switch.turn_on
         entity_id: switch.trockner
 
-  - alias: 'Trockner gestartet - Telegram'
+  - alias: "Trockner - Nachricht Telegram"
+    id: "trockner_nachricht_telegram"
     trigger:
       - platform: state
         entity_id: input_select.status_trockner
@@ -213,7 +222,8 @@ automation:
           message: >-
             Der Trockner wurde gestartet.
 
-  - alias: 'Trockner fertig'
+  - alias: "Trockner - Fertig"
+    id: "trockner_fertig"
     trigger:
       - platform: state
         entity_id: input_select.status_trockner

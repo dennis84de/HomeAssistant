@@ -113,7 +113,8 @@ sensor:
         unit_of_measurement: '%'
 
 automation:
-  - alias: "Staubsaugen - Automatische Reinigung"
+  - alias: "Staubsaugen - Gestartet"
+    id: "staubsaugen_gestartet"
     trigger:
       - platform: state
         entity_id: binary_sensor.zu_hause
@@ -152,6 +153,7 @@ automation:
           message: 'Das Saugen der Wohnung wurde gestartet.'
 
   - alias: "Staubsaugen - Beendet"
+    id: "staubsaugen_beendet"
     trigger:
       - platform: state
         entity_id: vacuum.roborock_vacuum
@@ -163,9 +165,9 @@ automation:
         state: 'on'      
       - condition: template
         value_template: >-
-          {% set letzter_start = as_timestamp(state_attr("automation.staubsaugen_automatische_reinigung", "last_triggered")) | timestamp_custom("%s", True) | int  %}
+          {% set letzter_start = as_timestamp(state_attr("automation.staubsaugen_gestartet", "last_triggered")) | timestamp_custom("%s", True) | int  %}
           {% set now = now().strftime("%s") | int %}
-          {% set abstand_stunden = ((now - letzter_start | timestamp_custom("%s") | int) / 3600) | int %}
+          {% set abstand_stunden = ((now - letzter_start | int) / 3600) | int %}
 
           {{ True if abstand_stunden <= 2 else False }}         
     action:
@@ -201,6 +203,7 @@ automation:
                   params: [33463,24839]     
           
   - alias: "Staubsaugen - Fehler"
+    id: "staubsaugen_fehler"
     trigger:
       - platform: state
         entity_id: vacuum.roborock_vacuum
@@ -216,6 +219,7 @@ automation:
           message: 'Während des Staubsaugens ist ein Fehler aufgetreten.'             
         
   - alias: "Staubsaugen - Behälter geleert"
+    id: "staubsaugen_behaelter_geleert"
     trigger:
       - platform: event
         event_type: call_service

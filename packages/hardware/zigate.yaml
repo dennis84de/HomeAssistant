@@ -64,7 +64,8 @@ sensor:
           {{ ns.found | int }}
           
 automation:
-  - alias: 'Cube - Letzte Aktion'
+  - alias: "Cube - Letzte Aktion"
+    id: "cube_letzte_aktion"
     trigger:
       - platform: state
         entity_id:

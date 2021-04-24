@@ -85,7 +85,8 @@ script:
               entity_id: switch.pc      
 
 automation:
-  - alias: "Training - Schalter"
+  - alias: "Training - Gestartet"
+    id: "training_gestartet"
     trigger:
       - platform: state
         entity_id: binary_sensor.schalter_flur
@@ -94,16 +95,24 @@ automation:
       - condition: state
         entity_id: binary_sensor.besuch
         state: 'off'
+      - condition: state
+        entity_id: input_boolean.training_aktiv
+        state: 'off'        
     action:
-      - choose:
-          - conditions:
-              - condition: state
-                entity_id: input_boolean.training_aktiv
-                state: 'off'
-            sequence:
-              - service: script.training_einschalten
-        default:
-          - service: script.training_ausschalten   
+      - service: script.training_einschalten
+      
+  - alias: "Training - Beendet"
+    id: "training_beendet"
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.schalter_flur
+        to: 'off'
+    condition:
+      - condition: state
+        entity_id: input_boolean.training_aktiv
+        state: 'on'
+    action:
+      - service: script.training_ausschalten
                   
 homeassistant:
   customize:
