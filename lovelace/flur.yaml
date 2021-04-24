@@ -1,15 +1,5 @@
 title: Flur
 path: flur
-popup_cards:
-  sensor.flur_luftfeuchtigkeit:
-    title: Luftfeuchtigkeit
-    card:
-      type: entities
-      entities:
-        - entity: sensor.flur_absolutehumidity
-        - entity: sensor.flur_heatindex
-        - entity: sensor.flur_dewpoint
-        - entity: sensor.flur_perception
 cards:
   - type: entities
     title: Geräte

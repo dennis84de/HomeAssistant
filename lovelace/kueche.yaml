@@ -1,15 +1,5 @@
 title: Küche
 path: kueche
-popup_cards:
-  sensor.kueche_luftfeuchtigkeit:
-    title: Luftfeuchtigkeit
-    card:
-      type: entities
-      entities:
-        - entity: sensor.kueche_absolutehumidity
-        - entity: sensor.kueche_heatindex
-        - entity: sensor.kueche_dewpoint
-        - entity: sensor.kueche_perception
 cards:
   - type: entities
     title: Geräte

@@ -1,15 +1,5 @@
 title: Schlafzimmer
 path: schlafzimmer
-popup_cards:
-  sensor.schlafzimmer_luftfeuchtigkeit:
-    title: Luftfeuchtigkeit
-    card:
-      type: entities
-      entities:
-        - entity: sensor.schlafzimmer_absolutehumidity
-        - entity: sensor.schlafzimmer_heatindex
-        - entity: sensor.schlafzimmer_dewpoint
-        - entity: sensor.schlafzimmer_perception
 cards:
   - type: entities
     title: Multimedia
