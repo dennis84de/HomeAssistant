@@ -60,6 +60,18 @@ popup_cards:
           name: Handy Ping
 
 cards:
+  - type: conditional
+    conditions:
+      - entity: sensor.echo_wohnzimmer_next_timer
+        state_not: "unavailable"
+    card:
+      type: entities
+      title: Timer
+      show_header_toggle: false
+      entities:
+      - entity: sensor.echo_wohnzimmer_next_timer
+        name: Echo Wohnzimmer   
+
   - type: entities
     title: Infos
     show_header_toggle: false
