@@ -1,16 +1,3 @@
-camera:
-  - platform: ffmpeg
-    name: "Wohnzimmer"    
-    input: rtsp://192.168.2.77/ch0_0.h264
-    
-binary_sensor:
-  - platform: mqtt
-    name: "Kamera Bewegung"
-    state_topic: "kamera_wohnzimmer/motion_detection"
-    payload_on: "motion_start"
-    payload_off: "motion_stop"
-    device_class: motion    
-    
 switch:
   - platform: command_line
     switches:

@@ -148,6 +148,6 @@ cards:
       type: picture-glance
       title: Kamera
       entities:
-        - binary_sensor.kamera_bewegung
+        - binary_sensor.kamera_wohnzimmer_bewegung
         - switch.kamera_wohnzimmer
-      camera_image: camera.wohnzimmer           
+      camera_image: camera.kamera_wohnzimmer           
