@@ -73,6 +73,9 @@ automation:
         entity_id: input_boolean.nicht_stoeren
         state: 'off'
       - condition: state
+        entity_id: input_boolean.baden_aktiv
+        state: 'off'        
+      - condition: state
         entity_id: binary_sensor.besuch
         state: 'off' 
       - condition: state

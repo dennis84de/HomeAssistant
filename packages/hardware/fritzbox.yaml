@@ -6,18 +6,26 @@ input_text:
     name: 'Gäste Wlan - Password'
 
 sensor:
-  - platform: fritzbox_netmonitor
-    name: Netmonitor
-    host: !secret fritzbox_host
+#  - platform: fritzbox_netmonitor
+#    name: Netmonitor
+#    host: !secret fritzbox_host
     
   - platform: template
     sensors:
+      netmonitor_status:
+        friendly_name: "Fritzbox - Status"    
+        value_template: >-
+          {% set fritzboxStatus = states('sensor.netmonitor') %}
+          
+          {{ '-' if fritzboxStatus == 'unknown' else fritzboxStatus }}          
+        icon_template: mdi:table-network    
+          
       netmonitor_uptime:
         friendly_name: "Fritzbox - Laufzeit"    
         value_template: >-
           {% set onlineSeconds = state_attr('sensor.netmonitor','uptime') | int %}
           
-          {%if onlineSeconds == 0 or onlineSeconds == None %}
+          {% if onlineSeconds == 0 or onlineSeconds == None %}
             -
           {% else %}
             {% set now = as_timestamp(now()) | int %}

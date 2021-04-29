@@ -59,59 +59,6 @@ cards:
       - entity: sensor.edg_wertstoff
       - entity: sensor.edg_papier
 
-  - type: conditional
-    conditions:
-      - entity: sensor.bvb_spiel
-        state_not: "-"
-    card:
-      type: entities
-      title: Borussia Dortmund
-      show_header_toggle: false
-      entities:
-        - entity: sensor.bvb_spiel
-        - entity: sensor.bvb_datum
-        - entity: sensor.bvb_uhrzeit
-        - entity: sensor.bvb_ort
-
-  - type: conditional
-    conditions:
-      - entity: input_boolean.home_office 
-        state: "off"
-    card:
-      type: entities
-      title: Arbeit
-      show_header_toggle: false
-      entities:
-      - entity: sensor.fahrzeit_zur_arbeit
-      - entity: sensor.fahrzeit_nach_hause
-      - entity: sensor.abfahrzeit      
-      - entity: binary_sensor.schlechtes_wetter      
-      - entity: binary_sensor.arbeitstag
-
-  - type: custom:mini-graph-card
-    name: Fahrzeit
-    line_width: 2
-    animate: true
-    hours_to_show: 168
-    points_per_hour: 2
-    hour24: true
-    show:
-      icon: false
-      points: false
-      state: false
-    entities:
-      - entity: sensor.fahrzeit_zur_arbeit
-      - entity: sensor.fahrzeit_nach_hause
-
-  - type: glance
-    title: Tanken
-    show_header_toggle: false
-    entities:
-      - entity: sensor.tankstelle_real
-      - entity: binary_sensor.tankstelle_real_status
-      - entity: sensor.tankstelle_jet
-      - entity: binary_sensor.tankstelle_jet_status
-
   - type: custom:mini-graph-card
     name: Temperatur
     line_width: 2
@@ -135,15 +82,66 @@ cards:
       - entity: sensor.arbeitszimmer_temperatur
         name: Arbeitszimmer
       - entity: sensor.sportzimmer_temperatur
-        name: Sportzimmer           
+        name: Sportzimmer     
+        
+  - type: conditional
+    conditions:
+      - entity: sensor.bvb_spiel
+        state_not: "-"
+    card:
+      type: entities
+      title: Borussia Dortmund
+      show_header_toggle: false
+      entities:
+        - entity: sensor.bvb_spiel
+        - entity: sensor.bvb_datum
+        - entity: sensor.bvb_uhrzeit
+        - entity: sensor.bvb_ort
+
+  - type: glance
+    title: Tanken
+    show_header_toggle: false
+    entities:
+      - entity: sensor.tankstelle_real
+      - entity: binary_sensor.tankstelle_real_status
+      - entity: sensor.tankstelle_jet
+      - entity: binary_sensor.tankstelle_jet_status   
+      
+  - type: conditional
+    conditions:
+      - entity: input_boolean.home_office 
+        state: "off"
+    card:
+      type: entities
+      title: Arbeit
+      show_header_toggle: false
+      entities:
+      - entity: sensor.fahrzeit_zur_arbeit
+      - entity: sensor.fahrzeit_nach_hause
+      - entity: sensor.abfahrzeit      
+      - entity: binary_sensor.schlechtes_wetter      
+      - entity: binary_sensor.arbeitstag   
+        
+  - type: custom:mini-graph-card
+    name: Fahrzeit
+    line_width: 2
+    animate: true
+    hours_to_show: 168
+    points_per_hour: 2
+    hour24: true
+    show:
+      icon: false
+      points: false
+      state: false
+    entities:
+      - entity: sensor.fahrzeit_zur_arbeit
+      - entity: sensor.fahrzeit_nach_hause
            
   - type: entities
     title: Waage
     show_header_toggle: false
     entities:
-      - entity: sensor.gewicht
-#        type: "custom:secondaryinfo-entity-row"
-#        secondary_info: "Durchschnitt: [[ sensor.gewicht_durchschnitt ]] kg"       
+      - entity: sensor.gewicht   
       - entity: sensor.bmi
       - entity: sensor.wasser
       - entity: sensor.fett

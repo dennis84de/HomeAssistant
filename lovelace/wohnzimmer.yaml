@@ -36,7 +36,12 @@ cards:
         name: Youtube
       - entity: cover.kodi_untertitel
       - entity: cover.fernseher_sender
-        name: Sender
+        name: Sender 
+          
+  - type: entities
+    title: Mediaplayer
+    show_header_toggle: false
+    entities:      
       - type: custom:mini-media-player
         entity: media_player.fernseher_wohnzimmer
         name: Fernseher
@@ -64,7 +69,56 @@ cards:
         name: Radio
         hide:
           source: true
+          progress: true           
+        
+  - type: entities
+    title: Balkon
+    show_header_toggle: false
+    entities:
+      - entity: binary_sensor.bewegungsmelder_balkon
+        name: Bewegungsmelder
+      - entity: sensor.helligkeit_balkon
+        name: Helligkeit     
+      - entity: light.balkon_licht
+        name: Licht      
+      - entity: switch.balkon_radio
+        name: Radio
+      - entity: input_boolean.radio_balkon_bewegungsmelder_deaktiviert
+        name: Bewegungsmelder deaktiviert
+      - type: custom:mini-media-player
+        entity: media_player.balkon
+        hide:
+          source: true
           progress: true  
+          
+  - type: glance
+    title: Thermometer
+    show_header_toggle: false
+    entities:
+      - entity: sensor.wohnzimmer_temperatur       
+      - entity: sensor.wohnzimmer_luftfeuchtigkeit       
+
+  - type: glance
+    title: Sensoren
+    show_header_toggle: false
+    entities:
+      - entity: binary_sensor.bewegungsmelder_wohnzimmer
+        name: Bewegungsmelder
+      - entity: sensor.cube_status
+        name: Cube
+      - entity: sensor.wohnzimmer_helligkeit
+        name: Helligkeit        
+
+  - type: glance
+    title: Heizung
+    show_header_toggle: false
+    entities:
+      - entity: binary_sensor.balkontuer
+        name: Balkontür      
+      - entity: binary_sensor.fenster_wohnzimmer
+        name: Fenster
+      - entity: climate.wohnzimmer
+        name: Heizung
 
   - type: conditional
     conditions:
@@ -85,55 +139,6 @@ cards:
         - entity: sensor.ventilator_timer
         - entity: input_boolean.ventilator_timer_aktiv
         - entity: input_select.ventilator_timer
-
-  - type: glance
-    title: Heizung
-    show_header_toggle: false
-    entities:
-      - entity: binary_sensor.balkontuer
-        name: Balkontür      
-      - entity: binary_sensor.fenster_wohnzimmer
-        name: Fenster
-      - entity: climate.wohnzimmer
-        name: Heizung
-
-  - type: glance
-    title: Thermometer
-    show_header_toggle: false
-    entities:
-      - entity: sensor.wohnzimmer_temperatur       
-      - entity: sensor.wohnzimmer_luftfeuchtigkeit       
-
-  - type: glance
-    title: Sensoren
-    show_header_toggle: false
-    entities:
-      - entity: binary_sensor.bewegungsmelder_wohnzimmer
-        name: Bewegungsmelder
-      - entity: sensor.cube_status
-        name: Cube
-      - entity: sensor.wohnzimmer_helligkeit
-        name: Helligkeit
-
-  - type: entities
-    title: Balkon
-    show_header_toggle: false
-    entities:
-      - entity: binary_sensor.bewegungsmelder_balkon
-        name: Bewegungsmelder
-      - entity: sensor.helligkeit_balkon
-        name: Helligkeit     
-      - entity: light.balkon_licht
-        name: Licht      
-      - entity: switch.balkon_radio
-        name: Radio
-      - entity: input_boolean.radio_balkon_bewegungsmelder_deaktiviert
-        name: Bewegungsmelder deaktiviert
-      - type: custom:mini-media-player
-        entity: media_player.balkon
-        hide:
-          source: true
-          progress: true  
           
   - type: conditional
     conditions:

@@ -50,6 +50,9 @@ automation:
           - binary_sensor.bewegungsmelder_wohnzimmer
         from: 'off'
         to: 'on'
+    condition:
+      condition: template
+      value_template: "{{ True if trigger.to_state.attributes.friendly_name != states('input_select.letzte_bewegung') else False }}"
     action:
       - service: input_select.select_option
         data:

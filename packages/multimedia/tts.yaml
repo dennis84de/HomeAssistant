@@ -23,13 +23,19 @@ script:
         conditions:
           - condition: state
             entity_id: binary_sensor.zu_hause
-            state: 'on'
-          - condition: state
-            entity_id: binary_sensor.schlafen_aktiv
-            state: 'off'
-          - condition: state
-            entity_id: input_boolean.nicht_stoeren
-            state: 'off'            
+            state: 'on'        
+          - condition: or
+            conditions:      
+              - condition: and
+                conditions:
+                  - condition: state
+                    entity_id: binary_sensor.schlafen_aktiv
+                    state: 'off'      
+                  - condition: state
+                    entity_id: input_boolean.nicht_stoeren
+                    state: 'off'                          
+              - condition: template
+                value_template: "{{ override is defined and override == true }}"
       - service: notify.alexa_media
         data_template:
           data:

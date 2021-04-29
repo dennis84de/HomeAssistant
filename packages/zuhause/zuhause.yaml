@@ -51,7 +51,7 @@ automation:
       - condition: template
         value_template: >-
           {% set now = as_timestamp(now()) | int %}
-          {% set last = as_timestamp(state_attr("script.alles_ausschalten", "last_triggered")) | int %}
+          {% set last = as_timestamp(state_attr("script.alles_ausschalten_nfc", "last_triggered")) | int %}
           {% set diff = ((now - last) / 60) | int %}
 
           {{ diff >= 10 }}

@@ -182,7 +182,7 @@ automation:
         data:
           echo: "flur"
           message: "Der Computer wird Arbeitszimmer wird gleich ausgeschaltet."
-      - delay: '00:00:02'
+      - delay: '00:00:04'
       - service: timer.start
         entity_id: timer.home_office_ende
       - service: media_player.play_media

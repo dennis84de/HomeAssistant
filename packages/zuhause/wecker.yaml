@@ -281,6 +281,8 @@ automation:
             {{ 'Guten Morgen. Es ist ' ~ uhrzeitSatz ~ ' Uhr. Du hast ' ~ schlafenSatz ~ ' geschlafen.' }}      
       - service: switch.turn_on
         entity_id: switch.computer
+      - service: switch.turn_off
+        entity_id: switch.schlafzimmer_radio        
       - choose:
           - conditions:
               - condition: state

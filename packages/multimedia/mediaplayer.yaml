@@ -14,8 +14,8 @@ media_player:
     name: Benachrichtigungen VLC
         
 automation:
-  - id: "uhr_glocke_starten"
-    alias: "Uhr - Glocke starten"
+  - alias: "Uhr - Glocke starten"
+    id: "uhr_glocke_starten"
     trigger:
       - platform: time_pattern
         minutes: 30
@@ -63,8 +63,8 @@ automation:
             {% endif %}
           media_content_type: music
 
-  - id: "uhr_glocke_abbrechen"
-    alias: 'Uhr - Glocke abbrechen'
+  - alias: 'Uhr - Glocke abbrechen'
+    id: "uhr_glocke_abbrechen"
     trigger:
       - platform: state
         entity_id: input_boolean.uhr_einschalten
@@ -89,6 +89,7 @@ automation:
         entity_id: input_boolean.uhr_einschalten
 
   - alias: "BVB - Torhymne"
+    id: "bvb_torhymne"
     trigger:
       - platform: state
         entity_id: sensor.cube_bewegung
@@ -116,6 +117,7 @@ automation:
           media_content_type: music
 
   - alias: "BVB - Musik starten"
+    id: "bvb_musik_starten"
     trigger:
       - platform: state
         entity_id: sensor.cube_bewegung
@@ -140,6 +142,7 @@ automation:
           media_content_type: music
 
   - alias: "BVB - Musik stoppen"
+    id: "bvb_musik_stoppen"
     trigger:
       - platform: state
         entity_id: sensor.cube_bewegung

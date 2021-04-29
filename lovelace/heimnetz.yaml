@@ -5,7 +5,7 @@ cards:
     title: Status
     show_header_toggle: false
     entities:
-      - entity: sensor.netmonitor
+      - entity: sensor.netmonitor_status
         name: "Fritzbox"
       - entity: sensor.netmonitor_uptime
         name: "Verbunden seit"

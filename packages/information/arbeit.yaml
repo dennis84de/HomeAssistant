@@ -104,6 +104,9 @@ automation:
         entity_id: calendar.urlaub
         state: 'off'
       - condition: state
+        entity_id: calendar.krank
+        state: 'off'        
+      - condition: state
         entity_id: input_boolean.home_office
         state: 'off'        
     action:

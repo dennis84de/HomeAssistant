@@ -111,6 +111,19 @@ cards:
       - entity: sensor.home_assistant_overhead_satellites
         name: Sateliten        
         
+  - type: conditional
+    conditions:
+      - entity: sensor.formel1_datum
+        state_not: "-"
+    card:
+      type: entities
+      title: Formel 1
+      show_header_toggle: false
+      entities:
+        - entity: sensor.formel1_rennen
+        - entity: sensor.formel1_datum
+        - entity: sensor.formel1_qualifikation    
+        
   - type: custom:atomic-calendar-revive
     name: Serien
     maxDaysToShow: 30
@@ -127,63 +140,4 @@ cards:
       - entity: sensor.exchange_rate_1_btc
         name: Kurs (1 BTC)
       - entity: sensor.trade_volume
-        name: Handelsvolumen
-        
-  - type: markdown
-    title: Anrufliste
-    content: >-
-      {% set callTypeColors = {'incoming':'#268dda', 'outgoing':'#8bbf68', 'missed':'#e45f3b'} %}
-      {% set callList = state_attr('sensor.fritzbox_call_list', 'calls') %}
-      
-      {% if states('sensor.fritzbox_call_list') == 0 or states('sensor.fritzbox_call_list') == 'unknown' %}
-      **<font color={{ callTypeColors['incoming'] }}>Keine Anrufe vorhanden.</font>**
-      {% else %}
-        {% for call in callList %}
-          {% set name = call.name %}
-          {% set number = call.number %}
-          {% set date = as_timestamp(call.date) | timestamp_custom("%d.%m.%Y, %H:%M", True) %}
-          {% set weekday = as_timestamp(call.date) | timestamp_custom("%w", True) | int %}          
-          {% set durationSeconds = call.duration | round() %}
-          
-          {% if call.calltype == 'incoming' %}
-            {% set icon = 'mdi:phone-incoming' %}
-          {% elif call.calltype == 'outgoing' %}
-            {% set icon = 'mdi:phone-outgoing' %}
-          {% elif call.calltype == 'missed' %}
-            {% set icon = 'mdi:phone-missed' %}
-          {% else %}
-            {% set icon = 'mdi:phone-hangup' %}
-          {% endif %}
-
-          {% if durationSeconds == 0 %}
-            {% set duration = '-' %}
-          {% elif durationSeconds < 60 %}
-            {% set duration = '< 1 Minute' %}
-          {% elif durationSeconds >= 60 and durationSeconds < 120 %}
-            {% set duration = '1 Minute' %}            
-          {% elif durationSeconds >= 120 and durationSeconds < 7200 %}
-            {% set duration = (durationSeconds / 60)| round() ~ ' Minuten' %}
-          {% elif durationSeconds >= 7200 %}          
-           {% set duration = ((durationSeconds / 3600) | round()) ~ ' Stunden' %}           
-          {% else %}
-            {% set duration = '' %}
-          {% endif %}           
-          
-        <font color={{ callTypeColors[call.calltype] }}> <ha-icon icon="{{ icon }}"></ha-icon></font> {{ name }} ({{ number }})
-        *{{ ['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'][weekday-1] }}, {{ date }} Uhr*
-        *Dauer: {{ duration }}*
-        {% endfor %}
-      {% endif %}
-                          
-  - type: conditional
-    conditions:
-      - entity: sensor.formel1_datum
-        state_not: "-"
-    card:
-      type: entities
-      title: Formel 1
-      show_header_toggle: false
-      entities:
-        - entity: sensor.formel1_rennen
-        - entity: sensor.formel1_datum
-        - entity: sensor.formel1_qualifikation            
+        name: Handelsvolumen                                        

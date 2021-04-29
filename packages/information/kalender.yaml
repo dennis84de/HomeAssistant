@@ -24,6 +24,20 @@ binary_sensor:
 
             {{ nextVacationTime.strftime('%j')|int - now().strftime('%j')|int == 1 }}          
           {% endif %}
+          
+      krank_morgen:
+        friendly_name: 'Krank morgen'
+        device_class: opening
+        value_template: >-
+          {% set nextEntry = state_attr('calendar.arbeit_krank', 'start_time') %}
+          
+          {% if nextEntry == None %}
+            False
+          {% else %}
+            {% set nextStartTime = strptime(state_attr('calendar.arbeit_krank', 'start_time'),'%Y-%m-%d %H:%M:%S') %}
+
+            {{ nextStartTime.strftime('%j')|int - now().strftime('%j')|int == 1 }}          
+          {% endif %}          
 
 sensor:
   - platform: template
