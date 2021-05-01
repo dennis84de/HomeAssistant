@@ -152,9 +152,6 @@ automation:
         entity_id: binary_sensor.bewegungsmelder_balkon
         to: 'on'
     condition:
-      - condition: time
-        after: '08:00'
-        before: '22:00'
       - condition: or
         conditions:
           - condition: time
@@ -171,6 +168,9 @@ automation:
       - condition: state
         entity_id: 'media_player.radio_balkon'
         state: 'off'
+      - condition: state
+        entity_id: 'binary_sensor.balkontuer'
+        state: 'on'                
       - condition: state
         entity_id: 'input_boolean.radio_balkon_bewegungsmelder_deaktiviert'
         state: 'off'        

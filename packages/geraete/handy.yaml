@@ -268,8 +268,10 @@ automation:
             entity_id: media_player.kodi_wohnzimmer
             state: 'idle'
     action:
-      - service: switch.turn_on
-        entity_id: switch.radios_lautlos
+      - service: media_player.volume_mute
+        data:
+          entity_id: media_player.soundbar
+          is_volume_muted: true
 
   - alias: "Handy inaktiv - Soundbar aktivieren"
     id: "handy_inaktiv_soundbar_aktivieren"
@@ -284,8 +286,10 @@ automation:
       - condition: template
         value_template: '{{ state_attr("media_player.soundbar", "is_volume_muted") == True }}'
     action:
-      - service: switch.turn_off
-        entity_id: switch.radios_lautlos
+      - service: media_player.volume_mute
+        data:
+          entity_id: media_player.soundbar
+          is_volume_muted: false      
           
   - alias: "Handy aktiv - Musik pausieren"
     id: "handy_aktiv_musik_pausieren"
