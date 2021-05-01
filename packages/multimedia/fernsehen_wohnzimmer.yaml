@@ -302,10 +302,10 @@ automation:
       - service: light.turn_off
         entity_id: light.flur_vorne, light.flur_hinten, light.badezimmerschrank, light.schreibtisch, light.kuche_regal, light.arbeitszimmer_lampe, light.balkon_licht, light.sportzimmer_regal
       - condition: state
-        entity_id: media_player.badezimmer
+        entity_id: media_player.radio_badezimmer
         state: 'playing'
       - service: media_player.media_pause
-        entity_id: media_player.badezimmer
+        entity_id: media_player.radio_badezimmer
 
   - alias: "Youtube Wohnzimmer - Pausieren"
     id: youtube_wohnzimmer_pausieren
@@ -378,10 +378,10 @@ automation:
       - service: light.turn_off
         entity_id: light.flur_vorne, light.flur_hinten, light.badezimmerschrank, light.schreibtisch, light.kuche_regal, light.arbeitszimmer_lampe, light.balkon_licht, light.sportzimmer_regal
       - condition: state
-        entity_id: media_player.badezimmer
+        entity_id: media_player.radio_badezimmer
         state: 'playing'
       - service: media_player.media_pause
-        entity_id: media_player.badezimmer                      
+        entity_id: media_player.radio_badezimmer                      
            
   - alias: "Soundbar Lautstärke - Cube"
     id: "soundbar_laustaerke_cube"

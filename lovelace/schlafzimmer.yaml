@@ -23,7 +23,7 @@ cards:
           controls: true
           progress: true
       - type: custom:mini-media-player
-        entity: media_player.schlafzimmer
+        entity: media_player.radio_schlafzimmer
         name: Radio
         hide:
           source: true

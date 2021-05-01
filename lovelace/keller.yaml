@@ -7,7 +7,7 @@ cards:
     entities:
       - entity: switch.keller_radio
       - type: custom:mini-media-player
-        entity: media_player.keller
+        entity: media_player.radio_keller
         group: true
         hide:
           source: true

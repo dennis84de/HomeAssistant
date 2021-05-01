@@ -57,7 +57,7 @@ cards:
     show_header_toggle: false
     entities:
       - type: custom:mini-media-player
-        entity: media_player.kuche
+        entity: media_player.radio_kueche
         name: Radio
         hide:
           source: true

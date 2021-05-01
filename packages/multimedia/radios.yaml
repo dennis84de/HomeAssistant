@@ -4,41 +4,41 @@ switch:
       wiedergabe_badezimmer:
         friendly_name: Wiedergabe Badezimmer
         value_template: >-
-          {{ is_state('media_player.badezimmer', 'playing') }}
+          {{ is_state('media_player.radio_badezimmer', 'playing') }}
         icon_template: >-
-          {{ 'mdi:play-circle-outline' if is_state('media_player.badezimmer', 'playing') else 'mdi:pause-circle-outline' }}
+          {{ 'mdi:play-circle-outline' if is_state('media_player.radio_badezimmer', 'playing') else 'mdi:pause-circle-outline' }}
         turn_on:
           - service: media_player.media_play
             data:
-              entity_id: media_player.badezimmer
+              entity_id: media_player.radio_badezimmer
         turn_off:
           - service: media_player.media_pause
             data:
-              entity_id: media_player.badezimmer
+              entity_id: media_player.radio_badezimmer
 
       wiedergabe_aktiv:
         friendly_name: Wiedergabe aktiv
         value_template: >-
-          {% if is_state('media_player.kuche', 'playing')
-            or is_state('media_player.badezimmer', 'playing')
-            or is_state('media_player.wohnzimmer', 'playing')
-            or is_state('media_player.schlafzimmer', 'playing')
-            or is_state('media_player.arbeitszimmer', 'playing')
-            or is_state('media_player.flur', 'playing')
-            or is_state('media_player.balkon', 'playing')
+          {% if is_state('media_player.radio_kueche', 'playing')
+            or is_state('media_player.radio_badezimmer', 'playing')
+            or is_state('media_player.radio_wohnzimmer', 'playing')
+            or is_state('media_player.radio_schlafzimmer', 'playing')
+            or is_state('media_player.radio_arbeitszimmer', 'playing')
+            or is_state('media_player.radio_flur', 'playing')
+            or is_state('media_player.radio_balkon', 'playing')
           %}
             True
           {% else %}
             False
           {% endif %}
         icon_template: >-
-          {% if is_state('media_player.kuche', 'playing')
-            or is_state('media_player.badezimmer', 'playing')
-            or is_state('media_player.wohnzimmer', 'playing')
-            or is_state('media_player.schlafzimmer', 'playing')
-            or is_state('media_player.arbeitszimmer', 'playing')
-            or is_state('media_player.flur', 'playing')
-            or is_state('media_player.balkon', 'playing')
+          {% if is_state('media_player.radio_kueche', 'playing')
+            or is_state('media_player.radio_badezimmer', 'playing')
+            or is_state('media_player.radio_wohnzimmer', 'playing')
+            or is_state('media_player.radio_schlafzimmer', 'playing')
+            or is_state('media_player.radio_arbeitszimmer', 'playing')
+            or is_state('media_player.radio_flur', 'playing')
+            or is_state('media_player.radio_balkon', 'playing')
           %}
             mdi:play-circle-outline
           {% else %}
@@ -72,24 +72,24 @@ switch:
       radios_lautlos:
         friendly_name: Radios lautlos
         value_template: >-
-          {% if (is_state('media_player.wohnzimmer', 'playing') and state_attr('media_player.wohnzimmer', 'volume_level') == None)
-            or (is_state('media_player.arbeitszimmer', 'playing') and state_attr('media_player.arbeitszimmer', 'volume_level') == None)
-            or (is_state('media_player.badezimmer', 'playing') and state_attr('media_player.badezimmer', 'volume_level') == None)
-            or (is_state('media_player.kuche', 'playing') and state_attr('media_player.kuche', 'volume_level') == None)
-            or (is_state('media_player.schlafzimmer', 'playing') and state_attr('media_player.schlafzimmer', 'volume_level') == None)
-            or (is_state('media_player.balkon', 'playing') and state_attr('media_player.balkon', 'volume_level') == None)
+          {% if (is_state('media_player.radio_wohnzimmer', 'playing') and state_attr('media_player.radio_wohnzimmer', 'volume_level') == None)
+            or (is_state('media_player.radio_arbeitszimmer', 'playing') and state_attr('media_player.radio_arbeitszimmer', 'volume_level') == None)
+            or (is_state('media_player.radio_badezimmer', 'playing') and state_attr('media_player.radio_badezimmer', 'volume_level') == None)
+            or (is_state('media_player.radio_kueche', 'playing') and state_attr('media_player.radio_kueche', 'volume_level') == None)
+            or (is_state('media_player.radio_schlafzimmer', 'playing') and state_attr('media_player.radio_schlafzimmer', 'volume_level') == None)
+            or (is_state('media_player.radio_balkon', 'playing') and state_attr('media_player.radio_balkon', 'volume_level') == None)
           %}
             True
           {% else %}
             False
           {% endif %}
         icon_template: >-
-          {% if (is_state('media_player.wohnzimmer', 'playing') and state_attr('media_player.wohnzimmer', 'volume_level') == None)
-            or (is_state('media_player.arbeitszimmer', 'playing') and state_attr('media_player.arbeitszimmer', 'volume_level') == None)
-            or (is_state('media_player.badezimmer', 'playing') and state_attr('media_player.badezimmer', 'volume_level') == None)
-            or (is_state('media_player.kuche', 'playing') and state_attr('media_player.kuche', 'volume_level') == None)
-            or (is_state('media_player.schlafzimmer', 'playing') and state_attr('media_player.schlafzimmer', 'volume_level') == None)
-            or (is_state('media_player.balkon', 'playing') and state_attr('media_player.balkon', 'volume_level') == None)
+          {% if (is_state('media_player.radio_wohnzimmer', 'playing') and state_attr('media_player.radio_wohnzimmer', 'volume_level') == None)
+            or (is_state('media_player.radio_arbeitszimmer', 'playing') and state_attr('media_player.radio_arbeitszimmer', 'volume_level') == None)
+            or (is_state('media_player.radio_badezimmer', 'playing') and state_attr('media_player.radio_badezimmer', 'volume_level') == None)
+            or (is_state('media_player.radio_kueche', 'playing') and state_attr('media_player.radio_kueche', 'volume_level') == None)
+            or (is_state('media_player.radio_schlafzimmer', 'playing') and state_attr('media_player.radio_schlafzimmer', 'volume_level') == None)
+            or (is_state('media_player.radio_balkon', 'playing') and state_attr('media_player.radio_balkon', 'volume_level') == None)
           %}
             mdi:volume-off
           {% else %}
@@ -120,7 +120,7 @@ binary_sensor:
         value_template: >-
           {% if is_state('entity_controller.radio_badezimmer_bewegung', 'active_timer') %}
             false
-          {% elif is_state('media_player.badezimmer', 'playing') %}
+          {% elif is_state('media_player.radio_badezimmer', 'playing') %}
             true
           {% elif is_state('switch.wohnzimmer_radio', 'on')
             or is_state('switch.balkon_radio', 'on')
@@ -169,7 +169,7 @@ automation:
         entity_id: 'switch.wiedergabe_aktiv'
         state: 'on'
       - condition: state
-        entity_id: 'media_player.balkon'
+        entity_id: 'media_player.radio_balkon'
         state: 'off'
       - condition: state
         entity_id: 'input_boolean.radio_balkon_bewegungsmelder_deaktiviert'
@@ -187,7 +187,7 @@ automation:
         entity_id: input_boolean.radio_balkon_aktiv
       - service: media_player.turn_on
         data:
-          entity_id: media_player.balkon
+          entity_id: media_player.radio_balkon
 
   - alias: 'Radio Balkon - Keine Bewegung'
     id: "radio_balkon_keine_bewegung"
@@ -204,7 +204,7 @@ automation:
         entity_id: input_boolean.radio_balkon_aktiv
       - service: media_player.turn_off
         data:
-          entity_id: media_player.balkon
+          entity_id: media_player.radio_balkon
 
   - alias: 'Radio Balkon - Starten'
     id: "radio_balkon_starten"
@@ -222,14 +222,14 @@ automation:
       - condition: not
         conditions:
           - condition: state
-            entity_id: media_player.balkon
+            entity_id: media_player.radio_balkon
             state: 'playing'                        
     action:
       - service: input_boolean.turn_on
         entity_id: input_boolean.radio_balkon_aktiv
       - service: media_player.turn_on
         data:
-          entity_id: media_player.balkon
+          entity_id: media_player.radio_balkon
       
   - alias: 'Radio Balkon - Synchronisieren'
     id: "radio_balkon_synchronisieren"
@@ -239,7 +239,7 @@ automation:
         to: '2'
     condition:
       - condition: state
-        entity_id: media_player.balkon
+        entity_id: media_player.radio_balkon
         state: 'playing'
     action:
       - service: script.sync_radios
@@ -322,13 +322,13 @@ script:
     alias: Radios synchronisieren
     sequence:
       - condition: state
-        entity_id: media_player.wohnzimmer
+        entity_id: media_player.radio_wohnzimmer
         state: 'playing'
       - service: media_player.turn_off
-        entity_id: media_player.wohnzimmer
+        entity_id: media_player.radio_wohnzimmer
       - delay: '00:00:02'
       - service: media_player.turn_on
-        entity_id: media_player.wohnzimmer
+        entity_id: media_player.radio_wohnzimmer
 
   radios_einschalten:
     alias: Radios einschalten
@@ -347,20 +347,20 @@ script:
     alias: Radios abspielen
     sequence:
       - service: media_player.media_play
-        entity_id: media_player.kuche, media_player.badezimmer, media_player.wohnzimmer, media_player.schlafzimmer, media_player.arbeitszimmer, media_player.flur
+        entity_id: media_player.radio_kueche, media_player.radio_badezimmer, media_player.radio_wohnzimmer, media_player.radio_schlafzimmer, media_player.radio_arbeitszimmer, media_player.radio_flur
 
   radios_pausieren:
       alias: Radios pausieren
       sequence:
         - service: media_player.media_pause
-          entity_id: media_player.kuche, media_player.badezimmer, media_player.wohnzimmer, media_player.schlafzimmer, media_player.arbeitszimmer, media_player.flur
+          entity_id: media_player.radio_kueche, media_player.radio_badezimmer, media_player.radio_wohnzimmer, media_player.radio_schlafzimmer, media_player.radio_arbeitszimmer, media_player.radio_flur
 
   radios_lautlos:
       alias: Radios lautlos
       sequence:
         - service: media_player.volume_set          
           data:
-            entity_id: media_player.kuche, media_player.badezimmer, media_player.wohnzimmer, media_player.schlafzimmer, media_player.arbeitszimmer, media_player.flur, media_player.balkon
+            entity_id: media_player.radio_kueche, media_player.radio_badezimmer, media_player.radio_wohnzimmer, media_player.radio_schlafzimmer, media_player.radio_arbeitszimmer, media_player.radio_flur, media_player.radio_balkon
             volume_level: 0
           
   radios_laut:
@@ -368,11 +368,11 @@ script:
       sequence:
         - service: media_player.volume_set          
           data:
-            entity_id: media_player.kuche, media_player.badezimmer, media_player.wohnzimmer, media_player.schlafzimmer, media_player.arbeitszimmer, media_player.flur
+            entity_id: media_player.radio_kueche, media_player.radio_badezimmer, media_player.radio_wohnzimmer, media_player.radio_schlafzimmer, media_player.radio_arbeitszimmer, media_player.radio_flur
             volume_level: 0.4
         - service: media_player.volume_set          
           data:
-            entity_id: media_player.balkon
+            entity_id: media_player.radio_balkon
             volume_level: 0.2            
 
   wohnung_radios_einschalten:
@@ -381,10 +381,10 @@ script:
       - service: switch.turn_on
         entity_id: switch.badezimmer_radio, switch.wohnzimmer_radio, switch.flur_radio, switch.kuche_radio
       - wait_template: >-
-          {% if is_state('media_player.kuche', 'playing')
-            and is_state('media_player.badezimmer', 'playing')
-            and is_state('media_player.wohnzimmer', 'playing')
-            and is_state('media_player.flur', 'playing')
+          {% if is_state('media_player.radio_kueche', 'playing')
+            and is_state('media_player.radio_badezimmer', 'playing')
+            and is_state('media_player.radio_wohnzimmer', 'playing')
+            and is_state('media_player.radio_flur', 'playing')
           %}
             True
           {% else %}

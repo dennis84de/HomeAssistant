@@ -65,7 +65,7 @@ cards:
           progress: true
           volume: true
       - type: custom:mini-media-player
-        entity: media_player.wohnzimmer
+        entity: media_player.radio_wohnzimmer
         name: Radio
         hide:
           source: true
@@ -86,7 +86,7 @@ cards:
       - entity: input_boolean.radio_balkon_bewegungsmelder_deaktiviert
         name: Bewegungsmelder deaktiviert
       - type: custom:mini-media-player
-        entity: media_player.balkon
+        entity: media_player.radio_balkon
         hide:
           source: true
           progress: true  
