@@ -96,7 +96,7 @@ automation:
               - service: script.zu_hause_abends     
           - conditions:
               - condition: state
-                entity_id: sensor.presence_simulation
+                entity_id: switch.presence_simulation
                 state: 'on'
             sequence:
               - service: presence_simulation.stop
@@ -171,14 +171,17 @@ script:
   zu_hause:
     alias: "Zu Hause"
     sequence:
-      - service: script.wohnung_radios_einschalten
       - service: switch.turn_on
-        entity_id: switch.computer, switch.watchtv_wohnzimmer      
-      - condition: state
-        entity_id: binary_sensor.sonne_tagsueber
-        state: 'off'
-      - service: light.turn_on
-        entity_id: light.couch, light.strahler
+        entity_id: switch.computer, switch.watchtv_wohnzimmer        
+      - service: script.wohnung_radios_einschalten
+      - choose:
+          - conditions:
+              - condition: state
+                entity_id: binary_sensor.sonne_tagsueber
+                state: 'off'
+            sequence:
+              - service: light.turn_on
+                entity_id: light.couch, light.strahler   
 
   zu_hause_home_office:
     alias: "Zu Hause - Home Office"

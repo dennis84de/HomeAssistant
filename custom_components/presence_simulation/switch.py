@@ -1,11 +1,12 @@
-from homeassistant.helpers.entity import ToggleEntity
+#from homeassistant.helpers.entity import ToggleEntity
+from homeassistant.components.switch import SwitchEntity
 from datetime import datetime, timezone, timedelta
 import math
 import logging
 from .const import (
         DOMAIN,
-        SENSOR_PLATFORM,
-        SENSOR
+        SWITCH_PLATFORM,
+        SWITCH
 )
 SCAN_INTERVAL = timedelta(seconds=5)
 _LOGGER = logging.getLogger(__name__)
@@ -23,17 +24,16 @@ async def async_setup_entry(hass, config_entry, async_add_devices):
     if PresenceSimulationSwitch.instances == 0:
         async_add_devices([PresenceSimulationSwitch(hass)], True)
 
-class PresenceSimulationSwitch(ToggleEntity):
+class PresenceSimulationSwitch(SwitchEntity):
     instances = 0
 
     def __init__(self, hass):
-        self.turn_off()
+        self.internal_turn_off()
         self.hass = hass
         self.attr={}
         self.attr["friendly_name"] = "Presence Simulation Toggle"
         self._next_events = []
         PresenceSimulationSwitch.instances += 1
-        pass
 
     @property
     def name(self):
@@ -41,30 +41,46 @@ class PresenceSimulationSwitch(ToggleEntity):
 
     @property
     def is_on(self):
+        """Return True if the state is on"""
         return self._state == "on"
 
     @property
     def state(self):
+        """Return the state of the switch"""
         return self._state
 
-    def turn_on(self, **kwargs):
+    def internal_turn_on(self, **kwargs):
+        """Turn on the presence simulation flag. Does not launch the simulation, this is for the calls from the services, to avoid a loop"""
         self._state = "on"
 
-    def turn_off(self, **kwargs):
+    def internal_turn_off(self, **kwargs):
+        """Turn off the presence simulation flag. Does not launch the stop simulation service, this is for the calls from the services, to avoid a loop"""
         self._state = "off"
         self._next_events = []
 
+    def turn_on(self, **kwargs):
+        """Turn on the presence simulation"""
+        _LOGGER.debug("Turn on of the presence simulation through the switch")
+        self.hass.services.call(DOMAIN, "start")
+
+    def turn_off(self, **kwargs):
+        """Turn off the presence simulation"""
+        _LOGGER.debug("Turn off of the presence simulation through the switch")
+        self.hass.services.call(DOMAIN, "stop")
+
     async def async_update(self):
+        """Update the attributes in regards to the list of next events"""
         if len(self._next_events) > 0:
-            self.attr["next_event_datetime"], self.attr["next_entity_id"], self.attr["next_entity_state"] = sorted(self._next_events)[0]
+            self.attr["next_event_datetime"], self.attr["next_entity_id"], self.attr["next_entity_state"] = self._next_events[0] #list is sorted
         else:
             for prop in ("next_event_datetime", "next_entity_id", "next_entity_state"):
                 if prop in self.attr:
                     del self.attr[prop]
 
     def update(self):
+        """Update the attributes in regards to the list of next events"""
         if len(self._next_events) > 0:
-            self.attr["next_event_datetime"], self.attr["next_entity_id"], self.attr["next_entity_state"] = sorted(self._next_events)[0]
+            self.attr["next_event_datetime"], self.attr["next_entity_id"], self.attr["next_entity_state"] = self._next_events[0] #list is sorted
         else:
             for prop in ("next_event_datetime", "next_entity_id", "next_entity_state"):
                 if prop in self.attr:
@@ -72,6 +88,7 @@ class PresenceSimulationSwitch(ToggleEntity):
 
     @property
     def device_state_attributes(self):
+        """Returns the attributes list"""
         return self.attr
 
     async def async_added_to_hass(self):
@@ -79,16 +96,34 @@ class PresenceSimulationSwitch(ToggleEntity):
         await super().async_added_to_hass()
         if DOMAIN not in self.hass.data:
             self.hass.data[DOMAIN] = {}
-        if SENSOR_PLATFORM not in self.hass.data[DOMAIN]:
-            self.hass.data[DOMAIN][SENSOR_PLATFORM] = {}
-        self.hass.data[DOMAIN][SENSOR_PLATFORM][SENSOR] = self
+        if SWITCH_PLATFORM not in self.hass.data[DOMAIN]:
+            self.hass.data[DOMAIN][SWITCH_PLATFORM] = {}
+        self.hass.data[DOMAIN][SWITCH_PLATFORM][SWITCH] = self
 
     async def async_add_next_event(self, next_datetime, entity_id, state):
+        """Add the next event in the the events list and sort them"""
         self._next_events.append((next_datetime, entity_id, state))
+        #sort so that the firt element is the next one
+        self._next_events = sorted(self._next_events)
 
     async def async_remove_event(self, entity_id):
+        """Remove the next event of an entity"""
         i=0
         for e in self._next_events:
             if e[1] == entity_id:
                 del self._next_events[i]
             i += 1
+
+    async def set_start_datetime(self, start_datetime):
+        self.attr["simulation_start"] = start_datetime
+
+    async def reset_start_datetime(self):
+        if "simulation_start" in self.attr:
+            del self.attr["simulation_start"]
+
+    async def set_entities(self, entities):
+        self.attr["entity_id"] = entities
+
+    async def reset_entities(self):
+        if "entity_id" in self.attr:
+            del self.attr["entity_id"]
