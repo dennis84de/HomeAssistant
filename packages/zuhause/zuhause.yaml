@@ -264,8 +264,6 @@ script:
                 {{- x.name -}}
               {% endfor %}           
             {% endif %}
-      - service: input_boolean.turn_off
-        entity_id: input_boolean.zu_hause_begruessung
         
   zu_hause_begruessung_abends:
       alias: "Zu Hause - Begrüßung abends"
