@@ -21,17 +21,13 @@ input_boolean:
 entity_controller:           
   bewegung_schlafzimmer_bett:
     friendly_name: "Bewegung Schlafzimmer Bett"
-    sensor: binary_sensor.bewegungsmelder_schlafzimmer
+    sensors: 
+      - binary_sensor.bewegungsmelder_bett
+      - binary_sensor.bewegungsmelder_schlafzimmer
     entity: light.bett
     delay: 120    
     service_data:
       brightness: 100
-    night_mode:
-      delay: 120
-      service_data:
-        brightness: 60
-      start_time: '23:00:00'
-      end_time: '05:00:00'     
     behaviours:
       on_enter_overridden: 'off'
     overrides:
@@ -55,7 +51,7 @@ entity_controller:
       - binary_sensor.bewegungsmelder_inaktiv_unterwegs
       - binary_sensor.bewegungsmelder_inaktiv_staubsauger
       - input_boolean.bewegungsmelder_schlafzimmer_deaktiviert     
-      
+           
 automation:
   - alias: "Schlafzimmer - Licht ausschalten"
     id: "schlafzimmer_licht_ausschalten"  

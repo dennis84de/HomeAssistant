@@ -102,6 +102,8 @@ cards:
         name: Wohnzimmer
       - entity: sensor.bewegungsmelder_badezimmer_battery_level
         name: Badezimmer
+      - entity: sensor.bewegungsmelder_balkon_battery_level
+        name: Balkon        
       - entity: sensor.bewegungsmelder_flur_vorne_battery_level
         name: Flur vorne
       - entity: sensor.bewegungsmelder_flur_hinten_battery_level
@@ -110,12 +112,12 @@ cards:
         name: Arbeitszimmer
       - entity: sensor.bewegungsmelder_sportzimmer_battery_level
         name: Sportzimmer
+      - entity: sensor.bewegungsmelder_kueche_battery_level
+        name: Küche        
       - entity: sensor.bewegungsmelder_schlafzimmer_battery_level
         name: Schlafzimmer
-      - entity: sensor.bewegungsmelder_kueche_battery_level
-        name: Küche
-      - entity: sensor.bewegungsmelder_balkon_battery_level
-        name: Balkon
+      - entity: sensor.bewegungsmelder_bett_battery_level
+        name: Bett
 
   - type: entities
     title: Heizung

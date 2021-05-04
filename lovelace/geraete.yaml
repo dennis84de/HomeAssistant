@@ -61,8 +61,8 @@ cards:
         name: Arbeitszimmer
       - entity: zigate.bewegungsmelder_sportzimmer
         name: Sportzimmer
-      - entity: zigate.bewegungsmelder_balkon
-        name: Balkon
+      - entity: zigate.bewegungsmelder_bett
+        name: Bett
 
   - type: entities
     title: Fenster

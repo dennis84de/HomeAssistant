@@ -17,7 +17,7 @@ sensor:
       - zigate.bewegungsmelder_sportzimmer
       - zigate.bewegungsmelder_schlafzimmer
       - zigate.bewegungsmelder_kueche
-      - zigate.bewegungsmelder_balkon
+      - zigate.bewegungsmelder_bett
       - zigate.balkontuer
       - zigate.fenster_wohnzimmer
       - zigate.fenster_schlafzimmer

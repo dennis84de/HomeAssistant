@@ -11,7 +11,8 @@ input_select:
       - Schlafzimmer
       - Sportzimmer
       - Wohnzimmer
-
+      - Bett
+      
 sensor:
   - platform: template
     sensors:
@@ -48,6 +49,7 @@ automation:
           - binary_sensor.bewegungsmelder_schlafzimmer
           - binary_sensor.bewegungsmelder_sportzimmer
           - binary_sensor.bewegungsmelder_wohnzimmer
+          - binary_sensor.bewegungsmelder_bett
         from: 'off'
         to: 'on'
     condition:

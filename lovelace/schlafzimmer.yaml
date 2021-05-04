@@ -91,7 +91,9 @@ cards:
     show_header_toggle: false
     entities:
       - entity: binary_sensor.bewegungsmelder_schlafzimmer       
-        name: Bewegungsmelder
+        name: Schlafzimmer
+      - entity: binary_sensor.bewegungsmelder_bett
+        name: Bett        
       - entity: sensor.helligkeit_schlafzimmer
       - entity: binary_sensor.im_bett
 
