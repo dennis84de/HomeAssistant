@@ -23,17 +23,6 @@ sensor:
           {% else %}
             mdi:phone
           {% endif %}
-
-  - platform: mqtt
-    name: "Letzter Anruf"
-    state_topic: "phone/last_call" 
-    value_template: >-
-      {% if value == None %}
-        -
-      {% else %}
-        {{ value }}
-      {% endif %}        
-    icon: mdi:phone-classic
    
 input_boolean:
   licht_aktiv:
@@ -43,22 +32,6 @@ input_boolean:
     name: Musik pausiert            
         
 automation:
-  - alias: "Eingehender Anruf - Telefon"
-    id: "eingehender_anruf_telefon"
-    trigger:
-      - platform: state
-        entity_id: sensor.telefon
-        to: 'ringing'
-    condition:
-      - condition: template
-        value_template: '{{ state_attr("sensor.telefon", "from") != None }}'        
-    action:
-      - service: mqtt.publish       
-        data_template:
-          payload: '{{ state_attr(trigger.entity_id, "from") }}'          
-          topic: phone/last_call
-          retain: true
-
   - alias: "Eingehender Anruf - Licht starten"
     id: "eingehender_anruf_licht_starten"
     trigger:

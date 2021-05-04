@@ -93,22 +93,6 @@ sensor:
         device_class: timestamp
         
 automation: 
-  - alias: "Eingehender Anruf - Handy"
-    id: "eingehender_anruf_handy"
-    trigger:
-      - platform: state
-        entity_id: sensor.handy
-        to: 'incoming'
-    condition:
-      - condition: template
-        value_template: '{{ state_attr("sensor.handy", "number") != None }}'        
-    action:
-      - service: mqtt.publish
-        data_template:
-          payload: '{{ state_attr(trigger.entity_id, "number") }}'          
-          topic: phone/last_call
-          retain: true
-
   - alias: "Handy aktiv - Kodi Wohnzimmer pausieren"
     id: "handy_aktiv_kodi_wohnzimmer_pausieren"
     trigger:
@@ -344,8 +328,8 @@ automation:
       - service: switch.turn_off
         entity_id: switch.radios_lautlos
 
-  - alias: "Handy - Eingehender Anruf"
-    id: "handy_eingehender_anruf"
+  - alias: "Handy aktiv - Benachrichtigung"
+    id: "handy_aktiv_benachrichtigung"
     trigger:
       - platform: state
         entity_id: sensor.handy
@@ -355,10 +339,10 @@ automation:
         entity_id: input_boolean.nicht_stoeren
         state: 'off'
     action:
-      service: !secret tts_service
-      data_template:
-        message: >-
-          Ein eingehender Anruf von {% if state_attr('sensor.handy', 'name') != '-' and state_attr('sensor.handy', 'name').startswith('+') == False %}{{ state_attr('sensor.handy', 'name') }}{% else %}einer unbekannten Nummer{% endif %}.
+      - service: !secret tts_service
+        data:
+          message: >-
+            Ein eingehender Anruf von {% if state_attr('sensor.handy', 'name') != '-' and state_attr('sensor.handy', 'name').startswith('+') == False %}{{ state_attr('sensor.handy', 'name') }}{% else %}einer unbekannten Nummer{% endif %}.
 
   - alias: "Handy - Neue SMS"
     id: "handy_neue_sms"
@@ -424,37 +408,34 @@ automation:
     trigger: 
       - platform: state
         entity_id: sensor.handy
-        to: 'idle'          
-    condition:    
-      - condition: template     
-        value_template: '{{ trigger.from_state.state == "sms" }}'
-    action:
-      - service: persistent_notification.dismiss  
-        data:              
-          notification_id: neue_sms
-
-  - alias: "Handy - Benachrichtigung ausgeblendet"
-    id: "handy_benachrichtigung_ausgeblendet"
-    trigger:
+        to: 'idle'
       - platform: event
         event_type: call_service
         event_data:
           domain: persistent_notification
-          service: dismiss           
+          service: dismiss
     condition:
-      - condition: template
-        value_template: >-
-          {% if trigger.event.data.service_data.notification_id == "neue_sms" %}
-            True
-          {% else %}
-            False
-          {% endif %}
+      - condition: or
+        conditions:
+          - condition: template
+            value_template: "{{ trigger.entity_id == 'sensor.handy' and trigger.from_state.state == 'sms' }}"
+          - condition: template
+            value_template: "{{ trigger.event.data.service_data.notification_id == 'neue_sms' }}"
     action:
-      - service: mqtt.publish
-        data_template:
-           topic: 'handy/status'
-           payload: '{"date":"-","name":"-","number":"-","status":"idle","text":"-","time":"-"}'
-           retain: true
+      - choose:
+          - conditions:
+            - condition: template
+              value_template: "{{ trigger.entity_id == 'sensor.handy' }}"
+            sequence:
+              - service: persistent_notification.dismiss  
+                data:              
+                  notification_id: neue_sms
+        default:
+          - service: mqtt.publish
+            data:
+               topic: 'handy/status'
+               payload: '{"date":"-","name":"-","number":"-","status":"idle","text":"-","time":"-"}'
+               retain: true
 
   - alias: "Handy - Batteriestand niedrig"
     id: "handy_batteriestand_niedrig"
