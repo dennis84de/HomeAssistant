@@ -199,6 +199,7 @@ automation:
       - condition: state
         entity_id: input_boolean.radio_balkon_aktiv
         state: 'on'
+        for: "00:00:10"
     action:
       - service: input_boolean.turn_off
         entity_id: input_boolean.radio_balkon_aktiv
