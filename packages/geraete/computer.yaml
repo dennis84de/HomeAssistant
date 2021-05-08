@@ -71,9 +71,9 @@ automation:
     id: "telegram_computer_ausschalten"
     trigger:
       - platform: event
-        event_type: telegram_callback
+        event_type: telegram_command
         event_data:
-          data: '/computer_ausschalten'
+          command: '/computer_ausschalten'
     action:
       - service: switch.turn_off
         entity_id: switch.computer

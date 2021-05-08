@@ -96,15 +96,15 @@ automation:
     id: "telegram_unterwegs_einschalten"
     trigger:
       - platform: event
-        event_type: telegram_callback
+        event_type: telegram_command
         event_data:
-          data: '/unterwegs'
-    action:
+          command: '/unterwegs'
+    action:      
       - service: mqtt.publish
         data:
            topic: 'location/handy'
            payload: 'not_home'
-           retain: true
+           retain: true      
       - service: telegram_bot.send_message
         data_template:
           target: '{{ trigger.event.data.chat_id }}'
