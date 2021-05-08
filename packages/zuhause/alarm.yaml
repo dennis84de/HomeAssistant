@@ -72,26 +72,18 @@ automation:
     id: "alarm_nachricht_bewegungsmelder"
     trigger:
       - platform: state
-        entity_id: binary_sensor.bewegungsmelder_badezimmer
-        to: 'on'
-      - platform: state
-        entity_id: binary_sensor.bewegungsmelder_wohnzimmer
-        to: 'on'
-      - platform: state
-        entity_id: binary_sensor.bewegungsmelder_flur_vorne
-        to: 'on'
-      - platform: state
-        entity_id: binary_sensor.bewegungsmelder_arbeitszimmer
-        to: 'on'
-      - platform: state
-        entity_id: binary_sensor.bewegungsmelder_sportszimmer
-        to: 'on'        
-      - platform: state
-        entity_id: binary_sensor.bewegungsmelder_schlafzimmer
-        to: 'on'
-      - platform: state
-        entity_id: binary_sensor.bewegungsmelder_kueche
-        to: 'on'
+        entity_id:
+          - binary_sensor.bewegungsmelder_arbeitszimmer
+          - binary_sensor.bewegungsmelder_badezimmer
+          - binary_sensor.bewegungsmelder_balkon
+          - binary_sensor.bewegungsmelder_flur_hinten
+          - binary_sensor.bewegungsmelder_flur_vorne
+          - binary_sensor.bewegungsmelder_kueche
+          - binary_sensor.bewegungsmelder_schlafzimmer
+          - binary_sensor.bewegungsmelder_sportzimmer
+          - binary_sensor.bewegungsmelder_wohnzimmer
+          - binary_sensor.bewegungsmelder_bett       
+        to: 'on'           
     condition:
       - condition: state
         entity_id: binary_sensor.zu_hause
@@ -106,45 +98,24 @@ automation:
       service: notify.telegram
       data_template:
         title: "Bewegung erkannt"
-        message: >-
-          {% if trigger.entity_id == "binary_sensor.bewegungsmelder_badezimmer" %}
-             Im Badezimmer wurde eine Bewegung erkannt.
-          {% elif trigger.entity_id == "binary_sensor.bewegungsmelder_wohnzimmer" %}
-            Im Wohnzimmer wurde eine Bewegung erkannt.
-          {% elif trigger.entity_id == "binary_sensor.bewegungsmelder_flur_vorne" %}
-            Im Flur wurde eine Bewegung erkannt.
-          {% elif trigger.entity_id == "binary_sensor.bewegungsmelder_arbeitszimmer" %}
-            Im Arbeitszimmer wurde eine Bewegung erkannt.
-          {% elif trigger.entity_id == "binary_sensor.bewegungsmelder_sportszimmer" %}
-            Im Sportzimmer wurde eine Bewegung erkannt.            
-          {% elif trigger.entity_id == "binary_sensor.bewegungsmelder_schlafzimmer" %}
-            Im Schlafzimmer wurde eine Bewegung erkannt.
-          {% elif trigger.entity_id == "binary_sensor.bewegungsmelder_kueche" %}
+        message: >-          
+          {% if trigger.entity_id == 'binary_sensor.bewegungsmelder_kueche' %}
             In der Küche wurde eine Bewegung erkannt.
           {% else %}
-            Eine sonstige Bewegung wurde erkannt.
+            Im {{ trigger.to_state.attributes.friendly_name }} wurde eine Bewegung erkannt.
           {% endif %}
 
   - alias: "Alarm - Nachricht Fenster"
     id: "alarm_nachricht_fenster"
     trigger:
       - platform: state
-        entity_id: binary_sensor.balkontuer
-        to: 'on'      
-      - platform: state
-        entity_id: binary_sensor.fenster_wohnzimmer
-        to: 'on'
-      - platform: state
-        entity_id: binary_sensor.fenster_schlafzimmer
-        to: 'on'
-      - platform: state
-        entity_id: binary_sensor.fenster_kueche
-        to: 'on'
-      - platform: state
-        entity_id: binary_sensor.fenster_arbeitszimmer
-        to: 'on'
-      - platform: state
-        entity_id: binary_sensor.fenster_sportzimmer
+        entity_id: 
+          - binary_sensor.balkontuer
+          - binary_sensor.fenster_wohnzimmer
+          - binary_sensor.fenster_schlafzimmer
+          - binary_sensor.fenster_kueche
+          - binary_sensor.fenster_arbeitszimmer
+          - binary_sensor.fenster_sportzimmer
         to: 'on'
     condition:
       - condition: state
@@ -158,16 +129,8 @@ automation:
       data_template:
         title: "Fenster geöffnet"
         message: >-
-          {% if trigger.entity_id == "binary_sensor.balkontuer" %}
-            Die Balontür wurde geöffnet.
-          {% elif trigger.entity_id == "binary_sensor.fenster_wohnzimmer" %}
-            Das Fenster im Wohnzimmer wurde geöffnet.            
-          {% elif trigger.entity_id == "binary_sensor.fenster_schlafzimmer" %}
-            Das Fenster im Schlafzimmer wurde geöffnet.
-          {% elif trigger.entity_id == "binary_sensor.fenster_kueche" %}
-            Das Fenster in der Küche wurde geöffnet.
-          {% elif trigger.entity_id == "binary_sensor.fenster_arbeitszimmer" %}
-            Das Fenster im Arbeitszimmer wurde geöffnet.
-          {% elif trigger.entity_id == "binary_sensor.fenster_sportzimmer" %}
-            Das Fenster im Sportzimmer wurde geöffnet.
-          {% endif %}              
+          {% if trigger.entity_id == 'binary_sensor.balkontuer' %}
+            Die Balkontür wurde geöffnet.
+          {% else %}
+            Das Fenster im {{ trigger.to_state.attributes.friendly_name }} wurde geöffnet.
+          {% endif %} 
