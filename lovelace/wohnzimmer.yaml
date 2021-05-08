@@ -131,7 +131,6 @@ cards:
       entities:
         - entity: fan.ventilator
         - entity: switch.ventilator_natuerlicher_wind
-        - entity: input_number.ventilator_geschwindigkeit
         - entity: input_select.ventilator_drehungswinkel
         - entity: sensor.ventilator_batterie
           name: Batteriestand
