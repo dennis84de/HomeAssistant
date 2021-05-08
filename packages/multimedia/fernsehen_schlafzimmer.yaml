@@ -154,7 +154,7 @@ automation:
     id: "schlafzimmer_kodi_pausieren"
     trigger:
       platform: state
-      entity_id: binary_sensor.bewegungsmelder_schlafzimmer
+      entity_id: binary_sensor.bewegungsmelder_bett
       to: 'on'
     condition:
       - condition: state

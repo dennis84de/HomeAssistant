@@ -371,7 +371,7 @@ automation:
     id: "schlafzimmer_tablet_wieder_pausieren"
     trigger:
       platform: state
-      entity_id: binary_sensor.bewegungsmelder_schlafzimmer
+      entity_id: binary_sensor.bewegungsmelder_bett
       to: 'on'
     condition:
       - condition: state
