@@ -20,7 +20,11 @@ cards:
     show_header_toggle: false
     entities:
       - entity: device_tracker.netzwerkdj
+        name: Fritzbox
       - entity: device_tracker.fritzrepeater
+        name: Repeater
+      - entity: device_tracker.diskstation
+        name: Diskstation
 
   - type: entities
     title: Multimedia
@@ -29,7 +33,9 @@ cards:
       - entity: device_tracker.fernseherwohnzimmer
         name: Fernseher
       - entity: device_tracker.soundbar      
+        name: Soundbar
       - entity: device_tracker.kamerawohnzimmer
+        name: Kamera Wohnzimmer
 
   - type: entities
     title: Haushalt
@@ -45,43 +51,66 @@ cards:
     show_header_toggle: false
     entities:
       - entity: device_tracker.computer
+        name: Wohnzimmer
       - entity: device_tracker.computerarbeit
+        name: Arbeitszimmer
       
   - type: entities
     title: Radios
     show_header_toggle: false
     entities:
       - entity: device_tracker.radiowohnzimmer
+        name: Wohnzimmer
       - entity: device_tracker.radioflur
+        name: Flur
       - entity: device_tracker.radiobadezimmer
+        name: Badezimmer
       - entity: device_tracker.radiokueche
+        name: Küche
       - entity: device_tracker.radioschlafzimmer
+        name: Schlafzimmer
       - entity: device_tracker.radioarbeitszimmer
+        name: Arbeitszimmer
       - entity: device_tracker.radiobalkon
+        name: Balkon
       - entity: device_tracker.radiokeller
+        name: Keller
 
   - type: entities
     title: TP-Link
     show_header_toggle: false
     entities:
       - entity: device_tracker.tplinkwohnzimmermonitor
+        name: Wohnzimmer Monitor
       - entity: device_tracker.tplinkwohnzimmerradio      
+        name: Wohnzimmer Radio
       - entity: device_tracker.tplinkschlafzimmerradio
+        name: Schlafzimmer Radio
       - entity: device_tracker.tplinkflurradio
+        name: Flur Radio
       - entity: device_tracker.tplinkbadezimmerradio
+        name: Badezimmer Radio
       - entity: device_tracker.tplinkkuecheradio   
+        name: Küche Radio
       - entity: device_tracker.tplinkkellerradio
+        name: Keller Radio
       - entity: device_tracker.tplinkschlafzimmerfernseher
+        name: Schlafzimmer Fernseher
       - entity: device_tracker.tplinksportzimmerfernseher
+        name: Sportzimmer Fernseher
       - entity: device_tracker.tplinkwaschmaschine
+        name: Waschmaschine
       - entity: device_tracker.tplinktrockner      
+        name: Trocker
       
   - type: entities
     title: Edimax
     show_header_toggle: false
     entities:      
       - entity: device_tracker.edimaxsportzimmerlicht
+        name: Sportzimmer Licht
       - entity: device_tracker.edimaxcrosstrainer
+        name: Crosstrainer
       
   - type: entities
     title: Amazon Echo
@@ -178,10 +207,4 @@ cards:
     show_header_toggle: false
     entities:
       - entity: device_tracker.shellycouch
-        name: Wohnzimmer Strahler                
-          
-  - type: entities
-    title: ESP8266
-    show_header_toggle: false
-    entities:
-      - entity: device_tracker.esptuerklingel
+        name: Wohnzimmer Strahler

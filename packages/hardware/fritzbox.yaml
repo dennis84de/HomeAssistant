@@ -136,46 +136,32 @@ homeassistant:
 
     device_tracker.tplinkwohnzimmerradio:
       icon: mdi:power-socket-eu
-      friendly_name: Wohnzimmer Radio
     device_tracker.tplinkschlafzimmerradio:
       icon: mdi:power-socket-eu
-      friendly_name: Schlafzimmer Radio
     device_tracker.tplinkkuecheradio:
       icon: mdi:power-socket-eu
-      friendly_name: Küche Radio
     device_tracker.tplinkbadezimmerradio:
       icon: mdi:power-socket-eu
-      friendly_name: Badezimmer Radio
     device_tracker.tplinkwohnzimmermonitor:
       icon: mdi:power-socket-eu
-      friendly_name: Wohnzimmer Monitor
     device_tracker.tplinkflurradio:
       icon: mdi:power-socket-eu
-      friendly_name: Flur Radio
     device_tracker.tplinkwaschmaschine:
       icon: mdi:power-socket-eu
-      friendly_name: Waschmaschine
     device_tracker.tplinktrockner:
       icon: mdi:power-socket-eu
-      friendly_name: Trockner
     device_tracker.tplinkkellerradio:
       icon: mdi:power-socket-eu
-      friendly_name: Keller Radio
     device_tracker.tplinkschlafzimmerfernseher:
       icon: mdi:power-socket-eu
-      friendly_name: Schlafzimmer Fernseher
     device_tracker.tplinksportzimmerfernseher:
       icon: mdi:power-socket-eu
-      friendly_name: Sportzimmer Fernseher
     device_tracker.edimaxsportzimmerlicht:
       icon: mdi:power-socket-eu
-      friendly_name: Sportzimmer Licht
     device_tracker.edimaxcrosstrainer:
       icon: mdi:power-socket-eu
-      friendly_name: Crosstrainer
     device_tracker.fritzrepeater:
       icon: mdi:wifi
-      friendly_name: Repeater
 
     device_tracker.computer:
       icon: mdi:desktop-classic
@@ -261,32 +247,23 @@ homeassistant:
       icon: mdi:television
     device_tracker.kamerawohnzimmer:
       icon: mdi:cctv
-      friendly_name: Kamera
       
     device_tracker.radiowohnzimmer:
       icon: mdi:raspberry-pi
-      friendly_name: Wohnzimmer
     device_tracker.radiobadezimmer:
       icon: mdi:raspberry-pi
-      friendly_name: Badezimmer
     device_tracker.radiokueche:
       icon: mdi:raspberry-pi
-      friendly_name: Küche
     device_tracker.radioschlafzimmer:
       icon: mdi:raspberry-pi
-      friendly_name: Schlafzimmer
     device_tracker.radioflur:
       icon: mdi:raspberry-pi
-      friendly_name: Flur
     device_tracker.radioarbeitszimmer:
       icon: mdi:raspberry-pi
-      friendly_name: Arbeitszimmer
     device_tracker.radiobalkon:
       icon: mdi:raspberry-pi
-      friendly_name: Balkon
     device_tracker.radiokeller:
       icon: mdi:raspberry-pi
-      friendly_name: Keller
       
     device_tracker.tasmotaarbeitszimmerlampe:
       icon: mdi:developer-board
