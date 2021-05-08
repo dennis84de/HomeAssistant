@@ -10,7 +10,7 @@ cards:
       - entity: sensor.strommix
       - entity: sensor.schimmelindikator
       - entity: binary_sensor.auto_waschen
-      - entity: binary_sensor.winterreifen
+      - entity: binary_sensor.autoreifen
       - entity: sensor.katastrophenalarm
 
   - type: entities
