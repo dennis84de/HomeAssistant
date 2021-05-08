@@ -146,9 +146,19 @@ automation:
         from: 'off'
         to: 'idle'
     condition:
-      - condition: state
-        state: 'on'
-        entity_id: switch.alle_radios
+      - condition: template
+        value_template: >-
+          {% if is_state('switch.wohnzimmer_radio', 'on')
+            or is_state('switch.balkon_radio', 'on')
+            or is_state('switch.schlafzimmer_radio', 'on')
+            or is_state('switch.flur_radio', 'on')
+            or is_state('switch.arbeitszimmer_radio', 'on')
+            or is_state('switch.kuche_radio', 'on')
+          %}
+            True
+          {% else %}
+            False
+          {% endif %}        
       - condition: state
         state: 'on'
         entity_id: input_boolean.musik_ausschalten
