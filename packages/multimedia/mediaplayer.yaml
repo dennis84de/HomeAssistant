@@ -8,11 +8,6 @@ media_player:
     host: !secret homeassistant_host
     name: Benachrichtigungen
 
-  - platform: vlc_telnet
-    host: !secret vlc_ha_host    
-    password: !secret vlc_ha_password
-    name: Benachrichtigungen VLC
-        
 automation:
   - alias: "Uhr - Glocke starten"
     id: "uhr_glocke_starten"
@@ -28,6 +23,9 @@ automation:
       - condition: state
         entity_id: input_boolean.uhr_einschalten
         state: 'on'
+      - condition: state
+        entity_id: input_boolean.baden_aktiv
+        state: 'off'
       - condition: state
         entity_id: calendar.borussia_dortmund
         state: 'off'
