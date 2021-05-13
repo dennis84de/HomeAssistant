@@ -88,6 +88,23 @@ cards:
       - entity: sensor.balkon_temperatur
         name: Balkon
 
+  - type: custom:mini-graph-card
+    name: Helligkeit
+    line_width: 2
+    animate: true
+    hours_to_show: 48
+    points_per_hour: 5
+    hour24: true
+    show:
+      fill: false
+      icon: false
+      points: false
+    entities:
+      - entity: sensor.helligkeit_balkon
+        name: Helligkeit
+      - entity: sensor.helligkeit_balkon_durchschnitt
+        name: Durchschnitt
+        
   - type: entities
     title: Sonne und Mond
     show_header_toggle: false

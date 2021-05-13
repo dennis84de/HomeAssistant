@@ -110,6 +110,21 @@ sensor:
     outdoor_temp_sensor: sensor.mold_balkon_temperatur
     calibration_factor: 1.16
 
+  - platform: average
+    name: 'Helligkeit Balkon Durchschnitt'
+    duration:
+      minutes: 15
+    entities:
+      - sensor.helligkeit_balkon      
+          
+  - platform: dwd_weather_warnings
+    region_name: Stadt Dortmund
+    name: Wetterwarnungen
+
+  - platform: opensky
+    name: Flugzeuge
+    radius: 10
+      
   - platform: rest
     name: Strommix
     resource: !secret strommix_url
@@ -402,14 +417,6 @@ sensor:
             {%- set next = [ns.spring, ns.fall] | min %}
             {%- set phrase = '1 Stunde vorstellen' if next == ns.spring else '1 Stunde zurückstellen' %}
             {"Frühling": "{{ns.spring}}", "Herbst": "{{ns.fall}}", "Nächste Umstellung": "{{next}}", "Tage":{{(next-today).days}}, "Uhr": "{{phrase}}"}
-          
-  - platform: dwd_weather_warnings
-    region_name: Stadt Dortmund
-    name: Wetterwarnungen
-
-  - platform: opensky
-    name: Flugzeuge
-    radius: 10
 
 automation:
   - alias: "Balkontür schließen"
