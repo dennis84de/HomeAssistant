@@ -163,10 +163,7 @@ panel_iframe:
     url: http://192.168.2.100/infoscreen/
 
 homeassistant:
-  customize:
-    sensor.countdown_sudtirol:
-      unit_of_measurement: Tage
-      
+  customize:      
     binary_sensor.arbeitstag:
       icon: mdi:account-hard-hat
       
