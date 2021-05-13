@@ -1,7 +1,11 @@
 logger:
   default: error
-#  logs:
-#    custom_components.entity_controller: debug
+  filters:
+    zigate:
+      - "IEEE is missing for *, please pair it again"
+      - "Device * doesn't receive last command*"
+    custom_components.average.sensor:
+      -  "Unable to find an entity*"
   
 recorder:
   purge_keep_days: 7
@@ -21,6 +25,7 @@ recorder:
       - calendar
       - entity_controller
       - media_player
+      - person
   exclude:
     entities:
       - sensor.home_assistant_overhead_satellites
