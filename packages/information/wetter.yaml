@@ -113,14 +113,14 @@ sensor:
   - platform: average
     name: 'Helligkeit Balkon Durchschnitt'
     duration:
-      minutes: 15
+      minutes: 30
     entities:
       - sensor.helligkeit_balkon      
           
   - platform: dwd_weather_warnings
     region_name: Stadt Dortmund
     name: Wetterwarnungen
-
+    
   - platform: opensky
     name: Flugzeuge
     radius: 10
