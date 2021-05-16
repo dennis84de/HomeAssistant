@@ -77,4 +77,29 @@ script:
         data_template:
           entity_id: media_player.benachrichtigungen
           message: >-
-            {{ message }}            
+            {{ message }}
+            
+automation:
+  - alias: "Echo Wohnzimmer - Timer ausschalten"
+    id: "echo_wohnzimmer_timers_ausschalten"
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.bewegungsmelder_flur_vorne
+        to: 'on'
+      - platform: state
+        entity_id: binary_sensor.bewegungsmelder_flur_hinten
+        to: 'on'        
+    condition:
+      - condition: not
+        conditions:
+          - condition: state
+            entity_id: sensor.echo_wohnzimmer_next_timer
+            state: 'unavailable'
+      - condition: template
+        value_template: "{{ (as_timestamp(states('sensor.echo_wohnzimmer_next_timer')) | int) < (as_timestamp(now()) | int) }}"        
+    action:
+      - service: media_player.play_media
+        data:
+          entity_id: media_player.echo_wohnzimmer
+          media_content_id: 'Alarm ausschalten'
+          media_content_type: custom        
