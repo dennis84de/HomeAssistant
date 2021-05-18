@@ -35,6 +35,8 @@ lovelace:
       type: module    
     - url: /hacsfiles/lovelace-grocy-chores-card/grocy-chores-card.js
       type: module          
+    - url: /hacsfiles/home-assistant-sun-card/home-assistant-sun-card.js
+      type: module         
     
   dashboards:      
     lovelace-rooms:

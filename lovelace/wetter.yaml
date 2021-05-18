@@ -70,7 +70,7 @@ cards:
         {% if not loop.last %}***{% endif %}
         {% endfor %}
       {% endif %}  
-  
+
   - type: custom:mini-graph-card
     name: Temperatur
     line_width: 2
@@ -87,7 +87,7 @@ cards:
         name: Parkplatz
       - entity: sensor.balkon_temperatur
         name: Balkon
-
+        
   - type: custom:mini-graph-card
     name: Helligkeit
     line_width: 2
@@ -103,8 +103,25 @@ cards:
       - entity: sensor.helligkeit_balkon
         name: Helligkeit
       - entity: sensor.helligkeit_balkon_durchschnitt
-        name: Durchschnitt
+        name: Durchschnitt               
         
+  - type: custom:sun-card
+    title: Sonnenstand
+    language: 'de' 
+    
+  - type: entities
+    title: Sonne
+    show_header_toggle: false
+    entities:
+      - entity: sensor.helligkeit_wetter
+        name: Helligkeit
+      - entity: sensor.uv_index_current
+      - entity: sensor.uv_index_max
+      - entity: sensor.zeit_sonne
+      - entity: binary_sensor.protection_window
+      - entity: binary_sensor.sommerzeit
+      - entity: sensor.zeitumstellung
+      
   - type: entities
     title: Sonne und Mond
     show_header_toggle: false
@@ -132,19 +149,6 @@ cards:
       - entity: sensor.darksky_pressure
       - entity: sensor.darksky_ozone
       - entity: sensor.co2_intensity_51_49_7_36
-
-  - type: entities
-    title: Sonne
-    show_header_toggle: false
-    entities:
-      - entity: sensor.helligkeit_wetter
-        name: Helligkeit
-      - entity: sensor.uv_index_current
-      - entity: sensor.uv_index_max
-      - entity: sensor.zeit_sonne
-      - entity: binary_sensor.protection_window
-      - entity: binary_sensor.sommerzeit
-      - entity: sensor.zeitumstellung
 
   - type: entities
     title: Pollen
