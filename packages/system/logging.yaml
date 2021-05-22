@@ -26,6 +26,7 @@ recorder:
       - entity_controller
       - media_player
       - person
+      - counter
   exclude:
     entities:
       - sensor.home_assistant_overhead_satellites
