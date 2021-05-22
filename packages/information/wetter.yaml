@@ -50,7 +50,7 @@ binary_sensor:
         friendly_name: "Sommerzeit"     
         icon_template: "mdi:weather-sunny"          
         value_template: "{{ now().timetuple().tm_isdst > 0 }}"  
-        
+                           
 sensor:
   - platform: moon
       
@@ -418,6 +418,36 @@ sensor:
             {%- set phrase = '1 Stunde vorstellen' if next == ns.spring else '1 Stunde zurückstellen' %}
             {"Frühling": "{{ns.spring}}", "Herbst": "{{ns.fall}}", "Nächste Umstellung": "{{next}}", "Tage":{{(next-today).days}}, "Uhr": "{{phrase}}"}
 
+      wetterwarnungen_aktiv:
+        friendly_name: "Wetterwarnungen"      
+        icon_template: mdi:weather-partly-lightning
+        value_template: >-
+          {% set ns = namespace(found=0) %}          
+          {% set current_count = state_attr("sensor.wetterwarnungen_current_warning_level", "warning_count") %}
+          {% set advance_count = state_attr("sensor.wetterwarnungen_advance_warning_level", "warning_count") %}
+
+          {% if current_count > 0 or advance_count > 0 %}         
+            {% for i in range(current_count) %}
+              {% set startTime = as_timestamp(state_attr("sensor.wetterwarnungen_current_warning_level", "warning_" ~ loop.index ~ "_start")) %}
+              {% set endTime = as_timestamp(state_attr("sensor.wetterwarnungen_current_warning_level", "warning_" ~ loop.index ~ "_end")) %}
+            
+              {% if startTime < as_timestamp(now()) < endTime %}
+                {% set ns.found = ns.found + 1 -%}
+              {%endif%}
+            {% endfor %}
+
+            {% for i in range(advance_count) %}
+              {% set startTime = as_timestamp(state_attr("sensor.wetterwarnungen_advance_warning_level", "warning_" ~ loop.index ~ "_start")) %}
+              {% set endTime = as_timestamp(state_attr("sensor.wetterwarnungen_advance_warning_level", "warning_" ~ loop.index ~ "_end")) %}
+              
+              {% if startTime < as_timestamp(now()) < endTime %}
+                {% set ns.found = ns.found + 1 -%}
+              {%endif%}
+            {% endfor %}              
+          {% endif %}                
+          
+          {{ ns.found }}   
+          
 automation:
   - alias: "Balkontür schließen"
     id: "balkontuer_schliessen"
@@ -454,20 +484,19 @@ automation:
   - alias: 'Wetterwarnungen'
     id: "wetterwarnungen"
     trigger:
-      - entity_id: sensor.wetterwarnungen_current_warning_level
-        platform: state
-      - entity_id: sensor.wetterwarnungen_advance_warning_level
-        platform: state        
+      - platform: state
+        entity_id: sensor.wetterwarnungen_current_warning_level        
+      - platform: state  
+        entity_id: sensor.wetterwarnungen_advance_warning_level
+      - platform: state  
+        entity_id: sensor.wetterwarnungen_aktiv
     condition:
       - condition: state
         entity_id: input_boolean.wetter_warnungen_einschalten
         state: 'on'        
-      - condition: template     
-        value_template: >-
-          {% set oldWarningCount = trigger.from_state.attributes.warning_count | int %}
-          {% set newWarningCount = trigger.to_state.attributes.warning_count | int %}
-          
-          {{ newWarningCount > oldWarningCount }}
+      - condition: numeric_state
+        entity_id: sensor.wetterwarnungen_aktiv
+        above: 0
     action:
       - choose:
           - conditions:
@@ -488,15 +517,23 @@ automation:
                       {%- for i in range(current_count) -%}
                         {% set headline = state_attr("sensor.wetterwarnungen_current_warning_level", "warning_" ~ loop.index ~ "_headline") %}
                         {% set description = state_attr("sensor.wetterwarnungen_current_warning_level", "warning_" ~ loop.index ~ "_description") %}
-
-                        {%- if headline != None -%} {{ headline }}. {% endif -%} {%- if description != None -%} {{ description }} {% endif -%}
+                        {% set startTime = as_timestamp(state_attr("sensor.wetterwarnungen_current_warning_level", "warning_" ~ loop.index ~ "_start")) %}
+                        {% set endTime = as_timestamp(state_attr("sensor.wetterwarnungen_current_warning_level", "warning_" ~ loop.index ~ "_end")) %}
+            
+                        {% if startTime < as_timestamp(now()) < endTime %}
+                          {%- if headline != None -%} {{ headline }}. {% endif -%} {%- if description != None -%} {{ description }} {% endif -%}
+                        {%endif%}           
                       {%- endfor -%}
 
                       {%- for i in range(advance_count) -%}
                         {% set headline = state_attr("sensor.wetterwarnungen_advance_warning_level", "warning_" ~ loop.index ~ "_headline") %}
                         {% set description = state_attr("sensor.wetterwarnungen_advance_warning_level", "warning_" ~ loop.index ~ "_description") %}
-
-                        {%- if headline != None -%} {{ headline }}. {% endif -%} {%- if description != None %} {{ description }} {%- endif %}
+                        {% set startTime = as_timestamp(state_attr("sensor.wetterwarnungen_currewetterwarnungen_advance_warning_levelnt_warning_level", "warning_" ~ loop.index ~ "_start")) %}
+                        {% set endTime = as_timestamp(state_attr("sensor.wetterwarnungen_advance_warning_level", "warning_" ~ loop.index ~ "_end")) %}
+            
+                        {% if startTime < as_timestamp(now()) < endTime %}
+                          {%- if headline != None -%} {{ headline }}. {% endif -%} {%- if description != None -%} {{ description }} {% endif -%}
+                        {%endif%}                        
                       {%- endfor -%}              
                     {% endif %}
               - service: telegram_bot.send_photo
@@ -518,15 +555,23 @@ automation:
                   {% for i in range(current_count) %}
                     {% set headline = state_attr("sensor.wetterwarnungen_current_warning_level", "warning_" ~ loop.index ~ "_headline") %}
                     {% set description = state_attr("sensor.wetterwarnungen_current_warning_level", "warning_" ~ loop.index ~ "_description") | regex_replace(find=' \([^)]*\)', replace='', ignorecase=False) %}
-
-                    {% if headline != None %} {{ headline }}. {% endif %} {% if description != None %} {{ description }} {% endif %}
+                    {% set startTime = as_timestamp(state_attr("sensor.wetterwarnungen_current_warning_level", "warning_" ~ loop.index ~ "_start")) %}
+                    {% set endTime = as_timestamp(state_attr("sensor.wetterwarnungen_current_warning_level", "warning_" ~ loop.index ~ "_end")) %}
+                        
+                    {% if startTime < as_timestamp(now()) < endTime %}
+                      {% if headline != None %} {{ headline }}. {% endif %} {% if description != None %} {{ description }} {% endif %}
+                    {%endif%}                                                
                   {% endfor %}
 
                   {% for i in range(advance_count) %}
                     {% set headline = state_attr("sensor.wetterwarnungen_advance_warning_level", "warning_" ~ loop.index ~ "_headline") %}
                     {% set description = state_attr("sensor.wetterwarnungen_advance_warning_level", "warning_" ~ loop.index ~ "_description") | regex_replace(find=' \([^)]*\)', replace='', ignorecase=False) %}
-
-                    {% if headline != None %} {{ headline }}. {% endif %} {% if description != None %} {{ description }} {% endif %}
+                    {% set startTime = as_timestamp(state_attr("sensor.wetterwarnungen_advance_warning_level", "warning_" ~ loop.index ~ "_start")) %}
+                    {% set endTime = as_timestamp(state_attr("sensor.wetterwarnungen_advance_warning_level", "warning_" ~ loop.index ~ "_end")) %}
+                        
+                    {% if startTime < as_timestamp(now()) < endTime %}
+                      {% if headline != None %} {{ headline }}. {% endif %} {% if description != None %} {{ description }} {% endif %}
+                    {%endif%}                      
                   {% endfor %}              
                 {% endif %}         
             
