@@ -156,8 +156,6 @@ homeassistant:
       icon: mdi:power-socket-eu
     device_tracker.tplinksportzimmerfernseher:
       icon: mdi:power-socket-eu
-    device_tracker.edimaxsportzimmerlicht:
-      icon: mdi:power-socket-eu
     device_tracker.edimaxcrosstrainer:
       icon: mdi:power-socket-eu
     device_tracker.fritzrepeater:
@@ -273,9 +271,9 @@ homeassistant:
       icon: mdi:developer-board
     device_tracker.tasmotakuechenschrank:
       icon: mdi:developer-board
-    device_tracker.tasmotaladegeraet:
+    device_tracker.tasmotaarbeitszimmerladegeraet:
       icon: mdi:developer-board
-    device_tracker.tasmotamonitore:
+    device_tracker.tasmotaarbeitszimmermonitore:
       icon: mdi:developer-board
     device_tracker.tasmotastrahler:
       icon: mdi:developer-board
@@ -283,6 +281,10 @@ homeassistant:
       icon: mdi:developer-board
     device_tracker.tasmotakleiderschrank:
       icon: mdi:developer-board
+    device_tracker.tasmotasportzimmerregal:
+      icon: mdi:developer-board      
+    device_tracker.tasmotasportzimmerladegeraet:
+      icon: mdi:developer-board        
       
     device_tracker.shellycouch:
       icon: mdi:connection

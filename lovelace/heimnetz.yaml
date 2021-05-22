@@ -104,15 +104,6 @@ cards:
         name: Trocker
       
   - type: entities
-    title: Edimax
-    show_header_toggle: false
-    entities:      
-      - entity: device_tracker.edimaxsportzimmerlicht
-        name: Sportzimmer Licht
-      - entity: device_tracker.edimaxcrosstrainer
-        name: Crosstrainer
-      
-  - type: entities
     title: Amazon Echo
     show_header_toggle: false
     entities:
@@ -171,13 +162,6 @@ cards:
         name: Arbeitszimmer
       - entity: device_tracker.magichomebalkon
         name: Balkon
-
-  - type: entities
-    title: Broadlink
-    show_header_toggle: false
-    entities:
-      - entity: device_tracker.broadlinkschlafzimmer
-        name: Schlafzimmer
       
   - type: entities
     title: Tasmota
@@ -189,16 +173,20 @@ cards:
         name: Arbeitszimmer Lampe
       - entity: device_tracker.tasmotaarbeitszimmerradio
         name: Arbeitszimmer Radio
+      - entity: device_tracker.tasmotaarbeitszimmerladegeraet
+        name: Arbeitszimmer Ladegerät
+      - entity: device_tracker.tasmotaarbeitszimmermonitore
+        name: Arbeitszimmer Monitore        
+      - entity: device_tracker.tasmotasportzimmerladegeraet
+        name: Sportzimmer Ladegerät
+      - entity: device_tracker.tasmotasportzimmerregal
+        name: Sportzimmer Regal        
       - entity: device_tracker.tasmotabalkonradio
         name: Balkon Radio
       - entity: device_tracker.tasmotakuechenschrank
         name: Küchenschrank
       - entity: device_tracker.tasmotakleiderschrank
         name: Kleiderschrank        
-      - entity: device_tracker.tasmotaladegeraet
-        name: Ladegerät
-      - entity: device_tracker.tasmotamonitore
-        name: Monitore
       - entity: device_tracker.tasmotaspuelmaschine
         name: Spülmaschine
           
@@ -208,3 +196,17 @@ cards:
     entities:
       - entity: device_tracker.shellycouch
         name: Wohnzimmer Strahler
+              
+  - type: entities
+    title: Edimax
+    show_header_toggle: false
+    entities:      
+      - entity: device_tracker.edimaxcrosstrainer
+        name: Crosstrainer
+        
+  - type: entities
+    title: Broadlink
+    show_header_toggle: false
+    entities:
+      - entity: device_tracker.broadlinkschlafzimmer
+        name: Schlafzimmer        

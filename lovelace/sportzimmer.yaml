@@ -37,6 +37,8 @@ cards:
       - entity: switch.sportzimmer_fernseher
         name: Fernseher
       - entity: switch.crosstrainer
+      - entity: switch.sportzimmer_ladegerat
+        name: Ladegerät
 
   - type: entities
     title: Multimedia

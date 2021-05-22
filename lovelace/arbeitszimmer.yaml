@@ -5,7 +5,8 @@ cards:
     title: Geräte
     show_header_toggle: false
     entities:
-      - entity: switch.ladegerat
+      - entity: switch.arbeitszimmer_ladegerat
+        name: Ladegerät
       - entity: switch.arbeitszimmer_radio
         name: Radio
 
