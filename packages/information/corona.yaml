@@ -10,26 +10,7 @@ input_text:
     name: Corona Dortmund gestern   
   corona_mulheim_gestern:
     name: Corona Mülheim gestern
-
-counter:
-  corona_dortmund_ueber_grenzwert:
-    name: Corona - Dortmund über Grenzwert
-    step: 1
-
-  corona_muelheim_ueber_grenzwert:
-    name: Corona - Mülheim über Grenzwert
-    step: 1
     
-binary_sensor:
-  - platform: template
-    sensors:
-      corona_dortmund_drei_tage_grenzwert:
-        friendly_name: Corona - Dortmund - 3-Tage-Grenzwert        
-        value_template: "{{ states('counter.corona_dortmund_ueber_grenzwert') | int >= 3 }}"
-      corona_muelheim_drei_tage_grenzwert:
-        friendly_name: Corona - Mülheim - 3-Tage-Grenzwert        
-        value_template: "{{ states('counter.corona_muelheim_ueber_grenzwert') | int >= 3 }}"         
-          
 sensor:
   - platform: rest
     name: "Corona Impfungen Deutschland"
@@ -106,25 +87,5 @@ automation:
       - service: input_text.set_value
         data:
           entity_id: input_text.corona_mulheim_gestern
-          value: "{{ states('sensor.sk_mulheim_a_d_ruhr_weekincidence') }}"
-      - choose:
-          - conditions:
-              - condition: template
-                value_template: "{{ states('sensor.sk_dortmund_weekincidence') | float < states('input_number.corona_grenzwert') | float }}"
-            sequence:
-              - service: counter.reset
-                entity_id: counter.corona_dortmund_ueber_grenzwert          
-        default:
-          - service: counter.increment
-            entity_id: counter.corona_dortmund_ueber_grenzwert
-      - choose:
-          - conditions:
-              - condition: template
-                value_template: "{{ states('sensor.sk_mulheim_a_d_ruhr_weekincidence') | float < states('input_number.corona_grenzwert') | float }}"
-            sequence:
-              - service: counter.reset
-                entity_id: counter.corona_muelheim_ueber_grenzwert          
-        default:
-          - service: counter.increment
-            entity_id: counter.corona_muelheim_ueber_grenzwert
+          value: "{{ states('sensor.sk_mulheim_a_d_ruhr_weekincidence') }}"      
                 
