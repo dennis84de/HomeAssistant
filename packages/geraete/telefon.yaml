@@ -400,7 +400,7 @@ automation:
             {% set from = trigger.from_state.attributes.from %}
             {% set from_name = trigger.from_state.attributes.from_name %}
             
-            {% if from == None or name == '' %}
+            {% if from == None or from == '' %}
               Ein verpasster Anruf ohne Rufnummer.
             {% elif from_name == None or from_name == 'unknown' %}
               Ein verpasster Anruf von einer unbekannten Rufnummer ({{ from }}).
