@@ -2,6 +2,7 @@ bewegungsmelder:
   name: Bewegungsmelder
   entities:    
     - binary_sensor.bewegungsmelder_schlafzimmer
+    - binary_sensor.bewegungsmelder_bett
     - binary_sensor.bewegungsmelder_flur_vorne
     - binary_sensor.bewegungsmelder_flur_hinten
     - binary_sensor.bewegungsmelder_arbeitszimmer
