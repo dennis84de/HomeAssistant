@@ -1,27 +1,44 @@
 heimnetz:
   name: Heimnetz
   entities:    
+    - device_tracker.fernseherwohnzimmer
     - device_tracker.soundbar   
+    - device_tracker.kamerawohnzimmer
     - device_tracker.xiaomivacuum
-    - device_tracker.tplinkwohnzimmermonitor
-    - device_tracker.tplinkwohnzimmerradio    
-    - device_tracker.tplinkschlafzimmerradio
-    - device_tracker.tplinkflurradio
-    - device_tracker.tplinkbadezimmerradio
-    - device_tracker.tplinkkuecheradio   
-    - device_tracker.tplinkschlafzimmerfernseher
-    - device_tracker.tplinkwaschmaschine
-    - device_tracker.tplinktrockner        
-#    - device_tracker.echoflur
-#    - device_tracker.echokueche
-#    - device_tracker.echobadezimmer
-#    - device_tracker.echowohnzimmer
-#    - device_tracker.echoschlafzimmer
+    - device_tracker.tplinkwohnzimmermonitor        
+    - device_tracker.tplinkwohnzimmerradio            
+    - device_tracker.tplinkschlafzimmerradio      
+    - device_tracker.tplinkflurradio      
+    - device_tracker.tplinkbadezimmerradio      
+    - device_tracker.tplinkkuecheradio         
+    - device_tracker.tplinkkellerradio      
+    - device_tracker.tplinkschlafzimmerfernseher      
+    - device_tracker.tplinksportzimmerfernseher      
+#    - device_tracker.tplinkwaschmaschine      
+#    - device_tracker.tplinktrockner            
+    - device_tracker.tasmotastrahler            
+    - device_tracker.tasmotaarbeitszimmerlampe      
+    - device_tracker.tasmotaarbeitszimmerradio      
+    - device_tracker.tasmotaarbeitszimmerladegeraet      
+    - device_tracker.tasmotaarbeitszimmermonitore      
+    - device_tracker.tasmotasportzimmerladegeraet      
+    - device_tracker.tasmotasportzimmerregal      
+    - device_tracker.tasmotabalkonradio      
+    - device_tracker.tasmotakuechenschrank      
+    - device_tracker.tasmotakleiderschrank      
+    - device_tracker.tasmotaspuelmaschine      
+    - device_tracker.echoflur
+    - device_tracker.echokueche
+    - device_tracker.echobadezimmer
+    - device_tracker.echowohnzimmer
+    - device_tracker.echoschlafzimmer
     - device_tracker.magichomeflurvorne
     - device_tracker.magichomeflurhinten
     - device_tracker.magichomekueche
     - device_tracker.magichomebadezimmer
     - device_tracker.magichomeschlafzimmer
     - device_tracker.magichomearbeitszimmer
-    - device_tracker.magichomebalkon      
-    - device_tracker.broadlinkschlafzimmer    
+    - device_tracker.magichomebalkon          
+    - device_tracker.shellycouch
+    - device_tracker.edimaxcrosstrainer
+    - device_tracker.broadlinkschlafzimmer 
