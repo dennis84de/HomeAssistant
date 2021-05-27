@@ -43,7 +43,7 @@ binary_sensor:
           {% if is_state('sensor.helligkeit_balkon', None) or is_state('sensor.helligkeit_balkon', 'unknown') or is_state('sensor.helligkeit_balkon', '0') %}
             {{ states('sensor.helligkeit_wetter') | float > 15 }}
           {% else %}
-            {{ states('sensor.helligkeit_balkon') | float > 21000 }}
+            {{ states('sensor.helligkeit_balkon') | float > 22000 }}
           {% endif %}
           
       sommerzeit:
@@ -497,6 +497,17 @@ automation:
       - condition: numeric_state
         entity_id: sensor.wetterwarnungen_aktiv
         above: 0
+      - condition: template     
+        value_template: >-
+          {% if trigger.entity_id == 'sensor.wetterwarnungen_current_warning_level' or trigger.entity_id == 'sensor.wetterwarnungen_advance_warning_level'%}
+            {% set oldWarningCount = trigger.from_state.attributes.warning_count | int %}
+            {% set newWarningCount = trigger.to_state.attributes.warning_count | int %}
+
+            {{ newWarningCount > oldWarningCount }}                  
+          {% else %}
+            True
+          {% endif %}
+  
     action:
       - choose:
           - conditions:
