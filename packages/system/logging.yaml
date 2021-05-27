@@ -3,7 +3,7 @@ logger:
   filters:
     zigate:
       - "IEEE is missing for *, please pair it again"
-      - "Device * doesn't receive last command*"
+      - "Device * doesn't receive last command to endpoint 1 cluster 0: 0xa7"
     custom_components.average.sensor:
       -  "Unable to find an entity*"
   
