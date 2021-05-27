@@ -1,7 +1,6 @@
-customElements.whenDefined('card-tools').then(() => {
-  let cardTools = customElements.get('card-tools');
-    
-  class GrocyChoresCard extends cardTools.LitElement {
+import { html, LitElement } from "https://unpkg.com/lit?module";
+
+  class GrocyChoresCard extends LitElement {
     static getConfigElement() {
       return document.createElement("content-card-editor");
     }
@@ -64,94 +63,183 @@ customElements.whenDefined('card-tools').then(() => {
     }
   
     render(){
-      if (!this.entity)
-      return cardTools.LitHtml`
-      <hui-warning>
-        ${this._hass.localize("ui.panel.lovelace.warning.entity_not_found",
-          "entity",
-          this.config.entity
-        )}
-      </hui-warning>
-      `
-      return cardTools.LitHtml
+      if (!this.entities)
+      {
+        return html`
+        <hui-warning>
+          ${this._hass.localize("ui.panel.lovelace.warning.entity_not_found",
+            "entity",
+            this.config.entity
+          )}
+        </hui-warning>
+        `
+      }
+
+      if(this.items == undefined)
+      {
+        this.items = [];
+        this.notShowing = [];
+      }
+
+      if(this.items.length < 1 && this.show_empty == false)
+      {
+        return "";
+      }
+
+      return html
       `
         ${this._renderStyle()}
-        ${cardTools.LitHtml
+        ${html
           `<ha-card>
-            <div class="header">
+            <h1 class="card-header">
               <div class="name">
                 ${this.header}
               </div>
-            </div>
-            <div>
-              ${this.chores.length > 0 ? cardTools.LitHtml`
-              ${this.chores.map(chore =>
-                cardTools.LitHtml`
-                <div class="info flex">
-                  <div>
-                    ${chore._filtered_name != null ? chore._filtered_name : chore.name}
-                    <div class="secondary">
-                      ${this.translate("Due")}: <span class="${chore.next_estimated_execution_time != null ? this.checkDueClass(chore.dueInDays) : ""}">${chore.next_estimated_execution_time != null ? this.formatDueDate(chore.next_estimated_execution_time, chore.dueInDays) : "-"}</span>
-                    </div>
-                    ${this.show_assigned == true && chore.next_execution_assigned_user != null ? cardTools.LitHtml
-                      `
+            </h1>
+            <div class="card-content">
+              ${this.items.length > 0 ? html`
+                ${this.items.map(item =>
+                  html`
+                  <div class="info flex">
+                    <div>
+                      ${item._filtered_name != null ? item._filtered_name : item.name}
                       <div class="secondary">
-                          ${this.translate("Assigned to")}: ${chore.next_execution_assigned_user.display_name}
+                        ${this.translate("Due")}: <span class="${item.next_estimated_execution_time != null ? this.checkDueClass(item.dueInDays) : ""}">${item.next_estimated_execution_time != null ? this.formatDueDate(item.next_estimated_execution_time, item.dueInDays) : "-"}</span>
                       </div>
+                      ${this.show_assigned == true && item.next_execution_assigned_user != null ? html
+                        `
+                        <div class="secondary">
+                            ${this.translate("Assigned to")}: ${item.next_execution_assigned_user.display_name}
+                        </div>
+                        `
+                      : ""}
+                      ${this.show_last_tracked == true ? html
                       `
-                    : ""}
-                    ${this.show_last_tracked == true ? cardTools.LitHtml
+                        ${item.type == "chore" ? html
+                        `
+                          <div class="secondary">
+                          ${this.translate("Last tracked")}: ${item.last_tracked_time != null ? item.last_tracked_time.substr(0, 10) : "-"}
+                          ${this.show_last_tracked_by == true && item.last_done_by != null ? this.translate("by") + " " + item.last_done_by.display_name : ""}
+                          </div>
+                        `
+                        : ""
+                        }
+
                       `
-                    <div class="secondary">
-                      ${this.translate("Last tracked")}: ${chore.last_tracked_time != null ? chore.last_tracked_time.substr(0, 10) : "-"}
-                      ${this.show_last_tracked_by == true && chore.last_done_by != null ? this.translate("by") + " " + chore.last_done_by.display_name : ""}
+                      : ""}
                     </div>
+                    ${this.show_track_button == true ? html
+                    `
+                      ${item.type == "chore" ? html
+                      `
+                      <div>
+                        <mwc-button @click=${ev => this._trackChore(item.id)}>${this.translate("Track")}</mwc-button>
+                      </div>     
+                      `
+                      : html
+                      `
+                      <div>
+                        <mwc-button @click=${ev => this._trackTask(item.id)}>${this.translate("Track")}</mwc-button>
+                      </div>
+                      `}
                     `
                     : ""}
-                  </div>
-                  ${this.show_track_button == true ? cardTools.LitHtml
-                  `
-                  <div>
-                    <mwc-button @click=${ev => this._track(chore.id)}>${this.translate("Track")}</mwc-button>
-                  </div>     
-                  `
-                  : ""}
 
-                </div>`
-              )}` : cardTools.LitHtml`<div class="info flex">${this.translate("No chores")}!</div>`}
+                  </div>`
+              )}` : html`<div class="info flex">${this.translate("No todos")}!</div>`}
             </div>
-            ${this.notShowing.length > 0 && this.notShowing.length != null ? cardTools.LitHtml
+            ${this.notShowing.length > 0 && this.notShowing.length != null ? html
               `
-              <div class="secondary">
-                  ${this.translate("Look in Grocy for {number} more chores").replace("{number}", this.notShowing.length)}
+              <div class="secondary not-showing">
+              ${this.translate("Look in Grocy for {number} more items").replace("{number}", this.notShowing.length)}
               </div>
               `
-            : ""}
+              : ""}
+              ${this.show_create_task ? html
+                `
+                <mwc-button class="hide-button" @click=${ev => this._toggleAddTask()}><ha-icon icon="mdi:chevron-down"></ha-icon> Add task</mwc-button>
+                <div style="display: none;" id="add-task-row" class="add-row">
+                  <mwc-button @click=${ev => this._addTask()}><ha-icon class="add-icon" icon="mdi:plus"></ha-icon></mwc-button>
+                  <paper-input
+                    id="add-task"
+                    class="add-input"
+                    no-label-float
+                    placeholder=${this.translate("Add task")}>
+                  </paper-input>
+                  <paper-input
+                    id="add-date"
+                    class="add-input"
+                    no-label-float
+                    placeholder=${this.translate("Optional due date/time")}
+                    value="${this._formatDate()}">
+                  </paper-input>
+                </div>
+                `
+              : ""}
           </ha-card>`}
       `;
     } 
 
-    _track(choreId){
+    _formatDate(){
+      var currentdate = new Date(); 
+      var datetime = currentdate.getFullYear() + "-"
+                + ("0" + (currentdate.getMonth() + 1)).slice(-2) + "-" 
+                + currentdate.getDate() + " "  
+                + ("0" + (currentdate.getHours() + 1)).slice(-2) + ":"  
+                + ("0" + (currentdate.getMinutes() + 1)).slice(-2);
+      return datetime;
+    }
+
+    _trackChore(choreId){
       this._hass.callService("grocy", "execute_chore", {
         chore_id: choreId,
         done_by: this.userId
       });
     }
 
+    _trackTask(taskId){
+      this._hass.callService("grocy", "complete_task", {
+        task_id: taskId
+      });
+    }
+
+    _toggleAddTask(){
+      console.log("toggling");
+      var x = this.shadowRoot.getElementById("add-task-row");
+      if (x.style.display === "none") {
+        x.style.display = "flex";
+      } else {
+        x.style.display = "none";
+      }
+    }
+
+    _addTask(){
+      var taskName = this.shadowRoot.getElementById('add-task').value;
+      var taskDueDate = this.shadowRoot.getElementById('add-date').value;
+      if(taskName == null || taskName == "")
+      {
+        alert(this.translate("'Name' can't be empty"));
+      }
+      else if(taskDueDate == null) {
+        this._hass.callService("grocy", "add_generic", {
+          entity_type: "tasks",
+          data: { "name": taskName }
+        });
+        console.log("Adding task: " + taskName)
+      }
+      else {
+        this._hass.callService("grocy", "add_generic", {
+          entity_type: "tasks",
+          data: { "name": taskName, "due_date": taskDueDate }
+        });
+        console.log("Adding task: " + taskName + ", due: " + taskDueDate)
+      }
+    }
+
     _renderStyle() {
-        return cardTools.LitHtml
+        return html
         `
           <style>
-            ha-card {
-              padding: 16px;
-            }
-            .header {
-              padding: 0;
-              @apply --paper-font-headline;
-              line-height: 40px;
-              color: var(--primary-text-color);
-              padding: 4px 0 12px;
-            }
             .info {
               padding-bottom: 1em;
             }
@@ -165,44 +253,146 @@ customElements.whenDefined('card-tools').then(() => {
             .due-today {
               color: orange !important;
             }
+            .not-showing {
+              margin-top: -16px;
+              margin-left: 16px;
+              padding-bottom: 16px;
+            }
             .secondary {
               display: block;
               color: #8c96a5;
-          }
+            }
+            .add-row {
+              padding-bottom: 16px;
+              display: flex;
+              flex-direction: row;
+              align-items: center;
+              width: 100%;
+            }
+            .add-input {
+              padding-right: 16px;
+              width: 100%;
+            }
+            .hide-button {
+              margin-top: -16px;
+              padding: 0 16px 16px 16px;
+            }
           </style>
         `;
       }
-    
+
+      _configSetup(){
+        this.userId = this.config.user_id == null ? 1 : this.config.user_id;
+        this.filter = this.config.filter == null ? null : this.config.filter;
+        this.filter_user = this.config.filter_user == null ? null : this.config.filter_user;
+        this.remove_filter = this.config.remove_filter == null ? false : this.config.remove_filter;
+        this.show_quantity = this.config.show_quantity == null || this.config.show_quantity == 0 || this.config.show_quantity == '' ? null : this.config.show_quantity;
+        this.show_days = this.config.show_days === null || this.config.show_days === '' ? null : this.config.show_days;
+        this.show_assigned = this.config.show_assigned == null ? true : this.config.show_assigned;
+        this.show_track_button = this.config.show_track_button == null ? true : this.config.show_track_button;
+        this.show_last_tracked = this.config.show_last_tracked == null ? true : this.config.show_last_tracked;
+        this.show_last_tracked_by = this.config.show_last_tracked_by == null ? true : this.config.show_last_tracked_by;
+        this.filter_category = this.config.filter_category == null ? null : this.config.filter_category;
+        this.show_category = this.config.show_category == null ? true : this.config.show_category;
+        this.show_description = this.config.show_description == null ? true : this.config.show_description;
+        this.show_empty = this.config.show_empty == null ? true : this.config.show_empty;
+        this.show_create_task = this.config.show_create_task == null ? false : this.config.show_create_task;
+      }
+
     set hass(hass) {
       this._hass = hass;
+      this.entities = new Array();
+      if(Array.isArray(this.config.entity))
+      {      
+        for (var i = 0; i < this.config.entity.length; ++i) {
+          this.entities[i] = this.config.entity[i] in hass.states ? hass.states[this.config.entity[i]] : null;
+        }
+      }
+      else {
+        this.entities[0] = this.config.entity in hass.states ? hass.states[this.config.entity] : null;
+      }
+
+      this.header = this.config.title == null ? "Todo" : this.config.title;
       
-      this.entity = this.config.entity in hass.states ? hass.states[this.config.entity] : null;
+      this._configSetup();
 
-      this.header = this.config.title == null ? "Chores" : this.config.title;
-      this.userId = this.config.user_id == null ? 1 : this.config.user_id;
+      if (this.entities) {
+        var allItems = [];
+        var finalItemsList = [];
 
-      this.show_quantity = this.config.show_quantity == null || this.config.show_quantity == 0 || this.config.show_quantity == '' ? null : this.config.show_quantity;
-      this.show_days = this.config.show_days === null || this.config.show_days === '' ? null : this.config.show_days;
+        for (var i = 0; i < this.entities.length; ++i) {
+          var items;
+          if (this.entities[i].state == 'unknown')
+          {
+            console.warn("The Grocy sensor " + this.entities[i].entity_id + " is unknown.");
+          }
+          else {
+            if (this.entities[i].attributes.chores != undefined || this.entities[i].attributes.chores != null) {
+              items = this.entities[i].attributes.chores;
+              if(items != undefined)
+                items.map(item =>{
+                  item.type = "chore"
+                });
+            }
+            else {
+              items = this.entities[i].attributes.tasks;
+              if(items != undefined)
+              {
+                items.map(item =>{
+                  item.type = "task"
+                });
+              }
+            }
+            if (items != null){
+              if (this.filter != null) {
+                var filteredItems = [];
+                for (let i = 0; i < items.length; i++) {
+                  if (items[i].name.includes(this.filter)) {
+                    if (this.remove_filter) {
+                      items[i]._filtered_name = items[i].name.replace(this.filter, '');
+                    }
+                    filteredItems.push(items[i]);
+                  }
+                }
+                items = filteredItems;
+              }
+      
+              if (this.filter_user != null) {
+                var filteredItems = [];
+                for (let i = 0; i < items.length; i++) {
+                  if (items[i].next_execution_assigned_user != null && items[i].next_execution_assigned_user.id == this.filter_user) {
+                    filteredItems.push(items[i]);
+                  }
+                }
+                items = filteredItems;
+              }
 
-      this.filter = this.config.filter == null ? null : this.config.filter;
-      this.filter_user = this.config.filter_user == null ? null : this.config.filter_user;
-      this.remove_filter = this.config.remove_filter == null ? false : this.config.remove_filter;
+              allItems.push(items);
+            }
+          }
+        }
+        if(allItems.length > 0)
+        {
+          allItems = allItems[0].concat(allItems[1])
+          allItems = allItems.filter(function(x) {
+            return x !== undefined;
+          });
+          allItems.map(item =>{
+            if(item.next_estimated_execution_time == null && item.due_date != null)
+            {
+              item.next_estimated_execution_time = item.due_date;
+            }
+          });
 
-      this.show_assigned = this.config.show_assigned == null ? true : this.config.show_assigned;
-      this.show_last_tracked = this.config.show_last_tracked == null ? true : this.config.show_last_tracked;
-      this.show_last_tracked_by = this.config.show_last_tracked_by == null ? true : this.config.show_last_tracked_by;
-
-      this.show_track_button = this.config.show_track_button == null ? true : this.config.show_track_button;
-
-      if (this.entity) {
-        if (this.entity.state == 'unknown')
-          throw new Error("The Grocy sensor is unknown.");
-
-        var chores = this.entity.attributes.chores;
-        var allChores = []
-  
-        if(chores != null){
-          chores.sort(function(a,b){
+          allItems.sort(function(a,b){
+            if (a.next_estimated_execution_time == null || a.next_estimated_execution_time == undefined || a.next_estimated_execution_time == "-")
+            {
+              return -1;
+            }
+            if (b.next_estimated_execution_time == null || b.next_estimated_execution_time == undefined || b.next_estimated_execution_time == "-")
+            {
+              return 1;
+            }
             if (a.next_estimated_execution_time != null && b.next_estimated_execution_time != null) {
               var aSplitDate = a.next_estimated_execution_time.split(/[- :T]/)
               var bSplitDate = b.next_estimated_execution_time.split(/[- :T]/)
@@ -212,71 +402,41 @@ customElements.whenDefined('card-tools').then(() => {
     
               return aParsedDueDate - bParsedDueDate;
             }
-              return;
+            return 0;
           })
-  
-          if (this.filter != null) {
-            var filteredChores = [];
-            for (let i = 0; i < chores.length; i++) {
-              if (chores[i].name.includes(this.filter)) {
-                if (this.remove_filter) {
-                  chores[i]._filtered_name = chores[i].name.replace(this.filter, '');
-                  // console.log(chores[i]._filtered_name)
-                }
-                filteredChores.push(chores[i]);
-              }
-            }
-            chores = filteredChores;
-          }
-  
-          if (this.filter_user != null) {
-            var filteredChores = [];
-            for (let i = 0; i < chores.length; i++) {
-              if (chores[i].next_execution_assigned_user != null && chores[i].next_execution_assigned_user.id == this.filter_user) {
-                filteredChores.push(chores[i]);
-              }
-            }
-            chores = filteredChores;
-          }
-  
-          chores.map(chore =>{
-            var dueInDays = chore.next_estimated_execution_time ? this.calculateDueDate(chore.next_estimated_execution_time) : 10000;
-            chore.dueInDays = dueInDays;
-            if(this.show_days !== null) {
+          
+          allItems.map(item =>{
+            var dueInDays = item.next_estimated_execution_time ? this.calculateDueDate(item.next_estimated_execution_time) : 10000;
+            item.dueInDays = dueInDays;
+            if(this.show_days != null) {
               if(dueInDays <= this.show_days){
-                allChores.push(chore);
+                finalItemsList.push(item);
               }
-              else if(chore.next_estimated_execution_time != null && chore.next_estimated_execution_time.slice(0,4) == "2999") {
-                chore.next_estimated_execution_time = "-";
-                allChores.unshift(chore)
+              else if(item.next_estimated_execution_time != null && item.next_estimated_execution_time.slice(0,4) == "2999") {
+                item.next_estimated_execution_time = "-";
+                finalItemsList.unshift(item)
               }
             }
             else {
-              if(chore.next_estimated_execution_time == null || dueInDays == 10000 || chore.next_estimated_execution_time.slice(0,4) == "2999"){
-                chore.next_estimated_execution_time = "-";
-                allChores.unshift(chore)
+              if(item.next_estimated_execution_time == null || dueInDays == 10000 || item.next_estimated_execution_time.slice(0,4) == "2999"){
+                item.next_estimated_execution_time = "-";
+                finalItemsList.unshift(item)
               }
               else
-                allChores.push(chore);
+              finalItemsList.push(item);
             }
           })
           
-          if(this.show_quantity != null){
-            this.chores = allChores.slice(0, this.show_quantity);
-            this.notShowing = allChores.slice(this.show_quantity);
+          if(this.show_quantity != null) {
+            this.items = finalItemsList.slice(0, this.show_quantity);
+            this.notShowing = finalItemsList.slice(this.show_quantity);
           }
-          else{
-            this.chores = allChores;
+          else {
+            this.items = finalItemsList;
             this.notShowing = 0;
           }
         }
-        else
-          this.chores = allChores;
-        
-        this.state = this.entity.state
       }
-      
-
       this.requestUpdate();
     }
     
@@ -285,22 +445,14 @@ customElements.whenDefined('card-tools').then(() => {
       return 3;
     }
   }
-  
-  customElements.define('grocy-chores-card', GrocyChoresCard);
-
+      
   // Configure the preview in the Lovelace card picker
   window.customCards = window.customCards || [];
   window.customCards.push({
     type: 'grocy-chores-card',
-    name: 'Grocy Chores Card',
+    name: 'Grocy Chores and Tasks Card',
     preview: false,
-    description: 'A card used to display chores information from the Grocy custom component.',
-    });
+    description: 'A card used to display chores and/or tasks from the Grocy custom component.',
   });
   
-  window.setTimeout(() => {
-    if(customElements.get('card-tools')) return;
-    customElements.define('grocy-chores-card', class extends HTMLElement{
-      setConfig() { throw new Error("Can't find card-tools. See https://github.com/thomasloven/lovelace-card-tools");}
-    });
-  }, 2000);
+  customElements.define('grocy-chores-card', GrocyChoresCard);
