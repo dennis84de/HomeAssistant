@@ -2,10 +2,10 @@
 import aioblescan as aiobs
 import asyncio
 import copy
+import janus
 import json
 import logging
 from threading import Thread
-import janus
 import voluptuous as vol
 
 from homeassistant.config_entries import SOURCE_IMPORT, ConfigEntry
@@ -24,7 +24,7 @@ from homeassistant.helpers.entity_registry import (
     async_entries_for_device,
 )
 
-from .ble_parser import ble_parser, BLEinterface
+from .ble_parser import ble_parser, hci_get_mac
 from .const import (
     DEFAULT_ROUNDING,
     DEFAULT_DECIMALS,
@@ -62,6 +62,7 @@ from .const import (
     MAC_REGEX,
     AES128KEY24_REGEX,
     AES128KEY32_REGEX,
+    MEASUREMENT_DICT,
     SERVICE_CLEANUP_ENTRIES,
 )
 
@@ -71,7 +72,7 @@ CONFIG_YAML = {}
 UPDATE_UNLISTENER = None
 
 try:
-    BT_INTERFACES = BLEinterface.get_mac([0, 1, 2, 3])
+    BT_INTERFACES = hci_get_mac([0, 1, 2, 3])
     BT_HCI_INTERFACES = list(BT_INTERFACES.keys())
     BT_MAC_INTERFACES = list(BT_INTERFACES.values())
     DEFAULT_BT_INTERFACE = list(BT_INTERFACES.items())[0][1]
@@ -239,7 +240,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry):
         # Configuration in YAML
         for key, value in CONFIG_YAML.items():
             config[key] = value
-        _LOGGER.warning("Available Bluetooth interfaces for BLE monitor: %s", BT_MAC_INTERFACES)
+        _LOGGER.info("Available Bluetooth interfaces for BLE monitor: %s", BT_MAC_INTERFACES)
 
         if config[CONF_HCI_INTERFACE]:
             # Configuration of BT interface with hci number
@@ -486,8 +487,12 @@ class HCIdump(Thread):
         self.evt_cnt += 1
         if len(data) < 12:
             return
-        msg, binary, measuring = ble_parser(self, data)
+        msg = ble_parser(self, data)
         if msg:
+            measurements = list(msg.keys())
+            device_type = msg["type"]
+            measuring = any(x in measurements for x in MEASUREMENT_DICT[device_type][0])
+            binary = any(x in measurements for x in MEASUREMENT_DICT[device_type][1])
             if binary == measuring:
                 self.dataqueue_bin.sync_q.put_nowait(msg)
                 self.dataqueue_meas.sync_q.put_nowait(msg)
