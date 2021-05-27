@@ -129,38 +129,19 @@ homeassistant:
     sensor.netmonitor:
       friendly_name: Fritzbox
       icon: mdi:router-wireless
+      
     switch.fritzbox_wifi:
       friendly_name: Wlan
     switch.fritzbox_7272_guest_wifi:
       friendly_name: Gäste Wlan
-
-    device_tracker.tplinkwohnzimmerradio:
-      icon: mdi:power-socket-eu
-    device_tracker.tplinkschlafzimmerradio:
-      icon: mdi:power-socket-eu
-    device_tracker.tplinkkuecheradio:
-      icon: mdi:power-socket-eu
-    device_tracker.tplinkbadezimmerradio:
-      icon: mdi:power-socket-eu
-    device_tracker.tplinkwohnzimmermonitor:
-      icon: mdi:power-socket-eu
-    device_tracker.tplinkflurradio:
-      icon: mdi:power-socket-eu
-    device_tracker.tplinkwaschmaschine:
-      icon: mdi:power-socket-eu
-    device_tracker.tplinktrockner:
-      icon: mdi:power-socket-eu
-    device_tracker.tplinkkellerradio:
-      icon: mdi:power-socket-eu
-    device_tracker.tplinkschlafzimmerfernseher:
-      icon: mdi:power-socket-eu
-    device_tracker.tplinksportzimmerfernseher:
-      icon: mdi:power-socket-eu
-    device_tracker.edimaxcrosstrainer:
-      icon: mdi:power-socket-eu
+      
+    sensor.speedtest_download:
+      icon: mdi:download-network
+    sensor.speedtest_upload:
+      icon: mdi:upload-network
+      
     device_tracker.fritzrepeater:
       icon: mdi:wifi
-
     device_tracker.computer:
       icon: mdi:desktop-classic
     device_tracker.computerarbeit:
@@ -177,123 +158,35 @@ homeassistant:
       friendly_name: Netzwerk
     device_tracker.epsondrucker:
       icon: mdi:printer
-    device_tracker.maxheizung:
-      icon: mdi:radiator
     device_tracker.xiaomivacuum:
       icon: mdi:robot-vacuum-variant
     device_tracker.xiaomifan:
-      icon: mdi:fan
-
-    device_tracker.echokueche:
-      icon: mdi:amazon-alexa
-    device_tracker.echowohnzimmer:
-      icon: mdi:amazon-alexa
-    device_tracker.echobadezimmer:
-      icon: mdi:amazon-alexa
-    device_tracker.echoschlafzimmer:
-      icon: mdi:amazon-alexa
-    device_tracker.echoflur:
-      icon: mdi:amazon-alexa
-
-    device_tracker.tabletwohnzimmer:
-      icon: mdi:tablet-android
-    device_tracker.tabletbadezimmer:
-      icon: mdi:tablet-android
-    device_tracker.tabletschlafzimmer:
-      icon: mdi:tablet-android
-    device_tracker.tabletkueche:
-      icon: mdi:tablet-android
-    device_tracker.tabletbalkon:
-      icon: mdi:tablet-android
-
-    device_tracker.firetvschlafzimmer:
-      icon: mdi:fire
-    device_tracker.firetvbadezimmer:
-      icon: mdi:fire
-    device_tracker.firetvsportzimmer:
-      icon: mdi:fire
-
-    device_tracker.handy:
-      icon: mdi:cellphone
-    device_tracker.handygps:
-      icon: mdi:cellphone
-    device_tracker.handymqtt:
-      icon: mdi:cellphone 
-    device_tracker.handyfritzbox:
-      icon: mdi:cellphone      
-    device_tracker.handyping:
-      icon: mdi:cellphone           
-
-    device_tracker.magichomeflurvorne:
-      icon: mdi:lightbulb-on-outline
-    device_tracker.magichomeflurhinten:
-      icon: mdi:lightbulb-on-outline
-    device_tracker.magichomebadezimmer:
-      icon: mdi:lightbulb-on-outline
-    device_tracker.magichomeschlafzimmer:
-      icon: mdi:lightbulb-on-outline
-    device_tracker.magichomekueche:
-      icon: mdi:lightbulb-on-outline
-    device_tracker.magichomearbeitszimmer:
-      icon: mdi:lightbulb-on-outline
-    device_tracker.magichomebalkon:
-      icon: mdi:lightbulb-on-outline
-
+      icon: mdi:fan      
     device_tracker.soundbar:
       icon: mdi:music-note
     device_tracker.fernseherwohnzimmer:
       icon: mdi:television
     device_tracker.kamerawohnzimmer:
       icon: mdi:cctv
-      
-    device_tracker.radiowohnzimmer:
-      icon: mdi:raspberry-pi
-    device_tracker.radiobadezimmer:
-      icon: mdi:raspberry-pi
-    device_tracker.radiokueche:
-      icon: mdi:raspberry-pi
-    device_tracker.radioschlafzimmer:
-      icon: mdi:raspberry-pi
-    device_tracker.radioflur:
-      icon: mdi:raspberry-pi
-    device_tracker.radioarbeitszimmer:
-      icon: mdi:raspberry-pi
-    device_tracker.radiobalkon:
-      icon: mdi:raspberry-pi
-    device_tracker.radiokeller:
-      icon: mdi:raspberry-pi
-      
-    device_tracker.tasmotaarbeitszimmerlampe:
-      icon: mdi:developer-board
-    device_tracker.tasmotaarbeitszimmerradio:
-      icon: mdi:developer-board
-    device_tracker.tasmotabalkonradio:
-      icon: mdi:developer-board
-    device_tracker.tasmotakuechenschrank:
-      icon: mdi:developer-board
-    device_tracker.tasmotaarbeitszimmerladegeraet:
-      icon: mdi:developer-board
-    device_tracker.tasmotaarbeitszimmermonitore:
-      icon: mdi:developer-board
-    device_tracker.tasmotastrahler:
-      icon: mdi:developer-board
-    device_tracker.tasmotaspuelmaschine:
-      icon: mdi:developer-board
-    device_tracker.tasmotakleiderschrank:
-      icon: mdi:developer-board
-    device_tracker.tasmotasportzimmerregal:
-      icon: mdi:developer-board      
-    device_tracker.tasmotasportzimmerladegeraet:
-      icon: mdi:developer-board        
-      
-    device_tracker.shellycouch:
-      icon: mdi:connection
-      
-    device_tracker.esptuerklingel:
-      icon: mdi:wifi-star
-      friendly_name: Türklingel
 
-    sensor.speedtest_download:
-      icon: mdi:download-network
-    sensor.speedtest_upload:
-      icon: mdi:upload-network      
+  customize_glob:
+    device_tracker.tasmota*:
+      icon: mdi:developer-board     
+    device_tracker.radio*:
+      icon: mdi:raspberry-pi
+    device_tracker.magichome*:
+      icon: mdi:lightbulb-on-outline
+    device_tracker.firetv*:
+      icon: mdi:fire
+    device_tracker.tablet*:
+      icon: mdi:tablet-android
+    device_tracker.echo*:
+      icon: mdi:amazon-alexa
+    device_tracker.shelly*:
+      icon: mdi:connection
+    device_tracker.handy*:
+      icon: mdi:cellphone
+    device_tracker.tplink*:
+      icon: mdi:power-socket-eu
+    device_tracker.edimax*:
+      icon: mdi:power-socket-eu      
