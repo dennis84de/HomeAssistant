@@ -122,6 +122,56 @@ sensor:
           {% endif %}
         icon_template: mdi:city
 
+      dfb_spiel:
+        friendly_name: Nächstes Spiel
+        value_template: >
+          {% if state_attr('calendar.nationalmannschaft', 'message') %}
+            {% set message = state_attr('calendar.nationalmannschaft', 'message') %}
+            {% set messageSplitted = message.split(' | ') %}
+
+            {{ messageSplitted[0] ~ ' (' ~ messageSplitted[1] ~ ')' }}
+          {% else %}
+            -
+          {% endif %}
+        icon_template: mdi:soccer
+
+      dfb_datum:
+        friendly_name: Datum
+        value_template: >
+          {% if state_attr('calendar.nationalmannschaft', 'start_time') %}
+            {% set weekday = as_timestamp(state_attr('calendar.nationalmannschaft', 'start_time')) | timestamp_custom("%w", True) | int %}
+
+            {{ ['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'][weekday-1] }}, {{ as_timestamp(state_attr('calendar.nationalmannschaft', 'start_time')) | timestamp_custom("%d.%m.%Y", True) | string }}
+          {% else %}
+            -
+          {% endif %}
+        icon_template: mdi:calendar-alert
+
+      dfb_uhrzeit:
+        friendly_name: Uhrzeit
+        value_template: >
+          {% if state_attr('calendar.nationalmannschaft', 'start_time') %}
+            {% set dateSplitted = state_attr('calendar.nationalmannschaft', 'start_time').split(' ') %}
+            {% set timeSplitted = dateSplitted[1].split(':') %}
+            {{ timeSplitted[0] ~ ':' ~ timeSplitted[1] ~ ' Uhr' }}            
+          {% else %}
+            -
+          {% endif %}
+        icon_template: mdi:clock-outline
+
+      dfb_ort:
+        friendly_name: Ort
+        value_template: >
+          {% if state_attr('calendar.nationalmannschaft', 'location') %}
+            {% set location = state_attr('calendar.nationalmannschaft', 'location') %}
+            {% set locationSplitted = location.split(' | ') %}
+
+            {{ locationSplitted[1] }}
+          {% else %}
+            -
+          {% endif %}
+        icon_template: mdi:city
+        
       formel1_rennen:
         friendly_name: Nächstes Rennen
         value_template: >       

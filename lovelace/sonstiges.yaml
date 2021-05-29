@@ -124,6 +124,20 @@ cards:
         - entity: sensor.formel1_datum
         - entity: sensor.formel1_qualifikation    
         
+  - type: conditional
+    conditions:
+      - entity: sensor.dfb_spiel
+        state_not: "-"
+    card:
+      type: entities
+      title: Nationmalmannschaft
+      show_header_toggle: false
+      entities:
+        - entity: sensor.dfb_spiel
+        - entity: sensor.dfb_datum
+        - entity: sensor.dfb_uhrzeit
+        - entity: sensor.dfb_ort
+        
   - type: custom:atomic-calendar-revive
     name: Serien
     maxDaysToShow: 30
