@@ -167,8 +167,10 @@ cards:
     title: Tasmota
     show_header_toggle: false
     entities:
-      - entity: device_tracker.tasmotastrahler
+      - entity: device_tracker.tasmotawohnzimmerstrahler
         name: Wohnzimmer Strahler      
+      - entity: device_tracker.tasmotawohnzimmercouch
+        name: Wohnzimmer Couch        
       - entity: device_tracker.tasmotaarbeitszimmerlampe
         name: Arbeitszimmer Lampe
       - entity: device_tracker.tasmotaarbeitszimmerradio
@@ -177,8 +179,6 @@ cards:
         name: Arbeitszimmer Ladegerät
       - entity: device_tracker.tasmotaarbeitszimmermonitore
         name: Arbeitszimmer Monitore        
-      - entity: device_tracker.tasmotasportzimmerladegeraet
-        name: Sportzimmer Ladegerät
       - entity: device_tracker.tasmotasportzimmerregal
         name: Sportzimmer Regal        
       - entity: device_tracker.tasmotabalkonradio
@@ -194,8 +194,8 @@ cards:
     title: Shelly
     show_header_toggle: false
     entities:
-      - entity: device_tracker.shellycouch
-        name: Wohnzimmer Strahler
+      - entity: device_tracker.shellysportzimmerladegeraet
+        name: Sportzimmer Ladegerät
               
   - type: entities
     title: Edimax
