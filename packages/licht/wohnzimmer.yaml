@@ -5,11 +5,11 @@ input_boolean:
 
 light:
   - platform: switch
-    name: Couch
+    name: Wohnzimmer Couch
     entity_id: switch.wohnzimmer_couch
 
   - platform: switch
-    name: Strahler
+    name: Wohnzimmer Strahler
     entity_id: switch.wohnzimmer_strahler
 
 binary_sensor:
@@ -27,7 +27,7 @@ entity_controller:
   bewegung_wohnzimmer:
     friendly_name: "Bewegung Wohnzimmer"
     sensor: binary_sensor.bewegungsmelder_wohnzimmer
-    entities: light.couch
+    entities: light.wohnzimmer_couch
     delay: 60
     behaviours:
       on_enter_overridden: 'off'
@@ -55,17 +55,17 @@ automation:
         entity_id: binary_sensor.home_office
         state: 'off'
       - condition: state
-        entity_id: light.couch
+        entity_id: light.wohnzimmer_couch
         state: 'off'
       - condition: state
-        entity_id: light.strahler
+        entity_id: light.wohnzimmer_strahler
         state: 'off'
       - condition: state
         entity_id: input_boolean.baden_aktiv
         state: 'off'        
     action:
       - service: light.turn_on
-        entity_id: light.couch, light.strahler
+        entity_id: light.wohnzimmer_couch, light.wohnzimmer_strahler
 
   - alias: "Wohnzimmer - Licht Couch"
     id: "wohnzimmer_licht_couch"
@@ -86,11 +86,11 @@ automation:
         value_template: '{{ is_state("media_player.benachrichtigungen", "playing") == False }}'           
     action:
       - service: light.toggle
-        entity_id: light.couch, light.strahler
+        entity_id: light.wohnzimmer_couch, light.wohnzimmer_strahler
 
 homeassistant:
   customize:
-    light.couch:
+    light.wohnzimmer_couch:
       icon: mdi:sofa
-    light.strahler:
+    light.wohnzimmer_strahler:
       icon: mdi:spotlight

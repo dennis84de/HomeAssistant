@@ -59,8 +59,8 @@ automation:
         data_template:
           scene_id: eingehender_anruf_licht_status
           entities:
-            light.strahler:
-              state: "{{ states('light.strahler') }}"     
+            light.wohnzimmer_strahler:
+              state: "{{ states('light.wohnzimmer_strahler') }}"     
       - service: input_boolean.turn_on
         entity_id: input_boolean.licht_aktiv
       - alias: 'Eingehender Anruf - Licht schalten'
@@ -76,7 +76,7 @@ automation:
                   state: 'incoming'              
           sequence:
             - service: light.toggle
-              entity_id: light.strahler
+              entity_id: light.wohnzimmer_strahler
             - delay:
                 seconds: 1
 

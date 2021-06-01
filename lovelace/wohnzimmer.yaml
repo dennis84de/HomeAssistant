@@ -5,8 +5,10 @@ cards:
     title: Licht
     show_header_toggle: false
     entities:
-      - entity: light.couch
-      - entity: light.strahler
+      - entity: light.wohnzimmer_couch
+        name: Couch
+      - entity: light.wohnzimmer_strahler
+        name: Strahler
       
   - type: entities
     title: Computer

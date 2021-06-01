@@ -11,8 +11,8 @@ alles_ausschalten:
     - switch.computer
     - switch.watchtv_wohnzimmer
     - switch.watchtv_schlafzimmer
-    - light.couch
-    - light.strahler
+    - light.wohnzimmer_couch
+    - light.wohnzimmer_strahler
     - light.arbeitszimmer_lampe
     - light.sportzimmer_regal
     - light.schreibtisch
@@ -28,8 +28,8 @@ alles_ausschalten:
 licht_wohnung:
   name: Licht Wohnung
   entities:
-    - light.couch
-    - light.strahler
+    - light.wohnzimmer_couch
+    - light.wohnzimmer_strahler
     - light.arbeitszimmer_lampe
     - light.sportzimmer_regal
     - light.schreibtisch
@@ -44,8 +44,8 @@ licht_wohnung:
 licht_unterwegs:
   name: Licht unterwegs
   entities:
-    - light.couch
-    - light.strahler
+    - light.wohnzimmer_couch
+    - light.wohnzimmer_strahler
     - light.arbeitszimmer_lampe
     - light.sportzimmer_regal
     - light.kuche_regal

@@ -181,7 +181,7 @@ script:
                 state: 'off'
             sequence:
               - service: light.turn_on
-                entity_id: light.couch, light.strahler   
+                entity_id: light.wohnzimmer_couch, light.wohnzimmer_strahler   
 
   zu_hause_home_office:
     alias: "Zu Hause - Home Office"
@@ -194,7 +194,7 @@ script:
     alias: "Zu Hause - abends"
     sequence:
       - service: light.turn_on
-        entity_id: light.couch, light.strahler
+        entity_id: light.wohnzimmer_couch, light.wohnzimmer_strahler
       - service: switch.turn_on
         entity_id: switch.computer, switch.watchtv_wohnzimmer
       - service: switch.turn_on
