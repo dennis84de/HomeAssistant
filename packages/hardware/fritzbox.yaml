@@ -5,56 +5,9 @@ input_text:
   guest_wifi_password:
     name: 'Gäste Wlan - Password'
 
-sensor:
-#  - platform: fritzbox_netmonitor
-#    name: Netmonitor
-#    host: !secret fritzbox_host
-    
+sensor:    
   - platform: template
     sensors:
-      netmonitor_status:
-        friendly_name: "Fritzbox - Status"    
-        value_template: >-
-          {% set fritzboxStatus = states('sensor.netmonitor') %}
-          
-          {{ '-' if fritzboxStatus == 'unknown' else fritzboxStatus }}          
-        icon_template: mdi:table-network    
-          
-      netmonitor_uptime:
-        friendly_name: "Fritzbox - Laufzeit"    
-        value_template: >-
-          {% set onlineSeconds = state_attr('sensor.netmonitor','uptime') | int %}
-          
-          {% if onlineSeconds == 0 or onlineSeconds == None %}
-            -
-          {% else %}
-            {% set now = as_timestamp(now()) | int %}
-            {% set lastReboot = now - onlineSeconds | int %}
-            {% set weekday = lastReboot | timestamp_custom("%w", True) | int %}
-
-            {{ ['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'][weekday-1] }}, {{ lastReboot | timestamp_custom("%d.%m.%Y", True) | string }}               
-          {% endif %}
-        icon_template: >-
-          mdi:calendar-range        
-           
-      netmonitor_data_sent:
-        friendly_name: "Fritzbox - Daten gesendet" 
-        unit_of_measurement: GB
-        value_template: >-
-          {% set bytesSent = (state_attr('sensor.netmonitor','bytes_sent')) %}
-          {{ (bytesSent / 1024 / 1024 / 1024) | round(2) if bytesSent else '-' }}         
-        icon_template: >-
-          mdi:upload-network
-          
-      netmonitor_data_received:
-        friendly_name: "Fritzbox - Daten empfangen"   
-        unit_of_measurement: GB
-        value_template: >-               
-          {% set bytesReceived = (state_attr('sensor.netmonitor','bytes_received')) %}
-          {{ (bytesReceived / 1024 / 1024 / 1024) | round(2) if bytesReceived else '-' }}
-        icon_template: >-
-          mdi:download-network          
-          
       gaeste_wlan_ssid:
         friendly_name: "Gäste-Wlan SSID"
         value_template: >-

@@ -5,14 +5,10 @@ cards:
     title: Status
     show_header_toggle: false
     entities:
-      - entity: sensor.netmonitor_status
+      - entity: binary_sensor.fritz_box_7272_connectivity
         name: "Fritzbox"
-      - entity: sensor.netmonitor_uptime
-        name: "Verbunden seit"
-      - entity: sensor.netmonitor_data_received
-        name: "Daten empfangen"        
-      - entity: sensor.netmonitor_data_sent
-        name: "Daten gesendet"
+      - entity: sensor.fritz_box_7272_uptime
+        name: "Letzter Neustart"
       - entity: sensor.heimnetz_offline  
       
   - type: entities
