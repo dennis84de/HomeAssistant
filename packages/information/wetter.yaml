@@ -203,7 +203,7 @@ sensor:
       helligkeit_wetter:
         friendly_name: 'Helligkeit Wetter'
         value_template: >-
-          {%- set irradiance = states('sensor.br_irradiance') | float %} 
+          {%- set irradiance = states('sensor.buienradar_irradiance') | float %} 
           {%- set irradiance_pct = irradiance / 10 %}
           {%- set elevation = state_attr('sun.sun','elevation') | float %}
           {%- set cloud_coverage = states('sensor.darksky_cloud_coverage') | float %}
