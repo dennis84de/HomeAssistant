@@ -43,7 +43,7 @@ binary_sensor:
           {% if is_state('sensor.helligkeit_balkon', None) or is_state('sensor.helligkeit_balkon', 'unknown') or is_state('sensor.helligkeit_balkon', '0') %}
             {{ states('sensor.helligkeit_wetter') | float > 15 }}
           {% else %}
-            {{ states('sensor.helligkeit_balkon') | float > 22000 }}
+            {{ states('sensor.helligkeit_balkon_durchschnitt') | float > 22000 }}
           {% endif %}
           
       sommerzeit:
@@ -53,10 +53,6 @@ binary_sensor:
                            
 sensor:
   - platform: moon
-      
-  - platform: buienradar
-    monitored_conditions:
-      - irradiance
       
   - platform: darksky
     api_key: !secret darksky_key
@@ -425,8 +421,8 @@ sensor:
           {% set ns = namespace(found=0) %}          
           {% set current_count = state_attr("sensor.wetterwarnungen_current_warning_level", "warning_count") %}
           {% set advance_count = state_attr("sensor.wetterwarnungen_advance_warning_level", "warning_count") %}
-
-          {% if current_count > 0 or advance_count > 0 %}         
+          
+          {% if current_count != None and advance_count != None and (current_count > 0 or advance_count > 0) %}
             {% for i in range(current_count) %}
               {% set startTime = as_timestamp(state_attr("sensor.wetterwarnungen_current_warning_level", "warning_" ~ loop.index ~ "_start")) %}
               {% set endTime = as_timestamp(state_attr("sensor.wetterwarnungen_current_warning_level", "warning_" ~ loop.index ~ "_end")) %}
@@ -522,7 +518,7 @@ automation:
                     {% set current_count = state_attr("sensor.wetterwarnungen_current_warning_level", "warning_count") %}
                     {% set advance_count = state_attr("sensor.wetterwarnungen_advance_warning_level", "warning_count") %}
 
-                    {% if current_count == 0 and advance_count == 0 %}
+                    {% if (current_count == None or advance_count == None) or (current_count == 0 and advance_count == 0) %}
                       Aktuell liegt keine Wetterwarnung vor.
                     {% else %}
                       {%- for i in range(current_count) -%}
@@ -559,7 +555,7 @@ automation:
                 {% set current_count = state_attr("sensor.wetterwarnungen_current_warning_level", "warning_count") %}
                 {% set advance_count = state_attr("sensor.wetterwarnungen_advance_warning_level", "warning_count") %}
 
-                {% if current_count == 0 and advance_count == 0 %}
+                {% if current_count == None or advance_count == None or (current_count == 0 and advance_count == 0) %}
                   Aktuell liegt keine Wetterwarnung vor.
                 {% else %}
                   Achtung!
