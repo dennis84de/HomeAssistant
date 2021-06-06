@@ -81,29 +81,7 @@ automation:
         entity_id: binary_sensor.im_bett
         state: 'on'   
         for:
-          seconds: 1   
-      - condition: or
-        conditions:
-          - condition: state
-            entity_id: media_player.kodi_schlafzimmer
-            state: 'unavailable'
-          - condition: state
-            entity_id: media_player.kodi_schlafzimmer
-            state: 'idle'
-          - condition: state
-            entity_id: media_player.kodi_schlafzimmer
-            state: 'off'
-      - condition: or
-        conditions:
-          - condition: state
-            entity_id: media_player.tablet_schlafzimmer
-            state: 'unavailable'
-          - condition: state
-            entity_id: media_player.tablet_schlafzimmer
-            state: 'off'         
-          - condition: state
-            entity_id: media_player.tablet_schlafzimmer
-            state: 'idle'               
+          seconds: 1               
     action:
       - service: homeassistant.turn_off
         entity_id: group.licht_wohnung

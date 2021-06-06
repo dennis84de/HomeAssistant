@@ -158,3 +158,55 @@ automation:
     action:
       - service: media_player.media_pause
         entity_id: media_player.benachrichtigungen
+                
+  - alias: "Schlafzimmer - Tablet Wiedergabe"
+    id: "schlafzimmer_tablet_wiedergabe"
+    trigger:
+      - platform: state        
+        entity_id: binary_sensor.schalter_schlafzimmer
+        to: 'on'
+      - platform: state        
+        entity_id: sensor.schalter_schlafzimmer
+        to: '2'   
+      - platform: state        
+        entity_id: binary_sensor.im_bett
+        to: 'on'   
+        for:
+          seconds: 1
+    condition:
+      - condition: state        
+        entity_id: binary_sensor.im_bett
+        state: 'on'   
+        for:
+          seconds: 1
+      - condition: state
+        entity_id: binary_sensor.schlafen_aktiv
+        state: 'on'      
+      - condition: or
+        conditions:
+        - condition: state
+          entity_id: media_player.tablet_schlafzimmer
+          state: 'playing'
+        - condition: state
+          entity_id: media_player.tablet_schlafzimmer
+          state: 'paused'
+    action:
+      - service: media_player.media_play_pause
+        entity_id: media_player.tablet_schlafzimmer         
+        
+  - alias: "Schlafzimmer - Tablet pausieren"
+    id: "schlafzimmer_tablet_pausieren"
+    trigger:
+      platform: state
+      entity_id: binary_sensor.bewegungsmelder_bett
+      to: 'on'
+    condition:
+      - condition: state
+        entity_id: media_player.tablet_schlafzimmer
+        state: 'playing'
+      - condition: state
+        entity_id: binary_sensor.schlafen_aktiv
+        state: 'on'   
+    action:
+      - service: media_player.media_pause
+        entity_id: media_player.tablet_schlafzimmer                            
