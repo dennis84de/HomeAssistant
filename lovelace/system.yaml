@@ -21,7 +21,7 @@ cards:
       - entity: input_boolean.besuch
       - entity: input_boolean.nicht_stoeren  
       - entity: input_boolean.wetter_warnungen_einschalten          
-      - entity: input_boolean.licht_simulaton
+      - entity: input_boolean.licht_simulation
       - entity: script.alexa_witz_gestartet
       
   - type: entities

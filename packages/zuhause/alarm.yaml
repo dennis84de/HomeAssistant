@@ -1,5 +1,5 @@
 input_boolean:
-  licht_simulaton:
+  licht_simulation:
     name: "Lichtsimulation"
     icon: mdi:lightbulb-group-outline
 

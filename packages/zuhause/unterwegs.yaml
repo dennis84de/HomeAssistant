@@ -63,7 +63,7 @@ automation:
         state: 'on'        
     action:
       - service: input_boolean.turn_on
-        entity_id: input_boolean.licht_simulaton
+        entity_id: input_boolean.licht_simulation
 
   - alias: "Telegram - Unterwegs Status"
     id: "telegram_unterwegs_status"
@@ -265,7 +265,7 @@ script:
       - choose:
           - conditions:
               - condition: state
-                entity_id: input_boolean.licht_simulaton
+                entity_id: input_boolean.licht_simulation
                 state: 'on'
             sequence:
               - service: presence_simulation.start
