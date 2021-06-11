@@ -99,7 +99,10 @@ automation:
                 entity_id: switch.presence_simulation
                 state: 'on'
             sequence:
-              - service: presence_simulation.stop
+              - service: switch.turn_off
+                entity_id: switch.presence_simulation
+              - service: input_boolean.turn_off
+                entity_id: input_boolean.licht_simulation
                 
   - alias: "Zu Hause - Begrüßung aktivieren"
     id: "zu_hause_begruessung_aktivieren"
@@ -172,8 +175,7 @@ script:
     alias: "Zu Hause"
     sequence:
       - service: switch.turn_on
-        entity_id: switch.computer, switch.watchtv_wohnzimmer        
-      - service: script.wohnung_radios_einschalten
+        entity_id: switch.computer, switch.watchtv_wohnzimmer              
       - choose:
           - conditions:
               - condition: state
@@ -182,13 +184,14 @@ script:
             sequence:
               - service: light.turn_on
                 entity_id: light.wohnzimmer_couch, light.wohnzimmer_strahler   
+      - service: script.wohnung_radios_einschalten                
 
   zu_hause_home_office:
     alias: "Zu Hause - Home Office"
-    sequence:
-      - service: script.wohnung_radios_einschalten 
+    sequence:      
       - service: switch.turn_on
         entity_id: switch.arbeitszimmer_radio, switch.pc_arbeit, switch.arbeitszimmer_monitore
+      - service: script.wohnung_radios_einschalten         
         
   zu_hause_abends:
     alias: "Zu Hause - abends"

@@ -268,7 +268,8 @@ script:
                 entity_id: input_boolean.licht_simulation
                 state: 'on'
             sequence:
-              - service: presence_simulation.start
+              - service: switch.turn_on
+                entity_id: switch.presence_simulation
       - choose:
           - conditions:
               - condition: state
