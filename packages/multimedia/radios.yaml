@@ -221,9 +221,8 @@ script:
       - service: script.sync_radios
       - choose:
           - conditions:
-              - condition: state
-                entity_id: binary_sensor.home_office
-                state: 'off'
+              - condition: template
+                value_template: "{{ is_state('binary_sensor.home_office', 'off') and (homeOfficeHeute is not defined or homeOfficeHeute == False) }}"
               - condition: template
                 value_template: '{{ now().isoweekday() != 7 }}'        
               - condition: time
@@ -235,7 +234,7 @@ script:
               - condition: numeric_state
                 entity_id: sensor.laufzeit_minuten
                 above: 5
-            sequence:
+            sequence:            
               - service: switch.turn_on
                 entity_id: switch.balkon_radio
       

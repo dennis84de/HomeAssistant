@@ -139,6 +139,8 @@ automation:
         entity_id: switch.schlafzimmer_radio               
       - delay: "00:{{ states('input_number.alarmdelay') | int }}:00" 
       - service: script.wohnung_radios_einschalten
+        data:
+          homeOfficeHeute: "{{ is_state('binary_sensor.home_office_heute', 'on') }}"
 
   - alias: "Wecker - Zeit geändert"
     id: "wecker_zeit_geaendert"
