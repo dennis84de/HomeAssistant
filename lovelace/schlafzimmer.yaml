@@ -72,11 +72,11 @@ cards:
       - entity: switch.schlafzimmer_radio
         name: Radio
 
-  - type: glance
+  - type: entities
     title: Heizung
     show_header_toggle: false
     entities:
-      - entity: binary_sensor.fenster_arbeitszimmer   
+      - entity: binary_sensor.fenster_schlafzimmer   
         name: Fenster
 
   - type: glance
