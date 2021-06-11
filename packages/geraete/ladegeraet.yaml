@@ -13,10 +13,10 @@ sensor:
       sportzimmer_ladegeraet_verbrauch:
         friendly_name: Sportzimmer Ladegerät Verbrauch
         value_template: >-
-          {% if is_state('switch.sportzimmer_ladegerat', 'unavailable') or is_state('sensor.sportzimmer_ladegerat_energy_power', 'unavailable') %}
+          {% if is_state('switch.sportzimmer_ladegerat', 'unavailable') or is_state('sensor.sportzimmer_ladegerat_power', 'unavailable') %}
             {{ 0.00 | float }}
           {% else %}
-            {{ states('sensor.sportzimmer_ladegerat_energy_power') | float }}
+            {{ states('sensor.sportzimmer_ladegerat_power') | float }}
           {% endif %}
         unit_of_measurement: 'W'
         icon_template: 'mdi:power-cycle'
@@ -66,7 +66,7 @@ automation:
     trigger:
       - platform: numeric_state
         entity_id: sensor.sportzimmer_ladegeraet_verbrauch
-        above: 10
+        above: 5
         for: '00:01:00'
     condition:
       - condition: state
