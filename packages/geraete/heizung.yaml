@@ -12,23 +12,19 @@ binary_sensor:
       heizung_arbeitszimmer_batterie:
         friendly_name: Arbeitszimmer
         device_class: battery
-        value_template: >
-          {{ state_attr('climate.arbeitszimmer', 'battery_low') }}
+        value_template: "{{ state_attr('climate.arbeitszimmer', 'battery_low') }}"
       heizung_badezimmer_batterie:
         friendly_name: Badezimmer
         device_class: battery
-        value_template: >
-          {{ state_attr('climate.badezimmer', 'battery_low') }}
+        value_template: "{{ state_attr('climate.badezimmer', 'battery_low') }}"
       heizung_kueche_batterie:
         friendly_name: Küche
         device_class: battery
-        value_template: >
-          {{ state_attr('climate.kuche', 'battery_low') }}
+        value_template: "{{ state_attr('climate.kuche', 'battery_low') }}"
       heizung_wohnzimmer_batterie:
         friendly_name: Wohnzimmer
         device_class: battery
-        value_template: >
-          {{ state_attr('climate.wohnzimmer', 'battery_low') }}
+        value_template: "{{ state_attr('climate.wohnzimmer', 'battery_low') }}"
 
 automation:
   - alias: "Heizung Wohnzimmer - Fenster geöffnet"
@@ -45,11 +41,8 @@ automation:
         for:
           seconds: 30
     condition:
-      - condition: state
-        entity_id: climate.wohnzimmer
-        state: 'heat'
-      - condition: template
-        value_template: '{{ state_attr("climate.wohnzimmer", "preset_mode") == "comfort" }}'        
+      - "{{ is_state('climate.wohnzimmer', 'heat') }}"
+      - "{{ state_attr('climate.wohnzimmer', 'preset_mode') == 'comfort' }}"
     action:
       - service: climate.set_preset_mode
         data:
@@ -111,11 +104,8 @@ automation:
         for:
           seconds: 30
     condition:
-      - condition: state
-        entity_id: climate.kuche
-        state: 'heat'
-      - condition: template
-        value_template: '{{ state_attr("climate.kuche", "preset_mode") == "comfort" }}'        
+      - "{{ is_state('climate.kuche', 'heat') }}"
+      - "{{ state_attr('climate.kuche', 'preset_mode') == 'comfort' }}"
     action:
       - service: climate.set_preset_mode
         data:
@@ -171,11 +161,8 @@ automation:
         for:
           seconds: 30
     condition:
-      - condition: state
-        entity_id: climate.arbeitszimmer
-        state: 'heat'
-      - condition: template
-        value_template: '{{ state_attr("climate.arbeitszimmer", "preset_mode") == "comfort" }}'          
+      - "{{ is_state('climate.arbeitszimmer', 'heat') }}"
+      - "{{ state_attr('climate.arbeitszimmer', 'preset_mode') == 'comfort' }}"
     action:
       - service: climate.set_preset_mode
         data:
