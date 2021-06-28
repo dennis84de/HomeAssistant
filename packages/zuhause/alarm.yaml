@@ -99,7 +99,9 @@ automation:
       data_template:
         title: "Bewegung erkannt"
         message: >-          
-          {% if trigger.entity_id == 'binary_sensor.bewegungsmelder_kueche' %}
+          {% if trigger.entity_id == 'binary_sensor.bewegungsmelder_balkon' %}
+            Auf dem Balkon wurde eine Bewegung erkannt.        
+          {% elif trigger.entity_id == 'binary_sensor.bewegungsmelder_kueche' %}
             In der Küche wurde eine Bewegung erkannt.
           {% else %}
             Im {{ trigger.to_state.attributes.friendly_name }} wurde eine Bewegung erkannt.
@@ -131,6 +133,8 @@ automation:
         message: >-
           {% if trigger.entity_id == 'binary_sensor.balkontuer' %}
             Die Balkontür wurde geöffnet.
+          {% elif trigger.entity_id == 'binary_sensor.fenster_kueche' %}
+            Das Fenster in der Küche wurde geöffnet.        
           {% else %}
             Das Fenster im {{ trigger.to_state.attributes.friendly_name }} wurde geöffnet.
           {% endif %} 
