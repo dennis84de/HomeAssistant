@@ -480,30 +480,11 @@ automation:
   - alias: 'Wetterwarnungen'
     id: "wetterwarnungen"
     trigger:
-      - platform: state
-        entity_id: sensor.wetterwarnungen_current_warning_level        
-      - platform: state  
-        entity_id: sensor.wetterwarnungen_advance_warning_level
       - platform: state  
         entity_id: sensor.wetterwarnungen_aktiv
     condition:
-      - condition: state
-        entity_id: input_boolean.wetter_warnungen_einschalten
-        state: 'on'        
-      - condition: numeric_state
-        entity_id: sensor.wetterwarnungen_aktiv
-        above: 0
-      - condition: template     
-        value_template: >-
-          {% if trigger.entity_id == 'sensor.wetterwarnungen_current_warning_level' or trigger.entity_id == 'sensor.wetterwarnungen_advance_warning_level'%}
-            {% set oldWarningCount = trigger.from_state.attributes.warning_count | int %}
-            {% set newWarningCount = trigger.to_state.attributes.warning_count | int %}
-
-            {{ newWarningCount > oldWarningCount }}                  
-          {% else %}
-            True
-          {% endif %}
-  
+      - "{{ is_state('input_boolean.wetter_warnungen_einschalten', 'on') }}" 
+      - "{{ trigger.to_state.state > trigger.from_state.state }}" 
     action:
       - choose:
           - conditions:
@@ -580,18 +561,7 @@ automation:
                       {% if headline != None %} {{ headline }}. {% endif %} {% if description != None %} {{ description }} {% endif %}
                     {%endif%}                      
                   {% endfor %}              
-                {% endif %}         
-            
-  - alias: "Wetterwarnungen ausschalten"
-    id: "wetterwarnungen_ausschalten"
-    trigger:
-      - platform: state
-        entity_id: input_boolean.wetter_warnungen_einschalten
-        to: 'off'
-    action:
-      - service: !secret tts_service
-        data:
-          message: "Die Wetterwarnungen wurden ausgeschaltet."   
+                {% endif %}
             
 homeassistant:
   customize:
