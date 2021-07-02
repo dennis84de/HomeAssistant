@@ -5,8 +5,7 @@ cards:
     title: Raspberry
     show_header_toggle: false
     entities:
-      - entity: sensor.cpu_temperatur
-      - entity: sensor.gpu_temperatur
+      - entity: sensor.processor_temperature
       - entity: sensor.disk_use_percent
       - entity: sensor.memory_use_percent
       - entity: binary_sensor.rpi_power_status

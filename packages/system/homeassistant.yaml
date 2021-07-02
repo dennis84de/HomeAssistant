@@ -93,17 +93,6 @@ sensor:
     command: "head -5 /config/.HA_VERSION"
     scan_interval: 3600
 
-  - platform: command_line
-    name: CPU Temperatur
-    command: "cat /sys/class/thermal/thermal_zone0/temp"
-    unit_of_measurement: "°C"
-    value_template: '{{ value | multiply(0.001) | round(1) }}'
-
-  - platform: command_line
-    name: GPU Temperatur
-    command: vcgencmd measure_temp | sed "s/temp=//;s/'C//"
-    unit_of_measurement: "°C"
-
   - platform: systemmonitor
     resources:
       - type: disk_use_percent
@@ -111,6 +100,7 @@ sensor:
       - type: memory_use_percent
       - type: processor_use
       - type: last_boot
+      - type: processor_temperature
 
   - platform: template
     sensors:
@@ -281,9 +271,12 @@ homeassistant:
       friendly_name: Benutzter Arbeitsspeicher
       icon: mdi:database-plus
     sensor.processor_use:
-      friendly_name: CPU-Auslastung
+      friendly_name: CPU Auslastung
       icon: mdi:creation
-    
+    sensor.processor_temperature:
+      friendly_name: CPU Temperatur
+      icon: mdi:creation
+          
     sensor.gpu_temperatur:
       icon: mdi:thermometer-low
         
