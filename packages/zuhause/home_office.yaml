@@ -15,6 +15,10 @@ input_boolean:
     name: Computer Arbeit ausschalten    
     icon: mdi:desktop-classic
     
+  computer_arbeit_herunterfahren:
+    name: Computer Arbeit herunterfahren    
+    icon: mdi:power-settings
+    
   home_office_musik_pausiert:
     name: Musik pausiert    
    
@@ -85,8 +89,17 @@ switch:
             broadcast_address: !secret fritzbox_broadcast
             broadcast_port: 9
         turn_off:
-          service: switch.turn_on
-          entity_id: switch.computer_arbeit_ruhezustand
+          - choose:
+              - conditions:
+                  - condition: state
+                    entity_id: input_boolean.computer_arbeit_herunterfahren
+                    state: 'on'
+                sequence:
+                  - service: switch.turn_on
+                    entity_id: switch.computer_arbeit_herunterfahren      
+            default:
+              - service: switch.turn_on
+                entity_id: switch.computer_arbeit_ruhezustand
 
 script:
   home_office_start:
@@ -109,6 +122,22 @@ script:
         state: 'on'
       - service: switch.turn_off
         entity_id: switch.pc
+      - choose:
+          - conditions:
+              - condition: or
+                conditions:
+                  - condition: state
+                    entity_id: binary_sensor.arbeitstag_morgen
+                    state: 'off'
+                  - condition: state
+                    entity_id: binary_sensor.urlaub_morgen
+                    state: 'on'                       
+            sequence:
+              - service: input_boolean.turn_on
+                entity_id: input_boolean.computer_arbeit_herunterfahren      
+        default:
+          - service: input_boolean.turn_off
+            entity_id: input_boolean.computer_arbeit_herunterfahren              
           
   home_office_ende:
     alias: 'Home Office - Ende'
@@ -145,7 +174,7 @@ script:
                 state: 'on'
             sequence:
               - service: switch.turn_off
-                entity_id: switch.pc_arbeit      
+                entity_id: switch.pc_arbeit                
         
 automation:
   - alias: "Home Office - Start"
