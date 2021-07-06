@@ -12,6 +12,7 @@ cards:
       - entity: binary_sensor.auto_waschen
       - entity: binary_sensor.autoreifen
       - entity: sensor.katastrophenalarm
+      - entity: sensor.sternzeichen
 
   - type: entities
     title: Corona Virus
