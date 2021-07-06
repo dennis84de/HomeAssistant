@@ -119,8 +119,17 @@ script:
         entity_id: switch.watchtv_wohnzimmer, switch.monitor
       - service: light.turn_off
         entity_id: light.wohnzimmer_strahler, light.balkon_licht
-      - service: light.turn_on
-        entity_id: light.bett, light.kleiderschrank
+      - choose:
+          - conditions:
+              - condition: state
+                entity_id: binary_sensor.fenster_schlafzimmer
+                state: 'on'
+            sequence:
+              - service: light.turn_on
+                entity_id: light.bett
+        default:
+          - service: light.turn_on
+            entity_id: light.bett, light.kleiderschrank        
       - choose:
           - conditions:
               - condition: state
@@ -128,7 +137,7 @@ script:
                 state: 'on'
             sequence:
               - service: switch.turn_off
-                entity_id: switch.pc    
+                entity_id: switch.pc                   
       - choose:
           - conditions:
               - condition: state
