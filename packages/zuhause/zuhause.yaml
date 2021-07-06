@@ -184,17 +184,19 @@ script:
             sequence:
               - service: light.turn_on
                 entity_id: light.wohnzimmer_couch, light.wohnzimmer_strahler   
-      - service: script.wohnung_radios_einschalten       
       - service: input_boolean.turn_on
-        entity_id: input_boolean.computer_ausschalten, input_boolean.computer_arbeit_ausschalten      
+        entity_id: input_boolean.computer_ausschalten                  
+      - service: script.wohnung_radios_einschalten       
 
   zu_hause_home_office:
     alias: "Zu Hause - Home Office"
     sequence:      
       - service: switch.turn_on
         entity_id: switch.arbeitszimmer_radio, switch.pc_arbeit, switch.arbeitszimmer_monitore
-      - service: script.wohnung_radios_einschalten         
-        
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.computer_arbeit_ausschalten           
+      - service: script.wohnung_radios_einschalten   
+             
   zu_hause_abends:
     alias: "Zu Hause - abends"
     sequence:
@@ -202,6 +204,8 @@ script:
         entity_id: light.wohnzimmer_couch, light.wohnzimmer_strahler
       - service: switch.turn_on
         entity_id: switch.computer, switch.watchtv_wohnzimmer
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.computer_ausschalten          
       - service: switch.turn_on
         entity_id: switch.badezimmer_radio
 
