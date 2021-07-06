@@ -175,33 +175,38 @@ sensor:
       formel1_rennen:
         friendly_name: Nächstes Rennen
         value_template: >       
-          {% set ort = state_attr('calendar.formel1_rennen', 'location') %}   
+          {% set rennen = as_timestamp(state_attr('calendar.formel1_rennen', 'start_time')) %}
+          {% set sprint = as_timestamp(state_attr('calendar.formel1_sprint', 'start_time')) %}
           
-          {% if ort == None %}
-            -
+          {% if sprint < rennen %}
+            {% set location = state_attr('calendar.formel1_sprint', 'message').split(':')[1].split('/') %}
           {% else %}
             {% set location = state_attr('calendar.formel1_rennen', 'message').split(':')[1].split('/') %}
-
-            {% if ort != None and ort != '' %}
-              {{ ort }}
-            {% elif location != None and location != '' %}
-              {{ location[1] }} ({{ location[0].strip() }})
-            {% else %}
-              -
-            {% endif %}              
           {% endif %}
+          
+          {% if location != None and location != '' %}
+            {{ location[1] }} ({{ location[0].strip() }})
+          {% else %}
+            -
+          {% endif %}                           
         icon_template: mdi:car-sports
 
       formel1_datum:
         friendly_name: Datum
         value_template: >
-          {% set rennen = state_attr('calendar.formel1_rennen', 'start_time') %}
+          {% set rennen = as_timestamp(state_attr('calendar.formel1_rennen', 'start_time')) %}
+          {% set sprint = as_timestamp(state_attr('calendar.formel1_sprint', 'start_time')) %}        
         
-          {% if rennen == None %}
+          {% if sprint < rennen %}
+            {% set start = sprint %}
+          {% else %}
+            {% set start = rennen %}
+          {% endif %}
+
+          {% if start == None %}
             -
           {% else %}           
-            {% set rennenTs = as_timestamp(state_attr('calendar.formel1_rennen', 'start_time')) %}
-            {{ rennenTs | timestamp_custom("%d.%m.%Y", True) | string }}, {{ rennenTs | timestamp_custom("%H:%M Uhr") | string }}       
+            {{ start | timestamp_custom("%d.%m.%Y", True) | string }}, {{ start | timestamp_custom("%H:%M Uhr") | string }}       
           {% endif %}         
         icon_template: mdi:calendar-alert
 
