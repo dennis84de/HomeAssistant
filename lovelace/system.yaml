@@ -54,7 +54,7 @@ cards:
     title: Gäste Wlan
     show_header_toggle: false
     entities:
-      - entity: switch.fritzbox_7272_guest_wifi
+      - entity: switch.fritz_box_7272_guest_wifi
         name: Gastzugang
         tap_action:
            action: toggle
