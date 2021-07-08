@@ -1,0 +1,28 @@
+input_boolean:   
+  besuch:
+    name: "Besuch"
+    icon: mdi:account-multiple   
+
+binary_sensor:
+  - platform: template
+    sensors:         
+      besuch:
+        friendly_name: "Besuch"
+        device_class: presence        
+        value_template: >-
+          {{ True if is_state('input_boolean.besuch', 'on') else False }}     
+              
+automation:
+  - alias: "Zu Hause - Besuch Schalter"
+    id: "zu_hause_besuch_schalter"
+    trigger:
+      - platform: state
+        entity_id: sensor.schalter_flur
+        to: '3'
+    condition:
+      - condition: state
+        entity_id: binary_sensor.zu_hause
+        state: 'on'
+    action:
+      - service: input_boolean.toggle
+        entity_id: input_boolean.besuch  
