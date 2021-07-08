@@ -170,8 +170,8 @@ automation:
       - service: switch.turn_off
         entity_id: switch.wohnzimmer_radio, switch.balkon_radio, switch.flur_radio, switch.kuche_radio, switch.schlafzimmer_radio, switch.arbeitszimmer_radio     
 
-  - id: "kodi_wohnzimmer_wiedergabe"
-    alias: "Kodi Wohnzimmer - Wiedergabe"
+  - alias: "Kodi Wohnzimmer - Wiedergabe"
+    id: "kodi_wohnzimmer_wiedergabe"    
     trigger:
       - platform: state
         entity_id: binary_sensor.schalter_wohnzimmer
@@ -212,8 +212,8 @@ automation:
       - service: media_player.media_next_track
         entity_id: media_player.kodi_wohnzimmer
 
-  - id: "kodi_wohnzimmer_untertitel"
-    alias: "Kodi Wohnzimmer - Untertitel"
+  - alias: "Kodi Wohnzimmer - Untertitel"
+    id: "kodi_wohnzimmer_untertitel"    
     trigger:
       - platform: state
         entity_id: sensor.cube_bewegung
@@ -370,9 +370,9 @@ automation:
     trigger:
       - platform: state
         entity_id: binary_sensor.computer_mozilla_firefox_fullscreen
+#        entity_id: binary_sensor.computer_youtube
     condition:
-      - condition: template
-        value_template: '{{ is_state("binary_sensor.computer_mozilla_firefox_fullscreen", "unavailable") == False }}'
+      - '{{ is_state("binary_sensor.computer_mozilla_firefox_fullscreen", "unavailable") == False }}'
     action:
       - service: input_boolean.turn_{{ trigger.to_state.state }}
         entity_id: input_boolean.youtube_wohnzimmer_aktiv           
