@@ -20,7 +20,7 @@ automation:
         entity_id: input_boolean.alexa_witz_gestartet
         state: 'on'
       - condition: template
-        value_template: '{{ trigger.from_state.attributes.media_position_updated_at !=  trigger.to_state.attributes.media_position_updated_at }}'
+        value_template: '{{ trigger.from_state.attributes.media_position_updated_at != trigger.to_state.attributes.media_position_updated_at }}'
     action:
       - service: counter.increment
         entity_id: counter.alexa_witz_status
@@ -37,6 +37,21 @@ automation:
         state: 'on'
     action:
       - service: script.alexa_witz_beendet
+        
+  - alias: "Alexa Witz"
+    id: "alexa_witz"  
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.schalter_badezimmer
+        to: 'off'       
+    condition:
+      - condition: state
+        entity_id: binary_sensor.besuch
+        state: 'on'
+    action:
+      - service: script.alexa_witz
+        data:
+          echo: badezimmer
         
 script:
   alexa_witz_gestartet:
@@ -61,6 +76,15 @@ script:
         entity_id: input_boolean.alexa_witz_gestartet        
       - service: switch.turn_off
         entity_id: switch.radios_lautlos
+          
+  alexa_witz:
+    alias: "Alexa Witz"
+    sequence:
+      - service: media_player.play_media
+        data:          
+          entity_id: media_player.echo_{{ echo }}
+          media_content_id: Alexa.Joke.Play
+          media_content_type: sequence          
           
 homeassistant:
   customize:
