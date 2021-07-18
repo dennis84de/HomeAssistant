@@ -452,9 +452,6 @@ automation:
       value_template: >-
         {{ states('sensor.balkon_temperatur') | float > states('sensor.wohnzimmer_temperatur') | float + 2 }}
     condition:       
-      - condition: numeric_state
-        entity_id: sensor.balkon_temperatur
-        above: 23
       - condition: or
         conditions:
           - condition: state
@@ -462,10 +459,10 @@ automation:
             state: 'on'
           - condition: state
             entity_id: binary_sensor.fenster_wohnzimmer
-            state: 'on'            
-      - condition: numeric_state
-        entity_id: sensor.laufzeit_minuten
-        above: 5
+            state: 'on'
+      - "{{ (states('sensor.laufzeit_minuten') | float) > 0 }}"
+      - "{{ (states('sensor.wohnzimmer_temperatur') | float) > 0 }}"
+      - "{{ (states('sensor.balkon_temperatur') | float) > 23 }}"  
     action:
       - service: !secret tts_service
         data_template:
