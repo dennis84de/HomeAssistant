@@ -178,7 +178,7 @@ sensor:
           {% set rennen = as_timestamp(state_attr('calendar.formel1_rennen', 'start_time')) %}
           {% set sprint = as_timestamp(state_attr('calendar.formel1_sprint', 'start_time')) %}
           
-          {% if sprint < rennen %}
+          {% if sprint != None and sprint < rennen %}
             {% set location = state_attr('calendar.formel1_sprint', 'message').split(':')[1].split('/') %}
           {% else %}
             {% set location = state_attr('calendar.formel1_rennen', 'message').split(':')[1].split('/') %}
@@ -197,7 +197,7 @@ sensor:
           {% set rennen = as_timestamp(state_attr('calendar.formel1_rennen', 'start_time')) %}
           {% set sprint = as_timestamp(state_attr('calendar.formel1_sprint', 'start_time')) %}        
         
-          {% if sprint < rennen %}
+          {% if sprint != None and sprint < rennen %}
             {% set start = sprint %}
           {% else %}
             {% set start = rennen %}
