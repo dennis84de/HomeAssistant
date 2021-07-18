@@ -121,7 +121,7 @@ automation:
         data:
           title: 'Handy'
           message: >-
-            {% set name = state_attr('sensor.handy', 'name') %}
+            {% set name = state_attr('sensor.handy', 'anrufer') %}
             {% set number = state_attr('sensor.handy', 'number') %}
             
             {% if is_state("sensor.handy", "outgoing") %}
@@ -133,9 +133,9 @@ automation:
               
             {% elif is_state("sensor.handy", "incoming") %}
               {% if name == number %}
-                Eingehender Anruf von {{ state_attr('sensor.handy', 'name') }}.
+                Eingehender Anruf von {{ state_attr('sensor.handy', 'anrufer') }}.
               {% else %}
-                Eingehender Anruf von {{ state_attr('sensor.handy', 'name') }} ({{ state_attr('sensor.handy', 'number') }}).
+                Eingehender Anruf von {{ state_attr('sensor.handy', 'anrufer') }} ({{ state_attr('sensor.handy', 'number') }}).
               {% endif %}                          
             {% endif %}                                 
           data:
@@ -341,9 +341,15 @@ automation:
     action:
       - service: !secret tts_service
         data:
-          message: >-
-            Ein eingehender Anruf von {% if state_attr('sensor.handy', 'name') != '-' and state_attr('sensor.handy', 'name').startswith('+') == False %}{{ state_attr('sensor.handy', 'name') }}{% else %}einer unbekannten Nummer{% endif %}.
-
+          message: >-       
+            {% if is_state_attr('sensor.handy', 'anrufer', None) == False and state_attr('sensor.handy', 'anrufer') != '-' and state_attr('sensor.handy', 'anrufer').startswith('+') == False %}
+              {% set messageString = state_attr('sensor.handy', 'anrufer') %}
+            {% else %}
+              {% set messageString = 'einer unbekannten Rufnummer' %}            
+            {% endif %}
+            
+            Ein eingehender Anruf von {{ messageString }}.
+          
   - alias: "Handy - Neue SMS"
     id: "handy_neue_sms"
     trigger:
@@ -361,12 +367,12 @@ automation:
       - service: !secret tts_service
         data:
           message: >-
-            Eine neue SMS von {% if state_attr('sensor.handy', 'name') != '-' and state_attr('sensor.handy', 'name').startswith('+') == False and state_attr('sensor.handy', 'name').startswith('0') == False %}"{{ state_attr('sensor.handy', 'name') }}"{% else %}einer unbekannten Nummer{% endif %} ist eingegangen.
+            Eine neue SMS von {% if state_attr('sensor.handy', 'anrufer') != '-' and state_attr('sensor.handy', 'anrufer').startswith('+') == False and state_attr('sensor.handy', 'anrufer').startswith('0') == False %}"{{ state_attr('sensor.handy', 'anrufer') }}"{% else %}einer unbekannten Nummer{% endif %} ist eingegangen.
             {% if state_attr('sensor.handy', 'text') != null %} {{ state_attr('sensor.handy', 'text') }} {% endif %}
       - service: persistent_notification.create        
         data:
           title: >-
-            {% if state_attr('sensor.handy', 'name') != '-' and state_attr('sensor.handy', 'name').startswith('+') == False and state_attr('sensor.handy', 'name').startswith('0') == False %} {{ state_attr('sensor.handy', 'name') }} {% else %}Unbekannte Nummer{% endif %}
+            {% if state_attr('sensor.handy', 'anrufer') != '-' and state_attr('sensor.handy', 'anrufer').startswith('+') == False and state_attr('sensor.handy', 'anrufer').startswith('0') == False %} {{ state_attr('sensor.handy', 'anrufer') }} {% else %}Unbekannte Nummer{% endif %}
           message: >-
             {% if state_attr('sensor.handy', 'text') != null %} {{ state_attr('sensor.handy', 'text') }} {% endif %}
           notification_id: neue_sms                  
@@ -380,7 +386,7 @@ automation:
                 data:
                   title: 'Handy'
                   message: >-
-                    {% set name = state_attr('sensor.handy', 'name') | string %}
+                    {% set name = state_attr('sensor.handy', 'anrufer') | string %}
 
                     {% if name.startswith('+') or name.startswith('0') or name == '-' %}
                       Eine neue SMS ist eingegangen.
@@ -434,7 +440,7 @@ automation:
           - service: mqtt.publish
             data:
                topic: 'handy/status'
-               payload: '{"date":"-","name":"-","number":"-","status":"idle","text":"-","time":"-"}'
+               payload: '{"date":"-","anrufer":"-","number":"-","status":"idle","text":"-","time":"-"}'
                retain: true
 
   - alias: "Handy - Batteriestand niedrig"
