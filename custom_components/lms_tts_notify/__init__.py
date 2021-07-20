@@ -125,14 +125,18 @@ class Coordinator(Thread):
                     self.skip_save = True
                     self.save_state()
                     self.save_playlists()
-                # unsync player if in sync group
-                if any(event['entity_id'] in sublist for sublist in self.sync_group):
-                    _LOGGER.debug('UnSync %s', event['entity_id'])
-                    self._hass.services.call(
-                        'squeezebox',
-                        'unsync',
-                        {'entity_id': event['entity_id']},
+                # unsync players
+                _LOGGER.debug('UnSync %s', event['entity_id'])
+                self._hass.services.call(
+                    'squeezebox',
+                    'unsync',
+                    {'entity_id': event['entity_id']},
                     )
+                self._hass.services.call(
+                    'squeezebox',
+                    'call_method',
+                    {'entity_id': event['entity_id'], 'command': 'playlist', 'parameters': ['repeat', 0]}
+                )
                 # send to media_player queue
                 self._queue_listener[event['entity_id']].queue.put(event)
                 # keep track of players used
@@ -239,6 +243,11 @@ class Coordinator(Thread):
 
     def save_state(self):
         '''Save state of media_player'''
+        self._hass.services.call(
+            'squeezebox',
+            'call_query',
+            {'entity_id': list(self._queue_listener), 'command': 'playlist', 'parameters': ['repeat', "?"]}
+            )
         for player, _ in self._queue_listener.items():
             service_data = {'entity_id': player}
             self._hass.services.call('homeassistant', 'update_entity', service_data)
@@ -263,6 +272,16 @@ class Coordinator(Thread):
                                     attributes[attr] = []
                 else:
                     attributes[ATTR_SYNC_GROUP] = []
+
+                attributes['repeat'] = cur_state.attributes['query_result']['_repeat']
+                # self._hass.services.call(
+                #         'squeezebox',
+                #         'call_query',
+                #         {'entity_id': player, 'command': 'syncgroups', 'parameters': ["?"]}
+                #     )
+                # cur_state = self._hass.states.get(player)
+                # attributes['sync'] = cur_state.attributes['query_result']['syncgroups_loop']                
+
                 _LOGGER.debug('Save state: %s -> %s', player, {'state': cur_state.state, 'attributes': attributes})
                 self._queue_listener[player].state_save = {'state': cur_state.state, 'attributes': attributes}
 
@@ -271,6 +290,11 @@ class Coordinator(Thread):
         _LOGGER.debug('Restore state: %s -> %s ', player, self._queue_listener[player].state_save)
         turn_on = self._queue_listener[player].state_save['state']
         service_data = {'entity_id': player}
+        self._hass.services.call(
+            'squeezebox',
+            'call_method',
+            {'entity_id': player, 'command': 'playlist', 'parameters': ['repeat', self._queue_listener[player].state_save['attributes']['repeat']]}
+        )
         if turn_on != 'playing':
             self._hass.services.call('media_player', 'turn_off', service_data)
 
