@@ -1,10 +1,15 @@
 input_boolean:
-  zu_hause_begruessung:
-    name: "Begrüßung"
-    
   zu_hause_aktiviert:
     name: "Zu Hause aktiviert"
 
+input_select:
+  zu_hause_begruessung:
+    name: Begrüßung
+    options:
+      - Deaktiviert
+      - Tür
+      - Handy
+      
 shell_command:
   send_position: "curl -X POST '{{ url }}?lat={{ state_attr('zone.home', 'latitude') }}&lon={{ state_attr('zone.home', 'longitude') }}&timestamp={{ as_timestamp(now()) | int }}'"
 
@@ -158,8 +163,7 @@ automation:
         entity_id: input_boolean.zu_hause_aktiviert
         state: 'off'         
       - condition: template
-        value_template: >-
-          {{ is_state('binary_sensor.zu_hause', 'off') if trigger.entity_id == "sensor.schalter_flur" else True }}        
+        value_template: "{{ is_state('binary_sensor.zu_hause', 'off') if trigger.entity_id == 'sensor.schalter_flur' else True }}"
       - condition: template
         value_template: >-
           {% set now = as_timestamp(now()) | int %}
@@ -212,7 +216,7 @@ automation:
     trigger:
       - platform: state
         entity_id: binary_sensor.tuersensor
-        to: 'on'
+        to: 'on'  
       - platform: state
         entity_id: binary_sensor.zu_hause
         to: 'on'
@@ -220,6 +224,9 @@ automation:
       - condition: numeric_state
         entity_id: sensor.laufzeit_minuten
         above: 5
+      - condition: state
+        entity_id: input_select.zu_hause_begruessung
+        state: 'Deaktiviert'        
       - condition: or
         conditions:
           - condition: state
@@ -230,9 +237,20 @@ automation:
             entity_id: binary_sensor.tuersensor
             state: 'off'
             for: '00:05:00'
-    action:
-      - service: input_boolean.turn_on
-        entity_id: input_boolean.zu_hause_begruessung        
+    action:    
+      - choose:
+          - conditions:
+              - "{{ trigger.entity_id == 'binary_sensor.zu_hause' }}" 
+            sequence:
+              - service: input_select.select_option
+                entity_id: input_select.zu_hause_begruessung
+                data:                  
+                  option: 'Handy'
+        default:
+          - service: input_select.select_option            
+            entity_id: input_select.zu_hause_begruessung
+            data:
+              option: 'Tür'
         
   - alias: "Zu Hause - Begrüßung starten"
     id: "zu_hause_begruessung_starten"
@@ -242,14 +260,18 @@ automation:
         to: 'off' 
       - platform: state
         entity_id: binary_sensor.zu_hause
-        to: 'on'
+        to: 'on'        
     condition:
-      - condition: state
-        entity_id: input_boolean.zu_hause_begruessung
-        state: 'on'       
+      - "{{ not is_state('input_select.zu_hause_begruessung', 'Deaktiviert') }}"   
+      - condition: or
+        conditions:
+          - "{{ trigger.entity_id == 'binary_sensor.zu_hause' and is_state('input_select.zu_hause_begruessung', 'Tür') }}"          
+          - "{{ trigger.entity_id == 'binary_sensor.tuersensor' and is_state('input_select.zu_hause_begruessung', 'Handy') }}"      
     action:      
-      - service: input_boolean.turn_off
-        entity_id: input_boolean.zu_hause_begruessung
+      - service: input_select.select_option
+        entity_id: input_select.zu_hause_begruessung
+        data:
+          option: 'Deaktiviert'         
       - choose:
           - conditions:
               - condition: time        
