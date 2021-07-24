@@ -10,7 +10,6 @@ input_number:
     min: 1
     max: 24
     step: 1
-    initial: 24
 
 input_select:
   cube_letzte_aktion:
