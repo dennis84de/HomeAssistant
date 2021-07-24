@@ -307,8 +307,7 @@ automation:
     action:
       - choose:
           - conditions:
-              - condition: template
-                value_template: "{{ True if trigger.to_state.state == 'on' else False }}"
+              - "{{ True if trigger.to_state.state == 'on' else False }}"
             sequence:
               - service: input_boolean.turn_off
                 entity_id: input_boolean.home_office
