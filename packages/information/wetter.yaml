@@ -480,6 +480,7 @@ automation:
       - platform: state  
         entity_id: sensor.wetterwarnungen_aktiv
     condition:
+      - "{{ is_state('binary_sensor.schlafen_aktiv', 'off') }}" 
       - "{{ is_state('input_boolean.wetter_warnungen_einschalten', 'on') }}" 
       - "{{ trigger.to_state.state > trigger.from_state.state }}" 
     action:
