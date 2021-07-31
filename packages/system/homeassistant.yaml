@@ -49,6 +49,10 @@ lovelace:
 breaking_changes:
   name: Wichtige Änderungen
 
+browser_mod:
+  disable:
+    - all
+
 zone:
   - name: home
     latitude: !secret home_latitude
