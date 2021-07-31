@@ -1,18 +1,10 @@
 title: Infomation
 path: information
-cards:
-  - type: conditional
-    conditions:
-      - entity: sensor.echo_wohnzimmer_next_timer
-        state_not: "unavailable"
-    card:
-      type: entities
-      title: Timer
-      show_header_toggle: false
-      entities:
-      - entity: sensor.echo_wohnzimmer_next_timer
-        name: Echo Wohnzimmer   
-
+type: custom:horizontal-layout
+layout:
+  width: 400
+  max_cols: 3
+cards:             
   - type: entities
     title: Infos
     show_header_toggle: false
@@ -31,7 +23,7 @@ cards:
     entities:
       - entity: sensor.telefon_status
       - entity: sensor.handy_status
-      - entity: sensor.ungelesene_mails
+      - entity: sensor.ungelesene_mails     
 
   - type: entities
     title: Wecker
@@ -41,8 +33,58 @@ cards:
         name: 'Nächster Alarm'
         type: "custom:secondaryinfo-entity-row"              
         secondary_info: "[[ sensor.wecker_startdatum ]]"       
-      - entity: binary_sensor.alarm_aktiv
+      - entity: binary_sensor.alarm_aktiv 
 
+  - type: conditional
+    conditions:
+      - entity: sensor.echo_wohnzimmer_next_timer
+        state_not: "unavailable"
+    card:
+      type: entities
+      entities:
+      - entity: sensor.echo_wohnzimmer_next_timer
+        name: Timer Wohnzimmer   
+
+  - type: conditional
+    conditions:
+      - entity: sensor.echo_flur_next_timer
+        state_not: "unavailable"
+    card:
+      type: entities
+      entities:
+      - entity: sensor.echo_flur_next_timer
+        name: Timer Flur   
+        
+  - type: conditional
+    conditions:
+      - entity: sensor.echo_badezimmer_next_timer
+        state_not: "unavailable"
+    card:
+      type: entities
+      entities:
+      - entity: sensor.echo_badezimmer_next_timer
+        name: Timer Badezimmer   
+        
+  - type: conditional
+    conditions:
+      - entity: sensor.echo_kuche_next_timer
+        state_not: "unavailable"
+    card:
+      type: entities
+      entities:
+      - entity: sensor.echo_kuche_next_timer
+        name: Timer Küche   
+        
+  - type: conditional
+    conditions:
+      - entity: sensor.echo_schlafzimmer_next_timer
+        state_not: "unavailable"
+    card:
+      type: entities
+      entities:
+      - entity: sensor.echo_schlafzimmer_next_timer
+        name: Timer Schlafzimmer          
+        
   - type: entities
     title: Kalender
     show_header_toggle: false
@@ -58,7 +100,21 @@ cards:
       - entity: sensor.edg_restmuell
       - entity: sensor.edg_wertstoff
       - entity: sensor.edg_papier
-
+        
+  - type: conditional
+    conditions:
+      - entity: sensor.bvb_spiel
+        state_not: "-"
+    card:
+      type: entities
+      title: Borussia Dortmund
+      show_header_toggle: false
+      entities:
+        - entity: sensor.bvb_spiel
+        - entity: sensor.bvb_datum
+        - entity: sensor.bvb_uhrzeit
+        - entity: sensor.bvb_ort       
+        
   - type: custom:mini-graph-card
     name: Temperatur
     line_width: 2
@@ -82,22 +138,17 @@ cards:
       - entity: sensor.arbeitszimmer_temperatur
         name: Arbeitszimmer
       - entity: sensor.sportzimmer_temperatur
-        name: Sportzimmer     
-        
-  - type: conditional
-    conditions:
-      - entity: sensor.bvb_spiel
-        state_not: "-"
-    card:
-      type: entities
-      title: Borussia Dortmund
-      show_header_toggle: false
-      entities:
-        - entity: sensor.bvb_spiel
-        - entity: sensor.bvb_datum
-        - entity: sensor.bvb_uhrzeit
-        - entity: sensor.bvb_ort
+        name: Sportzimmer      
 
+  - type: entities
+    title: Waage
+    show_header_toggle: false
+    entities:
+      - entity: sensor.gewicht   
+      - entity: sensor.bmi
+      - entity: sensor.wasser
+      - entity: sensor.fett
+              
   - type: glance
     title: Tanken
     show_header_toggle: false
@@ -105,8 +156,28 @@ cards:
       - entity: sensor.tankstelle_real
       - entity: binary_sensor.tankstelle_real_status
       - entity: sensor.tankstelle_jet
-      - entity: binary_sensor.tankstelle_jet_status   
-      
+      - entity: binary_sensor.tankstelle_jet_status       
+
+  - type: conditional
+    conditions:
+      - entity: input_boolean.home_office 
+        state: "off"
+    card:        
+      type: custom:mini-graph-card
+      name: Fahrzeit
+      line_width: 2
+      animate: true
+      hours_to_show: 168
+      points_per_hour: 2
+      hour24: true
+      show:
+        icon: false
+        points: false
+        state: false
+      entities:
+        - entity: sensor.fahrzeit_zur_arbeit
+        - entity: sensor.fahrzeit_nach_hause
+         
   - type: conditional
     conditions:
       - entity: input_boolean.home_office 
@@ -120,28 +191,4 @@ cards:
       - entity: sensor.fahrzeit_nach_hause
       - entity: sensor.abfahrzeit      
       - entity: binary_sensor.schlechtes_wetter      
-      - entity: binary_sensor.arbeitstag   
-        
-  - type: custom:mini-graph-card
-    name: Fahrzeit
-    line_width: 2
-    animate: true
-    hours_to_show: 168
-    points_per_hour: 2
-    hour24: true
-    show:
-      icon: false
-      points: false
-      state: false
-    entities:
-      - entity: sensor.fahrzeit_zur_arbeit
-      - entity: sensor.fahrzeit_nach_hause
-           
-  - type: entities
-    title: Waage
-    show_header_toggle: false
-    entities:
-      - entity: sensor.gewicht   
-      - entity: sensor.bmi
-      - entity: sensor.wasser
-      - entity: sensor.fett
+      - entity: binary_sensor.arbeitstag       

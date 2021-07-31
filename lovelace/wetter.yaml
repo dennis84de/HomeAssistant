@@ -1,28 +1,14 @@
 title: Wetter
 path: wetter
-          
+type: custom:horizontal-layout
+layout:
+  width: 400
+  max_cols: 3          
 cards:
   - type: custom:weather-card
     entity: weather.dwd_weather_dortmund
     icons: "/local/icons/weather_icons/static/"    
     name: Wetter
-
-  - type: entities
-    title: Thermometer
-    show_header_toggle: false
-    entities:
-      - entity: sensor.parkplatz_temperatur
-        name: Temperatur Parkplatz
-      - entity: sensor.parkplatz_luftfeuchtigkeit
-        name: Luftfeuchtigkeit Parkplatz
-      - entity: sensor.parkplatz_luftdruck
-        name: Luftdruck Parkplatz
-      - entity: sensor.balkon_temperatur
-        name: Temperatur Balkon
-      - entity: sensor.balkon_luftfeuchtigkeit
-        name: Luftfeuchtigkeit Balkon
-      - entity: sensor.balkon_luftdruck
-        name: Luftdruck Balkon
 
   - type: entities
     title: Wetter
@@ -70,6 +56,23 @@ cards:
         {% if not loop.last %}***{% endif %}
         {% endfor %}
       {% endif %}  
+      
+  - type: entities
+    title: Thermometer
+    show_header_toggle: false
+    entities:
+      - entity: sensor.parkplatz_temperatur
+        name: Temperatur Parkplatz
+      - entity: sensor.parkplatz_luftfeuchtigkeit
+        name: Luftfeuchtigkeit Parkplatz
+      - entity: sensor.parkplatz_luftdruck
+        name: Luftdruck Parkplatz
+      - entity: sensor.balkon_temperatur
+        name: Temperatur Balkon
+      - entity: sensor.balkon_luftfeuchtigkeit
+        name: Luftfeuchtigkeit Balkon
+      - entity: sensor.balkon_luftdruck
+        name: Luftdruck Balkon
 
   - type: custom:mini-graph-card
     name: Temperatur

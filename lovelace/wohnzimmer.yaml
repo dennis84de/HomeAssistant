@@ -1,5 +1,9 @@
 title: Wohnzimmer
 path: wohnzimmer 
+type: custom:horizontal-layout
+layout:
+  width: 400
+  max_cols: 3
 cards:
   - type: entities
     title: Licht
@@ -9,21 +13,39 @@ cards:
         name: Couch
       - entity: light.wohnzimmer_strahler
         name: Strahler
-      
+
+  - type: entities
+    title: Geräte
+    show_header_toggle: false
+    entities:
+      - entity: switch.wohnzimmer_radio
+        name: Radio             
+        
+  - type: entities
+    title: Balkon
+    show_header_toggle: false
+    entities:
+      - entity: binary_sensor.bewegungsmelder_balkon
+        name: Bewegungsmelder
+      - entity: light.balkon_licht
+        name: Licht      
+      - entity: switch.balkon_radio
+        name: Radio
+      - entity: input_boolean.radio_balkon_bewegungsmelder_deaktiviert
+        name: Bewegungsmelder deaktiviert
+      - type: custom:mini-media-player
+        entity: media_player.radio_balkon
+        hide:
+          source: true
+          progress: true  
+                    
   - type: entities
     title: Computer
     show_header_toggle: false
     entities:
       - entity: switch.pc
       - entity: switch.monitor
-      - entity: input_boolean.computer_ausschalten
-      
-  - type: entities
-    title: Geräte
-    show_header_toggle: false
-    entities:
-      - entity: switch.wohnzimmer_radio
-        name: Radio
+      - entity: input_boolean.computer_ausschalten                     
       
   - type: entities
     title: Multimedia
@@ -38,8 +60,8 @@ cards:
         name: Youtube
       - entity: cover.kodi_untertitel
       - entity: cover.fernseher_sender
-        name: Sender 
-          
+        name: Sender       
+        
   - type: entities
     title: Mediaplayer
     show_header_toggle: false
@@ -71,25 +93,7 @@ cards:
         name: Radio
         hide:
           source: true
-          progress: true           
-        
-  - type: entities
-    title: Balkon
-    show_header_toggle: false
-    entities:
-      - entity: binary_sensor.bewegungsmelder_balkon
-        name: Bewegungsmelder
-      - entity: light.balkon_licht
-        name: Licht      
-      - entity: switch.balkon_radio
-        name: Radio
-      - entity: input_boolean.radio_balkon_bewegungsmelder_deaktiviert
-        name: Bewegungsmelder deaktiviert
-      - type: custom:mini-media-player
-        entity: media_player.radio_balkon
-        hide:
-          source: true
-          progress: true  
+          progress: true                 
           
   - type: glance
     title: Thermometer

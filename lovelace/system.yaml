@@ -1,5 +1,92 @@
 title: System
 path: system
+type: custom:horizontal-layout
+layout:
+  width: 400
+  max_cols: 3
+popup_cards:
+  switch.alle_radios:
+    title: Radios
+    card:
+      type: entities
+      entities:
+        - entity: switch.wohnzimmer_radio     
+          name: Wohnzimmer
+        - entity: switch.balkon_radio        
+          name: Balkon
+        - entity: switch.flur_radio        
+          name: Flur
+        - entity: switch.badezimmer_radio        
+          name: Badezimmer
+        - entity: switch.kuche_radio        
+          name: Küche
+        - entity: switch.schlafzimmer_radio        
+          name: Schlafzimmer
+        - entity: switch.arbeitszimmer_radio
+          name: Arbeitszimmer
+        
+  switch.wiedergabe_aktiv:
+    title: Radios
+    card:
+      type: entities
+      entities:
+        - type: custom:mini-media-player
+          entity: media_player.radio_wohnzimmer
+          name: Wohnzimmer
+          hide:
+            source: true
+            progress: true
+            controls: true  
+            info: true
+        - type: custom:mini-media-player
+          entity: media_player.radio_balkon
+          name: Balkon    
+          hide:
+            source: true
+            progress: true
+            controls: true  
+            info: true         
+        - type: custom:mini-media-player
+          entity: media_player.radio_flur
+          name: Flur    
+          hide:
+            source: true
+            progress: true
+            controls: true  
+            info: true
+        - type: custom:mini-media-player
+          entity: media_player.radio_badezimmer
+          name: Badezimmer
+          hide:
+            source: true
+            progress: true
+            controls: true  
+            info: true
+        - type: custom:mini-media-player
+          entity: media_player.radio_kueche
+          name: Küche    
+          hide:
+            source: true
+            progress: true
+            controls: true  
+            info: true         
+        - type: custom:mini-media-player
+          entity: media_player.radio_schlafzimmer
+          name: Schlafzimmer    
+          hide:
+            source: true
+            progress: true
+            controls: true  
+            info: true
+        - type: custom:mini-media-player
+          entity: media_player.radio_arbeitszimmer
+          name: Arbeitszimmer    
+          hide:
+            source: true
+            progress: true
+            controls: true  
+            info: true             
+            
 cards:
   - type: entities
     title: Home Assistant
@@ -107,6 +194,18 @@ cards:
         name: Balkon
         icon: mdi:sync-off
 
+  - type: markdown
+    title: Letzte Automationen
+    content: |
+      {% for state in (states.automation
+        | selectattr('attributes.last_triggered')
+        | sort(attribute='attributes.last_triggered', reverse=true)) [0:20] -%}
+        {% if (now() - state.attributes.last_triggered).total_seconds() < 86400 %}
+          {%- set t = (as_timestamp(state.attributes.last_triggered) | timestamp_custom('%H:%M')) -%}
+          {{t}} &nbsp;&nbsp; {{state.name}}
+        {% endif -%}
+      {% endfor %}            
+
   - type: custom:stack-in-card
     title: Internet
     cards:
@@ -131,14 +230,3 @@ cards:
             graph: line
             detail: 1
             
-  - type: markdown
-    title: Letzte Automationen
-    content: |
-      {% for state in (states.automation
-        | selectattr('attributes.last_triggered')
-        | sort(attribute='attributes.last_triggered', reverse=true)) [0:20] -%}
-        {% if (now() - state.attributes.last_triggered).total_seconds() < 86400 %}
-          {%- set t = (as_timestamp(state.attributes.last_triggered) | timestamp_custom('%H:%M')) -%}
-          {{t}} &nbsp;&nbsp; {{state.name}}
-        {% endif -%}
-      {% endfor %}            

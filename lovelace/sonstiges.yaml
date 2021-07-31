@@ -1,5 +1,9 @@
 title: Sonstiges
 path: sonstiges         
+type: custom:horizontal-layout
+layout:
+  width: 400
+  max_cols: 3
 cards: 
   - type: entities
     title: Sonstiges
@@ -155,4 +159,4 @@ cards:
       - entity: sensor.exchange_rate_1_btc
         name: Kurs (1 BTC)
       - entity: sensor.trade_volume
-        name: Handelsvolumen                                        
+        name: Handelsvolumen           

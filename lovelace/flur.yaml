@@ -1,5 +1,9 @@
 title: Flur
 path: flur
+type: custom:horizontal-layout
+layout:
+  width: 400
+  max_cols: 3
 cards:
   - type: entities
     title: Geräte
