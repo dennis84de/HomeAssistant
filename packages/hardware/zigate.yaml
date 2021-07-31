@@ -62,6 +62,17 @@ sensor:
         
           {{ ns.found | int }}
           
+        attribute_templates:
+          offline: >-
+            {% set zigateEntities = expand('group.zigate') %}
+            {% set now = as_timestamp(now()) | int %}
+            {% set puffer = states('input_number.zigate_offline_puffer') | int * 60 | int -%}
+
+            {% for x in zigateEntities if ((now - (as_timestamp(x.state) | int) ) / 60 | round()) > puffer %}
+              {%- if not loop.first %}, {% endif -%}
+              {{ x.attributes.friendly_name }}
+            {% endfor %}                
+          
 automation:
   - alias: "Cube - Letzte Aktion"
     id: "cube_letzte_aktion"
