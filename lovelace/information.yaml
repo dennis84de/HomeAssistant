@@ -5,37 +5,9 @@ layout:
   width: 400
   max_cols: 3
 cards:             
-  - type: entities
-    title: Infos
-    show_header_toggle: false
-    entities:
-      - entity: sensor.countdown_neuhaus
-      - entity: binary_sensor.zu_hause
-        name: Dennis
-        secondary_info: last-changed
-      - entity: sensor.aufenthaltsort_handy
-      - entity: proximity.home
-      - entity: sensor.letzte_bewegung
-
-  - type: entities
-    title: Benachrichtigungen
-    show_header_toggle: false
-    entities:
-      - entity: sensor.telefon_status
-      - entity: sensor.handy_status
-      - entity: sensor.ungelesene_mails     
-
-  - type: entities
-    title: Wecker
-    show_header_toggle: false
-    entities:
-      - entity: sensor.wecker_startzeit
-        name: 'Nächster Alarm'
-        type: "custom:secondaryinfo-entity-row"              
-        secondary_info: "[[ sensor.wecker_startdatum ]]"       
-      - entity: binary_sensor.alarm_aktiv 
-
   - type: conditional
+    view_layout:
+      column: 1
     conditions:
       - entity: sensor.echo_wohnzimmer_next_timer
         state_not: "unavailable"
@@ -46,6 +18,8 @@ cards:
         name: Timer Wohnzimmer   
 
   - type: conditional
+    view_layout:
+      column: 1
     conditions:
       - entity: sensor.echo_flur_next_timer
         state_not: "unavailable"
@@ -56,6 +30,8 @@ cards:
         name: Timer Flur   
         
   - type: conditional
+    view_layout:
+      column: 1  
     conditions:
       - entity: sensor.echo_badezimmer_next_timer
         state_not: "unavailable"
@@ -64,18 +40,10 @@ cards:
       entities:
       - entity: sensor.echo_badezimmer_next_timer
         name: Timer Badezimmer   
-        
+               
   - type: conditional
-    conditions:
-      - entity: sensor.echo_kuche_next_timer
-        state_not: "unavailable"
-    card:
-      type: entities
-      entities:
-      - entity: sensor.echo_kuche_next_timer
-        name: Timer Küche   
-        
-  - type: conditional
+    view_layout:
+      column: 1  
     conditions:
       - entity: sensor.echo_schlafzimmer_next_timer
         state_not: "unavailable"
@@ -84,23 +52,51 @@ cards:
       entities:
       - entity: sensor.echo_schlafzimmer_next_timer
         name: Timer Schlafzimmer          
-        
-  - type: entities
-    title: Kalender
-    show_header_toggle: false
-    entities:
-      - entity: calendar.kalender
-      - entity: sensor.naechster_urlaub
-      - entity: sensor.naechster_feiertag
+                        
+  - type: conditional
+    view_layout:
+      column: 1  
+    conditions:
+      - entity: sensor.echo_kuche_next_timer
+        state_not: "unavailable"
+    card:
+      type: entities
+      entities:
+      - entity: sensor.echo_kuche_next_timer
+        name: Timer Kuche     
 
+  - type: custom:layout-break
+        
   - type: entities
-    title: Abfallkalender
+    title: Infos
     show_header_toggle: false
     entities:
-      - entity: sensor.edg_restmuell
-      - entity: sensor.edg_wertstoff
-      - entity: sensor.edg_papier
-        
+      - entity: sensor.countdown_neuhaus
+      - entity: binary_sensor.zu_hause
+        name: Dennis
+        secondary_info: last-changed
+      - entity: sensor.aufenthaltsort_handy
+      - entity: proximity.home
+      - entity: sensor.letzte_bewegung          
+              
+  - type: entities
+    title: Benachrichtigungen
+    show_header_toggle: false
+    entities:
+      - entity: sensor.telefon_status
+      - entity: sensor.handy_status
+      - entity: sensor.ungelesene_mails      
+      
+  - type: entities
+    title: Wecker
+    show_header_toggle: false
+    entities:
+      - entity: sensor.wecker_startzeit
+        name: 'Nachster Alarm'
+        type: "custom:secondaryinfo-entity-row"              
+        secondary_info: "[[ sensor.wecker_startdatum ]]"       
+      - entity: binary_sensor.alarm_aktiv       
+              
   - type: conditional
     conditions:
       - entity: sensor.bvb_spiel
@@ -113,8 +109,33 @@ cards:
         - entity: sensor.bvb_spiel
         - entity: sensor.bvb_datum
         - entity: sensor.bvb_uhrzeit
-        - entity: sensor.bvb_ort       
-        
+        - entity: sensor.bvb_ort             
+      
+  - type: entities
+    title: Abfallkalender
+    show_header_toggle: false
+    entities:
+      - entity: sensor.edg_restmuell
+      - entity: sensor.edg_wertstoff
+      - entity: sensor.edg_papier   
+      
+  - type: entities
+    title: Kalender
+    show_header_toggle: false
+    entities:
+      - entity: calendar.kalender
+      - entity: sensor.naechster_urlaub
+      - entity: sensor.naechster_feiertag
+            
+  - type: entities
+    title: Waage
+    show_header_toggle: false
+    entities:
+      - entity: sensor.gewicht   
+      - entity: sensor.bmi
+      - entity: sensor.wasser
+      - entity: sensor.fett
+                    
   - type: custom:mini-graph-card
     name: Temperatur
     line_width: 2
@@ -134,31 +155,15 @@ cards:
       - entity: sensor.schlafzimmer_temperatur
         name: Schlafzimmer
       - entity: sensor.kueche_temperatur
-        name: Küche
+        name: Kuche
       - entity: sensor.arbeitszimmer_temperatur
         name: Arbeitszimmer
       - entity: sensor.sportzimmer_temperatur
-        name: Sportzimmer      
-
-  - type: entities
-    title: Waage
-    show_header_toggle: false
-    entities:
-      - entity: sensor.gewicht   
-      - entity: sensor.bmi
-      - entity: sensor.wasser
-      - entity: sensor.fett
-              
-  - type: glance
-    title: Tanken
-    show_header_toggle: false
-    entities:
-      - entity: sensor.tankstelle_real
-      - entity: binary_sensor.tankstelle_real_status
-      - entity: sensor.tankstelle_jet
-      - entity: binary_sensor.tankstelle_jet_status       
-
+        name: Sportzimmer
+        
   - type: conditional
+    view_layout:
+      column: 2  
     conditions:
       - entity: input_boolean.home_office 
         state: "off"
@@ -176,9 +181,20 @@ cards:
         state: false
       entities:
         - entity: sensor.fahrzeit_zur_arbeit
-        - entity: sensor.fahrzeit_nach_hause
-         
+        - entity: sensor.fahrzeit_nach_hause      
+        
+  - type: glance
+    title: Tanken
+    show_header_toggle: false
+    entities:
+      - entity: sensor.tankstelle_real
+      - entity: binary_sensor.tankstelle_real_status
+      - entity: sensor.tankstelle_jet
+      - entity: binary_sensor.tankstelle_jet_status            
+      
   - type: conditional
+    view_layout:
+      column: 3  
     conditions:
       - entity: input_boolean.home_office 
         state: "off"
@@ -191,4 +207,4 @@ cards:
       - entity: sensor.fahrzeit_nach_hause
       - entity: sensor.abfahrzeit      
       - entity: binary_sensor.schlechtes_wetter      
-      - entity: binary_sensor.arbeitstag       
+      - entity: binary_sensor.arbeitstag            
