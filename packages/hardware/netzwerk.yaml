@@ -1,11 +1,5 @@
 speedtestdotnet:
 
-#device_tracker:
-#  - platform: nmap_tracker
-#    scan_options: " --privileged -sn "
-#    hosts:
-#      - !secret nmap_hosts                
-      
 binary_sensor:
   - platform: template
     sensors:
