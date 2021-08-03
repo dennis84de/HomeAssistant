@@ -47,6 +47,7 @@ cards:
     entities:
       - entity: zigate.zigate
       - entity: sensor.zigate_offline
+      - entity: script.zigate_geraet_paaren
 
   - type: entities
     title: Bewegungsmelder

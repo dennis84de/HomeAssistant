@@ -72,7 +72,13 @@ sensor:
               {%- if not loop.first %}, {% endif -%}
               {{ x.attributes.friendly_name }}
             {% endfor %}                
-          
+    
+script:
+  zigate_geraet_paaren:
+    alias: "Gerät paaren"
+    sequence:
+      - service: zigate.permit_join
+      
 automation:
   - alias: "Cube - Letzte Aktion"
     id: "cube_letzte_aktion"
@@ -127,12 +133,14 @@ automation:
 homeassistant:
   customize:
     binary_sensor.tuersensor:
-      device_class: door
+      device_class: door      
+
+    script.zigate_geraet_paaren:
+      icon: mdi:connection
       
   customize_glob:
     binary_sensor.bewegungsmelder_*:
       device_class: motion
       
     sensor.helligkeit_*:
-      device_class: illuminance
-    
+      device_class: illuminance    
