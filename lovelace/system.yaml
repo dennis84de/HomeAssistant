@@ -16,10 +16,10 @@ popup_cards:
           name: Balkon
         - entity: switch.flur_radio        
           name: Flur
-        - entity: switch.badezimmer_radio        
-          name: Badezimmer
         - entity: switch.kuche_radio        
           name: Küche
+        - entity: switch.badezimmer_radio        
+          name: Badezimmer          
         - entity: switch.schlafzimmer_radio        
           name: Schlafzimmer
         - entity: switch.arbeitszimmer_radio
@@ -55,14 +55,6 @@ popup_cards:
             controls: true  
             info: true
         - type: custom:mini-media-player
-          entity: media_player.radio_badezimmer
-          name: Badezimmer
-          hide:
-            source: true
-            progress: true
-            controls: true  
-            info: true
-        - type: custom:mini-media-player
           entity: media_player.radio_kueche
           name: Küche    
           hide:
@@ -70,6 +62,14 @@ popup_cards:
             progress: true
             controls: true  
             info: true         
+        - type: custom:mini-media-player
+          entity: media_player.radio_badezimmer
+          name: Badezimmer
+          hide:
+            source: true
+            progress: true
+            controls: true  
+            info: true            
         - type: custom:mini-media-player
           entity: media_player.radio_schlafzimmer
           name: Schlafzimmer    
