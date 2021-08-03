@@ -136,7 +136,46 @@ switch:
                 sequence:
                   - service: media_player.turn_off
                     entity_id: media_player.soundbar
-          
+     
+script:
+  kodi_wohnzimmer_starten:
+    alias: "Kodi Wohnzimmer - Starten"
+    sequence:
+      - service: media_player.media_play
+        entity_id: media_player.kodi_wohnzimmer
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.kodi_wohnzimmer_pausiert
+      - service: homeassistant.turn_off
+        entity_id: group.licht_fernsehen         
+      - choose:
+          - conditions:
+              - condition: state
+                entity_id: media_player.radio_badezimmer
+                state: 'playing'          
+            sequence:
+              - service: media_player.media_pause
+                entity_id: media_player.radio_badezimmer
+        
+  kodi_wohnzimmer_pausieren:
+    alias: "Kodi Wohnzimmer - Pausieren"
+    sequence:
+      - service: media_player.media_pause
+        entity_id: media_player.kodi_wohnzimmer        
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.kodi_wohnzimmer_pausiert
+      - choose:
+          - conditions:
+              - condition: template
+                value_template: >-
+                  {% if triggerEntity and (triggerEntity == 'binary_sensor.bewegungsmelder_balkon' or triggerEntity == 'sensor.schalter_balkon') %}
+                    {{ is_state('binary_sensor.sonne_tagsueber', 'off') }}
+                  {% else %}
+                    False
+                  {% endif %}                  
+            sequence:
+              - service: switch.turn_on
+                entity_id: light.balkon_licht  
+                
 automation:      
   - alias: "Kodi Wohnzimmer - Musik ausschalten"
     id: "kodi_wohnzimmer_musik_ausschalten"
@@ -186,6 +225,9 @@ automation:
           {% else %}
             True
           {% endif %}   
+      - condition: state
+        entity_id: binary_sensor.besuch
+        state: 'off'               
       - condition: or
         conditions:
         - condition: state
@@ -195,38 +237,37 @@ automation:
           entity_id: media_player.kodi_wohnzimmer
           state: 'paused'
     action:
-      - service: media_player.media_play_pause
-        entity_id: media_player.kodi_wohnzimmer     
-           
-  - alias: "Kodi Wohnzimmer - Nächster Titel"
-    id: "kodi_wohnzimmer_naechster_titel"
+      - choose:
+          - conditions:
+              - condition: state
+                entity_id: media_player.kodi_wohnzimmer
+                state: 'paused'
+            sequence:
+              - service: script.kodi_wohnzimmer_starten
+        default:
+          - service: script.kodi_wohnzimmer_pausieren
+          
+  - alias: "Kodi Wohnzimmer - Starten"
+    id: "kodi_wohnzimmer_starten"
     trigger:
       - platform: state
-        entity_id: sensor.cube_bewegung
+        entity_id: binary_sensor.bewegungsmelder_wohnzimmer
+        to: 'on'
     condition:
-      - condition: template
-        value_template: '{{ True if "drop" in trigger.to_state.state else False }}'         
-      - condition: template
-        value_template: '{{ is_state("media_player.kodi_wohnzimmer", "off") == False }}'
-    action:
-      - service: media_player.media_next_track
-        entity_id: media_player.kodi_wohnzimmer
-
-  - alias: "Kodi Wohnzimmer - Untertitel"
-    id: "kodi_wohnzimmer_untertitel"    
-    trigger:
-      - platform: state
-        entity_id: sensor.cube_bewegung
-    condition:
-      - condition: template
-        value_template: '{{ True if "shake" in trigger.to_state.state else False }}'         
       - condition: state
         entity_id: media_player.kodi_wohnzimmer
-        state: 'playing'        
+        state: 'paused'
+      - condition: state
+        entity_id: input_boolean.kodi_wohnzimmer_pausiert
+        state: 'on'
+      - condition: state
+        entity_id: sensor.telefon
+        state: 'idle'
+      - condition: template
+        value_template: '{{ is_state("sensor.handy", "incoming") == False and is_state("sensor.handy", "outgoing") == False }}'
     action:
-      - service: cover.stop_cover
-        entity_id: cover.kodi_untertitel
-
+      - service: script.kodi_wohnzimmer_starten
+        
   - alias: "Kodi Wohnzimmer - Pausieren"
     id: "kodi_wohnzimmer_pausieren"
     trigger:
@@ -258,65 +299,46 @@ automation:
       - condition: template
         value_template: '{{ is_state("sensor.handy", "incoming") == False and is_state("sensor.handy", "outgoing") == False }}'
       - condition: template       
-        value_template: >-
-          {% set triggerEntity = trigger.entity_id %}
-          
+        value_template: >-  
           {% if triggerEntity == 'binary_sensor.bewegungsmelder_balkon' or triggerEntity == 'sensor.schalter_balkon' %}
             {{ is_state('binary_sensor.balkontuer', 'on') }}
           {% else %}
             True
           {% endif %}
     action:
-      - service: media_player.media_pause
-        entity_id: media_player.kodi_wohnzimmer        
-      - service: input_boolean.turn_on
-        entity_id: input_boolean.kodi_wohnzimmer_pausiert
-      - choose:
-          - conditions:
-              - condition: template
-                value_template: >-
-                  {% set triggerEntity = trigger.entity_id %}
-
-                  {% if triggerEntity == 'binary_sensor.bewegungsmelder_balkon' or triggerEntity == 'sensor.schalter_balkon' %}
-                    {{ is_state('binary_sensor.sonne_tagsueber', 'off') }}
-                  {% else %}
-                    False
-                  {% endif %}                  
-            sequence:
-              - service: switch.turn_on
-                entity_id: light.balkon_licht  
-
-  - alias: "Kodi Wohnzimmer - Starten"
-    id: "kodi_wohnzimmer_starten"
+      - service: script.kodi_wohnzimmer_pausieren
+        data:
+          triggerEntity: trigger.entity_id          
+        
+  - alias: "Kodi Wohnzimmer - Nächster Titel"
+    id: "kodi_wohnzimmer_naechster_titel"
     trigger:
       - platform: state
-        entity_id: binary_sensor.bewegungsmelder_wohnzimmer
-        to: 'on'
+        entity_id: sensor.cube_bewegung
     condition:
-      - condition: state
-        entity_id: media_player.kodi_wohnzimmer
-        state: 'paused'
-      - condition: state
-        entity_id: input_boolean.kodi_wohnzimmer_pausiert
-        state: 'on'
-      - condition: state
-        entity_id: sensor.telefon
-        state: 'idle'
       - condition: template
-        value_template: '{{ is_state("sensor.handy", "incoming") == False and is_state("sensor.handy", "outgoing") == False }}'
+        value_template: '{{ True if "drop" in trigger.to_state.state else False }}'         
+      - condition: template
+        value_template: '{{ is_state("media_player.kodi_wohnzimmer", "off") == False }}'
     action:
-      - service: media_player.media_play
+      - service: media_player.media_next_track
         entity_id: media_player.kodi_wohnzimmer
-      - service: input_boolean.turn_off
-        entity_id: input_boolean.kodi_wohnzimmer_pausiert
-      - service: light.turn_off
-        entity_id: light.flur_vorne, light.flur_hinten, light.badezimmerschrank, light.schreibtisch, light.kuche_regal, light.arbeitszimmer_lampe, light.balkon_licht, light.sportzimmer_regal
-      - condition: state
-        entity_id: media_player.radio_badezimmer
-        state: 'playing'
-      - service: media_player.media_pause
-        entity_id: media_player.radio_badezimmer
 
+  - alias: "Kodi Wohnzimmer - Untertitel"
+    id: "kodi_wohnzimmer_untertitel"    
+    trigger:
+      - platform: state
+        entity_id: sensor.cube_bewegung
+    condition:
+      - condition: template
+        value_template: '{{ True if "shake" in trigger.to_state.state else False }}'         
+      - condition: state
+        entity_id: media_player.kodi_wohnzimmer
+        state: 'playing'        
+    action:
+      - service: cover.stop_cover
+        entity_id: cover.kodi_untertitel          
+          
   - alias: "Youtube Wohnzimmer - Pausieren"
     id: youtube_wohnzimmer_pausieren
     trigger:

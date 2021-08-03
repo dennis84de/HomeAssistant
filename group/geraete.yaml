@@ -39,6 +39,22 @@ licht_wohnung:
     - light.bett
     - light.kleiderschrank
     - light.kuche_regal
+    - light.kuche_schrank
+    - light.balkon_licht
+    
+licht_fernsehen:
+  name: Licht Fernsehen
+  entities:
+    - light.arbeitszimmer_lampe
+    - light.sportzimmer_regal
+    - light.schreibtisch
+    - light.flur_vorne
+    - light.flur_hinten
+    - light.badezimmerschrank
+    - light.bett
+    - light.kleiderschrank
+    - light.kuche_regal
+    - light.kuche_schrank
     - light.balkon_licht
     
 licht_unterwegs:
