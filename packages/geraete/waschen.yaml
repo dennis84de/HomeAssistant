@@ -18,32 +18,10 @@ input_select:
 sensor:
   - platform: template
     sensors:
-      waschmaschine_verbrauch:
-        friendly_name: Verbrauch Waschmaschine
-        value_template: >-
-          {% if is_state('switch.waschmaschine', 'unavailable') %}
-            {{ 0.00 | float }}
-          {% else %}
-            {{ state_attr('switch.waschmaschine', 'current_power_w') | float }}
-          {% endif %}
-        unit_of_measurement: 'W'
-        icon_template: 'mdi:power-cycle'
-
       waschmaschine_status:
         friendly_name: Status Waschmaschine
         value_template: "{{ states('input_select.status_waschmaschine') }}"
         icon_template: 'mdi:washing-machine'
-
-      trockner_verbrauch:
-        friendly_name: Verbrauch Trockner
-        value_template: >-
-          {% if is_state('switch.trockner', 'unavailable') %}
-            {{ 0.00 | float }}
-          {% else %}
-            {{ state_attr('switch.trockner', 'current_power_w') | float }}            
-          {% endif %}
-        unit_of_measurement: 'W'
-        icon_template: 'mdi:power-cycle'
 
       trockner_status:
         friendly_name: Status Trockner

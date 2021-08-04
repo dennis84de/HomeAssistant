@@ -95,10 +95,6 @@ sensor:
       - hourly_summary
       - dew_point
 
-  - platform: co2signal
-    token: !secret co2signal_key
-    scan_interval: 900
-
   - platform: mold_indicator
     name: Schimmelindikator
     indoor_temp_sensor: sensor.mold_wohnzimmer_temperatur
@@ -630,9 +626,6 @@ homeassistant:
 
     sensor.strommix:
       icon: mdi:solar-power
-
-    sensor.co2_intensity_51_49_7_36:
-      friendly_name: CO2 Belastung
 
   customize_glob:
     sensor.*_absolutehumidity:
