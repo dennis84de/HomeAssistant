@@ -49,6 +49,32 @@ cards:
       - entity: sensor.zigate_offline
       - entity: script.zigate_geraet_paaren
 
+  - type: conditional
+    view_layout:
+      column: 2
+    conditions:
+      - entity: sensor.zigate_offline
+        state_not: "0"
+    card:
+      type: markdown
+      title: Zigate
+      content: |
+        {% if is_state('sensor.zigate_offline', '0') %}
+          **<font color=#c5e566>Alle Geräte sind online</font>**
+        {% else %}
+          **<font color=#ff0000>Die folgenden Geräte sind offline:</font>**
+          {% set puffer = states('input_number.zigate_offline_puffer') | int * 3600 | int -%}
+
+          {% for state in (states.zigate
+            | selectattr('attributes.last_seen')
+            | sort(attribute='attributes.last_seen', reverse=false)) -%}
+            {% if (as_timestamp(now()) - as_timestamp(state.state)) > puffer %}
+              {%- set t = (as_timestamp(state.state) | timestamp_custom('%H:%M')) -%}
+              {{t}} &nbsp;&nbsp; {{state.name}}
+            {% endif -%}
+          {% endfor %}             
+        {% endif %}            
+
   - type: entities
     title: Bewegungsmelder
     show_header_toggle: false

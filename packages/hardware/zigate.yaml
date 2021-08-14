@@ -42,7 +42,7 @@ sensor:
           {% set zigateEntities = expand('group.zigate') %}
           {% set now = as_timestamp(now()) | int %}
           {% set puffer = states('input_number.zigate_offline_puffer') | int * 60 | int -%}
-          {% set ns = namespace(found=false) -%}
+          {% set ns = namespace(found=false) -%}         
           
           {% for x in zigateEntities if ((now - (as_timestamp(x.state) | int) ) / 60 | round()) > puffer %}
             {% set ns.found = true -%}
@@ -61,18 +61,7 @@ sensor:
           {% endfor %}        
         
           {{ ns.found | int }}
-          
-        attribute_templates:
-          offline: >-
-            {% set zigateEntities = expand('group.zigate') %}
-            {% set now = as_timestamp(now()) | int %}
-            {% set puffer = states('input_number.zigate_offline_puffer') | int * 60 | int -%}
 
-            {% for x in zigateEntities if ((now - (as_timestamp(x.state) | int) ) / 60 | round()) > puffer %}
-              {%- if not loop.first %}, {% endif -%}
-              {{ x.attributes.friendly_name }}
-            {% endfor %}                
-    
 script:
   zigate_geraet_paaren:
     alias: "Gerät paaren"
