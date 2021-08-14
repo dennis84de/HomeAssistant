@@ -64,18 +64,7 @@ zone:
     longitude: !secret work_longitude
     radius: 70
     icon: mdi:wan 
-
-input_datetime:
-  home_assistant_start:
-    name: Home Assistant gestartet    
-    has_time: true
-    has_date: true
-    
-  home_assistant_stop:
-    name: Home Assistant gestoppt    
-    has_time: true
-    has_date: true
-    
+            
 sensor:
   - platform: sql
     db_url: !secret mariadb_url
@@ -114,16 +103,6 @@ sensor:
           mdi:av-timer
         value_template: >-
           {{ as_timestamp(states('sensor.last_boot')) | timestamp_custom("%d.%m.%Y") | string }}
-          
-      neustart_dauer:
-        friendly_name: "Neustart Dauer"
-        icon_template: mdi:cached
-        unit_of_measurement: 'Sekunden'
-        value_template: >-
-          {% set start = as_timestamp(states('input_datetime.letzter_neustart_start')) | int %}
-          {% set ende = as_timestamp(states('input_datetime.letzter_neustart_ende')) | int %}
-
-          {{ (ende - start) | int }}
           
       laufzeit_minuten:
         friendly_name: "Laufzeit Minuten"
@@ -202,10 +181,6 @@ automation:
       - platform: homeassistant
         event: start
     action:
-      - service: input_datetime.set_datetime
-        entity_id: input_datetime.home_assistant_start
-        data:
-          datetime: "{{ now().strftime('%Y-%m-%d %H:%M:%S') }}"   
       - service: hassio.addon_stdin
         data:
           addon: 15d21743_samba_backup
@@ -238,11 +213,17 @@ automation:
       - platform: homeassistant
         event: shutdown     
     action:
-      - service: input_datetime.set_datetime
-        entity_id: input_datetime.home_assistant_stop
-        data:
-          datetime: "{{ now().strftime('%Y-%m-%d %H:%M:%S') }}" 
-          
+      - choose:
+          - conditions:
+            - condition: state
+              entity_id: binary_sensor.zu_hause
+              state: 'off'
+            sequence:
+              - service: notify.telegram
+                data:
+                  title: 'Home Assistant gestoppt'
+                  message: "Home Assistant wurde gestoppt."        
+                
   - alias: "Home Assistant - Fehler Neustart"
     id: "home_assistant_fehler_neustart"
     trigger:
