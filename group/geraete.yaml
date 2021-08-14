@@ -67,3 +67,12 @@ licht_unterwegs:
     - light.kuche_regal
     - light.balkon_licht
     - light.kleiderschrank
+    
+tablets:
+  name: Tablets
+  entities:
+    - sensor.tablet_wohnzimmer_batterie
+    - sensor.tablet_schlafzimmer_batterie
+    - sensor.tablet_badezimmer_batterie
+    - sensor.tablet_kuche_batterie
+    - sensor.tablet_balkon_batterie

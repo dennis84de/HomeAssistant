@@ -448,12 +448,25 @@ automation:
     trigger:
       - platform: state
         entity_id: sensor.handy_batterie
+      - platform: state
+        entity_id: binary_sensor.zu_hause
+        to: 'on'
+        for:
+          minutes: 5
     condition:
-      - condition: numeric_state
-        entity_id: sensor.handy_batterie
-        below: 16
       - condition: template
-        value_template: '{{ state_attr("sensor.handy_batterie", "is_charging") == False }}'
+        value_template: -<
+          {% if trigger.entity_id == 'binary_sensor.zu_hause' %}
+            {% set min_battery_level = states('input_number.batteriestand_warnlevel') | int -%}
+            {% set batteriestand = states('sensor.handy_batterie') | int %}
+            {% set wirdAufgeladen = state_attr('sensor.handy_batterie', 'is_charging') == True %}
+            
+            {{ not wirdAufgeladen and batteriestand <= min_battery_level }}      
+          {% else %}
+            {% set min_battery_level = states('input_number.batteriestand_warnlevel') | int -%}
+            
+            {{ states('trigger.to_state.state') <= min_battery_level and state_attr('trigger.to_state.state', 'is_charging') == False }}
+          {% endif %}
     action:
       - service: !secret tts_service
         data:
@@ -464,12 +477,22 @@ automation:
     trigger:
       - platform: state
         entity_id: sensor.handy_batterie
+      - platform: state
+        entity_id: binary_sensor.zu_hause
+        to: 'on'
+        for:
+          minutes: 6     
     condition:
-      - condition: numeric_state
-        entity_id: sensor.handy_batterie
-        above: 99
       - condition: template
-        value_template: '{{ state_attr("sensor.handy_batterie", "is_charging") == True }}'
+        value_template: -<
+          {% if trigger.entity_id == 'binary_sensor.zu_hause' %}           
+            {% set batteriestand = states('sensor.handy_batterie') | int %}
+            {% set wirdAufgeladen = state_attr('sensor.handy_batterie', 'is_charging') == True %}
+            
+            {{ wirdAufgeladen and batteriestand > 99 }}      
+          {% else %}           
+            {{ states('trigger.to_state.state') > 99 and state_attr('trigger.to_state.state', 'is_charging') == True }}
+          {% endif %}      
     action:
       - service: !secret tts_service
         data:

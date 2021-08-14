@@ -112,191 +112,162 @@ sensor:
         device_class: timestamp           
           
 automation:
-  - alias: "Tablet Wohnzimmer - Batteriestand niedrig"
-    id: "tablet_wohnzimmer_batteriestand_niedrig"
+  - alias: "Tablet - Batteriestand niedrig"
+    id: "tablet_batteriestand_niedrig"
     trigger:
       - platform: state
-        entity_id: sensor.tablet_wohnzimmer_batterie
+        entity_id: 
+          - sensor.tablet_wohnzimmer_batterie
+          - sensor.tablet_schlafzimmer_batterie
+          - sensor.tablet_badezimmer_batterie
+          - sensor.tablet_kuche_batterie
+          - sensor.tablet_balkon_batterie
       - platform: state
         entity_id: binary_sensor.zu_hause
         to: 'on'
         for:
-          minutes: 5
-    condition:
-      - condition: numeric_state
-        entity_id: sensor.tablet_wohnzimmer_batterie
-        below: 16
+          minutes: 3
+    condition:                    
       - condition: template
-        value_template: '{{ state_attr("sensor.tablet_wohnzimmer_batterie", "is_charging") == False }}'
+        value_template: >-
+          {% if trigger.entity_id == 'binary_sensor.zu_hause' %}
+          
+            {% set tablets = expand('group.tablets') %}
+            {% set min_battery_level = states('input_number.batteriestand_warnlevel') | int -%}
+            {% set ns = namespace(found=False) -%}
+
+            {% for x in tablets if x.state|int <= min_battery_level and x.attributes.is_charging == False %}
+              {% set ns.found = True -%}
+            {% endfor %}  
+
+            {{ ns.found == True }}          
+          {% else %}
+            {% set min_battery_level = states('input_number.batteriestand_warnlevel') | int -%}
+            
+            {{ states('trigger.to_state.state') <= min_battery_level and state_attr('trigger.to_state.state', 'is_charging') == False }}
+          {% endif %}
+      
     action:
       - service: !secret tts_service
         data:
-          message: "Das Tablet im Wohnzimmer muss aufgeladen werden. Der Batteriestand beträgt {{ states('sensor.tablet_wohnzimmer_batterie') | int }} Prozent."
+          message: >-
+            {% if trigger.entity_id == 'binary_sensor.zu_hause' or trigger.entity_id == 'input_boolean.uhr_einschalten' %}
 
-  - alias: "Tablet Schlafzimmer - Batteriestand niedrig"
-    id: "tablet_schlafzimmer_batteriestand_niedrig"
+              {% set tablets = expand('group.tablets') %}
+              {% set min_battery_level = states('input_number.batteriestand_warnlevel') | int -%}
+              {% set ns = namespace(found=0) -%}
+              
+              {% for x in tablets if x.state|int <= min_battery_level and x.attributes.is_charging == False %}
+                {% set ns.found = ns.found + 1 -%}
+              {% endfor %}
+
+              {% if (ns.found | int) == 1 %}
+                Der Batteriestand von dem folgenden Gerät ist niedrig.
+              {% elif (ns.found | int) > 1 %}
+                Der Batteriestand der folgenden Geräte ist niedrig.
+              {% endif %}
+
+              {% for x in tablets if x.state|int <= min_battery_level and x.attributes.is_charging == False %}
+                {%- if not loop.first %}, {% endif -%}
+                {{- x.name -}}
+              {% endfor %}
+
+            {% else %}
+              {% set tablet = trigger.entity_id %}
+              {% set tabletBatteriestand =  states('trigger.to_state.state') | int %}
+              
+              {% if tablet == 'sensor.tablet_wohnzimmer_batterie' %}
+                {% set tabletName = 'im Wohnzimmer' %}
+              {% elif tablet == 'sensor.tablet_schlafzimmer_batterie' %}
+                {% set tabletName = 'im Schlafzimmer' %}       
+              {% elif tablet == 'sensor.tablet_badezimmer_batterie' %}
+                {% set tabletName = 'im Badezimmer' %}   
+              {% elif tablet == 'sensor.tablet_kuche_batterie' %}
+                {% set tabletName = 'in der Küche' %}   
+              {% elif tablet == 'sensor.tablet_balkon_batterie' %}
+                {% set tabletName = 'auf dem Balkon' %}     
+              {% else %}
+                {% set tabletName = '' %}
+              {% endif %}
+              
+              {{ "Das Tablet " ~ tabletName ~ " muss aufgeladen werden. Der Batteriestand beträgt " ~ tabletBatteriestand ~ " Prozent." }}
+            {% endif %}
+    
+  - alias: "Tablet - Aufgeladen"
+    id: "tablet_aufgeladen"
     trigger:
       - platform: state
-        entity_id: sensor.tablet_schlafzimmer_batterie
+        entity_id: 
+          - sensor.tablet_wohnzimmer_batterie
+          - sensor.tablet_schlafzimmer_batterie
+          - sensor.tablet_badezimmer_batterie
+          - sensor.tablet_kuche_batterie
+          - sensor.tablet_balkon_batterie
       - platform: state
         entity_id: binary_sensor.zu_hause
         to: 'on'
         for:
-          minutes: 10
+          minutes: 4
     condition:
-      - condition: numeric_state
-        entity_id: sensor.tablet_schlafzimmer_batterie
-        below: 16
       - condition: template
-        value_template: '{{ state_attr("sensor.tablet_schlafzimmer_batterie", "is_charging") == False }}'
+        value_template: >-
+          {% if trigger.entity_id == 'binary_sensor.zu_hause' %}         
+            {% set ns = namespace(found=false) -%}
+            {% set tablets = expand('group.tablets') %}
+            
+            {% for x in tablets if x.state|int > 99 and x.attributes.is_charging == True %}             
+              {% set ns.found = true -%}
+            {% endfor %}  
+
+            {{ ns.found == True }}          
+          {% else %}            
+            {{ states('trigger.to_state.state') > 99 and state_attr('trigger.to_state.state', 'is_charging') == True }}
+          {% endif %}      
     action:
       - service: !secret tts_service
         data:
-          message: "Das Tablet im Schlafzimmer muss aufgeladen werden. Der Batteriestand beträgt {{ states('sensor.tablet_schlafzimmer_batterie') | int }} Prozent."
+          message: >-
+            {% if trigger.entity_id == 'binary_sensor.zu_hause' %}
 
-  - alias: "Tablet Badezimmer - Batteriestand niedrig"
-    id: "tablet_badezimmer_batteriestand_niedrig"
-    trigger:
-      - platform: state
-        entity_id: sensor.tablet_badezimmer_batterie
-      - platform: state
-        entity_id: binary_sensor.zu_hause
-        to: 'on'
-        for:
-          minutes: 15
-    condition:
-      - condition: numeric_state
-        entity_id: sensor.tablet_badezimmer_batterie
-        below: 16
-      - condition: template
-        value_template: '{{ state_attr("sensor.tablet_badezimmer_batterie", "is_charging") == False }}'
-    action:
-      - service: !secret tts_service
-        data:
-          message: "Das Tablet im Badezimmer muss aufgeladen werden. Der Batteriestand beträgt {{ states('sensor.tablet_badezimmer_batterie') | int }} Prozent."
+              {% set tablets = expand('group.tablets') %}
+              {% set min_battery_level = states('input_number.batteriestand_warnlevel') | int -%}
+              {% set ns = namespace(found=0) -%}
+              
+              {% for x in tablets if x.state|int > 99 and x.attributes.is_charging == True %}
+                {% set ns.found = ns.found + 1 -%}
+              {% endfor %}
 
-  - alias: "Tablet Küche - Batteriestand niedrig"
-    id: "tablet_kueche_batteriestand_niedrig"
-    trigger:
-      - platform: state
-        entity_id: sensor.tablet_kuche_batterie
-      - platform: state
-        entity_id: binary_sensor.zu_hause
-        to: 'on'
-        for:
-          minutes: 20
-    condition:
-      - condition: numeric_state
-        entity_id: sensor.tablet_kuche_batterie
-        below: 16
-      - condition: template
-        value_template: '{{ state_attr("sensor.tablet_kuche_batterie", "is_charging") == False }}'
-    action:
-      - service: !secret tts_service
-        data:
-          message: "Das Tablet in der Küche muss aufgeladen werden. Der Batteriestand beträgt {{ states('sensor.tablet_kuche_batterie') | int }} Prozent."
+              {% if (ns.found | int) == 1 %}
+                Das folgende Gerät wurde vollständig aufgeladen.
+              {% elif (ns.found | int) > 1 %}
+                Die folgenden Geräte wurden vollständig aufgeladen.
+              {% endif %}
 
-  - alias: "Tablet Balkon - Batteriestand niedrig"
-    id: "tablet_balkon_batteriestand_niedrig"
-    trigger:
-      - platform: state
-        entity_id: sensor.tablet_balkon_batterie
-      - platform: state
-        entity_id: binary_sensor.zu_hause
-        to: 'on'
-        for:
-          minutes: 10
-    condition:
-      - condition: numeric_state
-        entity_id: sensor.tablet_balkon_batterie
-        below: 16
-      - condition: template
-        value_template: '{{ state_attr("sensor.tablet_balkon_batterie", "is_charging") == False }}'
-    action:
-      - service: !secret tts_service
-        data:
-          message: "Das Tablet auf dem Balkon muss aufgeladen werden. Der Batteriestand beträgt {{ states('sensor.tablet_balkon_batterie') | int }} Prozent."
+              {% for x in tablets if x.state|int > 99 and x.attributes.is_charging == True %}
+                {%- if not loop.first %}, {% endif -%}
+                {{- x.name -}}
+              {% endfor %}
 
-  - alias: "Tablet Wohnzimmer - Aufgeladen"
-    id: "tablet_wohnzimmer_aufgeladen"
-    trigger:
-      - platform: state
-        entity_id: sensor.tablet_wohnzimmer_batterie
-    condition:
-      - condition: numeric_state
-        entity_id: sensor.tablet_wohnzimmer_batterie
-        above: 99
-      - condition: template
-        value_template: '{{ state_attr("sensor.tablet_wohnzimmer_batterie", "is_charging") == True }}'
-    action:
-      - service: !secret tts_service
-        data:
-          message: "Das Tablet im Wohnzimmer wurde vollständig aufgeladen."
-
-  - alias: "Tablet Schlafzimmer - Aufgeladen"
-    id: "tablet_schlafzimmer_aufgeladen"
-    trigger:
-      - platform: state
-        entity_id: sensor.tablet_schlafzimmer_batterie
-    condition:
-      - condition: numeric_state
-        entity_id: sensor.tablet_schlafzimmer_batterie
-        above: 99
-      - condition: template
-        value_template: '{{ state_attr("sensor.tablet_schlafzimmer_batterie", "is_charging") == True }}'
-    action:
-      - service: !secret tts_service
-        data:
-          message: "Das Tablet im Schlafzimmer wurde vollständig aufgeladen."
-
-  - alias: "Tablet Badezimmer - Aufgeladen"
-    id: "tablet_badezimmer_aufgeladen"
-    trigger:
-      - platform: state
-        entity_id: sensor.tablet_badezimmer_batterie
-    condition:
-      - condition: numeric_state
-        entity_id: sensor.tablet_badezimmer_batterie
-        above: 99
-      - condition: template
-        value_template: '{{ state_attr("sensor.tablet_badezimmer_batterie", "is_charging") == True }}'
-    action:
-      - service: !secret tts_service
-        data:
-          message: "Das Tablet im Badezimmer wurde vollständig aufgeladen."
-
-  - alias: "Tablet Küche - Aufgeladen"
-    id: "tablet_kueche_aufgeladen"
-    trigger:
-      - platform: state
-        entity_id: sensor.tablet_kuche_batterie
-    condition:
-      - condition: numeric_state
-        entity_id: sensor.tablet_kuche_batterie
-        above: 99
-      - condition: template
-        value_template: '{{ state_attr("sensor.tablet_kuche_batterie", "is_charging") == True }}'
-    action:
-      - service: !secret tts_service
-        data:
-          message: "Das Tablet in der Küche wurde vollständig aufgeladen."
-
-  - alias: "Tablet Balkon - Aufgeladen"
-    id: "tablet_balkon_aufgeladen"
-    trigger:
-      - platform: state
-        entity_id: sensor.tablet_balkon_batterie
-    condition:
-      - condition: numeric_state
-        entity_id: sensor.tablet_balkon_batterie
-        above: 99
-      - condition: template
-        value_template: '{{ state_attr("sensor.tablet_balkon_batterie", "is_charging") == True }}'
-    action:
-      - service: !secret tts_service
-        data:
-          message: "Das Tablet auf dem Balkon wurde vollständig aufgeladen."
-
+            {% else %}
+              {% set tablet = trigger.entity_id %}
+              
+              {% if tablet == 'sensor.tablet_wohnzimmer_batterie' %}
+                {% set tabletName = 'im Wohnzimmer' %}
+              {% elif tablet == 'sensor.tablet_schlafzimmer_batterie' %}
+                {% set tabletName = 'im Schlafzimmer' %}       
+              {% elif tablet == 'sensor.tablet_badezimmer_batterie' %}
+                {% set tabletName = 'im Badezimmer' %}   
+              {% elif tablet == 'sensor.tablet_kuche_batterie' %}
+                {% set tabletName = 'in der Küche' %}   
+              {% elif tablet == 'sensor.tablet_balkon_batterie' %}
+                {% set tabletName = 'auf dem Balkon' %}     
+              {% else %}
+                {% set tabletName = '' %}
+              {% endif %}
+              
+              {{ "Das Tablet " ~ tabletName ~ " wurde vollständig aufgeladen." }}
+            {% endif %}
+    
 homeassistant:
   customize:
     sensor.tablet_schlafzimmer_batterie:
