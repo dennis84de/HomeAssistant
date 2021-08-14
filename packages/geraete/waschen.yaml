@@ -150,7 +150,7 @@ automation:
         state: 'off'
     action:
       - service: notify.telegram
-        data_template:
+        data:
           title: "Waschmaschine gestartet"
           message: "Die Waschmaschine wurde gestartet."
 
@@ -169,12 +169,12 @@ automation:
                 state: 'off'
             sequence:
               - service: notify.telegram
-                data_template:
+                data:
                   title: "Waschmaschine fertig"
                   message: "Die Waschmaschine ist fertig."
         default:
           - service: !secret tts_service
-            data_template:
+            data:
               message: "Die Waschmaschine ist fertig."
       - condition: state
         entity_id: switch.trockner
@@ -195,7 +195,7 @@ automation:
         state: 'off'
     action:
       - service: notify.telegram
-        data_template:
+        data:
           title: "Trockner gestartet"
           message: >-
             Der Trockner wurde gestartet.
@@ -215,10 +215,10 @@ automation:
                 state: 'off'
             sequence:
               - service: notify.telegram
-                data_template:
+                data:
                   title: "Trockner fertig"
                   message: "Der Trockner ist fertig."
         default:
           - service: !secret tts_service
-            data_template:
+            data:
               message: "Der Trockner ist fertig."

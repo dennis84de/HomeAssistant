@@ -20,7 +20,7 @@ script:
     alias: "Training einschalten"
     sequence:  
       - service: !secret tts_service
-        data_template:
+        data:
           echo: "flur"
           message: "Training wird eingeschaltet"
       - service: input_boolean.turn_on
@@ -45,7 +45,7 @@ script:
     alias: "Training ausschalten"
     sequence:
       - service: !secret tts_service
-        data_template:         
+        data:         
           echo: "flur"
           message: "Training wird ausgeschaltet"          
       - service: input_boolean.turn_off

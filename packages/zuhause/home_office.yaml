@@ -236,7 +236,7 @@ automation:
       - service: media_player.media_pause
         entity_id: media_player.benachrichtigungen
       - service: !secret tts_service
-        data_template:
+        data:
           echo: "flur"
           message: "Der Vorgang wurde abgebrochen."
       - service: timer.cancel
@@ -251,7 +251,7 @@ automation:
           entity_id: timer.home_office_ende
     action:
       - service: !secret tts_service
-        data_template:
+        data:
           echo: "flur"
           message: "Der Computer im Arbeitszimmer wird jetzt ausgeschaltet."
       - service: script.home_office_ende
@@ -282,14 +282,14 @@ automation:
                 state: 'off'                
             sequence:
               - service: notify.telegram
-                data_template:
+                data:
                   title: 'Computer Arbeitszimmer'
                   message: 'Der Computer im Arbeitszimmer wurde eingeschaltet und wird jetzt heruntergefahren.'
               - service: switch.turn_off
                 entity_id: switch.pc_arbeit                  
         default:      
           - service: !secret tts_service
-            data_template:          
+            data:          
               message: "Der Computer im Arbeitszimmer wurde eingeschaltet."
      
   - alias: "Home Office - Status geändert"

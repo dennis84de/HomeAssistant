@@ -130,7 +130,7 @@ automation:
         value_template: '{{ state_attr("sensor.tablet_wohnzimmer_batterie", "is_charging") == False }}'
     action:
       - service: !secret tts_service
-        data_template:
+        data:
           message: "Das Tablet im Wohnzimmer muss aufgeladen werden. Der Batteriestand beträgt {{ states('sensor.tablet_wohnzimmer_batterie') | int }} Prozent."
 
   - alias: "Tablet Schlafzimmer - Batteriestand niedrig"
@@ -151,7 +151,7 @@ automation:
         value_template: '{{ state_attr("sensor.tablet_schlafzimmer_batterie", "is_charging") == False }}'
     action:
       - service: !secret tts_service
-        data_template:
+        data:
           message: "Das Tablet im Schlafzimmer muss aufgeladen werden. Der Batteriestand beträgt {{ states('sensor.tablet_schlafzimmer_batterie') | int }} Prozent."
 
   - alias: "Tablet Badezimmer - Batteriestand niedrig"
@@ -172,7 +172,7 @@ automation:
         value_template: '{{ state_attr("sensor.tablet_badezimmer_batterie", "is_charging") == False }}'
     action:
       - service: !secret tts_service
-        data_template:
+        data:
           message: "Das Tablet im Badezimmer muss aufgeladen werden. Der Batteriestand beträgt {{ states('sensor.tablet_badezimmer_batterie') | int }} Prozent."
 
   - alias: "Tablet Küche - Batteriestand niedrig"
@@ -193,7 +193,7 @@ automation:
         value_template: '{{ state_attr("sensor.tablet_kuche_batterie", "is_charging") == False }}'
     action:
       - service: !secret tts_service
-        data_template:
+        data:
           message: "Das Tablet in der Küche muss aufgeladen werden. Der Batteriestand beträgt {{ states('sensor.tablet_kuche_batterie') | int }} Prozent."
 
   - alias: "Tablet Balkon - Batteriestand niedrig"
@@ -214,7 +214,7 @@ automation:
         value_template: '{{ state_attr("sensor.tablet_balkon_batterie", "is_charging") == False }}'
     action:
       - service: !secret tts_service
-        data_template:
+        data:
           message: "Das Tablet auf dem Balkon muss aufgeladen werden. Der Batteriestand beträgt {{ states('sensor.tablet_balkon_batterie') | int }} Prozent."
 
   - alias: "Tablet Wohnzimmer - Aufgeladen"
@@ -230,7 +230,7 @@ automation:
         value_template: '{{ state_attr("sensor.tablet_wohnzimmer_batterie", "is_charging") == True }}'
     action:
       - service: !secret tts_service
-        data_template:
+        data:
           message: "Das Tablet im Wohnzimmer wurde vollständig aufgeladen."
 
   - alias: "Tablet Schlafzimmer - Aufgeladen"
@@ -246,7 +246,7 @@ automation:
         value_template: '{{ state_attr("sensor.tablet_schlafzimmer_batterie", "is_charging") == True }}'
     action:
       - service: !secret tts_service
-        data_template:
+        data:
           message: "Das Tablet im Schlafzimmer wurde vollständig aufgeladen."
 
   - alias: "Tablet Badezimmer - Aufgeladen"
@@ -262,7 +262,7 @@ automation:
         value_template: '{{ state_attr("sensor.tablet_badezimmer_batterie", "is_charging") == True }}'
     action:
       - service: !secret tts_service
-        data_template:
+        data:
           message: "Das Tablet im Badezimmer wurde vollständig aufgeladen."
 
   - alias: "Tablet Küche - Aufgeladen"
@@ -278,7 +278,7 @@ automation:
         value_template: '{{ state_attr("sensor.tablet_kuche_batterie", "is_charging") == True }}'
     action:
       - service: !secret tts_service
-        data_template:
+        data:
           message: "Das Tablet in der Küche wurde vollständig aufgeladen."
 
   - alias: "Tablet Balkon - Aufgeladen"
@@ -294,7 +294,7 @@ automation:
         value_template: '{{ state_attr("sensor.tablet_balkon_batterie", "is_charging") == True }}'
     action:
       - service: !secret tts_service
-        data_template:
+        data:
           message: "Das Tablet auf dem Balkon wurde vollständig aufgeladen."
 
 homeassistant:

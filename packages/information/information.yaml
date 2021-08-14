@@ -151,7 +151,7 @@ automation:
         command: '/tanken'
     action:
       - service: notify.telegram
-        data_template:
+        data:
           title: "Aktuelle Benzinpreise"
           message: >
             Real: {% if states('sensor.tankstelle_real') != 'unknown' %}{{ states('sensor.tankstelle_real') }}€{% else %}{%if states('sensor.tankstelle_real_status') == 'off' %}geschlossen{% else %}-{% endif %}{% endif %}

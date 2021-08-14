@@ -461,7 +461,7 @@ automation:
       - "{{ (states('sensor.balkon_temperatur') | float) > 23 }}"  
     action:
       - service: !secret tts_service
-        data_template:
+        data:
           message: >-
             {% set temperaturBalkon = states('sensor.balkon_temperatur') | float %}
             {% set temperaturWohnzimmer = states('sensor.wohnzimmer_temperatur') | float %}
@@ -525,7 +525,7 @@ automation:
 
         default:      
           - service: !secret tts_service
-            data_template:
+            data:
               message: >-
                 {% set current_count = state_attr("sensor.wetterwarnungen_current_warning_level", "warning_count") %}
                 {% set advance_count = state_attr("sensor.wetterwarnungen_advance_warning_level", "warning_count") %}

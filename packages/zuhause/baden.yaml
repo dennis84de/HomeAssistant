@@ -21,7 +21,7 @@ automation:
         state: 'off'             
     action:
       - service: !secret tts_service
-        data_template:
+        data:
           echo: "badezimmer"
           message: "Alle Geräte werden ausgeschaltet. Viel Spaß beim Baden."
       - service: input_boolean.turn_on
@@ -46,7 +46,7 @@ automation:
         state: 'on'       
     action:        
       - service: !secret tts_service
-        data_template:
+        data:
           echo: "badezimmer"
           message: "Alle Geräte werden wieder eingeschaltet."          
       - service: input_boolean.turn_off

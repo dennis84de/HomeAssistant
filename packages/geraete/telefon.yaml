@@ -56,7 +56,7 @@ automation:
         state: 'on'        
     action:
       - service: scene.create
-        data_template:
+        data:
           scene_id: eingehender_anruf_licht_status
           entities:
             light.wohnzimmer_strahler:

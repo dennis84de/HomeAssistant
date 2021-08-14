@@ -45,7 +45,7 @@ automation:
         to: 'on'
     action:
       service: !secret tts_service
-      data_template:
+      data:
         echo: "wohnzimmer"
         message: >-
           Der Gastzugang wurde eingeschaltet. Der Name lautet "{{ states('sensor.gaeste_wlan_ssid') }}".
@@ -60,7 +60,7 @@ automation:
         to: 'off'
     action:
       service: !secret tts_service
-      data_template:
+      data:
         echo: "wohnzimmer"
         message: >-
           Der Gastzugang wurde ausgeschaltet.

@@ -101,7 +101,7 @@ script:
     alias: Schlafen gehen
     sequence:
       - service: !secret tts_service
-        data_template:
+        data:
           echo: "wohnzimmer"
           message: "Alle Geräte werden jetzt ausgeschaltet. Gute Nacht."
       - delay: '00:00:07'
@@ -172,7 +172,7 @@ automation:
         before: '06:00'  
     action:
       - service: !secret tts_service
-        data_template:
+        data:
           echo: "wohnzimmer"
           message: "Alle Geräte werden gleich ausgeschaltet."
       - delay: '00:00:05'
@@ -198,7 +198,7 @@ automation:
       - service: media_player.media_pause
         entity_id: media_player.benachrichtigungen
       - service: !secret tts_service
-        data_template:
+        data:
           echo: "wohnzimmer"
           message: "Der Vorgang wurde abgebrochen."
       - service: timer.cancel
@@ -264,7 +264,7 @@ automation:
       - service: input_boolean.turn_on
         entity_id: input_boolean.wecker_erinnerung_morgen    
       - service: !secret tts_service
-        data_template:
+        data:
           echo: "schlafzimmer"
           override: true
           message: >-
@@ -283,7 +283,7 @@ automation:
     action:
       - service: timer.start
         entity_id: timer.sleeptimer
-        data_template:
+        data:
           duration: >
             {{ states('input_select.timer_schlafzimmer_dauer')  | int * 60 | int }}
 
@@ -295,7 +295,7 @@ automation:
     action:
       - service: timer.start
         entity_id: timer.sleeptimer
-        data_template:
+        data:
           duration: >
             {{ states('input_select.timer_schlafzimmer_dauer') | int * 60 | int }}
       - service: input_boolean.turn_on

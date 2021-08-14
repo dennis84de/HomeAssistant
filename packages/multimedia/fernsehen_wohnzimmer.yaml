@@ -448,7 +448,7 @@ automation:
           {{ diff >= 5 }}        
     action:
       - service: media_player.volume_set
-        data_template:
+        data:
           entity_id: media_player.soundbar
           volume_level: >
             {% if is_state('media_player.soundbar', 'off') %}

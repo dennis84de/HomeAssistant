@@ -217,7 +217,7 @@ automation:
               state: 'off'
             sequence:
               - service: notify.telegram
-                data_template:
+                data:
                   title: 'Home Assistant gestartet'
                   message: "Home Assistant wurde neugestartet."
         default:
@@ -228,7 +228,7 @@ automation:
               media_content_type: music
           - delay: '00:00:02'
           - service: !secret tts_service
-            data_template:
+            data:
               echo: "wohnzimmer"
               message: "Home Assistant wurde neugestartet."          
           
@@ -251,7 +251,7 @@ automation:
         to: 'notifying'
     action:
       - service: !secret tts_service
-        data_template:
+        data:
           echo: "wohnzimmer"
           message: "Während des Neustarts ist ein Fehler aufgetreten."
 

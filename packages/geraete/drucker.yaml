@@ -45,7 +45,7 @@ automation:
         state: 'home'
     action:
       - service: mqtt.publish
-        data_template:
+        data:
           topic: printer/black
           retain: true
           payload: '{{ states("sensor.ink_level_black") }}'
@@ -61,7 +61,7 @@ automation:
         state: 'home'     
     action:
       - service: mqtt.publish
-        data_template:
+        data:
           topic: printer/magenta
           retain: true
           payload: '{{ states("sensor.ink_level_magenta") }}'
@@ -77,7 +77,7 @@ automation:
         state: 'home'
     action:
       - service: mqtt.publish
-        data_template:
+        data:
           topic: printer/yellow
           retain: true
           payload: '{{ states("sensor.ink_level_yellow") }}'
@@ -93,7 +93,7 @@ automation:
         state: 'home'     
     action:
       - service: mqtt.publish
-        data_template:
+        data:
           topic: printer/cyan
           retain: true
           payload: '{{ states("sensor.ink_level_cyan") }}'
@@ -109,7 +109,7 @@ automation:
         state: 'home'
     action:
       - service: mqtt.publish
-        data_template:
+        data:
           topic: printer/waste
           retain: true
           payload: '{{ states("sensor.cleaning_level") }}'          

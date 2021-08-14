@@ -109,7 +109,7 @@ automation:
         value_template: '{{ True if not "(T.B.A.)" in state_attr("calendar.borussia_dortmund", "message") else False }}'
     action:
       - service: media_player.play_media
-        data_template:
+        data:
           entity_id: media_player.benachrichtigungen
           media_content_id: sounds/torhymne.mp3
           media_content_type: music
@@ -134,7 +134,7 @@ automation:
             state: 'playing'
     action:
       - service: media_player.play_media
-        data_template:
+        data:
           entity_id: media_player.benachrichtigungen
           media_content_id: sounds/heja_bvb.mp3
           media_content_type: music

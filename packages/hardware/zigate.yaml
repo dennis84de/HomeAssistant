@@ -98,7 +98,7 @@ automation:
             {{ True if trigger.to_state.state else False }}
     action:
       - service: input_select.select_option
-        data_template:
+        data:
           entity_id: input_select.cube_letzte_aktion    
           option: >-
             {% if trigger.entity_id == "sensor.cube_drehung" %}

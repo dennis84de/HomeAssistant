@@ -57,14 +57,14 @@ automation:
         to: 'triggered'
     action:
       - service: notify.telegram
-        data_template:
+        data:
           title: "Alarm"
           message: "Der Alarm in der Wohnung wurde ausgelöst."
       - condition: state
         entity_id: switch.kamera_wohnzimmer
         state: 'on'
       - service: telegram_bot.send_photo
-        data_template:
+        data:
           caption: 'Kamera'
           url: 'http://192.168.2.75:8123/api/camera_proxy/camera.kamera_wohnzimmer?token={{ state_attr("camera.kamera_wohnzimmer", "access_token") }}'
                     
@@ -96,7 +96,7 @@ automation:
         state: 'docked'
     action:
       service: notify.telegram
-      data_template:
+      data:
         title: "Bewegung erkannt"
         message: >-          
           {% if trigger.entity_id == 'binary_sensor.bewegungsmelder_balkon' %}
@@ -128,7 +128,7 @@ automation:
         state: 'armed_away'
     action:
       service: notify.telegram
-      data_template:
+      data:
         title: "Fenster geöffnet"
         message: >-
           {% if trigger.entity_id == 'binary_sensor.balkontuer' %}

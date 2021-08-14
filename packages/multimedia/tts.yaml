@@ -44,7 +44,7 @@ script:
               - condition: template
                 value_template: "{{ override is defined and override == true }}"
       - service: notify.alexa_media
-        data_template:
+        data:
           data:
             type: tts
           target: >-
@@ -80,7 +80,7 @@ script:
             entity_id: input_boolean.nicht_stoeren
             state: 'off'            
       - service: tts.google_translate_say
-        data_template:
+        data:
           entity_id: media_player.benachrichtigungen
           message: "{{ message }}"
          

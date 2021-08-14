@@ -79,7 +79,7 @@ automation:
       - service: switch.turn_off
         entity_id: switch.computer
       - service: notify.telegram
-        data_template:
+        data:
           title: "Computer eingeschaltet"
           message: "Der Computer war noch eingeschaltet und wird jetzt heruntergefahren."
 
@@ -94,7 +94,7 @@ automation:
       - service: switch.turn_off
         entity_id: switch.computer
       - service: telegram_bot.send_message
-        data_template:
+        data:
           target: '{{ trigger.event.data.chat_id }}'
           message: "Der Computer wird ausgeschaltet."
           

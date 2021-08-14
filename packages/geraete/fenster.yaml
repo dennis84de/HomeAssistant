@@ -28,14 +28,14 @@ automation:
                 value_template: "{{ True if trigger.entity_id == 'binary_sensor.balkontuer' else False }}"
             sequence:
               - service: notify.kodi_wohnzimmer
-                data_template:
+                data:
                   title: "Balkontür"
                   message: "Die Balkontür wurde {{ 'geöffnet' if trigger.to_state.state == 'on' else 'geschlossen' }}."                    
                   data:
                     displaytime: 5000
         default:
           - service: notify.kodi_wohnzimmer
-            data_template:
+            data:
               title: "Fenster"
               message: >-
                 {% if trigger.to_state.state == 'on' %}

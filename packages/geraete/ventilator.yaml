@@ -122,7 +122,7 @@ automation:
         state: 'on'        
     action:
       - service: xiaomi_miio_fan.fan_set_oscillation_angle
-        data_template:
+        data:
           entity_id: fan.ventilator
           angle: '{{ trigger.to_state.state | int }}'
 
@@ -137,7 +137,7 @@ automation:
         state: 'on'        
     action:
       - service: input_select.select_option
-        data_template:
+        data:
           entity_id: input_select.ventilator_drehungswinkel
           option: '{{ trigger.to_state.state }}'
 
@@ -156,7 +156,7 @@ automation:
         entity_id: input_boolean.ventilator_timer_aktiv
       - service: timer.start
         entity_id: timer.ventilator
-        data_template:
+        data:
           duration: >
             {{ states('input_select.ventilator_timer') | int * 60 | int }}
 

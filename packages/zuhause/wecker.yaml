@@ -179,7 +179,7 @@ automation:
           {{ wecker - now > 1 }}
     action:
       - service: !secret tts_service
-        data_template:
+        data:
           echo: "schlafzimmer"
           override: true
           message: >-
@@ -266,7 +266,7 @@ automation:
       - service: input_boolean.turn_on
         entity_id: input_boolean.aufstehen_aktiviert
       - service: !secret tts_service
-        data_template:                  
+        data:                  
           message: >-
             {%- set word_for_and = 'und' %}
             {%- set up_time = as_timestamp(now()) - state_attr('input_datetime.schlafen_uhrzeit', 'timestamp') | int %}
@@ -314,7 +314,7 @@ automation:
                     above: input_number.corona_grenzwert                        
             sequence:
               - service: !secret tts_service
-                data_template:                  
+                data:                  
                   message: >-
                     {% set coronaDortmundGestern = states('input_text.corona_dortmund_gestern') | float %}
                     {% set coronaMuelheimGestern = states('input_text.corona_mulheim_gestern') | float %}

@@ -456,7 +456,7 @@ automation:
         value_template: '{{ state_attr("sensor.handy_batterie", "is_charging") == False }}'
     action:
       - service: !secret tts_service
-        data_template:
+        data:
           message: "Das Handy muss aufgeladen werden. Der Batteriestand beträgt {{ states('sensor.handy_batterie') | int }} Prozent."
 
   - alias: "Handy - Aufgeladen"
@@ -472,7 +472,7 @@ automation:
         value_template: '{{ state_attr("sensor.handy_batterie", "is_charging") == True }}'
     action:
       - service: !secret tts_service
-        data_template:
+        data:
           message: "Das Handy wurde vollständig aufgeladen."
 
 homeassistant:

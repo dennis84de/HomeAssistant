@@ -102,7 +102,7 @@ automation:
         state: 'off'      
     action:
       - service: !secret tts_service
-        data_template:
+        data:
           message: >-
             "Es ist Zeit zur Arbeit zu fahren. Die aktuelle Fahrzeit beträgt {{ states('sensor.fahrzeit_zur_arbeit') }} Minuten.{% if is_state('binary_sensor.schlechtes_wetter', 'on') %} Aktuell ist mit {{ states('sensor.wetterlage') }} zu rechnen.{% endif %}"
 
@@ -115,7 +115,7 @@ automation:
         command: '/fahrzeit'
     action:
       - service: notify.telegram
-        data_template:
+        data:
           title: "Fahrzeit nach Hause"
           message: >-
             Die Fahrzeit von der Arbeit nach Hause beträgt aktuell {{ states('sensor.fahrzeit_nach_hause') }} Minuten.

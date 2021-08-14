@@ -90,7 +90,7 @@ script:
         data:
           url: !secret phonetracker_send_position_url
       - service: device_tracker.see
-        data_template:
+        data:
           dev_id: handygps
           location_name: 'home'
           gps: ["{{ state_attr('zone.home', 'latitude') }}", "{{ state_attr('zone.home', 'longitude') }}"]
@@ -100,7 +100,7 @@ script:
     sequence:
       - delay: '00:00:20'
       - service: !secret tts_service
-        data_template:
+        data:
           message: >-
             "Hallo Dennis. Willkommen zu Hause."
             
@@ -151,7 +151,7 @@ script:
       sequence:
         - delay: '00:00:20'
         - service: !secret tts_service
-          data_template:
+          data:
             message: "Hallo Dennis. Willkommen zu Hause."
 
   zu_hause_licht_simulation:
