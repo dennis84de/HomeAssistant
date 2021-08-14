@@ -18,7 +18,7 @@ binary_sensor:
       bewegungsmelder_inaktiv_tagsueber:
         friendly_name: Bewegungsmelder inaktiv tagsüber
         value_template: >
-          {% set homeOfficeAktiv = is_state('binary_sensor.home_office', 'on') %}
+          {% set homeOfficeAktiv = is_state('binary_sensor.home_office_aktiv', 'on') %}
           {% set schlafenAktiv = is_state('binary_sensor.schlafen_aktiv', 'on') %}
         
           {{ False if homeOfficeAktiv or schlafenAktiv else True }}
@@ -52,7 +52,7 @@ automation:
         entity_id: binary_sensor.zu_hause
         state: 'on'
       - condition: state
-        entity_id: binary_sensor.home_office
+        entity_id: binary_sensor.home_office_aktiv
         state: 'off'
       - condition: state
         entity_id: light.wohnzimmer_couch

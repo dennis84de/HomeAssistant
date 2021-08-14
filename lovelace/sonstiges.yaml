@@ -6,19 +6,94 @@ layout:
   max_cols: 3
 cards: 
   - type: entities
+    view_layout:
+      column: 1  
     title: Sonstiges
     show_header_toggle: false
     entities:
       - entity: sensor.flugzeuge
       - entity: binary_sensor.iss
+      - entity: sensor.home_assistant_overhead_satellites               
       - entity: sensor.strommix
       - entity: sensor.schimmelindikator
       - entity: binary_sensor.auto_waschen
       - entity: binary_sensor.autoreifen
       - entity: sensor.katastrophenalarm
       - entity: sensor.sternzeichen
+                
+  - type: conditional
+    view_layout:
+      column: 1  
+    conditions:
+      - entity: sensor.formel1_datum
+        state_not: "-"
+    card:
+      type: entities
+      title: Formel 1
+      show_header_toggle: false
+      entities:
+        - entity: sensor.formel1_rennen
+        - entity: sensor.formel1_datum
+        - entity: sensor.formel1_qualifikation    
+        
+  - type: conditional
+    view_layout:
+      column: 1  
+    conditions:
+      - entity: sensor.dfb_spiel
+        state_not: "-"
+    card:
+      type: entities
+      title: Nationmalmannschaft
+      show_header_toggle: false
+      entities:
+        - entity: sensor.dfb_spiel
+        - entity: sensor.dfb_datum
+        - entity: sensor.dfb_uhrzeit
+        - entity: sensor.dfb_ort        
+        
+  - type: entities
+    view_layout:
+      column: 2  
+    title: SpaceX
+    show_header_toggle: false
+    entities:
+      - entity: sensor.next_launch_rocket
+        name: Rakete
+      - entity: sensor.next_launch_mission
+        name: Mission
+      - entity: sensor.next_launch_day_de
+        name: Datum
+      - entity: sensor.next_launch_time_de
+        name: Uhrzeit
+      - entity: sensor.next_launch_site
+        name: Startplatz
 
   - type: entities
+    view_layout:
+      column: 2  
+    title: Starman
+    show_header_toggle: false
+    entities:
+      - entity: sensor.starman_distance
+        name: Entfernung
+      - entity: sensor.starman_speed 
+        name: Geschwindigkeit
+
+  - type: custom:atomic-calendar-revive
+    view_layout:
+      column: 2  
+    name: Serien
+    maxDaysToShow: 30
+    maxEventCount: 10
+    showLocation: false
+    disableEventLink: true
+    entities:
+      - entity: calendar.serien     
+      
+  - type: entities
+    view_layout:
+      column: 3
     title: Corona Virus
     show_header_toggle: false
     entities:
@@ -32,6 +107,8 @@ cards:
         name: Tote                 
 
   - type: custom:mini-graph-card
+    view_layout:
+      column: 3    
     line_width: 2
     animate: true
     hours_to_show: 168
@@ -51,6 +128,8 @@ cards:
         name: Mülheim an der Ruhr
 
   - type: horizontal-stack
+    view_layout:
+      column: 3  
     cards:
       - type: custom:mini-graph-card
         name: Impfungen
@@ -84,79 +163,14 @@ cards:
             name: Deutschland
           - entity: sensor.coronavirus_vaccination_nrw_quote
             name: NRW
-        
+                
   - type: entities
-    title: SpaceX
-    show_header_toggle: false
-    entities:
-      - entity: sensor.next_launch_rocket
-        name: Rakete
-      - entity: sensor.next_launch_mission
-        name: Mission
-      - entity: sensor.next_launch_day_de
-        name: Datum
-      - entity: sensor.next_launch_time_de
-        name: Uhrzeit
-      - entity: sensor.next_launch_site
-        name: Startplatz
-
-  - type: entities
-    title: Starman
-    show_header_toggle: false
-    entities:
-      - entity: sensor.starman_distance
-        name: Entfernung
-      - entity: sensor.starman_speed 
-        name: Geschwindigkeit
-
-  - type: entities
-    title: Sateliten
-    show_header_toggle: false
-    entities:
-      - entity: sensor.home_assistant_overhead_satellites
-        name: Sateliten        
-        
-  - type: conditional
-    conditions:
-      - entity: sensor.formel1_datum
-        state_not: "-"
-    card:
-      type: entities
-      title: Formel 1
-      show_header_toggle: false
-      entities:
-        - entity: sensor.formel1_rennen
-        - entity: sensor.formel1_datum
-        - entity: sensor.formel1_qualifikation    
-        
-  - type: conditional
-    conditions:
-      - entity: sensor.dfb_spiel
-        state_not: "-"
-    card:
-      type: entities
-      title: Nationmalmannschaft
-      show_header_toggle: false
-      entities:
-        - entity: sensor.dfb_spiel
-        - entity: sensor.dfb_datum
-        - entity: sensor.dfb_uhrzeit
-        - entity: sensor.dfb_ort
-        
-  - type: custom:atomic-calendar-revive
-    name: Serien
-    maxDaysToShow: 30
-    maxEventCount: 10
-    showLocation: false
-    disableEventLink: true
-    entities:
-      - entity: calendar.serien      
-        
-  - type: entities
+    view_layout:
+      column: 3    
     title: Bitcoin
     show_header_toggle: false
     entities:
       - entity: sensor.exchange_rate_1_btc
         name: Kurs (1 BTC)
       - entity: sensor.trade_volume
-        name: Handelsvolumen           
+        name: Handelsvolumen

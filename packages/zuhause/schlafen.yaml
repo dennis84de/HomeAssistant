@@ -116,9 +116,13 @@ script:
       - service: switch.turn_off
         entity_id: switch.wohnzimmer_radio, switch.balkon_radio, switch.flur_radio, switch.kuche_radio, switch.schlafzimmer_radio, switch.arbeitszimmer_radio
       - service: switch.turn_off
-        entity_id: switch.watchtv_wohnzimmer, switch.monitor
+        entity_id: switch.watchtv_wohnzimmer, switch.monitor, switch.pc
       - service: light.turn_off
         entity_id: light.wohnzimmer_strahler, light.balkon_licht
+      - service: input_select.select_option
+        data:
+          entity_id: input_select.computer_ausschalten  
+          option: 'Herunterfahren'
       - choose:
           - conditions:
               - condition: state
@@ -129,15 +133,7 @@ script:
                 entity_id: light.bett
         default:
           - service: light.turn_on
-            entity_id: light.bett, light.kleiderschrank        
-      - choose:
-          - conditions:
-              - condition: state
-                entity_id: input_boolean.computer_ausschalten
-                state: 'on'
-            sequence:
-              - service: switch.turn_off
-                entity_id: switch.pc                   
+            entity_id: light.bett, light.kleiderschrank
       - choose:
           - conditions:
               - condition: state

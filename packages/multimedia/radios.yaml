@@ -222,7 +222,7 @@ script:
       - choose:
           - conditions:
               - condition: template
-                value_template: "{{ is_state('binary_sensor.home_office', 'off') and (homeOfficeHeute is not defined or homeOfficeHeute == False) }}"
+                value_template: "{{ is_state('binary_sensor.home_office_aktiv', 'off') and (homeOfficeHeute is not defined or homeOfficeHeute == False) }}"
               - condition: template
                 value_template: '{{ now().isoweekday() != 7 }}'        
               - condition: time

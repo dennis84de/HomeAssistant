@@ -16,6 +16,9 @@ automation:
       - condition: state
         entity_id: input_boolean.baden_aktiv
         state: 'off'       
+      - condition: state
+        entity_id: binary_sensor.schlafen_aktiv
+        state: 'off'             
     action:
       - service: !secret tts_service
         data_template:
@@ -26,18 +29,10 @@ automation:
       - service: light.turn_on
         entity_id: light.badezimmerschrank
       - service: switch.turn_off
-        entity_id: switch.watchtv_wohnzimmer, switch.monitor
+        entity_id: switch.watchtv_wohnzimmer, switch.monitor, switch.pc
       - service: script.radios_ausschalten
       - service: light.turn_off
-        entity_id: light.wohnzimmer_couch, light.wohnzimmer_strahler   
-      - choose:
-          conditions:
-            - condition: state
-              entity_id: input_boolean.computer_ausschalten
-              state: 'on'
-          sequence:
-            - service: switch.turn_off
-              entity_id: switch.pc      
+        entity_id: light.wohnzimmer_couch, light.wohnzimmer_strahler
         
   - alias: "Baden - Beenden"
     id: "baden_beenden"

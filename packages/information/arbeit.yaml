@@ -47,8 +47,8 @@ binary_sensor:
     
   - platform: template
     sensors:
-      office_morgen:
-        friendly_name: 'Büro heute'
+      buero_morgen:
+        friendly_name: 'Büro morgen'
         device_class: opening
         value_template: >-
           {% set NextOffice = state_attr('calendar.arbeit_buero', 'start_time') %}
@@ -98,17 +98,8 @@ automation:
         value_template: '{{ states("sensor.time") == states("sensor.abfahrzeit") }}'
     condition:
       - condition: state
-        entity_id: binary_sensor.arbeitstag
-        state: 'on'
-      - condition: state
-        entity_id: calendar.urlaub
-        state: 'off'
-      - condition: state
-        entity_id: calendar.krank
-        state: 'off'        
-      - condition: state
-        entity_id: input_boolean.home_office
-        state: 'off'        
+        entity_id: binary_sensor.home_office_heute
+        state: 'off'      
     action:
       - service: !secret tts_service
         data_template:

@@ -151,7 +151,7 @@ script:
         data:
           echo: "wohnzimmer"
           message: "Home Assistant wird neugestartet."
-      - delay: '00:00:03'      
+      - delay: '00:00:05'      
       - service: media_player.play_media
         data:
           entity_id: media_player.benachrichtigungen

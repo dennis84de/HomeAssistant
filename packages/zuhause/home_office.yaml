@@ -11,16 +11,17 @@ input_boolean:
   home_office_aktiv:
     name: Home Office aktiv
     
-  computer_arbeit_ausschalten:
-    name: Computer Arbeit ausschalten    
-    icon: mdi:desktop-classic
-    
-  computer_arbeit_herunterfahren:
-    name: Computer Arbeit herunterfahren    
-    icon: mdi:power-settings
-    
   home_office_musik_pausiert:
     name: Musik pausiert    
+   
+input_select:
+  computer_arbeit_ausschalten:
+    name: Computer ausschalten
+    icon: mdi:power-settings
+    options:      
+      - Ruhezustand
+      - Herunterfahren
+      - Nichts unternehmen
    
 input_text:
   teams_status:
@@ -51,8 +52,8 @@ binary_sensor:
 
           {{ True if (istHomeOffice and istArbeitstag and keinUrlaub and nichtKrank) else False }}
           
-      home_office:
-        friendly_name: 'Home Office'
+      home_office_aktiv:
+        friendly_name: 'Home Office aktiv'
         icon_template: mdi:home-city
         value_template: >-
           {% set homeOfficeHeute = is_state('binary_sensor.home_office_heute', 'on') %}
@@ -92,14 +93,18 @@ switch:
           - choose:
               - conditions:
                   - condition: state
-                    entity_id: input_boolean.computer_arbeit_herunterfahren
-                    state: 'on'
+                    entity_id: input_select.computer_arbeit_ausschalten
+                    state: 'Ruhezustand'
                 sequence:
                   - service: switch.turn_on
-                    entity_id: switch.computer_arbeit_herunterfahren      
-            default:
-              - service: switch.turn_on
-                entity_id: switch.computer_arbeit_ruhezustand
+                    entity_id: switch.computer_arbeit_ruhezustand
+              - conditions:
+                  - condition: state
+                    entity_id: input_select.computer_arbeit_ausschalten
+                    state: 'Herunterfahren'
+                sequence:
+                  - service: switch.turn_on
+                    entity_id: switch.computer_arbeit_herunterfahren
 
 script:
   home_office_start:
@@ -108,7 +113,7 @@ script:
       - service: input_boolean.turn_on
         entity_id: input_boolean.home_office_aktiv
       - service: switch.turn_off
-        entity_id: switch.schlafzimmer_radio, switch.monitor        
+        entity_id: switch.schlafzimmer_radio, switch.monitor, switch.pc
       - service: switch.turn_on
         entity_id: switch.arbeitszimmer_radio, switch.pc_arbeit, switch.arbeitszimmer_monitore  
       - service: light.turn_off
@@ -122,15 +127,7 @@ script:
               - service: climate.set_preset_mode
                 data:
                   entity_id: climate.arbeitszimmer
-                  preset_mode: 'comfort'      
-      - choose:
-          - conditions:
-              - condition: state
-                entity_id: input_boolean.computer_ausschalten
-                state: 'on'
-            sequence:
-              - service: switch.turn_off
-                entity_id: switch.pc
+                  preset_mode: 'comfort'
       - choose:
           - conditions:
               - condition: or
@@ -142,11 +139,15 @@ script:
                     entity_id: binary_sensor.urlaub_morgen
                     state: 'on'                       
             sequence:
-              - service: input_boolean.turn_on
-                entity_id: input_boolean.computer_arbeit_herunterfahren      
+              - service: input_select.select_option
+                data:
+                  entity_id: input_select.computer_arbeit_ausschalten  
+                  option: 'Herunterfahren'     
         default:
-          - service: input_boolean.turn_off
-            entity_id: input_boolean.computer_arbeit_herunterfahren              
+          - service: input_select.select_option
+            data:
+              entity_id: input_select.computer_arbeit_ausschalten  
+              option: 'Ruhezustand'             
           
   home_office_ende:
     alias: 'Home Office - Ende'
@@ -154,7 +155,7 @@ script:
       - service: input_boolean.turn_off
         entity_id: input_boolean.home_office_aktiv
       - service: switch.turn_off
-        entity_id: switch.arbeitszimmer_radio, switch.arbeitszimmer_monitore
+        entity_id: switch.arbeitszimmer_radio, switch.arbeitszimmer_monitore, switch.pc_arbeit
       - service: switch.turn_on
         entity_id: switch.computer
       - choose:
@@ -175,15 +176,7 @@ script:
               - service: climate.set_preset_mode
                 data:
                   entity_id: climate.arbeitszimmer
-                  preset_mode: 'eco'        
-      - choose:
-          - conditions:
-              - condition: state
-                entity_id: input_boolean.computer_arbeit_ausschalten
-                state: 'on'
-            sequence:
-              - service: switch.turn_off
-                entity_id: switch.pc_arbeit                
+                  preset_mode: 'eco'
         
 automation:
   - alias: "Home Office - Start"
@@ -272,7 +265,7 @@ automation:
         for: '00:05:00'
     condition:       
       - condition: state
-        entity_id: binary_sensor.home_office
+        entity_id: binary_sensor.home_office_aktiv
         state: 'off'        
     action:
       - choose:

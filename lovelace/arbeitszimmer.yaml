@@ -54,11 +54,8 @@ cards:
         name: Computer
       - entity: switch.arbeitszimmer_monitore
         name: Monitore
-      - entity: input_boolean.computer_arbeit_herunterfahren
-        name: Computer herunterfahren        
-      - entity: input_boolean.computer_arbeit_ausschalten
-        name: Computer ausschalten
-      - entity: input_boolean.home_office        
+      - entity: input_select.computer_arbeit_ausschalten
+        name: Computer ausschalten          
 
   - type: entities
     title: Microsoft Teams

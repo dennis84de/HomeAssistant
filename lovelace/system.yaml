@@ -162,8 +162,8 @@ cards:
     title: Backup
     show_header_toggle: false
     entities:
-      - entity: sensor.backup_status
-      - entity: sensor.backup_letztes_backup
+      - entity: sensor.samba_backup_status
+      - entity: sensor.samba_letztes_backup
 
   - type: entities
     title: Bewegungsmelder deaktivieren

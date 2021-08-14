@@ -12,7 +12,7 @@ automation:
         value_template: >-
           {% set ns = namespace(found=0) -%}
           {% set computerEingeschaltet = is_state('switch.computer', 'on') %}
-          {% set computerEingeschaltetLassen = is_state('input_boolean.computer_ausschalten', 'on') %}
+          {% set computerEingeschaltetLassen = is_state('input_select.computer_ausschalten', 'Nichts unternehmen') %}
 
           {% for entity_id in state_attr('group.alles_ausschalten', 'entity_id') -%}
             {% set parts = entity_id.split('.') -%}
@@ -259,7 +259,7 @@ script:
            payload: 'not_home'
            retain: true
       - service: switch.turn_off
-        entity_id: switch.alle_radios, switch.monitor, switch.schlafzimmer_fernseher, switch.watchtv_wohnzimmer, switch.watchtv_schlafzimmer, switch.arbeitszimmer_monitore
+        entity_id: switch.alle_radios, switch.monitor, switch.pc, switch.schlafzimmer_fernseher, switch.watchtv_wohnzimmer, switch.watchtv_schlafzimmer, switch.arbeitszimmer_monitore, switch.pc_arbeit
       - service: light.turn_off
         entity_id: light.wohnzimmer_couch, light.wohnzimmer_strahler, light.flur_vorne, light.flur_hinten, light.badezimmerschrank, light.bett, light.kleiderschrank, light.kuche_regal, light.kuche_schrank, light.schreibtisch, light.balkon_licht, light.arbeitszimmer_lampe, light.sportzimmer_regal     
       - choose:
@@ -270,19 +270,7 @@ script:
             sequence:
               - service: switch.turn_on
                 entity_id: switch.presence_simulation
-      - choose:
-          - conditions:
-              - condition: state
-                entity_id: input_boolean.computer_ausschalten
-                state: 'on'
-            sequence:
-              - service: switch.turn_off
-                entity_id: switch.pc     
-      - choose:
-          - conditions:
-              - condition: state
-                entity_id: input_boolean.computer_arbeit_ausschalten
-                state: 'on'
-            sequence:
-              - service: switch.turn_off
-                entity_id: switch.pc_arbeit
+      - service: input_select.select_option
+        data:
+          entity_id: input_select.computer_ausschalten  
+          option: 'Herunterfahren'                     

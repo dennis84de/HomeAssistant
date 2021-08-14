@@ -33,7 +33,7 @@ automation:
         entity_id: binary_sensor.zu_hause
         state: 'on'
       - condition: state
-        entity_id: binary_sensor.home_office
+        entity_id: binary_sensor.home_office_aktiv
         state: 'off'
       - condition: state
         entity_id: binary_sensor.schlafen_aktiv

@@ -26,7 +26,7 @@ entity_controller:
     behaviours:
       on_enter_overridden: 'off'
     overrides:     
-      - binary_sensor.home_office
+      - binary_sensor.home_office_aktiv
       - binary_sensor.sonne_tagsueber      
       - binary_sensor.bewegungsmelder_inaktiv_unterwegs  
       - binary_sensor.bewegungsmelder_inaktiv_staubsauger

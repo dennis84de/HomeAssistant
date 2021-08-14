@@ -1,8 +1,12 @@
-input_boolean:
+input_select:
   computer_ausschalten:
     name: Computer ausschalten
-    icon: mdi:desktop-classic 
-
+    icon: mdi:power-settings
+    options:      
+      - Ruhezustand
+      - Herunterfahren
+      - Nichts unternehmen
+      
 sensor:   
   - platform: openhardwaremonitor
     host: !secret computer_host
@@ -24,15 +28,24 @@ switch:
         value_template: "{{ is_state('binary_sensor.computer', 'on') }}"
         icon_template: mdi:desktop-tower
         turn_on:
-          service: wake_on_lan.send_magic_packet
-          data:
-            mac: !secret computer_mac
-            broadcast_address: !secret fritzbox_broadcast
-            broadcast_port: 9
+          - service: wake_on_lan.send_magic_packet
+            data:
+              mac: !secret computer_mac
+              broadcast_address: !secret fritzbox_broadcast
+              broadcast_port: 9
         turn_off:
-          service: switch.turn_on
-#          entity_id: switch.computer_ruhezustand
-          entity_id: switch.computer_herunterfahren
+          - choose:
+              - conditions:
+                  - "{{ is_state('input_select.computer_ausschalten', 'Ruhezustand') }}"
+                sequence:
+                  - service: switch.turn_on
+                    entity_id: switch.computer_ruhezustand
+              - conditions:
+                  - "{{ is_state('input_select.computer_ausschalten', 'Herunterfahren') }}"
+                sequence:
+                  - service: switch.turn_on
+                    entity_id: switch.computer_herunterfahren            
+                    
       computer:
         friendly_name: Computer
         value_template: "{{ is_state('switch.pc', 'on') and is_state('switch.monitor', 'on') }}"
@@ -57,9 +70,11 @@ automation:
       - condition: state
         entity_id: switch.computer
         state: 'on'
-      - condition: state
-        entity_id: input_boolean.computer_ausschalten
-        state: 'on'
+      - condition: not
+        conditions:
+          - condition: state
+            entity_id: input_select.computer_ausschalten
+            state: 'Nichts unternehmen'
     action:
       - service: switch.turn_off
         entity_id: switch.computer

@@ -38,18 +38,34 @@ script:
                 state: 'off'
             sequence:
               - service: light.turn_on
-                entity_id: light.wohnzimmer_couch, light.wohnzimmer_strahler   
-      - service: input_boolean.turn_on
-        entity_id: input_boolean.computer_ausschalten                  
-      - service: script.wohnung_radios_einschalten       
+                entity_id: light.wohnzimmer_couch, light.wohnzimmer_strahler             
+      - service: script.wohnung_radios_einschalten               
 
   zu_hause_home_office:
     alias: "Zu Hause - Home Office"
     sequence:      
       - service: switch.turn_on
         entity_id: switch.arbeitszimmer_radio, switch.pc_arbeit, switch.arbeitszimmer_monitore
-      - service: input_boolean.turn_on
-        entity_id: input_boolean.computer_arbeit_ausschalten           
+      - choose:
+          - conditions:
+              - condition: or
+                conditions:
+                  - condition: state
+                    entity_id: binary_sensor.arbeitstag_morgen
+                    state: 'off'
+                  - condition: state
+                    entity_id: binary_sensor.urlaub_morgen
+                    state: 'on'                       
+            sequence:
+              - service: input_select.select_option
+                data:
+                  entity_id: input_select.computer_arbeit_ausschalten  
+                  option: 'Herunterfahren'     
+        default:
+          - service: input_select.select_option
+            data:
+              entity_id: input_select.computer_arbeit_ausschalten  
+              option: 'Ruhezustand'
       - service: script.wohnung_radios_einschalten   
              
   zu_hause_abends:
@@ -58,9 +74,7 @@ script:
       - service: light.turn_on
         entity_id: light.wohnzimmer_couch, light.wohnzimmer_strahler
       - service: switch.turn_on
-        entity_id: switch.computer, switch.watchtv_wohnzimmer
-      - service: input_boolean.turn_on
-        entity_id: input_boolean.computer_ausschalten          
+        entity_id: switch.computer, switch.watchtv_wohnzimmer     
       - service: switch.turn_on
         entity_id: switch.badezimmer_radio
 
@@ -185,7 +199,7 @@ automation:
       - choose:
           - conditions:
               - condition: state
-                entity_id: binary_sensor.home_office
+                entity_id: binary_sensor.home_office_aktiv
                 state: 'off'          
               - condition: time
                 after: '08:00'
@@ -194,7 +208,7 @@ automation:
               - service: script.zu_hause
           - conditions:
               - condition: state
-                entity_id: binary_sensor.home_office
+                entity_id: binary_sensor.home_office_aktiv
                 state: 'on'          
             sequence:              
               - service: script.zu_hause_home_office

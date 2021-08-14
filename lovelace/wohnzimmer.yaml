@@ -45,7 +45,7 @@ cards:
     entities:
       - entity: switch.pc
       - entity: switch.monitor
-      - entity: input_boolean.computer_ausschalten                     
+      - entity: input_select.computer_ausschalten                     
       
   - type: entities
     title: Multimedia
