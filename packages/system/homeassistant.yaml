@@ -192,8 +192,7 @@ automation:
               state: 'off'
             sequence:
               - service: notify.telegram
-                data:
-                  title: 'Home Assistant gestartet'
+                data:                  
                   message: "Home Assistant wurde neugestartet."
         default:
           - service: media_player.play_media
@@ -220,8 +219,7 @@ automation:
               state: 'off'
             sequence:
               - service: notify.telegram
-                data:
-                  title: 'Home Assistant gestoppt'
+                data:                  
                   message: "Home Assistant wurde gestoppt."        
                 
   - alias: "Home Assistant - Fehler Neustart"

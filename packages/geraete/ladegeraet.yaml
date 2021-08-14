@@ -98,8 +98,7 @@ automation:
                 state: 'off'
             sequence:
               - service: notify.telegram
-                data:
-                  title: "Ladenvorgang abgeschlossen"
+                data:                  
                   message: "Der Ladevorgang im Sportzimmer wurde abgeschlossen."
         default:
           - service: !secret tts_service

@@ -294,8 +294,7 @@ automation:
                 state: 'off'                
             sequence:
                   - service: notify.telegram
-                    data:
-                      title: 'Computer Arbeitszimmer'
+                    data:                      
                       message: 'Der Computer im Arbeitszimmer wurde eingeschaltet und wird jetzt heruntergefahren.'
                   - service: switch.turn_off
                     entity_id: switch.pc_arbeit                  

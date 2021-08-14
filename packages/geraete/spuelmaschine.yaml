@@ -92,8 +92,7 @@ automation:
                 state: 'off'
             sequence:
               - service: notify.telegram
-                data:
-                  title: "Spülmaschine fertig"
+                data:                  
                   message: "Die Spülmaschine ist fertig"
         default:
           - service: !secret tts_service

@@ -148,8 +148,7 @@ automation:
       - service: input_boolean.turn_on
         entity_id: input_boolean.staubsauger_automatische_reinigung_gestartet
       - service: notify.telegram
-        data:
-          title: 'Staubsaugen gestartet'
+        data:          
           message: 'Das Saugen der Wohnung wurde gestartet.'
 
   - alias: "Staubsaugen - Beendet"
@@ -182,8 +181,7 @@ automation:
                 state: 'off'      
             sequence:
               - service: notify.telegram
-                data:
-                  title: 'Staubsaugen beendet'
+                data:                  
                   message: 'Die Wohnung wurde vollständig gesaugt.'
       - choose:
           - conditions:

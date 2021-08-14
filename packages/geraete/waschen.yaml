@@ -150,8 +150,7 @@ automation:
         state: 'off'
     action:
       - service: notify.telegram
-        data:
-          title: "Waschmaschine gestartet"
+        data:          
           message: "Die Waschmaschine wurde gestartet."
 
   - alias: "Waschmaschine - Fertig"
@@ -169,8 +168,7 @@ automation:
                 state: 'off'
             sequence:
               - service: notify.telegram
-                data:
-                  title: "Waschmaschine fertig"
+                data:                  
                   message: "Die Waschmaschine ist fertig."
         default:
           - service: !secret tts_service
@@ -195,10 +193,8 @@ automation:
         state: 'off'
     action:
       - service: notify.telegram
-        data:
-          title: "Trockner gestartet"
-          message: >-
-            Der Trockner wurde gestartet.
+        data:          
+          message: "Der Trockner wurde gestartet."
 
   - alias: "Trockner - Fertig"
     id: "trockner_fertig"
@@ -215,8 +211,7 @@ automation:
                 state: 'off'
             sequence:
               - service: notify.telegram
-                data:
-                  title: "Trockner fertig"
+                data:                  
                   message: "Der Trockner ist fertig."
         default:
           - service: !secret tts_service

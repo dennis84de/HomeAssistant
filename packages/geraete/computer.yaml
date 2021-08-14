@@ -79,8 +79,7 @@ automation:
       - service: switch.turn_off
         entity_id: switch.computer
       - service: notify.telegram
-        data:
-          title: "Computer eingeschaltet"
+        data:          
           message: "Der Computer war noch eingeschaltet und wird jetzt heruntergefahren."
 
   - alias: "Telegram - Computer ausschalten"

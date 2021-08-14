@@ -86,8 +86,7 @@ automation:
         state: 'on'
       - service: notify.telegram
         data:
-          message: >-
-            Es sind noch Geräte eingeschaltet.
+          message: "Es sind noch Geräte eingeschaltet."
           data:
             inline_keyboard:
               - 'Geräte anzeigen:/geraete'
