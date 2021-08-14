@@ -250,10 +250,22 @@ automation:
         event_data:
           entity_id: timer.home_office_ende
     action:
-      - service: !secret tts_service
-        data:
-          echo: "flur"
-          message: "Der Computer im Arbeitszimmer wird jetzt ausgeschaltet."
+      - choose:
+          - conditions:
+              - condition: state
+                entity_id: input_select.computer_arbeit_ausschalten
+                state: 'Herunterfahren'
+            sequence:
+              - service: !secret tts_service
+                data:
+                  echo: "flur"
+                  message: "Der Computer im Arbeitszimmer wird jetzt heruntergefahren."
+        default:      
+          - service: !secret tts_service
+            data:
+              echo: "flur"
+              message: "Der Computer im Arbeitszimmer wird jetzt ausgeschaltet."
+      - delay: '00:00:02'
       - service: script.home_office_ende
 
   - alias: "Home Office - Computer eingeschaltet"
@@ -281,12 +293,12 @@ automation:
                 entity_id: binary_sensor.zu_hause
                 state: 'off'                
             sequence:
-              - service: notify.telegram
-                data:
-                  title: 'Computer Arbeitszimmer'
-                  message: 'Der Computer im Arbeitszimmer wurde eingeschaltet und wird jetzt heruntergefahren.'
-              - service: switch.turn_off
-                entity_id: switch.pc_arbeit                  
+                  - service: notify.telegram
+                    data:
+                      title: 'Computer Arbeitszimmer'
+                      message: 'Der Computer im Arbeitszimmer wurde eingeschaltet und wird jetzt heruntergefahren.'
+                  - service: switch.turn_off
+                    entity_id: switch.pc_arbeit                  
         default:      
           - service: !secret tts_service
             data:          
