@@ -68,7 +68,7 @@ automation:
           minutes: 30
     condition:
       - condition: state
-        entity_id: switch.computer
+        entity_id: switch.pc
         state: 'on'
       - condition: not
         conditions:
@@ -77,7 +77,7 @@ automation:
             state: 'Nichts unternehmen'
     action:
       - service: switch.turn_off
-        entity_id: switch.computer
+        entity_id: switch.pc
       - service: notify.telegram
         data:          
           message: "Der Computer war noch eingeschaltet und wird jetzt heruntergefahren."
@@ -91,7 +91,7 @@ automation:
           command: '/computer_ausschalten'
     action:
       - service: switch.turn_off
-        entity_id: switch.computer
+        entity_id: switch.pc
       - service: telegram_bot.send_message
         data:
           target: '{{ trigger.event.data.chat_id }}'

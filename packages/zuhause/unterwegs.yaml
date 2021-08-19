@@ -11,7 +11,7 @@ automation:
       - condition: template
         value_template: >-
           {% set ns = namespace(found=0) -%}
-          {% set computerEingeschaltet = is_state('switch.computer', 'on') %}
+          {% set computerEingeschaltet = is_state('switch.pc', 'on') %}
           {% set computerEingeschaltetLassen = is_state('input_select.computer_ausschalten', 'Nichts unternehmen') %}
 
           {% for entity_id in state_attr('group.alles_ausschalten', 'entity_id') -%}
