@@ -92,7 +92,7 @@ cards:
     show_header_toggle: false
     entities:
       - entity: sensor.wecker_startzeit
-        name: 'Nachster Alarm'
+        name: 'Nächster Alarm'
         type: "custom:secondaryinfo-entity-row"              
         secondary_info: "[[ sensor.wecker_startdatum ]]"       
       - entity: binary_sensor.alarm_aktiv       
