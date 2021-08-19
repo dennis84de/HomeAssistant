@@ -127,7 +127,7 @@ automation:
         to: 'on'
         for:
           minutes: 3
-    condition:                    
+    condition:               
       - condition: template
         value_template: >-
           {% if trigger.entity_id == 'binary_sensor.zu_hause' %}
@@ -145,13 +145,12 @@ automation:
             {% set min_battery_level = states('input_number.batteriestand_warnlevel') | int -%}
             
             {{ states('trigger.to_state.state') <= min_battery_level and state_attr('trigger.to_state.state', 'is_charging') == False }}
-          {% endif %}
-      
+          {% endif %}      
     action:
       - service: !secret tts_service
         data:
           message: >-
-            {% if trigger.entity_id == 'binary_sensor.zu_hause' or trigger.entity_id == 'input_boolean.uhr_einschalten' %}
+            {% if trigger.entity_id == 'binary_sensor.zu_hause' %}
 
               {% set tablets = expand('group.tablets') %}
               {% set min_battery_level = states('input_number.batteriestand_warnlevel') | int -%}
