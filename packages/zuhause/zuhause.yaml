@@ -235,9 +235,6 @@ automation:
         entity_id: binary_sensor.zu_hause
         to: 'on'
     condition:    
-      - condition: numeric_state
-        entity_id: sensor.laufzeit_minuten
-        above: 5
       - condition: state
         entity_id: input_select.zu_hause_begruessung
         state: 'Deaktiviert'        
@@ -274,8 +271,8 @@ automation:
         to: 'off' 
       - platform: state
         entity_id: binary_sensor.zu_hause
-        to: 'on'        
-    condition:
+        to: 'on'            
+    condition:  
       - "{{ not is_state('input_select.zu_hause_begruessung', 'Deaktiviert') }}"   
       - condition: or
         conditions:
