@@ -7,40 +7,32 @@ import subprocess
 import requests
 from requests.auth import HTTPBasicAuth
 
-from homeassistant.components.media_player import (
-    DEVICE_CLASS_SPEAKER,
-    MediaPlayerEntity,
-)
-from homeassistant.components.media_player.const import (
-    MEDIA_TYPE_MUSIC,
-    SUPPORT_PLAY_MEDIA,
-)
-from homeassistant.const import (
-    CONF_HOST,
-    CONF_MAC,
-    CONF_NAME,
-    CONF_PASSWORD,
-    CONF_PORT,
-    CONF_USERNAME,
-    STATE_IDLE,
-    STATE_OFF,
-    STATE_ON,
-    STATE_PLAYING,
-)
+from homeassistant.components.media_player import (DEVICE_CLASS_SPEAKER,
+                                                   MediaPlayerEntity)
+from homeassistant.components.media_player.const import (MEDIA_TYPE_MUSIC,
+                                                         SUPPORT_PLAY_MEDIA,
+                                                         SUPPORT_TURN_OFF,
+                                                         SUPPORT_TURN_ON)
+from homeassistant.const import (CONF_HOST, CONF_MAC, CONF_NAME, CONF_PASSWORD,
+                                 CONF_PORT, CONF_USERNAME, STATE_IDLE,
+                                 STATE_OFF, STATE_ON, STATE_PLAYING)
 from homeassistant.helpers.device_registry import CONNECTION_NETWORK_MAC
 
-from .config import get_status
+from .common import (get_privacy, set_power_off_in_progress,
+                     set_power_on_in_progress, set_privacy)
 from .const import CONF_SERIAL, DEFAULT_BRAND, DOMAIN, HTTP_TIMEOUT
 
 SUPPORT_YIHACK_MEDIA = (
     SUPPORT_PLAY_MEDIA
+    | SUPPORT_TURN_OFF
+    | SUPPORT_TURN_ON
 )
 
 _LOGGER = logging.getLogger(__name__)
 
 async def async_setup_entry(hass, config_entry, async_add_entities):
     """Set up the Yi Camera media player from a config entry."""
-    async_add_entities([YiHackMediaPlayer(config_entry)])
+    async_add_entities([YiHackMediaPlayer(config_entry)], True)
 
 
 class YiHackMediaPlayer(MediaPlayerEntity):
@@ -58,26 +50,12 @@ class YiHackMediaPlayer(MediaPlayerEntity):
         self._user = config.data[CONF_USERNAME]
         self._password = config.data[CONF_PASSWORD]
         # Assume that the media player is not in Play mode
-        self._playing = False
         self._state = None
+        self._playing = False
 
-    async def async_update(self):
-        """Update state of device."""
-        conf = dict([
-            (CONF_HOST, self._host),
-            (CONF_PORT, self._port),
-            (CONF_USERNAME, self._user),
-            (CONF_PASSWORD, self._password),
-        ])
-        response = await self.hass.async_add_executor_job(get_status, conf)
-        if response is None:
-            self._state = STATE_OFF
-        else:
-            try:
-                response_name = response["hostname"]
-                self._state = STATE_ON
-            except KeyError:
-                self._state = STATE_OFF
+    def update(self):
+        """Return the state of the media player (privacy off = state on)."""
+        self._state = not get_privacy(self.hass, self._device_name)
 
     @property
     def brand(self):
@@ -86,24 +64,24 @@ class YiHackMediaPlayer(MediaPlayerEntity):
 
     @property
     def name(self):
-        """Return the name of the camera."""
+        """Return the name of the device."""
         return self._name
 
     @property
     def unique_id(self) -> str:
-        """Return the unique ID of the camera."""
+        """Return the unique ID of the device."""
         return self._unique_id
 
     @property
     def state(self):
-        """Return the state of the camera."""
-        if self._state == STATE_ON:
+        """Return the state of the device."""
+        if self._state:
             if self._playing:
                 return STATE_PLAYING
             else:
                 return STATE_IDLE
 
-        return self._state
+        return STATE_OFF
 
     @property
     def device_info(self):
@@ -130,6 +108,32 @@ class YiHackMediaPlayer(MediaPlayerEntity):
     def device_class(self):
         """Set the device class to SPEAKER."""
         return DEVICE_CLASS_SPEAKER
+
+    def turn_off(self):
+        """Turn off camera (set privacy on)."""
+        conf = dict([
+            (CONF_HOST, self._host),
+            (CONF_PORT, self._port),
+            (CONF_USERNAME, self._user),
+            (CONF_PASSWORD, self._password),
+        ])
+        if not get_privacy(self.hass, self._device_name):
+            _LOGGER.debug("Turn off camera %s", self._name)
+            set_power_on_in_progress(self.hass, self._device_name)
+            set_privacy(self.hass, self._device_name, True, conf)
+
+    def turn_on(self):
+        """Turn on camera (set privacy off)."""
+        conf = dict([
+            (CONF_HOST, self._host),
+            (CONF_PORT, self._port),
+            (CONF_USERNAME, self._user),
+            (CONF_PASSWORD, self._password),
+        ])
+        if get_privacy(self.hass, self._device_name):
+            _LOGGER.debug("Turn on Camera %s", self._name)
+            set_power_off_in_progress(self.hass)
+            set_privacy(self.hass, self._device_name, False, conf)
 
     async def async_play_media(self, media_type, media_id, **kwargs):
         """Send the play_media command to the media player."""

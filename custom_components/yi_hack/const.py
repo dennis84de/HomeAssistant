@@ -3,12 +3,18 @@
 DOMAIN = "yi_hack"
 
 DEFAULT_BRAND = "yi-hack"
+DEFAULT_BRAND_R = "yi_hack"
 
 MSTAR = "yi-hack-mstar"
 ALLWINNER = "yi-hack-allwinner"
 ALLWINNERV2 = "yi-hack-allwinner-v2"
 V5 = "yi-hack-v5"
 SONOFF = "sonoff-hack"
+MSTAR_R = "yi_hack_m"
+ALLWINNER_R = "yi_hack_a"
+ALLWINNERV2_R = "yi_hack_a2"
+V5_R = "yi_hack_v5"
+SONOFF_R = "yi_hack_s"
 
 DEFAULT_HOST = ""
 DEFAULT_PORT = 8080
@@ -45,3 +51,8 @@ CONF_SOUND_DETECTION_MSG = "SOUND_DETECTION_MSG"
 
 LINK_LOW_RES_STREAM = "low_res_stream"
 LINK_HIGH_RES_STREAM = "high_res_stream"
+
+END_OF_POWER_OFF = "END_OF_POWER_OFF"
+END_OF_POWER_ON = "END_OF_POWER_ON"
+#IS_ON = "IS_ON"
+#PRIVACY = "PRIVACY"

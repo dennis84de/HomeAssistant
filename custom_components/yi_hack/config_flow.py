@@ -3,40 +3,23 @@
 import logging
 
 import voluptuous as vol
-
 from homeassistant import config_entries
 from homeassistant.components.ffmpeg import CONF_EXTRA_ARGUMENTS
-from homeassistant.const import (
-    CONF_HOST,
-    CONF_MAC,
-    CONF_NAME,
-    CONF_PASSWORD,
-    CONF_PORT,
-    CONF_USERNAME,
-)
+from homeassistant.const import (CONF_HOST, CONF_MAC, CONF_NAME, CONF_PASSWORD,
+                                 CONF_PORT, CONF_USERNAME)
 from homeassistant.helpers.device_registry import format_mac
 
-from .config import get_status
-from .const import (
-    CONF_HACK_NAME,
-    CONF_MQTT_PREFIX,
-    CONF_PTZ,
-    CONF_RTSP_PORT,
-    CONF_SERIAL,
-    CONF_TOPIC_AI_HUMAN_DETECTION,
-    CONF_TOPIC_BABY_CRYING,
-    CONF_TOPIC_MOTION_DETECTION,
-    CONF_TOPIC_MOTION_DETECTION_IMAGE,
-    CONF_TOPIC_SOUND_DETECTION,
-    CONF_TOPIC_STATUS,
-    DEFAULT_BRAND,
-    DEFAULT_EXTRA_ARGUMENTS,
-    DEFAULT_HOST,
-    DEFAULT_PASSWORD,
-    DEFAULT_PORT,
-    DEFAULT_USERNAME,
-    DOMAIN,
-)
+from .common import get_status
+from .const import (ALLWINNER, ALLWINNER_R, ALLWINNERV2, ALLWINNERV2_R,
+                    CONF_HACK_NAME, CONF_MQTT_PREFIX, CONF_PTZ, CONF_RTSP_PORT,
+                    CONF_SERIAL, CONF_TOPIC_AI_HUMAN_DETECTION,
+                    CONF_TOPIC_BABY_CRYING, CONF_TOPIC_MOTION_DETECTION,
+                    CONF_TOPIC_MOTION_DETECTION_IMAGE,
+                    CONF_TOPIC_SOUND_DETECTION, CONF_TOPIC_STATUS,
+                    DEFAULT_BRAND, DEFAULT_BRAND_R, DEFAULT_EXTRA_ARGUMENTS,
+                    DEFAULT_HOST, DEFAULT_PASSWORD, DEFAULT_PORT,
+                    DEFAULT_USERNAME, DOMAIN, MSTAR, MSTAR_R, SONOFF, SONOFF_R,
+                    V5, V5_R)
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -92,7 +75,18 @@ class YiHackFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
                     user_input[CONF_MAC] = format_mac(mac)
                     user_input[CONF_PTZ] = ptz
                     user_input[CONF_HACK_NAME] = hackname
-                    user_input[CONF_NAME] = user_input[CONF_HACK_NAME] + "-" + user_input[CONF_MAC].replace(':', '')
+                    if hackname == MSTAR:
+                        user_input[CONF_NAME] = MSTAR_R + "_" + user_input[CONF_MAC].replace(':', '')[6:]
+                    elif hackname == ALLWINNER:
+                        user_input[CONF_NAME] = ALLWINNER_R + "_" + user_input[CONF_MAC].replace(':', '')[6:]
+                    elif hackname == ALLWINNERV2:
+                        user_input[CONF_NAME] = ALLWINNERV2_R + "_" + user_input[CONF_MAC].replace(':', '')[6:]
+                    elif hackname == V5:
+                        user_input[CONF_NAME] = V5_R + "_" + user_input[CONF_MAC].replace(':', '')[6:]
+                    elif hackname == SONOFF:
+                        user_input[CONF_NAME] = SONOFF_R + "_" + user_input[CONF_MAC].replace(':', '')[6:]
+                    else:
+                        user_input[CONF_NAME] = DEFAULT_BRAND_R + "_" + user_input[CONF_MAC].replace(':', '')[6:]
                 else:
                     _LOGGER.error("Unable to get mac address or serial number from device %s", host)
                     errors["base"] = "cannot_get_mac_or serial"

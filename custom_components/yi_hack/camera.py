@@ -1,48 +1,32 @@
-"""Support for Xiaomi Cameras: yi-hack-MStar, yi-hack-Allwinner and yi-hack-Allwinner-v2."""
+"""Support for Xiaomi Cameras: yi-hack-MStar, yi-hack-Allwinner, yi-hack-Allwinner-v2, yi-hack-v5 and sonoff-hack."""
 
 import asyncio
 import logging
 
-from haffmpeg.camera import CameraMjpeg
-from haffmpeg.tools import IMAGE_JPEG, ImageFrame
 import requests
 from requests.auth import HTTPBasicAuth
-import voluptuous as vol
 
+import voluptuous as vol
+from haffmpeg.camera import CameraMjpeg
+from haffmpeg.tools import IMAGE_JPEG, ImageFrame
 from homeassistant.components import mqtt
-from homeassistant.components.camera import SUPPORT_STREAM, Camera
+from homeassistant.components.camera import (SUPPORT_ON_OFF, SUPPORT_STREAM,
+                                             Camera)
 from homeassistant.components.ffmpeg import CONF_EXTRA_ARGUMENTS, DATA_FFMPEG
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import (
-    CONF_HOST,
-    CONF_MAC,
-    CONF_NAME,
-    CONF_PASSWORD,
-    CONF_PORT,
-    CONF_USERNAME,
-)
+from homeassistant.const import (CONF_HOST, CONF_MAC, CONF_NAME, CONF_PASSWORD,
+                                 CONF_PORT, CONF_USERNAME)
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers import entity_platform
 from homeassistant.helpers.aiohttp_client import async_aiohttp_proxy_stream
 from homeassistant.helpers.device_registry import CONNECTION_NETWORK_MAC
 
-from .const import (
-    ALLWINNER,
-    ALLWINNERV2,
-    CONF_HACK_NAME,
-    CONF_MQTT_PREFIX,
-    CONF_PTZ,
-    CONF_SERIAL,
-    CONF_TOPIC_MOTION_DETECTION_IMAGE,
-    DEFAULT_BRAND,
-    DOMAIN,
-    HTTP_TIMEOUT,
-    LINK_HIGH_RES_STREAM,
-    LINK_LOW_RES_STREAM,
-    MSTAR,
-    SERVICE_PTZ,
-    SERVICE_SPEAK,
-)
+from .common import (get_privacy, set_power_off_in_progress,
+                     set_power_on_in_progress, set_privacy)
+from .const import (ALLWINNER, ALLWINNERV2, CONF_HACK_NAME, CONF_MQTT_PREFIX,
+                    CONF_PTZ, CONF_SERIAL, CONF_TOPIC_MOTION_DETECTION_IMAGE,
+                    DEFAULT_BRAND, DOMAIN, HTTP_TIMEOUT, LINK_HIGH_RES_STREAM,
+                    LINK_LOW_RES_STREAM, MSTAR, SERVICE_PTZ, SERVICE_SPEAK)
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -67,7 +51,6 @@ DEFAULT_LANGUAGE = "en-US"
 DEFAULT_SENTENCE = ""
 
 ICON = "mdi:camera"
-
 
 async def async_setup_entry(hass: HomeAssistant, config: ConfigEntry, async_add_entities):
     """Set up a Yi Camera."""
@@ -116,7 +99,6 @@ async def async_setup_entry(hass: HomeAssistant, config: ConfigEntry, async_add_
         True
     )
 
-
 class YiHackCamera(Camera):
     """Define an implementation of a Yi Camera."""
 
@@ -131,12 +113,12 @@ class YiHackCamera(Camera):
         self._unique_id = self._device_name + "_caca"
         self._mac = config.data[CONF_MAC]
         self._serial_number = config.data[CONF_SERIAL]
-        self._is_on = True
         self._host = config.data[CONF_HOST]
         self._port = config.data[CONF_PORT]
         self._user = config.data[CONF_USERNAME]
         self._password = config.data[CONF_PASSWORD]
         self._ptz = config.data[CONF_PTZ]
+        self._state = None
 
         self._http_base_url = "http://" + self._host
         if self._port != 80:
@@ -146,7 +128,37 @@ class YiHackCamera(Camera):
     @property
     def supported_features(self) -> int:
         """Return supported features."""
-        return SUPPORT_STREAM
+        return SUPPORT_STREAM | SUPPORT_ON_OFF
+
+    def update(self):
+        """Return the state of the camera (privacy off = state on)."""
+        self._state = not get_privacy(self.hass, self._device_name)
+
+    def turn_off(self):
+        """Turn on privacy (set camera off)."""
+        conf = dict([
+            (CONF_HOST, self._host),
+            (CONF_PORT, self._port),
+            (CONF_USERNAME, self._user),
+            (CONF_PASSWORD, self._password),
+        ])
+        if not get_privacy(self.hass, self._device_name):
+            _LOGGER.debug("Turn off camera %s", self._name)
+            set_power_on_in_progress(self.hass, self._device_name)
+            set_privacy(self.hass, self._device_name, True, conf)
+
+    def turn_on(self):
+        """Turn off privacy (set camera on)."""
+        conf = dict([
+            (CONF_HOST, self._host),
+            (CONF_PORT, self._port),
+            (CONF_USERNAME, self._user),
+            (CONF_PASSWORD, self._password),
+        ])
+        if get_privacy(self.hass, self._device_name):
+            _LOGGER.debug("Turn on Camera %s", self._name)
+            set_power_off_in_progress(self.hass)
+            set_privacy(self.hass, self._device_name, False, conf)
 
     async def stream_source(self) -> str:
         """Return the stream source."""
@@ -312,7 +324,7 @@ class YiHackCamera(Camera):
     @property
     def is_on(self):
         """Determine whether the camera is on."""
-        return self._is_on
+        return self._state
 
     @property
     def unique_id(self):
@@ -335,24 +347,26 @@ class YiHackCamera(Camera):
             "model": DOMAIN,
         }
 
-
 class YiHackMqttCamera(Camera):
-    """representation of a MQTT camera."""
+    """Representation of a MQTT camera."""
 
     def __init__(self, hass: HomeAssistant, config):
         """Initialize the MQTT Camera."""
         super().__init__()
 
-        self._hass = hass
         self._device_name = config.data[CONF_NAME]
         self._name = self._device_name  + "_motion_detection_cam"
         self._unique_id = self._device_name + "_camd"
         self._mac = config.data[CONF_MAC]
         self._serial_number = config.data[CONF_SERIAL]
-        self._is_on = True
         self._state_topic = config.data[CONF_MQTT_PREFIX] + "/" + config.data[CONF_TOPIC_MOTION_DETECTION_IMAGE]
         self._last_image = None
         self._mqtt_subscription = None
+        self._state = None
+
+    def update(self):
+        """Return the state of the camera (privacy off = state on)."""
+        self._state = not get_privacy(self.hass, self._device_name)
 
     async def async_added_to_hass(self):
         """Subscribe to MQTT events."""
@@ -390,7 +404,7 @@ class YiHackMqttCamera(Camera):
     @property
     def is_on(self):
         """Determine whether the camera is on."""
-        return self._is_on
+        return self._state
 
     @property
     def unique_id(self):
