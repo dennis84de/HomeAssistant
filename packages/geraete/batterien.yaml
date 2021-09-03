@@ -31,7 +31,8 @@ sensor:
       - zigate.thermometer_kueche
       - zigate.thermometer_sportzimmer
       - zigate.thermometer_parkplatz
-      - zigate.thermometer_hardware
+      - zigate.thermometer_wohnzimmer_hardware
+      - zigate.thermometer_arbeitszimmer_hardware
       - zigate.tuersensor      
       - zigate.bett
       - zigate.cube
@@ -100,8 +101,10 @@ homeassistant:
       friendly_name: "Thermometer Küche"
     sensor.thermometer_sportzimmer_battery_level:
       friendly_name: "Thermometer Sportzimmer"
-    sensor.thermometer_hardware_battery_level:
-      friendly_name: "Thermometer Hardware"
+    sensor.thermometer_wohnzimmer_hardware_battery_level:
+      friendly_name: "Thermometer Wohnzimmer Hardware"
+    sensor.thermometer_arbeitszimmer_hardware_battery_level:
+      friendly_name: "Thermometer Arbeitszimmer Hardware"      
     sensor.balkontuer_battery_level:
       friendly_name: "Balkontür"
     sensor.fenster_wohnzimmer_battery_level:

@@ -132,20 +132,45 @@ script:
               {% endfor %}
             {% endif %}
 
-            {% set count_battery_entities = states('sensor.batteriestand_niedrig') | int -%}
+            {% set min_battery_level = states('input_number.batteriestand_warnlevel') | int -%}   
+            {% set handyBatteriestand = states('sensor.handy_batterie') | int %}
+            {% set handyWirdAufgeladen = state_attr('sensor.handy_batterie', 'is_charging') == True %}
             
+            {% if not handyWirdAufgeladen and handyBatteriestand <= min_battery_level %}
+              Das Handy muss aufgeladen werden.
+            {% endif %}    
+                    
+            {% set count_battery_entities = states('sensor.batteriestand_niedrig') | int -%}
+                                 
             {% if count_battery_entities > 0 %}
               {{ "Der Batteriestand der folgenden Geräte ist niedrig." if count_battery_entities > 1 else "Der Batteriestand des folgenden Gerätes ist niedrig."}}
               
               {% set entities = expand('group.batteriestand') %}
-              {% set min_battery_level = states('input_number.batteriestand_warnlevel') | int -%}
-
+             
               {% for x in entities if x.state|int < min_battery_level %}
                 {%- if not loop.first %}, {% endif -%}
                 {{- x.name -}}
-              {% endfor %}           
+              {% endfor %}       
+            {% endif %}             
+            
+            {% set tablets = expand('group.tablets') %}
+            {% set ns = namespace(found=0) -%}
+
+            {% for x in tablets if x.state|int > 99 and x.attributes.is_charging == True %}
+              {% set ns.found = ns.found + 1 -%}
+            {% endfor %}
+
+            {% if (ns.found | int) == 1 %}
+              Das folgende Gerät wurde vollständig aufgeladen.
+            {% elif (ns.found | int) > 1 %}
+              Die folgenden Geräte wurden vollständig aufgeladen.
             {% endif %}
-        
+
+            {% for x in tablets if x.state|int > 99 and x.attributes.is_charging == True %}
+              {%- if not loop.first %}, {% endif -%}
+              {{- x.name -}}
+            {% endfor %}            
+                              
   zu_hause_begruessung_abends:
       alias: "Zu Hause - Begrüßung abends"
       sequence:
@@ -153,14 +178,6 @@ script:
         - service: !secret tts_service
           data:
             message: "Hallo Dennis. Willkommen zu Hause."
-
-  zu_hause_licht_simulation:
-      alias: "Zu Hause - Lichtsimulation"
-      sequence:
-        - service: switch.turn_off
-          entity_id: switch.presence_simulation
-        - service: input_boolean.turn_off
-          entity_id: input_boolean.licht_simulation
             
 automation:
   - alias: "Zu Hause"
@@ -184,13 +201,21 @@ automation:
           {% set last = as_timestamp(state_attr("script.alles_ausschalten_nfc", "last_triggered")) | int %}
           {% set diff = ((now - last) / 60) | int %}
 
-          {{ diff >= 10 }}
-      - condition: numeric_state
-        entity_id: sensor.laufzeit_minuten
-        above: 5             
+          {{ diff >= 10 }}        
     action:     
       - service: input_boolean.turn_on
-        entity_id: input_boolean.zu_hause_aktiviert      
+        entity_id: input_boolean.zu_hause_aktiviert     
+      - choose:              
+        - conditions:
+            - condition: state
+              entity_id: input_select.zu_hause_begruessung
+              state: 'Deaktiviert'       
+              for: '00:01:00'
+          sequence:
+            - service: input_select.select_option
+              entity_id: input_select.zu_hause_begruessung
+              data:                  
+                option: 'Handy'        
       - service: script.zu_hause_standort
       - service: alarm_control_panel.alarm_disarm
         entity_id: alarm_control_panel.alarm
@@ -217,66 +242,48 @@ automation:
                 after: '20:00'
                 before: '23:30'
             sequence:           
-              - service: script.zu_hause_abends     
-          - conditions:
-              - condition: state
-                entity_id: switch.presence_simulation
-                state: 'on'
-            sequence:
-              - service: script.zu_hause_licht_simulation
+              - service: script.zu_hause_abends      
+      - choose:              
+        - conditions:
+            - condition: state
+              entity_id: switch.presence_simulation
+              state: 'on'
+          sequence:
+            - service: presence_simulation.stop
                 
-  - alias: "Zu Hause - Begrüßung aktivieren"
-    id: "zu_hause_begruessung_aktivieren"
+  - alias: "Zu Hause - Tür geöffnet"
+    id: "zu_hause_tuer_geoeffnet"
     trigger:
       - platform: state
         entity_id: binary_sensor.tuersensor
-        to: 'on'  
-      - platform: state
-        entity_id: binary_sensor.zu_hause
         to: 'on'
     condition:    
       - condition: state
         entity_id: input_select.zu_hause_begruessung
         state: 'Deaktiviert'        
-      - condition: or
-        conditions:
-          - condition: state
-            entity_id: binary_sensor.zu_hause
-            state: 'off'
-            for: '00:05:00'
-          - condition: state
-            entity_id: binary_sensor.tuersensor
-            state: 'off'
-            for: '00:05:00'
+      - condition: state
+        entity_id: input_boolean.zu_hause_aktiviert
+        state: 'off'        
     action:    
-      - choose:
-          - conditions:
-              - "{{ trigger.entity_id == 'binary_sensor.zu_hause' }}" 
-            sequence:
-              - service: input_select.select_option
-                entity_id: input_select.zu_hause_begruessung
-                data:                  
-                  option: 'Handy'
-        default:
-          - service: input_select.select_option            
-            entity_id: input_select.zu_hause_begruessung
-            data:
-              option: 'Tür'
+      - service: input_select.select_option            
+        entity_id: input_select.zu_hause_begruessung
+        data:
+          option: 'Tür'
         
-  - alias: "Zu Hause - Begrüßung starten"
-    id: "zu_hause_begruessung_starten"
+  - alias: "Zu Hause - Begrüßung"
+    id: "zu_hause_begruessung"
     trigger:
       - platform: state
         entity_id: binary_sensor.tuersensor
         to: 'off' 
       - platform: state
         entity_id: binary_sensor.zu_hause
-        to: 'on'            
+        to: 'on'               
     condition:  
       - "{{ not is_state('input_select.zu_hause_begruessung', 'Deaktiviert') }}"   
       - condition: or
         conditions:
-          - "{{ trigger.entity_id == 'binary_sensor.zu_hause' and is_state('input_select.zu_hause_begruessung', 'Tür') }}"          
+          - "{{ trigger.entity_id == 'binary_sensor.zu_hause' and is_state('input_select.zu_hause_begruessung', 'Tür') }}"     
           - "{{ trigger.entity_id == 'binary_sensor.tuersensor' and is_state('input_select.zu_hause_begruessung', 'Handy') }}"      
     action:      
       - service: input_select.select_option
@@ -286,7 +293,7 @@ automation:
       - choose:
           - conditions:
               - condition: time        
-                after: '22:00'   
+                after: '23:00'   
             sequence:
               - service: script.zu_hause_begruessung_abends
         default:

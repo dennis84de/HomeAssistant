@@ -1,18 +1,31 @@
 input_number:
-  alarmdelay:
+  wecker_verzoegerung:
     name: Verzögerung
     min: 0   
     max: 30
     step: 5
     icon: mdi:timer-sand
 
-  alarmadvance:
+  wecker_vorlauf:
     name: Vorlauf
     min: 0    
     max: 30
     step: 5
     icon: mdi:timer-sand
+    
+input_datetime:
+  alarm_standard_buero:
+    name: Wecker Büro
+    has_date: false
+    has_time: true
+    icon: mdi:timer
 
+  alarm_standard_homeoffice:
+    name: Wecker Home Office
+    has_date: false
+    has_time: true
+    icon: mdi:timer
+    
 input_boolean:
   alarm_aktiv:
     name: Wecker aktiv    
@@ -23,15 +36,6 @@ input_boolean:
     
   wecker_zeit_geaendert:
     name: Zeit geändert     
-
-input_text:
-  alarm_standard_buero:
-    name: Wecker Büro
-    initial: '05:15'
-    
-  alarm_standard_homeoffice:
-    name: Wecker Home Office 
-    initial: '06:00'    
     
 binary_sensor:
   - platform: template
@@ -45,15 +49,15 @@ binary_sensor:
       wecker_richtig_gestellt:
         friendly_name: Wecker richtig gestellt
         value_template: >-
-          {% set wecker_zeit = as_timestamp(states('sensor.tablet_schlafzimmer_nachster_wecker')) | timestamp_custom("%H:%M", True) %}
-          {% set wecker_standard_buero = states('input_text.alarm_standard_buero') %}
-          {% set wecker_standard_homeoffice = states('input_text.alarm_standard_homeoffice') %}     
+          {% set wecker_zeit = as_timestamp(states('sensor.tablet_schlafzimmer_nachster_wecker')) | timestamp_custom("%H:%M:%S", True) %}
+          {% set wecker_standard_buero = states('input_datetime.alarm_standard_buero') %}
+          {% set wecker_standard_homeoffice = states('input_datetime.alarm_standard_homeoffice') %}     
 
           {% set tagWecker = as_timestamp(states('sensor.tablet_schlafzimmer_nachster_wecker')) | timestamp_custom("%d", True) | int %}
           {% set tagHeute = as_timestamp(now()) | timestamp_custom("%d", True) | int %}
 
           {% set buero_morgen = is_state('binary_sensor.buero_morgen', 'on') %}
-          {% set buero_heute = is_state('calendar.arbeit_buero', 'on') %}
+          {% set buero_heute = is_state('binary_sensor.buero_heute', 'on') %}
 
           {% if wecker_zeit == None %}
             False
@@ -113,22 +117,17 @@ automation:
       - platform: template
         value_template: >-
           {% set jetzt = as_timestamp(states('sensor.date_time').replace(',','')) | int %}         
-          {% set vorlauf = (states('input_number.alarmadvance' ) | int) * 60  %}
+          {% set vorlauf = (states('input_number.wecker_vorlauf' ) | int) * 60  %}
           {% set wecker = as_timestamp(states('sensor.tablet_schlafzimmer_nachster_wecker')) | int %}
           
           {{ wecker == jetzt + vorlauf }}
     condition:
-      condition: and
-      conditions:
-        - condition: numeric_state
-          entity_id: sensor.laufzeit_minuten
-          above: 5
-        - condition: state
-          entity_id: input_boolean.alarm_aktiv
-          state: 'off'        
-        - condition: state
-          entity_id: binary_sensor.schlafen_aktiv
-          state: 'on'
+      - condition: state
+        entity_id: input_boolean.alarm_aktiv
+        state: 'off'        
+      - condition: state
+        entity_id: binary_sensor.schlafen_aktiv
+        state: 'on'
     action:
       - service: input_boolean.turn_on
         entity_id: input_boolean.alarm_aktiv  
@@ -138,10 +137,11 @@ automation:
           effect: colorloop
       - service: switch.turn_on
         entity_id: switch.schlafzimmer_radio               
-      - delay: "00:{{ states('input_number.alarmdelay') | int }}:00" 
+      - delay: "00:{{ states('input_number.wecker_verzoegerung') | int }}:00" 
       - service: script.wohnung_radios_einschalten
         data:
           homeOfficeHeute: "{{ is_state('binary_sensor.home_office_heute', 'on') }}"
+          bueroHeute: "{{ is_state('binary_sensor.buero_heute', 'on') }}"
 
   - alias: "Wecker - Zeit geändert"
     id: "wecker_zeit_geaendert"
@@ -149,12 +149,12 @@ automation:
       - platform: state
         entity_id: sensor.tablet_schlafzimmer_nachster_wecker
     condition:
-        - condition: state
-          entity_id: input_boolean.alarm_aktiv
-          state: 'on'        
-        - condition: state
-          entity_id: binary_sensor.schlafen_aktiv
-          state: 'on'    
+      - condition: state
+        entity_id: input_boolean.alarm_aktiv
+        state: 'on'        
+      - condition: state
+        entity_id: binary_sensor.schlafen_aktiv
+        state: 'on'    
     action:
       - service: input_boolean.turn_on
         entity_id: input_boolean.wecker_zeit_geaendert      
@@ -302,7 +302,7 @@ automation:
       - choose:
           - conditions:
               - condition: state
-                entity_id: calendar.arbeit_buero
+                entity_id: binary_sensor.buero_heute
                 state: 'on'
               - condition: or
                 conditions:

@@ -78,8 +78,10 @@ cards:
         name: Küche
       - entity: sensor.thermometer_sportzimmer_battery_level
         name: Sportzimmer
-      - entity: sensor.thermometer_hardware_battery_level
-        name: Hardware
+      - entity: sensor.thermometer_wohnzimmer_hardware_battery_level
+        name: Wohnzimmer Hardware
+      - entity: sensor.thermometer_arbeitszimmer_hardware_battery_level
+        name: Arbeitszimmer Hardware        
 
   - type: entities
     title: Fenster

@@ -11,12 +11,12 @@ sensor:
       gaeste_wlan_ssid:
         friendly_name: "Gäste-Wlan SSID"
         value_template: "{{ states('input_text.guest_wifi_ssid') }}"
-        icon_template: "{{ 'mdi:wifi' if is_state('switch.fritz_box_7272_guest_wifi', 'on') else 'mdi:wifi-off' }}"
+        icon_template: "{{ 'mdi:wifi' if is_state('switch.fritz_box_7272_wi_fi_pretty_fly_for_a_wifi', 'on') else 'mdi:wifi-off' }}"
             
       gaeste_wlan_password:
         friendly_name: "Gäste-Wlan Passwort"
         value_template: "{{ states('input_text.guest_wifi_password') }}"
-        icon_template: "{{ 'mdi:wifi-strength-4-lock' if is_state('switch.fritz_box_7272_guest_wifi', 'on') else 'mdi:wifi-strength-lock-outline' }}"
+        icon_template: "{{ 'mdi:wifi-strength-4-lock' if is_state('switch.fritz_box_7272_wi_fi_pretty_fly_for_a_wifi', 'on') else 'mdi:wifi-strength-lock-outline' }}"
             
       heimnetz_offline:
         friendly_name: Geräte offline
@@ -40,7 +40,7 @@ automation:
     id: "gaeste_wlan_eingeschaltet"
     trigger:
       - platform: state
-        entity_id: switch.fritz_box_7272_guest_wifi
+        entity_id: switch.fritz_box_7272_wi_fi_pretty_fly_for_a_wifi
         from: 'off'
         to: 'on'
     action:
@@ -55,7 +55,7 @@ automation:
     id: "gaeste_wlan_ausgeschaltet"
     trigger:
       - platform: state
-        entity_id: switch.fritz_box_7272_guest_wifi
+        entity_id: switch.fritz_box_7272_wi_fi_pretty_fly_for_a_wifi
         from: 'on'
         to: 'off'
     action:

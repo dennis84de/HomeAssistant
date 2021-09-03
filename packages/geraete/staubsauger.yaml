@@ -5,6 +5,16 @@ input_boolean:
   staubsauger_automatische_reinigung_gestartet:
     name: Automatische Reinigung gestartet    
     
+input_select:
+  staubsauger_reinigen:
+    name: Reinigen
+    options:
+      - Auswählen
+      - Filter
+      - Bürste
+      - Seitenbürste
+      - Sensor
+      
 binary_sensor:
   - platform: template
     sensors:
@@ -225,3 +235,32 @@ automation:
         entity_id: counter.behaelter_leeren
       - service: vacuum.return_to_base
         entity_id: vacuum.roborock_vacuum        
+        
+  - alias: "Staubsaugen - Reinigen"
+    id: "staubsaugen_reinigen"
+    trigger:
+      - platform: state
+        entity_id: input_select.staubsauger_reinigen
+    condition:
+      - "{{ trigger.to_state.state != 'Auswählen' }}"
+    action:          
+      - service: vacuum.send_command
+        target:
+          entity_id: vacuum.roborock_vacuum
+        data:
+          command: reset_consumable
+          params: >-
+            {% if trigger.to_state.state == 'Filter' %}
+              ['filter_work_time']
+            {% elif trigger.to_state.state == 'Bürste' %}
+              ['main_brush_work_time']
+            {% elif trigger.to_state.state == 'Seitenbürste' %}
+              ['side_brush_work_time']
+            {% else %}
+              ['sensor_dirty_time']
+            {% endif %}
+      - delay: '00:00:02'            
+      - service: input_select.select_option
+        data:
+          entity_id: input_select.staubsauger_reinigen
+          option: Auswählen

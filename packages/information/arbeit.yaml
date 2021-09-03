@@ -1,3 +1,27 @@
+input_select:
+  arbeit_puffer:
+    name: Puffer
+    options:
+      - "10"
+      - "20"
+      - "30"
+    icon: mdi:timelapse         
+
+input_datetime:
+  arbeit_beginn:
+    name: Arbeit Beginn
+    has_date: false
+    has_time: true
+    icon: mdi:timer
+
+input_number:
+  arbeit_beginn_wecker:
+    name: Arbeit Beginn Wecker
+    min: 0   
+    max: 180
+    step: 5
+    icon: mdi:timer-sand
+    
 sensor:
   - platform: here_travel_time
     name: Fahrzeit zur Arbeit
@@ -24,14 +48,17 @@ sensor:
         icon_template: mdi:clock-start
         unit_of_measurement: 'Uhr'
         value_template: >-
-          {% set minuten_arbeit = (states('input_select.arbeit_stunden') | int * 60) + (states('input_select.arbeit_minuten') | int) | int %}
-          {% set verzoegerung_wetter = (10 if is_state('binary_sensor.schlechtes_wetter', 'on') else 0) %}
-          {% set minuten_minus_fahrzeit = (minuten_arbeit - states('sensor.fahrzeit_zur_arbeit') | int) - (states('input_select.arbeit_puffer') | int) - (verzoegerung_wetter | int) | int %}
-          {% set stunde_abfahrt = (minuten_minus_fahrzeit / 60) | int %}
-          {% set minuten_abfahrt = (minuten_minus_fahrzeit - stunde_abfahrt * 60) | int %}
-          {% set abfahrt = "%0.02d:%0.02d" | format(stunde_abfahrt, minuten_abfahrt ) %}
+          {% set fahrzeitMinuten = states('sensor.fahrzeit_zur_arbeit') | int %}
+          {% set beginnMinuten = (state_attr('input_datetime.arbeit_beginn', 'timestamp') / 60) | int %}
+          {% set pufferMinuten = states('input_select.arbeit_puffer') | int %}
+          {% set verzoegerungWetter = (10 if is_state('binary_sensor.schlechtes_wetter', 'on') else 0) %}
 
-          {{ abfahrt }}
+          {% set abfahrzeitMinuten = beginnMinuten - fahrzeitMinuten - pufferMinuten - verzoegerungWetter %}
+          {% set stundeAbfahrt = (abfahrzeitMinuten / 60) | int %}
+          {% set minuteAbfahrt = (abfahrzeitMinuten - stundeAbfahrt * 60) | int %}
+          {% set uhrzeitAbfahrt = "%0.02d:%0.02d" | format(stundeAbfahrt, minuteAbfahrt ) %}
+
+          {{ uhrzeitAbfahrt }}
 
 binary_sensor:
   - platform: workday
@@ -47,9 +74,19 @@ binary_sensor:
     
   - platform: template
     sensors:
+      buero_heute:
+        friendly_name: 'Büro heute'
+        value_template: >-
+          {% set istBuero = is_state('calendar.arbeit_buero', 'on') %}         
+          {% set istHomeOffice = is_state('input_boolean.home_office', 'on') %}
+          {% set istArbeitstag = is_state('binary_sensor.arbeitstag', 'on') %}
+          {% set keinUrlaub = is_state('calendar.urlaub', 'off') %}
+          {% set nichtKrank = is_state('calendar.arbeit_krank', 'off') %}
+
+          {{ True if (istBuero and istArbeitstag and keinUrlaub and nichtKrank) else False }}
+          
       buero_morgen:
         friendly_name: 'Büro morgen'
-        device_class: opening
         value_template: >-
           {% set NextOffice = state_attr('calendar.arbeit_buero', 'start_time') %}
           
@@ -60,36 +97,17 @@ binary_sensor:
 
             {{ NextOfficeTime.strftime('%j')|int - now().strftime('%j')|int == 1 }}          
           {% endif %}
-    
-input_select:
-  arbeit_stunden:
-    name: Stunde
-    options:
-      - 5
-      - 6
-      - 7
-    icon: mdi:av-timer
+          
+      infos_buero_anzeigen:
+        friendly_name: 'Infos anzeigen'        
+        value_template: >-
+          {% set buero_heute = is_state('binary_sensor.buero_heute', 'on') %}
+          {% set buero_morgen = is_state('binary_sensor.buero_morgen', 'on') %}
+          {% set arbeitstag = is_state('binary_sensor.arbeitstag', 'on') %}
+          {% set keinUrlaub = is_state('calendar.urlaub', 'off') %}
+          
+          {{ keinUrlaub and arbeitstag and (buero_heute or buero_morgen) }}
 
-  arbeit_minuten:
-    name: Minute
-    options:
-      - 0
-      - 10
-      - 20
-      - 30
-      - 40
-      - 50
-    icon: mdi:timer
-
-  arbeit_puffer:
-    name: Puffer
-    options:
-      - 0
-      - 10
-      - 20
-      - 30
-    icon: mdi:timelapse         
-        
 automation:             
   - alias: 'Benachrichtigung Arbeit'
     id: "benachrichtigung_arbeit"
@@ -97,14 +115,51 @@ automation:
       - platform: template
         value_template: '{{ states("sensor.time") == states("sensor.abfahrzeit") }}'
     condition:
-      - condition: state
-        entity_id: binary_sensor.home_office_heute
-        state: 'off'      
+      - condition: template
+        value_template: >-        
+          {% set istBuero = is_state('binary_sensor.buero_heute', 'on') %}          
+          {% set istArbeitstag = is_state('binary_sensor.arbeitstag', 'on') %}
+          {% set keinUrlaub = is_state('calendar.urlaub', 'off') %}
+          {% set nichtKrank = is_state('calendar.arbeit_krank', 'off') %}
+
+          {{ True if (istBuero and istArbeitstag and keinUrlaub and nichtKrank) else False }}        
     action:
       - service: !secret tts_service
         data:
           message: >-
             "Es ist Zeit zur Arbeit zu fahren. Die aktuelle Fahrzeit beträgt {{ states('sensor.fahrzeit_zur_arbeit') }} Minuten.{% if is_state('binary_sensor.schlechtes_wetter', 'on') %} Aktuell ist mit {{ states('sensor.wetterlage') }} zu rechnen.{% endif %}"
+
+  - alias: 'Arbeitsbeginn geändert'
+    id: "arbeitsbeginn_geaendert"
+    trigger:
+      - platform: state
+        entity_id: input_datetime.arbeit_beginn
+      - platform: state
+        entity_id: input_number.arbeit_beginn_wecker        
+    condition:
+      - condition: or
+        conditions:
+          - condition: state
+            entity_id: binary_sensor.buero_heute
+            state: 'on'
+          - condition: state
+            entity_id: binary_sensor.buero_morgen
+            state: 'on'
+    action:
+      - service: input_datetime.set_datetime
+        target:
+          entity_id: input_datetime.alarm_standard_buero
+        data:
+          time: >-
+            {% set arbeitBeginnInMinuten = (state_attr('input_datetime.arbeit_beginn', 'timestamp') / 60 ) | int %}
+            {% set vorlaufInMinuten = states('input_number.arbeit_beginn_wecker') | int %}
+            {% set weckerInMinuten = (arbeitBeginnInMinuten -  vorlaufInMinuten) | int %}
+
+            {% set weckerStunden = (weckerInMinuten / 60) |int %}
+            {% set weckerMinuten = (weckerInMinuten - (weckerStunden * 60)) | int %}
+            {% set weckerUhrzeit = "%0.02d:%0.02d" | format(weckerStunden, weckerMinuten ) %}
+
+            {{ weckerUhrzeit }}          
 
   - alias: "Fahrzeit nach Hause"
     id: "fahrzeit_nach_hause"

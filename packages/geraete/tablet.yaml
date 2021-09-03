@@ -122,75 +122,34 @@ automation:
           - sensor.tablet_badezimmer_batterie
           - sensor.tablet_kuche_batterie
           - sensor.tablet_balkon_batterie
-      - platform: state
-        entity_id: binary_sensor.zu_hause
-        to: 'on'
-        for:
-          minutes: 3
     condition:               
       - condition: template
         value_template: >-
-          {% if trigger.entity_id == 'binary_sensor.zu_hause' %}
-          
-            {% set tablets = expand('group.tablets') %}
-            {% set min_battery_level = states('input_number.batteriestand_warnlevel') | int -%}
-            {% set ns = namespace(found=False) -%}
+          {% set min_battery_level = states('input_number.batteriestand_warnlevel') | int -%}
 
-            {% for x in tablets if x.state|int <= min_battery_level and x.attributes.is_charging == False %}
-              {% set ns.found = True -%}
-            {% endfor %}  
-
-            {{ ns.found == True }}          
-          {% else %}
-            {% set min_battery_level = states('input_number.batteriestand_warnlevel') | int -%}
-            
-            {{ states('trigger.to_state.state') <= min_battery_level and state_attr('trigger.to_state.state', 'is_charging') == False }}
-          {% endif %}      
+          {{ (trigger.to_state.state | int) <= min_battery_level and trigger.to_state.attributes.is_charging == False }}  
     action:
       - service: !secret tts_service
         data:
           message: >-
-            {% if trigger.entity_id == 'binary_sensor.zu_hause' %}
+            {% set tablet = trigger.entity_id %}
+            {% set tabletBatteriestand =  trigger.to_state.state | int %}
 
-              {% set tablets = expand('group.tablets') %}
-              {% set min_battery_level = states('input_number.batteriestand_warnlevel') | int -%}
-              {% set ns = namespace(found=0) -%}
-              
-              {% for x in tablets if x.state|int <= min_battery_level and x.attributes.is_charging == False %}
-                {% set ns.found = ns.found + 1 -%}
-              {% endfor %}
-
-              {% if (ns.found | int) == 1 %}
-                Der Batteriestand von dem folgenden Gerät ist niedrig.
-              {% elif (ns.found | int) > 1 %}
-                Der Batteriestand der folgenden Geräte ist niedrig.
-              {% endif %}
-
-              {% for x in tablets if x.state|int <= min_battery_level and x.attributes.is_charging == False %}
-                {%- if not loop.first %}, {% endif -%}
-                {{- x.name -}}
-              {% endfor %}
-
+            {% if tablet == 'sensor.tablet_wohnzimmer_batterie' %}
+              {% set tabletName = 'im Wohnzimmer' %}
+            {% elif tablet == 'sensor.tablet_schlafzimmer_batterie' %}
+              {% set tabletName = 'im Schlafzimmer' %}       
+            {% elif tablet == 'sensor.tablet_badezimmer_batterie' %}
+              {% set tabletName = 'im Badezimmer' %}   
+            {% elif tablet == 'sensor.tablet_kuche_batterie' %}
+              {% set tabletName = 'in der Küche' %}   
+            {% elif tablet == 'sensor.tablet_balkon_batterie' %}
+              {% set tabletName = 'auf dem Balkon' %}     
             {% else %}
-              {% set tablet = trigger.entity_id %}
-              {% set tabletBatteriestand =  states('trigger.to_state.state') | int %}
-              
-              {% if tablet == 'sensor.tablet_wohnzimmer_batterie' %}
-                {% set tabletName = 'im Wohnzimmer' %}
-              {% elif tablet == 'sensor.tablet_schlafzimmer_batterie' %}
-                {% set tabletName = 'im Schlafzimmer' %}       
-              {% elif tablet == 'sensor.tablet_badezimmer_batterie' %}
-                {% set tabletName = 'im Badezimmer' %}   
-              {% elif tablet == 'sensor.tablet_kuche_batterie' %}
-                {% set tabletName = 'in der Küche' %}   
-              {% elif tablet == 'sensor.tablet_balkon_batterie' %}
-                {% set tabletName = 'auf dem Balkon' %}     
-              {% else %}
-                {% set tabletName = '' %}
-              {% endif %}
-              
-              {{ "Das Tablet " ~ tabletName ~ " muss aufgeladen werden. Der Batteriestand beträgt " ~ tabletBatteriestand ~ " Prozent." }}
+              {% set tabletName = '' %}
             {% endif %}
+
+            {{ "Das Tablet " ~ tabletName ~ " muss aufgeladen werden. Der Batteriestand beträgt " ~ tabletBatteriestand ~ " Prozent." }}
     
   - alias: "Tablet - Aufgeladen"
     id: "tablet_aufgeladen"
@@ -202,70 +161,30 @@ automation:
           - sensor.tablet_badezimmer_batterie
           - sensor.tablet_kuche_batterie
           - sensor.tablet_balkon_batterie
-      - platform: state
-        entity_id: binary_sensor.zu_hause
-        to: 'on'
-        for:
-          minutes: 4
     condition:
       - condition: template
-        value_template: >-
-          {% if trigger.entity_id == 'binary_sensor.zu_hause' %}         
-            {% set ns = namespace(found=false) -%}
-            {% set tablets = expand('group.tablets') %}
-            
-            {% for x in tablets if x.state|int > 99 and x.attributes.is_charging == True %}             
-              {% set ns.found = true -%}
-            {% endfor %}  
-
-            {{ ns.found == True }}          
-          {% else %}            
-            {{ states('trigger.to_state.state') > 99 and state_attr('trigger.to_state.state', 'is_charging') == True }}
-          {% endif %}      
+        value_template: "{{ (trigger.to_state.state | int) > 99 and trigger.to_state.attributes.is_charging == True }}"
     action:
       - service: !secret tts_service
         data:
           message: >-
-            {% if trigger.entity_id == 'binary_sensor.zu_hause' %}
+            {% set tablet = trigger.entity_id %}
 
-              {% set tablets = expand('group.tablets') %}
-              {% set min_battery_level = states('input_number.batteriestand_warnlevel') | int -%}
-              {% set ns = namespace(found=0) -%}
-              
-              {% for x in tablets if x.state|int > 99 and x.attributes.is_charging == True %}
-                {% set ns.found = ns.found + 1 -%}
-              {% endfor %}
-
-              {% if (ns.found | int) == 1 %}
-                Das folgende Gerät wurde vollständig aufgeladen.
-              {% elif (ns.found | int) > 1 %}
-                Die folgenden Geräte wurden vollständig aufgeladen.
-              {% endif %}
-
-              {% for x in tablets if x.state|int > 99 and x.attributes.is_charging == True %}
-                {%- if not loop.first %}, {% endif -%}
-                {{- x.name -}}
-              {% endfor %}
-
+            {% if tablet == 'sensor.tablet_wohnzimmer_batterie' %}
+              {% set tabletName = 'im Wohnzimmer' %}
+            {% elif tablet == 'sensor.tablet_schlafzimmer_batterie' %}
+              {% set tabletName = 'im Schlafzimmer' %}       
+            {% elif tablet == 'sensor.tablet_badezimmer_batterie' %}
+              {% set tabletName = 'im Badezimmer' %}   
+            {% elif tablet == 'sensor.tablet_kuche_batterie' %}
+              {% set tabletName = 'in der Küche' %}   
+            {% elif tablet == 'sensor.tablet_balkon_batterie' %}
+              {% set tabletName = 'auf dem Balkon' %}     
             {% else %}
-              {% set tablet = trigger.entity_id %}
-              
-              {% if tablet == 'sensor.tablet_wohnzimmer_batterie' %}
-                {% set tabletName = 'im Wohnzimmer' %}
-              {% elif tablet == 'sensor.tablet_schlafzimmer_batterie' %}
-                {% set tabletName = 'im Schlafzimmer' %}       
-              {% elif tablet == 'sensor.tablet_badezimmer_batterie' %}
-                {% set tabletName = 'im Badezimmer' %}   
-              {% elif tablet == 'sensor.tablet_kuche_batterie' %}
-                {% set tabletName = 'in der Küche' %}   
-              {% elif tablet == 'sensor.tablet_balkon_batterie' %}
-                {% set tabletName = 'auf dem Balkon' %}     
-              {% else %}
-                {% set tabletName = '' %}
-              {% endif %}
-              
-              {{ "Das Tablet " ~ tabletName ~ " wurde vollständig aufgeladen." }}
+              {% set tabletName = '' %}
             {% endif %}
+
+            {{ "Das Tablet " ~ tabletName ~ " wurde vollständig aufgeladen." }}            
     
 homeassistant:
   customize:

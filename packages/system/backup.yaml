@@ -1,9 +1,9 @@
-sensor:
-  - platform: template
-    sensors:         
-      backup_status:
-        friendly_name: "Status"
-        value_template: >-
+template:
+  - sensor:
+      - name: "Samba Backup Status"
+        unique_id: backup_status
+        icon: mdi:nas
+        state: >
           {% set backupStatus = states('sensor.samba_backup') %}
 
           {% if backupStatus == 'IDLE' %}
@@ -17,11 +17,11 @@ sensor:
           {% else %} 
             Unbekannt
           {% endif %}
-        icon_template: "mdi:nas"
         
-      backup_letztes_backup:
-        friendly_name: "Letztes Backup"
-        value_template: >-
+      - name: "Samba Letztes Backup"
+        unique_id: backup_last_update
+        icon: mdi:update
+        state: >
           {% if state_attr('sensor.samba_backup', 'last_backup') %}
             {% set weekday = as_timestamp(state_attr('sensor.samba_backup', 'last_backup')) | timestamp_custom("%w", True) | int %}
 
@@ -29,4 +29,3 @@ sensor:
           {% else %}
             -
           {% endif %}
-        icon_template: "mdi:update"

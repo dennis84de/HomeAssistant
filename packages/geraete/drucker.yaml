@@ -34,75 +34,19 @@ sensor:
     state_topic: "printer/waste"    
     
 automation:
-  - alias: "Drucker - Patrone Schwarz"
-    id: "drucker_patrone_schwarz"
+  - alias: "Drucker - Tintenstand"
+    id: "drucker_tintenstand"
     trigger:
       - platform: state
         entity_id: sensor.ink_level_black
-    condition:
-      - condition: state
-        entity_id: device_tracker.epsondrucker
-        state: 'home'
-    action:
-      - service: mqtt.publish
-        data:
-          topic: printer/black
-          retain: true
-          payload: '{{ states("sensor.ink_level_black") }}'
-          
-  - alias: "Drucker - Patrone Magenta"
-    id: "drucker_patrone_magenta"
-    trigger:
       - platform: state
         entity_id: sensor.ink_level_magenta
-    condition:
-      - condition: state
-        entity_id: device_tracker.epsondrucker
-        state: 'home'     
-    action:
-      - service: mqtt.publish
-        data:
-          topic: printer/magenta
-          retain: true
-          payload: '{{ states("sensor.ink_level_magenta") }}'
-          
-  - alias: "Drucker - Patrone Gelb"
-    id: "drucker_patrone_gelb"
-    trigger:
       - platform: state
         entity_id: sensor.ink_level_yellow
-    condition:
-      - condition: state
-        entity_id: device_tracker.epsondrucker
-        state: 'home'
-    action:
-      - service: mqtt.publish
-        data:
-          topic: printer/yellow
-          retain: true
-          payload: '{{ states("sensor.ink_level_yellow") }}'
-          
-  - alias: "Drucker - Patrone Cyan"
-    id: "drucker_patrone_cyan"
-    trigger:
       - platform: state
         entity_id: sensor.ink_level_cyan
-    condition:
-      - condition: state
-        entity_id: device_tracker.epsondrucker
-        state: 'home'     
-    action:
-      - service: mqtt.publish
-        data:
-          topic: printer/cyan
-          retain: true
-          payload: '{{ states("sensor.ink_level_cyan") }}'
-          
-  - alias: "Drucker - Patrone Abfall"
-    id: "drucker_patrone_abfall"
-    trigger:
       - platform: state
-        entity_id: sensor.cleaning_level
+        entity_id: sensor.cleaning_level        
     condition:
       - condition: state
         entity_id: device_tracker.epsondrucker
@@ -110,9 +54,20 @@ automation:
     action:
       - service: mqtt.publish
         data:
-          topic: printer/waste
+          topic: >-
+            {% if trigger.entity_id == 'sensor.ink_level_black' %}
+              printer/black
+            {% elif trigger.entity_id == 'sensor.ink_level_magenta' %}
+              printer/magenta
+            {% elif trigger.entity_id == 'sensor.ink_level_yellow' %}
+              printer/yellow
+            {% elif trigger.entity_id == 'sensor.ink_level_cyan' %}
+              printer/cyan
+            {% elif trigger.entity_id == 'sensor.cleaning_level' %}
+              printer/waste
+            {% endif %}
           retain: true
-          payload: '{{ states("sensor.cleaning_level") }}'          
+          payload: "{{ states(trigger.entity_id) }}"          
 
 homeassistant:
   customize:

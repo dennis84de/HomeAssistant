@@ -41,7 +41,7 @@ binary_sensor:
         friendly_name: Youtube aktiv
         icon_template: "mdi:youtube-tv"
         value_template: "{{ is_state('input_boolean.youtube_wohnzimmer_aktiv', 'on') }}"
-    
+        
 cover:
   - platform: template
     covers:
@@ -185,6 +185,7 @@ automation:
         from: 'off'
         to: 'idle'
     condition:
+      - "{{ (states('sensor.laufzeit_minuten') | float) > 1 }}"      
       - condition: template
         value_template: >-
           {% if is_state('switch.wohnzimmer_radio', 'on')
@@ -200,11 +201,8 @@ automation:
           {% endif %}        
       - condition: state
         state: 'on'
-        entity_id: input_boolean.musik_ausschalten
-      - condition: numeric_state
-        entity_id: sensor.laufzeit_minuten
-        above: 2
-    action:
+        entity_id: input_boolean.musik_ausschalten      
+    action:  
       - service: script.radios_pausieren
       - service: switch.turn_off
         entity_id: switch.wohnzimmer_radio, switch.balkon_radio, switch.flur_radio, switch.kuche_radio, switch.schlafzimmer_radio, switch.arbeitszimmer_radio     
@@ -394,9 +392,10 @@ automation:
         entity_id: binary_sensor.computer_mozilla_firefox_fullscreen
 #        entity_id: binary_sensor.computer_youtube
     condition:
-      - '{{ is_state("binary_sensor.computer_mozilla_firefox_fullscreen", "unavailable") == False }}'
+      - "{{ is_state('binary_sensor.computer_mozilla_firefox_fullscreen', 'unavailable') == False }}"
+      - "{{ trigger.to_state.state != states('input_boolean.youtube_wohnzimmer_aktiv') }}"
     action:
-      - service: input_boolean.turn_{{ trigger.to_state.state }}
+      - service: input_boolean.toggle
         entity_id: input_boolean.youtube_wohnzimmer_aktiv           
         
   - alias: "Youtube Wohnzimmer - Starten"
@@ -435,10 +434,7 @@ automation:
     condition:
       - condition: state
         entity_id: media_player.soundbar
-        state: 'on'
-      - condition: numeric_state
-        entity_id: sensor.laufzeit_minuten
-        above: 5       
+        state: 'on'      
       - condition: template
         value_template: >-
           {% set now = as_timestamp(now()) | int %}
@@ -446,7 +442,7 @@ automation:
           {% set diff = ((now - last)) | int %}
 
           {{ diff >= 5 }}        
-    action:
+    action:  
       - service: media_player.volume_set
         data:
           entity_id: media_player.soundbar

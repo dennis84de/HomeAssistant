@@ -107,8 +107,7 @@ cards:
       - entity: input_boolean.uhr_einschalten
       - entity: input_boolean.besuch
       - entity: input_boolean.nicht_stoeren  
-      - entity: input_boolean.wetter_warnungen_einschalten          
-      - entity: input_boolean.licht_simulation
+      - entity: input_boolean.wetter_warnungen_einschalten
       - entity: script.alexa_witz_gestartet
       
   - type: entities
@@ -141,7 +140,7 @@ cards:
     title: Gäste Wlan
     show_header_toggle: false
     entities:
-      - entity: switch.fritz_box_7272_guest_wifi
+      - entity: switch.fritz_box_7272_wi_fi_pretty_fly_for_a_wifi
         name: Gastzugang
         tap_action:
            action: toggle

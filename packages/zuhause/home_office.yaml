@@ -22,19 +22,11 @@ input_select:
       - Ruhezustand
       - Herunterfahren
       - Nichts unternehmen
-   
-input_text:
-  teams_status:
-    name: Microsoft Teams Status
-    icon: mdi:microsoft-teams
-  teams_activity:
-    name: Microsoft Teams Activity
-    icon: mdi:microsoft-teams    
     
 binary_sensor:
   - platform: mqtt
     name: "Computer Arbeit"
-    state_topic: "homeassistant/sensor/JAESCHKE-PC/availability"
+    state_topic: "homeassistant/sensor/PC-DJAESCHKE/availability"
     payload_on: "online"
     payload_off: "offline"
     device_class: connectivity
@@ -55,27 +47,8 @@ binary_sensor:
       home_office_aktiv:
         friendly_name: 'Home Office aktiv'
         icon_template: mdi:home-city
-        value_template: >-
-          {% set homeOfficeHeute = is_state('binary_sensor.home_office_heute', 'on') %}
-          {% set homeOfficeAktiv = is_state('input_boolean.home_office_aktiv', 'on') %}
+        value_template: "{{ is_state('input_boolean.home_office_aktiv', 'on') }}"
 
-          {{ True if (homeOfficeHeute and homeOfficeAktiv) else False }}
-      
-sensor:
-  - platform: template
-    sensors:
-      teams_status:
-        friendly_name: "Microsoft Teams - Status"
-        value_template: "{{states('input_text.teams_status')}}"
-        icon_template: "{{state_attr('input_text.teams_status', 'icon')}}"
-        unique_id: sensor.teams_status
-        
-      teams_activity:
-        friendly_name: "Microsoft Teams - Aktivität"
-        value_template: "{{states('input_text.teams_activity')}}"
-        icon_template: "{{state_attr('input_text.teams_activity', 'icon')}}"
-        unique_id: sensor.teams_activity          
-          
 switch:
   - platform: template
     switches:
@@ -86,7 +59,7 @@ switch:
         turn_on:
           service: wake_on_lan.send_magic_packet
           data:
-            mac: !secret computerarbeit_mac
+            mac: !secret computer_arbeit_mac
             broadcast_address: !secret fritzbox_broadcast
             broadcast_port: 9
         turn_off:
@@ -190,7 +163,7 @@ automation:
         entity_id: binary_sensor.home_office_heute
         state: 'on'       
       - condition: state
-        entity_id: input_boolean.home_office_aktiv
+        entity_id: binary_sensor.home_office_aktiv
         state: 'off'     
     action:
       - service: script.home_office_start
@@ -203,7 +176,7 @@ automation:
         to: '2'      
     condition:
       - condition: state
-        entity_id: input_boolean.home_office_aktiv
+        entity_id: binary_sensor.home_office_aktiv
         state: 'on'
       - condition: state
         entity_id: timer.home_office_ende

@@ -444,9 +444,8 @@ automation:
   - alias: "Balkontür schließen"
     id: "balkontuer_schliessen"
     trigger:
-      platform: template
-      value_template: >-
-        {{ states('sensor.balkon_temperatur') | float > states('sensor.wohnzimmer_temperatur') | float + 2 }}
+      - platform: template
+        value_template: "{{ states('sensor.balkon_temperatur') | float > states('sensor.wohnzimmer_temperatur') | float + 2 }}"
     condition:       
       - condition: or
         conditions:
@@ -456,7 +455,6 @@ automation:
           - condition: state
             entity_id: binary_sensor.fenster_wohnzimmer
             state: 'on'
-      - "{{ (states('sensor.laufzeit_minuten') | float) > 0 }}"
       - "{{ (states('sensor.wohnzimmer_temperatur') | float) > 0 }}"
       - "{{ (states('sensor.balkon_temperatur') | float) > 23 }}"  
     action:

@@ -62,8 +62,7 @@ automation:
         entity_id: calendar.urlaub
         state: 'on'        
     action:
-      - service: input_boolean.turn_on
-        entity_id: input_boolean.licht_simulation
+      - service: presence_simulation.start
 
   - alias: "Telegram - Unterwegs Status"
     id: "telegram_unterwegs_status"
@@ -261,14 +260,6 @@ script:
         entity_id: switch.alle_radios, switch.monitor, switch.pc, switch.schlafzimmer_fernseher, switch.watchtv_wohnzimmer, switch.watchtv_schlafzimmer, switch.arbeitszimmer_monitore, switch.pc_arbeit
       - service: light.turn_off
         entity_id: light.wohnzimmer_couch, light.wohnzimmer_strahler, light.flur_vorne, light.flur_hinten, light.badezimmerschrank, light.bett, light.kleiderschrank, light.kuche_regal, light.kuche_schrank, light.schreibtisch, light.balkon_licht, light.arbeitszimmer_lampe, light.sportzimmer_regal     
-      - choose:
-          - conditions:
-              - condition: state
-                entity_id: input_boolean.licht_simulation
-                state: 'on'
-            sequence:
-              - service: switch.turn_on
-                entity_id: switch.presence_simulation
       - service: input_select.select_option
         data:
           entity_id: input_select.computer_ausschalten  

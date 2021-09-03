@@ -54,12 +54,12 @@ browser_mod:
     - all
 
 zone:
-  - name: home
+  - name: Zu Hause
     latitude: !secret home_latitude
     longitude: !secret home_longitude
-    radius: 60
+    radius: 50
     icon: mdi:home-account
-  - name: work
+  - name: Arbeit
     latitude: !secret work_latitude
     longitude: !secret work_longitude
     radius: 70

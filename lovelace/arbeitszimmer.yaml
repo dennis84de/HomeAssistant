@@ -38,6 +38,14 @@ cards:
       - entity: sensor.helligkeit_arbeitszimmer
 
   - type: glance
+    title: Hardware
+    show_header_toggle: false
+    entities:
+      - entity: sensor.arbeitszimmer_hardware_temperatur
+      - entity: sensor.arbeitszimmer_hardware_luftfeuchtigkeit
+      - entity: sensor.arbeitszimmer_hardware_luftdruck
+      
+  - type: glance
     title: Heizung
     show_header_toggle: false
     entities:
@@ -58,15 +66,6 @@ cards:
         name: Computer ausschalten          
 
   - type: entities
-    title: Microsoft Teams
-    show_header_toggle: false
-    entities:
-      - entity: sensor.teams_status
-        name: Status
-      - entity: sensor.teams_activity
-        name: Aktivität
-
-  - type: entities
     title: Staubsauger
     show_header_toggle: false
     entities:
@@ -76,12 +75,13 @@ cards:
         name: Batteriestand
       - entity: binary_sensor.reinigung_heute
       - entity: sensor.letzte_reinigung
+      - entity: counter.behaelter_leeren
       - type: divider
+      - entity: input_select.staubsauger_reinigen
       - entity: sensor.reinigung_filter
       - entity: sensor.reinigung_buerste
       - entity: sensor.reinigung_seitenbuerste
-      - entity: sensor.reinigung_sensor
-      - entity: counter.behaelter_leeren
+      - entity: sensor.reinigung_sensor          
 
   - type: entities
     title: Multimedia

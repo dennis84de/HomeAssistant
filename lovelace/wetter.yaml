@@ -151,8 +151,8 @@ cards:
       - entity: sensor.darksky_humidity
       - entity: sensor.darksky_pressure
       - entity: sensor.darksky_ozone
-      - entity: sensor.co2_belastung
-      - entity: sensor.co2_fossile_brennstoffe
+      - entity: sensor.co2_intensity        
+      - entity: sensor.grid_fossil_fuel_percentage
 
   - type: entities
     title: Pollen

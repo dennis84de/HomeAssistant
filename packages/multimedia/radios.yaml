@@ -221,19 +221,13 @@ script:
       - service: script.sync_radios
       - choose:
           - conditions:
-              - condition: template
-                value_template: "{{ is_state('binary_sensor.home_office_aktiv', 'off') and (homeOfficeHeute is not defined or homeOfficeHeute == False) }}"
-              - condition: template
-                value_template: '{{ now().isoweekday() != 7 }}'        
+              - "{{ is_state('binary_sensor.home_office_aktiv', 'off') and (homeOfficeHeute is not defined or homeOfficeHeute == False) }}"
+              - "{{ bueroHeute is not defined or bueroHeute == False }}"
+              - "{{ now().isoweekday() != 7 }}"
+              - "{{ (states('sensor.balkon_temperatur') | int) > 10 }}"
               - condition: time
                 after: '06:00'
                 before: '21:00'
-              - condition: numeric_state
-                entity_id: sensor.balkon_temperatur
-                above: 10
-              - condition: numeric_state
-                entity_id: sensor.laufzeit_minuten
-                above: 5
             sequence:            
               - service: switch.turn_on
                 entity_id: switch.balkon_radio

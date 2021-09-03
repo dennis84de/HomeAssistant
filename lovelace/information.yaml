@@ -96,7 +96,32 @@ cards:
         type: "custom:secondaryinfo-entity-row"              
         secondary_info: "[[ sensor.wecker_startdatum ]]"       
       - entity: binary_sensor.alarm_aktiv       
-              
+           
+  - type: conditional
+    view_layout:
+      column: 3  
+    conditions:
+      - entity: binary_sensor.infos_buero_anzeigen 
+        state: "on"
+    card:
+      type: entities
+      title: Arbeit
+      show_header_toggle: false
+      entities:
+        - entity: sensor.fahrzeit_zur_arbeit
+        - entity: sensor.fahrzeit_nach_hause
+        - type: divider
+        - entity: sensor.abfahrzeit      
+          type: "custom:secondaryinfo-entity-row"              
+          secondary_info: "[[ if(binary_sensor.schlechtes_wetter.state == 'on', '<b style='color:red'>Schlechtes Wetter</b>', '') ]]"        
+        - entity: input_datetime.arbeit_beginn
+          name: Arbeitsbeginn
+        - entity: input_number.arbeit_beginn_wecker
+          name: Vorlauf Wecker
+          type: "custom:secondaryinfo-entity-row"              
+          secondary_info: "[[ input_datetime.alarm_standard_buero ]]"            
+         
+      
   - type: conditional
     conditions:
       - entity: sensor.bvb_spiel
@@ -165,10 +190,8 @@ cards:
     view_layout:
       column: 2  
     conditions:
-      - entity: binary_sensor.home_office_heute 
-        state: "off"
-      - entity: binary_sensor.arbeitstag
-        state: "on"        
+      - entity: binary_sensor.infos_buero_anzeigen 
+        state: "on"
     card:        
       type: custom:mini-graph-card
       name: Fahrzeit
@@ -193,22 +216,3 @@ cards:
       - entity: binary_sensor.tankstelle_real_status
       - entity: sensor.tankstelle_jet
       - entity: binary_sensor.tankstelle_jet_status            
-      
-  - type: conditional
-    view_layout:
-      column: 3  
-    conditions:
-      - entity: binary_sensor.home_office_heute 
-        state: "off"
-      - entity: binary_sensor.arbeitstag
-        state: "on"
-    card:
-      type: entities
-      title: Arbeit
-      show_header_toggle: false
-      entities:
-      - entity: sensor.fahrzeit_zur_arbeit
-      - entity: sensor.fahrzeit_nach_hause
-      - entity: sensor.abfahrzeit      
-      - entity: binary_sensor.schlechtes_wetter      
-      - entity: binary_sensor.arbeitstag            
