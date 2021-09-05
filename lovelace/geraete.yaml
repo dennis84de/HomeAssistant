@@ -35,11 +35,20 @@ cards:
       - entity: sensor.wohnzimmer_hardware_luftdruck
 
   - type: entities
-    title: Synology Diskstation
+    title: Server
     show_header_toggle: false
     entities:
-      - entity: binary_sensor.diskstation
-        name: Verfügbarkeit
+      - entity: binary_sensor.healthchecks_diskstation        
+      - entity: binary_sensor.uptime_robot_nextcloud        
+      - entity: binary_sensor.healthchecks_djaeschke           
+
+  - type: entities
+    title: Nextcloud
+    show_header_toggle: false
+    entities:      
+      - entity: sensor.nextcloud_zertifikat_tage
+        name: Zertifikat
+      - entity: sensor.nextcloud_system_version     
 
   - type: entities
     title: Zigbee
@@ -130,9 +139,7 @@ cards:
       - entity: zigate.thermometer_kueche
         name: Küche
       - entity: zigate.thermometer_wohnzimmer_hardware
-        name: Wohnzimmer Hardware
-      - entity: zigate.thermometer_arbeitszimmer_hardware
-        name: Arbeitszimmer Hardware        
+        name: Hardware  
 
   - type: entities
     title: Sensoren

@@ -15,19 +15,8 @@ sensor:
         
           {{ 'mdi:network-off-outline' if nextcloudTimestamp == None else 'mdi:network-outline' }}        
         unit_of_measurement: 'Tage'
-                              
+
 nextcloud:
     url: !secret nextcloud_url_https
     username: !secret nextcloud_username
-    password: !secret nextcloud_app_password
-            
-homeassistant:
-  customize:
-    binary_sensor.nextcloud:
-      friendly_name: Status
-
-    sensor.nextcloud_zertifikat:
-      friendly_name: Laufzeit Zertifikat
-      unit_of_measurement: Tage      
-    sensor.nextcloud_system_version:
-      friendly_name: Installierte Version          
+    password: !secret nextcloud_app_password           

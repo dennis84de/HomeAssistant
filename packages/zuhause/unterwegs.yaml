@@ -180,15 +180,21 @@ automation:
         event_type: telegram_command
         event_data:
           command: '/kamera'
-    condition:
-      - condition: state
-        entity_id: switch.kamera_wohnzimmer
-        state: 'on'          
     action:
-      - service: telegram_bot.send_photo
-        data:
-          caption: 'Kamera'
-          url: 'http://192.168.2.75:8123/api/camera_proxy/camera.wohnzimmer?token={{ state_attr("camera.wohnzimmer", "access_token") }}'
+      - choose:
+          conditions:
+            - condition: state
+              entity_id: switch.kamera_wohnzimmer
+              state: 'on'      
+          sequence:
+            - service: telegram_bot.send_photo
+              data:
+                caption: 'Kamera'
+                url: 'http://192.168.2.75:8123/api/camera_proxy/camera.wohnzimmer?token={{ state_attr("camera.wohnzimmer", "access_token") }}'
+        default:
+          - service: notify.telegram
+            data:
+              message: "Die Kamera ist nicht eingeschaltet."               
                
   - alias: "Telegram - Lichtsimulation einschalten"
     id: "telegram_lichsimulation_einschalten"
