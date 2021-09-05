@@ -343,6 +343,15 @@ automation:
       - platform: state
         entity_id: sensor.telefon
         to: 'ringing'
+    variables:
+      message: >-
+        {% if state_attr('sensor.telefon', 'from') == None or state_attr('sensor.telefon', 'from') == '' %}
+          Ein Anruf ohne Rufnummer.
+        {% elif state_attr('sensor.telefon', 'from_name') == None or state_attr('sensor.telefon', 'from_name') == 'unknown' %}
+          Ein Anruf von einer unbekannten Rufnummer.
+        {% else %}
+          Anruf von {{ state_attr('sensor.telefon', 'from_name') }}.
+        {% endif %}        
     action:
       - choose:
           - conditions:
@@ -360,25 +369,25 @@ automation:
                       Ein Anruf von einer unbekannten Rufnummer ({{ state_attr('sensor.telefon', 'from') }}).
                     {% else %}
                       Anruf von {{ state_attr('sensor.telefon', 'from_name') }} ({{ state_attr('sensor.telefon', 'from') }}).
-                    {% endif %}  
+                    {% endif %}                      
           - conditions:
               - condition: state
-                entity_id: binary_sensor.zu_hause
+                entity_id: binary_sensor.redmi_note_8t_bluetooth_status
                 state: 'on'      
               - condition: state
                 entity_id: input_boolean.nicht_stoeren
                 state: 'off'
             sequence:
-              - service: !secret tts_service
+              - service: notify.mobile_app_redmi_note_8t
                 data:
-                  message: >-
-                    {% if state_attr('sensor.telefon', 'from') == None or state_attr('sensor.telefon', 'from') == '' %}
-                      Ein eingehender Anruf ohne Rufnummer.
-                    {% elif state_attr('sensor.telefon', 'from_name') == None or state_attr('sensor.telefon', 'from_name') == 'unknown' %}
-                      Ein eingehender Anruf von einer unbekannten Rufnummer.
-                    {% else %}
-                      Ein eingehender Anruf von {{ state_attr('sensor.telefon', 'from_name') }}.
-                    {% endif %}
+                  title: Eingehender Anruf
+                  message: "{{message }}"  
+                  data:
+                    timeout: 5
+        default:
+          - service: !secret tts_service
+            data:
+              message: "{{message }}"          
 
   - alias: "Telefon aktiv - Anruf verpasst"
     id: "telefon_aktiv_anruf_verpasst"
