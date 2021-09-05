@@ -79,9 +79,7 @@ cards:
       - entity: sensor.thermometer_sportzimmer_battery_level
         name: Sportzimmer
       - entity: sensor.thermometer_wohnzimmer_hardware_battery_level
-        name: Wohnzimmer Hardware
-      - entity: sensor.thermometer_arbeitszimmer_hardware_battery_level
-        name: Arbeitszimmer Hardware        
+        name: Hardware
 
   - type: entities
     title: Fenster

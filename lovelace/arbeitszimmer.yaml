@@ -38,14 +38,6 @@ cards:
       - entity: sensor.helligkeit_arbeitszimmer
 
   - type: glance
-    title: Hardware
-    show_header_toggle: false
-    entities:
-      - entity: sensor.arbeitszimmer_hardware_temperatur
-      - entity: sensor.arbeitszimmer_hardware_luftfeuchtigkeit
-      - entity: sensor.arbeitszimmer_hardware_luftdruck
-      
-  - type: glance
     title: Heizung
     show_header_toggle: false
     entities:
