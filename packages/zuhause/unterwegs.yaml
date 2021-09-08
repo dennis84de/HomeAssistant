@@ -1,3 +1,11 @@
+binary_sensor:
+  - platform: template
+    sensors:             
+      bewegungsmelder_inaktiv_unterwegs:
+        friendly_name: "Bewegungmelder inaktiv - Unterwegs"
+        device_class: occupancy
+        value_template: "{{ True if is_state('binary_sensor.zu_hause', 'off') else False }}"
+
 automation:
   - alias: "Unterwegs - Geräte eingeschaltet"
     id: "unterwegs_geraete_eingeschaltet"
@@ -171,30 +179,7 @@ automation:
       - service: notify.telegram
         data:
           title: "Aufenthaltsort"
-          message: "{{ states('sensor.aufenthaltsort_handy') }} {% if states('proximity.home') | int > 0 %}({{ states('proximity.home') }}km von zu Hause.){% endif %}"
-
-  - alias: "Telegram - Kamera"
-    id: "telegram_kamera"
-    trigger:
-      - platform: event
-        event_type: telegram_command
-        event_data:
-          command: '/kamera'
-    action:
-      - choose:
-          conditions:
-            - condition: state
-              entity_id: switch.kamera_wohnzimmer
-              state: 'on'      
-          sequence:
-            - service: telegram_bot.send_photo
-              data:
-                caption: 'Kamera'
-                url: 'http://192.168.2.75:8123/api/camera_proxy/camera.wohnzimmer?token={{ state_attr("camera.wohnzimmer", "access_token") }}'
-        default:
-          - service: notify.telegram
-            data:
-              message: "Die Kamera ist nicht eingeschaltet."               
+          message: "{{ states('sensor.aufenthaltsort_handy') }} {% if states('proximity.home') | int > 0 %}({{ states('proximity.home') }}km von zu Hause.){% endif %}"         
                
   - alias: "Telegram - Lichtsimulation einschalten"
     id: "telegram_lichsimulation_einschalten"
