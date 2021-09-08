@@ -51,18 +51,26 @@ automation:
         entity_id: alarm_control_panel.alarm
         to: 'triggered'
     action:
-      - service: notify.telegram
-        data:
-          title: "Alarm"
-          message: "Der Alarm in der Wohnung wurde ausgelöst."
-      - condition: state
-        entity_id: switch.kamera_wohnzimmer
-        state: 'on'
-      - service: telegram_bot.send_photo
-        data:
-          caption: 'Kamera'
-          url: 'http://192.168.2.75:8123/api/camera_proxy/camera.kamera_wohnzimmer?token={{ state_attr("camera.kamera_wohnzimmer", "access_token") }}'
-                    
+      - choose:
+          conditions:
+            - condition: state
+              entity_id: switch.kamera_wohnzimmer
+              state: 'on'      
+          sequence:
+            - service: notify.telegram
+              data:
+                title: "Alarm"
+                message: "Der Alarm in der Wohnung wurde ausgelöst."            
+            - service: telegram_bot.send_photo
+              data:
+                caption: 'Kamera'
+                url: 'http://192.168.2.75:8123/api/camera_proxy/camera.kamera_wohnzimmer?token={{ state_attr("camera.kamera_wohnzimmer", "access_token") }}'
+        default:
+          - service: notify.telegram
+            data:
+              title: "Alarm"
+              message: "Der Alarm in der Wohnung wurde ausgelöst, aber die Kamera ist nicht eingeschaltet."               
+
   - alias: "Alarm - Nachricht Bewegungsmelder"
     id: "alarm_nachricht_bewegungsmelder"
     trigger:
