@@ -187,12 +187,10 @@ cards:
   - type: custom:stack-in-card
     title: Internet
     cards:
-      - type: horizontal-stack
-        cards:
-          - type: entities
-            entities:
-              - entity: binary_sensor.healthchecks_home_assistant      
-              - entity: sensor.speedtest_ping          
+      - type: entities
+        entities:                  
+          - entity: sensor.speedtest_ping      
+            name: Ping
       - type: horizontal-stack
         cards:
           - type: sensor

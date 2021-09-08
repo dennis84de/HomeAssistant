@@ -38,6 +38,7 @@ cards:
     title: Server
     show_header_toggle: false
     entities:
+      - entity: binary_sensor.healthchecks_home_assistant  
       - entity: binary_sensor.healthchecks_diskstation        
       - entity: binary_sensor.uptime_robot_nextcloud        
       - entity: binary_sensor.healthchecks_djaeschke           
@@ -49,6 +50,7 @@ cards:
       - entity: sensor.nextcloud_zertifikat_tage
         name: Zertifikat
       - entity: sensor.nextcloud_system_version     
+        name: Installierte Version
 
   - type: entities
     title: Zigbee
