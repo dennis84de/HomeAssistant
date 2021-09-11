@@ -34,7 +34,7 @@ sensor:
             | list %}
 
           {{ wifiOffline | length }}            
-    
+
 automation:
   - alias: "Gäste-Wlan eingeschaltet"
     id: "gaeste_wlan_eingeschaltet"
@@ -42,14 +42,14 @@ automation:
       - platform: state
         entity_id: switch.fritz_box_7272_wi_fi_pretty_fly_for_a_wifi
         from: 'off'
-        to: 'on'
+        to: 'on'        
     action:
-      service: !secret tts_service
-      data:
-        echo: "wohnzimmer"
-        message: >-
-          Der Gastzugang wurde eingeschaltet. Der Name lautet "{{ states('sensor.gaeste_wlan_ssid') }}".
-          Das Passwort ist "{{ states('sensor.gaeste_wlan_password') }}".
+      - service: !secret tts_service
+        data:
+          echo: "wohnzimmer"
+          message: >-
+            Der Gastzugang wurde eingeschaltet. Der Name lautet "{{ states('sensor.gaeste_wlan_ssid') }}".
+            Das Passwort ist "{{ states('sensor.gaeste_wlan_password') }}".
 
   - alias: "Gäste-Wlan ausgeschaltet"
     id: "gaeste_wlan_ausgeschaltet"
@@ -58,12 +58,12 @@ automation:
         entity_id: switch.fritz_box_7272_wi_fi_pretty_fly_for_a_wifi
         from: 'on'
         to: 'off'
-    action:
-      service: !secret tts_service
-      data:
-        echo: "wohnzimmer"
-        message: >-
-          Der Gastzugang wurde ausgeschaltet.
+    action:        
+      - service: !secret tts_service
+        data:
+          echo: "wohnzimmer"
+          message: >-
+            Der Gastzugang wurde ausgeschaltet.
 
 homeassistant:
   customize:
