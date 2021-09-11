@@ -34,8 +34,7 @@ binary_sensor:
       schlechtes_wetter:
         friendly_name: "Schlechtes Wetter"
         icon_template: mdi:weather-snowy-rainy
-        value_template: >-
-          {{ is_state('sensor.wetterlage', 'Klar') == False }}
+        value_template: "{{ not is_state('sensor.wetterlage', 'Klar') }}"
 
       sonne_tagsueber:
         friendly_name: "Sonne tagsüber"
@@ -166,24 +165,6 @@ sensor:
             {{ states('sensor.balkon_temperatur') | float }}
           {% endif %}          
         unit_of_measurement: '°C'
-        
-      wetter_text:
-        friendly_name: 'Wetter'
-        value_template:  >
-          {% if is_state("sensor.darksky_icon","clear-day") %} Klar
-          {% elif is_state("sensor.darksky_icon","clear-night") %} Klar
-          {% elif is_state("sensor.darksky_icon","rain") %} Regen
-          {% elif is_state("sensor.darksky_icon","snow") %} Schnee
-          {% elif is_state("sensor.darksky_icon","fog") %} Nebel
-          {% elif is_state("sensor.darksky_icon","sleet") %} Schneeregen
-          {% elif is_state("sensor.darksky_icon","wind") %} Wind
-          {% elif is_state("sensor.darksky_icon","cloudy") %} Wolkig
-          {% elif is_state("sensor.darksky_icon","partly-cloudy-day") %} Teilweise wolkig
-          {% elif is_state("sensor.darksky_icon","partly-cloudy-night") %} Teilweise wolkig
-          {% elif is_state("sensor.darksky_icon","hail") %} Hagel
-          {% elif is_state("sensor.darksky_icon","lightning") %} Gewitter
-          {% elif is_state("sensor.darksky_icon","thunderstorm") %} Sturm
-          {% endif %}
 
       wetterlage:
         friendly_name: 'Wetterlage'
@@ -197,9 +178,11 @@ sensor:
           {% else %} Klar {% endif %}
 
       helligkeit_wetter:
-        friendly_name: 'Helligkeit Wetter'
+        friendly_name: 'Helligkeit'
+        icon_template: mdi:theme-light-dark
         value_template: >-
-          {%- set irradiance = states('sensor.buienradar_irradiance') | float %} 
+          {%- set irradiance = states('sensor.sun_irradiance_dortmund') | float %} 
+                   
           {%- set irradiance_pct = irradiance / 10 %}
           {%- set elevation = state_attr('sun.sun','elevation') | float %}
           {%- set cloud_coverage = states('sensor.darksky_cloud_coverage') | float %}
@@ -557,13 +540,6 @@ automation:
             
 homeassistant:
   customize:
-    sun.sun:
-      friendly_name: Sonnenstand
-    sensor.moon:
-      friendly_name: Mondstand
-
-    sensor.pws_weather:
-      friendly_name: Aktuelles Wetter
 
     sensor.darksky_precip_type:
       friendly_name: Heutige Niederschlagsart      
@@ -599,39 +575,12 @@ homeassistant:
       friendly_name: Nächster Sturm
     sensor.darksky_summary:
       friendly_name: Aktuelles Wetter
-
-    sensor.wetterwarnungen_current_warning_level:
-      friendly_name: Wetterwarnungen
-      icon: mdi:weather-hurricane    
-
+      
     sensor.schimmelindikator:
       icon: mdi:biohazard
-
-    sensor.luftqualitat_pm10:
-      icon: mdi:weather-windy
-    sensor.luftqualitat_pm25:
-      icon: mdi:weather-windy-variant
 
     binary_sensor.iss:
       icon: mdi:earth
 
-    binary_sensor.protection_window:
-      friendly_name: Sonnenschutz
-
-    sensor.helligkeit_wetter:
-      name: Helligkeit
-      icon: mdi:theme-light-dark
-
     sensor.strommix:
       icon: mdi:solar-power
-
-  customize_glob:
-    sensor.*_absolutehumidity:
-      friendly_name: Luftfeuchtigkeit absolut
-    sensor.*_dewpoint:
-      friendly_name: Taupunkt
-    sensor.*_heatindex:
-      friendly_name: Wärme Index
-    sensor.*_perception:
-      friendly_name: Wahrnehmung
-      icon: mdi:weather-cloudy    
