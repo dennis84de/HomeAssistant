@@ -275,9 +275,8 @@ automation:
         to: 'Stillstand'
         for: '01:00:00'
     condition:
-      - condition: state
-        entity_id: switch.trockner
-        state: 'on'
+      - "{{ is_state('switch.trockner', 'on') }}"
+      - "{{ not is_state('sensor.waschmaschine_status', 'Waschen') }}"  
     action:
       - choose:
           - conditions:
