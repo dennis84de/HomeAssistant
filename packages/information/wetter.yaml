@@ -123,22 +123,6 @@ sensor:
     scan_interval: 3600
     value_template: '{{ value_json[0].eevalue }}'
 
-  - platform: rest
-    scan_interval: 3600
-    name: "DWD Pollen"
-    resource: https://opendata.dwd.de/climate_environment/health/alerts/s31fg.json
-    json_attributes_path: "$..content[?(@.partregion_id==41)].Pollen"
-    json_attributes:
-      - Erle
-      - Beifuss
-      - Ambrosia
-      - Birke
-      - Esche
-      - Hasel
-      - Graeser
-      - Roggen
-    value_template: "{{ value_json.last_update }}"
-
   - platform: template
     sensors:
       mold_wohnzimmer_temperatur:
@@ -201,48 +185,6 @@ sensor:
           {{ brightness | round }}
         unit_of_measurement: '%'
         device_class: 'illuminance'
-
-      dwd_pollen_graeser:
-        icon_template: "mdi:tree-outline"
-        friendly_name: "Gräser"
-        value_template: >-
-          {% set dwd_state = state_attr('sensor.dwd_pollen', 'Gräser')['today'] %}
-          {% if dwd_state == "3" %}6{% elif dwd_state == "2-3"%}5{% elif dwd_state == "2"%}4{% elif dwd_state == "1-2"%}3{% elif dwd_state == "1"%}2{% elif dwd_state == "0-1"%}1{% else %}0{% endif %}
-        attribute_templates:
-          today: >-
-            {% set dwd_state = state_attr('sensor.dwd_pollen', 'Gräser')['today'] %}
-            {% if dwd_state == "3" %}6{% elif dwd_state == "2-3"%}5{% elif dwd_state == "2"%}4{% elif dwd_state == "1-2"%}3{% elif dwd_state == "1"%}2{% elif dwd_state == "0-1"%}1{% else %}0{% endif %}
-          tomorrow: >-
-            {% set dwd_state = state_attr('sensor.dwd_pollen', 'Gräser')['tomorrow'] %}
-            {% if dwd_state == "3" %}6{% elif dwd_state == "2-3"%}5{% elif dwd_state == "2"%}4{% elif dwd_state == "1-2"%}3{% elif dwd_state == "1"%}2{% elif dwd_state == "0-1"%}1{% else %}0{% endif %}
-
-      dwd_pollen_birke:
-        icon_template: "mdi:tree-outline"
-        friendly_name: "Birke"
-        value_template: >-
-          {% set dwd_state = state_attr('sensor.dwd_pollen', 'Birke')['today'] %}
-          {% if dwd_state == "3" %}6{% elif dwd_state == "2-3"%}5{% elif dwd_state == "2"%}4{% elif dwd_state == "1-2"%}3{% elif dwd_state == "1"%}2{% elif dwd_state == "0-1"%}1{% else %}0{% endif %}
-        attribute_templates:
-          today: >-
-            {% set dwd_state = state_attr('sensor.dwd_pollen', 'Birke')['today'] %}
-            {% if dwd_state == "3" %}6{% elif dwd_state == "2-3"%}5{% elif dwd_state == "2"%}4{% elif dwd_state == "1-2"%}3{% elif dwd_state == "1"%}2{% elif dwd_state == "0-1"%}1{% else %}0{% endif %}
-          tomorrow: >-
-            {% set dwd_state = state_attr('sensor.dwd_pollen', 'Birke')['tomorrow'] %}
-            {% if dwd_state == "3" %}6{% elif dwd_state == "2-3"%}5{% elif dwd_state == "2"%}4{% elif dwd_state == "1-2"%}3{% elif dwd_state == "1"%}2{% elif dwd_state == "0-1"%}1{% else %}0{% endif %}
-
-      dwd_pollen_roggen:
-        icon_template: "mdi:tree-outline"
-        friendly_name: "Roggen"
-        value_template: >-
-          {% set dwd_state = state_attr('sensor.dwd_pollen', 'Roggen')['today'] %}
-          {% if dwd_state == "3" %}6{% elif dwd_state == "2-3"%}5{% elif dwd_state == "2"%}4{% elif dwd_state == "1-2"%}3{% elif dwd_state == "1"%}2{% elif dwd_state == "0-1"%}1{% else %}0{% endif %}
-        attribute_templates:
-          today: >-
-            {% set dwd_state = state_attr('sensor.dwd_pollen', 'Roggen')['today'] %}
-            {% if dwd_state == "3" %}6{% elif dwd_state == "2-3"%}5{% elif dwd_state == "2"%}4{% elif dwd_state == "1-2"%}3{% elif dwd_state == "1"%}2{% elif dwd_state == "0-1"%}1{% else %}0{% endif %}
-          tomorrow: >-
-            {% set dwd_state = state_attr('sensor.dwd_pollen', 'Roggen')['tomorrow'] %}
-            {% if dwd_state == "3" %}6{% elif dwd_state == "2-3"%}5{% elif dwd_state == "2"%}4{% elif dwd_state == "1-2"%}3{% elif dwd_state == "1"%}2{% elif dwd_state == "0-1"%}1{% else %}0{% endif %}
 
       tageszeit:
         friendly_name: Tageszeit
@@ -584,3 +526,10 @@ homeassistant:
 
     sensor.strommix:
       icon: mdi:solar-power
+      
+    sensor.pollenflug_graeser: 
+      icon: mdi:tree-outline
+    sensor.pollenflug_birke:
+      icon: mdi:tree-outline
+    sensor.pollenflug_roggen:      
+      icon: mdi:tree-outline

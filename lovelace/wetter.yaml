@@ -158,9 +158,12 @@ cards:
     title: Pollen
     show_header_toggle: false
     entities:
-      - entity: sensor.dwd_pollen_graeser
-      - entity: sensor.dwd_pollen_birke
-      - entity: sensor.dwd_pollen_roggen
+      - entity: sensor.pollenflug_graeser   
+        name: Gräser
+      - entity: sensor.pollenflug_birke
+        name: Birke
+      - entity: sensor.pollenflug_roggen
+        name: Roggen
 
   - type: picture-glance
     title: Wetter
