@@ -62,6 +62,7 @@ CONF_DEVICE_RESET_TIMER = "reset_timer"
 CONF_DEVICE_TRACK = "track_device"
 CONF_DEVICE_TRACKER_SCAN_INTERVAL = "tracker_scan_interval"
 CONF_DEVICE_TRACKER_CONSIDER_HOME = "consider_home"
+CONF_DEVICE_DELETE_DEVICE = "delete device"
 CONFIG_IS_FLOW = "is_flow"
 
 SERVICE_CLEANUP_ENTRIES = "cleanup_entries"
@@ -83,6 +84,7 @@ DEFAULT_DEVICE_RESET_TIMER = 35
 DEFAULT_DEVICE_TRACKER_SCAN_INTERVAL = 20
 DEFAULT_DEVICE_TRACKER_CONSIDER_HOME = 180
 DEFAULT_DEVICE_TRACK = False
+DEFAULT_DEVICE_DELETE_DEVICE = False
 
 # regex constants for configuration schema
 MAC_REGEX = "(?i)^(?:[0-9A-F]{2}[:]){5}(?:[0-9A-F]{2})$"
@@ -130,6 +132,7 @@ BINARY_SENSOR_TYPES: tuple[BLEMonitorBinarySensorEntityDescription, ...] = (
         name="ble remote binary single press",
         unique_id="rb_single_press_",
         device_class=None,
+        force_update=True,
     ),
     BLEMonitorBinarySensorEntityDescription(
         key="remote long press",
@@ -137,6 +140,7 @@ BINARY_SENSOR_TYPES: tuple[BLEMonitorBinarySensorEntityDescription, ...] = (
         name="ble remote binary long press",
         unique_id="rb_long_press_",
         device_class=None,
+        force_update=True,
     ),
     BLEMonitorBinarySensorEntityDescription(
         key="switch",
@@ -144,6 +148,7 @@ BINARY_SENSOR_TYPES: tuple[BLEMonitorBinarySensorEntityDescription, ...] = (
         name="ble switch",
         unique_id="sw_",
         device_class=DEVICE_CLASS_POWER,
+        force_update=True,
     ),
     BLEMonitorBinarySensorEntityDescription(
         key="opening",
@@ -151,6 +156,7 @@ BINARY_SENSOR_TYPES: tuple[BLEMonitorBinarySensorEntityDescription, ...] = (
         name="ble opening",
         unique_id="op_",
         device_class=DEVICE_CLASS_OPENING,
+        force_update=False,
     ),
     BLEMonitorBinarySensorEntityDescription(
         key="light",
@@ -158,6 +164,7 @@ BINARY_SENSOR_TYPES: tuple[BLEMonitorBinarySensorEntityDescription, ...] = (
         name="ble light",
         unique_id="lt_",
         device_class=DEVICE_CLASS_LIGHT,
+        force_update=False,
     ),
     BLEMonitorBinarySensorEntityDescription(
         key="moisture",
@@ -165,6 +172,7 @@ BINARY_SENSOR_TYPES: tuple[BLEMonitorBinarySensorEntityDescription, ...] = (
         name="ble moisture",
         unique_id="mo_",
         device_class=DEVICE_CLASS_MOISTURE,
+        force_update=False,
     ),
     BLEMonitorBinarySensorEntityDescription(
         key="motion",
@@ -172,6 +180,7 @@ BINARY_SENSOR_TYPES: tuple[BLEMonitorBinarySensorEntityDescription, ...] = (
         name="ble motion",
         unique_id="mn_",
         device_class=DEVICE_CLASS_MOTION,
+        force_update=False,
     ),
     BLEMonitorBinarySensorEntityDescription(
         key="weight removed",
@@ -180,6 +189,7 @@ BINARY_SENSOR_TYPES: tuple[BLEMonitorBinarySensorEntityDescription, ...] = (
         icon="mdi:weight",
         unique_id="wr_",
         device_class=None,
+        force_update=False,
     ),
     BLEMonitorBinarySensorEntityDescription(
         key="smoke detector",
@@ -187,6 +197,7 @@ BINARY_SENSOR_TYPES: tuple[BLEMonitorBinarySensorEntityDescription, ...] = (
         name="ble smoke detector",
         unique_id="sd_",
         device_class=DEVICE_CLASS_SMOKE,
+        force_update=False,
     ),
     BLEMonitorBinarySensorEntityDescription(
         key="fingerprint",
@@ -195,6 +206,7 @@ BINARY_SENSOR_TYPES: tuple[BLEMonitorBinarySensorEntityDescription, ...] = (
         icon="mdi:fingerprint",
         unique_id="fp_",
         device_class=None,
+        force_update=True,
     ),
     BLEMonitorBinarySensorEntityDescription(
         key="lock",
@@ -202,6 +214,7 @@ BINARY_SENSOR_TYPES: tuple[BLEMonitorBinarySensorEntityDescription, ...] = (
         name="ble lock",
         unique_id="lock_",
         device_class=DEVICE_CLASS_LOCK,
+        force_update=True,
     ),
     BLEMonitorBinarySensorEntityDescription(
         key="toothbrush",
@@ -210,6 +223,7 @@ BINARY_SENSOR_TYPES: tuple[BLEMonitorBinarySensorEntityDescription, ...] = (
         unique_id="tb_",
         icon="mdi:toothbrush-electric",
         device_class=DEVICE_CLASS_POWER,
+        force_update=False,
     ),
 )
 
@@ -603,7 +617,8 @@ MEASUREMENT_DICT = {
     'Blue Coin T'             : [["temperature", "rssi"], [], []],
     'Blue Puck RHT'           : [["temperature", "humidity", "rssi"], [], []],
     'HTP.xw'                  : [["temperature", "humidity", "pressure", "rssi"], [], []],
-    'HT.w'                    : [["temperature", "humidity", "pressure", "rssi"], [], []]
+    'HT.w'                    : [["temperature", "humidity", "pressure", "rssi"], [], []],
+    'Moat S2'                 : [["temperature", "humidity", "battery", "rssi"], [], []],
 }
 
 KETTLES = ('YM-K1501', 'YM-K1501EU', 'V-SK152')
@@ -671,6 +686,7 @@ MANUFACTURER_DICT = {
     'Blue Puck RHT'           : 'Teltonika',
     'HTP.xw'                  : 'SensorPush',
     'HT.w'                    : 'SensorPush',
+    'Moat S2'                 : 'Moat',
 }
 
 # Renamed model dictionary
