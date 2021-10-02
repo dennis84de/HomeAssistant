@@ -180,7 +180,7 @@ cards:
       - entity: sensor.schlafzimmer_temperatur
         name: Schlafzimmer
       - entity: sensor.kueche_temperatur
-        name: Kuche
+        name: Küche
       - entity: sensor.arbeitszimmer_temperatur
         name: Arbeitszimmer
       - entity: sensor.sportzimmer_temperatur
