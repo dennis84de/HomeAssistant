@@ -12,6 +12,10 @@ light:
     name: Wohnzimmer Strahler
     entity_id: switch.wohnzimmer_strahler
 
+  - platform: switch
+    name: Wohnzimmer Schrank
+    entity_id: switch.wohnzimmer_schrank
+    
 binary_sensor:
   - platform: template
     sensors:
@@ -94,3 +98,5 @@ homeassistant:
       icon: mdi:sofa
     light.wohnzimmer_strahler:
       icon: mdi:spotlight
+    light.wohnzimmer_schrank:
+      icon: mdi:cupboard
