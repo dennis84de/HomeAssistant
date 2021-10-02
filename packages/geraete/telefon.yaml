@@ -346,11 +346,11 @@ automation:
     variables:
       message: >-
         {% if state_attr('sensor.telefon', 'from') == None or state_attr('sensor.telefon', 'from') == '' %}
-          Ein Anruf ohne Rufnummer.
+          Ein eingehender Anruf ohne Rufnummer.
         {% elif state_attr('sensor.telefon', 'from_name') == None or state_attr('sensor.telefon', 'from_name') == 'unknown' %}
-          Ein Anruf von einer unbekannten Rufnummer.
+          Ein eingehender Anruf von einer unbekannten Rufnummer.
         {% else %}
-          Anruf von {{ state_attr('sensor.telefon', 'from_name') }}.
+          Ein eingehender Anruf von {{ state_attr('sensor.telefon', 'from_name') }}.
         {% endif %}        
     action:
       - choose:
@@ -368,7 +368,7 @@ automation:
                     {% elif state_attr('sensor.telefon', 'from_name') == None or state_attr('sensor.telefon', 'from_name') == 'unknown' %}
                       Ein Anruf von einer unbekannten Rufnummer ({{ state_attr('sensor.telefon', 'from') }}).
                     {% else %}
-                      Anruf von {{ state_attr('sensor.telefon', 'from_name') }} ({{ state_attr('sensor.telefon', 'from') }}).
+                      Ein Anruf von {{ state_attr('sensor.telefon', 'from_name') }} ({{ state_attr('sensor.telefon', 'from') }}).
                     {% endif %}                      
           - conditions:
               - condition: state
