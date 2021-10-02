@@ -88,8 +88,6 @@ cards:
     entities:
       - entity: device_tracker.tplinkwohnzimmermonitor
         name: Wohnzimmer Monitor
-      - entity: device_tracker.tplinkwohnzimmerradio      
-        name: Wohnzimmer Radio
       - entity: device_tracker.tplinkschlafzimmerradio
         name: Schlafzimmer Radio
       - entity: device_tracker.tplinkflurradio
@@ -100,10 +98,12 @@ cards:
         name: Küche Radio
       - entity: device_tracker.tplinkkellerradio
         name: Keller Radio
+      - entity: device_tracker.tplinksportzimmerfernseher
+        name: Sportzimmer Fernseher        
       - entity: device_tracker.tplinkschlafzimmerfernseher
         name: Schlafzimmer Fernseher
-      - entity: device_tracker.tplinksportzimmerfernseher
-        name: Sportzimmer Fernseher
+      - entity: device_tracker.tplinkkleiderschrank  
+        name: Kleiderschrank        
       - entity: device_tracker.tplinkwaschmaschine
         name: Waschmaschine
       - entity: device_tracker.tplinktrockner      
@@ -177,6 +177,8 @@ cards:
         name: Wohnzimmer Strahler      
       - entity: device_tracker.tasmotawohnzimmercouch
         name: Wohnzimmer Couch        
+      - entity: device_tracker.tasmotawohnzimmer_radio
+        name: Wohnzimmer Radio      
       - entity: device_tracker.tasmotaarbeitszimmerlampe
         name: Arbeitszimmer Lampe
       - entity: device_tracker.tasmotaarbeitszimmerradio
@@ -190,9 +192,7 @@ cards:
       - entity: device_tracker.tasmotabalkonradio
         name: Balkon Radio
       - entity: device_tracker.tasmotakuechenschrank
-        name: Küchenschrank
-      - entity: device_tracker.tasmotakleiderschrank
-        name: Kleiderschrank        
+        name: Küchenschrank  
       - entity: device_tracker.tasmotaspuelmaschine
         name: Spülmaschine
           
