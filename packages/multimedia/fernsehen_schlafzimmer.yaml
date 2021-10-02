@@ -217,6 +217,20 @@ automation:
       - service: media_player.media_pause
         entity_id: media_player.fire_tv_schlafzimmer
 
+  - alias: "Schlafzimmer - Fernseher ausschalten"
+    id: "schlafzimmer_fernseher_ausschalten"
+    trigger:
+      - platform: state        
+        entity_id: sensor.schalter_schlafzimmer
+        to: '3' 
+    condition:
+      - condition: state
+        entity_id: input_boolean.timer_schlafzimmer_aktiv
+        state: 'on'        
+    action:
+      - service: switch.turn_off
+        entity_id: switch.watchtv_schlafzimmer
+
 homeassistant:
   customize:
     switch.watchtv_schlafzimmer:
