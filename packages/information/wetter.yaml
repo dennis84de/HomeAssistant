@@ -527,9 +527,6 @@ homeassistant:
     sensor.strommix:
       icon: mdi:solar-power
       
-    sensor.pollenflug_graeser: 
-      icon: mdi:tree-outline
-    sensor.pollenflug_birke:
-      icon: mdi:tree-outline
-    sensor.pollenflug_roggen:      
+  customize_glob:
+    sensor.pollenflug_*: 
       icon: mdi:tree-outline

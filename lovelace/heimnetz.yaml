@@ -179,6 +179,8 @@ cards:
         name: Wohnzimmer Couch        
       - entity: device_tracker.tasmotawohnzimmer_radio
         name: Wohnzimmer Radio      
+      - entity: device_tracker.tasmotawohnzimmer_schrank
+        name: Wohnzimmer Schrank        
       - entity: device_tracker.tasmotaarbeitszimmerlampe
         name: Arbeitszimmer Lampe
       - entity: device_tracker.tasmotaarbeitszimmerradio
