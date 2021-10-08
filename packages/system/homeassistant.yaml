@@ -151,17 +151,8 @@ automation:
     id: "home_assistant_update_verfuegbar"
     trigger:
       - platform: state
-        entity_id: sensor.hass_current_version
-    condition:
-      - condition: template
-        value_template: >-
-          {% if is_state('sensor.hass_current_version', None) or is_state('sensor.hass_installed_version', None) %}
-            False
-          {% elif is_state("sensor.hass_current_version", "unavailable") %}
-            False
-          {% else %}
-            {{ states('sensor.hass_current_version') != states('sensor.hass_installed_version') }}
-          {% endif %}
+        entity_id: binary_sensor.updater
+        to: 'on'
     action:
       - choose:
           - conditions:
@@ -172,12 +163,12 @@ automation:
               - service: notify.telegram
                 data:
                   title: 'Neue Version'
-                  message: "Home Assistant {{ states('sensor.hass_current_version') }} ist jetzt verfügbar."
+                  message: "Home Assistant {{ states('sensor.neuste_version') }} ist jetzt verfügbar."
         default:
           - service: persistent_notification.create
             data:
               title: "Update verfügbar"
-              message: "Home Assistant {{ states('sensor.hass_current_version') }} ist jetzt verfügbar."
+              message: "Home Assistant {{ states('sensor.neuste_version') }} ist jetzt verfügbar."
               notification_id: neue_version
                
   - alias: "Home Assistant - Gestartet"
