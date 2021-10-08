@@ -1,5 +1,3 @@
-speedtestdotnet:
-
 binary_sensor:
   - platform: template
     sensors:

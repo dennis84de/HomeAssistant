@@ -379,8 +379,8 @@ automation:
         state: 'off'        
       - condition: template
         value_template: >-
-          {% set now = as_timestamp(now()) | int %}
-          {% set last = as_timestamp(state_attr("automation.alles_ausschalten", "last_triggered")) | int %}
+          {% set now = as_timestamp(now(), None) | int %}
+          {% set last = as_timestamp(state_attr("automation.alles_ausschalten", "last_triggered"), None) | int %}
           {% set diff = ((now - last) / 60) | int %}
 
           {{ diff >= 10 }}

@@ -40,11 +40,11 @@ sensor:
         friendly_name: Geräte offline        
         icon_template: >
           {% set zigateEntities = expand('group.zigate') %}
-          {% set now = as_timestamp(now()) | int %}
+          {% set now = as_timestamp(now(), None) | int %}
           {% set puffer = states('input_number.zigate_offline_puffer') | int * 60 | int -%}
           {% set ns = namespace(found=false) -%}         
           
-          {% for x in zigateEntities if ((now - (as_timestamp(x.state) | int) ) / 60 | round()) > puffer %}
+          {% for x in zigateEntities if ((now - (as_timestamp(x.state, None) | int) ) / 60 | round()) > puffer %}
             {% set ns.found = true -%}
           {% endfor %}
 
@@ -52,11 +52,11 @@ sensor:
 
         value_template: >
           {% set zigateEntities = expand('group.zigate') %}
-          {% set now = as_timestamp(now()) | int %}
+          {% set now = as_timestamp(now(), None) | int %}
           {% set puffer = states('input_number.zigate_offline_puffer') | int * 60 | int -%}
           {% set ns = namespace(found=false) -%}
           
-          {% for x in zigateEntities if ((now - (as_timestamp(x.state) | int) ) / 60 | round()) > puffer %}
+          {% for x in zigateEntities if ((now - (as_timestamp(x.state, None) | int) ) / 60 | round()) > puffer %}
             {% set ns.found = ns.found + 1 -%}
           {% endfor %}        
         

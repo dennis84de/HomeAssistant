@@ -11,7 +11,7 @@ input_select:
       - Handy
       
 shell_command:
-  send_position: "curl -X POST '{{ url }}?lat={{ state_attr('zone.home', 'latitude') }}&lon={{ state_attr('zone.home', 'longitude') }}&timestamp={{ as_timestamp(now()) | int }}'"
+  send_position: "curl -X POST '{{ url }}?lat={{ state_attr('zone.home', 'latitude') }}&lon={{ state_attr('zone.home', 'longitude') }}&timestamp={{ as_timestamp(now(), None) | int }}'"
 
 binary_sensor:
   - platform: template
@@ -123,10 +123,10 @@ script:
               {{ heimnetzOffline | join(', ') }}
                             
               {% set zigateEntities = expand('group.zigate') %}
-              {% set now = as_timestamp(now()) | int %}
+              {% set now = as_timestamp(now(), None) | int %}
               {% set puffer = states('input_number.zigate_offline_puffer') | int * 60 | int -%}
 
-              {% for x in zigateEntities if ((now - (as_timestamp(x.state) | int) ) / 60 | round()) > puffer %}
+              {% for x in zigateEntities if ((now - (as_timestamp(x.state, None) | int) ) / 60 | round()) > puffer %}
                 {%- if not loop.first %}, {% endif -%}
                 {{- x.name -}}
               {% endfor %}
@@ -197,8 +197,8 @@ automation:
         value_template: "{{ is_state('binary_sensor.zu_hause', 'off') if trigger.entity_id == 'sensor.schalter_flur' else True }}"
       - condition: template
         value_template: >-
-          {% set now = as_timestamp(now()) | int %}
-          {% set last = as_timestamp(state_attr("script.alles_ausschalten_nfc", "last_triggered")) | int %}
+          {% set now = as_timestamp(now(), None) | int %}
+          {% set last = as_timestamp(state_attr("script.alles_ausschalten_nfc", "last_triggered"), None) | int %}
           {% set diff = ((now - last) / 60) | int %}
 
           {{ diff >= 10 }}        

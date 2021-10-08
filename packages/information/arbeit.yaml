@@ -22,6 +22,12 @@ input_number:
     step: 5
     icon: mdi:timer-sand
     
+  arbeit_dauer:
+    name: Arbeit Dauer
+    min: 0
+    max: 12
+    step: 1
+    
 sensor:
   - platform: here_travel_time
     name: Fahrzeit zur Arbeit
@@ -77,7 +83,9 @@ binary_sensor:
       buero_heute:
         friendly_name: 'Büro heute'
         value_template: >-
-          {% set istBuero = is_state('calendar.arbeit_buero', 'on') %}         
+          {% set NextOffice = strptime(state_attr('calendar.arbeit_buero', 'start_time'),'%Y-%m-%d %H:%M:%S', None) %}
+          
+          {% set istBuero = false if NextOffice == None else NextOffice.strftime('%j')|int - now().strftime('%j')|int == 0 %}         
           {% set istHomeOffice = is_state('input_boolean.home_office', 'on') %}
           {% set istArbeitstag = is_state('binary_sensor.arbeitstag', 'on') %}
           {% set keinUrlaub = is_state('calendar.urlaub', 'off') %}
@@ -88,15 +96,23 @@ binary_sensor:
       buero_morgen:
         friendly_name: 'Büro morgen'
         value_template: >-
-          {% set NextOffice = state_attr('calendar.arbeit_buero', 'start_time') %}
+          {% set NextOffice = strptime(state_attr('calendar.arbeit_buero', 'start_time'),'%Y-%m-%d %H:%M:%S', None) %}
           
-          {% if NextOffice == None %}
-            False
-          {% else %}
-            {% set NextOfficeTime = strptime(state_attr('calendar.arbeit_buero', 'start_time'),'%Y-%m-%d %H:%M:%S') %}
-
-            {{ NextOfficeTime.strftime('%j')|int - now().strftime('%j')|int == 1 }}          
-          {% endif %}
+          {{ false if NextOffice == None else NextOffice.strftime('%j')|int - now().strftime('%j')|int == 1 }}
+          
+#      buero_noch_home_office:
+#        friendly_name: 'Noch Home Office'
+#        value_template: >-
+#          {% set buero_heute = is_state('binary_sensor.buero_heute', 'on') %}
+#          
+#          {% set beginnMinuten = (state_attr('input_datetime.arbeit_beginn', 'timestamp') / 60) | int %}
+#          {% set fahrzeitMinuten = states('sensor.fahrzeit_nach_hause') | int %}
+#          {% set arbeitszeitMinuten = (states('input_number.arbeit_dauer') | int) * 60 %}
+#          {% set timestampHeute = (as_timestamp(as_timestamp(now()) | timestamp_custom("%Y-%m-%d 00:00:00",true))) | int %}
+#          {% set timestampArbeitsende = timestampHeute + ((beginnMinuten + fahrzeitMinuten + arbeitszeitMinuten) * 60) %}
+#          {% set timestampJetzt = as_timestamp(now()) | int  %}
+#
+#          {{ buero_heute and timestampArbeitsende > timestampJetzt }}         
           
       infos_buero_anzeigen:
         friendly_name: 'Infos anzeigen'        
@@ -107,7 +123,7 @@ binary_sensor:
           {% set keinUrlaub = is_state('calendar.urlaub', 'off') %}
           
           {{ keinUrlaub and arbeitstag and (buero_heute or buero_morgen) }}
-
+          
 automation:             
   - alias: 'Benachrichtigung Arbeit'
     id: "benachrichtigung_arbeit"

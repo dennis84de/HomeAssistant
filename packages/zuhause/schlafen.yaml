@@ -76,8 +76,8 @@ sensor:
         value_template: >-
           {%- if is_state('input_boolean.timer_schlafzimmer_aktiv', 'on') %}
             {% set time = states('sensor.time') %}
-            {% set now = as_timestamp(now()) | int %}
-            {% set last = as_timestamp(state_attr('automation.sleeptimer_starten', 'last_triggered')) | int %}              
+            {% set now = as_timestamp(now(), None) | int %}
+            {% set last = as_timestamp(state_attr('automation.sleeptimer_starten', 'last_triggered'), None) | int %}              
             {% set duration = states('input_select.timer_schlafzimmer_dauer') | int %}
             {% set diff = (duration - ((now - last) / 60)) | int %}
 

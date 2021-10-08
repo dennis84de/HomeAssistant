@@ -94,8 +94,8 @@ cards:
     entities:
       - entity: sensor.database_size
       - entity: sensor.laufzeit_stunden
-      - entity: sensor.hass_installed_version
-      - entity: sensor.hass_current_version
+      - entity: sensor.installierte_version
+      - entity: sensor.neuste_version
       - entity: sensor.wichtige_anderungen
       - entity: sensor.hacs
       - entity: script.restart_homeassistant

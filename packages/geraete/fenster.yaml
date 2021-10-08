@@ -15,7 +15,7 @@ automation:
       - platform: state
         entity_id: binary_sensor.balkontuer        
     condition:
-      - "{{ (states('sensor.laufzeit_minuten') | float) > 1 }}"
+      - "{{ (states('sensor.laufzeit_minuten') | float(0)) > 1 }}"
       - condition: state
         entity_id: 'media_player.kodi_wohnzimmer'
         state: 'playing'      

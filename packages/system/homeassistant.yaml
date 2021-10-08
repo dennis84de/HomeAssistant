@@ -9,7 +9,7 @@ discovery:
 wake_on_lan:
 system_health:
 map:
-  
+updater:  
 lovelace:
   mode: yaml
   resources:
@@ -82,7 +82,7 @@ sensor:
     source: pypi
 
   - platform: command_line
-    name: HASS Installed Version
+    name: Installierte Version
     command: "head -5 /config/.HA_VERSION"
     scan_interval: 3600
 
@@ -97,12 +97,17 @@ sensor:
 
   - platform: template
     sensors:
+      neuste_version:
+        friendly_name: "Neuste Version"
+        icon_template: "mdi:update"
+        value_template: "{{ state_attr('binary_sensor.updater', 'newest_version') }}"
+          
       rpi_letzter_neustart:
         friendly_name: "Letzter Neustart"
         icon_template: >-
           mdi:av-timer
         value_template: >-
-          {{ as_timestamp(states('sensor.last_boot')) | timestamp_custom("%d.%m.%Y") | string }}
+          {{ as_timestamp(states('sensor.last_boot'), None) | timestamp_custom("%d.%m.%Y") | string }}
           
       laufzeit_minuten:
         friendly_name: "Laufzeit Minuten"
@@ -111,7 +116,7 @@ sensor:
         value_template: >-
           {% set up_time =  states('sensor.letzter_neustart') %}
      
-          {{ '-' if up_time == 'unknown' else ((as_timestamp(now()) - as_timestamp(up_time)) / 60) | int }}
+          {{ '-' if up_time == 'unknown' else ((as_timestamp(now(), None) - as_timestamp(up_time, None)) / 60) | int }}
               
       laufzeit_stunden:
         friendly_name: "Laufzeit Stunden"
@@ -120,7 +125,7 @@ sensor:
         value_template: >-
           {% set up_time =  states('sensor.letzter_neustart') %}
      
-          {{ '-' if up_time == 'unknown' else ((as_timestamp(now()) - as_timestamp(up_time)) / 60 / 60) | round(2) }}
+          {{ '-' if up_time == 'unknown' else ((as_timestamp(now(), None) - as_timestamp(up_time, None)) / 60 / 60) | round(2) }}
 
 script:  
   restart_homeassistant:
@@ -267,9 +272,5 @@ homeassistant:
       friendly_name: Größe Datenbank
       icon: mdi:database
       
-    sensor.hass_installed_version:
-      friendly_name: Installierte Version
+    sensor.installierte_version:      
       icon: mdi:shield-check
-    sensor.hass_current_version:
-      friendly_name: Neuste Version
-      icon: mdi:update

@@ -20,7 +20,7 @@ binary_sensor:
           {% if nextVacation == None %}
             False
           {% else %}
-            {% set nextVacationTime = strptime(state_attr('calendar.urlaub', 'start_time'),'%Y-%m-%d %H:%M:%S') %}
+            {% set nextVacationTime = strptime(state_attr('calendar.urlaub', 'start_time'),'%Y-%m-%d %H:%M:%S', None) %}
 
             {{ nextVacationTime.strftime('%j')|int - now().strftime('%j')|int == 1 }}          
           {% endif %}
@@ -34,7 +34,7 @@ binary_sensor:
           {% if nextEntry == None %}
             False
           {% else %}
-            {% set nextStartTime = strptime(state_attr('calendar.arbeit_krank', 'start_time'),'%Y-%m-%d %H:%M:%S') %}
+            {% set nextStartTime = strptime(state_attr('calendar.arbeit_krank', 'start_time'),'%Y-%m-%d %H:%M:%S', None) %}
 
             {{ nextStartTime.strftime('%j')|int - now().strftime('%j')|int == 1 }}          
           {% endif %}          
@@ -46,9 +46,9 @@ sensor:
         friendly_name: Restmüll
         value_template: >
           {% if state_attr('calendar.edg_restmuell', 'start_time') %}
-            {% set weekday = as_timestamp(state_attr('calendar.edg_restmuell', 'start_time')) | timestamp_custom("%w", True) | int %}
+            {% set weekday = as_timestamp(state_attr('calendar.edg_restmuell', 'start_time'), None) | timestamp_custom("%w", True) | int %}
 
-            {{ ['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'][weekday-1] }}, {{ as_timestamp(state_attr('calendar.edg_restmuell', 'start_time')) | timestamp_custom("%d.%m.%Y", True) | string }}
+            {{ ['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'][weekday-1] }}, {{ as_timestamp(state_attr('calendar.edg_restmuell', 'start_time'), None) | timestamp_custom("%d.%m.%Y", True) | string }}
           {% else %}
             -
           {% endif %}
@@ -58,9 +58,9 @@ sensor:
         friendly_name: Wertstoff
         value_template: >
           {% if state_attr('calendar.edg_wertstoff', 'start_time') %}
-            {% set weekday = as_timestamp(state_attr('calendar.edg_wertstoff', 'start_time')) | timestamp_custom("%w", True) | int %}
+            {% set weekday = as_timestamp(state_attr('calendar.edg_wertstoff', 'start_time'), None) | timestamp_custom("%w", True) | int %}
 
-            {{ ['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'][weekday-1] }}, {{ as_timestamp(state_attr('calendar.edg_wertstoff', 'start_time')) | timestamp_custom("%d.%m.%Y", True) | string }}
+            {{ ['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'][weekday-1] }}, {{ as_timestamp(state_attr('calendar.edg_wertstoff', 'start_time'), None) | timestamp_custom("%d.%m.%Y", True) | string }}
           {% else %}
             -
           {% endif %}
@@ -70,9 +70,9 @@ sensor:
         friendly_name: Papier
         value_template: >
           {% if state_attr('calendar.edg_papier', 'start_time') %}
-            {% set weekday = as_timestamp(state_attr('calendar.edg_papier', 'start_time')) | timestamp_custom("%w", True) | int %}
+            {% set weekday = as_timestamp(state_attr('calendar.edg_papier', 'start_time'), None) | timestamp_custom("%w", True) | int %}
 
-            {{ ['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'][weekday-1] }}, {{ as_timestamp(state_attr('calendar.edg_papier', 'start_time')) | timestamp_custom("%d.%m.%Y", True) | string }}
+            {{ ['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'][weekday-1] }}, {{ as_timestamp(state_attr('calendar.edg_papier', 'start_time'), None) | timestamp_custom("%d.%m.%Y", True) | string }}
           {% else %}
             -
           {% endif %}
@@ -92,9 +92,9 @@ sensor:
         friendly_name: Datum
         value_template: >
           {% if state_attr('calendar.borussia_dortmund', 'start_time') %}
-            {% set weekday = as_timestamp(state_attr('calendar.borussia_dortmund', 'start_time')) | timestamp_custom("%w", True) | int %}
+            {% set weekday = as_timestamp(state_attr('calendar.borussia_dortmund', 'start_time'), None) | timestamp_custom("%w", True) | int %}
 
-            {{ ['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'][weekday-1] }}, {{ as_timestamp(state_attr('calendar.borussia_dortmund', 'start_time')) | timestamp_custom("%d.%m.%Y", True) | string }}
+            {{ ['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'][weekday-1] }}, {{ as_timestamp(state_attr('calendar.borussia_dortmund', 'start_time'), None) | timestamp_custom("%d.%m.%Y", True) | string }}
           {% else %}
             -
           {% endif %}
@@ -139,9 +139,9 @@ sensor:
         friendly_name: Datum
         value_template: >
           {% if state_attr('calendar.nationalmannschaft', 'start_time') %}
-            {% set weekday = as_timestamp(state_attr('calendar.nationalmannschaft', 'start_time')) | timestamp_custom("%w", True) | int %}
+            {% set weekday = as_timestamp(state_attr('calendar.nationalmannschaft', 'start_time'), None) | timestamp_custom("%w", True) | int %}
 
-            {{ ['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'][weekday-1] }}, {{ as_timestamp(state_attr('calendar.nationalmannschaft', 'start_time')) | timestamp_custom("%d.%m.%Y", True) | string }}
+            {{ ['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'][weekday-1] }}, {{ as_timestamp(state_attr('calendar.nationalmannschaft', 'start_time'), None) | timestamp_custom("%d.%m.%Y", True) | string }}
           {% else %}
             -
           {% endif %}
@@ -175,8 +175,8 @@ sensor:
       formel1_rennen:
         friendly_name: Nächstes Rennen
         value_template: >       
-          {% set rennen = as_timestamp(state_attr('calendar.formel1_rennen', 'start_time')) %}
-          {% set sprint = as_timestamp(state_attr('calendar.formel1_sprint', 'start_time')) %}
+          {% set rennen = as_timestamp(state_attr('calendar.formel1_rennen', 'start_time'), None) %}
+          {% set sprint = as_timestamp(state_attr('calendar.formel1_sprint', 'start_time'), None) %}
           
           {% if sprint != None and sprint < rennen %}
             {% set location = state_attr('calendar.formel1_sprint', 'message').split(':')[1].split('/') %}
@@ -194,8 +194,8 @@ sensor:
       formel1_datum:
         friendly_name: Datum
         value_template: >
-          {% set rennen = as_timestamp(state_attr('calendar.formel1_rennen', 'start_time')) %}
-          {% set sprint = as_timestamp(state_attr('calendar.formel1_sprint', 'start_time')) %}        
+          {% set rennen = as_timestamp(state_attr('calendar.formel1_rennen', 'start_time'), None) %}
+          {% set sprint = as_timestamp(state_attr('calendar.formel1_sprint', 'start_time'), None) %}        
         
           {% if sprint != None and sprint < rennen %}
             {% set start = sprint %}
@@ -219,8 +219,8 @@ sensor:
           {% if qualifikation == None or rennen == None %}
             -
           {% else %}
-            {% set qualifikationTs = as_timestamp(state_attr('calendar.formel1_qualifikation', 'start_time')) %}
-            {% set rennenTs = as_timestamp(state_attr('calendar.formel1_rennen', 'start_time')) %}
+            {% set qualifikationTs = as_timestamp(state_attr('calendar.formel1_qualifikation', 'start_time'), None) %}
+            {% set rennenTs = as_timestamp(state_attr('calendar.formel1_rennen', 'start_time'), None) %}
             
             {% if qualifikation > rennen %}
               -
@@ -238,9 +238,9 @@ sensor:
         friendly_name: Nächster Urlaub
         value_template: >
           {% if state_attr('calendar.urlaub', 'start_time') %}          
-            {% set weekday = as_timestamp(state_attr('calendar.urlaub', 'start_time')) | timestamp_custom("%w", True) | int %}
+            {% set weekday = as_timestamp(state_attr('calendar.urlaub', 'start_time'), None) | timestamp_custom("%w", True) | int %}
 
-            {{ ['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'][weekday-1] }}, {{ as_timestamp(state_attr('calendar.urlaub', 'start_time')) | timestamp_custom("%d.%m.%Y", True) | string }}
+            {{ ['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'][weekday-1] }}, {{ as_timestamp(state_attr('calendar.urlaub', 'start_time'), None) | timestamp_custom("%d.%m.%Y", True) | string }}
           {% else %}
             -
           {% endif %}
@@ -256,9 +256,9 @@ sensor:
         friendly_name: Nächster Feiertag
         value_template: >
           {% if state_attr('calendar.ferien_feiertage', 'start_time') %}             
-            {% set weekday = as_timestamp(state_attr('calendar.ferien_feiertage', 'start_time')) | timestamp_custom("%w", True) | int %}
+            {% set weekday = as_timestamp(state_attr('calendar.ferien_feiertage', 'start_time'), None) | timestamp_custom("%w", True) | int %}
 
-            {{ ['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'][weekday-1] }}, {{ as_timestamp(state_attr('calendar.ferien_feiertage', 'start_time')) | timestamp_custom("%d.%m.%Y", True) | string }}
+            {{ ['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'][weekday-1] }}, {{ as_timestamp(state_attr('calendar.ferien_feiertage', 'start_time'), None) | timestamp_custom("%d.%m.%Y", True) | string }}
           {% else %}
             -
           {% endif %}

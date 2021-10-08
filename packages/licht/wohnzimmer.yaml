@@ -27,6 +27,18 @@ binary_sensor:
         
           {{ False if homeOfficeAktiv or schlafenAktiv else True }}
           
+      wohnzimmer_schrank_inaktiv:
+        friendly_name: "Wohnzimmer Schrank inaktiv"   
+        value_template: >-
+          {% set time = states('sensor.time') %}
+          {% set hour = now().strftime("%H") | int %}
+          
+          {{ True if (hour >= 7 and hour <= 20 ) else False }}
+          
+      wohnzimmer_licht_inaktiv:
+        friendly_name: "Wohnzimmer Licht inaktiv"    
+        value_template: "{{ True if is_state('binary_sensor.wohnzimmer_schrank_inaktiv', 'off') else False }}"          
+          
 entity_controller:
   bewegung_wohnzimmer:
     friendly_name: "Bewegung Wohnzimmer"
@@ -37,10 +49,26 @@ entity_controller:
       on_enter_overridden: 'off'
     overrides:
       - binary_sensor.sonne_tagsueber  
+      - binary_sensor.wohnzimmer_licht_inaktiv  
       - binary_sensor.bewegungsmelder_inaktiv_tagsueber         
       - binary_sensor.bewegungsmelder_inaktiv_unterwegs
       - binary_sensor.bewegungsmelder_inaktiv_staubsauger
       - input_boolean.bewegungsmelder_wohnzimmer_deaktiviert      
+      
+  bewegung_wohnzimmerschrank:
+    friendly_name: "Bewegung Wohnzimmerschrank"
+    sensor: binary_sensor.bewegungsmelder_wohnzimmer
+    entities: light.wohnzimmer_schrank
+    delay: 60
+    behaviours:
+      on_enter_overridden: 'off'
+    overrides:
+      - binary_sensor.sonne_tagsueber  
+      - binary_sensor.wohnzimmer_schrank_inaktiv  
+      - binary_sensor.bewegungsmelder_inaktiv_tagsueber         
+      - binary_sensor.bewegungsmelder_inaktiv_unterwegs
+      - binary_sensor.bewegungsmelder_inaktiv_staubsauger
+      - input_boolean.bewegungsmelder_wohnzimmer_deaktiviert    
       
 automation:
   - alias: "Wohnzimmer - Licht Abends"
@@ -64,6 +92,9 @@ automation:
       - condition: state
         entity_id: light.wohnzimmer_strahler
         state: 'off'
+      - condition: state
+        entity_id: light.wohnzimmer_schrank
+        state: 'off'        
       - condition: state
         entity_id: input_boolean.baden_aktiv
         state: 'off'        

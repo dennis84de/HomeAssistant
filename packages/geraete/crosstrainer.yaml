@@ -31,7 +31,7 @@ script:
         entity_id: switch.watchtv_wohnzimmer, switch.monitor, switch.pc
       - service: script.radios_ausschalten
       - service: light.turn_off
-        entity_id: light.wohnzimmer_couch, light.wohnzimmer_strahler
+        entity_id: light.wohnzimmer_couch, light.wohnzimmer_strahler, light.wohnzimmer_schrank
       - choose:
           conditions:
             - condition: state

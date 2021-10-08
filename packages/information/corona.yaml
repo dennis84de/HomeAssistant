@@ -19,7 +19,7 @@ sensor:
       - vaccinated
       - quote
       - difference_to_the_previous_day
-    value_template: '{{ as_timestamp(strptime(value_json.lastUpdate,"")) | timestamp_local }}'
+    value_template: '{{ as_timestamp(strptime(value_json.lastUpdate,"", None), None) | timestamp_local(None) }}'
     device_class: timestamp
 
   - platform: rest
@@ -30,7 +30,7 @@ sensor:
       - vaccinated
       - quote
       - difference_to_the_previous_day
-    value_template: '{{ as_timestamp(strptime(value_json.lastUpdate,"")) | timestamp_local }}'
+    value_template: '{{ as_timestamp(strptime(value_json.lastUpdate,"", None), None) | timestamp_local(None) }}'
     device_class: timestamp    
 
   - platform: template

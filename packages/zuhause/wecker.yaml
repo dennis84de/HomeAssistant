@@ -49,12 +49,12 @@ binary_sensor:
       wecker_richtig_gestellt:
         friendly_name: Wecker richtig gestellt
         value_template: >-
-          {% set wecker_zeit = as_timestamp(states('sensor.tablet_schlafzimmer_nachster_wecker')) | timestamp_custom("%H:%M:%S", True) %}
+          {% set wecker_zeit = as_timestamp(states('sensor.tablet_schlafzimmer_nachster_wecker'), None) | timestamp_custom("%H:%M:%S", True) %}
           {% set wecker_standard_buero = states('input_datetime.alarm_standard_buero') %}
           {% set wecker_standard_homeoffice = states('input_datetime.alarm_standard_homeoffice') %}     
 
-          {% set tagWecker = as_timestamp(states('sensor.tablet_schlafzimmer_nachster_wecker')) | timestamp_custom("%d", True) | int %}
-          {% set tagHeute = as_timestamp(now()) | timestamp_custom("%d", True) | int %}
+          {% set tagWecker = as_timestamp(states('sensor.tablet_schlafzimmer_nachster_wecker'), None) | timestamp_custom("%d", True) | int %}
+          {% set tagHeute = as_timestamp(now(), None) | timestamp_custom("%d", True) | int %}
 
           {% set buero_morgen = is_state('binary_sensor.buero_morgen', 'on') %}
           {% set buero_heute = is_state('binary_sensor.buero_heute', 'on') %}
@@ -94,7 +94,7 @@ sensor:
           {% if alarmSensor == 'unavailable' %}
             -
           {% else %}
-            {{ as_timestamp(alarmSensor) | timestamp_custom("%H:%M", True) }}
+            {{ as_timestamp(alarmSensor, None) | timestamp_custom("%H:%M", True) }}
           {% endif %}              
         
       wecker_startdatum:
@@ -106,8 +106,8 @@ sensor:
           {% if alarmSensor == 'unavailable' %}
             -
           {% else %}
-            {% set weekday = as_timestamp(alarmSensor) | timestamp_custom("%w", True) | int %}
-            {{ ['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'][weekday-1] }}, {{ as_timestamp(alarmSensor) | timestamp_custom("%d.%m.%Y", True) | string }}          
+            {% set weekday = as_timestamp(alarmSensor, None) | timestamp_custom("%w", True) | int %}
+            {{ ['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'][weekday-1] }}, {{ as_timestamp(alarmSensor, None) | timestamp_custom("%d.%m.%Y", True) | string }}          
           {% endif %}
 
 automation:
@@ -116,9 +116,9 @@ automation:
     trigger:
       - platform: template
         value_template: >-
-          {% set jetzt = as_timestamp(states('sensor.date_time').replace(',','')) | int %}         
+          {% set jetzt = as_timestamp(states('sensor.date_time').replace(',',''), None) | int %}  
           {% set vorlauf = (states('input_number.wecker_vorlauf' ) | int) * 60  %}
-          {% set wecker = as_timestamp(states('sensor.tablet_schlafzimmer_nachster_wecker')) | int %}
+          {% set wecker = as_timestamp(states('sensor.tablet_schlafzimmer_nachster_wecker'), None) | int %}
           
           {{ wecker == jetzt + vorlauf }}
     condition:
@@ -173,8 +173,8 @@ automation:
         state: 'on'
       - condition: template
         value_template: >-
-          {% set wecker = as_timestamp(states('sensor.tablet_schlafzimmer_nachster_wecker')) / 86400 %}
-          {% set now = as_timestamp(as_timestamp(now()) | timestamp_custom("%Y-%m-%d 00:00:00",true)) / 86400 %}
+          {% set wecker = as_timestamp(states('sensor.tablet_schlafzimmer_nachster_wecker'), None) / 86400 %}
+          {% set now = as_timestamp(as_timestamp(now(), None) | timestamp_custom("%Y-%m-%d 00:00:00",true), None) / 86400 %}
 
           {{ wecker - now > 1 }}
     action:
@@ -237,8 +237,8 @@ automation:
                   - condition: template                   
                     value_template: >-
                       {% set alarmSensor = states('sensor.tablet_schlafzimmer_nachster_wecker') %}
-                      {% set alarmDay = as_timestamp(alarmSensor) | timestamp_custom('%d') | int %}
-                      {% set now = (as_timestamp(now()) | int) | timestamp_custom('%d') | int %}
+                      {% set alarmDay = as_timestamp(alarmSensor, None) | timestamp_custom('%d') | int %}
+                      {% set now = (as_timestamp(now(), None) | int) | timestamp_custom('%d') | int %}
 
                       {{ alarmSensor == 'unavailable' or alarmDay != now }}
               - condition: template                   
@@ -269,7 +269,7 @@ automation:
         data:                  
           message: >-
             {%- set word_for_and = 'und' %}
-            {%- set up_time = as_timestamp(now()) - state_attr('input_datetime.schlafen_uhrzeit', 'timestamp') | int %}
+            {%- set up_time = as_timestamp(now(), None) - state_attr('input_datetime.schlafen_uhrzeit', 'timestamp') | int %}
 
             {%- macro phrase(name, plural_name, divisor, mod=None) %}
               {%- set value = ((up_time // divisor) % (mod if mod else divisor)) | int %}
@@ -285,7 +285,7 @@ automation:
                    ] | select('!=','') | list %}
 
             {% set schlafenSatz = values[:-1] | join(', ') ~ ' ' ~ word_for_and ~ ' ' ~ values[-1] if values | length > 1 else values | first %}
-            {% set uhrzeitSatz = as_timestamp(now()) | timestamp_custom('%H:%M') %}         
+            {% set uhrzeitSatz = as_timestamp(now(), None) | timestamp_custom('%H:%M') %}         
              
             {{ 'Guten Morgen. Es ist ' ~ uhrzeitSatz ~ ' Uhr. Du hast ' ~ schlafenSatz ~ ' geschlafen.' }}      
       - service: switch.turn_on
@@ -316,9 +316,9 @@ automation:
               - service: !secret tts_service
                 data:                  
                   message: >-
-                    {% set coronaDortmundGestern = states('input_text.corona_dortmund_gestern') | float %}
-                    {% set coronaMuelheimGestern = states('input_text.corona_mulheim_gestern') | float %}
-                    {% set coronaGrenzwert = states('input_number.corona_grenzwert') | float %}
+                    {% set coronaDortmundGestern = states('input_text.corona_dortmund_gestern') | float(0) %}
+                    {% set coronaMuelheimGestern = states('input_text.corona_mulheim_gestern') | float(0) %}
+                    {% set coronaGrenzwert = states('input_number.corona_grenzwert') | float(0) %}
                     
                     {% if coronaDortmundGestern >= coronaGrenzwert and coronaMuelheimGestern >= coronaGrenzwert %}
                       Die Corona-Werte in Dortmund und Mülheim waren gestern zu hoch.

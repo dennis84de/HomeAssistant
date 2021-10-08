@@ -25,11 +25,11 @@ binary_sensor:
           {% set arbeitstag = is_state('binary_sensor.arbeitstag', 'on') %}
           {% set samstag = (now().isoweekday() | int) == 6 %}          
           {% set keinUrlaub = is_state('calendar.urlaub', 'off') %}
-          {% set heute = as_timestamp(now()) | timestamp_custom("%Y-%m-%d 00:00:00", True) %}
-          {% set letzteReinigung = as_timestamp(state_attr("automation.staubsaugen_beendet", "last_triggered")) | timestamp_custom("%Y-%m-%d 00:00:00", True) %}
+          {% set heute = as_timestamp(now(), None) | timestamp_custom("%Y-%m-%d 00:00:00", True) %}
+          {% set letzteReinigung = as_timestamp(state_attr("automation.staubsaugen_beendet", "last_triggered"), None) | timestamp_custom("%Y-%m-%d 00:00:00", True) %}
           
           {% if letzteReinigung %}
-            {% set abstandTage = ((as_timestamp(heute) - as_timestamp(letzteReinigung)) / 60 / 60 / 24) | int %}
+            {% set abstandTage = ((as_timestamp(heute, None) - as_timestamp(letzteReinigung, None)) / 60 / 60 / 24) | int %}
           {% else %}
             {% set abstandTage = 3 %}
           {% endif %}
@@ -60,9 +60,9 @@ sensor:
           {% if lastClean == None %}
             -
           {% else %}            
-            {% set weekday = as_timestamp(lastClean) | timestamp_custom("%w", True) | int %}
+            {% set weekday = as_timestamp(lastClean, None) | timestamp_custom("%w", True, None) | int %}
 
-            {{ ['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'][weekday-1] }}, {{ as_timestamp(lastClean) | timestamp_custom("%d.%m.%Y", True) | string }}              
+            {{ '-' if weekday == None else ['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'][weekday-1] }}, {{ as_timestamp(lastClean, None) | timestamp_custom("%d.%m.%Y", True) | string }}              
           {% endif %}
           
       reinigung_filter:
@@ -116,7 +116,7 @@ sensor:
           {% if is_state('vacuum.roborock_vacuum', 'unknown') %}
             0
           {% else %}
-            {{ state_attr("vacuum.roborock_vacuum","battery_level") | float }}
+            {{ state_attr("vacuum.roborock_vacuum","battery_level") | float(0) }}
           {% endif %}
         unit_of_measurement: '%'
 
@@ -172,7 +172,7 @@ automation:
         state: 'on'      
       - condition: template
         value_template: >-
-          {% set letzter_start = as_timestamp(state_attr("automation.staubsaugen_gestartet", "last_triggered")) | timestamp_custom("%s", True) | int  %}
+          {% set letzter_start = as_timestamp(state_attr("automation.staubsaugen_gestartet", "last_triggered"), None) | timestamp_custom("%s", True) | int  %}
           {% set now = now().strftime("%s") | int %}
           {% set abstand_stunden = ((now - letzter_start | int) / 3600) | int %}
 

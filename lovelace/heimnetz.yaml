@@ -9,7 +9,7 @@ cards:
     title: Status
     show_header_toggle: false
     entities:
-      - entity: binary_sensor.fritz_box_7272_connectivity
+      - entity: binary_sensor.fritz_box_7272_connection
         name: "Fritzbox"
       - entity: sensor.fritz_box_7272_connection_uptime
         name: "Letzter Neustart"

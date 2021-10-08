@@ -1,18 +1,15 @@
 alles_ausschalten:
   name: Alles auschalten
   entities:
-    - switch.wohnzimmer_radio
-    - switch.balkon_radio
-    - switch.flur_radio
-    - switch.badezimmer_radio
-    - switch.kuche_radio
-    - switch.schlafzimmer_radio
-    - switch.arbeitszimmer_radio
+    - switch.alle_radios
     - switch.computer
     - switch.watchtv_wohnzimmer
     - switch.watchtv_schlafzimmer
+    - switch.arbeitszimmer_monitore
+    - switch.pc_arbeit
     - light.wohnzimmer_couch
     - light.wohnzimmer_strahler
+    - light.wohnzimmer_schrank
     - light.arbeitszimmer_lampe
     - light.sportzimmer_regal
     - light.schreibtisch
@@ -30,6 +27,7 @@ licht_wohnung:
   entities:
     - light.wohnzimmer_couch
     - light.wohnzimmer_strahler
+    - light.wohnzimmer_schrank
     - light.arbeitszimmer_lampe
     - light.sportzimmer_regal
     - light.schreibtisch
@@ -62,6 +60,7 @@ licht_unterwegs:
   entities:
     - light.wohnzimmer_couch
     - light.wohnzimmer_strahler
+    - light.wohnzimmer_schrank
     - light.arbeitszimmer_lampe
     - light.sportzimmer_regal
     - light.kuche_regal

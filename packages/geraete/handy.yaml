@@ -1,7 +1,7 @@
 input_boolean:
   nicht_stoeren:
     name: Nicht stören
-    icon: mdi:do-not-disturb
+    icon: mdi:minus-circle
     
 device_tracker:
   - platform: phonetrack

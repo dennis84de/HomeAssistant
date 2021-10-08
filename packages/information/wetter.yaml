@@ -40,9 +40,9 @@ binary_sensor:
         friendly_name: "Sonne tagsüber"
         value_template: >-
           {% if is_state('sensor.helligkeit_balkon', None) or is_state('sensor.helligkeit_balkon', 'unknown') or is_state('sensor.helligkeit_balkon', '0') %}
-            {{ states('sensor.helligkeit_wetter') | float > 15 }}
+            {{ states('sensor.helligkeit_wetter') | float(0) > 15 }}
           {% else %}
-            {{ states('sensor.helligkeit_balkon_durchschnitt') | float > 22000 }}
+            {{ states('sensor.helligkeit_balkon_durchschnitt') | float(0) > 22000 }}
           {% endif %}
           
       sommerzeit:
@@ -128,25 +128,25 @@ sensor:
       mold_wohnzimmer_temperatur:
         value_template: >-
           {% if is_state('sensor.wohnzimmer_temperatur', 'unavailable') %}
-            {{ 0.00 | float }}
+            {{ 0.00 | float(0) }}
           {% else %}
-            {{ states('sensor.wohnzimmer_temperatur') | float }}
+            {{ states('sensor.wohnzimmer_temperatur') | float(0) }}
           {% endif %}
         unit_of_measurement: '°C'
       mold_wohnzimmer_luftfeuchtigkeit:
         value_template: >-
           {% if is_state('sensor.wohnzimmer_luftfeuchtigkeit', 'unavailable') %}
-            {{ 0.00 | float }}
+            {{ 0.00 | float(0) }}
           {% else %}
-            {{ states('sensor.wohnzimmer_luftfeuchtigkeit') | float }}
+            {{ states('sensor.wohnzimmer_luftfeuchtigkeit') | float(0) }}
           {% endif %}        
         unit_of_measurement: '%'
       mold_balkon_temperatur:
         value_template: >-        
           {% if is_state('sensor.balkon_temperatur', 'unavailable') %}
-            {{ 0.00 | float }}
+            {{ 0.00 | float(0) }}
           {% else %}
-            {{ states('sensor.balkon_temperatur') | float }}
+            {{ states('sensor.balkon_temperatur') | float(0) }}
           {% endif %}          
         unit_of_measurement: '°C'
 
@@ -165,11 +165,11 @@ sensor:
         friendly_name: 'Helligkeit'
         icon_template: mdi:theme-light-dark
         value_template: >-
-          {%- set irradiance = states('sensor.sun_irradiance_dortmund') | float %} 
+          {%- set irradiance = states('sensor.sun_irradiance_dortmund') | float(0) %} 
                    
           {%- set irradiance_pct = irradiance / 10 %}
-          {%- set elevation = state_attr('sun.sun','elevation') | float %}
-          {%- set cloud_coverage = states('sensor.darksky_cloud_coverage') | float %}
+          {%- set elevation = state_attr('sun.sun','elevation') | float(0) %}
+          {%- set cloud_coverage = states('sensor.darksky_cloud_coverage') | float(0) %}
           {%- set adjusted_clouds = cloud_coverage -  irradiance_pct %}
           {%- set cloud_factor = (1 - (0.75 * ( adjusted_clouds / 100) ** 3 )) %}
           {%- set min_elevation = -6 %}
@@ -189,9 +189,9 @@ sensor:
       tageszeit:
         friendly_name: Tageszeit
         value_template: >-
-          {% if (as_timestamp(state_attr('sun.sun', 'next_dusk'))) - (as_timestamp(state_attr('sun.sun', 'next_setting'))) < 0 %}
+          {% if (as_timestamp(state_attr('sun.sun', 'next_dusk'), None)) - (as_timestamp(state_attr('sun.sun', 'next_setting'), None)) < 0 %}
             Abenddämmerung
-          {% elif (as_timestamp(state_attr('sun.sun', 'next_rising'))) - (as_timestamp(state_attr('sun.sun', 'next_dawn'))) < 0 %}
+          {% elif (as_timestamp(state_attr('sun.sun', 'next_rising'), None)) - (as_timestamp(state_attr('sun.sun', 'next_dawn'), None)) < 0 %}
             Morgendämmerung
           {% elif (state_attr('sun.sun', 'elevation')) < - 4 %}
             Nacht
@@ -199,9 +199,9 @@ sensor:
             Tag
           {% endif %}
         entity_picture_template: >-
-          {% if (as_timestamp(state_attr('sun.sun', 'next_dusk'))) - (as_timestamp(state_attr('sun.sun', 'next_setting'))) < 0 %}
+          {% if (as_timestamp(state_attr('sun.sun', 'next_dusk'), None)) - (as_timestamp(state_attr('sun.sun', 'next_setting'), None)) < 0 %}
             /local/sonne/Dawn.png
-          {% elif (as_timestamp(state_attr('sun.sun', 'next_rising'))) - (as_timestamp(state_attr('sun.sun', 'next_dawn'))) < 0 %}
+          {% elif (as_timestamp(state_attr('sun.sun', 'next_rising'), None)) - (as_timestamp(state_attr('sun.sun', 'next_dawn'), None)) < 0 %}
             /local/sonne/Dusk.png         
           {% elif (state_attr('sun.sun', 'elevation')) < - 4 %}
             /local/sonne/Night.png
@@ -211,12 +211,12 @@ sensor:
 
       sonnenaufgang:
         friendly_name: 'Nächster Sonnenaufgang'
-        value_template: "{{ as_timestamp(state_attr('sun.sun', 'next_rising')) | timestamp_custom('%d.%m.%Y %H:%M') }}"
+        value_template: "{{ as_timestamp(state_attr('sun.sun', 'next_rising'), None) | timestamp_custom('%d.%m.%Y %H:%M') }}"
         icon_template: mdi:weather-sunset-up
 
       sonnenuntergang:
         friendly_name: 'Nächster Sonnenuntergang'
-        value_template: "{{ as_timestamp(state_attr('sun.sun', 'next_setting')) | timestamp_custom('%d.%m.%Y %H:%M') }}"
+        value_template: "{{ as_timestamp(state_attr('sun.sun', 'next_setting'), None) | timestamp_custom('%d.%m.%Y %H:%M') }}"
         icon_template: mdi:weather-sunset-down
 
       mondphasen:
@@ -261,13 +261,13 @@ sensor:
       uv_index_current:
         friendly_name: 'UV Index'
         unit_of_measurement: 'UV'
-        value_template: '{{ states("sensor.current_uv_index") | float | round(2) }}'
+        value_template: '{{ states("sensor.current_uv_index") | float(0) | round(2) }}'
         icon_template: '{{ state_attr("sensor.current_uv_index","icon") }}'
 
       uv_index_max:
         friendly_name: 'Maximaler UV Index'
         unit_of_measurement: 'UV'
-        value_template: '{{ states("sensor.max_uv_index") | float | round(2) }}'
+        value_template: '{{ states("sensor.max_uv_index") | float(0) | round(2) }}'
         icon_template: '{{ state_attr("sensor.max_uv_index","icon") }}'
 
       zeit_sonne:
@@ -285,12 +285,12 @@ sensor:
         friendly_name: 'Windrichtung'
         icon_template: mdi:compass
         value_template: >-
-          {% set winbearing = (states('sensor.darksky_wind_bearing') | float / 45) | int | round + 1 %}
+          {% set winbearing = (states('sensor.darksky_wind_bearing') | float(0) / 45) | int | round + 1 %}
           {% set winddir = ['Nord', 'NO','Ost','SO','Süd','SW','West','NW']%}
           
           {{ winddir[winbearing]}}
         entity_picture_template: >-
-          {% set winbearing = (states('sensor.darksky_wind_bearing') | float / 45) | int | round + 1 %}
+          {% set winbearing = (states('sensor.darksky_wind_bearing') | float(0) / 45) | int | round + 1 %}
           {% set winddir = ['0', '45','90','135','180','225','270','315'] %}
           
           {{ "/local/wind/" ~ winddir[winbearing] ~ ".png" }}
@@ -301,7 +301,7 @@ sensor:
         icon_template: "{{ 'mdi:rotate-left' if now().month > 3 else 'mdi:rotate-right' }}"       
         value_template: >
           {%- set ns = namespace(previous = 2, spring=none, fall=none) %}
-          {%- set today = strptime(states('sensor.date'), '%Y-%m-%d').astimezone().replace(hour=ns.previous) %}
+          {%- set today = strptime(states('sensor.date'), '%Y-%m-%d', None).astimezone().replace(hour=ns.previous) %}
           {%- for i in range(365) %}
             {%- set day = (today + timedelta(days=i)).astimezone() %}
             {%- if ns.previous - day.hour == -1 %}
@@ -321,7 +321,7 @@ sensor:
             {{ now().astimezone().tzinfo != dt.astimezone().tzinfo }}          
           next: >
             {%- set ns = namespace(previous = 2, spring=none, fall=none) %}
-            {%- set today = strptime(states('sensor.date'), '%Y-%m-%d').astimezone().replace(hour=ns.previous) %}
+            {%- set today = strptime(states('sensor.date'), '%Y-%m-%d', None).astimezone().replace(hour=ns.previous) %}
             {%- for i in range(365) %}
               {%- set day = (today + timedelta(days=i)).astimezone() %}
               {%- if ns.previous - day.hour == -1 %}
@@ -345,19 +345,19 @@ sensor:
           
           {% if current_count != None and advance_count != None and (current_count > 0 or advance_count > 0) %}
             {% for i in range(current_count) %}
-              {% set startTime = as_timestamp(state_attr("sensor.wetterwarnungen_current_warning_level", "warning_" ~ loop.index ~ "_start")) %}
-              {% set endTime = as_timestamp(state_attr("sensor.wetterwarnungen_current_warning_level", "warning_" ~ loop.index ~ "_end")) %}
+              {% set startTime = as_timestamp(state_attr("sensor.wetterwarnungen_current_warning_level", "warning_" ~ loop.index ~ "_start"), None) %}
+              {% set endTime = as_timestamp(state_attr("sensor.wetterwarnungen_current_warning_level", "warning_" ~ loop.index ~ "_end"), None) %}
             
-              {% if startTime < as_timestamp(now()) < endTime %}
+              {% if startTime < as_timestamp(now(), None) < endTime %}
                 {% set ns.found = ns.found + 1 -%}
               {%endif%}
             {% endfor %}
 
             {% for i in range(advance_count) %}
-              {% set startTime = as_timestamp(state_attr("sensor.wetterwarnungen_advance_warning_level", "warning_" ~ loop.index ~ "_start")) %}
-              {% set endTime = as_timestamp(state_attr("sensor.wetterwarnungen_advance_warning_level", "warning_" ~ loop.index ~ "_end")) %}
+              {% set startTime = as_timestamp(state_attr("sensor.wetterwarnungen_advance_warning_level", "warning_" ~ loop.index ~ "_start"), None) %}
+              {% set endTime = as_timestamp(state_attr("sensor.wetterwarnungen_advance_warning_level", "warning_" ~ loop.index ~ "_end"), None) %}
               
-              {% if startTime < as_timestamp(now()) < endTime %}
+              {% if startTime < as_timestamp(now(), None) < endTime %}
                 {% set ns.found = ns.found + 1 -%}
               {%endif%}
             {% endfor %}              
@@ -370,7 +370,7 @@ automation:
     id: "balkontuer_schliessen"
     trigger:
       - platform: template
-        value_template: "{{ states('sensor.balkon_temperatur') | float > states('sensor.wohnzimmer_temperatur') | float + 2 }}"
+        value_template: "{{ states('sensor.balkon_temperatur') | float(0) > states('sensor.wohnzimmer_temperatur') | float(0) + 2 }}"
     condition:       
       - condition: or
         conditions:
@@ -380,14 +380,14 @@ automation:
           - condition: state
             entity_id: binary_sensor.fenster_wohnzimmer
             state: 'on'
-      - "{{ (states('sensor.wohnzimmer_temperatur') | float) > 0 }}"
-      - "{{ (states('sensor.balkon_temperatur') | float) > 23 }}"  
+      - "{{ (states('sensor.wohnzimmer_temperatur') | float(0)) > 0 }}"
+      - "{{ (states('sensor.balkon_temperatur') | float(0)) > 23 }}"  
     action:
       - service: !secret tts_service
         data:
           message: >-
-            {% set temperaturBalkon = states('sensor.balkon_temperatur') | float %}
-            {% set temperaturWohnzimmer = states('sensor.wohnzimmer_temperatur') | float %}
+            {% set temperaturBalkon = states('sensor.balkon_temperatur') | float(0) %}
+            {% set temperaturWohnzimmer = states('sensor.wohnzimmer_temperatur') | float(0) %}
 
             {% set difference = (temperaturBalkon - temperaturWohnzimmer) | round() %}
 
@@ -422,10 +422,10 @@ automation:
                       {%- for i in range(current_count) -%}
                         {% set headline = state_attr("sensor.wetterwarnungen_current_warning_level", "warning_" ~ loop.index ~ "_headline") %}
                         {% set description = state_attr("sensor.wetterwarnungen_current_warning_level", "warning_" ~ loop.index ~ "_description") %}
-                        {% set startTime = as_timestamp(state_attr("sensor.wetterwarnungen_current_warning_level", "warning_" ~ loop.index ~ "_start")) %}
-                        {% set endTime = as_timestamp(state_attr("sensor.wetterwarnungen_current_warning_level", "warning_" ~ loop.index ~ "_end")) %}
+                        {% set startTime = as_timestamp(state_attr("sensor.wetterwarnungen_current_warning_level", "warning_" ~ loop.index ~ "_start"), None) %}
+                        {% set endTime = as_timestamp(state_attr("sensor.wetterwarnungen_current_warning_level", "warning_" ~ loop.index ~ "_end"), None) %}
             
-                        {% if startTime < as_timestamp(now()) < endTime %}
+                        {% if startTime < as_timestamp(now(), None) < endTime %}
                           {%- if headline != None -%} {{ headline }}. {% endif -%} {%- if description != None -%} {{ description }} {% endif -%}
                         {%endif%}           
                       {%- endfor -%}
@@ -433,10 +433,10 @@ automation:
                       {%- for i in range(advance_count) -%}
                         {% set headline = state_attr("sensor.wetterwarnungen_advance_warning_level", "warning_" ~ loop.index ~ "_headline") %}
                         {% set description = state_attr("sensor.wetterwarnungen_advance_warning_level", "warning_" ~ loop.index ~ "_description") %}
-                        {% set startTime = as_timestamp(state_attr("sensor.wetterwarnungen_currewetterwarnungen_advance_warning_levelnt_warning_level", "warning_" ~ loop.index ~ "_start")) %}
-                        {% set endTime = as_timestamp(state_attr("sensor.wetterwarnungen_advance_warning_level", "warning_" ~ loop.index ~ "_end")) %}
+                        {% set startTime = as_timestamp(state_attr("sensor.wetterwarnungen_advance_warning_level", "warning_" ~ loop.index ~ "_start"), None) %}
+                        {% set endTime = as_timestamp(state_attr("sensor.wetterwarnungen_advance_warning_level", "warning_" ~ loop.index ~ "_end"), None) %}
             
-                        {% if startTime < as_timestamp(now()) < endTime %}
+                        {% if startTime < as_timestamp(now(), True) < endTime %}
                           {%- if headline != None -%} {{ headline }}. {% endif -%} {%- if description != None -%} {{ description }} {% endif -%}
                         {%endif%}                        
                       {%- endfor -%}              
@@ -460,10 +460,10 @@ automation:
                   {% for i in range(current_count) %}
                     {% set headline = state_attr("sensor.wetterwarnungen_current_warning_level", "warning_" ~ loop.index ~ "_headline") %}
                     {% set description = state_attr("sensor.wetterwarnungen_current_warning_level", "warning_" ~ loop.index ~ "_description") | regex_replace(find=' \([^)]*\)', replace='', ignorecase=False) %}
-                    {% set startTime = as_timestamp(state_attr("sensor.wetterwarnungen_current_warning_level", "warning_" ~ loop.index ~ "_start")) %}
-                    {% set endTime = as_timestamp(state_attr("sensor.wetterwarnungen_current_warning_level", "warning_" ~ loop.index ~ "_end")) %}
+                    {% set startTime = as_timestamp(state_attr("sensor.wetterwarnungen_current_warning_level", "warning_" ~ loop.index ~ "_start"), None) %}
+                    {% set endTime = as_timestamp(state_attr("sensor.wetterwarnungen_current_warning_level", "warning_" ~ loop.index ~ "_end"), None) %}
                         
-                    {% if startTime < as_timestamp(now()) < endTime %}
+                    {% if startTime < as_timestamp(now(), None) < endTime %}
                       {% if headline != None %} {{ headline }}. {% endif %} {% if description != None %} {{ description }} {% endif %}
                     {%endif%}                                                
                   {% endfor %}
@@ -471,10 +471,10 @@ automation:
                   {% for i in range(advance_count) %}
                     {% set headline = state_attr("sensor.wetterwarnungen_advance_warning_level", "warning_" ~ loop.index ~ "_headline") %}
                     {% set description = state_attr("sensor.wetterwarnungen_advance_warning_level", "warning_" ~ loop.index ~ "_description") | regex_replace(find=' \([^)]*\)', replace='', ignorecase=False) %}
-                    {% set startTime = as_timestamp(state_attr("sensor.wetterwarnungen_advance_warning_level", "warning_" ~ loop.index ~ "_start")) %}
-                    {% set endTime = as_timestamp(state_attr("sensor.wetterwarnungen_advance_warning_level", "warning_" ~ loop.index ~ "_end")) %}
+                    {% set startTime = as_timestamp(state_attr("sensor.wetterwarnungen_advance_warning_level", "warning_" ~ loop.index ~ "_start"), None) %}
+                    {% set endTime = as_timestamp(state_attr("sensor.wetterwarnungen_advance_warning_level", "warning_" ~ loop.index ~ "_end"), None) %}
                         
-                    {% if startTime < as_timestamp(now()) < endTime %}
+                    {% if startTime < as_timestamp(now(), None) < endTime %}
                       {% if headline != None %} {{ headline }}. {% endif %} {% if description != None %} {{ description }} {% endif %}
                     {%endif%}                      
                   {% endfor %}              
@@ -526,7 +526,3 @@ homeassistant:
 
     sensor.strommix:
       icon: mdi:solar-power
-      
-  customize_glob:
-    sensor.pollenflug_*: 
-      icon: mdi:tree-outline

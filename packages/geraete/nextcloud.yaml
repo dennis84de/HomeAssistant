@@ -7,11 +7,11 @@ sensor:
       nextcloud_zertifikat_tage:
         friendly_name: "Nextcloud Zertifikat"
         value_template: >-
-          {% set nextcloudTimestamp = as_timestamp(states("sensor.cert_expiry_timestamp_cloud_djaeschke_de")) %}
+          {% set nextcloudTimestamp = as_timestamp(states("sensor.cert_expiry_timestamp_cloud_djaeschke_de"), None) %}
         
-          {{ '-' if nextcloudTimestamp == None else ((nextcloudTimestamp - as_timestamp(now())) | int /60/1440) | round(0) }}
+          {{ '-' if nextcloudTimestamp == None else ((nextcloudTimestamp - as_timestamp(now(), None)) | int /60/1440) | round(0) }}
         icon_template: >-
-          {% set nextcloudTimestamp = as_timestamp(states("sensor.cert_expiry_timestamp_cloud_djaeschke_de")) %}
+          {% set nextcloudTimestamp = as_timestamp(states("sensor.cert_expiry_timestamp_cloud_djaeschke_de"), None) %}
         
           {{ 'mdi:network-off-outline' if nextcloudTimestamp == None else 'mdi:network-outline' }}        
         unit_of_measurement: 'Tage'
