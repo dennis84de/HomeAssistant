@@ -248,8 +248,4 @@ script:
            payload: 'not_home'
            retain: true
       - service: homeassistant.turn_off
-        entity_id: group.alles_ausschalten        
-      - service: input_select.select_option
-        data:
-          entity_id: input_select.computer_ausschalten  
-          option: 'Herunterfahren'
+        entity_id: group.alles_ausschalten

@@ -13,13 +13,24 @@ input_text:
     
 sensor:
   - platform: rest
+    resource: https://worldometers.p.rapidapi.com/api/coronavirus/country/Germany
+    name: "Corona Deutschland"
+    headers:
+      x-rapidapi-key: !secret rapidapi_corona_apikey
+      x-rapidapi-host: "worldometers.p.rapidapi.com"
+    value_template: "[OK]"
+    scan_interval: 3600    
+    json_attributes:
+      - data
+    
+  - platform: rest
     name: "Corona Impfungen Deutschland"
     resource: https://rki-vaccination-data.vercel.app/api
     json_attributes:
       - vaccinated
       - quote
       - difference_to_the_previous_day
-    value_template: '{{ as_timestamp(strptime(value_json.lastUpdate,"", None), None) | timestamp_local(None) }}'
+    value_template: '{{ as_timestamp(value_json.lastUpdate, None) | timestamp_local(None) }}'
     device_class: timestamp
 
   - platform: rest
@@ -29,39 +40,55 @@ sensor:
     json_attributes:
       - vaccinated
       - quote
-      - difference_to_the_previous_day
-    value_template: '{{ as_timestamp(strptime(value_json.lastUpdate,"", None), None) | timestamp_local(None) }}'
+      - difference_to_the_previous_day    
+    value_template: '{{ as_timestamp(value_json.lastUpdate, None) | timestamp_local(None) }}'
     device_class: timestamp    
 
   - platform: template
-    sensors: 
+    sensors:
+      coronavirus_deutschland_bestaetigt:
+          friendly_name: Corona Bestätigt
+          icon_template: mdi:emoticon-neutral-outline
+          value_template: "{{ state_attr('sensor.corona_deutschland','data')['Total Cases'] | replace(',','') | int }}"
+          unit_of_measurement: Personen
+          
+      coronavirus_deutschland_aktuell:
+          friendly_name: Corona Aktuell
+          icon_template: mdi:emoticon-sad-outline        
+          value_template: "{{ state_attr('sensor.corona_deutschland','data')['Active Cases'] | replace(',','') | int }}"
+          unit_of_measurement: Personen
+          
+      coronavirus_deutschland_tote:
+          friendly_name: Corona Tote
+          icon_template: mdi:emoticon-cry-outline
+          value_template: "{{ state_attr('sensor.corona_deutschland','data')['Total Deaths'] | replace(',','') | int }}"
+          unit_of_measurement: Personen
+          
+      coronavirus_deutschland_genesene:
+          friendly_name: Corona Genesene
+          icon_template: mdi:emoticon-happy-outline
+          value_template: "{{ state_attr('sensor.corona_deutschland','data')['Total Recovered'] | replace(',','') | int }}"
+          unit_of_measurement: Personen  
+
       coronavirus_vaccination_brd_vaccinated:
         value_template: "{{ state_attr('sensor.corona_impfungen_deutschland', 'vaccinated') }}"
         friendly_name: 'Geimpfte'
         unit_of_measurement: 'Personen'
 
-  - platform: template
-    sensors: 
       coronavirus_vaccination_brd_quote:
         value_template: "{{ state_attr('sensor.corona_impfungen_deutschland', 'quote') }}"
         friendly_name: 'Impfquote'
 
-  - platform: template
-    sensors: 
       coronavirus_vaccination_brd_difference:
         value_template: "{{ state_attr('sensor.corona_impfungen_deutschland', 'difference_to_the_previous_day') }}"
         friendly_name: 'Neu-Geimpfte'
         unit_of_measurement: 'Personen'
 
-  - platform: template
-    sensors: 
       coronavirus_vaccination_nrw_vaccinated:
         value_template: "{{ state_attr('sensor.corona_impfungen_nrw', 'vaccinated') }}"
         friendly_name: 'Geimpfte'
         unit_of_measurement: 'Personen'
 
-  - platform: template
-    sensors: 
       coronavirus_vaccination_nrw_quote:
         value_template: "{{ state_attr('sensor.corona_impfungen_nrw', 'quote') }}"
         friendly_name: 'Impfquote'    

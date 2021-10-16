@@ -44,7 +44,7 @@ sensor:
           {% set puffer = states('input_number.zigate_offline_puffer') | int * 60 | int -%}
           {% set ns = namespace(found=false) -%}         
           
-          {% for x in zigateEntities if ((now - (as_timestamp(x.state, None) | int) ) / 60 | round()) > puffer %}
+          {% for x in zigateEntities if ((now - (as_timestamp(x.state, None) | int) ) / 60 | round(default=0)) > puffer %}
             {% set ns.found = true -%}
           {% endfor %}
 
@@ -56,7 +56,7 @@ sensor:
           {% set puffer = states('input_number.zigate_offline_puffer') | int * 60 | int -%}
           {% set ns = namespace(found=false) -%}
           
-          {% for x in zigateEntities if ((now - (as_timestamp(x.state, None) | int) ) / 60 | round()) > puffer %}
+          {% for x in zigateEntities if ((now - (as_timestamp(x.state, None) | int) ) / 60 | round(default=0)) > puffer %}
             {% set ns.found = ns.found + 1 -%}
           {% endfor %}        
         

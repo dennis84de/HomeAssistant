@@ -126,7 +126,7 @@ script:
               {% set now = as_timestamp(now(), None) | int %}
               {% set puffer = states('input_number.zigate_offline_puffer') | int * 60 | int -%}
 
-              {% for x in zigateEntities if ((now - (as_timestamp(x.state, None) | int) ) / 60 | round()) > puffer %}
+              {% for x in zigateEntities if ((now - (as_timestamp(x.state, None) | int) ) / 60 | round(default=0)) > puffer %}
                 {%- if not loop.first %}, {% endif -%}
                 {{- x.name -}}
               {% endfor %}
@@ -220,7 +220,11 @@ automation:
       - service: alarm_control_panel.alarm_disarm
         entity_id: alarm_control_panel.alarm
       - service: switch.turn_off
-        entity_id: switch.kamera_wohnzimmer          
+        entity_id: switch.kamera_wohnzimmer    
+      - service: input_select.select_option
+        data:
+          entity_id: input_select.computer_ausschalten  
+          option: 'Herunterfahren'        
       - choose:
           - conditions:
               - condition: state

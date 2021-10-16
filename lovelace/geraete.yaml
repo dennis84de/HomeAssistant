@@ -30,9 +30,9 @@ cards:
     title: Hardware
     show_header_toggle: false
     entities:
-      - entity: sensor.wohnzimmer_hardware_temperatur
-      - entity: sensor.wohnzimmer_hardware_luftfeuchtigkeit
-      - entity: sensor.wohnzimmer_hardware_luftdruck
+      - entity: sensor.hardware_temperatur
+      - entity: sensor.hardware_luftfeuchtigkeit
+      - entity: sensor.hardware_luftdruck
 
   - type: entities
     title: Server
@@ -140,7 +140,7 @@ cards:
         name: Sportzimmer
       - entity: zigate.thermometer_kueche
         name: Küche
-      - entity: zigate.thermometer_wohnzimmer_hardware
+      - entity: zigate.thermometer_hardware
         name: Hardware  
 
   - type: entities

@@ -101,7 +101,7 @@ cards:
     view_layout:
       column: 3  
     conditions:
-      - entity: binary_sensor.infos_buero_anzeigen 
+      - entity: binary_sensor.buero_heute 
         state: "on"
     card:
       type: entities
@@ -190,7 +190,7 @@ cards:
     view_layout:
       column: 2  
     conditions:
-      - entity: binary_sensor.infos_buero_anzeigen 
+      - entity: binary_sensor.buero_heute 
         state: "on"
     card:        
       type: custom:mini-graph-card

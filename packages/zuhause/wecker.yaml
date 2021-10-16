@@ -183,16 +183,16 @@ automation:
           echo: "schlafzimmer"
           override: true
           message: >-
-            {% set currentTime = states('sensor.time') %}
+            {% set stunde = now().strftime("%H") | int %}
             
-            {% if '00:00' <= currentTime < '05:00' %}
-              {% set message = 'Gute Nacht!' %}
-            {% elif '05:00' <= currentTime < '12:00' %}
+            {% if stunde >= 5 and stunde < 12 %}
               {% set message = 'Guten Morgen!' %}
-            {% elif '12:00' <= currentTime < '19:00' %}
-              {% set message = 'Guten Tag!' %}
-            {% else %}
+            {% elif stunde >= 12 and stunde < 19 %}
+              {% set message = 'Guten Tag!' %}        
+            {% elif stunde >= 19 and stunde <= 23 %}
               {% set message = 'Guten Abend!' %}
+            {% else %}
+              {% set message = 'Guten Nacht!' %}
             {% endif %}
             
             {{ message }} Der Wecker ist ausgeschaltet. Du solltest jetzt aufstehen!

@@ -97,13 +97,13 @@ cards:
     title: Corona Virus
     show_header_toggle: false
     entities:
-      - entity: sensor.germany_coronavirus_confirmed
+      - entity: sensor.coronavirus_deutschland_bestaetigt
         name: Bestätigt
-      - entity: sensor.germany_coronavirus_current
+      - entity: sensor.coronavirus_deutschland_aktuell
         name: Aktuell
-      - entity: sensor.germany_coronavirus_recovered
-        name: Geheilt
-      - entity: sensor.germany_coronavirus_deaths
+      - entity: sensor.coronavirus_deutschland_genesene
+        name: Genesene
+      - entity: sensor.coronavirus_deutschland_tote
         name: Tote                 
 
   - type: custom:mini-graph-card

@@ -83,9 +83,9 @@ binary_sensor:
       buero_heute:
         friendly_name: 'Büro heute'
         value_template: >-
-          {% set NextOffice = strptime(state_attr('calendar.arbeit_buero', 'start_time'),'%Y-%m-%d %H:%M:%S', None) %}
+          {% set NextOffice = state_attr('calendar.arbeit_buero', 'start_time') %}
           
-          {% set istBuero = false if NextOffice == None else NextOffice.strftime('%j')|int - now().strftime('%j')|int == 0 %}         
+          {% set istBuero = false if NextOffice == None else (NextOffice | as_datetime).strftime('%j')|int - now().strftime('%j')|int == 0 %}         
           {% set istHomeOffice = is_state('input_boolean.home_office', 'on') %}
           {% set istArbeitstag = is_state('binary_sensor.arbeitstag', 'on') %}
           {% set keinUrlaub = is_state('calendar.urlaub', 'off') %}
@@ -96,9 +96,9 @@ binary_sensor:
       buero_morgen:
         friendly_name: 'Büro morgen'
         value_template: >-
-          {% set NextOffice = strptime(state_attr('calendar.arbeit_buero', 'start_time'),'%Y-%m-%d %H:%M:%S', None) %}
+          {% set NextOffice = state_attr('calendar.arbeit_buero', 'start_time') %}
           
-          {{ false if NextOffice == None else NextOffice.strftime('%j')|int - now().strftime('%j')|int == 1 }}
+          {{ false if NextOffice == None else (NextOffice | as_datetime).strftime('%j')|int - now().strftime('%j')|int == 1 }}
           
 #      buero_noch_home_office:
 #        friendly_name: 'Noch Home Office'
@@ -113,16 +113,6 @@ binary_sensor:
 #          {% set timestampJetzt = as_timestamp(now()) | int  %}
 #
 #          {{ buero_heute and timestampArbeitsende > timestampJetzt }}         
-          
-      infos_buero_anzeigen:
-        friendly_name: 'Infos anzeigen'        
-        value_template: >-
-          {% set buero_heute = is_state('binary_sensor.buero_heute', 'on') %}
-          {% set buero_morgen = is_state('binary_sensor.buero_morgen', 'on') %}
-          {% set arbeitstag = is_state('binary_sensor.arbeitstag', 'on') %}
-          {% set keinUrlaub = is_state('calendar.urlaub', 'off') %}
-          
-          {{ keinUrlaub and arbeitstag and (buero_heute or buero_morgen) }}
           
 automation:             
   - alias: 'Benachrichtigung Arbeit'

@@ -17,17 +17,16 @@ input_boolean:
 binary_sensor:
   - platform: template
     sensors:
-      kuechelregal_inaktiv:
-        friendly_name: "Küchenregal inaktiv"   
+      kuechenschrank_inaktiv:
+        friendly_name: "Küchenschrank inaktiv"   
         value_template: >-
-          {% set time = states('sensor.time') %}
           {% set hour = now().strftime("%H") | int %}
           
-          {{ True if (hour >= 7 and hour <= 20 ) else False }}
+          {{ True if (hour < 7 or hour >= 20 ) else False }}
           
-      kuechenschrank_inaktiv:
-        friendly_name: "Küchenschrank inaktiv"    
-        value_template: "{{ True if is_state('binary_sensor.kuechelregal_inaktiv', 'off') else False }}"
+      kuechelregal_inaktiv:
+        friendly_name: "Küchenregal inaktiv"    
+        value_template: "{{ is_state('binary_sensor.kuechenschrank_inaktiv', 'off') }}"
           
 entity_controller:      
   bewegung_kuechenregal:

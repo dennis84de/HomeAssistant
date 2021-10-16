@@ -224,10 +224,8 @@ script:
               - "{{ is_state('binary_sensor.home_office_aktiv', 'off') and (homeOfficeHeute is not defined or homeOfficeHeute == False) }}"
               - "{{ bueroHeute is not defined or bueroHeute == False }}"
               - "{{ now().isoweekday() != 7 }}"
-              - "{{ (states('sensor.balkon_temperatur') | int) > 10 }}"
-              - condition: time
-                after: '06:00'
-                before: '21:00'
+              - "{{ (states('sensor.balkon_temperatur') | int) > 5 }}"
+              - "{{ now().strftime('%H') | int >= 6 and now().strftime('%H') | int <= 21 }}"
             sequence:            
               - service: switch.turn_on
                 entity_id: switch.balkon_radio

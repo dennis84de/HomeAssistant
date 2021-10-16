@@ -67,14 +67,8 @@ automation:
         for:
           minutes: 30
     condition:
-      - condition: state
-        entity_id: switch.pc
-        state: 'on'
-      - condition: not
-        conditions:
-          - condition: state
-            entity_id: input_select.computer_ausschalten
-            state: 'Nichts unternehmen'
+      - "{{ is_state('switch.pc', 'on') }}"
+      - "{{ not is_state('input_select.computer_ausschalten', 'Nichts unternehmen') }}"
     action:
       - service: switch.turn_off
         entity_id: switch.pc

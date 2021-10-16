@@ -261,13 +261,13 @@ sensor:
       uv_index_current:
         friendly_name: 'UV Index'
         unit_of_measurement: 'UV'
-        value_template: '{{ states("sensor.current_uv_index") | float(0) | round(2) }}'
+        value_template: '{{ states("sensor.current_uv_index") | float(0) | round(2, 0) }}'
         icon_template: '{{ state_attr("sensor.current_uv_index","icon") }}'
 
       uv_index_max:
         friendly_name: 'Maximaler UV Index'
         unit_of_measurement: 'UV'
-        value_template: '{{ states("sensor.max_uv_index") | float(0) | round(2) }}'
+        value_template: '{{ states("sensor.max_uv_index") | float(0) | round(2, 0) }}'
         icon_template: '{{ state_attr("sensor.max_uv_index","icon") }}'
 
       zeit_sonne:
@@ -305,9 +305,9 @@ sensor:
           {%- for i in range(365) %}
             {%- set day = (today + timedelta(days=i)).astimezone() %}
             {%- if ns.previous - day.hour == -1 %}
-              {%- set ns.spring = today + timedelta(days=i) | timestamp_local %}
+              {%- set ns.spring = today + timedelta(days=i) %}
             {%- elif ns.previous - day.hour == 1 %}
-              {%- set ns.fall = today + timedelta(days=i) | timestamp_local %}
+              {%- set ns.fall = today + timedelta(days=i) %}
             {%- endif %}
             {%- set ns.previous = day.hour %}
           {%- endfor %}
@@ -389,9 +389,9 @@ automation:
             {% set temperaturBalkon = states('sensor.balkon_temperatur') | float(0) %}
             {% set temperaturWohnzimmer = states('sensor.wohnzimmer_temperatur') | float(0) %}
 
-            {% set difference = (temperaturBalkon - temperaturWohnzimmer) | round() %}
+            {% set difference = (temperaturBalkon - temperaturWohnzimmer) | round(default=0) %}
 
-            Die Balkontür sollte geschlossen werden. Auf dem Balkon ist es {{ temperaturBalkon | round() }} Grad warm und damit {{ difference }} Grad wärmer als im Wohnzimmer.
+            Die Balkontür sollte geschlossen werden. Auf dem Balkon ist es {{ temperaturBalkon | round(default=0) }} Grad warm und damit {{ difference }} Grad wärmer als im Wohnzimmer.
 
   - alias: 'Wetterwarnungen'
     id: "wetterwarnungen"
