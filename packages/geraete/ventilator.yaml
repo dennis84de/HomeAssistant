@@ -1,8 +1,8 @@
-fan:
-  - platform: xiaomi_miio_fan
-    name: Ventilator
-    host: !secret xiaomi_fan_host
-    token: !secret xiaomi_fan_token   
+#fan:
+#  - platform: xiaomi_miio_fan
+#    name: Ventilator
+#    host: !secret xiaomi_fan_host
+#    token: !secret xiaomi_fan_token   
 
 input_boolean:
   ventilator_timer_aktiv:
