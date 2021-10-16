@@ -159,6 +159,25 @@ automation:
       - service: media_player.media_pause
         entity_id: media_player.benachrichtigungen
                 
+  - alias: "BVB - Playlist"
+    id: "bvb_playlist"
+    trigger:
+      - platform: state
+        entity_id: media_player.radio_badezimmer
+        to: 'playing'
+    condition:  
+      - "{{ is_state('calendar.borussia_dortmund', 'on') }}"          
+      - "{{ True if not '(T.B.A.)' in state_attr('calendar.borussia_dortmund', 'message') else False }}"    
+      - "{{ not is_state_attr('media_player.radio_badezimmer', 'media_artist', 'Borussia Dortmund') }}"    
+    action:
+      - service: squeezebox.call_method
+        data:
+          entity_id: media_player.radio_badezimmer
+          command: 'playlist'
+          parameters:
+            - play
+            - 'Borssua Dortmund'    
+                
   - alias: "Schlafzimmer - Tablet Wiedergabe"
     id: "schlafzimmer_tablet_wiedergabe"
     trigger:
