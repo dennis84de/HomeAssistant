@@ -65,7 +65,19 @@ sensor:
           {% set uhrzeitAbfahrt = "%0.02d:%0.02d" | format(stundeAbfahrt, minuteAbfahrt ) %}
 
           {{ uhrzeitAbfahrt }}
+          
+      naechstes_buero:
+        friendly_name: Nächstes Büro
+        value_template: >
+          {% if state_attr('calendar.arbeit_buero', 'start_time') %}
+            {% set weekday = as_timestamp(state_attr('calendar.arbeit_buero', 'start_time'), None) | timestamp_custom("%w", True) | int %}
 
+            {{ ['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'][weekday-1] }}, {{ as_timestamp(state_attr('calendar.arbeit_buero', 'start_time'), None) | timestamp_custom("%d.%m.%Y", True) | string }}
+          {% else %}
+            -
+          {% endif %}
+        icon_template: mdi:briefcase          
+        
 binary_sensor:
   - platform: workday
     name: Arbeitstag

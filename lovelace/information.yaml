@@ -151,6 +151,8 @@ cards:
       - entity: calendar.kalender
       - entity: sensor.naechster_urlaub
       - entity: sensor.naechster_feiertag
+      - entity: sensor.naechstes_buero
+        name: Büro
             
   - type: entities
     title: Waage
