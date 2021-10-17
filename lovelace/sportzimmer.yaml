@@ -12,7 +12,7 @@ cards:
       - entity: binary_sensor.fenster_sportzimmer
         name: Fenster
 
-  - type: entities
+  - type: glance
     title: Sensoren
     show_header_toggle: false
     entities:
@@ -31,8 +31,11 @@ cards:
     show_header_toggle: false
     entities:
       - entity: sensor.sportzimmer_temperatur
-      - entity: sensor.sportzimmer_luftfeuchtigkeit            
+        name: Temperatur
+      - entity: sensor.sportzimmer_luftfeuchtigkeit      
+        name: Luftfeuchtigkeit
       - entity: sensor.sportzimmer_luftdruck
+        name: Luftdruck
 
   - type: entities
     title: Geräte

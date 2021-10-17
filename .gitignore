@@ -25,7 +25,6 @@ alexa_media.amazon@*
 alexa_media.pickle*
 update.sh
 .google.token
-zigate.json*
 adbkey*
 __pycache__
 google_cloud.json

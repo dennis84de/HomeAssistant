@@ -42,56 +42,86 @@ cards:
       - entity: sensor.tuersensor_battery_level
       - entity: sensor.bett_battery_level      
       - entity: sensor.cube_battery_level
+      - entity: sensor.helligkeit_balkon_battery_level
+        name: Helligkeit
 
   - type: entities
     title: Schalter
     show_header_toggle: false
     entities:
-      - entity: sensor.schalter_wohnzimmer_battery_level        
+      - entity: sensor.schalter_wohnzimmer_battery_level       
+        name: Wohnzimmer
       - entity: sensor.schalter_flur_battery_level        
+        name: Flur
       - entity: sensor.schalter_balkon_battery_level        
+        name: Balkon
       - entity: sensor.schalter_schlafzimmer_battery_level        
+        name: Schlafzimmer
       - entity: sensor.schalter_arbeitszimmer_battery_level        
+        name: Arbeitszimmer
       - entity: sensor.schalter_badezimmer_battery_level        
+        name: Badezimmer
 
   - type: entities
     title: Thermometer
     show_header_toggle: false
     entities:
-      - entity: sensor.thermometer_flur_battery_level        
-      - entity: sensor.thermometer_balkon_battery_level        
+      - entity: sensor.thermometer_flur_battery_level      
+        name: Flur
       - entity: sensor.thermometer_parkplatz_battery_level        
+        name: Parkplatz
       - entity: sensor.thermometer_schlafzimmer_battery_level        
+        name: Schlafzimmer
       - entity: sensor.thermometer_arbeitszimmer_battery_level        
+        name: Arbeitszimmer
       - entity: sensor.thermometer_kueche_battery_level        
+        name: Küche
       - entity: sensor.thermometer_sportzimmer_battery_level        
+        name: Sportzimmer
       - entity: sensor.thermometer_hardware_battery_level        
+        name: Hardwarw
 
   - type: entities
     title: Fenster
     show_header_toggle: false
     entities:
-      - entity: sensor.balkontuer_battery_level        
+      - entity: sensor.balkontuer_battery_level    
+        name: Balkontür
       - entity: sensor.fenster_wohnzimmer_battery_level        
+        name: Wohnzimmer
       - entity: sensor.fenster_schlafzimmer_battery_level        
+        name: Schlafzimmer
       - entity: sensor.fenster_kueche_battery_level        
+        name: Küche
       - entity: sensor.fenster_arbeitszimmer_battery_level        
+        name: Arbeitszimmer
       - entity: sensor.fenster_sportzimmer_battery_level        
+        name: Arbeitszimmer
 
   - type: entities
     title: Bewegungsmelder
     show_header_toggle: false
     entities:
       - entity: sensor.bewegungsmelder_wohnzimmer_battery_level        
+        name: Wohnzimmer
       - entity: sensor.bewegungsmelder_badezimmer_battery_level        
+        name: Badezimmer
       - entity: sensor.bewegungsmelder_balkon_battery_level        
+        name: Balkon
       - entity: sensor.bewegungsmelder_flur_vorne_battery_level        
+        name: Flur vorne
       - entity: sensor.bewegungsmelder_flur_hinten_battery_level        
+        name: Flur hinten
       - entity: sensor.bewegungsmelder_arbeitszimmer_battery_level        
+        name: Arbeitszimmer
       - entity: sensor.bewegungsmelder_sportzimmer_battery_level        
+        name: Sportzimmer
       - entity: sensor.bewegungsmelder_kueche_battery_level        
+        name: Küche
       - entity: sensor.bewegungsmelder_schlafzimmer_battery_level        
+        name: Schlafzimmer
       - entity: sensor.bewegungsmelder_bett_battery_level        
+        name: Bett
 
   - type: entities
     title: Heizung

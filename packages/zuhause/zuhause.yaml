@@ -109,27 +109,16 @@ script:
             {% endif %}
 
             {% set count_heimnetz_entities = states('sensor.heimnetz_offline') | int -%}
-            {% set count_zigate_entities = states('sensor.zigate_offline') | int -%}
-            {% set count_complete = count_heimnetz_entities + count_zigate_entities | int -%}
             
-            {% if count_complete > 0 %}
-              {{ "Die folgenden Geräte sind offline." if count_complete > 1 else "Das folgende Gerät ist offline."}}
+            {% if count_heimnetz_entities > 0 %}
+              {{ "Die folgenden Geräte sind offline." if count_heimnetz_entities > 1 else "Das folgende Gerät ist offline."}}
 
               {% set heimnetzOffline = expand('group.heimnetz')
                 | selectattr('state','eq','not_home') 
                 | map(attribute='name')
                 | list %}              
 
-              {{ heimnetzOffline | join(', ') }}
-                            
-              {% set zigateEntities = expand('group.zigate') %}
-              {% set now = as_timestamp(now(), None) | int %}
-              {% set puffer = states('input_number.zigate_offline_puffer') | int * 60 | int -%}
-
-              {% for x in zigateEntities if ((now - (as_timestamp(x.state, None) | int) ) / 60 | round(default=0)) > puffer %}
-                {%- if not loop.first %}, {% endif -%}
-                {{- x.name -}}
-              {% endfor %}
+              {{ heimnetzOffline | join(', ') }}                            
             {% endif %}
 
             {% set min_battery_level = states('input_number.batteriestand_warnlevel') | int -%}   
@@ -185,10 +174,14 @@ automation:
     trigger:
       - platform: state
         entity_id: binary_sensor.zu_hause
-        to: 'on'    
-      - platform: state
-        entity_id: sensor.schalter_flur
-        to: '2'            
+        to: 'on'
+      - platform: event
+        event_type: zha_event
+        event_data:
+          device_ieee: 00:15:8d:00:01:c3:08:67
+          command: click
+          args:
+            click_type: double              
     condition:
       - condition: state
         entity_id: input_boolean.zu_hause_aktiviert

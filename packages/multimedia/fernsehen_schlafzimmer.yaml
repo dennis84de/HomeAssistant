@@ -124,12 +124,15 @@ automation:
   - alias: "Schlafzimmer - Kodi Wiedergabe"
     id: "schlafzimmer_kodi_wiedergabe"
     trigger:
-      - platform: state        
-        entity_id: binary_sensor.schalter_schlafzimmer
-        to: 'on'
-      - platform: state        
-        entity_id: sensor.schalter_schlafzimmer
-        to: '2'
+      - platform: event
+        event_type: zha_event
+        event_data:
+          device_ieee: 00:15:8d:00:02:13:45:68
+          command: attribute_updated
+          args:
+            attribute_id: 0
+            attribute_name: on_off     
+            value: 1
       - platform: state        
         entity_id: binary_sensor.im_bett
         to: 'on'
@@ -173,12 +176,15 @@ automation:
   - alias: "Schlafzimmer - Netflix Wiedergabe"
     id: "schlafzimmer_netflix_wiedergabe"
     trigger:
-      - platform: state        
-        entity_id: binary_sensor.schalter_schlafzimmer
-        to: 'on'
-      - platform: state        
-        entity_id: sensor.schalter_schlafzimmer
-        to: '2'
+      - platform: event
+        event_type: zha_event
+        event_data:
+          device_ieee: 00:15:8d:00:02:13:45:68
+          command: attribute_updated
+          args:
+            attribute_id: 0
+            attribute_name: on_off     
+            value: 1
       - platform: state        
         entity_id: binary_sensor.im_bett
         to: 'on'
@@ -220,9 +226,15 @@ automation:
   - alias: "Schlafzimmer - Fernseher ausschalten"
     id: "schlafzimmer_fernseher_ausschalten"
     trigger:
-      - platform: state        
-        entity_id: sensor.schalter_schlafzimmer
-        to: '3' 
+      - platform: event
+        event_type: zha_event
+        event_data:
+          device_ieee: 00:15:8d:00:02:13:45:68
+          command: attribute_updated
+          args:
+            attribute_id: 32768
+            attribute_name: Unknown     
+            value: 3
     condition:
       - condition: state
         entity_id: input_boolean.timer_schlafzimmer_aktiv

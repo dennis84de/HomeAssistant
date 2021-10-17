@@ -167,7 +167,7 @@ script:
           - conditions:
               - condition: template
                 value_template: >-
-                  {% if triggerEntity and (triggerEntity == 'binary_sensor.bewegungsmelder_balkon' or triggerEntity == 'sensor.schalter_balkon') %}
+                  {% if triggerId and (triggerId == 'bewegungsmelder_balkon' or triggerId == 'schalter_balkon') %}
                     {{ is_state('binary_sensor.sonne_tagsueber', 'off') }}
                   {% else %}
                     False
@@ -210,19 +210,19 @@ automation:
   - alias: "Kodi Wohnzimmer - Wiedergabe"
     id: "kodi_wohnzimmer_wiedergabe"    
     trigger:
-      - platform: state
-        entity_id: binary_sensor.schalter_wohnzimmer
-        to: 'off'
-      - platform: state
-        entity_id: sensor.cube_bewegung        
+      - platform: event
+        event_type: zha_event
+        event_data:
+          device_ieee: 00:15:8d:00:02:c8:c4:8b
+          command: click
+          args:
+            click_type: single   
+      - platform: event
+        event_type: zha_event
+        event_data:
+          device_ieee: 00:15:8d:00:01:10:0d:7a
+          command: flip      
     condition:
-      - condition: template
-        value_template: >-
-          {% if trigger.entity_id == 'sensor.cube_bewegung' %}
-            {{ True if "flip90" in trigger.to_state.state else False }}
-          {% else %}
-            True
-          {% endif %}   
       - condition: state
         entity_id: binary_sensor.besuch
         state: 'off'               
@@ -278,9 +278,15 @@ automation:
       - platform: state
         entity_id: binary_sensor.bewegungsmelder_balkon
         to: 'on'    
-      - platform: state
-        entity_id: sensor.schalter_balkon
-        to: '2'        
+        id: bewegungsmelder_balkon
+      - platform: event
+        event_type: zha_event
+        event_data:
+          device_ieee: 00:15:8d:00:02:c7:62:ce
+          command: click
+          args:
+            click_type: double    
+        id: schalter_balkon
     condition:
       - condition: state
         entity_id: media_player.kodi_wohnzimmer
@@ -298,7 +304,7 @@ automation:
         value_template: '{{ is_state("sensor.handy", "incoming") == False and is_state("sensor.handy", "outgoing") == False }}'
       - condition: template       
         value_template: >-  
-          {% if triggerEntity == 'binary_sensor.bewegungsmelder_balkon' or triggerEntity == 'sensor.schalter_balkon' %}
+          {% if trigger.id == 'bewegungsmelder_balkon' or trigger.id == 'schalter_balkon' %}
             {{ is_state('binary_sensor.balkontuer', 'on') }}
           {% else %}
             True
@@ -306,18 +312,18 @@ automation:
     action:
       - service: script.kodi_wohnzimmer_pausieren
         data:
-          triggerEntity: trigger.entity_id          
+          triggerId: trigger.id          
         
   - alias: "Kodi Wohnzimmer - Nächster Titel"
     id: "kodi_wohnzimmer_naechster_titel"
     trigger:
-      - platform: state
-        entity_id: sensor.cube_bewegung
-    condition:
-      - condition: template
-        value_template: '{{ True if "drop" in trigger.to_state.state else False }}'         
-      - condition: template
-        value_template: '{{ is_state("media_player.kodi_wohnzimmer", "off") == False }}'
+      - platform: event
+        event_type: zha_event
+        event_data:
+          device_ieee: 00:15:8d:00:01:10:0d:7a
+          command: drop    
+    condition:   
+      - "{{ is_state('media_player.kodi_wohnzimmer', 'playing') }}"
     action:
       - service: media_player.media_next_track
         entity_id: media_player.kodi_wohnzimmer
@@ -325,11 +331,12 @@ automation:
   - alias: "Kodi Wohnzimmer - Untertitel"
     id: "kodi_wohnzimmer_untertitel"    
     trigger:
-      - platform: state
-        entity_id: sensor.cube_bewegung
-    condition:
-      - condition: template
-        value_template: '{{ True if "shake" in trigger.to_state.state else False }}'         
+      - platform: event
+        event_type: zha_event
+        event_data:
+          device_ieee: 00:15:8d:00:01:10:0d:7a
+          command: shake    
+    condition:     
       - condition: state
         entity_id: media_player.kodi_wohnzimmer
         state: 'playing'        
@@ -349,9 +356,15 @@ automation:
       - platform: state
         entity_id: binary_sensor.bewegungsmelder_balkon
         to: 'on'     
-      - platform: state
-        entity_id: sensor.schalter_balkon
-        to: '2'
+        id: bewegungsmelder_balkon
+      - platform: event
+        event_type: zha_event
+        event_data:
+          device_ieee: 00:15:8d:00:02:c7:62:ce
+          command: click
+          args:
+            click_type: double 
+        id: schalter_balkon
     condition:
       - condition: state
         entity_id: binary_sensor.youtube_wohnzimmer_aktiv
@@ -371,10 +384,8 @@ automation:
       - condition: template
         value_template: '{{ is_state("sensor.handy", "incoming") == False and is_state("sensor.handy", "outgoing") == False }}'
       - condition: template       
-        value_template: >-
-          {% set triggerEntity = trigger.entity_id %}
-          
-          {% if triggerEntity == 'binary_sensor.bewegungsmelder_balkon' or triggerEntity == 'sensor.schalter_balkon' %}
+        value_template: >-         
+          {% if trigger.id == 'bewegungsmelder_balkon' or trigger.id == 'schalter_balkon' %}
             {{ is_state('binary_sensor.balkontuer', 'on') }}
           {% else %}
             True
@@ -418,50 +429,13 @@ automation:
         entity_id: input_boolean.youtube_wohnzimmer_pausiert      
       - service: switch.turn_on
         entity_id: switch.computer_wiedergabe
-      - service: light.turn_off
-        entity_id: light.flur_vorne, light.flur_hinten, light.badezimmerschrank, light.schreibtisch, light.kuche_regal, light.arbeitszimmer_lampe, light.balkon_licht, light.sportzimmer_regal
+      - service: homeassistant.turn_off
+        entity_id: group.licht_fernsehen              
       - condition: state
         entity_id: media_player.radio_badezimmer
         state: 'playing'
       - service: media_player.media_pause
-        entity_id: media_player.radio_badezimmer                      
-           
-  - alias: "Soundbar Lautstärke - Cube"
-    id: "soundbar_laustaerke_cube"
-    trigger:
-      - platform: state
-        entity_id: sensor.cube_drehung
-    condition:
-      - condition: state
-        entity_id: media_player.soundbar
-        state: 'on'      
-      - condition: template
-        value_template: >-
-          {% set now = as_timestamp(now(), None) | int %}
-          {% set last = as_timestamp(state_attr("automation.soundbar_lautstarke_cube", "last_triggered"), None) | int %}
-          {% set diff = ((now - last)) | int %}
-
-          {{ diff >= 5 }}        
-    action:  
-      - service: media_player.volume_set
-        data:
-          entity_id: media_player.soundbar
-          volume_level: >
-            {% if is_state('media_player.soundbar', 'off') %}
-              {% set oldState = 0 %}
-            {% elif state_attr('media_player.soundbar', 'volume_level') == None %}            
-              {% set oldState = 0 %}
-            {% else %}
-              {% set oldState = state_attr('media_player.soundbar', 'volume_level') | float(0) -%}
-            {% endif %}
-
-            {% if trigger.to_state.state | float(0) > 0 %}
-               {% set newState = oldState + 0.05 -%}
-            {% else %}
-               {% set newState = oldState - 0.05 -%}
-            {% endif %}
-
-            {{ newState }}
+        entity_id: media_player.radio_badezimmer                                 
 
 homeassistant:
   customize:

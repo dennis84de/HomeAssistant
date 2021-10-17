@@ -1,0 +1,4 @@
+homeassistant:
+  customize:
+    binary_sensor.tuersensor:
+      device_class: door              

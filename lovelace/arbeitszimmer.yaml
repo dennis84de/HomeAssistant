@@ -26,8 +26,11 @@ cards:
     show_header_toggle: false
     entities:
       - entity: sensor.arbeitszimmer_temperatur
+        name: Temperatur
       - entity: sensor.arbeitszimmer_luftfeuchtigkeit   
+        name: Luftfeuchtigkeit
       - entity: sensor.arbeitszimmer_luftdruck
+        name: Luftdruck        
 
   - type: glance
     title: Sensoren
@@ -36,6 +39,7 @@ cards:
       - entity: binary_sensor.bewegungsmelder_arbeitszimmer
         name: Bewegungsmelder
       - entity: sensor.helligkeit_arbeitszimmer
+        name: Helligkeit
 
   - type: glance
     title: Heizung

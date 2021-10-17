@@ -6,9 +6,13 @@ automation:
   - alias: "Baden - Starten"
     id: "baden_starten"  
     trigger:
-      - platform: state
-        entity_id: binary_sensor.schalter_badezimmer
-        to: 'off'       
+      - platform: event
+        event_type: zha_event
+        event_data:
+          device_ieee: 00:15:8d:00:02:e9:58:3a
+          command: click
+          args:
+            click_type: single           
     condition:
       - condition: state
         entity_id: binary_sensor.besuch
@@ -37,9 +41,13 @@ automation:
   - alias: "Baden - Beenden"
     id: "baden_beenden"
     trigger:
-      - platform: state
-        entity_id: binary_sensor.schalter_badezimmer
-        to: 'off'       
+      - platform: event
+        event_type: zha_event
+        event_data:
+          device_ieee: 00:15:8d:00:02:e9:58:3a
+          command: click
+          args:
+            click_type: single    
     condition:
       - condition: state
         entity_id: input_boolean.baden_aktiv

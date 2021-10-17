@@ -104,20 +104,17 @@ automation:
   - alias: "Wohnzimmer - Licht Couch"
     id: "wohnzimmer_licht_couch"
     trigger:
-      - platform: state
-        entity_id: sensor.cube_bewegung
+      - platform: event
+        event_type: zha_event
+        event_data:
+          device_ieee: 00:15:8d:00:01:10:0d:7a
+          command: knock   
     condition:
-      - condition: template
-        value_template: '{{ True if "double_tap" in trigger.to_state.state else False }}'
       - condition: or
         conditions:          
-          - condition: state
-            entity_id: calendar.borussia_dortmund
-            state: 'off'
-          - condition: template
-            value_template: '{{ True if "(T.B.A.)" in state_attr("calendar.borussia_dortmund", "message") else False }}'
-      - condition: template
-        value_template: '{{ is_state("media_player.benachrichtigungen", "playing") == False }}'           
+          - "{{ is_state('calendar.borussia_dortmund', 'off') }}"
+          - "{{ True if '(T.B.A.)' in state_attr('calendar.borussia_dortmund', 'message') else False }}"
+      - "{{ is_state('media_player.benachrichtigungen', 'playing') == False }}"
     action:
       - service: light.toggle
         entity_id: light.wohnzimmer_couch, light.wohnzimmer_strahler

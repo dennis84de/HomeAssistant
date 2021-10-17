@@ -40,10 +40,14 @@ automation:
         
   - alias: "Alexa Witz"
     id: "alexa_witz"  
-    trigger:
-      - platform: state
-        entity_id: binary_sensor.schalter_badezimmer
-        to: 'off'       
+    trigger:    
+      - platform: event
+        event_type: zha_event
+        event_data:
+          device_ieee: 00:15:8d:00:02:e9:58:3a
+          command: click
+          args:
+            click_type: single           
     condition:
       - condition: state
         entity_id: binary_sensor.besuch
@@ -84,11 +88,4 @@ script:
         data:          
           entity_id: media_player.echo_{{ echo }}
           media_content_id: Alexa.Joke.Play
-          media_content_type: sequence          
-          
-homeassistant:
-  customize:
-    script.alexa_witz_gestartet:
-      can_cancel: false
-      icon: mdi:emoticon-excited-outline          
-      friendly_name: Witz erzählen
+          media_content_type: sequence                    

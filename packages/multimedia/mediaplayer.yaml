@@ -67,15 +67,12 @@ automation:
       - platform: state
         entity_id: input_boolean.uhr_einschalten
         to: 'off'
-      - platform: state
-        entity_id: sensor.cube_bewegung    
-    condition:
-      - condition: or
-        conditions:
-          - condition: template
-            value_template: '{{ True if "double_tap" in trigger.to_state.state else False }}' 
-          - condition: template
-            value_template: '{{ True if trigger.entity_id == "input_boolean.uhr_einschalten" else False }}'               
+      - platform: event
+        event_type: zha_event
+        event_data:
+          device_ieee: 00:15:8d:00:01:10:0d:7a
+          command: knock   
+    condition:         
       - condition: state
         entity_id: media_player.benachrichtigungen
         state: 'playing'
@@ -89,19 +86,20 @@ automation:
   - alias: "BVB - Torhymne"
     id: "bvb_torhymne"
     trigger:
-      - platform: state
-        entity_id: sensor.cube_bewegung
-      - platform: state
-        entity_id: binary_sensor.schalter_balkon
-        to: 'off'             
+      - platform: event
+        event_type: zha_event
+        event_data:
+          device_ieee: 00:15:8d:00:01:10:0d:7a
+          command: drop    
+      - platform: event
+        event_type: zha_event
+        event_data:
+          device_ieee: 00:15:8d:00:02:c7:62:ce
+          command: click
+          args:
+            click_type: single
     condition:
-      - condition: template
-        value_template: >-
-          {% if trigger.entity_id == 'binary_sensor.schalter_balkon' %}
-            True
-          {% else %}
-            {{ True if "drop" in trigger.to_state.state else False }}
-          {% endif %}       
+
       - condition: state
         entity_id: calendar.borussia_dortmund
         state: 'on'
@@ -117,11 +115,12 @@ automation:
   - alias: "BVB - Musik starten"
     id: "bvb_musik_starten"
     trigger:
-      - platform: state
-        entity_id: sensor.cube_bewegung
-    condition:  
-      - condition: template
-        value_template: '{{ True if "double_tap" in trigger.to_state.state else False }}'       
+      - platform: event
+        event_type: zha_event
+        event_data:
+          device_ieee: 00:15:8d:00:01:10:0d:7a
+          command: knock   
+    condition:    
       - condition: state
         entity_id: calendar.borussia_dortmund
         state: 'on'
@@ -142,11 +141,12 @@ automation:
   - alias: "BVB - Musik stoppen"
     id: "bvb_musik_stoppen"
     trigger:
-      - platform: state
-        entity_id: sensor.cube_bewegung
-    condition:     
-      - condition: template
-        value_template: '{{ True if "double_tap" in trigger.to_state.state else False }}'         
+      - platform: event
+        event_type: zha_event
+        event_data:
+          device_ieee: 00:15:8d:00:01:10:0d:7a
+          command: knock   
+    condition:           
       - condition: state
         entity_id: calendar.borussia_dortmund
         state: 'on'
@@ -181,12 +181,15 @@ automation:
   - alias: "Schlafzimmer - Tablet Wiedergabe"
     id: "schlafzimmer_tablet_wiedergabe"
     trigger:
-      - platform: state        
-        entity_id: binary_sensor.schalter_schlafzimmer
-        to: 'on'
-      - platform: state        
-        entity_id: sensor.schalter_schlafzimmer
-        to: '2'   
+      - platform: event
+        event_type: zha_event
+        event_data:
+          device_ieee: 00:15:8d:00:02:13:45:68
+          command: attribute_updated
+          args:
+            attribute_id: 0
+            attribute_name: on_off     
+            value: 1
       - platform: state        
         entity_id: binary_sensor.im_bett
         to: 'on'   

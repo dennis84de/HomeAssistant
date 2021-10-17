@@ -1,11 +1,5 @@
 logger:
   default: error
-  filters:
-    zigate:
-      - "IEEE is missing for *, please pair it again"
-      - "Device * doesn't receive last command*"
-    custom_components.average.sensor:
-      -  "Unable to find an entity*"
   
 recorder:
   purge_keep_days: 7

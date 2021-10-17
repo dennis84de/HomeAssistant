@@ -110,8 +110,6 @@ cards:
     entities:
       - entity: binary_sensor.bewegungsmelder_wohnzimmer
         name: Bewegungsmelder
-      - entity: sensor.cube_status
-        name: Cube
       - entity: sensor.wohnzimmer_helligkeit
         name: Helligkeit        
 

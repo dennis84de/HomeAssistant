@@ -49,12 +49,10 @@ binary_sensor:
     sensors:
       im_bett:
         friendly_name: "Im Bett"
-        value_template: >-
-          {{not is_state("binary_sensor.bett",'on')}}
+        value_template: "{{not is_state('binary_sensor.bett', 'on')}}"
         device_class: vibration
         delay_off: 2
-        icon_template: >-
-            mdi:bed-king    
+        icon_template: mdi:bed-king    
             
       schlafen_aktiv:
         friendly_name: Schlafen aktiv
@@ -156,9 +154,13 @@ automation:
   - alias: "Schlafen gehen - Countdown starten"
     id: "schlafen_gehen_countdown_starten"
     trigger:
-      - platform: state
-        entity_id: sensor.schalter_wohnzimmer
-        to: '2'      
+      - platform: event
+        event_type: zha_event
+        event_data:
+          device_ieee: 00:15:8d:00:02:c8:c4:8b
+          command: click
+          args:
+            click_type: double      
     condition:
       - condition: state
         entity_id: binary_sensor.schlafen_aktiv
@@ -186,9 +188,13 @@ automation:
   - alias: "Schlafen gehen - Countdown abbrechen"
     id: "schlafen_gehen_countdown_abbrechen"
     trigger:
-      - platform: state
-        entity_id: binary_sensor.schalter_wohnzimmer
-        to: 'off'
+      - platform: event
+        event_type: zha_event
+        event_data:
+          device_ieee: 00:15:8d:00:02:c8:c4:8b
+          command: click
+          args:
+            click_type: single
     condition:
       - condition: state
         entity_id: timer.schlafen_einschalten

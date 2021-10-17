@@ -61,18 +61,10 @@ cards:
     title: Thermometer
     show_header_toggle: false
     entities:
-      - entity: sensor.parkplatz_temperatur
-        name: Temperatur Parkplatz
       - entity: sensor.parkplatz_luftfeuchtigkeit
-        name: Luftfeuchtigkeit Parkplatz
+        name: Luftfeuchtigkeit
       - entity: sensor.parkplatz_luftdruck
-        name: Luftdruck Parkplatz
-      - entity: sensor.balkon_temperatur
-        name: Temperatur Balkon
-      - entity: sensor.balkon_luftfeuchtigkeit
-        name: Luftfeuchtigkeit Balkon
-      - entity: sensor.balkon_luftdruck
-        name: Luftdruck Balkon
+        name: Luftdruck
 
   - type: custom:mini-graph-card
     name: Temperatur
@@ -88,7 +80,7 @@ cards:
     entities:
       - entity: sensor.parkplatz_temperatur
         name: Parkplatz
-      - entity: sensor.balkon_temperatur
+      - entity: sensor.bewegungsmelder_balkon_temperatur
         name: Balkon 
         
   - type: custom:mini-graph-card

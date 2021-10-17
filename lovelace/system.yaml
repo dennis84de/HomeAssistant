@@ -109,6 +109,7 @@ cards:
       - entity: input_boolean.nicht_stoeren  
       - entity: input_boolean.wetter_warnungen_einschalten
       - entity: script.alexa_witz_gestartet
+        name: Witz erzählen
       
   - type: entities
     title: Radios

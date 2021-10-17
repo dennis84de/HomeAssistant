@@ -36,8 +36,11 @@ cards:
     show_header_toggle: false
     entities:
       - entity: sensor.kueche_temperatur
-      - entity: sensor.kueche_luftfeuchtigkeit       
+        name: Temperatur
+      - entity: sensor.kueche_luftfeuchtigkeit   
+        name: Luftfeuchtigkeit
       - entity: sensor.kueche_luftdruck
+        name: Luftdruck
 
   - type: glance
     title: Sensoren

@@ -26,13 +26,20 @@ entity_controller:
       - input_boolean.bewegungsmelder_balkon_deaktiviert
 
 automation:
-  - alias: 'Licht Balkon - Einschalten'
-    id: "licht_balkon_einschalten"
+  - alias: 'Licht Balkon'
+    id: "licht_balkon"
     trigger:
-      - platform: state
-        entity_id: binary_sensor.schalter_balkon
-        to: 'off'
+      - platform: event
+        event_type: zha_event
+        event_data:
+          device_ieee: 00:15:8d:00:02:c7:62:ce
+          command: click
+          args:
+            click_type: single 
     condition:
+      - condition: state
+        entity_id: sensor.sonne_tagsueber
+        state: 'off'            
       - condition: state
         entity_id: calendar.borussia_dortmund
         state: 'off'      

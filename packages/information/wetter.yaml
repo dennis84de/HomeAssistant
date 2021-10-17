@@ -17,6 +17,10 @@ input_boolean:
     name: Wetterwarnungen
     icon: mdi:weather-lightning-rainy
 
+input_text:
+  wetter_helligkeit_grenzwert:
+    name: Helligkeit Grenzwert
+    
 binary_sensor:
   - platform: car_wash
     name: Auto waschen
@@ -42,7 +46,7 @@ binary_sensor:
           {% if is_state('sensor.helligkeit_balkon', None) or is_state('sensor.helligkeit_balkon', 'unknown') or is_state('sensor.helligkeit_balkon', '0') %}
             {{ states('sensor.helligkeit_wetter') | float(0) > 15 }}
           {% else %}
-            {{ states('sensor.helligkeit_balkon_durchschnitt') | float(0) > 22000 }}
+            {{ states('sensor.helligkeit_balkon_durchschnitt') | float(0) > states('input_text.wetter_helligkeit_grenzwert') | float(500) }}
           {% endif %}
           
       sommerzeit:
