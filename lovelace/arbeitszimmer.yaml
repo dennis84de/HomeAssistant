@@ -38,7 +38,7 @@ cards:
     entities:
       - entity: binary_sensor.bewegungsmelder_arbeitszimmer
         name: Bewegungsmelder
-      - entity: sensor.helligkeit_arbeitszimmer
+      - entity: sensor.arbeitszimmer_helligkeit
         name: Helligkeit
 
   - type: glance

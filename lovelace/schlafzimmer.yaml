@@ -102,7 +102,7 @@ cards:
         name: Schlafzimmer
       - entity: binary_sensor.bewegungsmelder_bett
         name: Bett        
-      - entity: sensor.helligkeit_schlafzimmer
+      - entity: sensor.schlafzimmer_helligkeit
         name: Helligkeit
       - entity: binary_sensor.im_bett
 

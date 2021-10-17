@@ -95,9 +95,9 @@ cards:
       icon: false
       points: false
     entities:
-      - entity: sensor.helligkeit_balkon
+      - entity: sensor.balkon_helligkeit
         name: Helligkeit
-      - entity: sensor.helligkeit_balkon_durchschnitt
+      - entity: sensor.balkon_helligkeit_durchschnitt
         name: Durchschnitt               
         
   - type: custom:sun-card

@@ -17,9 +17,12 @@ input_boolean:
     name: Wetterwarnungen
     icon: mdi:weather-lightning-rainy
 
-input_text:
-  wetter_helligkeit_grenzwert:
+input_number:
+  helligkeit_grenzwert:
     name: Helligkeit Grenzwert
+    min: 100
+    max: 12000
+    step: 100 
     
 binary_sensor:
   - platform: car_wash
@@ -43,10 +46,10 @@ binary_sensor:
       sonne_tagsueber:
         friendly_name: "Sonne tagsüber"
         value_template: >-
-          {% if is_state('sensor.helligkeit_balkon', None) or is_state('sensor.helligkeit_balkon', 'unknown') or is_state('sensor.helligkeit_balkon', '0') %}
+          {% if is_state('sensor.balkon_helligkeit', None) or is_state('sensor.balkon_helligkeit', 'unknown') or is_state('sensor.balkon_helligkeit', '0') %}
             {{ states('sensor.helligkeit_wetter') | float(0) > 15 }}
           {% else %}
-            {{ states('sensor.helligkeit_balkon_durchschnitt') | float(0) > states('input_text.wetter_helligkeit_grenzwert') | float(500) }}
+            {{ states('sensor.balkon_helligkeit_durchschnitt') | float(0) > states('input_number.helligkeit_grenzwert') | float(500) }}
           {% endif %}
           
       sommerzeit:
@@ -106,11 +109,11 @@ sensor:
     calibration_factor: 1.16
 
   - platform: average
-    name: 'Helligkeit Balkon Durchschnitt'
+    name: 'Balkon Helligkeit Durchschnitt'
     duration:
       minutes: 30
     entities:
-      - sensor.helligkeit_balkon      
+      - sensor.balkon_helligkeit
           
   - platform: dwd_weather_warnings
     region_name: Stadt Dortmund

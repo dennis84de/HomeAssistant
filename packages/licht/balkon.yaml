@@ -38,7 +38,7 @@ automation:
             click_type: single 
     condition:
       - condition: state
-        entity_id: sensor.sonne_tagsueber
+        entity_id: binary_sensor.sonne_tagsueber
         state: 'off'            
       - condition: state
         entity_id: calendar.borussia_dortmund
