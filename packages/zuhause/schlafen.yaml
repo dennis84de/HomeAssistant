@@ -154,7 +154,8 @@ automation:
   - alias: "Schlafen gehen - Countdown starten"
     id: "schlafen_gehen_countdown_starten"
     trigger:
-      - platform: event
+      - id: schalter_wohnzimmer
+        platform: event
         event_type: zha_event
         event_data:
           device_ieee: 00:15:8d:00:02:c8:c4:8b
@@ -188,7 +189,8 @@ automation:
   - alias: "Schlafen gehen - Countdown abbrechen"
     id: "schlafen_gehen_countdown_abbrechen"
     trigger:
-      - platform: event
+      - id: schalter_wohnzimmer
+        platform: event
         event_type: zha_event
         event_data:
           device_ieee: 00:15:8d:00:02:c8:c4:8b

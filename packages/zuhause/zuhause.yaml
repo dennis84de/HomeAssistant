@@ -172,10 +172,12 @@ automation:
   - alias: "Zu Hause"
     id: "zu_hause"
     trigger:
-      - platform: state
+      - id: zu_hause
+        platform: state
         entity_id: binary_sensor.zu_hause
         to: 'on'
-      - platform: event
+      - id: schalter_flur
+        platform: event
         event_type: zha_event
         event_data:
           device_ieee: 00:15:8d:00:01:c3:08:67
@@ -187,7 +189,7 @@ automation:
         entity_id: input_boolean.zu_hause_aktiviert
         state: 'off'         
       - condition: template
-        value_template: "{{ is_state('binary_sensor.zu_hause', 'off') if trigger.entity_id == 'sensor.schalter_flur' else True }}"
+        value_template: "{{ is_state('binary_sensor.zu_hause', 'off') if trigger.id == 'schalter_flur' else True }}"
       - condition: template
         value_template: >-
           {% set now = as_timestamp(now(), None) | int %}

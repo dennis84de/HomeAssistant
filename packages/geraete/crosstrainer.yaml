@@ -86,7 +86,7 @@ automation:
           device_ieee: 00:15:8d:00:01:c3:08:67
           command: click
           args:
-            click_type: single
+            click_type: triple
     condition:
       - condition: state
         entity_id: binary_sensor.besuch
@@ -106,7 +106,7 @@ automation:
           device_ieee: 00:15:8d:00:01:c3:08:67
           command: click
           args:
-            click_type: single      
+            click_type: triple      
     condition:
       - condition: state
         entity_id: input_boolean.training_aktiv

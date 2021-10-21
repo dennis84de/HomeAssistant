@@ -21,8 +21,8 @@ input_number:
   helligkeit_grenzwert:
     name: Helligkeit Grenzwert
     min: 100
-    max: 12000
-    step: 100 
+    max: 1000
+    step: 50 
     
 binary_sensor:
   - platform: car_wash
@@ -150,10 +150,10 @@ sensor:
         unit_of_measurement: '%'
       mold_balkon_temperatur:
         value_template: >-        
-          {% if is_state('sensor.balkon_temperatur', 'unavailable') %}
+          {% if is_state('sensor.bewegungsmelder_balkon_temperatur', 'unavailable') %}
             {{ 0.00 | float(0) }}
           {% else %}
-            {{ states('sensor.balkon_temperatur') | float(0) }}
+            {{ states('sensor.bewegungsmelder_balkon_temperatur') | float(0) }}
           {% endif %}          
         unit_of_measurement: '°C'
 
@@ -377,7 +377,7 @@ automation:
     id: "balkontuer_schliessen"
     trigger:
       - platform: template
-        value_template: "{{ states('sensor.balkon_temperatur') | float(0) > states('sensor.wohnzimmer_temperatur') | float(0) + 2 }}"
+        value_template: "{{ states('sensor.bewegungsmelder_balkon_temperatur') | float(0) > states('sensor.wohnzimmer_temperatur') | float(0) + 2 }}"
     condition:       
       - condition: or
         conditions:
@@ -388,12 +388,12 @@ automation:
             entity_id: binary_sensor.fenster_wohnzimmer
             state: 'on'
       - "{{ (states('sensor.wohnzimmer_temperatur') | float(0)) > 0 }}"
-      - "{{ (states('sensor.balkon_temperatur') | float(0)) > 23 }}"  
+      - "{{ (states('sensor.bewegungsmelder_balkon_temperatur') | float(0)) > 23 }}"  
     action:
       - service: !secret tts_service
         data:
           message: >-
-            {% set temperaturBalkon = states('sensor.balkon_temperatur') | float(0) %}
+            {% set temperaturBalkon = states('sensor.bewegungsmelder_balkon_temperatur') | float(0) %}
             {% set temperaturWohnzimmer = states('sensor.wohnzimmer_temperatur') | float(0) %}
 
             {% set difference = (temperaturBalkon - temperaturWohnzimmer) | round(default=0) %}

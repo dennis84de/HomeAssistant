@@ -101,8 +101,10 @@ cards:
     title: Thermometer
     show_header_toggle: false
     entities:
-      - entity: sensor.wohnzimmer_temperatur       
-      - entity: sensor.wohnzimmer_luftfeuchtigkeit       
+      - entity: sensor.wohnzimmer_ble_temperatur
+        name: Temperatur
+      - entity: sensor.wohnzimmer_ble_luftfeuchtigkeit       
+        name: Luftfeuchtigkeit
 
   - type: glance
     title: Sensoren

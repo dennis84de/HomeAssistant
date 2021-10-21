@@ -16,16 +16,14 @@ automation:
   - alias: "Zu Hause - Besuch Schalter"
     id: "zu_hause_besuch_schalter"
     trigger:
-      - platform: state
-        entity_id: sensor.schalter_flur
-        to: '3'
-      - platform: event
+      - id: schalter_flur
+        platform: event
         event_type: zha_event
         event_data:
           device_ieee: 00:15:8d:00:01:c3:08:67
           command: click
           args:
-            click_type: triple           
+            click_type: single           
     condition:
       - condition: state
         entity_id: binary_sensor.zu_hause

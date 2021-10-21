@@ -4,6 +4,23 @@ type: custom:horizontal-layout
 layout:
   width: 400
   max_cols: 3
+popup_cards:
+  binary_sensor.zu_hause:
+    title: Zu Hause
+    card:
+      type: history-graph
+      entities:
+        - entity: person.dennis 
+          name: Person             
+        - entity: device_tracker.handy  
+          name: Wlan
+        - entity: device_tracker.handygps
+          name: GPS
+        - entity: device_tracker.handymqtt  
+          name: MQTT
+        - entity: device_tracker.handyping
+          name: Ping
+     
 cards:             
   - type: conditional
     view_layout:
@@ -173,7 +190,7 @@ cards:
       icon: false
       points: false
     entities:
-      - entity: sensor.wohnzimmer_temperatur
+      - entity: sensor.wohnzimmer_ble_temperatur
         name: Wohnzimmer
       - entity: sensor.badezimmer_temperatur
         name: Badezimmer

@@ -134,7 +134,7 @@ script:
       - choose:
           - conditions:
               - condition: numeric_state
-                entity_id: sensor.balkon_temperatur
+                entity_id: sensor.bewegungsmelder_balkon_temperatur
                 above: 10
             sequence:
               - service: switch.turn_on
@@ -293,6 +293,10 @@ automation:
     trigger:
       - platform: state
         entity_id: calendar.arbeit_buero
+        to: 'on'
+      - platform: state
+        entity_id: calendar.arbeit_buero
+        to: 'off'        
     action:
       - choose:
           - conditions:

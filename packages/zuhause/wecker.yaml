@@ -206,15 +206,26 @@ automation:
   - alias: "Aufstehen - Schlafen ausschalten"
     id: "aufstehen_schlafen_ausschalten"
     trigger:
-      - platform: state
+      - id: bwewegungsmelder
+        platform: state
         entity_id: binary_sensor.bewegungsmelder_kueche
         to: 'on'
-      - platform: state
+      - id: bwewegungsmelder
+        platform: state
         entity_id: binary_sensor.bewegungsmelder_flur_vorne
         to: 'on'
-      - platform: state
+      - id: bwewegungsmelder
+        platform: state
         entity_id: binary_sensor.bewegungsmelder_wohnzimmer
         to: 'on'
+      - id: schalter_badezimmer
+        platform: event
+        event_type: zha_event
+        event_data:
+          device_ieee: 00:15:8d:00:02:e9:58:3a
+          command: click
+          args:
+            click_type: single           
     condition:
       - condition: state
         entity_id: binary_sensor.schlafen_aktiv
@@ -224,6 +235,8 @@ automation:
           - condition: state
             entity_id: binary_sensor.alarm_aktiv
             state: 'on'
+          - condition: template
+            value_template: "{{ trigger.id == 'schalter_badezimmer' }}"              
           - condition: and
             conditions:
               - condition: time
