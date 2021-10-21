@@ -54,3 +54,18 @@ cards:
         name: Zertifikat
       - entity: sensor.nextcloud_system_version     
         name: Installierte Version
+        
+  - type: 'custom:zha-network-card'    
+    clickable: true
+    sort_by: last_seen
+    columns:
+      - name: Name
+        prop: name
+      - attr: last_seen
+        name: Last Seen            
+      - attr: available
+        id: available
+        modify: x || "false"
+        name: Online
+      - attr: lqi
+        name: LQI
