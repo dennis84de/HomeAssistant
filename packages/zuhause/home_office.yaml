@@ -130,7 +130,7 @@ script:
       - service: switch.turn_off
         entity_id: switch.arbeitszimmer_radio, switch.arbeitszimmer_monitore, switch.pc_arbeit
       - service: switch.turn_on
-        entity_id: switch.computer
+        entity_id: switch.computer, switch.watchtv_wohnzimmer
       - choose:
           - conditions:
               - condition: numeric_state
@@ -150,6 +150,15 @@ script:
                 data:
                   entity_id: climate.arbeitszimmer
                   preset_mode: 'eco'
+      - delay: '00:00:10'
+      - choose:
+          - conditions:
+              - condition: state
+                entity_id: sensor.sonne_tagsueber
+                state: 'off'
+            sequence:
+              - service: light.turn_on
+                entity_id: light.wohnzimmer_schrank                      
         
 automation:
   - alias: "Home Office - Start"
