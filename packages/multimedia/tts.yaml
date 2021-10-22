@@ -81,7 +81,7 @@ script:
             state: 'off'            
       - service: tts.google_translate_say
         data:
-          entity_id: media_player.benachrichtigungen
+          entity_id: media_player.squeezebox
           message: "{{ message }}"
          
   lms_tts:

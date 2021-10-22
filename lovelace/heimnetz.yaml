@@ -40,6 +40,8 @@ cards:
         name: Fernseher
       - entity: device_tracker.soundbar      
         name: Soundbar
+      - entity: device_tracker.squeezebox
+        name: Squeezebox        
       - entity: device_tracker.kamerawohnzimmer
         name: Kamera Wohnzimmer
 

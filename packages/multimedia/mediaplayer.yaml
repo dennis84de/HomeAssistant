@@ -3,11 +3,6 @@ input_boolean:
     name: Uhr einschalten
     icon: mdi:alarm-multiple
 
-media_player:
-  - platform: mpd
-    host: !secret homeassistant_host
-    name: Benachrichtigungen
-
 automation:
   - alias: "Uhr - Glocke starten"
     id: "uhr_glocke_starten"
@@ -52,12 +47,12 @@ automation:
     action:
       - service: media_player.play_media
         data:
-          entity_id: media_player.benachrichtigungen
+          entity_id: media_player.squeezebox
           media_content_id: >-
             {% if now().strftime("%M")|int == 30 %}
-              uhr/GrandFatherChime_half.mp3
+              file:///home/pi/Sounds/GrandFatherChime_half.mp3
             {% else %}
-              uhr/GrandFatherChime_{{now().strftime("%I")}}.mp3
+              file:///home/pi/Sounds/GrandFatherChime_{{now().strftime("%I")}}.mp3
             {% endif %}
           media_content_type: music
 
@@ -74,12 +69,12 @@ automation:
           command: knock   
     condition:         
       - condition: state
-        entity_id: media_player.benachrichtigungen
+        entity_id: media_player.squeezebox
         state: 'playing'
     action:
       - service: media_player.media_pause
         entity_id:
-          - media_player.benachrichtigungen
+          - media_player.squeezebox
       - service: input_boolean.turn_on
         entity_id: input_boolean.uhr_einschalten
 
@@ -108,8 +103,8 @@ automation:
     action:
       - service: media_player.play_media
         data:
-          entity_id: media_player.benachrichtigungen
-          media_content_id: sounds/torhymne.mp3
+          entity_id: media_player.squeezebox
+          media_content_id: file:///home/pi/Sounds/torhymne.mp3
           media_content_type: music
 
   - alias: "BVB - Musik starten"
@@ -129,13 +124,13 @@ automation:
       - condition: not
         conditions:
           - condition: state
-            entity_id: media_player.benachrichtigungen
+            entity_id: media_player.squeezebox
             state: 'playing'
     action:
       - service: media_player.play_media
         data:
-          entity_id: media_player.benachrichtigungen
-          media_content_id: sounds/heja_bvb.mp3
+          entity_id: media_player.squeezebox
+          media_content_id: file:///home/pi/Sounds/heja_bvb.mp3
           media_content_type: music
 
   - alias: "BVB - Musik stoppen"
@@ -153,30 +148,11 @@ automation:
       - condition: template
         value_template: '{{ True if "(T.B.A.)" in state_attr("calendar.borussia_dortmund", "message") else False }}'
       - condition: state
-        entity_id: media_player.benachrichtigungen
+        entity_id: media_player.squeezebox
         state: 'playing'
     action:
       - service: media_player.media_pause
-        entity_id: media_player.benachrichtigungen
-                
-  - alias: "BVB - Playlist"
-    id: "bvb_playlist"
-    trigger:
-      - platform: state
-        entity_id: media_player.radio_badezimmer
-        to: 'playing'
-    condition:  
-      - "{{ is_state('calendar.borussia_dortmund', 'on') }}"          
-      - "{{ True if not '(T.B.A.)' in state_attr('calendar.borussia_dortmund', 'message') else False }}"    
-      - "{{ not is_state_attr('media_player.radio_badezimmer', 'media_artist', 'Borussia Dortmund') }}"    
-    action:
-      - service: squeezebox.call_method
-        data:
-          entity_id: media_player.radio_badezimmer
-          command: 'playlist'
-          parameters:
-            - play
-            - 'Borssua Dortmund'    
+        entity_id: media_player.squeezebox
                 
   - alias: "Schlafzimmer - Tablet Wiedergabe"
     id: "schlafzimmer_tablet_wiedergabe"

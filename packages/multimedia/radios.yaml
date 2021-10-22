@@ -357,10 +357,10 @@ automation:
         state: 'on'        
     action:
       - service: switch.turn_off
-        entity_id: switch.badezimmer_radio
-      
-  - alias: 'Radio Badezimmer - Playlist'
-    id: "radio_badezimmer_playlist"
+        entity_id: switch.badezimmer_radio     
+            
+  - alias: 'Radio Badezimmer - Südtirol 1'
+    id: "radio_badezimmer_suedtirol1"
     trigger:
       - platform: state
         entity_id: media_player.radio_badezimmer
@@ -377,6 +377,25 @@ automation:
           parameters:
             - play
             - 'Südtirol 1'  
+            
+  - alias: "Radio Badezimmer - BVB"
+    id: "radio_badezimmer_bvb"
+    trigger:
+      - platform: state
+        entity_id: media_player.radio_badezimmer
+        to: 'playing'
+    condition:  
+      - "{{ is_state('calendar.borussia_dortmund', 'on') }}"          
+      - "{{ True if not '(T.B.A.)' in state_attr('calendar.borussia_dortmund', 'message') else False }}"    
+      - "{{ not is_state_attr('media_player.radio_badezimmer', 'media_artist', 'Borussia Dortmund') }}"    
+    action:
+      - service: squeezebox.call_method
+        data:
+          entity_id: media_player.radio_badezimmer
+          command: 'playlist'
+          parameters:
+            - play
+            - 'BVB'    
             
   - alias: 'Tür - Radios pausieren'
     id: "tuer_radios_pausieren"

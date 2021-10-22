@@ -180,8 +180,8 @@ automation:
       - delay: '00:00:05'
       - service: media_player.play_media
         data:
-          entity_id: media_player.benachrichtigungen
-          media_content_id: sounds/countdown_5.mp3
+          entity_id: media_player.squeezebox
+          media_content_id: file:///home/pi/Sounds/countdown_5.mp3
           media_content_type: music
       - service: timer.start
         entity_id: timer.schlafen_einschalten
@@ -203,7 +203,7 @@ automation:
         state: 'active'
     action:
       - service: media_player.media_pause
-        entity_id: media_player.benachrichtigungen
+        entity_id: media_player.squeezebox
       - service: !secret tts_service
         data:
           echo: "wohnzimmer"

@@ -120,8 +120,8 @@ cards:
       - entity: switch.radios_lautlos
       - entity: script.sync_radios
       - type: custom:mini-media-player
-        entity: media_player.benachrichtigungen
-        name: Benachrichtigungen
+        entity: media_player.squeezebox
+        name: Squeezebox
         hide:
           source: true
           progress: true

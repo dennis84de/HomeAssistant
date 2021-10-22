@@ -98,6 +98,8 @@ homeassistant:
     sensor.speedtest_upload:
       icon: mdi:upload-network
       
+    device_tracker.squeezebox:
+      icon: mdi:music-box-outline       
     device_tracker.fritzrepeater:
       icon: mdi:wifi
     device_tracker.computer:
