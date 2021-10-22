@@ -65,6 +65,28 @@ automation:
           message: >-
             Der Gastzugang wurde ausgeschaltet.
 
+  - alias: "Wlan offline"
+    id: "wlan_offline"
+    trigger:
+      - platform: state
+        entity_id: switch.fritz_box_7272_wi_fi_netzwerkdj
+        from: 'on'
+        for: '00:30:00'
+    action:
+      - choose:
+          - conditions:
+            - condition: state
+              entity_id: person.dennis
+              state: 'not_home'
+            sequence:
+              - service: notify.telegram
+                data:                  
+                  message: "Das Wlan ist seit 30 Minuten offline"
+        default:
+          - service: !secret tts_service
+            data:
+              message: "Das Wlan ist seit 30 Minuten offline"    
+
 homeassistant:
   customize:
     sensor.netmonitor:
