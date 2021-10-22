@@ -36,22 +36,32 @@ logbook:
       - switch
       - light
       - automation
+      - entity_controller
+      - person    
+    entities:  
+      - devicve_tracker.handy
+      - devicve_tracker.handygps
+      - devicve_tracker.handymqtt
+      - devicve_tracker.handyping
   exclude:
     entities:     
       - switch.schlafzimmer_fernseher_licht
       - switch.sportzimmer_regal
-      - switch.couch
-      - switch.strahler
+      - switch.wohnzimmer_couch
+      - switch.wohnzimmer_strahler
+      - switch.wohnzimmer_schrank
       - switch.kleiderschrank
       - switch.monitor
       - switch.pc
-      
+
 history:
   include:
     domains:
       - switch
       - media_player
       - lights
+      - entity_controller
+      - person
   exclude:
     entities:
       - switch.echo_badezimmer_do_not_disturb_switch
@@ -69,9 +79,26 @@ history:
       - switch.echo_wohnzimmer_do_not_disturb_switch
       - switch.echo_wohnzimmer_repeat_switch
       - switch.echo_wohnzimmer_shuffle_switch
+      - switch.firetv_badezimmer_do_not_disturb_switch
+      - switch.firetv_schlafzimmer_do_not_disturb_switch
+      - switch.firetv_sportzimmer_do_not_disturb_switch
       - switch.schlafzimmer_fernseher_remote
       - switch.schlafzimmer_fernseher_licht
       - switch.sportzimmer_regal
-      - switch.couch
-      - switch.strahler
+      - switch.wohnzimmer_couch
+      - switch.wohnzimmer_strahler
       - switch.kleiderschrank
+      - switch.wohnzimmer_schrank
+      - switch.adguard_filtering
+      - switch.adguard_parental_control
+      - switch.adguard_protection
+      - switch.adguard_safe_browsing
+      - switch.adguard_safe_search
+      - switch.computer_arbeit_herunterfahren
+      - switch.computer_arbeit_ruhezustand
+      - switch.computer_herunterfahren
+      - switch.computer_ruhezustand
+      - switch.computer_lautlos
+      - switch.computer_wiedergabe      
+      - switch.fritz_box_7272_call_deflection_0
+      - switch.fritz_box_7272_call_deflection_1
