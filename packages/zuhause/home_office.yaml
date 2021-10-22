@@ -284,7 +284,7 @@ automation:
                 entity_id: switch.pc_arbeit
           - conditions:
               - condition: state
-                entity_id: binary_sensor.zu_hause
+                entity_id: person.dennis
                 state: 'off'                
             sequence:
                   - service: notify.telegram

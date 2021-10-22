@@ -92,8 +92,8 @@ automation:
         to: 'Waschen'
     condition:
       - condition: state
-        entity_id: binary_sensor.zu_hause
-        state: 'off'
+        entity_id: person.dennis
+        state: 'not_home'
     action:
       - service: notify.telegram
         data:          
@@ -110,8 +110,8 @@ automation:
       - choose:
           - conditions:
               - condition: state
-                entity_id: binary_sensor.zu_hause
-                state: 'off'
+                entity_id: person.dennis
+                state: 'not_home'
             sequence:
               - service: notify.telegram
                 data:                  
@@ -141,8 +141,8 @@ automation:
       - choose:
           - conditions:
               - condition: state
-                entity_id: binary_sensor.zu_hause
-                state: 'off'
+                entity_id: person.dennis
+                state: 'not_home'
             sequence:
               - service: notify.telegram
                 data:                  
@@ -238,8 +238,8 @@ automation:
         to: 'Trocknen'
     condition:
       - condition: state
-        entity_id: binary_sensor.zu_hause
-        state: 'off'
+        entity_id: person.dennis
+        state: 'not_home'
     action:
       - service: notify.telegram
         data:          
@@ -256,8 +256,8 @@ automation:
       - choose:
           - conditions:
               - condition: state
-                entity_id: binary_sensor.zu_hause
-                state: 'off'
+                entity_id: person.dennis
+                state: 'not_home'
             sequence:
               - service: notify.telegram
                 data:                  
@@ -281,8 +281,8 @@ automation:
       - choose:
           - conditions:
               - condition: state
-                entity_id: binary_sensor.zu_hause
-                state: 'off'
+                entity_id: person.dennis
+                state: 'not_home'
             sequence:
               - service: notify.telegram
                 data:                  

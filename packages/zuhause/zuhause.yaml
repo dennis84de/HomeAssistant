@@ -1,7 +1,3 @@
-input_boolean:
-  zu_hause_aktiviert:
-    name: "Zu Hause aktiviert"
-
 input_select:
   zu_hause_begruessung:
     name: Begrüßung
@@ -13,18 +9,6 @@ input_select:
 shell_command:
   send_position: "curl -X POST '{{ url }}?lat={{ state_attr('zone.home', 'latitude') }}&lon={{ state_attr('zone.home', 'longitude') }}&timestamp={{ as_timestamp(now(), None) | int }}'"
 
-binary_sensor:
-  - platform: template
-    sensors:
-      zu_hause:
-        friendly_name: "zu Hause"
-        device_class: presence
-        value_template: >-
-          {% if is_state('device_tracker.handyping', 'home') or is_state('device_tracker.handymqtt', 'home') %}
-            true
-          {% else %}
-            false
-          {% endif %}
 script:
   zu_hause:
     alias: "Zu Hause"
@@ -168,14 +152,14 @@ script:
           data:
             message: "Hallo Dennis. Willkommen zu Hause."
             
-automation:
+automation:         
   - alias: "Zu Hause"
     id: "zu_hause"
     trigger:
       - id: zu_hause
         platform: state
-        entity_id: binary_sensor.zu_hause
-        to: 'on'
+        entity_id: person.dennis
+        to: 'home'
       - id: schalter_flur
         platform: event
         event_type: zha_event
@@ -184,12 +168,9 @@ automation:
           command: click
           args:
             click_type: double              
-    condition:
-      - condition: state
-        entity_id: input_boolean.zu_hause_aktiviert
-        state: 'off'         
+    condition:    
       - condition: template
-        value_template: "{{ is_state('binary_sensor.zu_hause', 'off') if trigger.id == 'schalter_flur' else True }}"
+        value_template: "{{ is_state('person.dennis', 'not_home') if trigger.id == 'schalter_flur' else True }}"
       - condition: template
         value_template: >-
           {% set now = as_timestamp(now(), None) | int %}
@@ -198,8 +179,6 @@ automation:
 
           {{ diff >= 10 }}        
     action:     
-      - service: input_boolean.turn_on
-        entity_id: input_boolean.zu_hause_aktiviert     
       - choose:              
         - conditions:
             - condition: state
@@ -261,8 +240,8 @@ automation:
         entity_id: input_select.zu_hause_begruessung
         state: 'Deaktiviert'        
       - condition: state
-        entity_id: input_boolean.zu_hause_aktiviert
-        state: 'off'        
+        entity_id: person.dennis
+        state: 'not_home'                 
     action:    
       - service: input_select.select_option            
         entity_id: input_select.zu_hause_begruessung
@@ -272,18 +251,20 @@ automation:
   - alias: "Zu Hause - Begrüßung"
     id: "zu_hause_begruessung"
     trigger:
-      - platform: state
+      - id: tuersensor
+        platform: state
         entity_id: binary_sensor.tuersensor
         to: 'off' 
-      - platform: state
-        entity_id: binary_sensor.zu_hause
-        to: 'on'               
+      - id: handy
+        platform: state
+        entity_id: person.dennis
+        to: 'home'               
     condition:  
       - "{{ not is_state('input_select.zu_hause_begruessung', 'Deaktiviert') }}"   
       - condition: or
         conditions:
-          - "{{ trigger.entity_id == 'binary_sensor.zu_hause' and is_state('input_select.zu_hause_begruessung', 'Tür') }}"     
-          - "{{ trigger.entity_id == 'binary_sensor.tuersensor' and is_state('input_select.zu_hause_begruessung', 'Handy') }}"      
+          - "{{ trigger.id == 'handy' and is_state('input_select.zu_hause_begruessung', 'Tür') }}"     
+          - "{{ trigger.id == 'tuersensor' and is_state('input_select.zu_hause_begruessung', 'Handy') }}"      
     action:      
       - service: input_select.select_option
         entity_id: input_select.zu_hause_begruessung

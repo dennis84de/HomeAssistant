@@ -26,8 +26,8 @@ automation:
             click_type: single           
     condition:
       - condition: state
-        entity_id: binary_sensor.zu_hause
-        state: 'on'
+        entity_id: person.dennis
+        state: 'home'
     action:
       - service: input_boolean.toggle
         entity_id: input_boolean.besuch  

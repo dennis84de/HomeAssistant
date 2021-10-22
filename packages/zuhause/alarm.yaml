@@ -17,8 +17,8 @@ automation:
     id: "alarm_aktiviert"
     trigger:
       - platform: state
-        entity_id: binary_sensor.zu_hause
-        to: 'off'
+        entity_id: person.dennis
+        to: 'not_home'
         for:
           minutes: 1
     action:
@@ -38,8 +38,8 @@ automation:
         entity_id: alarm_control_panel.alarm
         state: armed_away
       - condition: state
-        entity_id: binary_sensor.zu_hause
-        state: 'off'
+        entity_id: person.dennis
+        state: 'not_homes'
     action:
       service: alarm_control_panel.alarm_trigger
       entity_id: alarm_control_panel.alarm
@@ -89,8 +89,8 @@ automation:
         to: 'on'           
     condition:
       - condition: state
-        entity_id: binary_sensor.zu_hause
-        state: 'off'
+        entity_id: person.dennis
+        state: 'not_home'
       - condition: state
         entity_id: alarm_control_panel.alarm
         state: 'armed_away'
@@ -124,8 +124,8 @@ automation:
         to: 'on'
     condition:
       - condition: state
-        entity_id: binary_sensor.zu_hause
-        state: 'off'
+        entity_id: person.dennis
+        state: 'not_home'
       - condition: state
         entity_id: alarm_control_panel.alarm
         state: 'armed_away'

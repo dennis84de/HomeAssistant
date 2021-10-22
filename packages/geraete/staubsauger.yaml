@@ -125,8 +125,8 @@ automation:
     id: "staubsaugen_gestartet"
     trigger:
       - platform: state
-        entity_id: binary_sensor.zu_hause
-        to: 'off'
+        entity_id: person.dennis
+        to: 'not_home'
         for:
           minutes: 5
       - platform: time
@@ -139,8 +139,8 @@ automation:
         entity_id: vacuum.roborock_vacuum
         state: 'docked'
       - condition: state
-        entity_id: binary_sensor.zu_hause
-        state: 'off'
+        entity_id: person.dennis
+        state: 'not_home'
       - condition: state
         entity_id: input_boolean.staubsauger_automatische_reinigung
         state: 'on'        
@@ -185,8 +185,8 @@ automation:
       - choose:
           - conditions:
               - condition: state
-                entity_id: binary_sensor.zu_hause
-                state: 'off'      
+                entity_id: person.dennis
+                state: 'not_home'      
             sequence:
               - service: notify.telegram
                 data:                  
@@ -216,8 +216,8 @@ automation:
         to: 'error'
     condition:
       - condition: state
-        entity_id: binary_sensor.zu_hause
-        state: 'off'        
+        entity_id: person.dennis
+        state: 'not_home'        
     action:
       - service: notify.telegram
         data:

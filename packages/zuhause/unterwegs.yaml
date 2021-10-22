@@ -4,15 +4,15 @@ binary_sensor:
       bewegungsmelder_inaktiv_unterwegs:
         friendly_name: "Bewegungmelder inaktiv - Unterwegs"
         device_class: occupancy
-        value_template: "{{ True if is_state('binary_sensor.zu_hause', 'off') else False }}"
+        value_template: "{{ is_state('person.dennis', 'not_home') }}"
 
 automation:
   - alias: "Unterwegs - Geräte eingeschaltet"
     id: "unterwegs_geraete_eingeschaltet"
     trigger:
       - platform: state
-        entity_id: binary_sensor.zu_hause
-        to: 'off'
+        entity_id: person.dennis
+        to: 'not_home'
         for:
           minutes: 60
     condition:
@@ -63,8 +63,8 @@ automation:
     id: "urlaub_lichtsimulation_einschalten"
     trigger:
       - platform: state
-        entity_id: binary_sensor.zu_hause
-        to: 'off'
+        entity_id: person.dennis
+        to: 'not_home'
     condition:
       - condition: state
         entity_id: calendar.urlaub
@@ -240,8 +240,6 @@ script:
   alles_ausschalten:
     alias: "Alles ausschalten"
     sequence:
-      - service: input_boolean.turn_off
-        entity_id: input_boolean.zu_hause_aktiviert
       - service: mqtt.publish
         data:
            topic: 'location/handy'

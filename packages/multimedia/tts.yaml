@@ -29,8 +29,8 @@ script:
       - condition: and
         conditions:
           - condition: state
-            entity_id: binary_sensor.zu_hause
-            state: 'on'        
+            entity_id: person.dennis
+            state: 'home'        
           - condition: or
             conditions:      
               - condition: and
@@ -71,8 +71,8 @@ script:
       - condition: and
         conditions:
           - condition: state
-            entity_id: binary_sensor.zu_hause
-            state: 'on'
+            entity_id: person.dennis
+            state: 'home'
           - condition: state
             entity_id: binary_sensor.schlafen_aktiv
             state: 'off'
@@ -90,8 +90,8 @@ script:
       - condition: and
         conditions:
           - condition: state
-            entity_id: binary_sensor.zu_hause
-            state: 'on'        
+            entity_id: person.dennis
+            state: 'home'        
           - condition: or
             conditions:      
               - condition: and

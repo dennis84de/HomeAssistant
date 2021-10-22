@@ -62,8 +62,8 @@ automation:
     id: "unterwegs_computer_ausschalten"
     trigger:
       - platform: state
-        entity_id: binary_sensor.zu_hause
-        to: 'off'
+        entity_id: person.dennis
+        to: 'not_home'
         for:
           minutes: 30
     condition:

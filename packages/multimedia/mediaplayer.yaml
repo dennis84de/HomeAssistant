@@ -30,8 +30,8 @@ automation:
         entity_id: calendar.borussia_dortmund
         state: 'off'
       - condition: state
-        entity_id: binary_sensor.zu_hause
-        state: 'on'
+        entity_id: person.dennis
+        state: 'home'
       - condition: state
         entity_id: binary_sensor.home_office_aktiv
         state: 'off'

@@ -73,15 +73,19 @@ automation:
   - alias: "Wohnzimmer - Licht Abends"
     id: "wohnzimmer_licht_abends"
     trigger:
-      platform: state
-      entity_id: binary_sensor.sonne_tagsueber
-      to: 'off'
+      - platform: state
+        entity_id: binary_sensor.sonne_tagsueber
+        to: 'off'
     condition:
+      - condition: state
+        entity_id: binary_sensor.sonne_tagsueber
+        state: 'on'
+        for: '00:01:00'
       - condition: time
         after: '15:00'
       - condition: state
-        entity_id: binary_sensor.zu_hause
-        state: 'on'
+        entity_id: person.dennis
+        state: 'home'
       - condition: state
         entity_id: binary_sensor.home_office_aktiv
         state: 'off'

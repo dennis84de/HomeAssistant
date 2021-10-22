@@ -159,8 +159,8 @@ automation:
       - choose:
           - conditions:
             - condition: state
-              entity_id: binary_sensor.zu_hause
-              state: 'off'
+              entity_id: person.dennis
+              state: 'not_home'
             sequence:
               - service: notify.telegram
                 data:
@@ -186,13 +186,14 @@ automation:
       - choose:
           - conditions:
             - condition: state
-              entity_id: binary_sensor.zu_hause
-              state: 'off'
+              entity_id: person.dennis
+              state: 'not_home'
             sequence:
               - service: notify.telegram
                 data:                  
                   message: "Home Assistant wurde neugestartet."
         default:
+          - service: script.zu_hause_standort
           - service: media_player.play_media
             data:
               entity_id: media_player.benachrichtigungen
@@ -213,8 +214,8 @@ automation:
       - choose:
           - conditions:
             - condition: state
-              entity_id: binary_sensor.zu_hause
-              state: 'off'
+              entity_id: person.dennis
+              state: 'not_home'
             sequence:
               - service: notify.telegram
                 data:                  

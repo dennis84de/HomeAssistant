@@ -52,8 +52,8 @@ automation:
         entity_id: binary_sensor.besuch
         state: 'off' 
       - condition: state
-        entity_id: binary_sensor.zu_hause
-        state: 'on'        
+        entity_id: person.dennis
+        state: 'home'        
     action:
       - service: scene.create
         data:
@@ -356,8 +356,8 @@ automation:
       - choose:
           - conditions:
               - condition: state
-                entity_id: binary_sensor.zu_hause
-                state: 'off'
+                entity_id: person.dennis
+                state: 'not_home'
             sequence:
               - service: notify.telegram
                 data:
@@ -398,8 +398,8 @@ automation:
         to: 'idle'
     condition:
       - condition: state
-        entity_id: binary_sensor.zu_hause
-        state: 'on'
+        entity_id: person.dennis
+        state: 'home'
     action:
       - service: persistent_notification.create
         data:

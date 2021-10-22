@@ -99,8 +99,8 @@ automation:
         entity_id: sensor.ungelesene_mails
     condition:
       - condition: state
-        entity_id: binary_sensor.zu_hause
-        state: 'on'
+        entity_id: person.dennis
+        state: 'home'
       - condition: state
         entity_id: binary_sensor.schlafen_aktiv
         state: 'off'        
