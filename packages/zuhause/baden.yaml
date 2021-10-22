@@ -81,4 +81,4 @@ automation:
               state: 'off'
           sequence:
             - service: light.turn_on
-              entity_id: light.wohnzimmer_couch, light.wohnzimmer_strahler
+              entity_id: light.wohnzimmer_schrank
