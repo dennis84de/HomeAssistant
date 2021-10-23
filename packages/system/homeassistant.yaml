@@ -141,7 +141,7 @@ script:
       - service: media_player.play_media
         data:
           entity_id: media_player.squeezebox
-          media_content_id:  file:///home/pi/Sounds/winxp_shutdown.mp3
+          media_content_id:  http://192.168.2.75:8123/local/sounds/winxp_shutdown.mp3
           media_content_type: music
       - wait_template: "{{is_state('media_player.squeezebox', 'idle')}}"
         timeout: '00:00:02'
@@ -197,7 +197,7 @@ automation:
           - service: media_player.play_media
             data:
               entity_id: media_player.squeezebox
-              media_content_id: file:///home/pi/Sounds/winxp_start.mp3
+              media_content_id: http://192.168.2.75:8123/local/sounds/winxp_start.mp3
               media_content_type: music
           - delay: '00:00:02'
           - service: !secret tts_service

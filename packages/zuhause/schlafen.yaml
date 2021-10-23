@@ -181,7 +181,7 @@ automation:
       - service: media_player.play_media
         data:
           entity_id: media_player.squeezebox
-          media_content_id: file:///home/pi/Sounds/countdown_5.mp3
+          media_content_id: http://192.168.2.75:8123/local/sounds/countdown_5.mp3
           media_content_type: music
       - service: timer.start
         entity_id: timer.schlafen_einschalten

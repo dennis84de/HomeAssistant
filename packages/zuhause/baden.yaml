@@ -74,6 +74,12 @@ automation:
         default:
           - service: switch.turn_on
             entity_id: switch.watchtv_wohnzimmer, switch.badezimmer_radio
+          - wait_template: "{{ not is_state('media_player.radio_badezimmer', 'unavailable') }}"
+            timeout: '00:02:00'   
+          - service: script.radio_playlist_wiedergeben
+            data:
+              mediaplayer: media_player.radio_badezimmer
+              playlist: 'Südtirol 1'                
       - choose:
           conditions:
             - condition: state

@@ -207,18 +207,12 @@ script:
     sequence:
       - service: switch.turn_on
         entity_id: switch.badezimmer_radio, switch.wohnzimmer_radio, switch.flur_radio, switch.kuche_radio
-      - wait_template: >-
-          {% if is_state('media_player.radio_kueche', 'playing')
-            and is_state('media_player.radio_badezimmer', 'playing')
-            and is_state('media_player.radio_wohnzimmer', 'playing')
-            and is_state('media_player.radio_flur', 'playing')
-          %}
-            True
-          {% else %}
-            False
-          {% endif %}      
-        timeout: '00:02:00'
-      - service: script.sync_radios
+      - wait_template: "{{ not is_state('media_player.radio_flur', 'unavailable') }}"
+        timeout: '00:02:00'        
+      - service: script.radio_playlist_wiedergeben
+        data:
+          mediaplayer: media_player.radio_flur
+          playlist: 'Südtirol 1'
       - choose:
           - conditions:
               - "{{ is_state('binary_sensor.home_office_aktiv', 'off') and (homeOfficeHeute is not defined or homeOfficeHeute == False) }}"
@@ -230,6 +224,17 @@ script:
               - service: switch.turn_on
                 entity_id: switch.balkon_radio
       
+  radio_playlist_wiedergeben:
+    alias: "Radio - Playlist wiedergeben"
+    sequence:
+      - service: squeezebox.call_method
+        data:
+          entity_id: "{{ mediaplayer }}"
+          command: 'playlist'
+          parameters:
+            - play
+            - "{{ playlist }}"
+            
 automation:       
   - alias: 'Radio Balkon - Bewegung erkannt'
     id: "radio_balkon_bewegung_erkannt"

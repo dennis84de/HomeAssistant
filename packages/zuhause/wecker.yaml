@@ -137,6 +137,12 @@ automation:
           effect: colorloop
       - service: switch.turn_on
         entity_id: switch.schlafzimmer_radio               
+      - wait_template: "{{ not is_state('media_player.radio_schlafzimmer', 'unavailable') }}"      
+        timeout: '00:02:00'   
+      - service: script.radio_playlist_wiedergeben
+        data:
+          mediaplayer: media_player.radio_schlafzimmer
+          playlist: 'Südtirol 1'        
       - delay: "00:{{ states('input_number.wecker_verzoegerung') | int }}:00" 
       - service: script.wohnung_radios_einschalten
         data:
