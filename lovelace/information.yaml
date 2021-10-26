@@ -18,6 +18,8 @@ popup_cards:
           name: MQTT
         - entity: device_tracker.handyping
           name: Ping
+        - entity: device_tracker.handyapp
+          name: App
      
 cards:             
   - type: conditional
@@ -72,13 +74,13 @@ cards:
     view_layout:
       column: 1  
     conditions:
-      - entity: sensor.echo_kuche_next_timer
+      - entity: sensor.echo_kueche_next_timer
         state_not: "unavailable"
     card:
       type: entities
       entities:
-      - entity: sensor.echo_kuche_next_timer
-        name: Timer Kuche     
+      - entity: sensor.echo_kueche_next_timer
+        name: Timer Küche     
 
   - type: custom:layout-break
         

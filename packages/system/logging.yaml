@@ -70,9 +70,9 @@ history:
       - switch.echo_flur_do_not_disturb_switch
       - switch.echo_flur_repeat_switch
       - switch.echo_flur_shuffle_switch
-      - switch.echo_kuche_do_not_disturb_switch
-      - switch.echo_kuche_repeat_switch
-      - switch.echo_kuche_shuffle_switch
+      - switch.echo_kueche_do_not_disturb_switch
+      - switch.echo_kueche_repeat_switch
+      - switch.echo_kueche_shuffle_switch
       - switch.echo_schlafzimmer_do_not_disturb_switch
       - switch.echo_schlafzimmer_repeat_switch
       - switch.echo_schlafzimmer_shuffle_switch

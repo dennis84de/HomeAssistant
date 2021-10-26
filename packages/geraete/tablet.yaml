@@ -27,7 +27,7 @@ sensor:
     json_attributes_template: "{{ value_json | tojson }}"   
     
   - platform: mqtt
-    name: "Tablet Küche Batterie"
+    name: "Tablet Kueche Batterie"
     device_class: battery
     unit_of_measurement: '%'
     state_topic: "tablet/kueche/batterie"
@@ -75,10 +75,10 @@ sensor:
       tablet_kueche_zuletzt_geladen:
         friendly_name: Tablet Küche - Zuletzt geladen
         value_template: >
-          {% if is_state('sensor.tablet_kuche_batterie', None) %}
+          {% if is_state('sensor.tablet_kueche_batterie', None) %}
             -
           {% else %}
-            {% set lastCharged = state_attr('sensor.tablet_kuche_batterie','last_charged') | int %}
+            {% set lastCharged = state_attr('sensor.tablet_kueche_batterie','last_charged') | int %}
             {% set weekday = lastCharged | timestamp_custom("%w", True) | int %}
 
             {{ ['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'][weekday-1] }}, {{ lastCharged | timestamp_custom("%d.%m.%Y", True) | string }}  
@@ -120,9 +120,10 @@ automation:
           - sensor.tablet_wohnzimmer_batterie
           - sensor.tablet_schlafzimmer_batterie
           - sensor.tablet_badezimmer_batterie
-          - sensor.tablet_kuche_batterie
+          - sensor.tablet_kueche_batterie
           - sensor.tablet_balkon_batterie
     condition:               
+      - "{{ trigger.to_state.state is defined and trigger.to_state.state != 'unknown' }}"
       - condition: template
         value_template: >-
           {% set min_battery_level = states('input_number.batteriestand_warnlevel') | int -%}
@@ -141,7 +142,7 @@ automation:
               {% set tabletName = 'im Schlafzimmer' %}       
             {% elif tablet == 'sensor.tablet_badezimmer_batterie' %}
               {% set tabletName = 'im Badezimmer' %}   
-            {% elif tablet == 'sensor.tablet_kuche_batterie' %}
+            {% elif tablet == 'sensor.tablet_kueche_batterie' %}
               {% set tabletName = 'in der Küche' %}   
             {% elif tablet == 'sensor.tablet_balkon_batterie' %}
               {% set tabletName = 'auf dem Balkon' %}     
@@ -159,7 +160,7 @@ automation:
           - sensor.tablet_wohnzimmer_batterie
           - sensor.tablet_schlafzimmer_batterie
           - sensor.tablet_badezimmer_batterie
-          - sensor.tablet_kuche_batterie
+          - sensor.tablet_kueche_batterie
           - sensor.tablet_balkon_batterie
     condition:
       - condition: template
@@ -176,7 +177,7 @@ automation:
               {% set tabletName = 'im Schlafzimmer' %}       
             {% elif tablet == 'sensor.tablet_badezimmer_batterie' %}
               {% set tabletName = 'im Badezimmer' %}   
-            {% elif tablet == 'sensor.tablet_kuche_batterie' %}
+            {% elif tablet == 'sensor.tablet_kueche_batterie' %}
               {% set tabletName = 'in der Küche' %}   
             {% elif tablet == 'sensor.tablet_balkon_batterie' %}
               {% set tabletName = 'auf dem Balkon' %}     
@@ -194,7 +195,7 @@ homeassistant:
       friendly_name: Tablet Badezimmer
     sensor.tablet_wohnzimmer_batterie:
       friendly_name: Tablet Wohnzimmer
-    sensor.tablet_kuche_batterie:
+    sensor.tablet_kueche_batterie:
       friendly_name: Tablet Küche
     sensor.tablet_balkon_batterie:
       friendly_name: Tablet Balkon

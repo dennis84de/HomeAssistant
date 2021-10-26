@@ -59,7 +59,7 @@ script:
             {% elif letzteBewegung == 'Badezimmer' %}
               media_player.echo_badezimmer
             {% elif letzteBewegung == 'Küche' %}
-              media_player.echo_kuche
+              media_player.echo_kueche
             {% else %}
               media_player.echo_wohnzimmer
             {% endif %}

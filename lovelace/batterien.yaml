@@ -22,7 +22,7 @@ cards:
       - entity: sensor.tablet_wohnzimmer_batterie     
         type: "custom:secondaryinfo-entity-row"
         secondary_info: "Zuletzt geladen: [[ sensor.tablet_wohnzimmer_zuletzt_geladen ]]"           
-      - entity: sensor.tablet_kuche_batterie
+      - entity: sensor.tablet_kueche_batterie
         type: "custom:secondaryinfo-entity-row"
         secondary_info: "Zuletzt geladen: [[ sensor.tablet_kueche_zuletzt_geladen ]]"         
       - entity: sensor.tablet_badezimmer_batterie
@@ -80,8 +80,6 @@ cards:
         name: Küche
       - entity: sensor.thermometer_sportzimmer_battery_level        
         name: Sportzimmer
-      - entity: sensor.thermometer_hardware_battery_level        
-        name: Hardware
 
   - type: entities
     title: Fenster

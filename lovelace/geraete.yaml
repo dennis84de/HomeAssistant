@@ -26,17 +26,21 @@ cards:
       - entity: sensor.computer_intel_core_i5_8259u_load_cpu_total
       - entity: sensor.computer_intel_core_i5_8259u_temperatures_cpu_package
 
-  - type: glance
-    title: Hardware
-    show_header_toggle: false
-    entities:
-      - entity: sensor.hardware_temperatur
-        name: Temperatur
-      - entity: sensor.hardware_luftfeuchtigkeit
-        name: Luftfeuchtigkeit
-      - entity: sensor.hardware_luftdruck
-        name: Luftdruck
-
+  - type: 'custom:zha-network-card'    
+    clickable: true
+    sort_by: last_seen
+    columns:
+      - name: Name
+        prop: name
+      - attr: last_seen
+        name: Last Seen            
+      - attr: available
+        id: available
+        modify: x || "false"
+        name: Online
+      - attr: lqi
+        name: LQI
+        
   - type: entities
     title: Server
     show_header_toggle: false
@@ -53,19 +57,4 @@ cards:
       - entity: sensor.nextcloud_zertifikat_tage
         name: Zertifikat
       - entity: sensor.nextcloud_system_version     
-        name: Installierte Version
-        
-  - type: 'custom:zha-network-card'    
-    clickable: true
-    sort_by: last_seen
-    columns:
-      - name: Name
-        prop: name
-      - attr: last_seen
-        name: Last Seen            
-      - attr: available
-        id: available
-        modify: x || "false"
-        name: Online
-      - attr: lqi
-        name: LQI
+        name: Installierte Version       

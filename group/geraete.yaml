@@ -18,7 +18,7 @@ alles_ausschalten:
     - light.badezimmerschrank
     - light.bett
     - light.kleiderschrank
-    - light.kuche_regal
+    - light.kueche_regal
     - light.balkon_licht
     - fan.ventilator
     
@@ -36,8 +36,8 @@ licht_wohnung:
     - light.badezimmerschrank
     - light.bett
     - light.kleiderschrank
-    - light.kuche_regal
-    - light.kuche_schrank
+    - light.kueche_regal
+    - light.kueches_schrank
     - light.balkon_licht
     
 licht_fernsehen:
@@ -51,8 +51,8 @@ licht_fernsehen:
     - light.badezimmerschrank
     - light.bett
     - light.kleiderschrank
-    - light.kuche_regal
-    - light.kuche_schrank
+    - light.kueche_regal
+    - light.kueche_schrank
     - light.balkon_licht
     
 licht_unterwegs:
@@ -63,7 +63,7 @@ licht_unterwegs:
     - light.wohnzimmer_schrank
     - light.arbeitszimmer_lampe
     - light.sportzimmer_regal
-    - light.kuche_regal
+    - light.kueche_regal
     - light.balkon_licht
     - light.kleiderschrank
     
@@ -73,5 +73,5 @@ tablets:
     - sensor.tablet_wohnzimmer_batterie
     - sensor.tablet_schlafzimmer_batterie
     - sensor.tablet_badezimmer_batterie
-    - sensor.tablet_kuche_batterie
+    - sensor.tablet_kueche_batterie
     - sensor.tablet_balkon_batterie

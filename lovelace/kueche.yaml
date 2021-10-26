@@ -9,26 +9,26 @@ cards:
     title: Geräte
     show_header_toggle: false
     entities:
-      - entity: switch.kuche_radio
+      - entity: switch.kueche_radio
         name: Radio
       
   - type: glance
     title: Spülmaschine
     show_header_toggle: false
     entities:
-      - entity: switch.spulmaschine
+      - entity: switch.spuelmaschine
       - entity: sensor.spuelmaschine_status
         name: Status
-      - entity: sensor.spulmaschine_verbrauch
+      - entity: sensor.spuelmaschine_verbrauch
         name: Verbrauch
 
   - type: entities
     title: Licht
     show_header_toggle: false
     entities:
-      - entity: light.kuche_regal
+      - entity: light.kueche_regal
         name: Regal
-      - entity: light.kuche_schrank
+      - entity: light.kueche_schrank
         name: Schrank
 
   - type: glance
@@ -56,7 +56,7 @@ cards:
     entities:
       - entity: binary_sensor.fenster_kueche
         name: Fenster
-      - entity: climate.kuche
+      - entity: climate.kueche
         name: Heizung
 
   - type: entities

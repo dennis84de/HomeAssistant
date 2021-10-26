@@ -12,35 +12,21 @@ input_boolean:
     
   kodi_wohnzimmer_pausiert:
     name: Kodi Wohnzimmer pausiert    
-  kodi_wohnzimmer_pausieren:
-    name: Kodi Wohnzimmer pausieren    
-    icon: mdi:sync-off
 
-  youtube_wohnzimmer_aktiv:
-    name: Youtube Wohnzimmer aktiv
+  firefox_wohnzimmer_aktiv:
+    name: Firefox Wohnzimmer aktiv
     icon: mdi:youtube-tv
-  youtube_wohnzimmer_pausiert:
-    name: Youtube Wohnzimmer pausiert    
-  youtube_wohnzimmer_pausieren:
-    name: Youtube Wohnzimmer pausieren    
-    icon: mdi:sync-off
+    
+  firefox_wohnzimmer_pausiert:
+    name: Firefox Wohnzimmer pausiert    
     
 binary_sensor:
-  - platform: mqtt
-    name: "Kodi Wohnzimmer - MQTT"    
-    state_topic: "kodi_wohnzimmer/connected"
-    payload_on: "2"
-    payload_off: "0"
-    device_class: connectivity
-    json_attributes_topic: "kodi_wohnzimmer/status/progress"
-    json_attributes_template: "{{ value_json | tojson }}"   
-
   - platform: template
     sensors:
-      youtube_wohnzimmer_aktiv:
-        friendly_name: Youtube aktiv
+      firefox_wohnzimmer_aktiv:
+        friendly_name: Firefox aktiv
         icon_template: "mdi:youtube-tv"
-        value_template: "{{ is_state('input_boolean.youtube_wohnzimmer_aktiv', 'on') }}"
+        value_template: "{{ is_state('input_boolean.firefox_wohnzimmer_aktiv', 'on') }}"
         
 cover:
   - platform: template
@@ -185,28 +171,15 @@ automation:
         from: 'off'
         to: 'idle'
     condition:
-      - "{{ (states('sensor.laufzeit_minuten') | float(0)) > 1 }}"      
-      - condition: template
-        value_template: >-
-          {% if is_state('switch.wohnzimmer_radio', 'on')
-            or is_state('switch.balkon_radio', 'on')
-            or is_state('switch.schlafzimmer_radio', 'on')
-            or is_state('switch.flur_radio', 'on')
-            or is_state('switch.arbeitszimmer_radio', 'on')
-            or is_state('switch.kuche_radio', 'on')
-          %}
-            True
-          {% else %}
-            False
-          {% endif %}        
+      - "{{ (states('sensor.laufzeit_minuten') | float(0)) > 1 }}"         
       - condition: state
         state: 'on'
         entity_id: input_boolean.musik_ausschalten      
     action:  
-      - service: script.radios_pausieren
-      - service: switch.turn_off
-        entity_id: switch.wohnzimmer_radio, switch.balkon_radio, switch.flur_radio, switch.kuche_radio, switch.schlafzimmer_radio, switch.arbeitszimmer_radio     
-
+      - service: script.radios_ausschalten
+        data:
+          badezimmerEingeschaltetLassen: True
+          
   - alias: "Kodi Wohnzimmer - Wiedergabe"
     id: "kodi_wohnzimmer_wiedergabe"    
     trigger:
@@ -262,7 +235,7 @@ automation:
         entity_id: sensor.telefon
         state: 'idle'
       - condition: template
-        value_template: '{{ is_state("sensor.handy", "incoming") == False and is_state("sensor.handy", "outgoing") == False }}'
+        value_template: '{{ is_state("sensor.handy", "ringing") == False and is_state("sensor.handy", "dialing") == False }}'
     action:
       - service: script.kodi_wohnzimmer_starten
         
@@ -292,16 +265,13 @@ automation:
         entity_id: media_player.kodi_wohnzimmer
         state: 'playing'
       - condition: state
-        entity_id: input_boolean.kodi_wohnzimmer_pausieren
-        state: 'on'
-      - condition: state
         entity_id: binary_sensor.besuch
         state: 'off'        
       - condition: state
         entity_id: sensor.telefon
         state: 'idle'
       - condition: template
-        value_template: '{{ is_state("sensor.handy", "incoming") == False and is_state("sensor.handy", "outgoing") == False }}'
+        value_template: '{{ is_state("sensor.handy", "ringing") == False and is_state("sensor.handy", "dialing") == False }}'
       - condition: template       
         value_template: >-  
           {% if trigger.id == 'bewegungsmelder_balkon' or trigger.id == 'schalter_balkon' %}
@@ -344,8 +314,8 @@ automation:
       - service: cover.stop_cover
         entity_id: cover.kodi_untertitel          
           
-  - alias: "Youtube Wohnzimmer - Pausieren"
-    id: youtube_wohnzimmer_pausieren
+  - alias: "Firefox Wohnzimmer - Pausieren"
+    id: "firefox_wohnzimmer_pausieren"
     trigger:
       - platform: state
         entity_id: binary_sensor.bewegungsmelder_flur_vorne
@@ -367,13 +337,10 @@ automation:
         id: schalter_balkon
     condition:
       - condition: state
-        entity_id: binary_sensor.youtube_wohnzimmer_aktiv
+        entity_id: binary_sensor.firefox_wohnzimmer_aktiv
         state: 'on'
       - condition: state
-        entity_id: input_boolean.youtube_wohnzimmer_pausieren
-        state: 'on'
-      - condition: state
-        entity_id: input_boolean.youtube_wohnzimmer_pausiert
+        entity_id: input_boolean.firefox_wohnzimmer_pausiert
         state: 'off'        
       - condition: state
         entity_id: binary_sensor.besuch
@@ -382,7 +349,7 @@ automation:
         entity_id: sensor.telefon
         state: 'idle'
       - condition: template
-        value_template: '{{ is_state("sensor.handy", "incoming") == False and is_state("sensor.handy", "outgoing") == False }}'
+        value_template: '{{ is_state("sensor.handy", "ringing") == False and is_state("sensor.handy", "dialing") == False }}'
       - condition: template       
         value_template: >-         
           {% if trigger.id == 'bewegungsmelder_balkon' or trigger.id == 'schalter_balkon' %}
@@ -392,41 +359,41 @@ automation:
           {% endif %}        
     action:
       - service: input_boolean.turn_on
-        entity_id: input_boolean.youtube_wohnzimmer_pausiert
+        entity_id: input_boolean.firefox_wohnzimmer_pausiert
       - service: switch.turn_on
         entity_id: switch.computer_wiedergabe                
 
-  - alias: "Youtube Wohnzimmer - Status ändern"
-    id: youtube_wohnzimmer_status_geaendert
+  - alias: "Firefox Wohnzimmer - Status ändern"
+    id: "firefox_wohnzimmer_status_geaendert"
     trigger:
       - platform: state
         entity_id: binary_sensor.computer_mozilla_firefox_fullscreen
-#        entity_id: binary_sensor.computer_youtube
+#        entity_id: binary_sensor.computer_firefox
     condition:
       - "{{ is_state('binary_sensor.computer_mozilla_firefox_fullscreen', 'unavailable') == False }}"
-      - "{{ trigger.to_state.state != states('input_boolean.youtube_wohnzimmer_aktiv') }}"
+      - "{{ trigger.to_state.state != states('input_boolean.firefox_wohnzimmer_aktiv') }}"
     action:
       - service: input_boolean.toggle
-        entity_id: input_boolean.youtube_wohnzimmer_aktiv           
+        entity_id: input_boolean.firefox_wohnzimmer_aktiv           
         
-  - alias: "Youtube Wohnzimmer - Starten"
-    id: youtube_wohnzimmer_starten
+  - alias: "Firefox Wohnzimmer - Starten"
+    id: "firefox_wohnzimmer_starten"
     trigger:
       - platform: state
         entity_id: binary_sensor.bewegungsmelder_wohnzimmer
         to: 'on'
     condition:
       - condition: state
-        entity_id: input_boolean.youtube_wohnzimmer_pausiert
+        entity_id: input_boolean.firefox_wohnzimmer_pausiert
         state: 'on'
       - condition: state
         entity_id: sensor.telefon
         state: 'idle'
       - condition: template
-        value_template: '{{ is_state("sensor.handy", "incoming") == False and is_state("sensor.handy", "outgoing") == False }}'
+        value_template: '{{ is_state("sensor.handy", "ringing") == False and is_state("sensor.handy", "dialing") == False }}'
     action:
       - service: input_boolean.turn_off
-        entity_id: input_boolean.youtube_wohnzimmer_pausiert      
+        entity_id: input_boolean.firefox_wohnzimmer_pausiert      
       - service: switch.turn_on
         entity_id: switch.computer_wiedergabe
       - service: homeassistant.turn_off

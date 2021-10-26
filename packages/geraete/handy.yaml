@@ -56,9 +56,9 @@ sensor:
       handy_status:
         friendly_name: Handy
         value_template: >-
-          {% if is_state('sensor.handy', 'incoming') %}
+          {% if is_state('sensor.handy', 'ringing') %}
             Eingehender Anruf
-          {% elif is_state('sensor.handy', 'outgoing') %}
+          {% elif is_state('sensor.handy', 'dialing') %}
             Ausgehender Anruf
           {% elif is_state('sensor.handy', 'talking') %}
             Aktiver Anruf            
@@ -68,9 +68,9 @@ sensor:
             Ruhezustand
           {% endif %}
         icon_template: >
-          {% if is_state('sensor.handy', 'incoming') %}
+          {% if is_state('sensor.handy', 'ringing') %}
             mdi:phone-incoming
-          {% elif is_state('sensor.handy', 'outgoing') %}
+          {% elif is_state('sensor.handy', 'dialing') %}
             mdi:phone-outgoing
           {% elif is_state('sensor.handy', 'talking') %}
             mdi:phone-in-talk            
@@ -94,247 +94,309 @@ sensor:
         device_class: timestamp
         
 automation: 
-  - alias: "Handy aktiv - Kodi Wohnzimmer pausieren"
-    id: "handy_aktiv_kodi_wohnzimmer_pausieren"
+  - alias: "Handy aktiv - Wiedergabe pausieren"
+    id: "handy_aktiv_wiedergabe_pausieren"
     trigger:
       - platform: state
         entity_id: sensor.handy
-        to: 'incoming'
+        to: 'ringing'
       - platform: state
         entity_id: sensor.handy
-        to: 'outgoing'
+        to: 'dialing'
     condition:
       - condition: state
-        entity_id: media_player.kodi_wohnzimmer
-        state: 'playing'
+        entity_id: person.dennis
+        state: 'home'         
       - condition: state
         entity_id: input_boolean.nicht_stoeren
         state: 'off'
       - condition: state
         entity_id: binary_sensor.besuch
-        state: 'off'              
+        state: 'off'               
     action:
-      - service: input_boolean.turn_on
-        entity_id: input_boolean.kodi_wohnzimmer_pausiert
-      - service: media_player.media_pause
-        entity_id: media_player.kodi_wohnzimmer
-      - service: notify.kodi_wohnzimmer
-        data:
-          title: 'Handy'
-          message: >-
-            {% set name = state_attr('sensor.handy', 'anrufer') %}
-            {% set number = state_attr('sensor.handy', 'number') %}
-            
-            {% if is_state("sensor.handy", "outgoing") %}
-              {% if name == number %}
-                {{ state_attr('sensor.handy', 'name') }} wird angerufen.
-              {% else %}
-                {{ state_attr('sensor.handy', 'name') }} ({{ state_attr('sensor.handy', 'number') }}) wird angerufen.
-              {% endif %}
-              
-            {% elif is_state("sensor.handy", "incoming") %}
-              {% if name == number %}
-                Eingehender Anruf von {{ state_attr('sensor.handy', 'anrufer') }}.
-              {% else %}
-                Eingehender Anruf von {{ state_attr('sensor.handy', 'anrufer') }} ({{ state_attr('sensor.handy', 'number') }}).
-              {% endif %}                          
-            {% endif %}                                 
-          data:
-            displaytime: 5000
-            icon: "info"
-
-  - alias: "Handy inaktiv - Kodi Wohnzimmer wiedergeben"
-    id: "handy_inaktiv_kodi_wohnzimmer_wiedergeben"
-    trigger:
-      - platform: state
-        entity_id: sensor.handy
-        to: 'idle'
-    condition:
-      - condition: state
-        entity_id: media_player.kodi_wohnzimmer
-        state: 'paused'
-      - condition: state
-        entity_id: input_boolean.kodi_wohnzimmer_pausiert
-        state: 'on'
-      - condition: state
-        entity_id: sensor.telefon
-        state: 'idle'
-    action:
-      - service: input_boolean.turn_off
-        entity_id: input_boolean.kodi_wohnzimmer_pausiert
-      - service: media_player.media_play
-        entity_id: media_player.kodi_wohnzimmer
-      - service: notify.kodi_wohnzimmer
-        data:
-          title: 'Handy'
-          message: 'Anruf beendet'
-          data:
-            displaytime: 2000
-            icon: "info"
- 
-  - alias: "Handy aktiv - Youtube Wohnzimmer pausieren"
-    id: "handy_aktiv_youtube_wohnzimmer_pausieren"
-    trigger:
-      - platform: state
-        entity_id: sensor.handy
-        to: 'incoming'
-      - platform: state
-        entity_id: sensor.handy
-        to: 'outgoing'
-    condition:
-      - condition: state
-        entity_id: binary_sensor.youtube_wohnzimmer_aktiv
-        state: 'on'
-      - condition: state
-        entity_id: input_boolean.nicht_stoeren
-        state: 'off'
-      - condition: state
-        entity_id: binary_sensor.besuch
-        state: 'off'              
-    action:
-      - service: input_boolean.turn_on
-        entity_id: input_boolean.youtube_wohnzimmer_pausiert
-      - service: switch.turn_on
-        entity_id: switch.computer_wiedergabe
-
-  - alias: "Handy inaktiv - Youtube Wohnzimmer wiedergeben"
-    id: "handy_inaktiv_youtube_wohnzimmer_wiedergeben"
-    trigger:
-      - platform: state
-        entity_id: sensor.handy
-        to: 'idle'
-    condition:
-      - condition: state
-        entity_id: input_boolean.youtube_wohnzimmer_pausiert
-        state: 'on'
-      - condition: state
-        entity_id: sensor.telefon
-        state: 'idle'
-    action:
-      - service: input_boolean.turn_off
-        entity_id: input_boolean.youtube_wohnzimmer_pausiert      
       - choose:
           - conditions:
-            - condition: state
-              entity_id: binary_sensor.youtube_wohnzimmer_aktiv
-              state: 'on'
+              - condition: state
+                entity_id: media_player.kodi_wohnzimmer
+                state: 'playing'            
             sequence:
+              - service: input_boolean.turn_on
+                entity_id: input_boolean.kodi_wohnzimmer_pausiert
+              - service: media_player.media_pause
+                entity_id: media_player.kodi_wohnzimmer
+              - service: notify.kodi_wohnzimmer
+                data:
+                  title: 'Handy'
+                  message: >-
+                    {% set name = state_attr('sensor.handy', 'anrufer') %}
+                    {% set number = state_attr('sensor.handy', 'number') %}
+
+                    {% if is_state("sensor.handy", "dialing") %}
+                      {% if name == number %}
+                        {{ state_attr('sensor.handy', 'name') }} wird angerufen.
+                      {% else %}
+                        {{ state_attr('sensor.handy', 'name') }} ({{ state_attr('sensor.handy', 'number') }}) wird angerufen.
+                      {% endif %}
+
+                    {% elif is_state("sensor.handy", "ringing") %}
+                      {% if name == number %}
+                        Eingehender Anruf von {{ state_attr('sensor.handy', 'anrufer') }}.
+                      {% else %}
+                        Eingehender Anruf von {{ state_attr('sensor.handy', 'anrufer') }} ({{ state_attr('sensor.handy', 'number') }}).
+                      {% endif %}                          
+                    {% endif %}                                 
+                  data:
+                    displaytime: 5000
+                    icon: "info"
+      - choose:
+          - conditions:
+              - condition: state
+                entity_id: media_player.kodi_badezimmer
+                state: 'playing'            
+            sequence:
+              - service: input_boolean.turn_on
+                entity_id: input_boolean.kodi_badezimmer_pausiert
+              - service: media_player.media_pause
+                entity_id: media_player.kodi_badezimmer
+              - service: notify.kodi_badezimmer
+                data:
+                  title: 'Handy'
+                  message: >-
+                    {% set name = state_attr('sensor.handy', 'name') %}
+                    {% set number = state_attr('sensor.handy', 'number') %}
+
+                    {% if is_state("sensor.handy", "dialing") %}
+                      {% if name == number %}
+                        {{ state_attr('sensor.handy', 'name') }} wird angerufen.
+                      {% else %}
+                        {{ state_attr('sensor.handy', 'name') }} ({{ state_attr('sensor.handy', 'number') }}) wird angerufen.
+                      {% endif %}
+
+                    {% elif is_state("sensor.handy", "ringing") %}
+                      {% if name == number %}
+                        Eingehender Anruf von {{ state_attr('sensor.handy', 'name') }}.
+                      {% else %}
+                        Eingehender Anruf von {{ state_attr('sensor.handy', 'name') }} ({{ state_attr('sensor.handy', 'number') }}).
+                      {% endif %}                          
+                    {% endif %}                                 
+                  data:
+                    displaytime: 5000
+                    icon: "info"
+      - choose:
+          - conditions:
+              - condition: state
+                entity_id: media_player.kodi_sportzimmer
+                state: 'playing'         
+            sequence:
+              - service: input_boolean.turn_on
+                entity_id: input_boolean.kodi_sportzimmer_pausiert
+              - service: media_player.media_pause
+                entity_id: media_player.kodi_sportzimmer
+              - service: notify.kodi_sportzimmer
+                data:
+                  title: 'Handy'
+                  message: >-
+                    {% set name = state_attr('sensor.handy', 'name') %}
+                    {% set number = state_attr('sensor.handy', 'number') %}
+
+                    {% if is_state("sensor.handy", "dialing") %}
+                      {% if name == number %}
+                        {{ state_attr('sensor.handy', 'name') }} wird angerufen.
+                      {% else %}
+                        {{ state_attr('sensor.handy', 'name') }} ({{ state_attr('sensor.handy', 'number') }}) wird angerufen.
+                      {% endif %}
+
+                    {% elif is_state("sensor.handy", "ringing") %}
+                      {% if name == number %}
+                        Eingehender Anruf von {{ state_attr('sensor.handy', 'name') }}.
+                      {% else %}
+                        Eingehender Anruf von {{ state_attr('sensor.handy', 'name') }} ({{ state_attr('sensor.handy', 'number') }}).
+                      {% endif %}                          
+                    {% endif %}                                 
+                  data:
+                    displaytime: 5000
+                    icon: "info"
+      - choose:
+          - conditions:
+              - condition: state
+                entity_id: binary_sensor.firefox_wohnzimmer_aktiv
+                state: 'on'      
+            sequence:
+              - service: input_boolean.turn_on
+                entity_id: input_boolean.firefox_wohnzimmer_pausiert
               - service: switch.turn_on
-                entity_id: switch.computer_wiedergabe            
+                entity_id: switch.computer_wiedergabe
+      - choose:
+          - conditions:
+              - condition: state
+                entity_id: media_player.soundbar
+                state: 'on'                 
+              - condition: or
+                conditions:
+                  - condition: state
+                    entity_id: media_player.kodi_wohnzimmer
+                    state: 'off'          
+                  - condition: state
+                    entity_id: media_player.kodi_wohnzimmer
+                    state: 'idle'            
+              - condition: state
+                entity_id: binary_sensor.firefox_wohnzimmer_aktiv
+                state: 'off'     
+              - condition: state
+                entity_id: switch.wiedergabe_aktiv
+                state: 'off'                      
+            sequence:
+              - service: media_player.volume_mute
+                data:
+                  entity_id: media_player.soundbar
+                  is_volume_muted: true
+      - choose:
+          - conditions:
+              - condition: state
+                entity_id: switch.wiedergabe_aktiv
+                state: 'on'       
+              - condition: state
+                entity_id: input_boolean.tuer_musik_pausiert
+                state: 'off'
+              - condition: state
+                entity_id: input_boolean.home_office_musik_pausiert
+                state: 'off'                
+            sequence:
+              - service: input_boolean.turn_on
+                entity_id: input_boolean.telefon_musik_pausiert
+              - service: switch.turn_on
+                entity_id: switch.radios_lautlos
 
-  - alias: "Handy aktiv - Soundbar deaktivieren"
-    id: "handy_aktiv_soundbar_deaktivieren"
+  - alias: "Handy inaktiv - Wiedergabe starten"
+    id: "handy_inaktiv_wiedergabe_starten"
     trigger:
       - platform: state
         entity_id: sensor.handy
-        to: 'incoming'
-      - platform: state
-        entity_id: sensor.handy
-        to: 'outgoing'
-    condition:
-      - condition: state
-        entity_id: media_player.soundbar
-        state: 'on'
-      - condition: state
-        entity_id: input_boolean.nicht_stoeren
-        state: 'off'      
-      - condition: state
-        entity_id: binary_sensor.besuch
-        state: 'off'
-      - condition: state
-        entity_id: binary_sensor.youtube_wohnzimmer_aktiv
-        state: 'off'        
-      - condition: or
-        conditions:
-          - condition: state
-            entity_id: media_player.kodi_wohnzimmer
-            state: 'off'          
-          - condition: state
-            entity_id: media_player.kodi_wohnzimmer
-            state: 'idle'
-    action:
-      - service: media_player.volume_mute
-        data:
-          entity_id: media_player.soundbar
-          is_volume_muted: true
-
-  - alias: "Handy inaktiv - Soundbar aktivieren"
-    id: "handy_inaktiv_soundbar_aktivieren"
-    trigger:
-      - platform: state
-        entity_id: sensor.handy
+        from:                    
+          - 'dialing'
+          - 'ringing'          
+          - 'talking'
         to: 'idle'
     condition:
       - condition: state
-        entity_id: media_player.soundbar
-        state: 'on'
-      - condition: template
-        value_template: '{{ state_attr("media_player.soundbar", "is_volume_muted") == True }}'
-    action:
-      - service: media_player.volume_mute
-        data:
-          entity_id: media_player.soundbar
-          is_volume_muted: false      
-          
-  - alias: "Handy aktiv - Musik pausieren"
-    id: "handy_aktiv_musik_pausieren"
-    trigger:
-      - platform: state
-        entity_id: sensor.handy
-        to: 'incoming'
-      - platform: state
-        entity_id: sensor.handy
-        to: 'outgoing'
-    condition:
-      - condition: state
-        entity_id: switch.wiedergabe_aktiv
-        state: 'on'
-      - condition: state
-        entity_id: input_boolean.nicht_stoeren
-        state: 'off'
-      - condition: state
-        entity_id: binary_sensor.besuch
-        state: 'off'      
-      - condition: state
-        entity_id: input_boolean.telefon_musik_pausiert
-        state: 'off'        
-      - condition: state
-        entity_id: input_boolean.tuer_musik_pausiert
-        state: 'off'
-      - condition: state
-        entity_id: input_boolean.home_office_musik_pausiert
-        state: 'off'
-    action:
-      - service: input_boolean.turn_on
-        entity_id: input_boolean.telefon_musik_pausiert
-      - service: switch.turn_on
-        entity_id: switch.radios_lautlos
-
-  - alias: "Handy inaktiv - Musik wiedergeben"
-    id: "handy_inaktiv_musik_wiedergeben"
-    trigger:
-      - platform: state
-        entity_id: sensor.handy
-        to: 'idle'
-    condition:
-      - condition: state
-        entity_id: input_boolean.telefon_musik_pausiert
-        state: 'on'
+        entity_id: person.dennis
+        state: 'home'        
       - condition: state
         entity_id: sensor.telefon
         state: 'idle'
     action:
-      - service: input_boolean.turn_off
-        entity_id: input_boolean.telefon_musik_pausiert
-      - service: switch.turn_off
-        entity_id: switch.radios_lautlos
-
+      - choose:
+          - conditions:
+              - condition: state
+                entity_id: media_player.kodi_wohnzimmer
+                state: 'paused'
+              - condition: state
+                entity_id: input_boolean.kodi_wohnzimmer_pausiert
+                state: 'on'  
+            sequence:       
+              - service: input_boolean.turn_off
+                entity_id: input_boolean.kodi_wohnzimmer_pausiert
+              - service: media_player.media_play
+                entity_id: media_player.kodi_wohnzimmer
+              - service: notify.kodi_wohnzimmer
+                data:
+                  title: 'Handy'
+                  message: 'Anruf beendet'
+                  data:
+                    displaytime: 2000
+                    icon: "info" 
+      - choose:
+          - conditions:
+              - condition: state
+                entity_id: media_player.kodi_badezimmer
+                state: 'paused'
+              - condition: state
+                entity_id: input_boolean.kodi_badezimmer_pausiert
+                state: 'on'
+            sequence:       
+              - service: input_boolean.turn_off
+                entity_id: input_boolean.kodi_badezimmer_pausiert
+              - service: media_player.media_play
+                entity_id: media_player.kodi_badezimmer
+              - service: notify.kodi_badezimmer
+                data:
+                  title: 'Handy'
+                  message: 'Anruf beendet'
+                  data:
+                    displaytime: 2000
+                    icon: "info"
+      - choose:
+          - conditions:
+              - condition: state
+                entity_id: media_player.kodi_sportzimmer
+                state: 'paused'
+              - condition: state
+                entity_id: input_boolean.kodi_sportzimmer_pausiert
+                state: 'on'
+            sequence:       
+              - service: input_boolean.turn_off
+                entity_id: input_boolean.kodi_sportzimmer_pausiert
+              - service: media_player.media_play
+                entity_id: media_player.kodi_sportzimmer
+              - service: notify.kodi_sportzimmer
+                data:
+                  title: 'Handy'
+                  message: 'Anruf beendet'
+                  data:
+                    displaytime: 2000
+                    icon: "info"                 
+      - choose:
+          - conditions:
+              - condition: state
+                entity_id: input_boolean.firefox_wohnzimmer_pausiert
+                state: 'on'            
+            sequence:       
+              - service: input_boolean.turn_off
+                entity_id: input_boolean.firefox_wohnzimmer_pausiert      
+              - choose:
+                  - conditions:
+                      - condition: state
+                        entity_id: binary_sensor.firefox_wohnzimmer_aktiv
+                        state: 'on'
+                    sequence:
+                      - service: switch.turn_on
+                        entity_id: switch.computer_wiedergabe      
+      - choose:
+          - conditions:
+              - condition: state
+                entity_id: media_player.soundbar
+                state: 'on'
+              - condition: state
+                entity_id: media_player.soundbar
+                attribute: is_volume_muted
+                state: True                    
+#              - condition: template
+#                value_template: '{{ state_attr("media_player.soundbar", "is_volume_muted") == True }}'
+            sequence:       
+              - service: media_player.volume_mute
+                data:
+                  entity_id: media_player.soundbar
+                  is_volume_muted: false    
+      - choose:
+          - conditions:
+              - condition: state
+                entity_id: input_boolean.telefon_musik_pausiert
+                state: 'on'
+              - condition: state
+                entity_id: sensor.telefon
+                state: 'idle'
+            sequence:       
+              - service: input_boolean.turn_off
+                entity_id: input_boolean.telefon_musik_pausiert
+              - service: switch.turn_off
+                entity_id: switch.radios_lautlos
+    
   - alias: "Handy aktiv - Benachrichtigung"
     id: "handy_aktiv_benachrichtigung"
     trigger:
       - platform: state
         entity_id: sensor.handy
-        to: 'incoming'
+        to: 'ringing'
     condition:
       - condition: state
         entity_id: input_boolean.nicht_stoeren

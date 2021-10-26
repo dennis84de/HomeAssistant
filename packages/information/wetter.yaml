@@ -312,9 +312,9 @@ sensor:
           {%- for i in range(365) %}
             {%- set day = (today + timedelta(days=i)).astimezone() %}
             {%- if ns.previous - day.hour == -1 %}
-              {%- set ns.spring = today + timedelta(days=i) %}
+              {%- set ns.spring = today + timedelta(days=i-1) %}
             {%- elif ns.previous - day.hour == 1 %}
-              {%- set ns.fall = today + timedelta(days=i) %}
+              {%- set ns.fall = (today + timedelta(days=i-1)).replace(hour=3) %}
             {%- endif %}
             {%- set ns.previous = day.hour %}
           {%- endfor %}
@@ -332,9 +332,9 @@ sensor:
             {%- for i in range(365) %}
               {%- set day = (today + timedelta(days=i)).astimezone() %}
               {%- if ns.previous - day.hour == -1 %}
-                {%- set ns.spring = today + timedelta(days=i) %}
+                {%- set ns.spring = today + timedelta(days=i-1) %}
               {%- elif ns.previous - day.hour == 1 %}
-                {%- set ns.fall = today + timedelta(days=i) %}
+                {%- set ns.fall = (today + timedelta(days=i-1)).replace(hour=3) %}
               {%- endif %}
               {%- set ns.previous = day.hour %}
             {%- endfor %}

@@ -20,7 +20,7 @@ binary_sensor:
       heizung_kueche_batterie:
         friendly_name: Küche
         device_class: battery
-        value_template: "{{ state_attr('climate.kuche', 'battery_low') }}"
+        value_template: "{{ state_attr('climate.kueche', 'battery_low') }}"
       heizung_wohnzimmer_batterie:
         friendly_name: Wohnzimmer
         device_class: battery
@@ -104,12 +104,12 @@ automation:
         for:
           seconds: 30
     condition:
-      - "{{ is_state('climate.kuche', 'heat') }}"
-      - "{{ state_attr('climate.kuche', 'preset_mode') == 'comfort' }}"
+      - "{{ is_state('climate.kueche', 'heat') }}"
+      - "{{ state_attr('climate.kueche', 'preset_mode') == 'comfort' }}"
     action:
       - service: climate.set_preset_mode
         data:
-          entity_id: climate.kuche
+          entity_id: climate.kueche
           preset_mode: 'eco'
       - service: input_boolean.turn_on
         entity_id: input_boolean.heizung_ausgeschaltet_kueche
@@ -127,7 +127,7 @@ automation:
     action:
       - service: climate.set_preset_mode
         data:
-          entity_id: climate.kuche
+          entity_id: climate.kueche
           preset_mode: 'comfort'
       - service: input_boolean.turn_off
         entity_id: input_boolean.heizung_ausgeschaltet_kueche
@@ -136,7 +136,7 @@ automation:
     id: "heizung_kueche_heizung_eingeschaltet"
     trigger:
       - platform: state
-        entity_id: climate.kuche
+        entity_id: climate.kueche
         to: 'heat'
       - platform: template
         value_template: '{{ state_attr("climate.wohnzimmer", "preset_mode") == "comfort" }}'        
@@ -147,7 +147,7 @@ automation:
     action:
       - service: climate.set_preset_mode
         data:
-          entity_id: climate.kuche
+          entity_id: climate.kueche
           preset_mode: 'eco'
       - service: input_boolean.turn_on
         entity_id: input_boolean.heizung_ausgeschaltet_kueche

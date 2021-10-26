@@ -6,8 +6,8 @@ entity_controller:
     - entity_controller.bewegung_balkon
     - entity_controller.bewegung_flur_hinten
     - entity_controller.bewegung_flur_vorne
-    - entity_controller.bewegung_kuchenregal
-    - entity_controller.bewegung_kuchenschrank
+    - entity_controller.bewegung_kuechenregal
+    - entity_controller.bewegung_kuechenschrank
     - entity_controller.bewegung_schlafzimmer_bett
     - entity_controller.bewegung_schlafzimmer_kleiderschrank
     - entity_controller.bewegung_sportzimmer

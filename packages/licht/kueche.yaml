@@ -2,12 +2,12 @@ light:
   - platform: flux_led
     devices:
       192.168.2.46:
-        name: Küche Regal
+        name: Kueche Regal
         mode: "rgb"
 
   - platform: switch
     name: Küche Schrank
-    entity_id: switch.kuchenschrank
+    entity_id: switch.kuechenschrank
         
 input_boolean:
   bewegungsmelder_kueche_deaktiviert:
@@ -30,9 +30,9 @@ binary_sensor:
           
 entity_controller:      
   bewegung_kuechenregal:
-    friendly_name: "Bewegung Küchenregal"
+    friendly_name: "Bewegung Kuechenregal"
     sensor: binary_sensor.bewegungsmelder_kueche
-    entity: light.kuche_regal
+    entity: light.kueche_regal
     delay: 120     
     behaviours:
       on_enter_overridden: 'off'
@@ -44,9 +44,9 @@ entity_controller:
       - input_boolean.bewegungsmelder_kueche_deaktiviert
 
   bewegung_kuechenschrank:
-    friendly_name: "Bewegung Küchenschrank"
+    friendly_name: "Bewegung Kuechenschrank"
     sensor: binary_sensor.bewegungsmelder_kueche
-    entity: light.kuche_schrank
+    entity: light.kueche_schrank
     delay: 120
     behaviours:
       on_enter_overridden: 'off'
@@ -56,3 +56,12 @@ entity_controller:
       - binary_sensor.bewegungsmelder_inaktiv_unterwegs
       - binary_sensor.bewegungsmelder_inaktiv_staubsauger
       - input_boolean.bewegungsmelder_kueche_deaktiviert          
+      
+homeassistant:
+  customize:
+    light.kueche_regal:      
+      friendly_name: Küche Regal
+    entity_controller.bewegung_kuechenregal:      
+      friendly_name: Bewegung Küchenregal
+    entity_controller.bewegung_kuechenschrank:      
+      friendly_name: Bewegunge Küchenschrank      

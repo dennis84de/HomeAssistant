@@ -15,7 +15,7 @@ sensor:
           {% set min_battery_level = states('input_number.batteriestand_warnlevel') | int -%}
           {% set ns = namespace(found=false) -%}
           
-          {% for x in entities if x.state|int < min_battery_level %}
+          {% for x in entities if x.state|int <= min_battery_level %}
             {% set ns.found = true -%}
           {% endfor %}  
         
@@ -26,7 +26,7 @@ sensor:
           {% set min_battery_level = states('input_number.batteriestand_warnlevel') | int -%}
           {% set ns = namespace(found=false) -%}
           
-          {% for x in entities if x.state|int < min_battery_level %}
+          {% for x in entities if x.state|int <= min_battery_level %}
             {% set ns.found = ns.found + 1 -%}
           {% endfor %}  
           

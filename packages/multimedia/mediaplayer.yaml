@@ -34,7 +34,7 @@ automation:
         entity_id: binary_sensor.schlafen_aktiv
         state: 'off'     
       - condition: state
-        entity_id: binary_sensor.youtube_wohnzimmer_aktiv
+        entity_id: binary_sensor.firefox_wohnzimmer_aktiv
         state: 'off'     
       - condition: state
         entity_id: calendar.formel1_rennen

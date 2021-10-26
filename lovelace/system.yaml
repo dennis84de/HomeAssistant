@@ -16,7 +16,7 @@ popup_cards:
           name: Balkon
         - entity: switch.flur_radio        
           name: Flur
-        - entity: switch.kuche_radio        
+        - entity: switch.kueche_radio        
           name: Küche
         - entity: switch.badezimmer_radio        
           name: Badezimmer          

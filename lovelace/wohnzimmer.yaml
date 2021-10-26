@@ -56,10 +56,8 @@ cards:
       - entity: switch.computer
       - entity: switch.watchtv_wohnzimmer
       - entity: input_boolean.musik_ausschalten
-      - entity: input_boolean.kodi_wohnzimmer_pausieren
-        name: Wiedergabe pausieren
-      - entity: input_boolean.youtube_wohnzimmer_aktiv
-        name: Youtube
+      - entity: input_boolean.firefox_wohnzimmer_aktiv
+        name: Firefox
       - entity: cover.kodi_untertitel
       - entity: cover.fernseher_sender
         name: Sender       

@@ -110,8 +110,9 @@ script:
         entity_id: input_datetime.schlafen_uhrzeit
         data:
           datetime: "{{ now().strftime('%Y-%m-%d %H:%M:%S') }}"
-      - service: switch.turn_off
-        entity_id: switch.wohnzimmer_radio, switch.balkon_radio, switch.flur_radio, switch.kuche_radio, switch.schlafzimmer_radio, switch.arbeitszimmer_radio
+      - service: script.radios_ausschalten
+        data:
+          badezimmerEingeschaltetLassen: True
       - service: switch.turn_off
         entity_id: switch.watchtv_wohnzimmer, switch.monitor, switch.pc
       - service: light.turn_off
