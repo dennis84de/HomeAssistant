@@ -124,7 +124,8 @@ automation:
   - alias: "Schlafzimmer - Kodi Wiedergabe"
     id: "schlafzimmer_kodi_wiedergabe"
     trigger:
-      - platform: event
+      - id: schalter_schlafzimmer
+        platform: event
         event_type: zha_event
         event_data:
           device_ieee: 00:15:8d:00:02:13:45:68
@@ -176,7 +177,8 @@ automation:
   - alias: "Schlafzimmer - Netflix Wiedergabe"
     id: "schlafzimmer_netflix_wiedergabe"
     trigger:
-      - platform: event
+      - id: schalter_schlafzimmer
+        platform: event
         event_type: zha_event
         event_data:
           device_ieee: 00:15:8d:00:02:13:45:68
@@ -226,7 +228,8 @@ automation:
   - alias: "Schlafzimmer - Fernseher ausschalten"
     id: "schlafzimmer_fernseher_ausschalten"
     trigger:
-      - platform: event
+      - id: schalter_schlafzimmer
+        platform: event
         event_type: zha_event
         event_data:
           device_ieee: 00:15:8d:00:02:13:45:68

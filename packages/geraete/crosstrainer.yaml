@@ -80,7 +80,8 @@ automation:
   - alias: "Training - Gestartet"
     id: "training_gestartet"
     trigger:
-      - platform: event
+      - id: schalter_flur
+        platform: event
         event_type: zha_event
         event_data:
           device_ieee: 00:15:8d:00:01:c3:08:67
@@ -100,7 +101,8 @@ automation:
   - alias: "Training - Beendet"
     id: "training_beendet"
     trigger:
-      - platform: event
+      - id: schalter_flur
+        platform: event
         event_type: zha_event
         event_data:
           device_ieee: 00:15:8d:00:01:c3:08:67

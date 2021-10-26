@@ -29,7 +29,8 @@ automation:
   - alias: 'Licht Balkon'
     id: "licht_balkon"
     trigger:
-      - platform: event
+      - id: schalter_balkon
+        platform: event
         event_type: zha_event
         event_data:
           device_ieee: 00:15:8d:00:02:c7:62:ce

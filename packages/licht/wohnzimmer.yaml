@@ -108,7 +108,8 @@ automation:
   - alias: "Wohnzimmer - Licht Couch"
     id: "wohnzimmer_licht_couch"
     trigger:
-      - platform: event
+      - id: cube_wohnzimmer
+        platform: event
         event_type: zha_event
         event_data:
           device_ieee: 00:15:8d:00:01:10:0d:7a

@@ -56,7 +56,8 @@ automation:
   - alias: "Schlafzimmer - Licht ausschalten"
     id: "schlafzimmer_licht_ausschalten"  
     trigger:
-      - platform: event
+      - id: schalter_schlafzimmer
+        platform: event
         event_type: zha_event
         event_data:
           device_ieee: 00:15:8d:00:02:13:45:68

@@ -2,12 +2,14 @@ automation:
   - alias: "BVB - Torhymne"
     id: "bvb_torhymne"
     trigger:
-      - platform: event
+      - id: cube_wohnzimmer
+        platform: event
         event_type: zha_event
         event_data:
           device_ieee: 00:15:8d:00:01:10:0d:7a
           command: drop    
-      - platform: event
+      - id: schalter_balkon
+        platform: event
         event_type: zha_event
         event_data:
           device_ieee: 00:15:8d:00:02:c7:62:ce
@@ -30,7 +32,8 @@ automation:
   - alias: "BVB - Musik starten"
     id: "bvb_musik_starten"
     trigger:
-      - platform: event
+      - id: cube_wohnzimmer
+        platform: event
         event_type: zha_event
         event_data:
           device_ieee: 00:15:8d:00:01:10:0d:7a
@@ -56,7 +59,8 @@ automation:
   - alias: "BVB - Musik stoppen"
     id: "bvb_musik_stoppen"
     trigger:
-      - platform: event
+      - id: cube_wohnzimmer
+        platform: event
         event_type: zha_event
         event_data:
           device_ieee: 00:15:8d:00:01:10:0d:7a

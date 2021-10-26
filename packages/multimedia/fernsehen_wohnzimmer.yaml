@@ -183,14 +183,16 @@ automation:
   - alias: "Kodi Wohnzimmer - Wiedergabe"
     id: "kodi_wohnzimmer_wiedergabe"    
     trigger:
-      - platform: event
+      - id: schalter_wohnzimmer
+        platform: event
         event_type: zha_event
         event_data:
           device_ieee: 00:15:8d:00:02:c8:c4:8b
           command: click
           args:
             click_type: single   
-      - platform: event
+      - id: cube_wohnzimmer
+        platform: event
         event_type: zha_event
         event_data:
           device_ieee: 00:15:8d:00:01:10:0d:7a
@@ -242,24 +244,26 @@ automation:
   - alias: "Kodi Wohnzimmer - Pausieren"
     id: "kodi_wohnzimmer_pausieren"
     trigger:
-      - platform: state
+      - id: bewegungsmelder_flur_vorne
+        platform: state
         entity_id: binary_sensor.bewegungsmelder_flur_vorne
         to: 'on'
-      - platform: state
+      - id: bewegungsmelder_flur_hinten
+        platform: state
         entity_id: binary_sensor.bewegungsmelder_flur_hinten
         to: 'on'
-      - platform: state
+      - id: bewegungsmelder_balkon
+        platform: state
         entity_id: binary_sensor.bewegungsmelder_balkon
-        to: 'on'    
-        id: bewegungsmelder_balkon
-      - platform: event
+        to: 'on'            
+      - id: schalter_balkon
+        platform: event
         event_type: zha_event
         event_data:
           device_ieee: 00:15:8d:00:02:c7:62:ce
           command: click
           args:
-            click_type: double    
-        id: schalter_balkon
+            click_type: double            
     condition:
       - condition: state
         entity_id: media_player.kodi_wohnzimmer
@@ -287,7 +291,8 @@ automation:
   - alias: "Kodi Wohnzimmer - Nächster Titel"
     id: "kodi_wohnzimmer_naechster_titel"
     trigger:
-      - platform: event
+      - id: cube_wohnzimmer
+        platform: event
         event_type: zha_event
         event_data:
           device_ieee: 00:15:8d:00:01:10:0d:7a
@@ -301,7 +306,8 @@ automation:
   - alias: "Kodi Wohnzimmer - Untertitel"
     id: "kodi_wohnzimmer_untertitel"    
     trigger:
-      - platform: event
+      - id: cube_wohnzimmer
+        platform: event
         event_type: zha_event
         event_data:
           device_ieee: 00:15:8d:00:01:10:0d:7a
