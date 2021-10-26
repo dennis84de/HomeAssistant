@@ -7,14 +7,7 @@ input_select:
       - Aktiv
     icon: mdi:dishwasher
     
-sensor:
-  - platform: mqtt
-    name: "Spülmaschine Verbrauch"
-    unit_of_measurement: "W"
-    icon: "mdi:power-cycle"
-    state_topic: "tele/spuelmaschine/SENSOR" 
-    value_template: "{{ value_json['ENERGY']['Power'] }}"
-    
+sensor:   
   - platform: template
     sensors:
       spuelmaschine_status:
@@ -27,7 +20,7 @@ automation:
     id: "spuelmaschine_ausgeschaltet"
     trigger:
       - platform: state
-        entity_id: switch.spulmaschine
+        entity_id: switch.spuelmaschine
         from: 'on'
         to: 'off'
     action:
@@ -39,18 +32,21 @@ automation:
   - alias: 'Spülmaschine - Stillstand'
     id: "spuelmaschine_stillstand"
     trigger:
-      - platform: numeric_state
-        entity_id: sensor.spulmaschine_verbrauch
+      - id: spuelmaschine_verbrauch
+        platform: numeric_state
+        entity_id: sensor.spuelmaschine_verbrauch
         below: 2
         for: '00:00:30'
-      - platform: state
-        entity_id: switch.spulmaschine
+      - id: spuelmaschine_schalter
+        platform: state
+        entity_id: switch.spuelmaschine
         from: 'off'
         to: 'on'
     condition:
       - condition: state
-        entity_id: switch.spulmaschine
+        entity_id: switch.spuelmaschine
         state: 'on'
+      - "{{ trigger.id == 'spuelmaschine_schalter' or not is_state('input_select.status_spuelmaschine', 'Stillstand') }}"
     action:
       - service: input_select.select_option
         data:
@@ -61,12 +57,12 @@ automation:
     id: "spuelmaschine_aktiv"
     trigger:
       - platform: numeric_state
-        entity_id: sensor.spulmaschine_verbrauch
+        entity_id: sensor.spuelmaschine_verbrauch
         above: 20
         for: '00:01:00'
     condition:
       - condition: state
-        entity_id: switch.spulmaschine
+        entity_id: switch.spuelmaschine
         state: 'on'
       - condition: state
         entity_id: input_select.status_spuelmaschine
