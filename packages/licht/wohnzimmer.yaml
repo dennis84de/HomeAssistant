@@ -122,7 +122,7 @@ automation:
       - "{{ is_state('media_player.squeezebox', 'playing') == False }}"
     action:
       - service: light.toggle
-        entity_id: light.wohnzimmer_couch, light.wohnzimmer_strahler
+        entity_id: light.wohnzimmer_schrank
 
 homeassistant:
   customize:

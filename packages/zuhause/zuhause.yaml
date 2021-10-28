@@ -56,7 +56,7 @@ script:
     alias: "Zu Hause - abends"
     sequence:
       - service: light.turn_on
-        entity_id: light.wohnzimmer_couch, light.wohnzimmer_strahler
+        entity_id: light.wohnzimmer_schrank
       - service: switch.turn_on
         entity_id: switch.computer, switch.watchtv_wohnzimmer     
       - service: switch.turn_on

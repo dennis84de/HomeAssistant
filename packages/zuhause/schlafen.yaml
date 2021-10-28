@@ -116,7 +116,15 @@ script:
       - service: switch.turn_off
         entity_id: switch.watchtv_wohnzimmer, switch.monitor, switch.pc
       - service: light.turn_off
-        entity_id: light.wohnzimmer_strahler, light.balkon_licht
+        entity_id: light.wohnzimmer_strahler, light.wohnzimmer_schrank, light.balkon_licht
+      - choose:
+          - conditions:
+              - condition: state
+                entity_id: light.wohnzimmer_couch
+                state: 'off'
+            sequence:
+              - service: light.turn_on
+                entity_id: light.wohnzimmer_couch  
       - service: input_select.select_option
         data:
           entity_id: input_select.computer_ausschalten  
