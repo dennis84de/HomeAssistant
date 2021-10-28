@@ -148,5 +148,3 @@ homeassistant:
       icon: mdi:cellphone
     device_tracker.tplink*:
       icon: mdi:power-socket-eu
-    device_tracker.edimax*:
-      icon: mdi:power-socket-eu      

@@ -103,9 +103,7 @@ cards:
       - entity: device_tracker.tplinksportzimmerfernseher
         name: Sportzimmer Fernseher        
       - entity: device_tracker.tplinkschlafzimmerfernseher
-        name: Schlafzimmer Fernseher
-      - entity: device_tracker.tplinkkleiderschrank  
-        name: Kleiderschrank        
+        name: Schlafzimmer Fernseher   
       - entity: device_tracker.tplinkwaschmaschine
         name: Waschmaschine
       - entity: device_tracker.tplinktrockner      
@@ -206,13 +204,6 @@ cards:
     entities:
       - entity: device_tracker.shellysportzimmerladegeraet
         name: Sportzimmer Ladegerät
-              
-  - type: entities
-    title: Edimax
-    show_header_toggle: false
-    entities:      
-      - entity: device_tracker.edimaxcrosstrainer
-        name: Crosstrainer
         
   - type: entities
     title: Broadlink

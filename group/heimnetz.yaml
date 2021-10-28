@@ -5,6 +5,7 @@ heimnetz:
     - device_tracker.soundbar   
     - device_tracker.kamerawohnzimmer
     - device_tracker.xiaomivacuum
+    - device_tracker.squeezebox
     - device_tracker.tplinkwohnzimmermonitor        
     - device_tracker.tplinkwohnzimmerradio            
     - device_tracker.tplinkschlafzimmerradio      
@@ -13,9 +14,7 @@ heimnetz:
     - device_tracker.tplinkkuecheradio         
     - device_tracker.tplinkkellerradio      
     - device_tracker.tplinkschlafzimmerfernseher      
-    - device_tracker.tplinksportzimmerfernseher      
-#    - device_tracker.tplinkwaschmaschine      
-#    - device_tracker.tplinktrockner            
+    - device_tracker.tplinksportzimmerfernseher           
     - device_tracker.tasmotawohnzimmerstrahler         
     - device_tracker.tasmotawohnzimmercouch
     - device_tracker.tasmotaarbeitszimmerlampe      
@@ -24,8 +23,7 @@ heimnetz:
     - device_tracker.tasmotaarbeitszimmermonitore          
     - device_tracker.tasmotasportzimmerregal      
     - device_tracker.tasmotabalkonradio      
-    - device_tracker.tasmotakuechenschrank      
-    - device_tracker.tasmotakleiderschrank      
+    - device_tracker.tasmotakuechenschrank  
     - device_tracker.tasmotaspuelmaschine      
     - device_tracker.echoflur
     - device_tracker.echokueche
@@ -40,5 +38,4 @@ heimnetz:
     - device_tracker.magichomearbeitszimmer
     - device_tracker.magichomebalkon          
     - device_tracker.shellysportzimmerladegeraet
-    - device_tracker.edimaxcrosstrainer
     - device_tracker.broadlinkschlafzimmer 
