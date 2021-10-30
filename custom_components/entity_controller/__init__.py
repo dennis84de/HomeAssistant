@@ -18,7 +18,7 @@ along with Entity Controller.  If not, see <https://www.gnu.org/licenses/>.
 """
 Entity controller component for Home Assistant.
 Maintainer:       Daniel Mason
-Version:          v9.2.9
+Version:          v9.2.10
 Project Page:     https://danielbkr.net/projects/entity-controller/
 Documentation:    https://github.com/danobot/entity-controller
 """
@@ -55,7 +55,7 @@ from .const import (
     CONF_TRANSITION_BEHAVIOUR_ON,
     CONF_TRANSITION_BEHAVIOUR_OFF,
     CONF_TRANSITION_BEHAVIOUR_IGNORE,
-    
+
     # Behaviours
     CONF_BEHAVIOURS,
     CONF_ON_ENTER_IDLE,
@@ -105,7 +105,7 @@ from .entity_services import (
 
 
 
-VERSION = '9.2.9'
+VERSION = '9.2.10'
 
 
 _LOGGER = logging.getLogger(__name__)
@@ -151,10 +151,10 @@ ENTITY_SCHEMA = vol.Schema(
         vol.Optional(CONF_IGNORED_EVENT_SOURCES, default=[]): cv.ensure_list,
         vol.Optional(CONF_SERVICE_DATA, default=None): vol.Coerce(
             dict
-        ),  
+        ),
         vol.Optional(CONF_BEHAVIOURS, default=None): vol.Coerce(
             dict
-        ),  
+        ),
         # Default must be none because we differentiate between set and unset
         vol.Optional(CONF_SERVICE_DATA_OFF, default=None): vol.Coerce(dict),
     },
@@ -604,7 +604,7 @@ class Model:
         ):
             self.set_context(new.context)
             self.enable()
-        
+
     @callback
     def state_entity_state_change(self, entity, old, new):
         """ State change callback for state entities. This can be called with either a state change or an attribute change. """
@@ -1098,8 +1098,8 @@ class Model:
                 event.async_call_later(self.hass, 1, self.constrain_entity)
 
         self.log_config()
-    
-   
+
+
 
 
     def config_override_entities(self, config):
@@ -1208,18 +1208,38 @@ class Model:
     def handleTriggerOnDeactivateEntities(self):
         """ Entities that are defined outside of control entities via the `triggerOnDetivate` key. """
         if len(self.triggerOnDeactivate) > 0:
-            self.log.info("handleTriggerOnDeactivateEntities :: Triggering Deactivation entities (no params passed along)")
+            self.log.info("handleTriggerOnDeactivateEntities :: Triggering Deactivation entities (Yes! params passed along)")
             for e in self.triggerOnDeactivate:
                 self.log.debug("Triggering with turn_on call: %s", e)
-                self.call_service(e, "turn_on")
+                if self.lightParams.get(CONF_SERVICE_DATA_OFF) is not None:
+                    self.log.debug(
+                        "Triggering with turn_on call %s with service parameters %s",
+                        e,
+                        self.lightParams.get(CONF_SERVICE_DATA_OFF),
+                    )
+                    self.call_service(e, "turn_on", **self.lightParams.get(CONF_SERVICE_DATA_OFF))
+                else:
+                    self.log.debug("Triggering with turn_on call %s (no parameters provided to pass to service call)", e)
+                    self.call_service(e, "turn_on")
 
     def handleTriggerOnActivateEntities(self):
         """ Entities that are defined outside of control entities via the `triggerOnActivate` key. """
         if len(self.triggerOnActivate) > 0:
-            self.log.info("handleTriggerOnActivateEntities :: Triggering Activation entities (no params passed along)")
+            self.log.info("handleTriggerOnActivateEntities :: Triggering Activation entities (Yes! params passed along)")
             for e in self.triggerOnActivate:
-                self.log.debug("Triggering with turn_on call: %s", e)
-                self.call_service(e, "turn_on")
+                # if light params are defined
+                if self.lightParams.get(CONF_SERVICE_DATA) is not None:
+                    self.log.debug(
+                        "Triggering with turn_on call %s with service parameters %s",
+                        e,
+                        self.lightParams.get(CONF_SERVICE_DATA),
+                    )
+                    self.call_service(
+                        e, "turn_on", **self.lightParams.get(CONF_SERVICE_DATA)
+                    )
+                else:
+                    self.log.debug("Turning on %s (no parameters provided to pass to service call)", e)
+                    self.call_service(e, "turn_on")
 
     def turn_on_control_entities(self):
         self.handleTriggerOnActivateEntities()
@@ -1688,7 +1708,7 @@ class Model:
             return self.transition_behaviours[key]
         else:
             return None
-            
+
     def do_transition_behaviour(self, behaviour):
         """ Wrapper method for acting on transition behaviours such as at time of end constraint of state transitions from override state. """
         self.log.debug("%10s | Performing Transition Behaviour" % (behaviour))

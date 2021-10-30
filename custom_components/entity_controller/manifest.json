@@ -15,10 +15,9 @@
     "cover",
     "fan",
     "media_player",
-    "input_boolean",
-    "zigate"
+    "input_boolean"
   ],
   "codeowners": ["@danobot"],
   "homeassistant": "0.117.0",
-  "version": "9.2.5"
+  "version": "9.2.10"
 }
