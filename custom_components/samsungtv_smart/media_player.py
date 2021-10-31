@@ -45,6 +45,7 @@ from homeassistant.components.media_player.const import (
 )
 
 from homeassistant.const import (
+    ATTR_SW_VERSION,
     CONF_API_KEY,
     CONF_BROADCAST_ADDRESS,
     CONF_DEVICE_ID,
@@ -220,6 +221,7 @@ class SamsungTVDevice(MediaPlayerEntity):
         self._attr_device_info = DeviceInfo(
             identifiers={(DOMAIN, self._attr_unique_id)},
             name=self._attr_name,
+            manufacturer="Samsung Electronics",
         )
         self._attr_device_info.update(
             self._get_add_dev_info(
@@ -319,13 +321,13 @@ class SamsungTVDevice(MediaPlayerEntity):
 
     @staticmethod
     def _get_add_dev_info(dev_model, dev_name, dev_os, dev_mac):
-        dev_info = DeviceInfo(manufacturer="Samsung Electronics")
         model = dev_model or "Samsung TV"
         if dev_name:
             model = f"{model} ({dev_name})"
-        dev_info["model"] = model
+
+        dev_info = DeviceInfo(model=model)
         if dev_os:
-            dev_info["sw_version"] = dev_os
+            dev_info[ATTR_SW_VERSION] = dev_os
         if dev_mac:
             dev_info["connections"] = {(CONNECTION_NETWORK_MAC, dev_mac)}
 
