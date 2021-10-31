@@ -66,8 +66,6 @@ switch:
           - service: script.radios_einschalten            
         turn_off:
           - service: script.radios_ausschalten
-            data: 
-              badezimmerEingeschaltetLassen: True
               
       radios_lautlos:
         friendly_name: Radios lautlos

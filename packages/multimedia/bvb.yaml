@@ -1,3 +1,7 @@
+input_boolean:
+  bvb_tor_aktiv:
+    name: BVB Tor aktiv     
+    
 automation:
   - alias: "BVB - Torhymne"
     id: "bvb_torhymne"
@@ -28,6 +32,49 @@ automation:
           entity_id: media_player.squeezebox
           media_content_id: http://192.168.2.75:8123/local/sounds/torhymne.mp3
           media_content_type: music
+      - service: scene.create
+        data:
+          scene_id: bvb_tor
+          entities:
+            light.wohnzimmer_schrank:
+              state: "{{ states('light.wohnzimmer_schrank') }}"     
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.bvb_tor_aktiv              
+      - alias: 'BVB Tor - Licht'
+        repeat:
+          while:                  
+            - condition: state
+              entity_id: media_player.squeezebox
+              state: 'playing'   
+            - condition: state
+              entity_id: input_boolean.bvb_tor_aktiv
+              state: 'on'                      
+          sequence:
+            - service: light.toggle
+              entity_id: light.wohnzimmer_schrank
+            - delay:
+                seconds: 0.8
+
+  - alias: "BVB - Torhymne Ende"
+    id: "bvb_torhymne_ende"
+    trigger:
+      - platform: state
+        entity_id: media_player.squeezebox
+        to: 'idle'          
+      - platform: state
+        entity_id: input_boolean.bvb_tor_aktiv
+        to: 'on'    
+        for:
+          seconds: 33
+    condition:
+      - condition: state
+        entity_id: input_boolean.bvb_tor_aktiv
+        state: 'on'              
+    action:
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.bvb_tor_aktiv
+      - service: scene.turn_on
+        entity_id: scene.bvb_tor
 
   - alias: "BVB - Musik starten"
     id: "bvb_musik_starten"
@@ -76,7 +123,10 @@ automation:
         state: 'playing'
     action:
       - service: media_player.media_pause
-        entity_id: media_player.squeezebox                  
+        entity_id: media_player.squeezebox      
+      - service: media_player.clear_playlist
+        data:
+          entity_id: media_player.squeezebox        
                     
   - alias: "Radio Badezimmer - BVB"
     id: "radio_badezimmer_bvb"

@@ -68,7 +68,7 @@ cards:
     entities:      
       - type: custom:mini-media-player
         entity: media_player.fernseher_wohnzimmer
-        name: Fernseher
+        name: Fernseher        
         hide:
           progress: true
           controls: true
@@ -99,9 +99,9 @@ cards:
     title: Thermometer
     show_header_toggle: false
     entities:
-      - entity: sensor.wohnzimmer_ble_temperatur
+      - entity: sensor.wohnzimmer_temperatur
         name: Temperatur
-      - entity: sensor.wohnzimmer_ble_luftfeuchtigkeit       
+      - entity: sensor.wohnzimmer_luftfeuchtigkeit       
         name: Luftfeuchtigkeit
 
   - type: glance

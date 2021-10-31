@@ -369,9 +369,7 @@ automation:
               - condition: state
                 entity_id: media_player.soundbar
                 attribute: is_volume_muted
-                state: True                    
-#              - condition: template
-#                value_template: '{{ state_attr("media_player.soundbar", "is_volume_muted") == True }}'
+                state: True
             sequence:       
               - service: media_player.volume_mute
                 data:

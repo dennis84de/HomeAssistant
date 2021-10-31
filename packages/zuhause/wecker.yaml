@@ -37,6 +37,9 @@ input_boolean:
   wecker_zeit_geaendert:
     name: Zeit geändert     
     
+  aufstehen_begruessung:
+    name: Aufstehen Begrüßung     
+    
 binary_sensor:
   - platform: template
     sensors:
@@ -110,6 +113,94 @@ sensor:
             {{ ['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'][weekday-1] }}, {{ as_timestamp(alarmSensor, None) | timestamp_custom("%d.%m.%Y", True) | string }}          
           {% endif %}
 
+script:
+  aufstehen_begruessung:
+    alias: "Aufstehen - Begrüßung"
+    sequence:      
+      - service: !secret tts_service
+        data:          
+          echo: badezimmer
+          message: >-
+            {%- set word_for_and = 'und' %}
+            {%- set up_time = as_timestamp(now(), None) - state_attr('input_datetime.schlafen_uhrzeit', 'timestamp') | int %}
+
+            {%- macro phrase(name, plural_name, divisor, mod=None) %}
+              {%- set value = ((up_time // divisor) % (mod if mod else divisor)) | int %}
+              {%- set name = plural_name if value > 1 else name %}
+              {{- '{} {}'.format(value, name) if value | int > 0 else '' }}
+            {%- endmacro %}
+
+            {%- set values = [ 
+                       phrase('Woche', 'Wochen', 60*60*24*7), 
+                       phrase('Tag', 'Tage', 60*60*24, 7),
+                       phrase('Stunde', 'Stunden', 60*60, 24),
+                       phrase('Minute', 'Minuten', 60)
+                   ] | select('!=','') | list %}
+
+            {% set schlafenSatz = values[:-1] | join(', ') ~ ' ' ~ word_for_and ~ ' ' ~ values[-1] if values | length > 1 else values | first %}
+            {% set uhrzeitSatz = as_timestamp(now(), None) | timestamp_custom('%H:%M') %}         
+             
+            {{ 'Guten Morgen. Es ist ' ~ uhrzeitSatz ~ ' Uhr. Du hast ' ~ schlafenSatz ~ ' geschlafen.' }}      
+                       
+            {% set temperatur = states('sensor.parkplatz_temperatur') |int %}
+            {% set bueroHeute = is_state('binary_sensor.buero_heute', 'on') %}
+            
+            {% if bueroHeute %}
+              {{ 'Die Temperatur beträgt aktuell ' ~ temperatur ~ ' Grad.' }}
+            {% endif %}           
+            
+            {% set count_heimnetz_entities = states('sensor.heimnetz_offline') | int -%}
+            
+            {% if count_heimnetz_entities > 0 %}
+              {{ "Die folgenden Geräte sind offline." if count_heimnetz_entities > 1 else "Das folgende Gerät ist offline."}}
+
+              {% set heimnetzOffline = expand('group.heimnetz')
+                | selectattr('state','eq','not_home') 
+                | map(attribute='name')
+                | list %}              
+
+              {{ heimnetzOffline | join(', ') }}                            
+            {% endif %}
+
+            {% set min_battery_level = states('input_number.batteriestand_warnlevel') | int -%}   
+            {% set handyBatteriestand = states('sensor.handy_batterie') | int %}
+            {% set handyWirdAufgeladen = state_attr('sensor.handy_batterie', 'is_charging') == True %}
+            
+            {% if not handyWirdAufgeladen and handyBatteriestand <= min_battery_level %}
+              Das Handy muss aufgeladen werden.
+            {% endif %}    
+                    
+            {% set count_battery_entities = states('sensor.batteriestand_niedrig') | int -%}
+                                 
+            {% if count_battery_entities > 0 %}
+              {{ "Der Batteriestand der folgenden Geräte ist niedrig." if count_battery_entities > 1 else "Der Batteriestand des folgenden Gerätes ist niedrig."}}
+              
+              {% set entities = expand('group.batteriestand') %}
+             
+              {% for x in entities if x.state|int < min_battery_level %}
+                {%- if not loop.first %}, {% endif -%}
+                {{- x.name -}}
+              {% endfor %}       
+            {% endif %}             
+            
+            {% set tablets = expand('group.tablets') %}
+            {% set ns = namespace(found=0) -%}
+
+            {% for x in tablets if x.state|int > 99 and x.attributes.is_charging == True %}
+              {% set ns.found = ns.found + 1 -%}
+            {% endfor %}
+
+            {% if (ns.found | int) == 1 %}
+              Das folgende Gerät wurde vollständig aufgeladen.
+            {% elif (ns.found | int) > 1 %}
+              Die folgenden Geräte wurden vollständig aufgeladen.
+            {% endif %}
+
+            {% for x in tablets if x.state|int > 99 and x.attributes.is_charging == True %}
+              {%- if not loop.first %}, {% endif -%}
+              {{- x.name -}}
+            {% endfor %}     
+            
 automation:
   - alias: "Wecker - Starten"
     id: "wecker_starten"
@@ -212,15 +303,15 @@ automation:
   - alias: "Aufstehen - Schlafen ausschalten"
     id: "aufstehen_schlafen_ausschalten"
     trigger:
-      - id: bwewegungsmelder
+      - id: bewegungsmelder
         platform: state
         entity_id: binary_sensor.bewegungsmelder_kueche
         to: 'on'
-      - id: bwewegungsmelder
+      - id: bewegungsmelder
         platform: state
         entity_id: binary_sensor.bewegungsmelder_flur_vorne
         to: 'on'
-      - id: bwewegungsmelder
+      - id: bewegungsmelder
         platform: state
         entity_id: binary_sensor.bewegungsmelder_wohnzimmer
         to: 'on'
@@ -263,7 +354,15 @@ automation:
         entity_id: input_boolean.schlafen_fernseher_einschalten
       - service: light.turn_off
         entity_id: light.bett 
-
+      - choose:
+          - conditions:
+              - "{{ trigger.id != 'schalter_badezimmer' }}"                    
+            sequence:
+              - service: input_boolean.turn_on
+                entity_id: input_boolean.aufstehen_begruessung
+        default:
+          - service: script.aufstehen_begruessung
+        
   - alias: "Aufstehen - Geräte einschalten"
     id: "aufstehen_geraete_einschalten"
     trigger:
@@ -276,30 +375,7 @@ automation:
         state: 'off'        
     action:      
       - service: input_boolean.turn_on
-        entity_id: input_boolean.aufstehen_aktiviert
-      - service: !secret tts_service
-        data:                  
-          message: >-
-            {%- set word_for_and = 'und' %}
-            {%- set up_time = as_timestamp(now(), None) - state_attr('input_datetime.schlafen_uhrzeit', 'timestamp') | int %}
-
-            {%- macro phrase(name, plural_name, divisor, mod=None) %}
-              {%- set value = ((up_time // divisor) % (mod if mod else divisor)) | int %}
-              {%- set name = plural_name if value > 1 else name %}
-              {{- '{} {}'.format(value, name) if value | int > 0 else '' }}
-            {%- endmacro %}
-
-            {%- set values = [ 
-                       phrase('Woche', 'Wochen', 60*60*24*7), 
-                       phrase('Tag', 'Tage', 60*60*24, 7),
-                       phrase('Stunde', 'Stunden', 60*60, 24),
-                       phrase('Minute', 'Minuten', 60)
-                   ] | select('!=','') | list %}
-
-            {% set schlafenSatz = values[:-1] | join(', ') ~ ' ' ~ word_for_and ~ ' ' ~ values[-1] if values | length > 1 else values | first %}
-            {% set uhrzeitSatz = as_timestamp(now(), None) | timestamp_custom('%H:%M') %}         
-             
-            {{ 'Guten Morgen. Es ist ' ~ uhrzeitSatz ~ ' Uhr. Du hast ' ~ schlafenSatz ~ ' geschlafen.' }}      
+        entity_id: input_boolean.aufstehen_aktiviert      
       - service: switch.turn_on
         entity_id: switch.computer
       - service: switch.turn_off
@@ -310,34 +386,19 @@ automation:
                 entity_id: switch.alle_radios
                 state: 'off'
             sequence:                
-              - service: script.wohnung_radios_einschalten
-      - choose:
-          - conditions:
-              - condition: state
-                entity_id: binary_sensor.buero_heute
-                state: 'on'
-              - condition: or
-                conditions:
-                  - condition: numeric_state
-                    entity_id: input_text.corona_dortmund_gestern
-                    above: input_number.corona_grenzwert       
-                  - condition: numeric_state
-                    entity_id: input_text.corona_mulheim_gestern
-                    above: input_number.corona_grenzwert                        
-            sequence:
-              - service: !secret tts_service
-                data:                  
-                  message: >-
-                    {% set coronaDortmundGestern = states('input_text.corona_dortmund_gestern') | float(0) %}
-                    {% set coronaMuelheimGestern = states('input_text.corona_mulheim_gestern') | float(0) %}
-                    {% set coronaGrenzwert = states('input_number.corona_grenzwert') | float(0) %}
+              - service: script.wohnung_radios_einschalten       
                     
-                    {% if coronaDortmundGestern >= coronaGrenzwert and coronaMuelheimGestern >= coronaGrenzwert %}
-                      Die Corona-Werte in Dortmund und Mülheim waren gestern zu hoch.
-                    {% elif coronaMuelheimGestern >= coronaGrenzwert %}          
-                      Der Corona-Wert in Mülheim war gestern zu hoch.
-                    {% elif coronaDortmundGestern >= coronaGrenzwert  %}
-                      Der Corona-Wert in Dortmund war gestern zu hoch.
-                    {% else %}
-                      Die Corona-Werte waren gestern unter dem Grenzwert.
-                    {% endif %}          
+  - alias: "Aufstehen - Begrüßung"
+    id: "aufstehen_begruessung"
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.bewegungsmelder_badezimmer
+        to: 'on'
+    condition:
+      - condition: state
+        entity_id: input_boolean.aufstehen_begruessung
+        state: 'on'        
+    action:      
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.aufstehen_begruessung   
+      - service: script.aufstehen_begruessung

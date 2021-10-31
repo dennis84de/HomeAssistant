@@ -4,13 +4,7 @@ input_number:
     min: 0
     max: 1000
     step: 5
-        
-input_text:
-  corona_dortmund_gestern:
-    name: Corona Dortmund gestern   
-  corona_mulheim_gestern:
-    name: Corona Mülheim gestern
-    
+
 sensor:
   - platform: rest
     resource: https://worldometers.p.rapidapi.com/api/coronavirus/country/Germany
@@ -99,20 +93,3 @@ sensor:
         value_template: "{{ state_attr('sensor.corona_impfungen_nrw', 'difference_to_the_previous_day') }}"
         friendly_name: 'Neu-Geimpfte'
         unit_of_measurement: 'Personen'    
-    
-automation:        
-  - alias: "Corona-Werte - Vortag"
-    id: "corona_werte_vortag"
-    trigger:
-      - platform: time        
-        at: "00:00:00"
-    action:
-      - service: input_text.set_value
-        data:
-          entity_id: input_text.corona_dortmund_gestern
-          value: "{{ states('sensor.sk_dortmund_weekincidence') }}"       
-      - service: input_text.set_value
-        data:
-          entity_id: input_text.corona_mulheim_gestern
-          value: "{{ states('sensor.sk_mulheim_a_d_ruhr_weekincidence') }}"      
-                

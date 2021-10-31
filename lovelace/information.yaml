@@ -18,8 +18,6 @@ popup_cards:
           name: MQTT
         - entity: device_tracker.handyping
           name: Ping
-        - entity: device_tracker.handyapp
-          name: App
      
 cards:             
   - type: conditional
@@ -189,7 +187,7 @@ cards:
       icon: false
       points: false
     entities:
-      - entity: sensor.wohnzimmer_ble_temperatur
+      - entity: sensor.wohnzimmer_temperatur
         name: Wohnzimmer
       - entity: sensor.badezimmer_temperatur
         name: Badezimmer

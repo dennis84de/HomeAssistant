@@ -66,8 +66,8 @@ cards:
     title: Thermometer
     show_header_toggle: false
     entities:
-      - entity: sensor.thermometer_wohnzimmer_ble_battery_level
-        name: Wohnzimmer
+#      - entity: sensor.thermometer_wohnzimmer_ble_battery_level
+#        name: Wohnzimmer
       - entity: sensor.thermometer_flur_battery_level      
         name: Flur
       - entity: sensor.thermometer_parkplatz_battery_level        

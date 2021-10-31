@@ -9,13 +9,6 @@ tts:
 notify:
   - platform: alexa_media
     name: Alexa
-
-  - platform: lms_tts_notify
-    name: TTS Wohnzimmer
-    tts_service: tts.google_cloud_say
-    media_player: media_player.radio_wohnzimmer
-    device_group: device_tracker.handy
-    volume: 0.7      
    
 input_boolean:
   sprachausgabe:
@@ -25,7 +18,7 @@ input_boolean:
 script:
   alexa_tts:
     alias: "Alexa TTS"
-    sequence:
+    sequence:      
       - condition: and
         conditions:
           - condition: state
@@ -83,36 +76,7 @@ script:
         data:
           entity_id: media_player.squeezebox
           message: "{{ message }}"
-         
-  lms_tts:
-    alias: "LMS TTS"
-    sequence:
-      - condition: and
-        conditions:
-          - condition: state
-            entity_id: person.dennis
-            state: 'home'        
-          - condition: or
-            conditions:      
-              - condition: and
-                conditions:
-                  - condition: state
-                    entity_id: binary_sensor.schlafen_aktiv
-                    state: 'off'      
-                  - condition: state
-                    entity_id: input_boolean.nicht_stoeren
-                    state: 'off'                          
-              - condition: template
-                value_template: "{{ override is defined and override == true }}"            
-      - service: >-
-          {% if echo is defined and echo|length %}
-            notify.tts_wohnzimmer
-          {% else %}
-            notify.tts_wohnzimmer
-          {% endif %}
-        data:
-          message: "{{ message }}"
-            
+
 automation:
   - alias: "Echo Wohnzimmer - Timer ausschalten"
     id: "echo_wohnzimmer_timers_ausschalten"

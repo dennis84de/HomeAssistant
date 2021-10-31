@@ -56,8 +56,8 @@ automation:
         data:
           scene_id: eingehender_anruf_licht_status
           entities:
-            light.wohnzimmer_strahler:
-              state: "{{ states('light.wohnzimmer_strahler') }}"     
+            light.wohnzimmer_schrank:
+              state: "{{ states('light.wohnzimmer_schrank') }}"     
       - service: input_boolean.turn_on
         entity_id: input_boolean.licht_aktiv
       - alias: 'Eingehender Anruf - Licht schalten'
@@ -73,7 +73,7 @@ automation:
                   state: 'ringing'              
           sequence:
             - service: light.toggle
-              entity_id: light.wohnzimmer_strahler
+              entity_id: light.wohnzimmer_schrank
             - delay:
                 seconds: 1
 
@@ -358,9 +358,7 @@ automation:
               - condition: state
                 entity_id: media_player.soundbar
                 attribute: is_volume_muted
-                state: True    
-#              - condition: template
-#                value_template: '{{ state_attr("media_player.soundbar", "is_volume_muted") == True }}'                
+                state: True             
             sequence:       
               - service: media_player.volume_mute
                 data:

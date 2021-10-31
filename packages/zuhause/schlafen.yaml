@@ -101,7 +101,7 @@ script:
         data:
           echo: "wohnzimmer"
           message: "Alle Geräte werden jetzt ausgeschaltet. Gute Nacht."
-      - delay: '00:00:07'
+      - delay: '00:00:05'
       - service: input_boolean.turn_on
         entity_id: input_boolean.schlafen_aktiv
       - service: input_boolean.turn_off

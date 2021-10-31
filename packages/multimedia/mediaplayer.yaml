@@ -7,10 +7,11 @@ automation:
   - alias: "Uhr - Glocke starten"
     id: "uhr_glocke_starten"
     trigger:
-      - platform: time_pattern
-        minutes: 30
-      - platform: time_pattern
-        minutes: 00
+      - platform: template
+        value_template: >-
+          {% set minute = now().strftime("%M") | int %}
+          
+          {{ minute == 0 or minute == 30 }}
     condition:
       - condition: time
         after: '07:30'

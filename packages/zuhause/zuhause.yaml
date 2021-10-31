@@ -93,7 +93,7 @@ script:
         data:
           message: >-
             "Hallo Dennis. Willkommen zu Hause."
-            
+                              
             {% if is_state('counter.behaelter_leeren', '0') %}
               "Der Staubsaugerbehälter muss geleert werden."
             {% endif %}
