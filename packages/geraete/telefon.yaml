@@ -271,8 +271,9 @@ automation:
       - condition: state
         entity_id: person.dennis
         state: 'home'        
-      - condition: template
-        value_template: '{{ is_state("sensor.handy", "ringing") == False and is_state("sensor.handy", "dialing") == False }}'        
+      - condition: state
+        entity_id: 'sensor.handy'
+        state: 'idle'      
     action:
       - choose:
           - conditions:
@@ -368,15 +369,10 @@ automation:
           - conditions:
               - condition: state
                 entity_id: input_boolean.telefon_musik_pausiert
-                state: 'on'       
-              - condition: or
-                conditions:               
-                  - condition: state
-                    entity_id: sensor.handy
-                    state: 'idle'       
-                  - condition: state
-                    entity_id: sensor.handy
-                    state: 'sms'                        
+                state: 'on'    
+              - condition: state
+                entity_id: sensor.handy
+                state: 'idle'                                          
             sequence:       
               - service: input_boolean.turn_off
                 entity_id: input_boolean.telefon_musik_pausiert

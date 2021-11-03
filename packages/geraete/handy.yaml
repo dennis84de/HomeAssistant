@@ -26,6 +26,16 @@ proximity:
       - device_tracker.handymqtt
     tolerance: 50
        
+binary_sensor:
+  - platform: mqtt
+    name: "Handy SMS"
+    state_topic: "handy/sms"
+    value_template: "{{ (value_json.status | int) }}"   
+    payload_on: 1
+    payload_off: 0    
+    json_attributes_topic: "handy/sms"
+    json_attributes_template: "{{ value_json | tojson }}"   
+       
 sensor:
   - platform: places
     name: Aufenthaltsort Handy
@@ -62,8 +72,6 @@ sensor:
             Ausgehender Anruf
           {% elif is_state('sensor.handy', 'talking') %}
             Aktiver Anruf            
-          {% elif is_state('sensor.handy', 'sms') %}
-            Ungelesene SMS
           {% else %}
             Ruhezustand
           {% endif %}
@@ -73,8 +81,6 @@ sensor:
           {% elif is_state('sensor.handy', 'dialing') %}
             mdi:phone-outgoing
           {% elif is_state('sensor.handy', 'talking') %}
-            mdi:phone-in-talk            
-          {% elif is_state('sensor.handy', 'sms') %}
             mdi:message-alert
           {% else %}   
             mdi:phone
@@ -418,8 +424,8 @@ automation:
     id: "handy_neue_sms"
     trigger:
       - platform: state
-        entity_id: sensor.handy
-        to: 'sms'
+        entity_id: binary_sensor.handy_sms
+        to: 'on'
     condition:
       - condition: state
         entity_id: input_boolean.nicht_stoeren
@@ -438,14 +444,14 @@ automation:
           - service: !secret tts_service
             data:
               message: >-
-                Eine neue SMS von {% if state_attr('sensor.handy', 'anrufer') != '-' and state_attr('sensor.handy', 'anrufer').startswith('+') == False and state_attr('sensor.handy', 'anrufer').startswith('0') == False %}"{{ state_attr('sensor.handy', 'anrufer') }}"{% else %}einer unbekannten Nummer{% endif %} ist eingegangen.
-                {% if state_attr('sensor.handy', 'text') != null %} {{ state_attr('sensor.handy', 'text') }} {% endif %}
+                Eine neue SMS von {% if state_attr('binary_sensor.handy_sms', 'sender') != '-' and state_attr('binary_sensor.handy_sms', 'sender').startswith('+') == False and state_attr('binary_sensor.handy_sms', 'sender').startswith('0') == False %}"{{ state_attr('binary_sensor.handy_sms', 'sender') }}"{% else %}einer unbekannten Nummer{% endif %} ist eingegangen.
+                {% if state_attr('binary_sensor.handy_sms', 'text') != null %} {{ state_attr('binary_sensor.handy_sms', 'text') }} {% endif %}
       - service: persistent_notification.create        
         data:
           title: >-
-            {% if state_attr('sensor.handy', 'anrufer') != '-' and state_attr('sensor.handy', 'anrufer').startswith('+') == False and state_attr('sensor.handy', 'anrufer').startswith('0') == False %} {{ state_attr('sensor.handy', 'anrufer') }} {% else %}Unbekannte Nummer{% endif %}
+            {% if state_attr('binary_sensor.handy_sms', 'sender') != '-' and state_attr('binary_sensor.handy_sms', 'sender').startswith('+') == False and state_attr('binary_sensor.handy_sms', 'sender').startswith('0') == False %} {{ state_attr('binary_sensor.handy_sms', 'sender') }} {% else %}Unbekannte Nummer{% endif %}
           message: >-
-            {% if state_attr('sensor.handy', 'text') != null %} {{ state_attr('sensor.handy', 'text') }} {% endif %}
+            {% if state_attr('binary_sensor.handy_sms', 'text') != null %} {{ state_attr('binary_sensor.handy_sms', 'text') }} {% endif %}
           notification_id: neue_sms                  
       - choose:
           - conditions:
@@ -460,7 +466,7 @@ automation:
                 data:
                   title: 'Handy'
                   message: >-
-                    {% set name = state_attr('sensor.handy', 'anrufer') | string %}
+                    {% set name = state_attr('binary_sensor.handy_sms', 'sender') | string %}
 
                     {% if name.startswith('+') or name.startswith('0') or name == '-' %}
                       Eine neue SMS ist eingegangen.
@@ -471,14 +477,12 @@ automation:
                     displaytime: 3000
                     icon: "info"
               - condition: template
-                value_template: >-
-                  {{ state_attr('sensor.handy', 'text') != '-' }}
+                value_template: "{{ state_attr('binary_sensor.handy_sms', 'text') != '-' }}"
               - delay: '00:00:03'
               - service: notify.kodi_wohnzimmer
                 data:
                   title: 'Handy'
-                  message: >-
-                    {{ state_attr('sensor.handy', 'text') }}
+                  message: "{{ state_attr('binary_sensor.handy_sms', 'text') }}"
                   data:
                     displaytime: 6000
                     icon: "info"
@@ -486,26 +490,22 @@ automation:
   - alias: "Handy - SMS gelesen"
     id: "handy_sms_gelesen"  
     trigger: 
-      - platform: state
-        entity_id: sensor.handy
-        to: 'idle'
-      - platform: event
+      - id: sms_gelesen
+        platform: state
+        entity_id: binary_sensor.handy_sms
+        to: 'off'
+      - id: benachrichtigung
+        platform: event
         event_type: call_service
         event_data:
           domain: persistent_notification
           service: dismiss
     condition:
-      - condition: or
-        conditions:
-          - condition: template
-            value_template: "{{ trigger.entity_id == 'sensor.handy' and trigger.from_state.state == 'sms' }}"
-          - condition: template
-            value_template: "{{ trigger.event.data.service_data.notification_id == 'neue_sms' }}"
+      - "{{ True if trigger.id == 'sms_gelesen' else trigger.event.data.service_data.notification_id == 'neue_sms' }}"
     action:
       - choose:
           - conditions:
-            - condition: template
-              value_template: "{{ trigger.entity_id == 'sensor.handy' }}"
+            - "{{ trigger.id == 'sms_gelesen' }}"
             sequence:
               - service: persistent_notification.dismiss  
                 data:              
@@ -513,8 +513,8 @@ automation:
         default:
           - service: mqtt.publish
             data:
-               topic: 'handy/status'
-               payload: '{"date":"-","anrufer":"-","number":"-","status":"idle","text":"-","time":"-"}'
+               topic: 'handy/sms'
+               payload: '{"status":0}'
                retain: true
 
   - alias: "Handy - Batteriestand niedrig"

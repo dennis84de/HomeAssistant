@@ -158,7 +158,7 @@ script:
           data:
             message: "Hallo Dennis. Willkommen zu Hause."
             
-automation:         
+automation:     
   - alias: "Zu Hause"
     id: "zu_hause"
     trigger:

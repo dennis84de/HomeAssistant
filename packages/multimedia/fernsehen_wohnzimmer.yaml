@@ -52,8 +52,7 @@ cover:
             entity_id: media_player.kodi_wohnzimmer
             method: Input.ExecuteAction
             action: showsubtitles
-        icon_template: >-
-          mdi:message-bulleted      
+        icon_template: mdi:message-bulleted      
 
       fernseher_sender:
         friendly_name: "Fernseher Sender"
@@ -210,15 +209,8 @@ automation:
           entity_id: media_player.kodi_wohnzimmer
           state: 'paused'
     action:
-      - choose:
-          - conditions:
-              - condition: state
-                entity_id: media_player.kodi_wohnzimmer
-                state: 'paused'
-            sequence:
-              - service: script.kodi_wohnzimmer_starten
-        default:
-          - service: script.kodi_wohnzimmer_pausieren
+      - service: media_player.media_play_pause
+        entity_id: media_player.kodi_wohnzimmer
           
   - alias: "Kodi Wohnzimmer - Starten"
     id: "kodi_wohnzimmer_starten"
@@ -236,8 +228,9 @@ automation:
       - condition: state
         entity_id: sensor.telefon
         state: 'idle'
-      - condition: template
-        value_template: '{{ is_state("sensor.handy", "ringing") == False and is_state("sensor.handy", "dialing") == False }}'
+      - condition: state
+        entity_id: 'sensor.handy'
+        state: 'idle'
     action:
       - service: script.kodi_wohnzimmer_starten
         
@@ -274,8 +267,9 @@ automation:
       - condition: state
         entity_id: sensor.telefon
         state: 'idle'
-      - condition: template
-        value_template: '{{ is_state("sensor.handy", "ringing") == False and is_state("sensor.handy", "dialing") == False }}'
+      - condition: state
+        entity_id: 'sensor.handy'
+        state: 'idle'   
       - condition: template       
         value_template: >-  
           {% if trigger.id == 'bewegungsmelder_balkon' or trigger.id == 'schalter_balkon' %}
@@ -354,8 +348,9 @@ automation:
       - condition: state
         entity_id: sensor.telefon
         state: 'idle'
-      - condition: template
-        value_template: '{{ is_state("sensor.handy", "ringing") == False and is_state("sensor.handy", "dialing") == False }}'
+      - condition: state
+        entity_id: 'sensor.handy'
+        state: 'idle'           
       - condition: template       
         value_template: >-         
           {% if trigger.id == 'bewegungsmelder_balkon' or trigger.id == 'schalter_balkon' %}
@@ -395,8 +390,9 @@ automation:
       - condition: state
         entity_id: sensor.telefon
         state: 'idle'
-      - condition: template
-        value_template: '{{ is_state("sensor.handy", "ringing") == False and is_state("sensor.handy", "dialing") == False }}'
+      - condition: state
+        entity_id: 'sensor.handy'
+        state: 'idle'   
     action:
       - service: input_boolean.turn_off
         entity_id: input_boolean.firefox_wohnzimmer_pausiert      

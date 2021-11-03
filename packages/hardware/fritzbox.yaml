@@ -86,7 +86,10 @@ automation:
           - service: !secret tts_service
             data:
               message: "Das Wlan ist seit 30 Minuten offline"    
-
+      - service: homeassistant.reload_config_entry
+        data:
+          entry_id: !secret fritzbox_entry_id
+          
 homeassistant:
   customize:
     sensor.netmonitor:

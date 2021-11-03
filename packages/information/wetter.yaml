@@ -301,46 +301,6 @@ sensor:
           {% set winddir = ['0', '45','90','135','180','225','270','315'] %}
           
           {{ "/local/wind/" ~ winddir[winbearing] ~ ".png" }}
-          
-      zeitumstellung:
-        friendly_name: "Zeitumstellung"       
-        device_class: timestamp
-        icon_template: "{{ 'mdi:rotate-left' if now().month > 3 else 'mdi:rotate-right' }}"       
-        value_template: >
-          {%- set ns = namespace(previous = 2, spring=none, fall=none) %}
-          {%- set today = strptime(states('sensor.date'), '%Y-%m-%d', None).astimezone().replace(hour=ns.previous) %}
-          {%- for i in range(365) %}
-            {%- set day = (today + timedelta(days=i)).astimezone() %}
-            {%- if ns.previous - day.hour == -1 %}
-              {%- set ns.spring = today + timedelta(days=i-1) %}
-            {%- elif ns.previous - day.hour == 1 %}
-              {%- set ns.fall = (today + timedelta(days=i-1)).replace(hour=3) %}
-            {%- endif %}
-            {%- set ns.previous = day.hour %}
-          {%- endfor %}
-          
-          {{ [ns.spring, ns.fall] | min }}
-        attribute_templates:
-          is_dst_active: >
-            {{ now().timetuple().tm_isdst > 0 }}
-          dst_change_tomorrow: >
-            {% set dt = now() + timedelta(days=1) %}
-            {{ now().astimezone().tzinfo != dt.astimezone().tzinfo }}          
-          next: >
-            {%- set ns = namespace(previous = 2, spring=none, fall=none) %}
-            {%- set today = strptime(states('sensor.date'), '%Y-%m-%d', None).astimezone().replace(hour=ns.previous) %}
-            {%- for i in range(365) %}
-              {%- set day = (today + timedelta(days=i)).astimezone() %}
-              {%- if ns.previous - day.hour == -1 %}
-                {%- set ns.spring = today + timedelta(days=i-1) %}
-              {%- elif ns.previous - day.hour == 1 %}
-                {%- set ns.fall = (today + timedelta(days=i-1)).replace(hour=3) %}
-              {%- endif %}
-              {%- set ns.previous = day.hour %}
-            {%- endfor %}
-            {%- set next = [ns.spring, ns.fall] | min %}
-            {%- set phrase = '1 Stunde vorstellen' if next == ns.spring else '1 Stunde zurückstellen' %}
-            {"Frühling": "{{ns.spring}}", "Herbst": "{{ns.fall}}", "Nächste Umstellung": "{{next}}", "Tage":{{(next-today).days}}, "Uhr": "{{phrase}}"}
 
       wetterwarnungen_aktiv:
         friendly_name: "Wetterwarnungen"      

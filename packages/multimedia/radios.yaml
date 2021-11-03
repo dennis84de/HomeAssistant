@@ -101,10 +101,6 @@ switch:
 input_boolean:
   radio_balkon_aktiv:
     name: Radio Balkon aktiv
-    
-  radio_balkon_bewegungsmelder_deaktiviert:
-    name: Radio Balkon Bewegungsmelder deaktiviert  
-    icon: mdi:voice-off    
         
   telefon_musik_pausiert:
     name: Musik pausiert     
@@ -232,8 +228,8 @@ script:
       - choose:
           - conditions:
               - "{{ is_state('binary_sensor.home_office_aktiv', 'off') and (homeOfficeHeute is not defined or homeOfficeHeute == False) }}"
-              - "{{ bueroHeute is not defined or bueroHeute == False }}"
-              - "{{ now().isoweekday() != 7 }}"
+              - "{{ bueroHeute is not defined or bueroHeute == False }}"              
+              - "{{ now().isoweekday() == 6 or is_state('binary_sensor.arbeitstag', 'on') }}"
               - "{{ (states('sensor.bewegungsmelder_balkon_temperatur') | int) > 5 }}"
               - "{{ now().strftime('%H') | int >= 6 and now().strftime('%H') | int <= 21 }}"
             sequence:            
@@ -277,12 +273,10 @@ automation:
         state: 'off'
       - condition: state
         entity_id: 'binary_sensor.balkontuer'
-        state: 'on'                
+        state: 'on'
       - condition: state
-        entity_id: 'input_boolean.radio_balkon_bewegungsmelder_deaktiviert'
-        state: 'off'        
-      - condition: template
-        value_template: '{{ is_state("sensor.handy", "ringing") == False and is_state("sensor.handy", "dialing") == False }}'
+        entity_id: 'sensor.handy'
+        state: 'idle'        
       - condition: state
         entity_id: 'sensor.telefon'
         state: 'idle'
@@ -409,8 +403,9 @@ automation:
       - condition: state
         entity_id: switch.wiedergabe_aktiv
         state: 'on'
-      - condition: template
-        value_template: '{{ is_state("sensor.handy", "ringing") == False and is_state("sensor.handy", "dialing") == False }}'
+      - condition: state
+        entity_id: 'sensor.handy'
+        state: 'idle'   
       - condition: state
         entity_id: 'sensor.telefon'
         state: 'idle'          

@@ -44,8 +44,6 @@ entity_controller:
     sensor: binary_sensor.bewegungsmelder_wohnzimmer
     entities: light.wohnzimmer_couch
     delay: 60
-    behaviours:
-      on_enter_overridden: 'off'
     overrides:
       - binary_sensor.sonne_tagsueber  
       - binary_sensor.wohnzimmer_licht_inaktiv  
@@ -59,8 +57,6 @@ entity_controller:
     sensor: binary_sensor.bewegungsmelder_wohnzimmer
     entities: light.wohnzimmer_schrank
     delay: 60
-    behaviours:
-      on_enter_overridden: 'off'
     overrides:
       - binary_sensor.sonne_tagsueber  
       - binary_sensor.wohnzimmer_schrank_inaktiv  

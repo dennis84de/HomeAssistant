@@ -17,6 +17,94 @@ input_number:
     
 zodiac:
   
+template:
+  - trigger:
+    - platform: time
+      at: "00:00:00"
+    - platform: homeassistant
+      event: start
+    - platform: event
+      event_type: event_template_reloaded      
+    sensor:
+      - unique_id: zeitumstellung
+        name: "Zeitumstellung"
+        device_class: timestamp
+        state: >
+          {%- macro hms(t) %}
+          {%- set h, m, s = (t.dst() | string).split(':') | map('int') %}
+          {{- h * 60 * 60 + m * 60 + s }}
+          {%- endmacro %}
+
+          {%- macro is_dst(t) %}
+          {{- hms(t) | int != 0 }}
+          {%- endmacro %}
+
+          {%- macro finddst(t, kwarg, rng) %}
+          {%- set ns = namespace(previous=is_dst(t), found=none) %}
+          {%- for i in range(rng) %}
+            {%- set ts = t + timedelta(**{kwarg:i}) %}
+            {%- if ns.previous != is_dst(ts) and ns.found is none %}
+              {%- set ns.found = i %}
+            {%- endif %}
+          {%- endfor %}
+          {{ ns.found }}
+          {%- endmacro %}
+
+          {%- set t = now().replace(hour=0, minute=0, second=0, microsecond=0) %}
+          {%- set d = finddst(t, 'days', 365) | int - 1 %}
+          {%- set h = finddst(t + timedelta(days=d), 'hours', 24) | int %}
+          {%- set m = finddst(t + timedelta(days=d, hours=h), 'minutes', 60) | int %}
+          {{ (t.astimezone() + timedelta(days=d, hours=h, minutes=m)).isoformat() }}
+
+  - sensor:
+    - unique_id: zeitumstellung_tage
+      name: "Zeitumstellung Tage"
+      unit_of_measurement: Tage
+      state: >
+        {% set next = states('sensor.zeitumstellung') | as_datetime %}
+        {% set today = now().replace(hour=0, minute=0, second=0, microsecond=0) %}
+        
+        {{ (next - today).days if next is not none else 0 }}
+      availability: >
+        {{ states('sensor.zeitumstellung') not in ['unknown', 'unavailable'] }}
+
+    - unique_id: zeitumstellung_richtung
+      name: "Zeitumstellung Richtung"
+      state: >
+        {%- macro hms(t) %}
+        {%- set h, m, s = (t.dst() | string).split(':') | map('int') %}
+        {{- h * 60 * 60 + m * 60 + s }}
+        {%- endmacro %}
+
+        {%- macro phrase(seconds, name, divisor, mod=None) %}
+          {%- set value = ((seconds | abs // divisor) % (mod if mod else divisor)) | int %}
+          {%- set end = 'n' if value > 1 else '' %}
+          {{- '{} {}{}'.format(value, name, end) if value > 0 else '' }}
+        {%- endmacro %}
+
+        {%- macro total(seconds) %}
+        {%- set values = [ 
+          phrase(seconds, 'Stunde', 60*60, 60*60*24),
+          phrase(seconds, 'Minute', 60, 60),
+          ] | select('!=','') | list %}
+        {{- values[:-1] | join(', ') ~ ' and ' ~ values[-1] if values | length > 1 else values | first }}
+        {%- endmacro %}
+
+        {%- set next = states('sensor.zeitumstellung') %}
+        {%- set nextLocal = None if next in ['unknown', 'unavailable'] else next | as_datetime | as_local %}
+        
+        {%- if nextLocal is not none %}
+          {%- set ns = hms(nextLocal) | int %}
+          {%- set ps = hms(nextLocal - timedelta(days=1)) | int %}
+          {% if ns %}
+            {{ total(ns) }} vor
+          {% else %}
+            {{ total(ps) }} zurück
+          {% endif %}
+        {%- endif %}
+      availability: >
+        {{ states('sensor.zeitumstellung') not in ['unknown', 'unavailable'] }}  
+  
 sensor:
   - platform: imap
     server: !secret email_server
@@ -75,7 +163,7 @@ sensor:
         value_template: '{{ state_attr("sensor.next_launch_day", "launch_date_unix") | int | timestamp_custom("%H:%M")}}'
         icon_template: mdi:clock-outline
         unit_of_measurement: 'Uhr'          
-
+          
 binary_sensor:   
   - platform: template
     sensors:
