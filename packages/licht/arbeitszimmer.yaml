@@ -1,10 +1,4 @@
 light:
-  - platform: flux_led
-    devices:
-      192.168.2.63:
-        name: Schreibtisch
-        mode: "rgb"
-
   - platform: switch
     name: Arbeitszimmer Lampe
     entity_id: switch.arbeitszimmer_lampe

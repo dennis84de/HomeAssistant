@@ -65,19 +65,19 @@ cards:
     title: Staubsauger
     show_header_toggle: false
     entities:
-      - entity: vacuum.roborock_vacuum
+      - entity: vacuum.staubsauger
       - entity: input_boolean.staubsauger_automatische_reinigung
-      - entity: sensor.xiaomi_vacuum_batterie
-        name: Batteriestand
+#      - entity: sensor.xiaomi_vacuum_batterie
+#        name: Batteriestand
       - entity: binary_sensor.reinigung_heute
       - entity: sensor.letzte_reinigung
       - entity: counter.behaelter_leeren
       - type: divider
       - entity: input_select.staubsauger_reinigen
-      - entity: sensor.reinigung_filter
-      - entity: sensor.reinigung_buerste
-      - entity: sensor.reinigung_seitenbuerste
-      - entity: sensor.reinigung_sensor          
+      - entity: sensor.staubsauger_reinigung_filter
+      - entity: sensor.staubsauger_reinigung_buerste
+      - entity: sensor.staubsauger_reinigung_seitenbuerste
+      - entity: sensor.staubsauger_reinigung_sensor          
 
   - type: entities
     title: Multimedia

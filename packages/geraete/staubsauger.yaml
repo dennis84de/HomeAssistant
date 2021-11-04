@@ -13,7 +13,14 @@ input_select:
       - Filter
       - Bürste
       - Seitenbürste
-      - Sensor
+      - Sensor      
+
+counter:
+  behaelter_leeren:
+    name: Behälter leeren
+    icon: mdi:delete-empty
+    initial: 3
+    step: 1
       
 binary_sensor:
   - platform: template
@@ -39,14 +46,7 @@ binary_sensor:
       bewegungsmelder_inaktiv_staubsauger:
         friendly_name: "Bewegungmelder inaktiv - Staubsauger"
         device_class: occupancy
-        value_template: "{{ True if is_state('vacuum.roborock_vacuum', 'cleaning') or is_state('vacuum.roborock_vacuum', 'returning') else False }}"          
-
-counter:
-  behaelter_leeren:
-    name: Behälter leeren
-    icon: mdi:delete-empty
-    initial: 3
-    step: 1
+        value_template: "{{ True if is_state('vacuum.staubsauger', 'cleaning') or is_state('vacuum.staubsauger', 'returning') else False }}"          
 
 sensor:
   - platform: template
@@ -64,61 +64,6 @@ sensor:
 
             {{ '-' if weekday == None else ['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'][weekday-1] }}, {{ as_timestamp(lastClean, None) | timestamp_custom("%d.%m.%Y", True) | string }}              
           {% endif %}
-          
-      reinigung_filter:
-        friendly_name: Reinigung Filter
-        unit_of_measurement: 'Stunden'
-        icon_template: mdi:air-filter
-        value_template: >-
-          {% if state_attr("vacuum.roborock_vacuum", "filter_left") == None %}
-            -
-          {% else %}
-            {{ state_attr("vacuum.roborock_vacuum", "filter_left") }}
-          {% endif %}
-
-      reinigung_buerste:
-        friendly_name: Reinigung Bürste
-        unit_of_measurement: 'Stunden'
-        icon_template: mdi:broom
-        value_template: >-
-          {% if state_attr("vacuum.roborock_vacuum", "main_brush_left") == None %}
-            -
-          {% else %}
-            {{ state_attr("vacuum.roborock_vacuum", "main_brush_left") }}
-          {% endif %}
-
-      reinigung_seitenbuerste:
-        friendly_name: Reinigung Seitenbürste
-        unit_of_measurement: 'Stunden'
-        icon_template: mdi:broom
-        value_template: >-
-          {% if state_attr("vacuum.roborock_vacuum", "side_brush_left") == None %}
-            -
-          {% else %}
-            {{ state_attr("vacuum.roborock_vacuum", "side_brush_left") }}
-          {% endif %}
-
-      reinigung_sensor:
-        friendly_name: Reinigung Sensor
-        unit_of_measurement: 'Stunden'
-        icon_template: mdi:trash-can
-        value_template: >-
-          {% if state_attr("vacuum.roborock_vacuum", "sensor_dirty_left") == None %}
-            -
-          {% else %}
-            {{ state_attr("vacuum.roborock_vacuum", "sensor_dirty_left") }}
-          {% endif %}                  
-          
-      xiaomi_vacuum_batterie:
-        friendly_name: Batterie
-        device_class: battery
-        value_template: >
-          {% if is_state('vacuum.roborock_vacuum', 'unknown') %}
-            0
-          {% else %}
-            {{ state_attr("vacuum.roborock_vacuum","battery_level") | float(0) }}
-          {% endif %}
-        unit_of_measurement: '%'
 
 automation:
   - alias: "Staubsaugen - Gestartet"
@@ -136,7 +81,7 @@ automation:
         after: '06:00'
         before: '22:00'
       - condition: state
-        entity_id: vacuum.roborock_vacuum
+        entity_id: vacuum.staubsauger
         state: 'docked'
       - condition: state
         entity_id: person.dennis
@@ -152,7 +97,7 @@ automation:
         state: 'off'
     action:
       - service: vacuum.start
-        entity_id: vacuum.roborock_vacuum
+        entity_id: vacuum.staubsauger
       - service: input_boolean.turn_on
         entity_id: input_boolean.staubsauger_automatische_reinigung_gestartet
       - service: notify.telegram
@@ -163,7 +108,7 @@ automation:
     id: "staubsaugen_beendet"
     trigger:
       - platform: state
-        entity_id: vacuum.roborock_vacuum
+        entity_id: vacuum.staubsauger
         from: 'returning'
         to: 'docked'    
     condition:
@@ -204,7 +149,7 @@ automation:
                   notification_id: staubsauger_leeren
               - service: vacuum.send_command
                 data:
-                  entity_id: vacuum.roborock_vacuum
+                  entity_id: vacuum.staubsauger
                   command: app_goto_target
                   params: [33463,24839]     
           
@@ -212,7 +157,7 @@ automation:
     id: "staubsaugen_fehler"
     trigger:
       - platform: state
-        entity_id: vacuum.roborock_vacuum
+        entity_id: vacuum.staubsauger
         to: 'error'
     condition:
       - condition: state
@@ -239,7 +184,7 @@ automation:
       - service: counter.reset
         entity_id: counter.behaelter_leeren
       - service: vacuum.return_to_base
-        entity_id: vacuum.roborock_vacuum        
+        entity_id: vacuum.staubsauger        
         
   - alias: "Staubsaugen - Reinigen"
     id: "staubsaugen_reinigen"
@@ -251,7 +196,7 @@ automation:
     action:          
       - service: vacuum.send_command
         target:
-          entity_id: vacuum.roborock_vacuum
+          entity_id: vacuum.staubsauger
         data:
           command: reset_consumable
           params: >-

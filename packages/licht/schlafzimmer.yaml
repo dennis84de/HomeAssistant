@@ -1,10 +1,4 @@
 light:
-  - platform: flux_led
-    devices:
-      192.168.2.61:
-        name: Bett
-        mode: "rgb"       
-    
   - platform: switch
     name: Kleiderschrank
     entity_id: switch.kleiderschrank

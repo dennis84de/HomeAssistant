@@ -95,7 +95,7 @@ automation:
         entity_id: alarm_control_panel.alarm
         state: 'armed_away'
       - condition: state
-        entity_id: 'vacuum.roborock_vacuum'
+        entity_id: 'vacuum.staubsauger'
         state: 'docked'
     action:
       service: notify.telegram

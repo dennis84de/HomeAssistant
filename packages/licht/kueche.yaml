@@ -1,10 +1,4 @@
 light:
-  - platform: flux_led
-    devices:
-      192.168.2.46:
-        name: Kueche Regal
-        mode: "rgb"
-
   - platform: switch
     name: Küche Schrank
     entity_id: switch.kuechenschrank
@@ -64,4 +58,4 @@ homeassistant:
     entity_controller.bewegung_kuechenregal:      
       friendly_name: Bewegung Küchenregal
     entity_controller.bewegung_kuechenschrank:      
-      friendly_name: Bewegunge Küchenschrank      
+      friendly_name: Bewegung Küchenschrank

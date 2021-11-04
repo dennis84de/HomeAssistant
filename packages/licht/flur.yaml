@@ -1,16 +1,3 @@
-light:
-  - platform: flux_led
-    devices:
-      192.168.2.54:
-        name: Flur vorne
-        mode: "rgb"
-
-  - platform: flux_led
-    devices:
-      192.168.2.71:
-        name: Flur hinten
-        mode: "rgb"
-
 input_boolean:
   bewegungsmelder_flur_deaktiviert:
     name: Bewegungsmelder deaktiviert    
