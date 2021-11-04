@@ -403,25 +403,25 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
         if self._use_st:
             data_schema = data_schema.extend(
                 {
-                    vol.Optional(
+                    vol.Required(
                         CONF_USE_ST_STATUS_INFO,
                         default=options.get(
                             CONF_USE_ST_STATUS_INFO, True
                         ),
                     ): bool,
-                    vol.Optional(
+                    vol.Required(
                         CONF_USE_ST_CHANNEL_INFO,
                         default=options.get(
                             CONF_USE_ST_CHANNEL_INFO, True
                         ),
                     ): bool,
-                    vol.Optional(
+                    vol.Required(
                         CONF_SHOW_CHANNEL_NR,
                         default=options.get(
                             CONF_SHOW_CHANNEL_NR, False
                         ),
                     ): bool,
-                    vol.Optional(
+                    vol.Required(
                         OPT_POWER_ON_METHOD,
                         default=POWER_ON_METHODS.get(
                             options.get(
@@ -434,7 +434,7 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
 
         data_schema = data_schema.extend(
             {
-                vol.Optional(
+                vol.Required(
                     OPT_LOGO_OPTION,
                     default=LOGO_OPTIONS.get(
                         options.get(CONF_LOGO_OPTION, LOGO_OPTION_DEFAULT[0])
@@ -452,7 +452,7 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
                         "suggested_value": options.get(CONF_SYNC_TURN_ON)
                     },
                 ): cv.multi_select(switch_entities),
-                vol.Optional(CONF_SHOW_ADV_OPT, default=False): bool,
+                vol.Required(CONF_SHOW_ADV_OPT, default=False): bool,
             }
         )
         return self.async_show_form(step_id="init", data_schema=data_schema)
@@ -482,7 +482,7 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
 
         data_schema = vol.Schema(
             {
-                vol.Optional(
+                vol.Required(
                     OPT_APP_LOAD_METHOD,
                     default=APP_LOAD_METHODS.get(
                         options.get(
@@ -490,7 +490,7 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
                         )
                     ),
                 ): vol.In(list(APP_LOAD_METHODS.values())),
-                vol.Optional(
+                vol.Required(
                     OPT_APP_LAUNCH_METHOD,
                     default=APP_LAUNCH_METHODS.get(
                         options.get(
@@ -498,22 +498,22 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
                         )
                     ),
                 ): vol.In(list(APP_LAUNCH_METHODS.values())),
-                vol.Optional(
+                vol.Required(
                     CONF_DUMP_APPS,
                     default=options.get(CONF_DUMP_APPS, False),
                 ): bool,
-                vol.Optional(
+                vol.Required(
                     CONF_USE_MUTE_CHECK,
                     default=options.get(CONF_USE_MUTE_CHECK, True),
                 ): bool,
-                vol.Optional(
+                vol.Required(
                     CONF_WOL_REPEAT,
                     default=min(
                         options.get(CONF_WOL_REPEAT, 1),
                         MAX_WOL_REPEAT,
                     ),
                 ): vol.All(vol.Coerce(int), vol.Clamp(min=1, max=MAX_WOL_REPEAT)),
-                vol.Optional(
+                vol.Required(
                     CONF_POWER_ON_DELAY,
                     default=options.get(
                         CONF_POWER_ON_DELAY, DEFAULT_POWER_ON_DELAY
