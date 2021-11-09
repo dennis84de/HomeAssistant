@@ -39,7 +39,7 @@ automation:
         state: armed_away
       - condition: state
         entity_id: person.dennis
-        state: 'not_homes'
+        state: 'not_home'
     action:
       service: alarm_control_panel.alarm_trigger
       entity_id: alarm_control_panel.alarm

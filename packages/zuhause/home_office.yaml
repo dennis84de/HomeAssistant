@@ -79,6 +79,17 @@ switch:
                   - service: switch.turn_on
                     entity_id: switch.computer_arbeit_herunterfahren
 
+      computer_arbeit:
+        friendly_name: Computer Arbeit
+        value_template: "{{ is_state('switch.pc_arbeit', 'on') and is_state('switch.arbeitszimmer_monitore', 'on') }}"
+        icon_template: mdi:desktop-classic
+        turn_on:
+          service: switch.turn_on
+          entity_id: switch.arbeitszimmer_monitore, switch.pc_arbeit
+        turn_off:
+          service: switch.turn_off
+          entity_id: switch.arbeitszimmer_monitore, switch.pc_arbeit   
+          
 script:
   home_office_start:
     alias: 'Home Office - Start'
@@ -86,9 +97,9 @@ script:
       - service: input_boolean.turn_on
         entity_id: input_boolean.home_office_aktiv
       - service: switch.turn_off
-        entity_id: switch.schlafzimmer_radio, switch.monitor, switch.pc
+        entity_id: switch.balkon_radio, switch.computer, switch.watchtv_wohnzimmer
       - service: switch.turn_on
-        entity_id: switch.arbeitszimmer_radio, switch.pc_arbeit, switch.arbeitszimmer_monitore  
+        entity_id: switch.arbeitszimmer_radio, switch.computer_arbeit
       - service: light.turn_off
         entity_id: light.schreibtisch, light.arbeitszimmer_lampe
       - choose:
@@ -128,7 +139,7 @@ script:
       - service: input_boolean.turn_off
         entity_id: input_boolean.home_office_aktiv
       - service: switch.turn_off
-        entity_id: switch.arbeitszimmer_radio, switch.arbeitszimmer_monitore, switch.pc_arbeit
+        entity_id: switch.arbeitszimmer_radio, switch.computer_arbeit
       - service: switch.turn_on
         entity_id: switch.computer, switch.watchtv_wohnzimmer
       - choose:
@@ -266,7 +277,7 @@ automation:
     id: "home_office_computer_eingeschaltet"
     trigger:
       - platform: state
-        entity_id: switch.pc_arbeit
+        entity_id: switch.computer_arbeit
         to: 'on'
         for: '00:05:00'
     condition:       
@@ -281,7 +292,7 @@ automation:
                 state: 'on'                
             sequence:
               - service: switch.turn_off
-                entity_id: switch.pc_arbeit
+                entity_id: switch.computer_arbeit
           - conditions:
               - condition: state
                 entity_id: person.dennis
@@ -291,7 +302,7 @@ automation:
                     data:                      
                       message: 'Der Computer im Arbeitszimmer wurde eingeschaltet und wird jetzt heruntergefahren.'
                   - service: switch.turn_off
-                    entity_id: switch.pc_arbeit                  
+                    entity_id: switch.computer_arbeit                  
         default:      
           - service: !secret tts_service
             data:          
@@ -367,8 +378,3 @@ automation:
         entity_id: input_boolean.home_office_musik_pausiert
       - service: switch.turn_off
         entity_id: switch.radios_lautlos      
-        
-homeassistant:
-  customize:
-    switch.arbeitszimmer_monitore:
-      icon: mdi:monitor-dashboard      

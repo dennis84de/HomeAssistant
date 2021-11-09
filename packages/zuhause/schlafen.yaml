@@ -114,7 +114,7 @@ script:
         data:
           badezimmerEingeschaltetLassen: True
       - service: switch.turn_off
-        entity_id: switch.watchtv_wohnzimmer, switch.monitor, switch.pc
+        entity_id: switch.watchtv_wohnzimmer, switch.computer
       - service: light.turn_off
         entity_id: light.wohnzimmer_strahler, light.wohnzimmer_schrank, light.balkon_licht
       - choose:

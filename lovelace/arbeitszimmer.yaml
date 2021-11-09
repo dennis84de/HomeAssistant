@@ -54,10 +54,8 @@ cards:
     title: Arbeit
     show_header_toggle: false
     entities:
-      - entity: switch.pc_arbeit
+      - entity: switch.computer_arbeit
         name: Computer
-      - entity: switch.arbeitszimmer_monitore
-        name: Monitore
       - entity: input_select.computer_arbeit_ausschalten
         name: Computer ausschalten          
 
@@ -77,7 +75,7 @@ cards:
       - entity: sensor.staubsauger_reinigung_filter
       - entity: sensor.staubsauger_reinigung_buerste
       - entity: sensor.staubsauger_reinigung_seitenbuerste
-      - entity: sensor.staubsauger_reinigung_sensor          
+      - entity: sensor.staubsauger_reinigung_sensor    
 
   - type: entities
     title: Multimedia

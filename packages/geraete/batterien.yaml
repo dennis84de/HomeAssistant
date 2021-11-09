@@ -30,4 +30,4 @@ sensor:
             {% set ns.found = ns.found + 1 -%}
           {% endfor %}  
           
-          {{ ns.found | int }}          
+          {{ ns.found | int }}

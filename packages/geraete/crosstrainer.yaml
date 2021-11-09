@@ -23,7 +23,7 @@ script:
       - service: switch.turn_on
         entity_id: switch.crosstrainer, switch.sportzimmer_fernseher
       - service: switch.turn_off
-        entity_id: switch.watchtv_wohnzimmer, switch.monitor, switch.pc
+        entity_id: switch.watchtv_wohnzimmer, switch.computer       
       - service: script.radios_ausschalten
       - service: light.turn_off
         entity_id: light.wohnzimmer_couch, light.wohnzimmer_strahler, light.wohnzimmer_schrank
@@ -52,7 +52,7 @@ script:
       - service: light.turn_off
         entity_id: light.sportzimmer_regal
       - service: switch.turn_on
-        entity_id: switch.watchtv_wohnzimmer, switch.monitor
+        entity_id: switch.watchtv_wohnzimmer, switch.computer
       - service: script.wohnung_radios_einschalten
       - choose:
           conditions:
@@ -61,15 +61,7 @@ script:
               state: 'off'
           sequence:
             - service: light.turn_on
-              entity_id: light.wohnzimmer_schrank
-      - choose:
-          conditions:
-            - condition: state
-              entity_id: switch.pc
-              state: 'off'
-          sequence:
-            - service: switch.turn_on
-              entity_id: switch.pc      
+              entity_id: light.wohnzimmer_schrank 
 
 automation:
   - alias: "Training - Gestartet"

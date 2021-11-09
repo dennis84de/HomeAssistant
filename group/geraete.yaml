@@ -5,8 +5,7 @@ alles_ausschalten:
     - switch.computer
     - switch.watchtv_wohnzimmer
     - switch.watchtv_schlafzimmer
-    - switch.arbeitszimmer_monitore
-    - switch.pc_arbeit
+    - switch.computer_arbeit
     - light.wohnzimmer_couch
     - light.wohnzimmer_strahler
     - light.wohnzimmer_schrank

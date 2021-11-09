@@ -231,4 +231,4 @@ cards:
       - entity: sensor.tankstelle_real
       - entity: binary_sensor.tankstelle_real_status
       - entity: sensor.tankstelle_jet
-      - entity: binary_sensor.tankstelle_jet_status            
+      - entity: binary_sensor.tankstelle_jet_status                 

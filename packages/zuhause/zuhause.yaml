@@ -29,7 +29,7 @@ script:
     alias: "Zu Hause - Home Office"
     sequence:      
       - service: switch.turn_on
-        entity_id: switch.arbeitszimmer_radio, switch.pc_arbeit, switch.arbeitszimmer_monitore
+        entity_id: switch.arbeitszimmer_radio, switch.computer_arbeit
       - choose:
           - conditions:
               - condition: or
@@ -126,7 +126,7 @@ script:
               
               {% set entities = expand('group.batteriestand') %}
              
-              {% for x in entities if x.state|int < min_battery_level %}
+              {% for x in entities if x.state|int <= min_battery_level %}
                 {%- if not loop.first %}, {% endif -%}
                 {{- x.name -}}
               {% endfor %}       
@@ -207,20 +207,27 @@ automation:
           option: 'Herunterfahren'        
       - choose:
           - conditions:
+              - condition: or
+                conditions:
+                  - condition: state
+                    entity_id: binary_sensor.home_office_aktiv
+                    state: 'on'
+                  - condition: and
+                    conditions:
+                      - condition: state
+                        entity_id: binary_sensor.buero_heute
+                        state: 'on'                            
+            sequence:              
+              - service: script.zu_hause_home_office        
+          - conditions:
               - condition: state
                 entity_id: binary_sensor.home_office_aktiv
-                state: 'off'          
+                state: 'off'
               - condition: time
                 after: '08:00'
                 before: '20:00'
             sequence:          
               - service: script.zu_hause
-          - conditions:
-              - condition: state
-                entity_id: binary_sensor.home_office_aktiv
-                state: 'on'          
-            sequence:              
-              - service: script.zu_hause_home_office
           - conditions:
               - condition: time
                 after: '20:00'

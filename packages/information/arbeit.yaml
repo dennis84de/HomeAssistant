@@ -112,20 +112,6 @@ binary_sensor:
           
           {{ false if NextOffice == None else (NextOffice | as_datetime).strftime('%j')|int - now().strftime('%j')|int == 1 }}
           
-#      buero_noch_home_office:
-#        friendly_name: 'Noch Home Office'
-#        value_template: >-
-#          {% set buero_heute = is_state('binary_sensor.buero_heute', 'on') %}
-#          
-#          {% set beginnMinuten = (state_attr('input_datetime.arbeit_beginn', 'timestamp') / 60) | int %}
-#          {% set fahrzeitMinuten = states('sensor.fahrzeit_nach_hause') | int %}
-#          {% set arbeitszeitMinuten = (states('input_number.arbeit_dauer') | int) * 60 %}
-#          {% set timestampHeute = (as_timestamp(as_timestamp(now()) | timestamp_custom("%Y-%m-%d 00:00:00",true))) | int %}
-#          {% set timestampArbeitsende = timestampHeute + ((beginnMinuten + fahrzeitMinuten + arbeitszeitMinuten) * 60) %}
-#          {% set timestampJetzt = as_timestamp(now()) | int  %}
-#
-#          {{ buero_heute and timestampArbeitsende > timestampJetzt }}         
-          
 automation:             
   - alias: 'Benachrichtigung Arbeit'
     id: "benachrichtigung_arbeit"
