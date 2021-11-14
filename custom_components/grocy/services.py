@@ -20,8 +20,10 @@ SERVICE_PRICE = "price"
 SERVICE_SPOILED = "spoiled"
 SERVICE_TRANSACTION_TYPE = "transaction_type"
 SERVICE_CHORE_ID = "chore_id"
+SERVICE_TRACKED_TIME = "tracked_time"
 SERVICE_DONE_BY = "done_by"
 SERVICE_TASK_ID = "task_id"
+SERVICE_DONE_TIME = "done_time"
 SERVICE_ENTITY_TYPE = "entity_type"
 SERVICE_DATA = "data"
 
@@ -57,6 +59,7 @@ SERVICE_EXECUTE_CHORE_SCHEMA = vol.All(
         {
             vol.Required(SERVICE_CHORE_ID): int,
             vol.Optional(SERVICE_DONE_BY): int,
+            vol.Optional(SERVICE_TRACKED_TIME): str,
         }
     )
 )
@@ -65,6 +68,7 @@ SERVICE_COMPLETE_TASK_SCHEMA = vol.All(
     vol.Schema(
         {
             vol.Required(SERVICE_TASK_ID): int,
+            vol.Optional(SERVICE_DONE_TIME): str,
         }
     )
 )
@@ -192,9 +196,14 @@ async def async_execute_chore_service(hass, coordinator, data):
     """Execute a chore in Grocy."""
     chore_id = data[SERVICE_CHORE_ID]
     done_by = data.get(SERVICE_DONE_BY, "")
+    tracked_time_str = data.get(SERVICE_TRACKED_TIME, "")
+
+    tracked_time = datetime.now()
+    if tracked_time_str is not None and tracked_time_str != "":
+        tracked_time = iso8601.parse_date(tracked_time_str)
 
     def wrapper():
-        coordinator.api.execute_chore(chore_id, done_by)
+        coordinator.api.execute_chore(chore_id, done_by, tracked_time)
 
     await hass.async_add_executor_job(wrapper)
 
@@ -206,9 +215,14 @@ async def async_execute_chore_service(hass, coordinator, data):
 async def async_complete_task_service(hass, coordinator, data):
     """Complete a task in Grocy."""
     task_id = data[SERVICE_TASK_ID]
+    done_time_str = data.get(SERVICE_DONE_TIME, None)
+
+    done_time = datetime.now()
+    if done_time_str is not None and done_time_str != "":
+        done_time = iso8601.parse_date(done_time_str)
 
     def wrapper():
-        coordinator.api.complete_task(task_id)
+        coordinator.api.complete_task(task_id, done_time)
 
     await hass.async_add_executor_job(wrapper)
 
