@@ -22,17 +22,12 @@ input_datetime:
     has_time: true
     has_date: true
     
-input_select:
-  timer_schlafzimmer_dauer:
+input_number:
+  timer_schlafzimmer:
     name: Timer Schlafzimmer
-    options:
-      - 10
-      - 30
-      - 60
-      - 70
-      - 90
-      - 120    
-    icon: mdi:clock-end
+    min: 0
+    max: 120
+    step: 10
 
 timer:
   sleeptimer:
@@ -67,26 +62,6 @@ binary_sensor:
 sensor:
   - platform: template
     sensors:
-      timer_schlafzimmer_zeit:
-        friendly_name: Fernseher ausschalten
-        icon_template: mdi:filmstrip-off
-        unit_of_measurement: 'Minuten'
-        value_template: >-
-          {%- if is_state('input_boolean.timer_schlafzimmer_aktiv', 'on') %}
-            {% set now = as_timestamp(now(), None) | int %}
-            {% set last = as_timestamp(state_attr('automation.sleeptimer_starten', 'last_triggered'), None) | int %}              
-            {% set duration = states('input_select.timer_schlafzimmer_dauer') | int %}
-            {% set diff = (duration - ((now - last) / 60)) | int %}
-
-            {% if diff < 0 %}
-              {{ duration }}
-            {% else %}
-              {{ diff }}
-            {% endif %}
-          {% else %}
-              -
-          {%- endif %}
-
       schlafen_letzte_uhrzeit:
         friendly_name: Schlafen Letzte Uhrzeit       
         value_template: "{{ '%02d' % (state_attr('input_datetime.schlafen_uhrzeit', 'hour') | int) ~ ':' ~ '%02d' % (state_attr('input_datetime.schlafen_uhrzeit', 'minute') | int) }}"
@@ -150,14 +125,6 @@ script:
                 entity_id: switch.watchtv_schlafzimmer   
               - service: input_boolean.turn_on
                 entity_id: input_boolean.timer_schlafzimmer_aktiv        
-
-  sleeptimer_turn_off_tv:
-    alias: Sleeptimer aktivieren
-    sequence:
-      - condition: state
-        entity_id: input_boolean.timer_schlafzimmer_aktiv
-        state: 'on'
-      - service: script.watchtv_schlafzimmer_off
 
 automation:
   - alias: "Schlafen gehen - Countdown starten"
@@ -240,7 +207,7 @@ automation:
           seconds: 2        
     condition:
       - condition: state
-        entity_id: input_boolean.schlafen_aktiv
+        entity_id: binary_sensor.schlafen_aktiv
         state: 'on'
       - condition: state
         entity_id: input_boolean.wecker_erinnerung_morgen
@@ -293,51 +260,58 @@ automation:
   - alias: 'Sleeptimer - Starten'
     id: 'sleeptimer_starten'
     trigger:
-      platform: state
-      entity_id: input_boolean.timer_schlafzimmer_aktiv
-      to: 'on'
+      - platform: state
+        entity_id: input_boolean.timer_schlafzimmer_aktiv
+        to: 'on'
+      - platform: state
+        entity_id: input_number.timer_schlafzimmer        
+    condition:
+      - condition: state
+        entity_id: binary_sensor.schlafen_aktiv
+        state: 'on'        
     action:
       - service: timer.start
         entity_id: timer.sleeptimer
         data:
-          duration: >
-            {{ states('input_select.timer_schlafzimmer_dauer')  | int * 60 | int }}
-
-  - alias: 'Sleeptimer - Geändert'
-    id: 'sleeptimer_geaendert'
-    trigger:
-      platform: state
-      entity_id: input_select.timer_schlafzimmer_dauer
-    action:
-      - service: timer.start
-        entity_id: timer.sleeptimer
-        data:
-          duration: >
-            {{ states('input_select.timer_schlafzimmer_dauer') | int * 60 | int }}
+          duration: "{{ states('input_number.timer_schlafzimmer')  | int * 60 | int }}"
       - service: input_boolean.turn_on
         entity_id: input_boolean.timer_schlafzimmer_aktiv
 
   - alias: 'Sleeptimer - Endet'
     id: 'sleeptimer_endet'
     trigger:
-      platform: event
-      event_type: timer.finished
-      event_data:
-        entity_id: timer.sleeptimer
-    action:
-      - service: script.sleeptimer_turn_off_tv
-      - service: light.turn_off
-        entity_id: light.bett
+      - platform: event
+        event_type: timer.finished
+        event_data:
+          entity_id: timer.sleeptimer
+    condition:
+      - condition: state
+        entity_id: input_boolean.timer_schlafzimmer_aktiv
+        state: 'on'                    
+    action:      
+      - service: script.watchtv_schlafzimmer_off
+      - service: homeassistant.turn_off
+        entity_id: group.licht_wohnung
 
   - alias: 'Sleeptimer - Abbrechen'
     id: 'sleeptimer_abbrechen'
     trigger:
-      platform: state
-      entity_id: input_boolean.timer_schlafzimmer_aktiv
-      to: 'off'
+      - platform: state
+        entity_id: input_boolean.timer_schlafzimmer_aktiv
+        to: 'off'
+      - platform: event
+        event_type: timer.cancelled
+        event_data:
+          entity_id: timer.sleeptimer     
+    condition:
+      - condition: state
+        entity_id: timer.sleeptimer
+        state: 'active'                  
     action:
       - service: timer.cancel
         entity_id: timer.sleeptimer
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.timer_schlafzimmer_aktiv
 
 homeassistant:
   customize:
