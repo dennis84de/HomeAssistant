@@ -202,16 +202,16 @@ automation:
         state: 'off'               
       - condition: or
         conditions:
-        - condition: state
-          entity_id: media_player.kodi_wohnzimmer
-          state: 'playing'
-        - condition: state
-          entity_id: media_player.kodi_wohnzimmer
-          state: 'paused'
+          - condition: state
+            entity_id: media_player.kodi_wohnzimmer
+            state: 'playing'
+          - condition: state
+            entity_id: media_player.kodi_wohnzimmer
+            state: 'paused'
     action:
       - service: media_player.media_play_pause
         entity_id: media_player.kodi_wohnzimmer
-          
+
   - alias: "Kodi Wohnzimmer - Starten"
     id: "kodi_wohnzimmer_starten"
     trigger:

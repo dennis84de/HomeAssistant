@@ -6,6 +6,27 @@ layout:
   max_cols: 3
 cards:
   - type: entities
+    title: Sleeptimer
+    show_header_toggle: false
+    entities:
+      - type: custom:flipdown-timer-card
+        entity: timer.sleeptimer                
+        duration: '00:00:00'      
+        show_hour: true
+      - entity: input_boolean.timer_schlafzimmer_aktiv
+      - entity: input_number.timer_schlafzimmer
+      
+  - type: entities
+    title: Schlafen
+    show_header_toggle: false
+    entities:
+      - entity: script.schlafen_gehen
+      - entity: binary_sensor.schlafen_aktiv
+      - entity: sensor.schlafen_letzte_uhrzeit
+        name: Letzte Uhrzeit
+      - entity: input_boolean.schlafen_fernseher_einschalten
+
+  - type: entities
     title: Multimedia
     show_header_toggle: false
     entities:
@@ -40,24 +61,6 @@ cards:
         hide:
           source: true
           progress: true                
-
-  - type: entities
-    title: Schlafen
-    show_header_toggle: false
-    entities:
-      - entity: script.schlafen_gehen
-      - entity: binary_sensor.schlafen_aktiv
-      - entity: sensor.schlafen_letzte_uhrzeit
-        name: Letzte Uhrzeit
-      - entity: input_boolean.schlafen_fernseher_einschalten
-
-  - type: entities
-    title: Sleeptimer
-    show_header_toggle: false
-    entities:
-      - entity: sensor.timer_schlafzimmer_zeit
-      - entity: input_boolean.timer_schlafzimmer_aktiv
-      - entity: input_select.timer_schlafzimmer_dauer
 
   - type: entities
     title: Licht

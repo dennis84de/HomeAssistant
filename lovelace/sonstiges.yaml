@@ -20,7 +20,7 @@ cards:
       - entity: binary_sensor.autoreifen
       - entity: sensor.katastrophenalarm
       - entity: sensor.sternzeichen
-      - entity: sensor.zeitumstellung
+      - entity: sensor.zeitumstellung   
                 
   - type: conditional
     view_layout:

@@ -31,8 +31,9 @@ template:
         device_class: timestamp
         state: >
           {%- macro hms(t) %}
-          {%- set h, m, s = (t.dst() | string).split(':') | map('int') %}
-          {{- h * 60 * 60 + m * 60 + s }}
+          {%- set dststr = t.dst() | string if t.dst() is not none else "00:00:00" %}
+          {%- set h, m, s = dststr.split(':') | map('int') %}
+          {{- h * 60 * 60 + m * 60 + s }}   
           {%- endmacro %}
 
           {%- macro is_dst(t) %}
@@ -47,14 +48,15 @@ template:
               {%- set ns.found = i %}
             {%- endif %}
           {%- endfor %}
-          {{ ns.found }}
+            {{- ns.found }}
           {%- endmacro %}
 
           {%- set t = now().replace(hour=0, minute=0, second=0, microsecond=0) %}
-          {%- set d = finddst(t, 'days', 365) | int - 1 %}
-          {%- set h = finddst(t + timedelta(days=d), 'hours', 24) | int %}
-          {%- set m = finddst(t + timedelta(days=d, hours=h), 'minutes', 60) | int %}
-          {{ (t.astimezone() + timedelta(days=d, hours=h, minutes=m)).isoformat() }}
+          {%- set d = finddst(t, 'days', 366) | int - 1 %}
+          {%- set h = finddst(t + timedelta(days=d), 'hours', 25) | int - 1 %}
+          {%- set m = finddst(t + timedelta(days=d, hours=h), 'minutes', 61) | int %}
+          
+          {{ (t + timedelta(days=d, hours=h, minutes=m)).isoformat() }}
 
   - sensor:
     - unique_id: zeitumstellung_tage
@@ -66,14 +68,15 @@ template:
         
         {{ (next - today).days if next is not none else 0 }}
       availability: >
-        {{ states('sensor.zeitumstellung') not in ['unknown', 'unavailable'] }}
+        {{ states('sensor.zeitumstellung') not in ['unknown', 'unavailable'] }}      
 
     - unique_id: zeitumstellung_richtung
       name: "Zeitumstellung Richtung"
       state: >
         {%- macro hms(t) %}
-        {%- set h, m, s = (t.dst() | string).split(':') | map('int') %}
-        {{- h * 60 * 60 + m * 60 + s }}
+        {%- set dststr = t.dst() | string if t.dst() is not none else "00:00:00" %}
+        {%- set h, m, s = dststr.split(':') | map('int') %}
+        {{- h * 60 * 60 + m * 60 + s }}   
         {%- endmacro %}
 
         {%- macro phrase(seconds, name, divisor, mod=None) %}
@@ -87,23 +90,29 @@ template:
           phrase(seconds, 'Stunde', 60*60, 60*60*24),
           phrase(seconds, 'Minute', 60, 60),
           ] | select('!=','') | list %}
-        {{- values[:-1] | join(', ') ~ ' and ' ~ values[-1] if values | length > 1 else values | first }}
+        {{- values[:-1] | join(', ') ~ ' and ' ~ values[-1] if values | length > 1 else values | first | default}}
         {%- endmacro %}
 
-        {%- set next = states('sensor.zeitumstellung') %}
-        {%- set nextLocal = None if next in ['unknown', 'unavailable'] else next | as_datetime | as_local %}
-        
-        {%- if nextLocal is not none %}
-          {%- set ns = hms(nextLocal) | int %}
-          {%- set ps = hms(nextLocal - timedelta(days=1)) | int %}
-          {% if ns %}
-            {{ total(ns) }} vor
-          {% else %}
-            {{ total(ps) }} zurück
-          {% endif %}
-        {%- endif %}
-      availability: >
-        {{ states('sensor.zeitumstellung') not in ['unknown', 'unavailable'] }}  
+        {%- macro finddelta(t, kwarg, rng) %}
+        {%- set ns = namespace(previous=hms(t), found=none) %}
+        {%- for i in range(rng) %}
+          {%- set ts = t + timedelta(**{kwarg:i}) %}
+          {%- if ns.previous != hms(ts) and ns.found is none %}
+            {%- set before = hms(ts - timedelta(days=1)) | int %}
+            {%- set after = hms(ts) | int %}
+            {%- set ns.found =  after - before %}
+          {%- endif %}
+        {%- endfor %}
+        {{ ns.found }}
+        {%- endmacro %}
+
+        {%- set t = now().replace(hour=0, minute=0, second=0, microsecond=0) %}
+        {%- set delta = finddelta(t, 'days', 365) | int %}
+        {% if delta > 0 %}
+          {{ total(delta | abs) }} vor
+        {% else %}
+          {{ total(delta | abs) }} zurück
+        {% endif %}      
   
 sensor:
   - platform: imap
