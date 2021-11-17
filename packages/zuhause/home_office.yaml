@@ -146,7 +146,7 @@ script:
           - conditions:
               - condition: numeric_state
                 entity_id: sensor.bewegungsmelder_balkon_temperatur
-                above: 10
+                above: 0
             sequence:
               - service: switch.turn_on
                 entity_id: switch.balkon_radio        
@@ -161,7 +161,6 @@ script:
                 data:
                   entity_id: climate.arbeitszimmer
                   preset_mode: 'eco'
-      - delay: '00:00:10'
       - choose:
           - conditions:
               - condition: state

@@ -170,10 +170,8 @@ automation:
         from: 'off'
         to: 'idle'
     condition:
-      - "{{ (states('sensor.laufzeit_minuten') | float(0)) > 1 }}"         
-      - condition: state
-        state: 'on'
-        entity_id: input_boolean.musik_ausschalten      
+      - "{{ (states('sensor.laufzeit_minuten') | int) > 1 }}"   
+      - "{{ is_state('input_boolean.musik_ausschalten', 'on') }}"
     action:  
       - service: script.radios_ausschalten
         data:

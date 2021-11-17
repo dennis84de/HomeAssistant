@@ -13,6 +13,9 @@ cards:
         entity: timer.sleeptimer                
         duration: '00:00:00'      
         show_hour: true
+        styles:
+          button:
+            location: hide        
       - entity: input_boolean.timer_schlafzimmer_aktiv
       - entity: input_number.timer_schlafzimmer
       
