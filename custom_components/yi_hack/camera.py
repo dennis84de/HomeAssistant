@@ -1,4 +1,4 @@
-"""Support for Xiaomi Cameras: yi-hack-MStar, yi-hack-Allwinner, yi-hack-Allwinner-v2, yi-hack-v5 and sonoff-hack."""
+from __future__ import annotations
 
 import asyncio
 import logging
@@ -24,8 +24,8 @@ from homeassistant.helpers.device_registry import CONNECTION_NETWORK_MAC
 from .common import (get_privacy, set_power_off_in_progress,
                      set_power_on_in_progress, set_privacy)
 from .const import (ALLWINNER, ALLWINNERV2, CONF_HACK_NAME, CONF_MQTT_PREFIX,
-                    CONF_PTZ, CONF_SERIAL, CONF_TOPIC_MOTION_DETECTION_IMAGE,
-                    DEFAULT_BRAND, DOMAIN, HTTP_TIMEOUT, LINK_HIGH_RES_STREAM,
+                    CONF_PTZ, CONF_TOPIC_MOTION_DETECTION_IMAGE, DEFAULT_BRAND,
+                    DOMAIN, HTTP_TIMEOUT, LINK_HIGH_RES_STREAM,
                     LINK_LOW_RES_STREAM, MSTAR, SERVICE_PTZ, SERVICE_SPEAK)
 
 _LOGGER = logging.getLogger(__name__)
@@ -112,7 +112,6 @@ class YiHackCamera(Camera):
         self._name = self._device_name + "_cam"
         self._unique_id = self._device_name + "_caca"
         self._mac = config.data[CONF_MAC]
-        self._serial_number = config.data[CONF_SERIAL]
         self._host = config.data[CONF_HOST]
         self._port = config.data[CONF_PORT]
         self._user = config.data[CONF_USERNAME]
@@ -122,7 +121,7 @@ class YiHackCamera(Camera):
 
         self._http_base_url = "http://" + self._host
         if self._port != 80:
-            self._http_base_url += ":" + self._port
+            self._http_base_url += ":" + str(self._port)
         self._still_image_url = self._http_base_url + "/cgi-bin/snapshot.sh?res=high&watermark=yes"
 
     @property
@@ -192,8 +191,12 @@ class YiHackCamera(Camera):
 
         return await self.hass.async_add_executor_job(fetch_link)
 
-    async def async_camera_image(self):
+    async def async_camera_image(
+        self, width: int | None = None, height: int | None = None
+    ) -> bytes | None:
         """Return a still image response from the camera."""
+        """Ignore width and height when the image is fetched from url."""
+        """Camera component will resize it."""
         image = None
 
         if self._still_image_url:
@@ -226,7 +229,9 @@ class YiHackCamera(Camera):
                     ffmpeg.get_image(
                         stream_source,
                         output_format=IMAGE_JPEG,
-                        extra_cmd=self._extra_arguments
+                        extra_cmd=self._extra_arguments,
+                        width=width,
+                        height=height
                     )
                 )
 
@@ -263,7 +268,7 @@ class YiHackCamera(Camera):
             auth = HTTPBasicAuth(self._user, self._password)
 
         try:
-            response = requests.get("http://" + self._host + ":" + self._port + "/cgi-bin/ptz.sh?dir=" + movement + "&time=" + travel_time_str, timeout=HTTP_TIMEOUT, auth=auth)
+            response = requests.get("http://" + self._host + ":" + str(self._port) + "/cgi-bin/ptz.sh?dir=" + movement + "&time=" + travel_time_str, timeout=HTTP_TIMEOUT, auth=auth)
             if response.status_code >= 300:
                 _LOGGER.error("Failed to send ptz command to device %s", self._host)
         except requests.exceptions.RequestException as error:
@@ -290,7 +295,7 @@ class YiHackCamera(Camera):
             auth = HTTPBasicAuth(self._user, self._password)
 
         try:
-            response = requests.post("http://" + self._host + ":" + self._port + "/cgi-bin/speak.sh?lang=" + language, data=sentence, timeout=HTTP_TIMEOUT, auth=auth)
+            response = requests.post("http://" + self._host + ":" + str(self._port) + "/cgi-bin/speak.sh?lang=" + language, data=sentence, timeout=HTTP_TIMEOUT, auth=auth)
             if response.status_code >= 300:
                 _LOGGER.error("Failed to send speak command to device %s", self._host)
         except requests.exceptions.RequestException as error:
@@ -342,7 +347,7 @@ class YiHackCamera(Camera):
         return {
             "name": self._device_name,
             "connections": {(CONNECTION_NETWORK_MAC, self._mac)},
-            "identifiers": {(DOMAIN, self._serial_number)},
+            "identifiers": {(DOMAIN, self._mac)},
             "manufacturer": DEFAULT_BRAND,
             "model": DOMAIN,
         }
@@ -358,7 +363,6 @@ class YiHackMqttCamera(Camera):
         self._name = self._device_name  + "_motion_detection_cam"
         self._unique_id = self._device_name + "_camd"
         self._mac = config.data[CONF_MAC]
-        self._serial_number = config.data[CONF_SERIAL]
         self._state_topic = config.data[CONF_MQTT_PREFIX] + "/" + config.data[CONF_TOPIC_MOTION_DETECTION_IMAGE]
         self._last_image = None
         self._mqtt_subscription = None
@@ -387,8 +391,11 @@ class YiHackMqttCamera(Camera):
         if self._mqtt_subscription:
             self._mqtt_subscription()
 
-    async def async_camera_image(self):
+    async def async_camera_image(
+        self, width: int | None = None, height: int | None = None
+    ) -> bytes | None:
         """Return image response."""
+        """Ignore width and height: camera component will resize it."""
         return self._last_image
 
     @property
@@ -422,7 +429,7 @@ class YiHackMqttCamera(Camera):
         return {
             "name": self._device_name,
             "connections": {(CONNECTION_NETWORK_MAC, self._mac)},
-            "identifiers": {(DOMAIN, self._serial_number)},
+            "identifiers": {(DOMAIN, self._mac)},
             "manufacturer": DEFAULT_BRAND,
             "model": DOMAIN,
         }
