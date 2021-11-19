@@ -1,9 +1,3 @@
-#fan:
-#  - platform: xiaomi_miio_fan
-#    name: Ventilator
-#    host: !secret xiaomi_fan_host
-#    token: !secret xiaomi_fan_token   
-
 input_boolean:
   ventilator_timer_aktiv:
     name: Timer aktiv
@@ -46,7 +40,7 @@ sensor:
           {% if is_state('fan.ventilator', 'unknown') or states.fan.ventilator == None %}
             0
           {% else %}
-            {{ state_attr("fan.ventilator", "angle") | int }}
+            {{ state_attr("fan.ventilator", "angle") | int(0) }}
           {% endif %}
 
       ventilator_batterie:
@@ -74,10 +68,10 @@ sensor:
         unit_of_measurement: 'Minuten'
         value_template: >-
           {%- if is_state('input_boolean.ventilator_timer_aktiv', 'on') %}            
-            {% set now = as_timestamp(now(), None) | int %}
-            {% set last = as_timestamp(state_attr('automation.ventilator_timer_gestartet', 'last_triggered'), None) | int %}              
-            {% set duration = states('input_select.ventilator_timer') | int %}
-            {% set diff = (duration - ((now - last) / 60)) | int %}
+            {% set now = as_timestamp(now()) %}
+            {% set last = as_timestamp(state_attr('automation.ventilator_timer_gestartet', 'last_triggered'), 0) %}              
+            {% set duration = states('input_select.ventilator_timer') | int(0) %}
+            {% set diff = (duration - ((now - last) / 60)) | int(0) %}
 
             {% if diff < 0 %}
               {{ duration }}
@@ -123,7 +117,7 @@ automation:
       - service: xiaomi_miio_fan.fan_set_oscillation_angle
         data:
           entity_id: fan.ventilator
-          angle: '{{ trigger.to_state.state | int }}'
+          angle: '{{ trigger.to_state.state | int(0) }}'
 
   - alias: "Ventilator Winkel - Sensor geändert"
     id: "ventilator_winkel_sensor_geaendert"
@@ -157,7 +151,7 @@ automation:
         entity_id: timer.ventilator
         data:
           duration: >
-            {{ states('input_select.ventilator_timer') | int * 60 | int }}
+            {{ states('input_select.ventilator_timer') | int(0) }}
 
   - alias: "Ventilator - Timer abgebrochen"
     id: "ventilator_timer_abgebrochen"

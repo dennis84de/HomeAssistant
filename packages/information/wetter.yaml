@@ -200,10 +200,10 @@ sensor:
         icon_template: mdi:weather-windy-variant
         value_template: >
           {% if is_state('sensor.darksky_precip' , 'snow') %} Schnee
-          {% elif ((states('sensor.darksky_overnight_low_temperature') | int < 4) and (states('sensor.darksky_dew_point') | int < 6)
-            and (states('sensor.darksky_wind_speed') | int < 12) and (states('sensor.darksky_cloud_coverage') | int < 20)
-            and (states('sensor.darksky_humidity') | int > 50)) %} Frost
-          {% elif (states('sensor.darksky_precip_intensity') | int > 7) %} Regen
+          {% elif ((states('sensor.darksky_overnight_low_temperature') | int(0) < 4) and (states('sensor.darksky_dew_point') | int(0) < 6)
+            and (states('sensor.darksky_wind_speed') | int(0) < 12) and (states('sensor.darksky_cloud_coverage') | int(0) < 20)
+            and (states('sensor.darksky_humidity') | int(0) > 50)) %} Frost
+          {% elif (states('sensor.darksky_precip_intensity') | int(0) > 7) %} Regen
           {% else %} Klar {% endif %}
 
       helligkeit_wetter:
@@ -321,7 +321,7 @@ sensor:
           {% if is_state('sensor.skin_type_3_safe_exposure_time', 'unknown') %}
             0
           {% else %}
-            {{ states('sensor.skin_type_3_safe_exposure_time') | int }}
+            {{ states('sensor.skin_type_3_safe_exposure_time') | int(0) }}
           {% endif %}
         icon_template: '{{ state_attr("sensor.skin_type_3_safe_exposure_time","icon") }}'        
         unit_of_measurement: 'Minuten'
@@ -330,12 +330,12 @@ sensor:
         friendly_name: 'Windrichtung'
         icon_template: mdi:compass
         value_template: >-
-          {% set winbearing = (states('sensor.darksky_wind_bearing') | float(0) / 45) | int | round + 1 %}
+          {% set winbearing = (states('sensor.darksky_wind_bearing') | float(0) / 45) | int(0) | round + 1 %}
           {% set winddir = ['Nord', 'NO','Ost','SO','Süd','SW','West','NW']%}
           
           {{ winddir[winbearing]}}
         entity_picture_template: >-
-          {% set winbearing = (states('sensor.darksky_wind_bearing') | float(0) / 45) | int | round + 1 %}
+          {% set winbearing = (states('sensor.darksky_wind_bearing') | float(0) / 45) | int(0) | round + 1 %}
           {% set winddir = ['0', '45','90','135','180','225','270','315'] %}
           
           {{ "/local/wind/" ~ winddir[winbearing] ~ ".png" }}
@@ -353,7 +353,7 @@ sensor:
               {% set startTime = as_timestamp(state_attr("sensor.wetterwarnungen_current_warning_level", "warning_" ~ loop.index ~ "_start"), None) %}
               {% set endTime = as_timestamp(state_attr("sensor.wetterwarnungen_current_warning_level", "warning_" ~ loop.index ~ "_end"), None) %}
             
-              {% if startTime < as_timestamp(now(), None) < endTime %}
+              {% if startTime < as_timestamp(now()) < endTime %}
                 {% set ns.found = ns.found + 1 -%}
               {%endif%}
             {% endfor %}
@@ -362,7 +362,7 @@ sensor:
               {% set startTime = as_timestamp(state_attr("sensor.wetterwarnungen_advance_warning_level", "warning_" ~ loop.index ~ "_start"), None) %}
               {% set endTime = as_timestamp(state_attr("sensor.wetterwarnungen_advance_warning_level", "warning_" ~ loop.index ~ "_end"), None) %}
               
-              {% if startTime < as_timestamp(now(), None) < endTime %}
+              {% if startTime < as_timestamp(now()) < endTime %}
                 {% set ns.found = ns.found + 1 -%}
               {%endif%}
             {% endfor %}              
@@ -431,7 +431,7 @@ automation:
                         {% set startTime = as_timestamp(state_attr("sensor.wetterwarnungen_current_warning_level", "warning_" ~ loop.index ~ "_start"), None) %}
                         {% set endTime = as_timestamp(state_attr("sensor.wetterwarnungen_current_warning_level", "warning_" ~ loop.index ~ "_end"), None) %}
             
-                        {% if startTime < as_timestamp(now(), None) < endTime %}
+                        {% if startTime < as_timestamp(now()) < endTime %}
                           {%- if headline != None -%} {{ headline }}. {% endif -%} {%- if description != None -%} {{ description }} {% endif -%}
                         {%endif%}           
                       {%- endfor -%}
@@ -442,7 +442,7 @@ automation:
                         {% set startTime = as_timestamp(state_attr("sensor.wetterwarnungen_advance_warning_level", "warning_" ~ loop.index ~ "_start"), None) %}
                         {% set endTime = as_timestamp(state_attr("sensor.wetterwarnungen_advance_warning_level", "warning_" ~ loop.index ~ "_end"), None) %}
             
-                        {% if startTime < as_timestamp(now(), True) < endTime %}
+                        {% if startTime < as_timestamp(now()) < endTime %}
                           {%- if headline != None -%} {{ headline }}. {% endif -%} {%- if description != None -%} {{ description }} {% endif -%}
                         {%endif%}                        
                       {%- endfor -%}              
@@ -469,7 +469,7 @@ automation:
                     {% set startTime = as_timestamp(state_attr("sensor.wetterwarnungen_current_warning_level", "warning_" ~ loop.index ~ "_start"), None) %}
                     {% set endTime = as_timestamp(state_attr("sensor.wetterwarnungen_current_warning_level", "warning_" ~ loop.index ~ "_end"), None) %}
                         
-                    {% if startTime < as_timestamp(now(), None) < endTime %}
+                    {% if startTime < as_timestamp(now()) < endTime %}
                       {% if headline != None %} {{ headline }}. {% endif %} {% if description != None %} {{ description }} {% endif %}
                     {%endif%}                                                
                   {% endfor %}
@@ -480,7 +480,7 @@ automation:
                     {% set startTime = as_timestamp(state_attr("sensor.wetterwarnungen_advance_warning_level", "warning_" ~ loop.index ~ "_start"), None) %}
                     {% set endTime = as_timestamp(state_attr("sensor.wetterwarnungen_advance_warning_level", "warning_" ~ loop.index ~ "_end"), None) %}
                         
-                    {% if startTime < as_timestamp(now(), None) < endTime %}
+                    {% if startTime < as_timestamp(now()) < endTime %}
                       {% if headline != None %} {{ headline }}. {% endif %} {% if description != None %} {{ description }} {% endif %}
                     {%endif%}                      
                   {% endfor %}              

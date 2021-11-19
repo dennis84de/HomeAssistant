@@ -30,7 +30,7 @@ binary_sensor:
       wohnzimmer_schrank_inaktiv:
         friendly_name: "Wohnzimmer Schrank inaktiv"   
         value_template: >-          
-          {% set hour = now().strftime("%H") | int %}
+          {% set hour = now().strftime("%H") | int(0) %}
           
           {{ True if (hour < 7 or hour >= 20 ) else False }}
           

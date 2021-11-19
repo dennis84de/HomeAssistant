@@ -143,14 +143,18 @@ homeassistant:
       icon: mdi:printer
     device_tracker.xiaomivacuum:
       icon: mdi:robot-vacuum-variant
+      friendly_name: Xiaomi Staubsauger
     device_tracker.xiaomifan:
       icon: mdi:fan      
+      friendly_name: Xiaomi Ventilator
     device_tracker.soundbar:
       icon: mdi:music-note
     device_tracker.fernseherwohnzimmer:
       icon: mdi:television
+      friendly_name: Fernseher Wohnzimmer
     device_tracker.kamerawohnzimmer:
       icon: mdi:cctv
+      friendly_name: Kamera Wohnzimmer
       
     device_tracker.radiowohnzimmer:
       friendly_name: Radio Wohnzimmer
@@ -168,16 +172,7 @@ homeassistant:
       friendly_name: Radio Balkon
     device_tracker.radiokeller:
       friendly_name: Radio Keller
-      
-    device_tracker.xiaomivacuum:
-      friendly_name: Xiaomi Staubsauger
-    device_tracker.xiaomifan:
-      friendly_name: Xiaomi Ventilator
-    device_tracker.kamerawohnzimmer:
-      friendly_name: Kamera Wohnzimmer
-    device_tracker.fernseherwohnzimmer:
-      friendly_name: Fernseher Wohnzimmer
-        
+              
     device_tracker.tplinkwohnzimmermonitor:
       friendly_name: Wohnzimmer Monitor
     device_tracker.tplinkschlafzimmerradio:

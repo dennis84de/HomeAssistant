@@ -32,11 +32,11 @@ binary_sensor:
           {% set arbeitstag = is_state('binary_sensor.arbeitstag', 'on') %}
           {% set samstag = (now().isoweekday() | int) == 6 %}          
           {% set keinUrlaub = is_state('calendar.urlaub', 'off') %}
-          {% set heute = as_timestamp(now(), None) | timestamp_custom("%Y-%m-%d 00:00:00", True) %}
+          {% set heute = as_timestamp(now()) | timestamp_custom("%Y-%m-%d 00:00:00", True) %}
           {% set letzteReinigung = as_timestamp(state_attr("automation.staubsaugen_beendet", "last_triggered"), None) | timestamp_custom("%Y-%m-%d 00:00:00", True) %}
           
           {% if letzteReinigung %}
-            {% set abstandTage = ((as_timestamp(heute, None) - as_timestamp(letzteReinigung, None)) / 60 / 60 / 24) | int %}
+            {% set abstandTage = ((as_timestamp(heute, None) - as_timestamp(letzteReinigung, None)) / 60 / 60 / 24) | int(0) %}
           {% else %}
             {% set abstandTage = 3 %}
           {% endif %}
@@ -117,9 +117,9 @@ automation:
         state: 'on'      
       - condition: template
         value_template: >-
-          {% set letzter_start = as_timestamp(state_attr("automation.staubsaugen_gestartet", "last_triggered"), None) | timestamp_custom("%s", True) | int  %}
+          {% set letzter_start = as_timestamp(state_attr("automation.staubsaugen_gestartet", "last_triggered"), None) | timestamp_custom("%s", True) | int(0)  %}
           {% set now = now().strftime("%s") | int %}
-          {% set abstand_stunden = ((now - letzter_start | int) / 3600) | int %}
+          {% set abstand_stunden = ((now - letzter_start) / 3600) | int(0) %}
 
           {{ True if abstand_stunden <= 2 else False }}         
     action:

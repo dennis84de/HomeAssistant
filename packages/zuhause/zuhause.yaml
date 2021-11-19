@@ -7,7 +7,7 @@ input_select:
       - Handy
       
 shell_command:
-  send_position: "curl -X POST '{{ url }}?lat={{ state_attr('zone.home', 'latitude') }}&lon={{ state_attr('zone.home', 'longitude') }}&timestamp={{ as_timestamp(now(), None) | int }}'"
+  send_position: "curl -X POST '{{ url }}?lat={{ state_attr('zone.home', 'latitude') }}&lon={{ state_attr('zone.home', 'longitude') }}&timestamp={{ as_timestamp(now()) | int(0) }}'"
 
 script:
   zu_hause:
@@ -98,7 +98,7 @@ script:
               "Der Staubsaugerbehälter muss geleert werden."
             {% endif %}
 
-            {% set count_heimnetz_entities = states('sensor.heimnetz_offline') | int -%}
+            {% set count_heimnetz_entities = states('sensor.heimnetz_offline') | int(0) -%}
             
             {% if count_heimnetz_entities > 0 %}
               {{ "Die folgenden Geräte sind offline." if count_heimnetz_entities > 1 else "Das folgende Gerät ist offline."}}
@@ -111,22 +111,22 @@ script:
               {{ heimnetzOffline | join(', ') }}                            
             {% endif %}
 
-            {% set min_battery_level = states('input_number.batteriestand_warnlevel') | int -%}   
-            {% set handyBatteriestand = states('sensor.handy_batterie') | int %}
+            {% set min_battery_level = states('input_number.batteriestand_warnlevel') | int(0) -%}   
+            {% set handyBatteriestand = states('sensor.handy_batterie') | int(0) %}
             {% set handyWirdAufgeladen = state_attr('sensor.handy_batterie', 'is_charging') == True %}
             
             {% if not handyWirdAufgeladen and handyBatteriestand <= min_battery_level %}
               Das Handy muss aufgeladen werden.
             {% endif %}    
                     
-            {% set count_battery_entities = states('sensor.batteriestand_niedrig') | int -%}
+            {% set count_battery_entities = states('sensor.batteriestand_niedrig') | int(0) -%}
                                  
             {% if count_battery_entities > 0 %}
               {{ "Der Batteriestand der folgenden Geräte ist niedrig." if count_battery_entities > 1 else "Der Batteriestand des folgenden Gerätes ist niedrig."}}
               
               {% set entities = expand('group.batteriestand') %}
              
-              {% for x in entities if x.state|int <= min_battery_level %}
+              {% for x in entities if x.state|int(100) <= min_battery_level %}
                 {%- if not loop.first %}, {% endif -%}
                 {{- x.name -}}
               {% endfor %}       
@@ -139,9 +139,9 @@ script:
               {% set ns.found = ns.found + 1 -%}
             {% endfor %}
 
-            {% if (ns.found | int) == 1 %}
+            {% if (ns.found | int(0)) == 1 %}
               Das folgende Gerät wurde vollständig aufgeladen.
-            {% elif (ns.found | int) > 1 %}
+            {% elif (ns.found | int(0)) > 1 %}
               Die folgenden Geräte wurden vollständig aufgeladen.
             {% endif %}
 
@@ -179,9 +179,9 @@ automation:
         value_template: "{{ is_state('person.dennis', 'not_home') if trigger.id == 'schalter_flur' else True }}"
       - condition: template
         value_template: >-
-          {% set now = as_timestamp(now(), None) | int %}
-          {% set last = as_timestamp(state_attr("script.alles_ausschalten_nfc", "last_triggered"), None) | int %}
-          {% set diff = ((now - last) / 60) | int %}
+          {% set now = as_timestamp(now()) %}
+          {% set last = as_timestamp(state_attr("script.alles_ausschalten_nfc", "last_triggered"), None) | int(0) %}
+          {% set diff = ((now - last) / 60) | int(0) %}
 
           {{ diff >= 10 }}        
     action:     

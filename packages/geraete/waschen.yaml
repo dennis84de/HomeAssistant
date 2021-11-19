@@ -48,7 +48,7 @@ automation:
       - platform: numeric_state
         entity_id: sensor.waschmaschine_verbrauch
         below: 10
-        for: '00:03:00'
+        for: '00:00:30'
       - platform: state
         entity_id: switch.waschmaschine
         from: 'off'
@@ -194,7 +194,7 @@ automation:
       - platform: numeric_state
         entity_id: sensor.trockner_verbrauch
         below: 10
-        for: '00:03:00'
+        for: '00:00:30'
       - platform: state
         entity_id: switch.trockner
         from: 'off'

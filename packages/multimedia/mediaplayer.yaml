@@ -9,7 +9,7 @@ automation:
     trigger:
       - platform: template
         value_template: >-
-          {% set minute = now().strftime("%M") | int %}
+          {% set minute = now().strftime("%M") %}
           
           {{ minute == 0 or minute == 30 }}
     condition:

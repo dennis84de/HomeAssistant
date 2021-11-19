@@ -56,8 +56,8 @@ binary_sensor:
           {% set wecker_standard_buero = states('input_datetime.alarm_standard_buero') %}
           {% set wecker_standard_homeoffice = states('input_datetime.alarm_standard_homeoffice') %}     
 
-          {% set tagWecker = as_timestamp(states('sensor.tablet_schlafzimmer_nachster_wecker'), None) | timestamp_custom("%d", True) | int %}
-          {% set tagHeute = as_timestamp(now(), None) | timestamp_custom("%d", True) | int %}
+          {% set tagWecker = as_timestamp(states('sensor.tablet_schlafzimmer_nachster_wecker'), None) | timestamp_custom("%d", True) | int(0) %}
+          {% set tagHeute = as_timestamp(now()) | timestamp_custom("%d", True) | int(0) %}
 
           {% set buero_morgen = is_state('binary_sensor.buero_morgen', 'on') %}
           {% set buero_heute = is_state('binary_sensor.buero_heute', 'on') %}
@@ -109,7 +109,7 @@ sensor:
           {% if alarmSensor == 'unavailable' %}
             -
           {% else %}
-            {% set weekday = as_timestamp(alarmSensor, None) | timestamp_custom("%w", True) | int %}
+            {% set weekday = as_timestamp(alarmSensor, None) | timestamp_custom("%w", True) | int(0) %}
             {{ ['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'][weekday-1] }}, {{ as_timestamp(alarmSensor, None) | timestamp_custom("%d.%m.%Y", True) | string }}          
           {% endif %}
 
@@ -122,12 +122,12 @@ script:
           echo: badezimmer
           message: >-
             {%- set word_for_and = 'und' %}
-            {%- set up_time = as_timestamp(now(), None) - state_attr('input_datetime.schlafen_uhrzeit', 'timestamp') | int %}
+            {%- set up_time = as_timestamp(now()) - state_attr('input_datetime.schlafen_uhrzeit', 'timestamp') | int(0) %}
 
             {%- macro phrase(name, plural_name, divisor, mod=None) %}
-              {%- set value = ((up_time // divisor) % (mod if mod else divisor)) | int %}
+              {%- set value = ((up_time // divisor) % (mod if mod else divisor)) | int(0) %}
               {%- set name = plural_name if value > 1 else name %}
-              {{- '{} {}'.format(value, name) if value | int > 0 else '' }}
+              {{- '{} {}'.format(value, name) if value | int(0) > 0 else '' }}
             {%- endmacro %}
 
             {%- set values = [ 
@@ -138,7 +138,7 @@ script:
                    ] | select('!=','') | list %}
 
             {% set schlafenSatz = values[:-1] | join(', ') ~ ' ' ~ word_for_and ~ ' ' ~ values[-1] if values | length > 1 else values | first %}
-            {% set uhrzeitSatz = as_timestamp(now(), None) | timestamp_custom('%H:%M') %}         
+            {% set uhrzeitSatz = as_timestamp(now()) | timestamp_custom('%H:%M') %}         
              
             {{ 'Guten Morgen. Es ist ' ~ uhrzeitSatz ~ ' Uhr. Du hast ' ~ schlafenSatz ~ ' geschlafen.' }}      
                        
@@ -149,7 +149,7 @@ script:
               {{ 'Die Temperatur beträgt aktuell ' ~ temperatur ~ ' Grad.' }}
             {% endif %}           
             
-            {% set count_heimnetz_entities = states('sensor.heimnetz_offline') | int -%}
+            {% set count_heimnetz_entities = states('sensor.heimnetz_offline') | int(0) -%}
             
             {% if count_heimnetz_entities > 0 %}
               {{ "Die folgenden Geräte sind offline." if count_heimnetz_entities > 1 else "Das folgende Gerät ist offline."}}
@@ -162,22 +162,22 @@ script:
               {{ heimnetzOffline | join(', ') }}                            
             {% endif %}
 
-            {% set min_battery_level = states('input_number.batteriestand_warnlevel') | int -%}   
-            {% set handyBatteriestand = states('sensor.handy_batterie') | int %}
+            {% set min_battery_level = states('input_number.batteriestand_warnlevel') | int(0) -%}   
+            {% set handyBatteriestand = states('sensor.handy_batterie') | int(0) %}
             {% set handyWirdAufgeladen = state_attr('sensor.handy_batterie', 'is_charging') == True %}
             
             {% if not handyWirdAufgeladen and handyBatteriestand <= min_battery_level %}
               Das Handy muss aufgeladen werden.
             {% endif %}    
                     
-            {% set count_battery_entities = states('sensor.batteriestand_niedrig') | int -%}
+            {% set count_battery_entities = states('sensor.batteriestand_niedrig') | int(0) -%}
                                  
             {% if count_battery_entities > 0 %}
               {{ "Der Batteriestand der folgenden Geräte ist niedrig." if count_battery_entities > 1 else "Der Batteriestand des folgenden Gerätes ist niedrig."}}
               
               {% set entities = expand('group.batteriestand') %}
              
-              {% for x in entities if x.state|int <= min_battery_level %}
+              {% for x in entities if x.state|int(100) <= min_battery_level %}
                 {%- if not loop.first %}, {% endif -%}
                 {{- x.name -}}
               {% endfor %}       
@@ -190,9 +190,9 @@ script:
               {% set ns.found = ns.found + 1 -%}
             {% endfor %}
 
-            {% if (ns.found | int) == 1 %}
+            {% if (ns.found | int(0)) == 1 %}
               Das folgende Gerät wurde vollständig aufgeladen.
-            {% elif (ns.found | int) > 1 %}
+            {% elif (ns.found | int(0)) > 1 %}
               Die folgenden Geräte wurden vollständig aufgeladen.
             {% endif %}
 
@@ -207,9 +207,9 @@ automation:
     trigger:
       - platform: template
         value_template: >-
-          {% set jetzt = as_timestamp(states('sensor.date_time').replace(',',''), None) | int %}  
-          {% set vorlauf = (states('input_number.wecker_vorlauf' ) | int) * 60  %}
-          {% set wecker = as_timestamp(states('sensor.tablet_schlafzimmer_nachster_wecker'), None) | int %}
+          {% set jetzt = as_timestamp(states('sensor.date_time').replace(',',''), None) | int(0) %}  
+          {% set vorlauf = (states('input_number.wecker_vorlauf' ) | int(0)) * 60  %}
+          {% set wecker = as_timestamp(states('sensor.tablet_schlafzimmer_nachster_wecker'), None) | int(0) %}
           
           {{ wecker == jetzt + vorlauf }}
     condition:
@@ -271,7 +271,7 @@ automation:
       - condition: template
         value_template: >-
           {% set wecker = as_timestamp(states('sensor.tablet_schlafzimmer_nachster_wecker'), None) / 86400 %}
-          {% set now = as_timestamp(as_timestamp(now(), None) | timestamp_custom("%Y-%m-%d 00:00:00",true), None) / 86400 %}
+          {% set now = as_timestamp(as_timestamp(now()) | timestamp_custom("%Y-%m-%d 00:00:00",true), None) / 86400 %}
 
           {{ wecker - now > 1 }}
     action:
@@ -280,7 +280,7 @@ automation:
           echo: "schlafzimmer"
           override: true
           message: >-
-            {% set stunde = now().strftime("%H") | int %}
+            {% set stunde = now().strftime("%H") %}
             
             {% if stunde >= 5 and stunde < 12 %}
               {% set message = 'Guten Morgen!' %}
@@ -342,8 +342,8 @@ automation:
               - condition: template                   
                 value_template: >-
                   {% set alarmSensor = states('sensor.tablet_schlafzimmer_nachster_wecker') %}
-                  {% set alarmDay = as_timestamp(alarmSensor, None) | timestamp_custom('%d') | int %}
-                  {% set now = (as_timestamp(now(), None) | int) | timestamp_custom('%d') | int %}
+                  {% set alarmDay = as_timestamp(alarmSensor) | timestamp_custom('%d') %}
+                  {% set now = as_timestamp(now()) | timestamp_custom('%d') %}
 
                   {{ alarmSensor == 'unavailable' or alarmDay != now }}                  
               

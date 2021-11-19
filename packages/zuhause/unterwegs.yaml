@@ -179,7 +179,7 @@ automation:
       - service: notify.telegram
         data:
           title: "Aufenthaltsort"
-          message: "{{ states('sensor.aufenthaltsort_handy') }} {% if states('proximity.home') | int > 0 %}({{ states('proximity.home') }}km von zu Hause.){% endif %}"         
+          message: "{{ states('sensor.aufenthaltsort_handy') }} {% if states('proximity.home') | int(0) > 0 %}({{ states('proximity.home') }}km von zu Hause.){% endif %}"         
                
   - alias: "Telegram - Lichtsimulation einschalten"
     id: "telegram_lichsimulation_einschalten"

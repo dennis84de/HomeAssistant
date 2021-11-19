@@ -120,7 +120,7 @@ sensor:
         value_template: >-
           {% set up_time =  states('sensor.letzter_neustart') %}
      
-          {{ '-' if up_time == 'unknown' else ((as_timestamp(now(), None) - as_timestamp(up_time, None)) / 60) | int }}
+          {{ '-' if up_time == 'unknown' else ((as_timestamp(now()) - as_timestamp(up_time, None)) / 60) | int(0) }}
               
       laufzeit_stunden:
         friendly_name: "Laufzeit Stunden"
@@ -129,7 +129,7 @@ sensor:
         value_template: >-
           {% set up_time =  states('sensor.letzter_neustart') %}
      
-          {{ '-' if up_time == 'unknown' else ((as_timestamp(now(), None) - as_timestamp(up_time, None)) / 60 / 60) | round(2, 0) }}
+          {{ '-' if up_time == 'unknown' else ((as_timestamp(now()) - as_timestamp(up_time, None)) / 60 / 60) | round(2, 0) }}
 
 script:  
   restart_homeassistant:

@@ -230,8 +230,8 @@ script:
               - "{{ is_state('binary_sensor.home_office_aktiv', 'off') and (homeOfficeHeute is not defined or homeOfficeHeute == False) }}"
               - "{{ bueroHeute is not defined or bueroHeute == False }}"              
               - "{{ now().isoweekday() == 6 or is_state('binary_sensor.arbeitstag', 'on') }}"
-              - "{{ (states('sensor.bewegungsmelder_balkon_temperatur') | int) > 5 }}"
-              - "{{ now().strftime('%H') | int >= 6 and now().strftime('%H') | int <= 21 }}"
+              - "{{ (states('sensor.bewegungsmelder_balkon_temperatur') | int(0)) > 5 }}"
+              - "{{ now().strftime('%H') | int(0) >= 6 and now().strftime('%H') | int(0) <= 21 }}"
             sequence:            
               - service: switch.turn_on
                 entity_id: switch.balkon_radio
@@ -420,9 +420,9 @@ automation:
         state: 'off'        
       - condition: template
         value_template: >-
-          {% set now = as_timestamp(now(), None) | int %}
-          {% set last = as_timestamp(state_attr("automation.alles_ausschalten", "last_triggered"), None) | int %}
-          {% set diff = ((now - last) / 60) | int %}
+          {% set now = as_timestamp(now()) %}
+          {% set last = as_timestamp(state_attr("automation.alles_ausschalten", "last_triggered"), None) | int(0) %}
+          {% set diff = ((now - last) / 60) | int(0) %}
 
           {{ diff >= 10 }}
     action:

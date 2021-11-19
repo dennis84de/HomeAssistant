@@ -9,7 +9,7 @@ sensor:
         value_template: >-
           {% set nextcloudTimestamp = as_timestamp(states("sensor.cert_expiry_timestamp_cloud_djaeschke_de"), None) %}
         
-          {{ '-' if nextcloudTimestamp == None else ((nextcloudTimestamp - as_timestamp(now(), None)) | int /60/1440) | round(0, 0) }}
+          {{ '-' if nextcloudTimestamp == None else ((nextcloudTimestamp - as_timestamp(now())) | int(0) /60/1440) | round(0, 0) }}
         icon_template: >-
           {% set nextcloudTimestamp = as_timestamp(states("sensor.cert_expiry_timestamp_cloud_djaeschke_de"), None) %}
         

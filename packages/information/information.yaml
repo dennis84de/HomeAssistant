@@ -165,11 +165,11 @@ sensor:
       next_launch_day_de:
         friendly_name: 'Nächster Start - Datum'
         icon_template: mdi:calendar
-        value_template: '{{ state_attr("sensor.next_launch_day", "launch_date_unix") | int | timestamp_custom("%d.%m.%Y")}}'
+        value_template: '{{ state_attr("sensor.next_launch_day", "launch_date_unix") | int(0) | timestamp_custom("%d.%m.%Y")}}'
 
       next_launch_time_de:
         friendly_name: 'Nächster Start - Uhrzeit'
-        value_template: '{{ state_attr("sensor.next_launch_day", "launch_date_unix") | int | timestamp_custom("%H:%M")}}'
+        value_template: '{{ state_attr("sensor.next_launch_day", "launch_date_unix") | int(0) | timestamp_custom("%H:%M")}}'
         icon_template: mdi:clock-outline
         unit_of_measurement: 'Uhr'          
           
@@ -203,15 +203,15 @@ automation:
         state: 'off'        
       - condition: template     
         value_template: >-
-          {% set oldMailCount = trigger.from_state.state | int %}
-          {% set newMailCount = trigger.to_state.state | int %}
+          {% set oldMailCount = trigger.from_state.state | int(0) %}
+          {% set newMailCount = trigger.to_state.state | int(0) %}
           
           {{ newMailCount > oldMailCount }}        
     action:
       - service: !secret tts_service
         data:
           message: >-
-            {% set mailCount = (trigger.to_state.state | int) - (trigger.from_state.state | int) %}
+            {% set mailCount = (trigger.to_state.state | int(0)) - (trigger.from_state.state | int(0)) %}
 
             {% if mailCount == 1 %}
               Eine neue E-Mail ist eingegangen.
@@ -228,7 +228,7 @@ automation:
                 data:
                   title: 'E-Mail'
                   message: >-
-                    {% set mailCount = states('sensor.ungelesene_mails') | default(0) | int %}
+                    {% set mailCount = states('sensor.ungelesene_mails') | default(0) | int(0) %}
 
                     {% if mailCount == 1 %}
                       Eine neue E-Mail ist eingegangen.

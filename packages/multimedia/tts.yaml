@@ -94,7 +94,7 @@ automation:
             entity_id: sensor.echo_wohnzimmer_next_timer
             state: 'unavailable'
       - condition: template
-        value_template: "{{ (as_timestamp(states('sensor.echo_wohnzimmer_next_timer'), None) | int) < (as_timestamp(now(), None) | int) }}"        
+        value_template: "{{ (as_timestamp(states('sensor.echo_wohnzimmer_next_timer'), None) | int(0)) < (as_timestamp(now()) | int(0)) }}"        
     action:
       - service: media_player.play_media
         data:

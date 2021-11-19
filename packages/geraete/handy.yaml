@@ -30,7 +30,7 @@ binary_sensor:
   - platform: mqtt
     name: "Handy SMS"
     state_topic: "handy/sms"
-    value_template: "{{ (value_json.status | int) }}"   
+    value_template: "{{ (value_json.status | int(0)) }}"   
     payload_on: 1
     payload_off: 0    
     json_attributes_topic: "handy/sms"
@@ -92,8 +92,8 @@ sensor:
           {% if is_state('sensor.handy_batterie', None) %}
             -
           {% else %}
-            {% set lastCharged = state_attr('sensor.handy_batterie','last_charged') | int %}
-            {% set weekday = lastCharged | timestamp_custom("%w", True) | int %}
+            {% set lastCharged = state_attr('sensor.handy_batterie','last_charged') | int(0) %}
+            {% set weekday = lastCharged | timestamp_custom("%w", True) | int(0) %}
 
             {{ ['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'][weekday-1] }}, {{ lastCharged | timestamp_custom("%d.%m.%Y", True) | string }}  
           {% endif %}
@@ -525,13 +525,13 @@ automation:
     condition:
       - condition: template        
         value_template: -<
-          {% set min_battery_level = states('input_number.batteriestand_warnlevel') | int -%}
+          {% set min_battery_level = states('input_number.batteriestand_warnlevel') | int(0) -%}
 
-          {{ (trigger.to_state.state | int) <= min_battery_level and trigger.to_state.attributes.is_charging == False }}
+          {{ (trigger.to_state.state | int(0)) <= min_battery_level and trigger.to_state.attributes.is_charging == False }}
     action:
       - service: !secret tts_service
         data:
-          message: "Das Handy muss aufgeladen werden. Der Batteriestand beträgt {{ (trigger.to_state.state | int) }} Prozent."
+          message: "Das Handy muss aufgeladen werden. Der Batteriestand beträgt {{ (trigger.to_state.state | int(0)) }} Prozent."
 
   - alias: "Handy - Aufgeladen"
     id: "handy_aufgeladen"
@@ -540,7 +540,7 @@ automation:
         entity_id: sensor.handy_batterie 
     condition:
       - condition: template
-        value_template: "{{ (trigger.to_state.state | int) > 99 and trigger.to_state.attributes.is_charging == True }}"  
+        value_template: "{{ (trigger.to_state.state | int(100)) > 99 and trigger.to_state.attributes.is_charging == True }}"  
     action:
       - service: !secret tts_service
         data:

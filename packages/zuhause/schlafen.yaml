@@ -64,7 +64,7 @@ sensor:
     sensors:
       schlafen_letzte_uhrzeit:
         friendly_name: Schlafen Letzte Uhrzeit       
-        value_template: "{{ '%02d' % (state_attr('input_datetime.schlafen_uhrzeit', 'hour') | int) ~ ':' ~ '%02d' % (state_attr('input_datetime.schlafen_uhrzeit', 'minute') | int) }}"
+        value_template: "{{ '%02d' % (state_attr('input_datetime.schlafen_uhrzeit', 'hour') | int(0)) ~ ':' ~ '%02d' % (state_attr('input_datetime.schlafen_uhrzeit', 'minute') | int(0)) }}"
         icon_template: mdi:av-timer
         unit_of_measurement: 'Uhr'
 
@@ -273,7 +273,7 @@ automation:
       - service: timer.start
         entity_id: timer.sleeptimer
         data:
-          duration: "{{ states('input_number.timer_schlafzimmer')  | int * 60 | int }}"
+          duration: "{{ states('input_number.timer_schlafzimmer') | int(0) * 60 }}"
       - service: input_boolean.turn_on
         entity_id: input_boolean.timer_schlafzimmer_aktiv
 
