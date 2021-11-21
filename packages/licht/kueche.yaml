@@ -27,7 +27,7 @@ entity_controller:
     friendly_name: "Bewegung Kuechenregal"
     sensor: binary_sensor.bewegungsmelder_kueche
     entity: light.kueche_regal
-    delay: 120     
+    delay: 180     
     behaviours:
       on_enter_overridden: 'off'
     overrides:
@@ -41,7 +41,7 @@ entity_controller:
     friendly_name: "Bewegung Kuechenschrank"
     sensor: binary_sensor.bewegungsmelder_kueche
     entity: light.kueche_schrank
-    delay: 120
+    delay: 180
     behaviours:
       on_enter_overridden: 'off'
     overrides:            

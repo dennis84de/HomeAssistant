@@ -8,7 +8,7 @@ entity_controller:
     friendly_name: "Bewegung Flur vorne"
     sensor: binary_sensor.bewegungsmelder_flur_vorne
     entity: light.flur_vorne
-    delay: 120    
+    delay: 180    
     behaviours:
       on_enter_overridden: 'off'
     overrides:
