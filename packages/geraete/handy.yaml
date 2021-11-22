@@ -46,7 +46,7 @@ sensor:
     home_zone: zone.zu_hause
     
   - platform: mqtt
-    name: "Handy Batterie"
+    name: "Handy Battery Level"
     device_class: battery
     unit_of_measurement: '%'
     state_topic: "handy/batterie"
@@ -86,18 +86,18 @@ sensor:
             mdi:phone
           {% endif %}      
 
-      handy_zuletzt_geladen:
-        friendly_name: Handy - Zuletzt geladen
-        value_template: >
-          {% if is_state('sensor.handy_batterie', None) %}
-            -
-          {% else %}
-            {% set lastCharged = state_attr('sensor.handy_batterie','last_charged') | int(0) %}
-            {% set weekday = lastCharged | timestamp_custom("%w", True) | int(0) %}
-
-            {{ ['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'][weekday-1] }}, {{ lastCharged | timestamp_custom("%d.%m.%Y", True) | string }}  
-          {% endif %}
-        device_class: timestamp
+#      handy_zuletzt_geladen:
+#        friendly_name: Handy - Zuletzt geladen
+#        value_template: >
+#          {% if is_state('sensor.handy_batterie', None) %}
+#            -
+#          {% else %}
+#            {% set lastCharged = state_attr('sensor.handy_batterie','last_charged') | int(0) %}
+#            {% set weekday = lastCharged | timestamp_custom("%w", True) | int(0) %}
+#
+#            {{ ['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'][weekday-1] }}, {{ lastCharged | timestamp_custom("%d.%m.%Y", True) | string }}  
+#          {% endif %}
+#        device_class: timestamp
         
 automation: 
   - alias: "Handy aktiv - Wiedergabe pausieren"
@@ -521,7 +521,7 @@ automation:
     id: "handy_batteriestand_niedrig"
     trigger:
       - platform: state
-        entity_id: sensor.handy_batterie
+        entity_id: sensor.handy_battery_level
     condition:
       - condition: template        
         value_template: -<
@@ -537,7 +537,7 @@ automation:
     id: "handy_aufgeladen"
     trigger:
       - platform: state
-        entity_id: sensor.handy_batterie 
+        entity_id: sensor.handy_battery_level 
     condition:
       - condition: template
         value_template: "{{ (trigger.to_state.state | int(100)) > 99 and trigger.to_state.attributes.is_charging == True }}"  
@@ -548,7 +548,7 @@ automation:
 
 homeassistant:
   customize:
-    sensor.handy_batterie:
-      friendly_name: Handy
+    sensor.handy_battery_level:
+      friendly_name: Handy Batteriestand
     sensor.handy:
       friendly_name: Handy Status

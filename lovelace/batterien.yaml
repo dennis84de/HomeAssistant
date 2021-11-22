@@ -16,24 +16,26 @@ cards:
     title: Geräte
     show_header_toggle: false
     entities:
-      - entity: sensor.handy_batterie
-        type: "custom:secondaryinfo-entity-row"
-        secondary_info: "Zuletzt geladen: [[ sensor.handy_zuletzt_geladen ]]"      
-      - entity: sensor.tablet_wohnzimmer_batterie     
-        type: "custom:secondaryinfo-entity-row"
-        secondary_info: "Zuletzt geladen: [[ sensor.tablet_wohnzimmer_zuletzt_geladen ]]"           
-      - entity: sensor.tablet_kueche_batterie
-        type: "custom:secondaryinfo-entity-row"
-        secondary_info: "Zuletzt geladen: [[ sensor.tablet_kueche_zuletzt_geladen ]]"         
-      - entity: sensor.tablet_badezimmer_batterie
-        type: "custom:secondaryinfo-entity-row"
-        secondary_info: "Zuletzt geladen: [[ sensor.tablet_badezimmer_zuletzt_geladen ]]"         
-      - entity: sensor.tablet_schlafzimmer_batterie
-        type: "custom:secondaryinfo-entity-row"
-        secondary_info: "Zuletzt geladen: [[ sensor.tablet_schlafzimmer_zuletzt_geladen ]]"         
-      - entity: sensor.tablet_balkon_batterie
-        type: "custom:secondaryinfo-entity-row"
-        secondary_info: "Zuletzt geladen: [[ sensor.tablet_balkon_zuletzt_geladen ]]"         
+      - entity: sensor.handy_battery_level
+        name: Handy
+#        type: "custom:secondaryinfo-entity-row"
+#        secondary_info: "Zuletzt geladen: [[ sensor.handy_zuletzt_geladen ]]"      
+      - entity: sensor.tablet_wohnzimmer_battery_level     
+        name: Tablet Wohnzimmer
+#        type: "custom:secondaryinfo-entity-row"
+#        secondary_info: "Zuletzt geladen: [[ sensor.tablet_wohnzimmer_zuletzt_geladen ]]"              
+      - entity: sensor.tablet_badezimmer_battery_level
+        name: Tablet Badezimmer
+#        type: "custom:secondaryinfo-entity-row"
+#        secondary_info: "Zuletzt geladen: [[ sensor.tablet_badezimmer_zuletzt_geladen ]]"         
+      - entity: sensor.tablet_schlafzimmer_battery_level
+        name: Tablet Schlafzimmer
+#        type: "custom:secondaryinfo-entity-row"
+#        secondary_info: "Zuletzt geladen: [[ sensor.tablet_schlafzimmer_zuletzt_geladen ]]"         
+      - entity: sensor.tablet_balkon_battery_level
+        name: Tablet Balkon
+#        type: "custom:secondaryinfo-entity-row"
+#        secondary_info: "Zuletzt geladen: [[ sensor.tablet_balkon_zuletzt_geladen ]]"         
 
   - type: entities
     title: Sensoren

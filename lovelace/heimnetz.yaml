@@ -132,8 +132,6 @@ cards:
         name: Wohnzimmer
       - entity: device_tracker.tabletschlafzimmer
         name: Schlafzimmer
-      - entity: device_tracker.tabletkueche
-        name: Küche
       - entity: device_tracker.tabletbalkon
         name: Balkon
 

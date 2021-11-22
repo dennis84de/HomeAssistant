@@ -218,10 +218,12 @@ homeassistant:
       friendly_name: Tablet Wohnzimmer
     device_tracker.tabletschlafzimmer:
       friendly_name: Tablet Schafzimmer
-    device_tracker.tabletkueche:
-      friendly_name: Tablet Küche
     device_tracker.tabletbalkon:
       friendly_name: Tablet Balkon
+    device_tracker.tabletmultimedia:
+      friendly_name: Tablet Multimedia
+    device_tracker.tabletbackup:
+      friendly_name: Tablet Backup      
       
     device_tracker.magichomeflurvorne:
       friendly_name: MagicHome Flur vorne

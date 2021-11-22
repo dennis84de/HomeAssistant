@@ -251,7 +251,7 @@ automation:
           echo: "schlafzimmer"
           override: true
           message: >-
-            {% if states('sensor.tablet_schlafzimmer_nachster_wecker') == 'unavailable' %}
+            {% if states('sensor.tablet_schlafzimmer_next_alarm') == 'unavailable' %}
               Der Wecker ist noch nicht gestellt.
             {% else %}
               Der Wecker ist noch nicht richtig gestellt.

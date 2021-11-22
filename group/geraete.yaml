@@ -69,8 +69,7 @@ licht_unterwegs:
 tablets:
   name: Tablets
   entities:
-    - sensor.tablet_wohnzimmer_batterie
-    - sensor.tablet_schlafzimmer_batterie
-    - sensor.tablet_badezimmer_batterie
-    - sensor.tablet_kueche_batterie
-    - sensor.tablet_balkon_batterie
+    - sensor.tablet_wohnzimmer_battery_level
+    - sensor.tablet_schlafzimmer_battery_level
+    - sensor.tablet_badezimmer_battery_level
+    - sensor.tablet_balkon_battery_level

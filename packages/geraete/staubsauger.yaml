@@ -118,7 +118,7 @@ automation:
       - condition: template
         value_template: >-
           {% set letzter_start = as_timestamp(state_attr("automation.staubsaugen_gestartet", "last_triggered"), None) | timestamp_custom("%s", True) | int(0)  %}
-          {% set now = now().strftime("%s") | int %}
+          {% set now = now().strftime("%s") | int(0) %}
           {% set abstand_stunden = ((now - letzter_start) / 3600) | int(0) %}
 
           {{ True if abstand_stunden <= 2 else False }}         

@@ -111,14 +111,7 @@ script:
               {{ heimnetzOffline | join(', ') }}                            
             {% endif %}
 
-            {% set min_battery_level = states('input_number.batteriestand_warnlevel') | int(0) -%}   
-            {% set handyBatteriestand = states('sensor.handy_batterie') | int(0) %}
-            {% set handyWirdAufgeladen = state_attr('sensor.handy_batterie', 'is_charging') == True %}
-            
-            {% if not handyWirdAufgeladen and handyBatteriestand <= min_battery_level %}
-              Das Handy muss aufgeladen werden.
-            {% endif %}    
-                    
+            {% set min_battery_level = states('input_number.batteriestand_warnlevel') | int(0) -%}                       
             {% set count_battery_entities = states('sensor.batteriestand_niedrig') | int(0) -%}
                                  
             {% if count_battery_entities > 0 %}
