@@ -54,9 +54,8 @@ automation:
         from: 'off'
         to: 'on'
     condition:
-      - condition: state
-        entity_id: switch.waschmaschine
-        state: 'on'
+      - "{{ is_state('switch.waschmaschine', 'on') }}"     
+      - "{{ not is_state('sensor.waschmaschine_status', 'Stillstand') }}"           
     action:
       - service: input_select.select_option
         data:
@@ -71,12 +70,8 @@ automation:
         above: 20
         for: '00:01:00'
     condition:
-      - condition: state
-        entity_id: switch.waschmaschine
-        state: 'on'
-      - condition: state
-        entity_id: input_select.status_waschmaschine
-        state: 'Stillstand'
+      - "{{ is_state('switch.waschmaschine', 'on') }}"     
+      - "{{ is_state('sensor.waschmaschine_status', 'Stillstand') }}"
     action:
       - service: input_select.select_option
         data:
@@ -91,9 +86,7 @@ automation:
         from: 'Stillstand'
         to: 'Waschen'
     condition:
-      - condition: state
-        entity_id: person.dennis
-        state: 'not_home'
+      - "{{ is_state('person.dennis', 'not_home') }}"
     action:
       - service: notify.telegram
         data:          
@@ -109,9 +102,7 @@ automation:
     action:
       - choose:
           - conditions:
-              - condition: state
-                entity_id: person.dennis
-                state: 'not_home'
+              - "{{ is_state('person.dennis', 'not_home') }}"
             sequence:
               - service: notify.telegram
                 data:                  
@@ -120,11 +111,12 @@ automation:
           - service: !secret tts_service
             data:
               message: "Die Waschmaschine ist fertig."
-      - condition: state
-        entity_id: switch.trockner
-        state: 'off'
-      - service: switch.turn_on
-        entity_id: switch.trockner        
+      - choose:
+          - conditions:
+              - "{{ is_state('switch.trockner', 'off') }}"
+            sequence:
+              - service: switch.turn_on
+                entity_id: switch.trockner        
               
   - alias: "Waschmaschine - Noch eingeschaltet"
     id: "waschmaschine_noch_eingeschaltet"
@@ -134,15 +126,11 @@ automation:
         to: 'Stillstand'
         for: '01:00:00'
     condition:
-      - condition: state
-        entity_id: switch.waschmaschine
-        state: 'on'
+      - "{{ is_state('switch.waschmaschine', 'on') }}"
     action:
       - choose:
           - conditions:
-              - condition: state
-                entity_id: person.dennis
-                state: 'not_home'
+              - "{{ is_state('person.dennis', 'not_home') }}"
             sequence:
               - service: notify.telegram
                 data:                  
@@ -200,9 +188,8 @@ automation:
         from: 'off'
         to: 'on'
     condition:
-      - condition: state
-        entity_id: switch.trockner
-        state: 'on'
+      - "{{ is_state('switch.trockner','on') }}"     
+      - "{{ not is_state('sensor.trockner_status', 'Stillstand') }}"     
     action:
       - service: input_select.select_option
         data:
@@ -217,12 +204,8 @@ automation:
         above: 150
         for: '00:01:00'
     condition:
-      - condition: state
-        entity_id: switch.trockner
-        state: 'on'
-      - condition: state
-        entity_id: input_select.status_trockner
-        state: 'Stillstand'
+      - "{{ is_state('switch.trockner','on') }}"     
+      - "{{ is_state('sensor.trockner_status', 'Stillstand') }}"
     action:
       - service: input_select.select_option
         data:
@@ -237,9 +220,7 @@ automation:
         from: 'Stillstand'
         to: 'Trocknen'
     condition:
-      - condition: state
-        entity_id: person.dennis
-        state: 'not_home'
+      - "{{ is_state('person.dennis', 'not_home') }}"
     action:
       - service: notify.telegram
         data:          
@@ -255,9 +236,7 @@ automation:
     action:
       - choose:
           - conditions:
-              - condition: state
-                entity_id: person.dennis
-                state: 'not_home'
+              - "{{ is_state('person.dennis', 'not_home') }}"
             sequence:
               - service: notify.telegram
                 data:                  
