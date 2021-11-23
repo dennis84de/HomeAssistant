@@ -162,9 +162,9 @@ cards:
         name: Wohnzimmer Strahler      
       - entity: device_tracker.tasmotawohnzimmercouch
         name: Wohnzimmer Couch        
-      - entity: device_tracker.tasmotawohnzimmer_radio
+      - entity: device_tracker.tasmotawohnzimmerradio
         name: Wohnzimmer Radio      
-      - entity: device_tracker.tasmotawohnzimmer_schrank
+      - entity: device_tracker.tasmotawohnzimmerschrank
         name: Wohnzimmer Schrank        
       - entity: device_tracker.tasmotaarbeitszimmerlampe
         name: Arbeitszimmer Lampe
