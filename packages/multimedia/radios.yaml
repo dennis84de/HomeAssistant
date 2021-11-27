@@ -231,7 +231,7 @@ script:
               - "{{ bueroHeute is not defined or bueroHeute == False }}"              
               - "{{ now().isoweekday() == 6 or is_state('binary_sensor.arbeitstag', 'on') }}"
               - "{{ (states('sensor.bewegungsmelder_balkon_temperatur') | int(0)) > 5 }}"
-              - "{{ now().strftime('%H') | int(0) >= 6 and now().strftime('%H') | int(0) <= 21 }}"
+              - "{{ 21 > now().strftime('%H') | int(0) >= 6 }}"
             sequence:            
               - service: switch.turn_on
                 entity_id: switch.balkon_radio

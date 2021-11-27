@@ -4,6 +4,17 @@ type: custom:horizontal-layout
 layout:
   width: 400
   max_cols: 3
+popup_cards:
+  switch.computer_arbeit:
+    title: Computer
+    card:
+      type: entities
+      entities:          
+        - entity: switch.pc_arbeit
+          name: PC
+        - entity: switch.arbeitszimmer_monitore
+          name: Monitore
+
 cards:
   - type: entities
     title: Geräte

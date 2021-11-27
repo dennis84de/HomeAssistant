@@ -112,6 +112,17 @@ homeassistant:
       icon: mdi:power-socket-eu
       
   customize:
+    sensor.fritz_box_7272_device_uptime:
+      friendly_name: Fritzbox Laufzeit
+    sensor.fritz_box_7272_external_ip:
+      friendly_name: Externe IP
+    binary_sensor.fritz_box_7272_firmware_update:
+      friendly_name: Firmware Update
+    sensor.fritz_box_7272_gb_received:
+      friendly_name: GB empfangen
+    sensor.fritz_box_7272_gb_sent:
+      friendly_name: GB gesendet
+      
     sensor.netmonitor:
       friendly_name: Fritzbox
       icon: mdi:router-wireless

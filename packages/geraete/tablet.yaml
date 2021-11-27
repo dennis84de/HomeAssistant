@@ -10,11 +10,8 @@ automation:
           - sensor.tablet_balkon_battery_level
     condition:               
       - "{{ trigger.to_state.state is defined and trigger.to_state.state != 'unknown' }}"
-      - condition: template
-        value_template: >-
-          {% set min_battery_level = states('input_number.batteriestand_warnlevel') | int(0) -%}
-
-          {{ (trigger.to_state.state | int(0)) <= min_battery_level and trigger.to_state.attributes.is_charging == False }}  
+      - "{{ trigger.to_state.state | int(0) < trigger.from_state.state | int(0) }}"
+      - "{{ (trigger.to_state.state | int(0)) <= states('input_number.batteriestand_warnlevel') | int(0) }}  "
     action:
       - service: !secret tts_service
         data:
@@ -46,8 +43,8 @@ automation:
           - sensor.tablet_badezimmer_battery_level
           - sensor.tablet_balkon_battery_level
     condition:
-      - condition: template
-        value_template: "{{ (trigger.to_state.state | int(100)) > 99 and trigger.to_state.attributes.is_charging == True }}"
+      - "{{ (trigger.to_state.state | int(100)) > 99 }}"
+      - "{{ trigger.to_state.state | int(0) > trigger.from_state.state | int(0) }}"
     action:
       - service: !secret tts_service
         data:
@@ -71,10 +68,10 @@ automation:
 homeassistant:
   customize:
     sensor.tablet_schlafzimmer_battery_level:
-      friendly_name: Tablet Schlafzimmer Batteriestand
+      friendly_name: Tablet Schlafzimmer
     sensor.tablet_badezimmer_battery_level:
-      friendly_name: Tablet Badezimmer Batteriestand
+      friendly_name: Tablet Badezimmer 
     sensor.tablet_wohnzimmer_battery_level:
-      friendly_name: Tablet Wohnzimmer Batteriestand
+      friendly_name: Tablet Wohnzimmer
     sensor.tablet_balkon_battery_level:
-      friendly_name: Tablet Balkon Batteriestand
+      friendly_name: Tablet Balkon

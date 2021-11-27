@@ -11,8 +11,7 @@ heimnetz:
     - device_tracker.tplinkschlafzimmerradio      
     - device_tracker.tplinkflurradio      
     - device_tracker.tplinkbadezimmerradio      
-    - device_tracker.tplinkkuecheradio         
-    - device_tracker.tplinkkellerradio      
+    - device_tracker.tplinkkuecheradio      
     - device_tracker.tplinkschlafzimmerfernseher      
     - device_tracker.tplinksportzimmerfernseher           
     - device_tracker.tasmotawohnzimmerstrahler         

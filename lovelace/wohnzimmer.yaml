@@ -4,6 +4,16 @@ type: custom:horizontal-layout
 layout:
   width: 400
   max_cols: 3
+popup_cards:
+  switch.computer:
+    title: Computer
+    card:
+      type: entities
+      entities:          
+        - entity: switch.pc
+          name: PC
+        - entity: switch.monitor
+          name: Monitor
 cards:
   - type: entities
     title: Licht
@@ -43,15 +53,13 @@ cards:
     title: Computer
     show_header_toggle: false
     entities:
-      - entity: switch.pc
-      - entity: switch.monitor
+      - entity: switch.computer
       - entity: input_select.computer_ausschalten                     
       
   - type: entities
     title: Multimedia
     show_header_toggle: false
-    entities:      
-      - entity: switch.computer
+    entities:
       - entity: switch.watchtv_wohnzimmer
       - entity: input_boolean.musik_ausschalten
       - entity: input_boolean.firefox_wohnzimmer_aktiv

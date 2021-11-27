@@ -373,6 +373,7 @@ automation:
         entity_id: switch.computer
       - service: switch.turn_off
         entity_id: switch.schlafzimmer_radio        
+      - delay: '00:00:03'
       - choose:
           - conditions:
               - condition: state

@@ -100,8 +100,6 @@ script:
         entity_id: switch.balkon_radio, switch.computer, switch.watchtv_wohnzimmer
       - service: switch.turn_on
         entity_id: switch.arbeitszimmer_radio, switch.computer_arbeit
-      - service: light.turn_off
-        entity_id: light.schreibtisch, light.arbeitszimmer_lampe
       - choose:
           - conditions:
               - condition: state
@@ -144,6 +142,14 @@ script:
         entity_id: switch.computer, switch.watchtv_wohnzimmer
       - choose:
           - conditions:
+              - condition: state
+                entity_id: sensor.sonne_tagsueber
+                state: 'off'
+            sequence:
+              - service: light.turn_on
+                entity_id: light.wohnzimmer_schrank           
+      - choose:
+          - conditions:
               - condition: numeric_state
                 entity_id: sensor.bewegungsmelder_balkon_temperatur
                 above: 0
@@ -160,15 +166,7 @@ script:
               - service: climate.set_preset_mode
                 data:
                   entity_id: climate.arbeitszimmer
-                  preset_mode: 'eco'
-      - choose:
-          - conditions:
-              - condition: state
-                entity_id: sensor.sonne_tagsueber
-                state: 'off'
-            sequence:
-              - service: light.turn_on
-                entity_id: light.wohnzimmer_schrank                      
+                  preset_mode: 'eco'                   
         
 automation:
   - alias: "Home Office - Start"

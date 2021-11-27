@@ -8,10 +8,9 @@ automation:
     id: "uhr_glocke_starten"
     trigger:
       - platform: template
-        value_template: >-
-          {% set minute = now().strftime("%M") %}
-          
-          {{ minute == 0 or minute == 30 }}
+        value_template: "{{ now().strftime('%M')|int == 0 }}"      
+      - platform: template
+        value_template: "{{ now().strftime('%M')|int == 30 }}"    
     condition:
       - condition: time
         after: '07:30'
