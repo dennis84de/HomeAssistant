@@ -174,6 +174,7 @@ sensor:
         
       formel1_rennen:
         friendly_name: Nächstes Rennen
+        icon_template: mdi:car-sports
         value_template: >       
           {% set rennen = as_timestamp(state_attr('calendar.formel1_rennen', 'start_time'), None) %}
           {% set sprint = as_timestamp(state_attr('calendar.formel1_sprint', 'start_time'), None) %}
@@ -188,11 +189,11 @@ sensor:
             {{ location[1] }} ({{ location[0].strip() }})
           {% else %}
             -
-          {% endif %}                           
-        icon_template: mdi:car-sports
+          {% endif %}                                   
 
       formel1_datum:
         friendly_name: Datum
+        icon_template: mdi:calendar-alert
         value_template: >
           {% set rennen = as_timestamp(state_attr('calendar.formel1_rennen', 'start_time'), None) %}
           {% set sprint = as_timestamp(state_attr('calendar.formel1_sprint', 'start_time'), None) %}        
@@ -207,11 +208,11 @@ sensor:
             -
           {% else %}           
             {{ start | timestamp_custom("%d.%m.%Y", True) | string }}, {{ start | timestamp_custom("%H:%M Uhr") | string }}       
-          {% endif %}         
-        icon_template: mdi:calendar-alert
+          {% endif %}                 
 
       formel1_qualifikation:
         friendly_name: Qualifikation
+        icon_template: mdi:car-sports
         value_template: >
           {% set qualifikation = state_attr('calendar.formel1_qualifikation', 'start_time') %}
           {% set rennen = state_attr('calendar.formel1_rennen', 'start_time') %}
@@ -231,41 +232,50 @@ sensor:
                 -
               {% endif %}
             {% endif %}
-          {% endif %}       
-        icon_template: mdi:car-sports
+          {% endif %}               
 
       naechster_urlaub:
         friendly_name: Nächster Urlaub
+        icon_template: mdi:sunglasses
         value_template: >
-          {% if state_attr('calendar.urlaub', 'start_time') %}          
-            {% set weekday = as_timestamp(state_attr('calendar.urlaub', 'start_time'), None) | timestamp_custom("%w", True) | int(0) %}
-
-            {{ ['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'][weekday-1] }}, {{ as_timestamp(state_attr('calendar.urlaub', 'start_time'), None) | timestamp_custom("%d.%m.%Y", True) | string }}
-          {% else %}
-            -
-          {% endif %}
-        friendly_name_template: >-
           {% if state_attr('calendar.urlaub', 'message') %}
             {{ state_attr('calendar.urlaub', 'message') }}
           {% else %}
             -
-          {% endif %}          
-        icon_template: mdi:sunglasses
-        
-      naechster_feiertag:
-        friendly_name: Nächster Feiertag
-        value_template: >
-          {% if state_attr('calendar.ferien_feiertage', 'start_time') %}             
-            {% set weekday = as_timestamp(state_attr('calendar.ferien_feiertage', 'start_time'), None) | timestamp_custom("%w", True) | int(0) %}
+          {% endif %}
+        attribute_templates:
+          datum: >
+            {% if state_attr('calendar.urlaub', 'start_time') %}             
+              {% set weekday = as_timestamp(state_attr('calendar.urlaub', 'start_time'), None) | timestamp_custom("%w", True) | int(0) %}
 
-            {{ ['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'][weekday-1] }}, {{ as_timestamp(state_attr('calendar.ferien_feiertage', 'start_time'), None) | timestamp_custom("%d.%m.%Y", True) | string }}
-          {% else %}
-            -
-          {% endif %}
-        friendly_name_template: >-
-          {% if state_attr('calendar.ferien_feiertage', 'message') %}
-            {{ state_attr('calendar.ferien_feiertage', 'message') }}
-          {% else %}
-            -
-          {% endif %}
+              {{ ['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'][weekday-1] }}, {{ as_timestamp(state_attr('calendar.urlaub', 'start_time'), None) | timestamp_custom("%d.%m.%Y", True) | string }}
+            {% else %}
+              -              
+            {% endif %}
+          tage: >
+            {% set start = as_timestamp(state_attr('calendar.urlaub', 'start_time')) | int(0) %}
+
+            {{ 0 if start == 0 else ((start - as_timestamp(now())) | int / 60 / 60 / 24) | int(0) }}             
+        
+      naechste_ferien:
+        friendly_name: Nächste Ferien
         icon_template: mdi:calendar-star
+        value_template: >
+          {% if state_attr('calendar.ferien', 'message') %}
+            {{ state_attr('calendar.ferien', 'message') }}
+          {% else %}
+            -
+          {% endif %}
+        attribute_templates:
+          datum: >
+            {% if state_attr('calendar.ferien', 'start_time') %}             
+              {% set weekday = as_timestamp(state_attr('calendar.ferien', 'start_time'), None) | timestamp_custom("%w", True) | int(0) %}
+
+              {{ ['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'][weekday-1] }}, {{ as_timestamp(state_attr('calendar.ferien', 'start_time'), None) | timestamp_custom("%d.%m.%Y", True) | string }}
+            {% else %}
+              -
+            {% endif %}
+          tage: >
+            {% set start = as_timestamp(state_attr('calendar.ferien', 'start_time')) | int(0) %}
+
+            {{ 0 if start == 0 else ((start - as_timestamp(now())) | int / 60 / 60 / 24) | int(0) }}                  
