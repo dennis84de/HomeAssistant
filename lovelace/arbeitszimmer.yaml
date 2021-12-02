@@ -12,8 +12,10 @@ popup_cards:
       entities:          
         - entity: switch.pc_arbeit
           name: PC
+          secondary_info: last-changed
         - entity: switch.arbeitszimmer_monitore
           name: Monitore
+          secondary_info: last-changed
 
 cards:
   - type: entities

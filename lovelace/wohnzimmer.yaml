@@ -3,7 +3,7 @@ path: wohnzimmer
 type: custom:horizontal-layout
 layout:
   width: 400
-  max_cols: 3
+  max_cols: 3           
 popup_cards:
   switch.computer:
     title: Computer
@@ -12,8 +12,10 @@ popup_cards:
       entities:          
         - entity: switch.pc
           name: PC
+          secondary_info: last-changed
         - entity: switch.monitor
           name: Monitor
+          secondary_info: last-changed
 cards:
   - type: entities
     title: Licht
@@ -47,13 +49,13 @@ cards:
         entity: media_player.radio_balkon
         hide:
           source: true
-          progress: true  
+          progress: true           
                     
   - type: entities
     title: Computer
     show_header_toggle: false
     entities:
-      - entity: switch.computer
+      - entity: switch.computer        
       - entity: input_select.computer_ausschalten                     
       
   - type: entities
