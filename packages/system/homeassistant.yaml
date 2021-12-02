@@ -40,7 +40,9 @@ lovelace:
     - url: /hacsfiles/zha-network-card/zha-network-card.js
       type: module      
     - url: /hacsfiles/flipdown-timer-card/flipdown-timer-card.js
-      type: module          
+      type: module         
+    - url: /hacsfiles/lovelace-multiple-entity-row/multiple-entity-row.js
+      type: module      
     
   dashboards:      
     lovelace-rooms:
