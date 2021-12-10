@@ -78,11 +78,14 @@ cards:
     entities:
       - entity: vacuum.staubsauger
       - entity: input_boolean.staubsauger_automatische_reinigung
-#      - entity: sensor.xiaomi_vacuum_batterie
-#        name: Batteriestand
-      - entity: binary_sensor.reinigung_heute
-      - entity: sensor.letzte_reinigung
-      - entity: counter.behaelter_leeren
+      - entity: sensor.staubsauger_battery_level
+        name: Batteriestand
+      - entity: binary_sensor.staubsauger_reinigung_heute
+      - entity: sensor.staubsauger_last_clean_end
+        name: Letzte Reinigung
+        type: "custom:secondaryinfo-entity-row"              
+        secondary_info: "Dauer: [[ sensor.staubsauger_dauer_letzte_reinigung ]] Minuten"
+      - entity: counter.staubsauger_behaelter_leeren
       - type: divider
       - entity: input_select.staubsauger_reinigen
       - entity: sensor.staubsauger_reinigung_filter

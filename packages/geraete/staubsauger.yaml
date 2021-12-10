@@ -16,7 +16,7 @@ input_select:
       - Sensor      
 
 counter:
-  behaelter_leeren:
+  staubsauger_behaelter_leeren:
     name: Behälter leeren
     icon: mdi:delete-empty
     initial: 3
@@ -25,7 +25,7 @@ counter:
 binary_sensor:
   - platform: template
     sensors:
-      reinigung_heute:
+      staubsauger_reinigung_heute:
         friendly_name: Reinigung heute        
         icon_template: mdi:calendar
         value_template: >-
@@ -51,19 +51,16 @@ binary_sensor:
 sensor:
   - platform: template
     sensors:
-      letzte_reinigung:
-        friendly_name: Letzte Reinigung
-        icon_template: mdi:clock-end
-        value_template: >-
-          {% set lastClean = state_attr("automation.staubsaugen_beendet", "last_triggered") %}
-          
-          {% if lastClean == None %}
-            -
-          {% else %}            
-            {% set weekday = as_timestamp(lastClean, None) | timestamp_custom("%w", True, None) | int %}
-
-            {{ '-' if weekday == None else ['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'][weekday-1] }}, {{ as_timestamp(lastClean, None) | timestamp_custom("%d.%m.%Y", True) | string }}              
-          {% endif %}
+      staubsauger_dauer_letzte_reinigung:
+        friendly_name: "Staubsauger Dauer Letzte Reinigung"
+        icon_template: mdi:clock-outline
+        value_template: "{{ (states('sensor.staubsauger_last_clean_duration') | int(0) / 60) | int(0) }}"
+        
+      staubsauger_battery_level:
+        friendly_name: "Staubsauger Batteriestand"
+        device_class: battery
+        unit_of_measurement: "%"
+        value_template: "{{ state_attr('vacuum.staubsauger', 'battery_level') | float(0) }}"        
 
 automation:
   - alias: "Staubsaugen - Gestartet"
@@ -90,7 +87,7 @@ automation:
         entity_id: input_boolean.staubsauger_automatische_reinigung
         state: 'on'        
       - condition: state
-        entity_id: binary_sensor.reinigung_heute
+        entity_id: binary_sensor.staubsauger_reinigung_heute
         state: 'on'
       - condition: state
         entity_id:  calendar.urlaub
@@ -124,7 +121,7 @@ automation:
           {{ True if abstand_stunden <= 2 else False }}         
     action:
       - service: counter.decrement
-        entity_id: counter.behaelter_leeren        
+        entity_id: counter.staubsauger_behaelter_leeren        
       - service: input_boolean.turn_off
         entity_id: input_boolean.staubsauger_automatische_reinigung_gestartet        
       - choose:
@@ -139,7 +136,7 @@ automation:
       - choose:
           - conditions:
               - condition: numeric_state
-                entity_id: counter.behaelter_leeren
+                entity_id: counter.staubsauger_behaelter_leeren
                 below: 1
             sequence:
               - service: persistent_notification.create
@@ -182,7 +179,7 @@ automation:
         value_template: '{{ trigger.event.data.service_data.notification_id == "staubsauger_leeren" }}'
     action:
       - service: counter.reset
-        entity_id: counter.behaelter_leeren
+        entity_id: counter.staubsauger_behaelter_leeren
       - service: vacuum.return_to_base
         entity_id: vacuum.staubsauger        
         
