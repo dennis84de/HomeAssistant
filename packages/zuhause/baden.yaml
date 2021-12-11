@@ -34,7 +34,7 @@ automation:
       - service: light.turn_on
         entity_id: light.badezimmerschrank        
       - service: input_boolean.turn_on
-        entity_id: input_boolean.baden_aktiv, input_boolean.bewegungsmelder_badezimmer_deaktiviert
+        entity_id: input_boolean.baden_aktiv
       - service: switch.turn_off
         entity_id: switch.watchtv_wohnzimmer, switch.computer
       - service: script.radios_ausschalten
@@ -62,7 +62,7 @@ automation:
           echo: "badezimmer"
           message: "Alle Geräte werden wieder eingeschaltet."          
       - service: input_boolean.turn_off
-        entity_id: input_boolean.baden_aktiv, input_boolean.bewegungsmelder_badezimmer_deaktiviert
+        entity_id: input_boolean.baden_aktiv
       - service: entity_controller.disable_stay_mode
         entity_id: entity_controller.bewegung_badezimmer        
       - service: light.turn_off

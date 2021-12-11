@@ -505,7 +505,7 @@ automation:
       - "{{ is_state('binary_sensor.schlafen_aktiv', 'off') }}" 
       - "{{ is_state('input_boolean.wetter_warnungen_einschalten', 'on') }}" 
       - "{{ is_state('person.dennis', 'home') }}" 
-      - "{{ is_state('input_boolean.besuch', 'off') }}"   
+      - "{{ is_state('input_boolean.besuch', 'off') }}"
     action:
       - service: !secret tts_service
         data:

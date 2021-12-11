@@ -188,10 +188,6 @@ cards:
   - type: custom:stack-in-card
     title: Internet
     cards:
-      - type: entities
-        entities:                  
-          - entity: sensor.speedtest_ping      
-            name: Ping
       - type: horizontal-stack
         cards:
           - type: sensor

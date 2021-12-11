@@ -19,8 +19,6 @@ lovelace:
       type: module   
     - url: /hacsfiles/stack-in-card/stack-in-card.js
       type: module
-    - url: /hacsfiles/stack-in-card/slider-entity-row.js
-      type: module
     - url: /hacsfiles/mini-media-player/mini-media-player-bundle.js
       type: module
     - url: /hacsfiles/layout-card/layout-card.js
@@ -41,8 +39,6 @@ lovelace:
       type: module      
     - url: /hacsfiles/flipdown-timer-card/flipdown-timer-card.js
       type: module         
-    - url: /hacsfiles/lovelace-multiple-entity-row/multiple-entity-row.js
-      type: module      
     
   dashboards:      
     lovelace-rooms:

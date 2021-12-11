@@ -17,7 +17,6 @@ cards:
     show_header_toggle: false
     entities:
       - entity: sensor.handy_battery_level
-        name: Handy
 #        type: "custom:secondaryinfo-entity-row"
 #        secondary_info: "Zuletzt geladen: [[ sensor.handy_zuletzt_geladen ]]"      
       - entity: sensor.tablet_wohnzimmer_battery_level     
@@ -98,7 +97,7 @@ cards:
       - entity: sensor.fenster_arbeitszimmer_battery_level        
         name: Arbeitszimmer
       - entity: sensor.fenster_sportzimmer_battery_level        
-        name: Arbeitszimmer
+        name: Sportzimmer
 
   - type: entities
     title: Bewegungsmelder
