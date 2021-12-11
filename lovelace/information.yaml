@@ -12,10 +12,6 @@ popup_cards:
       entities:          
         - entity: device_tracker.handy  
           name: Wlan
-        - entity: device_tracker.handygps
-          name: GPS
-        - entity: device_tracker.handymqtt  
-          name: MQTT
         - entity: device_tracker.handyping
           name: Ping
      
@@ -90,6 +86,7 @@ cards:
       - entity: person.dennis
         secondary_info: last-changed
       - entity: sensor.aufenthaltsort_handy
+        secondary_info: last-changed
       - entity: proximity.home
       - entity: sensor.letzte_bewegung          
               

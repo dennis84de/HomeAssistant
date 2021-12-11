@@ -9,11 +9,6 @@ device_tracker:
     token: !secret phonetrack_token
     devices:
       - HandyGPS
-
-  - platform: mqtt
-    source_type: 'router'
-    devices:
-      handymqtt: 'location/handy'   
       
   - platform: ping
     hosts:
@@ -23,7 +18,6 @@ proximity:
   home:
     devices:      
       - device_tracker.handygps
-      - device_tracker.handymqtt
     tolerance: 50
        
 binary_sensor:
@@ -549,6 +543,6 @@ automation:
 homeassistant:
   customize:
     sensor.handy_battery_level:
-      friendly_name: Handy Batteriestand
+      friendly_name: Handy
     sensor.handy:
       friendly_name: Handy Status

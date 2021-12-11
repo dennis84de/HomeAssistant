@@ -23,6 +23,7 @@ recorder:
       - media_player
       - person
       - counter
+      - climate
   exclude:
     entities:
       - sensor.home_assistant_overhead_satellites
@@ -40,10 +41,10 @@ logbook:
       - automation
       - entity_controller
       - person    
+      - climate
     entities:  
       - devicve_tracker.handy
       - devicve_tracker.handygps
-      - devicve_tracker.handymqtt
       - devicve_tracker.handyping
   exclude:
     entities:     
@@ -66,6 +67,7 @@ history:
       - lights
       - entity_controller
       - person
+      - climate
   exclude:
     entities:
       - switch.echo_badezimmer_do_not_disturb_switch

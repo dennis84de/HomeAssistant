@@ -97,24 +97,6 @@ automation:
           data:
             inline_keyboard:
               - 'Geräte anzeigen:/geraete'
-              
-  - alias: "Telegram - Unterwegs einschalten"
-    id: "telegram_unterwegs_einschalten"
-    trigger:
-      - platform: event
-        event_type: telegram_command
-        event_data:
-          command: '/unterwegs'
-    action:      
-      - service: mqtt.publish
-        data:
-           topic: 'location/handy'
-           payload: 'not_home'
-           retain: true      
-      - service: telegram_bot.send_message
-        data:
-          target: '{{ trigger.event.data.chat_id }}'
-          message: "Der Status wird aktualisiert."
 
   - alias: "Telegram - Eingeschaltete Geräte"
     id: "telegram_eingeschaltete_geraete"
@@ -240,10 +222,5 @@ script:
   alles_ausschalten:
     alias: "Alles ausschalten"
     sequence:
-      - service: mqtt.publish
-        data:
-           topic: 'location/handy'
-           payload: 'not_home'
-           retain: true
       - service: homeassistant.turn_off
         entity_id: group.alles_ausschalten

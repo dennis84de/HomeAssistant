@@ -71,11 +71,6 @@ script:
   zu_hause_standort:
     alias: "Zu Hause - Standort"
     sequence:
-      - service: mqtt.publish
-        data:
-           topic: 'location/handy'
-           payload: 'home'
-           retain: true
       - service: shell_command.send_position
         data:
           url: !secret phonetracker_send_position_url
