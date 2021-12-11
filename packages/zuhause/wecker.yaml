@@ -335,10 +335,10 @@ automation:
               - condition: template                   
                 value_template: >-
                   {% set alarmSensor = states('sensor.tablet_schlafzimmer_next_alarm') %}
-                  {% set alarmDay = as_timestamp(alarmSensor) | timestamp_custom('%d') %}
-                  {% set now = as_timestamp(now()) | timestamp_custom('%d') %}
+                  {% set alarmDay = as_timestamp(alarmSensor, 0) | timestamp_custom('%d', 0) %}
+                  {% set now = as_timestamp(now()) | timestamp_custom('%d', 0) %}
 
-                  {{ alarmSensor == 'unavailable' or alarmDay != now }}                  
+                  {{ alarmSensor == 'unknown' or alarmDay != now }}
               
     action:
       - service: input_boolean.turn_off

@@ -80,19 +80,6 @@ sensor:
             mdi:phone
           {% endif %}      
 
-#      handy_zuletzt_geladen:
-#        friendly_name: Handy - Zuletzt geladen
-#        value_template: >
-#          {% if is_state('sensor.handy_batterie', None) %}
-#            -
-#          {% else %}
-#            {% set lastCharged = state_attr('sensor.handy_batterie','last_charged') | int(0) %}
-#            {% set weekday = lastCharged | timestamp_custom("%w", True) | int(0) %}
-#
-#            {{ ['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'][weekday-1] }}, {{ lastCharged | timestamp_custom("%d.%m.%Y", True) | string }}  
-#          {% endif %}
-#        device_class: timestamp
-        
 automation: 
   - alias: "Handy aktiv - Wiedergabe pausieren"
     id: "handy_aktiv_wiedergabe_pausieren"

@@ -29,19 +29,14 @@ binary_sensor:
         friendly_name: Reinigung heute        
         icon_template: mdi:calendar
         value_template: >-
-          {% set arbeitstag = is_state('binary_sensor.arbeitstag', 'on') %}
-          {% set samstag = (now().isoweekday() | int) == 6 %}          
+          {% set istArbeitstag = is_state('binary_sensor.arbeitstag', 'on') %}
+          {% set istSamstag = (now().isoweekday() | int) == 6 %}          
           {% set keinUrlaub = is_state('calendar.urlaub', 'off') %}
-          {% set heute = as_timestamp(now()) | timestamp_custom("%Y-%m-%d 00:00:00", True) %}
-          {% set letzteReinigung = as_timestamp(state_attr("automation.staubsaugen_beendet", "last_triggered"), None) | timestamp_custom("%Y-%m-%d 00:00:00", True) %}
+          {% set heute = as_timestamp(now()) | timestamp_custom("%d") | int(0) %}
+          {% set letzteReinigung = as_timestamp(state_attr("automation.staubsaugen_beendet", "last_triggered"), None) | timestamp_custom("%d") | int(0) %}
+          {% set abstandTage = (heute - letzteReinigung) if letzteReinigung else 3 %}
           
-          {% if letzteReinigung %}
-            {% set abstandTage = ((as_timestamp(heute, None) - as_timestamp(letzteReinigung, None)) / 60 / 60 / 24) | int(0) %}
-          {% else %}
-            {% set abstandTage = 3 %}
-          {% endif %}
-          
-          {{ True if keinUrlaub and (arbeitstag or samstag) and abstandTage > 2 else False }}
+          {{ True if keinUrlaub and (istArbeitstag or istSamstag) and abstandTage > 2 else False }}
           
       bewegungsmelder_inaktiv_staubsauger:
         friendly_name: "Bewegungmelder inaktiv - Staubsauger"

@@ -58,6 +58,7 @@ logbook:
       - switch.pc
       - switch.arbeitszimmer_monitore
       - switch.pc_arbeit   
+      - switch.arbeitszimmer_lampe
 
 history:
   include:
@@ -95,6 +96,7 @@ history:
       - switch.wohnzimmer_strahler
       - switch.kleiderschrank
       - switch.wohnzimmer_schrank
+      - switch.arbeitszimmer_lampe
       - switch.adguard_filtering
       - switch.adguard_parental_control
       - switch.adguard_protection

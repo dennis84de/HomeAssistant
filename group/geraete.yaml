@@ -3,45 +3,12 @@ alles_ausschalten:
   entities:
     - switch.alle_radios
     - switch.computer
-    - switch.watchtv_wohnzimmer
-    - switch.watchtv_schlafzimmer
     - switch.computer_arbeit
+    - switch.watchtv_wohnzimmer
+    - switch.watchtv_schlafzimmer    
     - light.wohnzimmer_couch
     - light.wohnzimmer_strahler
     - light.wohnzimmer_schrank
-    - light.arbeitszimmer_lampe
-    - light.sportzimmer_regal
-    - light.schreibtisch
-    - light.flur_vorne
-    - light.flur_hinten
-    - light.badezimmerschrank
-    - light.bett
-    - light.kleiderschrank
-    - light.kueche_regal
-    - light.balkon_licht
-    - fan.ventilator
-    
-licht_wohnung:
-  name: Licht Wohnung
-  entities:
-    - light.wohnzimmer_couch
-    - light.wohnzimmer_strahler
-    - light.wohnzimmer_schrank
-    - light.arbeitszimmer_lampe
-    - light.sportzimmer_regal
-    - light.schreibtisch
-    - light.flur_vorne
-    - light.flur_hinten
-    - light.badezimmerschrank
-    - light.bett
-    - light.kleiderschrank
-    - light.kueche_regal
-    - light.kueches_schrank
-    - light.balkon_licht
-    
-licht_fernsehen:
-  name: Licht Fernsehen
-  entities:
     - light.arbeitszimmer_lampe
     - light.sportzimmer_regal
     - light.schreibtisch
@@ -53,19 +20,8 @@ licht_fernsehen:
     - light.kueche_regal
     - light.kueche_schrank
     - light.balkon_licht
-    
-licht_unterwegs:
-  name: Licht unterwegs
-  entities:
-    - light.wohnzimmer_couch
-    - light.wohnzimmer_strahler
-    - light.wohnzimmer_schrank
-    - light.arbeitszimmer_lampe
-    - light.sportzimmer_regal
-    - light.kueche_regal
-    - light.balkon_licht
-    - light.kleiderschrank
-    
+    - fan.ventilator
+        
 tablets:
   name: Tablets
   entities:

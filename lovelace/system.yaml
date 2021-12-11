@@ -94,6 +94,7 @@ cards:
     entities:
       - entity: sensor.database_size
       - entity: sensor.laufzeit_stunden
+        name: Laufzeit
       - entity: sensor.installierte_version
       - entity: sensor.neuste_version
       - entity: sensor.wichtige_anderungen

@@ -210,17 +210,16 @@ automation:
     trigger:   
       - platform: homeassistant
         event: shutdown     
+    condition:
+      - condition: state
+        entity_id: person.dennis
+        state: 'not_home'      
     action:
-      - choose:
-          - conditions:
-            - condition: state
-              entity_id: person.dennis
-              state: 'not_home'
-            sequence:
-              - service: notify.telegram
-                data:                  
-                  message: "Home Assistant wurde gestoppt."        
-                
+      - service: notify.telegram
+        data:                  
+          message: "Home Assistant wurde gestoppt."        
+      - service: homeassistant.restart
+      
   - alias: "Home Assistant - Fehler Neustart"
     id: "home_assistant_fehler_neustart"
     trigger:
