@@ -1,3 +1,9 @@
+input_datetime:
+  handy_zuletzt_geladen:
+    name: Handy - Zuletzt geladen
+    has_date: true
+    has_time: false
+    
 input_boolean:
   nicht_stoeren:
     name: Nicht stören
@@ -79,6 +85,11 @@ sensor:
           {% else %}   
             mdi:phone
           {% endif %}      
+          
+      handy_zuletzt_geladen:
+        friendly_name: Handy - Zuletzt geladen
+        icon_template: mdi:clock-start
+        value_template: "{{ as_timestamp(states('input_datetime.handy_zuletzt_geladen')) | timestamp_custom('%d.%m.%Y', True) }}"          
 
 automation: 
   - alias: "Handy aktiv - Wiedergabe pausieren"
@@ -86,10 +97,11 @@ automation:
     trigger:
       - platform: state
         entity_id: sensor.handy
-        to: 'ringing'
-      - platform: state
-        entity_id: sensor.handy
-        to: 'dialing'
+        from: 'idle'
+        to:                    
+          - 'dialing'
+          - 'ringing'          
+          - 'talking'      
     condition:
       - condition: state
         entity_id: person.dennis
@@ -520,12 +532,22 @@ automation:
       - platform: state
         entity_id: sensor.handy_battery_level 
     condition:
-      - condition: template
-        value_template: "{{ (trigger.to_state.state | int(100)) > 99 and trigger.to_state.attributes.is_charging == True }}"  
+      - "{{ (trigger.to_state.state | int(100)) > 99 }}"
+      - "{{ trigger.to_state.state | int(0) > trigger.from_state.state | int(0) }}"
     action:
-      - service: !secret tts_service
+      - service: input_datetime.set_datetime
+        target:
+          entity_id: input_datetime.handy_zuletzt_geladen
         data:
-          message: "Das Handy wurde vollständig aufgeladen."
+          timestamp: "{{ now().timestamp() }}"   
+      - choose:
+          - conditions:
+              - "{{ is_state('person.dennis', 'home') }}"
+              - "{{ is_state('binary_sensor.schlafen_aktiv', 'off') }}"
+            sequence:       
+              - service: !secret tts_service
+                data:
+                  message: "Das Handy wurde vollständig aufgeladen."
 
 homeassistant:
   customize:

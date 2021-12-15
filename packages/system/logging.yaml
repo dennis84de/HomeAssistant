@@ -59,6 +59,7 @@ logbook:
       - switch.arbeitszimmer_monitore
       - switch.pc_arbeit   
       - switch.arbeitszimmer_lampe
+      - switch.kuechenschrank
 
 history:
   include:
@@ -71,6 +72,15 @@ history:
       - climate
   exclude:
     entities:
+      - switch.sportzimmer_regal
+      - switch.wohnzimmer_couch
+      - switch.wohnzimmer_strahler
+      - switch.kleiderschrank
+      - switch.wohnzimmer_schrank
+      - switch.arbeitszimmer_lampe
+      - switch.kuechenschrank
+      - switch.schlafzimmer_fernseher_remote
+      - switch.schlafzimmer_fernseher_licht      
       - switch.echo_badezimmer_do_not_disturb_switch
       - switch.echo_badezimmer_repeat_switch
       - switch.echo_badezimmer_shuffle_switch
@@ -88,15 +98,7 @@ history:
       - switch.echo_wohnzimmer_shuffle_switch
       - switch.firetv_badezimmer_do_not_disturb_switch
       - switch.firetv_schlafzimmer_do_not_disturb_switch
-      - switch.firetv_sportzimmer_do_not_disturb_switch
-      - switch.schlafzimmer_fernseher_remote
-      - switch.schlafzimmer_fernseher_licht
-      - switch.sportzimmer_regal
-      - switch.wohnzimmer_couch
-      - switch.wohnzimmer_strahler
-      - switch.kleiderschrank
-      - switch.wohnzimmer_schrank
-      - switch.arbeitszimmer_lampe
+      - switch.firetv_sportzimmer_do_not_disturb_switch      
       - switch.adguard_filtering
       - switch.adguard_parental_control
       - switch.adguard_protection

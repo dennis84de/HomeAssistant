@@ -48,6 +48,15 @@ lovelace:
       icon: mdi:home-assistant
       show_in_sidebar: true  
   
+panel_custom:
+  - name: panel-redirect
+    url_path: redirect-server-controls
+    sidebar_title: Serversteuerung
+    sidebar_icon: mdi:server
+    module_url: /local/scripts/panel-redirect.js
+    config:
+      target: /config/server_control
+
 breaking_changes:
   name: Wichtige Änderungen
 
