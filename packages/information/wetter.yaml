@@ -83,7 +83,7 @@ binary_sensor:
         friendly_name: "Sommerzeit"     
         icon_template: "mdi:weather-sunny"          
         value_template: "{{ now().timetuple().tm_isdst > 0 }}"  
-                           
+    
 sensor:
   - platform: moon
       

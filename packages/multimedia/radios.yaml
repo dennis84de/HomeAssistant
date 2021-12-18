@@ -254,35 +254,17 @@ automation:
       - platform: state
         entity_id: binary_sensor.bewegungsmelder_balkon
         to: 'on'
-    condition:
-      - condition: or
-        conditions:
-          - condition: time
-            after: '08:00'            
-            before: '12:00'           
-          - condition: time
-            after: '15:00'
-            before: '22:00'  
-      - condition: template
-        value_template: '{{ now().isoweekday() != 7 }}'   
-      - condition: state
-        entity_id: 'switch.wiedergabe_aktiv'
-        state: 'on'
-      - condition: state
-        entity_id: 'media_player.radio_balkon'
-        state: 'off'
-      - condition: state
-        entity_id: 'binary_sensor.balkontuer'
-        state: 'on'
-      - condition: state
-        entity_id: 'sensor.handy'
-        state: 'idle'        
-      - condition: state
-        entity_id: 'sensor.telefon'
-        state: 'idle'
-      - condition: state
-        entity_id: binary_sensor.besuch
-        state: 'off'
+    condition:     
+      - "{{ now().isoweekday() != 7 }}"
+      - "{{ is_state('binary_sensor.morgens', 'off') }}"
+      - "{{ is_state('binary_sensor.mittags', 'off') }}"
+      - "{{ is_state('binary_sensor.nachts', 'off') }}"
+      - "{{ is_state('switch.wiedergabe_aktiv', 'on') }}"
+      - "{{ is_state('media_player.radio_balkon', 'off') }}"
+      - "{{ is_state('binary_sensor.balkontuer', 'on') }}"
+      - "{{ is_state('sensor.handy', 'idle') }}"
+      - "{{ is_state('sensor.telefon', 'idle') }}"
+      - "{{ is_state('binary_sensor.besuch', 'off') }}"
     action:
       - service: input_boolean.turn_on
         entity_id: input_boolean.radio_balkon_aktiv

@@ -126,10 +126,13 @@ sensor:
         friendly_name: Nächstes Spiel
         value_template: >
           {% if state_attr('calendar.nationalmannschaft', 'message') %}
-            {% set message = state_attr('calendar.nationalmannschaft', 'message') %}
-            {% set messageSplitted = message.split(' | ') %}
+            {% set messageSplitted = state_attr('calendar.nationalmannschaft', 'message').split(' | ') %}
 
-            {{ messageSplitted[0] ~ ' (' ~ messageSplitted[1] ~ ')' }}
+            {% if  messageSplitted|length == 1 %}
+              {{ messageSplitted[0] }}
+            {% else %}
+              {{ messageSplitted[0] ~ ' (' ~ messageSplitted[1] ~ ')' }}
+            {% endif %}           
           {% else %}
             -
           {% endif %}
@@ -163,10 +166,13 @@ sensor:
         friendly_name: Ort
         value_template: >
           {% if state_attr('calendar.nationalmannschaft', 'location') %}
-            {% set location = state_attr('calendar.nationalmannschaft', 'location') %}
-            {% set locationSplitted = location.split(' | ') %}
+            {% set locationSplitted = state_attr('calendar.nationalmannschaft', 'location').split(' | ') %}
 
-            {{ locationSplitted[1] }}
+            {% if locationSplitted|length == 2 %}
+              {{ locationSplitted[1] }}
+            {% else %}
+              -
+            {% endif %}            
           {% else %}
             -
           {% endif %}
