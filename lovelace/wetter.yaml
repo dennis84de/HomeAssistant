@@ -90,6 +90,7 @@ cards:
     hours_to_show: 120
     points_per_hour: 5
     hour24: true
+    upper_bound: 1000
     show:
       fill: false
       icon: false
