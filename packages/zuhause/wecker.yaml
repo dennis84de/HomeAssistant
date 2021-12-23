@@ -27,7 +27,7 @@ input_datetime:
     icon: mdi:timer
     
 input_boolean:
-  alarm_aktiv:
+  wecker_aktiv:
     name: Wecker aktiv    
     icon: mdi:alarm-multiple
 
@@ -43,11 +43,11 @@ input_boolean:
 binary_sensor:
   - platform: template
     sensors:
-      alarm_aktiv:
-        friendly_name: Alarm aktiv
+      wecker_aktiv:
+        friendly_name: Wecker aktiv
         icon_template: mdi:alarm-multiple
         device_class: sound
-        value_template: "{{ True if is_state('input_boolean.alarm_aktiv', 'on') else False }}"
+        value_template: "{{ True if is_state('input_boolean.wecker_aktiv', 'on') else False }}"
 
       wecker_richtig_gestellt:
         friendly_name: Wecker richtig gestellt
@@ -207,14 +207,14 @@ automation:
           {{ wecker == jetzt + vorlauf }}
     condition:
       - condition: state
-        entity_id: input_boolean.alarm_aktiv
+        entity_id: input_boolean.wecker_aktiv
         state: 'off'        
       - condition: state
         entity_id: binary_sensor.schlafen_aktiv
         state: 'on'
     action:
       - service: input_boolean.turn_on
-        entity_id: input_boolean.alarm_aktiv  
+        entity_id: input_boolean.wecker_aktiv  
       - service: light.turn_on
         data:
           entity_id: light.bett
@@ -240,7 +240,7 @@ automation:
         entity_id: sensor.tablet_schlafzimmer_next_alarm
     condition:
       - condition: state
-        entity_id: input_boolean.alarm_aktiv
+        entity_id: input_boolean.wecker_aktiv
         state: 'on'        
       - condition: state
         entity_id: binary_sensor.schlafen_aktiv
@@ -259,7 +259,7 @@ automation:
           minutes: 5
     condition:
       - condition: state
-        entity_id: binary_sensor.alarm_aktiv
+        entity_id: binary_sensor.wecker_aktiv
         state: 'on'
       - condition: template
         value_template: >-
@@ -323,7 +323,7 @@ automation:
       - condition: or
         conditions:
           - condition: state
-            entity_id: binary_sensor.alarm_aktiv
+            entity_id: binary_sensor.wecker_aktiv
             state: 'on'
           - condition: template
             value_template: "{{ trigger.id == 'schalter_badezimmer' }}"              
@@ -342,7 +342,7 @@ automation:
               
     action:
       - service: input_boolean.turn_off
-        entity_id: input_boolean.schlafen_aktiv, input_boolean.alarm_aktiv, input_boolean.wecker_erinnerung_morgen, input_boolean.wecker_zeit_geaendert
+        entity_id: input_boolean.schlafen_aktiv, input_boolean.wecker_aktiv, input_boolean.wecker_erinnerung_morgen, input_boolean.wecker_zeit_geaendert
       - service: input_boolean.turn_on
         entity_id: input_boolean.schlafen_fernseher_einschalten
       - service: light.turn_off

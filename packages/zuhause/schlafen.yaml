@@ -210,6 +210,9 @@ automation:
         entity_id: binary_sensor.schlafen_aktiv
         state: 'on'
       - condition: state
+        entity_id: binary_sensor.alarm_aktiv
+        state: 'off'        
+      - condition: state
         entity_id: input_boolean.wecker_erinnerung_morgen
         state: 'off'    
       - condition: state
