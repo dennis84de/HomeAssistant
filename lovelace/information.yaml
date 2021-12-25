@@ -164,10 +164,8 @@ cards:
       - entity: calendar.kalender            
       - entity: sensor.naechste_ferien      
         type: "custom:secondaryinfo-entity-row"   
-        secondary_info: 'Noch [[ sensor.naechste_ferien.attributes.tage ]] [[ if(sensor.naechste_ferien.attributes.tage == 1, "Tag", "Tage") ]]'
       - entity: sensor.next_holiday
-        type: "custom:secondaryinfo-entity-row"              
-        secondary_info: 'Noch [[ sensor.next_holiday.attributes.days_until_next_holiday ]] [[ if(sensor.next_holiday.attributes.days_until_next_holiday == 1, "Tag", "Tage") ]]'
+        type: "custom:secondaryinfo-entity-row"                      
       - entity: sensor.naechster_urlaub     
       - entity: sensor.naechstes_buero
         name: Büro

@@ -139,8 +139,8 @@ sensor:
           {{ '-' if up_time == 'unknown' else ((as_timestamp(now()) - as_timestamp(up_time, None)) / 60 / 60) | round(2, 0) }}
 
 script:  
-  restart_homeassistant:
-    alias: Home Assistant neustarten
+  homeassistant_neustart:
+    alias: Home Assistant - Neustart
     sequence:
       - service: !secret tts_service
         data:
@@ -157,6 +157,35 @@ script:
         continue_on_timeout: 'true'      
       - service: homeassistant.restart
 
+  homeassistant_gestartet:
+    alias: Home Assistant - Gestartet
+    sequence:
+      - service: hassio.addon_stdin
+        data:
+          addon: 15d21743_samba_backup
+          input: restore-sensor          
+      - choose:
+          - conditions:
+            - condition: state
+              entity_id: person.dennis
+              state: 'not_home'
+            sequence:
+              - service: notify.telegram
+                data:                  
+                  message: "Home Assistant wurde neugestartet."
+        default:
+          - service: script.zu_hause_standort
+          - service: media_player.play_media
+            data:
+              entity_id: media_player.squeezebox
+              media_content_id: http://192.168.2.75:8123/local/sounds/winxp_start.mp3
+              media_content_type: music
+          - delay: '00:00:02'
+          - service: !secret tts_service
+            data:
+              echo: "wohnzimmer"
+              message: "Home Assistant wurde neugestartet."      
+      
 automation:
   - alias: "Home Assisant - Update verfügbar"
     id: "home_assistant_update_verfuegbar"
@@ -188,31 +217,7 @@ automation:
       - platform: homeassistant
         event: start
     action:
-      - service: hassio.addon_stdin
-        data:
-          addon: 15d21743_samba_backup
-          input: restore-sensor          
-      - choose:
-          - conditions:
-            - condition: state
-              entity_id: person.dennis
-              state: 'not_home'
-            sequence:
-              - service: notify.telegram
-                data:                  
-                  message: "Home Assistant wurde neugestartet."
-        default:
-          - service: script.zu_hause_standort
-          - service: media_player.play_media
-            data:
-              entity_id: media_player.squeezebox
-              media_content_id: http://192.168.2.75:8123/local/sounds/winxp_start.mp3
-              media_content_type: music
-          - delay: '00:00:02'
-          - service: !secret tts_service
-            data:
-              echo: "wohnzimmer"
-              message: "Home Assistant wurde neugestartet."          
+      - service: script.homeassistant_gestartet
           
   - alias: "Home Assistant - Gestoppt"
     id: "home_assistant_gestoppt"
@@ -248,8 +253,9 @@ homeassistant:
     zone.work:
       friendy_name: Arbeit
   
-    script.restart_homeassistant:
+    script.homeassistant_neustart:
       icon: mdi:home-assistant
+      name: Neustart
 
     sensor.hacs:
       friendly_name: HACS

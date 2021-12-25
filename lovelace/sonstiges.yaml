@@ -14,7 +14,7 @@ cards:
       - entity: sensor.flugzeuge
       - entity: binary_sensor.iss
       - entity: sensor.home_assistant_overhead_satellites               
-      - entity: sensor.strommix
+#      - entity: sensor.strommix
       - entity: sensor.schimmelindikator
       - entity: binary_sensor.auto_waschen
       - entity: binary_sensor.autoreifen

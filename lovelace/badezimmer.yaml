@@ -48,18 +48,13 @@ cards:
     title: Sensoren
     show_header_toggle: false
     entities:
+      - entity: sensor.badezimmer_temperatur
+        name: Temperatur      
       - entity: binary_sensor.bewegungsmelder_badezimmer
         name: Bewegungsmelder
       - entity: sensor.badezimmer_helligkeit
         name: Helligkeit
 
-  - type: glance
-    title: Thermometer
-    show_header_toggle: false
-    entities:
-      - entity: sensor.badezimmer_temperatur
-        name: Temperatur
-        
   - type: entities
     title: Heizung
     show_header_toggle: false

@@ -1,0 +1,12 @@
+template:
+  - sensor:
+      - name: "Bewegungsmelder deaktiviert"
+        unique_id: bewegungsmelder_deaktiviert
+        icon: mdi:nas
+        state: >
+          {% set motionSensorDeactivated = expand('group.bewegungsmelder_deaktiviert')
+            | selectattr('state','eq','on') 
+            | list
+            | length %}
+            
+          {{ motionSensorDeactivated }}

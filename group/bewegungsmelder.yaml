@@ -11,3 +11,15 @@ bewegungsmelder:
     - binary_sensor.bewegungsmelder_balkon
     - binary_sensor.bewegungsmelder_wohnzimmer
     - binary_sensor.bewegungsmelder_badezimmer
+    
+bewegungsmelder_deaktiviert:
+  name: Bewegungsmelder deaktiviert
+  entities:    
+    - input_boolean.bewegungsmelder_wohnzimmer_deaktiviert
+    - input_boolean.bewegungsmelder_schlafzimmer_deaktiviert
+    - input_boolean.bewegungsmelder_kueche_deaktiviert
+    - input_boolean.bewegungsmelder_badezimmer_deaktiviert
+    - input_boolean.bewegungsmelder_flur_deaktiviert
+    - input_boolean.bewegungsmelder_arbeitszimmer_deaktiviert
+    - input_boolean.bewegungsmelder_sportzimmer_deaktiviert     
+    - input_boolean.bewegungsmelder_balkon_deaktiviert

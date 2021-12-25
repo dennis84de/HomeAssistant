@@ -150,12 +150,12 @@ sensor:
     name: Flugzeuge
     radius: 10
       
-  - platform: rest
-    name: Strommix
-    resource: !secret strommix_url
-    unit_of_measurement: '%'
-    scan_interval: 3600
-    value_template: '{{ value_json[0].eevalue }}'
+#  - platform: rest
+#    name: Strommix
+#    resource: !secret strommix_url
+#    unit_of_measurement: '%'
+#    scan_interval: 3600
+#    value_template: '{{ value_json[0].eevalue }}'
 
   - platform: rest
     name: regenradar
