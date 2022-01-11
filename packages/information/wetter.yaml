@@ -2,11 +2,11 @@ sun:
 
 camera:
   - platform: generic
-    still_image_url: http://api.sat24.com/mostrecent/DE/visual5hdcomplete
+    still_image_url: https://api.sat24.com/mostrecent/DE/visual5hdcomplete
     name: Wetter
 
   - platform: generic
-    still_image_url: http://www.grueninger.com/webcam/current.jpg
+    still_image_url: https://www.grueninger.com/webcam/current.jpg
     name: Dortmund
 
 gdacs:
@@ -23,33 +23,6 @@ input_number:
     min: 100
     max: 1000
     step: 50 
-    
-template:
-  - trigger:
-      - platform: state
-        entity_id: sensor.regenradar
-      - platform: homeassistant
-        event: start
-      - platform: event
-        event_type: event_template_reloaded             
-    sensor:
-      - name: 'Regen Text'        
-        unique_id: 'regenradar_text'
-        icon: 'mdi:weather-pouring'
-        state: "{{ state_attr('sensor.regenradar', 'raintext') }}"
-    binary_sensor:
-      - name: 'Regen in 30 min'        
-        unique_id: 'regenradar_30m'
-        icon: "{{ 'mdi:weather-pouring' if is_state_attr('sensor.regenradar', 'rainin30min', 1) else 'mdi:weather-partly-cloudy' }}"
-        state: "{{ is_state_attr('sensor.regenradar', 'rainin30min', 1) }}"
-      - name: 'Regen in 60 min'      
-        unique_id: 'regenradar_60m'
-        icon: "{{ 'mdi:weather-pouring' if is_state_attr('sensor.regenradar', 'rainin60min', 1) else 'mdi:weather-partly-cloudy' }}"
-        state: "{{ is_state_attr('sensor.regenradar', 'rainin60min', 1)  }}"
-      - name: 'Regen in 120 min'        
-        unique_id: 'regenradar_120m'
-        icon: "{{ 'mdi:weather-pouring' if is_state_attr('sensor.regenradar', 'rainin120min', 1) else 'mdi:weather-partly-cloudy' }}"
-        state: "{{ is_state_attr('sensor.regenradar', 'rainin120min', 1)  }}"  
     
 binary_sensor:
   - platform: car_wash
@@ -484,39 +457,7 @@ automation:
                       {% if headline != None %} {{ headline }}. {% endif %} {% if description != None %} {{ description }} {% endif %}
                     {%endif%}                      
                   {% endfor %}              
-                {% endif %}
-            
-  - alias: "Wetterwarnung Regen"
-    id: "wetterwarnung_regen"
-    trigger:
-      - platform: state
-        id: '30'
-        entity_id: binary_sensor.regen_in_30_min
-        to: 'on'
-      - platform: state
-        id: '60'
-        entity_id: binary_sensor.regen_in_60_min
-        to: 'on'  
-      - platform: state
-        id: '120'
-        entity_id: binary_sensor.regen_in_120_min  
-        to: 'on'    
-    condition:       
-      - "{{ is_state('binary_sensor.schlafen_aktiv', 'off') }}" 
-      - "{{ is_state('input_boolean.wetter_warnungen_einschalten', 'on') }}" 
-      - "{{ is_state('person.dennis', 'home') }}" 
-      - "{{ is_state('input_boolean.besuch', 'off') }}"
-    action:
-      - service: !secret tts_service
-        data:
-          message: >-
-            {% if trigger.id == '120' %}
-              {{ 'Achtung! In den nächsten 2 Stunden ist mit Regen zu rechnen.' }}
-            {% elif trigger.id == '60' %}
-              {{ 'Achtung! In der nächsten Stunde ist mit Regen zu rechnen.' }}              
-            {% else %}
-              {{ 'Achtung! In den nächsten' ~ trigger.id ~ 'Minuten ist mit Regen zu rechnen.' }}
-            {% endif %}            
+                {% endif %}      
             
 homeassistant:
   customize:
@@ -554,12 +495,12 @@ homeassistant:
       friendly_name: Nächster Sturm
     sensor.darksky_summary:
       friendly_name: Aktuelles Wetter
-      
+    sensor.regenradar:
+      friendly_name: Regenradar
+      icon: mdi:weather-pouring
     sensor.schimmelindikator:
       icon: mdi:biohazard
-
     binary_sensor.iss:
       icon: mdi:earth
-
     sensor.strommix:
       icon: mdi:solar-power

@@ -19,11 +19,12 @@ device_tracker:
   - platform: ping
     hosts:
       handyping: !secret handy_host
-
+      
 proximity:
   home:
     devices:      
       - device_tracker.handygps
+      - device_tracker.handy
     tolerance: 50
        
 binary_sensor:
@@ -43,7 +44,7 @@ sensor:
     options: street_street_number,city
     api_key: !secret openstreetmap_email
     map_provider: google
-    home_zone: zone.zu_hause
+    home_zone: zone.home
     
   - platform: mqtt
     name: "Handy Battery Level"

@@ -210,21 +210,6 @@ script:
     sequence:
       - service: switch.turn_on
         entity_id: switch.badezimmer_radio, switch.wohnzimmer_radio, switch.flur_radio, switch.kueche_radio          
-      - wait_template: >-
-          {% if not is_state('media_player.radio_kueche', 'unavailable') 
-            and not is_state('media_player.radio_badezimmer', 'unavailable') 
-            and not is_state('media_player.radio_wohnzimmer', 'unavailable') 
-            and not is_state('media_player.radio_flur', 'unavailable') 
-          %}
-            True
-          {% else %}
-            False
-          {% endif %}
-        timeout: '00:03:00'
-      - service: script.radio_playlist_wiedergeben
-        data:
-          mediaplayer: media_player.radio_flur
-          playlist: 'Südtirol 1'
       - choose:
           - conditions:
               - "{{ is_state('binary_sensor.home_office_aktiv', 'off') and (homeOfficeHeute is not defined or homeOfficeHeute == False) }}"
@@ -235,6 +220,18 @@ script:
             sequence:            
               - service: switch.turn_on
                 entity_id: switch.balkon_radio
+      - wait_template: >-
+          {% if not is_state('media_player.radio_kueche', 'unavailable') 
+            and not is_state('media_player.radio_badezimmer', 'unavailable') 
+            and not is_state('media_player.radio_wohnzimmer', 'unavailable') 
+            and not is_state('media_player.radio_flur', 'unavailable') 
+          %}
+            True
+          {% else %}
+            False
+          {% endif %}
+      - service: media_player.media_play
+        entity_id: media_player.radio_flur
       
   radio_playlist_wiedergeben:
     alias: "Radio - Playlist wiedergeben"
@@ -367,13 +364,10 @@ automation:
       - "{{ is_state('calendar.borussia_dortmund', 'off') }}"
       - "{{ is_state_attr('media_player.radio_badezimmer', 'media_artist', 'Borussia Dortmund') }}"    
     action:
-      - service: squeezebox.call_method
+      - service: script.radio_playlist_wiedergeben
         data:
-          entity_id: media_player.radio_badezimmer
-          command: 'playlist'
-          parameters:
-            - play
-            - 'Südtirol 1'  
+          mediaplayer: media_player.radio_badezimmer
+          playlist: 'Südtirol 1'
             
   - alias: 'Tür - Radios pausieren'
     id: "tuer_radios_pausieren"

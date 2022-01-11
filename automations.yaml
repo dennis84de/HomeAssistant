@@ -11,7 +11,7 @@
   action:
   - service: switch.turn_on
     target:
-      entity_id: switch.kodi_wohnzimmer
+      entity_id: switch.computer_kodi
   mode: single
 - id: '1600374475624'
   alias: Kodi Wohnzimmer - Ausschalten

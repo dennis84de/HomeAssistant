@@ -19,7 +19,7 @@ binary_sensor:
     payload_on: "online"
     payload_off: "offline"
     device_class: connectivity
-
+  
 switch:
   - platform: template
     switches:

@@ -217,6 +217,11 @@ script:
             {% set windowMessage = '' if qty == 0 else '{} Fenster {} geöffnet: {}.'.format(p1, p2, openWindows | join(', ')) %}
             
             {{ vacuumMessage }} {{ windowMessage }} Alle Geräte werden ausgeschaltet. Auf Wiedersehen.
+      - service: mqtt.publish
+        data:
+           topic: 'handy/tracker'
+           payload: not_home
+           retain: true                 
       - service: script.alles_ausschalten   
       
   alles_ausschalten:

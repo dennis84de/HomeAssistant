@@ -32,10 +32,10 @@ binary_sensor:
           {% set istArbeitstag = is_state('binary_sensor.arbeitstag', 'on') %}
           {% set istSamstag = (now().isoweekday() | int) == 6 %}          
           {% set keinUrlaub = is_state('calendar.urlaub', 'off') %}
-          {% set heute = as_timestamp(now()) | timestamp_custom("%d") | int(0) %}
-          {% set letzteReinigung = as_timestamp(state_attr("automation.staubsaugen_beendet", "last_triggered"), None) | timestamp_custom("%d") | int(0) %}
-          {% set abstandTage = (heute - letzteReinigung) if letzteReinigung else 3 %}
-          
+          {% set heute = as_timestamp(now().replace(hour=0, minute=0, second=0)) %}
+          {% set letzteReinigung = as_timestamp(state_attr("automation.staubsaugen_beendet", "last_triggered").replace(hour=0, minute=0, second=0)) %}
+          {% set abstandTage = ((heute - letzteReinigung) / 60 / 60 / 24) | round() if letzteReinigung else 3 %}
+
           {{ True if keinUrlaub and (istArbeitstag or istSamstag) and abstandTage > 2 else False }}
           
       bewegungsmelder_inaktiv_staubsauger:

@@ -139,10 +139,7 @@ automation:
       - "{{ True if not '(T.B.A.)' in state_attr('calendar.borussia_dortmund', 'message') else False }}"    
       - "{{ not is_state_attr('media_player.radio_badezimmer', 'media_artist', 'Borussia Dortmund') }}"    
     action:
-      - service: squeezebox.call_method
+      - service: script.radio_playlist_wiedergeben
         data:
-          entity_id: media_player.radio_badezimmer
-          command: 'playlist'
-          parameters:
-            - play
-            - 'BVB'        
+          mediaplayer: media_player.radio_badezimmer
+          playlist: 'BVB'

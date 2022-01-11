@@ -38,7 +38,16 @@ binary_sensor:
 
             {{ nextStartTime.strftime('%j')|int - now().strftime('%j')|int == 1 }}          
           {% endif %}          
-
+          
+      adventszeit:
+        friendly_name: 'Adventszeit'
+        value_template: >-
+          {% set first_advent = now().replace(day=25, month=12) - timedelta(days = 21 + now().replace(day=25, month=12).isoweekday() ) %}
+          {{ first_advent <= now() <= now().replace(day=26, month=12) }}
+        icon_template: >-
+          {% set first_advent = now().replace(day=25, month=12) - timedelta(days = 21 + now().replace(day=25, month=12).isoweekday() ) %}
+          {{ 'mdi:string-lights' if first_advent <= now() <= now().replace(day=26, month=12) else 'mdi:string-lights-off' }}          
+         
 sensor:
   - platform: template
     sensors:

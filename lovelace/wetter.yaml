@@ -130,6 +130,7 @@ cards:
     title: Regen und Wind
     show_header_toggle: false
     entities:
+      - entity: sensor.regenradar
       - entity: sensor.darksky_precip_intensity
       - entity: sensor.darksky_precip_probability
       - entity: sensor.darksky_cloud_coverage

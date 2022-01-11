@@ -21,6 +21,7 @@ cards:
       - entity: sensor.katastrophenalarm
       - entity: sensor.sternzeichen
       - entity: sensor.zeitumstellung   
+      - entity: binary_sensor.adventszeit
                 
   - type: conditional
     view_layout:

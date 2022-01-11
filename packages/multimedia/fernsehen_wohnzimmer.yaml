@@ -172,6 +172,7 @@ automation:
     condition:
       - "{{ (states('sensor.laufzeit_minuten') | int(0)) > 1 }}"   
       - "{{ is_state('input_boolean.musik_ausschalten', 'on') }}"
+      - "{{ is_state('binary_sensor.besuch', 'off') }}"
     action:  
       - service: script.radios_ausschalten
         data:

@@ -5,15 +5,18 @@ timer:
              
 input_boolean:
   home_office:
-    name: Home Office
-    icon: mdi:home-city-outline
+    name: Home Office    
   
   home_office_aktiv:
     name: Home Office aktiv
     
   home_office_musik_pausiert:
     name: Musik pausiert    
-   
+
+  home_office_pause:
+    name: Home Office Pause
+    icon: mdi:bell-sleep
+    
 input_select:
   computer_arbeit_ausschalten:
     name: Computer ausschalten
@@ -49,6 +52,11 @@ binary_sensor:
         icon_template: mdi:home-city
         value_template: "{{ is_state('input_boolean.home_office_aktiv', 'on') }}"
 
+      home_office_pause:
+        friendly_name: 'Home Office Pause'
+        icon_template: mdi:bell-sleep
+        value_template: "{{ is_state('input_boolean.home_office_pause', 'on') }}"
+        
 switch:
   - platform: template
     switches:
@@ -375,3 +383,30 @@ automation:
         entity_id: input_boolean.home_office_musik_pausiert
       - service: switch.turn_off
         entity_id: switch.radios_lautlos      
+        
+  - alias: "Home Office - Pause"
+    id: "home_office_pause"    
+    trigger:
+      - platform: event
+        event_type: zha_event
+        event_data:
+          device_ieee: 00:15:8d:00:01:10:0d:7a
+          command: flip      
+    condition:           
+      - condition: state
+        entity_id: binary_sensor.home_office_aktiv
+        state: 'on'
+    action:
+      - choose:
+          - conditions:
+              - condition: state
+                entity_id: binary_sensor.home_office_pause
+                state: 'off'     
+            sequence:
+              - service: light.turn_off
+                entity_id: light.wohnzimmer_couch, light.wohnzimmer_strahler, light.wohnzimmer_schrank 
+              - service: input_boolean.turn_on
+                entity_id: input_boolean.bewegungsmelder_wohnzimmer_deaktiviert, input_boolean.home_office_pause                
+        default:          
+          - service: input_boolean.turn_off
+            entity_id: input_boolean.bewegungsmelder_wohnzimmer_deaktiviert, input_boolean.home_office_pause

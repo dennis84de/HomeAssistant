@@ -70,7 +70,9 @@ cards:
       - entity: switch.computer_arbeit
         name: Computer
       - entity: input_select.computer_arbeit_ausschalten
-        name: Computer ausschalten          
+        name: Computer ausschalten        
+      - entity: input_boolean.home_office_pause
+        name: Pause            
 
   - type: entities
     title: Staubsauger

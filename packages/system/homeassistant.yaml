@@ -65,7 +65,7 @@ browser_mod:
     - all
 
 zone:
-  - name: Zu Hause
+  - name: Home
     latitude: !secret home_latitude
     longitude: !secret home_longitude
     radius: 50
@@ -250,8 +250,6 @@ homeassistant:
   customize:
     zone.home:
       friendy_name: Zu Hause
-    zone.work:
-      friendy_name: Arbeit
   
     script.homeassistant_neustart:
       icon: mdi:home-assistant
