@@ -3,25 +3,14 @@ input_boolean:
     name: Bewegungsmelder deaktiviert    
     icon: mdi:sync-off
 
-entity_controller:      
-  bewegung_balkon:
-    friendly_name: "Bewegung Balkon"
-    sensor: binary_sensor.bewegungsmelder_balkon
-    entity: light.balkon_licht
-    delay: 1200
-    grace_period: 60
-    behaviours:
-      on_enter_overridden: 'off'
-    overrides:  
-      - binary_sensor.sonne_tagsueber
-      - binary_sensor.bewegungsmelder_inaktiv_unterwegs
-      - binary_sensor.bewegungsmelder_inaktiv_staubsauger
-      - input_boolean.bewegungsmelder_balkon_deaktiviert
-
 automation:
-  - alias: 'Licht Balkon'
-    id: "licht_balkon"
+  - alias: 'Licht Balkon - Einschalten'
+    id: "licht_balkon_einschalten"
     trigger:
+      - id: bewegungsmelder_balkon
+        platform: state
+        entity_id: binary_sensor.bewegungsmelder_balkon
+        to: 'on'      
       - id: schalter_balkon
         platform: event
         event_type: zha_event
@@ -31,14 +20,13 @@ automation:
           args:
             click_type: single 
     condition:
-      - condition: state
-        entity_id: binary_sensor.sonne_tagsueber
-        state: 'off'            
-      - condition: state
-        entity_id: calendar.borussia_dortmund
-        state: 'off'      
+      - "{{ is_state('person.dennis', 'home') }}"
+      - "{{ is_state('binary_sensor.besuch', 'off') }}"
+      - "{{ is_state('binary_sensor.sonne_tagsueber', 'off') }}"
+      - "{{ is_state('calendar.borussia_dortmund', 'off') }}"
+      - "{{ is_state('input_boolean.bewegungsmelder_balkon_deaktiviert', 'off') }}"
     action:
-      - service: light.toggle
+      - service: light.turn_on
         entity_id: light.balkon_licht
       
   - alias: "Licht Balkon - Ausschalten"
@@ -47,17 +35,18 @@ automation:
       - platform: state
         entity_id: binary_sensor.bewegungsmelder_wohnzimmer
         to: 'on'
-    condition:
+    condition:      
       - condition: state
-        entity_id: entity_controller.bewegung_balkon
-        state: 'active_timer'
-      - condition: template
-        value_template: >-
-          {% set letzte_bewegung = as_timestamp(state_attr("entity_controller.bewegung_balkon", "last_triggered_at"), None) | timestamp_custom("%s", True) | int(0)  %}
-          {% set now = now().strftime("%s") | int(0) %}
-          {% set abstand_sekunden = (now - letzte_bewegung) %}
-
-          {{ True if abstand_sekunden >= 10 else False }}
+        entity_id: binary_sensor.besuch
+        state: 'off'      
+      - condition: state
+        entity_id: input_boolean.bewegungsmelder_balkon_deaktiviert
+        state: 'off'            
+      - condition: state
+        entity_id: light.balkon_licht
+        state: 'on'
+        for:
+          seconds: 10
     action:
       - service: light.turn_off
         entity_id: light.balkon_licht

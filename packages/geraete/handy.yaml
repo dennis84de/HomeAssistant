@@ -20,6 +20,10 @@ device_tracker:
     hosts:
       handyping: !secret handy_host
       
+  - platform: mqtt
+    devices:
+      handymqtt: "handy/tracker"
+      
 proximity:
   home:
     devices:      
@@ -556,3 +560,5 @@ homeassistant:
       friendly_name: Handy
     sensor.handy:
       friendly_name: Handy Status
+    device_tracker.handygps:
+      friendly_name: Handy MQTT      

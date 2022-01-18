@@ -222,7 +222,7 @@ automation:
         entity_id: media_player.radio_schlafzimmer
       - service: light.turn_on
         data:
-          entity_id: light.bett
+          entity_id: light.bett      
           effect: colorloop             
       - delay: "00:{{ states('input_number.wecker_verzoegerung') | int }}:00" 
       - service: script.wohnung_radios_einschalten

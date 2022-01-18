@@ -29,14 +29,12 @@ binary_sensor:
         friendly_name: 'Krank morgen'
         device_class: opening
         value_template: >-
-          {% set nextEntry = state_attr('calendar.arbeit_krank', 'start_time') %}
-          
-          {% if nextEntry == None %}
+          {% if not state_attr('calendar.arbeit_krank', 'end_time') %}
             False
           {% else %}
-            {% set nextStartTime = strptime(state_attr('calendar.arbeit_krank', 'start_time'),'%Y-%m-%d %H:%M:%S', None) %}
+            {% set nextEndTime = state_attr('calendar.arbeit_krank', 'end_time') | as_datetime %}
 
-            {{ nextStartTime.strftime('%j')|int - now().strftime('%j')|int == 1 }}          
+            {{ nextEndTime.strftime('%j')|int - now().strftime('%j')|int >= 1 }}          
           {% endif %}          
           
       adventszeit:

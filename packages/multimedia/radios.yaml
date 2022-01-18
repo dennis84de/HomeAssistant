@@ -215,7 +215,7 @@ script:
               - "{{ is_state('binary_sensor.home_office_aktiv', 'off') and (homeOfficeHeute is not defined or homeOfficeHeute == False) }}"
               - "{{ bueroHeute is not defined or bueroHeute == False }}"              
               - "{{ now().isoweekday() == 6 or is_state('binary_sensor.arbeitstag', 'on') }}"
-              - "{{ (states('sensor.bewegungsmelder_balkon_temperatur') | int(0)) > 5 }}"
+              - "{{ (states('sensor.bewegungsmelder_balkon_temperatur') | int(0)) > -5 }}"
               - "{{ 21 > now().strftime('%H') | int(0) >= 6 }}"
             sequence:            
               - service: switch.turn_on

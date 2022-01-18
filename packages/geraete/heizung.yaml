@@ -193,10 +193,10 @@ automation:
     id: "heizung_arbeitszimmer_heizunug_eingeschaltet"
     trigger:
       - platform: state
-        entity_id: climate.wohnzimmer
+        entity_id: climate.arbeitszimmer
         to: 'heat'
       - platform: template
-        value_template: '{{ state_attr("climate.wohnzimmer", "preset_mode") == "comfort" }}'
+        value_template: '{{ state_attr("climate.arbeitszimmer", "preset_mode") == "comfort" }}'
     condition:
       - condition: state
         entity_id: binary_sensor.fenster_arbeitszimmer
@@ -204,7 +204,7 @@ automation:
     action:
       - service: climate.set_preset_mode
         data:
-          entity_id: climate.wohnzimmer
+          entity_id: climate.arbeitszimmer
           preset_mode: 'eco'
       - service: input_boolean.turn_on
         entity_id: input_boolean.heizung_ausgeschaltet_arbeitszimmer
