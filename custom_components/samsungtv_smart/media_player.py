@@ -77,6 +77,7 @@ from .const import (
     CONF_DUMP_APPS,
     CONF_EXT_POWER_ENTITY,
     CONF_LOGO_OPTION,
+    CONF_PING_PORT,
     CONF_POWER_ON_DELAY,
     CONF_POWER_ON_METHOD,
     CONF_SHOW_CHANNEL_NR,
@@ -105,7 +106,7 @@ from .const import (
     AppLaunchMethod,
     PowerOnMethod,
 )
-from .logo import LOGO_OPTION_DEFAULT, Logo
+from .logo import LOGO_OPTION_DEFAULT, Logo, LogoOption
 
 ATTR_ART_MODE_STATUS = "art_mode_status"
 ATTR_IP_ADDRESS = "ip_address"
@@ -326,7 +327,7 @@ class SamsungTVDevice(MediaPlayerEntity):
         self._st_error_count = 0
         self._setvolumebyst = False
 
-        self._logo_option = LOGO_OPTION_DEFAULT[0]
+        self._logo_option = LOGO_OPTION_DEFAULT
         self._logo = Logo(
             logo_option=self._logo_option,
             logo_file_download=logo_file,
@@ -460,7 +461,8 @@ class SamsungTVDevice(MediaPlayerEntity):
     def _ping_device(self):
         """Ping TV with WS and others method to check power status."""
 
-        result = self._ws.ping_device()
+        ping_port = self._get_option(CONF_PING_PORT, 0)
+        result = self._ws.ping_device(ping_port)
         if result and self._st:
             use_st_status = self._get_option(CONF_USE_ST_STATUS_INFO, True)
             if (
@@ -857,7 +859,9 @@ class SamsungTVDevice(MediaPlayerEntity):
             self._running_app,
         )
 
-        new_logo_option = self._get_option(CONF_LOGO_OPTION, self._logo_option)
+        new_logo_option = LogoOption(
+            self._get_option(CONF_LOGO_OPTION, self._logo_option.value)
+        )
         if self._logo_option != new_logo_option:
             self._logo_option = new_logo_option
             self._logo.set_logo_color(new_logo_option)

@@ -34,7 +34,7 @@ LOGO_OPTIONS_MAPPING = {
     LogoOption.TransparentColor: "transparent-color",
     LogoOption.TransparentWhite: "transparent-white",
 }
-LOGO_OPTION_DEFAULT = [LogoOption.WhiteColor.value, "fff-color"]
+LOGO_OPTION_DEFAULT = LogoOption.WhiteColor
 LOGO_BASE_URL = "https://jaruba.github.io/channel-logos/"
 LOGO_FILE = "logo_paths.json"
 LOGO_FILE_DOWNLOAD = "logo_paths_download.json"
@@ -53,7 +53,7 @@ class Logo:
 
     def __init__(
         self,
-        logo_option: int,
+        logo_option: LogoOption,
         logo_file_download: str = None,
         session: Optional[aiohttp.ClientSession] = None,
     ):
@@ -76,32 +76,21 @@ class Logo:
             os.path.join(app_path, LOGO_FILE_DOWNLOAD)
         )
 
-    def set_logo_color(self, logo_option):
+    def set_logo_color(self, logo_type: LogoOption):
         """ Sets the logo color option and image base url if not already set to this option """
-        logo_option = (
-            LOGO_OPTIONS_MAPPING[LogoOption(logo_option)]
-            if logo_option
-            else LOGO_OPTION_DEFAULT[1]
-        )
+        logo_option = LOGO_OPTIONS_MAPPING[logo_type]
         if self._logo_option and self._logo_option == logo_option:
             return
 
         _LOGGER.debug("Setting logo option to %s", logo_option)
-        if logo_option in LOGO_OPTIONS_MAPPING.values():
-            self._logo_option = logo_option
-        else:
-            _LOGGER.warning(
-                "Unrecognized value '%s' for 'Display logos' option. Using default value.",
-                logo_option,
-            )
-            self._logo_option = LOGO_OPTION_DEFAULT[1]
+        self._logo_option = logo_option
 
-        if logo_option == LOGO_OPTIONS_MAPPING[LogoOption.Disabled]:
+        if logo_type == LogoOption.Disabled:
             self._media_image_base_url = None
         else:
             self._media_image_base_url = f"{LOGO_BASE_URL}export/{self._logo_option}"
 
-    async def check_requested(self):
+    def check_requested(self):
         """Check if a new file update is requested."""
         if self._media_image_base_url is None:
             return False
@@ -178,9 +167,9 @@ class Logo:
                 "Please check file writing permissions.",
                 self._logo_file_download_path,
             )
-        except OSError as e:
+        except OSError:
             _LOGGER.warning(
-                "Not able to write to write the downloaded paths file to %s. "
+                "Not able to write the downloaded paths file to %s. "
                 "Disk might be full or another OS error occurred",
                 self._logo_file_download_path,
             )
@@ -226,12 +215,14 @@ class Logo:
 
     async def async_find_match(self, media_title):
         """ Finds a match in the logo_paths file for a given media_title """
+        if self._media_image_base_url is None:
+            _LOGGER.debug("Media image base url was not set! Not able to find a matching logo")
+            return None
+
         if media_title is None:
             _LOGGER.warning("No media title right now! Not able to find a matching logo")
-            return
-        if self._media_image_base_url is None:
-            _LOGGER.warning("Media image base url was not set! Not able to find a matching logo")
-            return
+            return None
+
         _LOGGER.debug("Matching media title for %s", media_title)
         await self._async_ensure_latest_path_file()
 

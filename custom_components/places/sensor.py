@@ -392,7 +392,7 @@ class Places(Entity):
         return self._entity_picture
 
     @property
-    def device_state_attributes(self):
+    def extra_state_attributes(self):
         """Return the state attributes."""
         return{
             ATTR_STREET_NUMBER: self._street_number,
@@ -465,7 +465,7 @@ class Places(Entity):
         _LOGGER.info( "(" + self._name + ") Check if update req'd : " + self._devicetracker_id )
         _LOGGER.debug( "(" + self._name + ") Previous State        : " + previous_state )
 
-        if hasattr(self, '_devicetracker_id'):
+        if hasattr(self, '_devicetracker_id') and self.hass.states.get(self._devicetracker_id) is not None:
             now = datetime.now()
             old_latitude    = str(self._latitude)
             old_longitude   = str(self._longitude)
@@ -480,7 +480,7 @@ class Places(Entity):
             home_location     = home_latitude + "," + home_longitude
             
             #maplink_google ='https://www.google.com/maps/@' + current_location+',' + self._map_zoom + 'z'
-            maplink_apple  = 'https://maps.apple.com/maps/?ll=' + current_location + '&z=' + self._map_zoom
+            maplink_apple  = 'https://maps.apple.com/maps/?q=' + current_location + '&z=' + self._map_zoom
             #maplink_google = 'https://www.google.com/maps/dir/?api=1&origin=' + current_location + '&destination=' + home_location + '&travelmode=driving&layer=traffic'
             maplink_google = 'https://www.google.com/maps/search/?api=1&basemap=roadmap&layer=traffic&query=' + current_location
             if (new_latitude != 'None' and new_longitude != 'None' and

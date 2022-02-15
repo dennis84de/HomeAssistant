@@ -13,11 +13,12 @@ from homeassistant.components.sensor import (
     SensorStateClass,
 )
 from homeassistant.const import (
-    CONDUCTIVITY,
+    CONCENTRATION_PARTS_PER_MILLION,
+    CONCENTRATION_MICROGRAMS_PER_CUBIC_METER,
     CONCENTRATION_MILLIGRAMS_PER_CUBIC_METER,
+    CONDUCTIVITY,
     ELECTRIC_POTENTIAL_VOLT,
     ENERGY_KILO_WATT_HOUR,
-    ENTITY_CATEGORY_DIAGNOSTIC,
     LIGHT_LUX,
     MASS_KILOGRAMS,
     PERCENTAGE,
@@ -28,6 +29,7 @@ from homeassistant.const import (
     VOLUME_LITERS,
     Platform,
 )
+from homeassistant.helpers.entity import EntityCategory
 
 DOMAIN = "ble_monitor"
 PLATFORMS = [
@@ -58,6 +60,8 @@ CONF_DEVICE_TRACKER_SCAN_INTERVAL = "tracker_scan_interval"
 CONF_DEVICE_TRACKER_CONSIDER_HOME = "consider_home"
 CONF_DEVICE_DELETE_DEVICE = "delete device"
 CONF_PACKET = "packet"
+CONF_GATEWAY_ID = "gateway_id"
+CONF_UUID = "uuid"
 CONFIG_IS_FLOW = "is_flow"
 
 SERVICE_CLEANUP_ENTRIES = "cleanup_entries"
@@ -75,6 +79,7 @@ DEFAULT_REPORT_UNKNOWN = "Off"
 DEFAULT_DISCOVERY = True
 DEFAULT_RESTORE_STATE = False
 DEFAULT_DEVICE_MAC = ""
+DEFAULT_DEVICE_UUID = ""
 DEFAULT_DEVICE_ENCRYPTION_KEY = ""
 DEFAULT_DEVICE_DECIMALS = "default"
 DEFAULT_DEVICE_USE_MEDIAN = "default"
@@ -103,6 +108,9 @@ CONF_TMIN_PROBES = 0.0
 CONF_TMAX_PROBES = 300.0
 CONF_HMIN = 0.0
 CONF_HMAX = 99.9
+
+# Beacon types
+
 
 # Sensors with deviating temperature range
 KETTLES = ('YM-K1501', 'YM-K1501EU', 'V-SK152')
@@ -244,6 +252,15 @@ SENSOR_TYPES: tuple[BLEMonitorSensorEntityDescription, ...] = (
         state_class=SensorStateClass.MEASUREMENT,
     ),
     BLEMonitorSensorEntityDescription(
+        key="cypress temperature",
+        sensor_class="TemperatureSensor",
+        name="ble cypress temperature",
+        unique_id="t_cypress_",
+        native_unit_of_measurement=TEMP_CELSIUS,
+        device_class=SensorDeviceClass.TEMPERATURE,
+        state_class=SensorStateClass.MEASUREMENT,
+    ),
+    BLEMonitorSensorEntityDescription(
         key="temperature probe 1",
         sensor_class="TemperatureSensor",
         name="ble temperature probe 1",
@@ -325,6 +342,15 @@ SENSOR_TYPES: tuple[BLEMonitorSensorEntityDescription, ...] = (
         state_class=SensorStateClass.MEASUREMENT,
     ),
     BLEMonitorSensorEntityDescription(
+        key="cypress humidity",
+        sensor_class="HumiditySensor",
+        name="ble cypress humidity",
+        unique_id="h_cypress_",
+        native_unit_of_measurement="RH%",
+        device_class=SensorDeviceClass.HUMIDITY,
+        state_class=SensorStateClass.MEASUREMENT,
+    ),
+    BLEMonitorSensorEntityDescription(
         key="humidity outdoor",
         sensor_class="HumiditySensor",
         name="ble humidity outdoor",
@@ -398,7 +424,17 @@ SENSOR_TYPES: tuple[BLEMonitorSensorEntityDescription, ...] = (
         native_unit_of_measurement=SIGNAL_STRENGTH_DECIBELS_MILLIWATT,
         device_class=SensorDeviceClass.SIGNAL_STRENGTH,
         state_class=SensorStateClass.MEASUREMENT,
-        entity_category=ENTITY_CATEGORY_DIAGNOSTIC,
+        entity_category=EntityCategory.DIAGNOSTIC,
+    ),
+    BLEMonitorSensorEntityDescription(
+        key="measured power",
+        sensor_class="MeasuringSensor",
+        name="ble measured power",
+        unique_id="measured_power_",
+        native_unit_of_measurement=SIGNAL_STRENGTH_DECIBELS_MILLIWATT,
+        device_class=SensorDeviceClass.SIGNAL_STRENGTH,
+        state_class=SensorStateClass.MEASUREMENT,
+        entity_category=EntityCategory.DIAGNOSTIC,
     ),
     BLEMonitorSensorEntityDescription(
         key="battery",
@@ -408,7 +444,7 @@ SENSOR_TYPES: tuple[BLEMonitorSensorEntityDescription, ...] = (
         native_unit_of_measurement=PERCENTAGE,
         device_class=SensorDeviceClass.BATTERY,
         state_class=SensorStateClass.MEASUREMENT,
-        entity_category=ENTITY_CATEGORY_DIAGNOSTIC,
+        entity_category=EntityCategory.DIAGNOSTIC,
     ),
     BLEMonitorSensorEntityDescription(
         key="voltage",
@@ -418,7 +454,51 @@ SENSOR_TYPES: tuple[BLEMonitorSensorEntityDescription, ...] = (
         native_unit_of_measurement=ELECTRIC_POTENTIAL_VOLT,
         device_class=SensorDeviceClass.VOLTAGE,
         state_class=SensorStateClass.MEASUREMENT,
-        entity_category=ENTITY_CATEGORY_DIAGNOSTIC,
+        entity_category=EntityCategory.DIAGNOSTIC,
+    ),
+    BLEMonitorSensorEntityDescription(
+        key="mac",
+        sensor_class="StateChangedSensor",
+        name="ble mac",
+        unique_id="mac_",
+        icon="mdi:alpha-m-circle-outline",
+        native_unit_of_measurement=None,
+        device_class=None,
+        state_class=None,
+        entity_category=EntityCategory.DIAGNOSTIC,
+    ),
+    BLEMonitorSensorEntityDescription(
+        key="uuid",
+        sensor_class="StateChangedSensor",
+        name="ble uuid",
+        unique_id="uuid_",
+        icon="mdi:alpha-u-circle-outline",
+        native_unit_of_measurement=None,
+        device_class=None,
+        state_class=None,
+        entity_category=EntityCategory.DIAGNOSTIC,
+    ),
+    BLEMonitorSensorEntityDescription(
+        key="major",
+        sensor_class="StateChangedSensor",
+        name="ble major",
+        unique_id="major_",
+        icon="mdi:counter",
+        native_unit_of_measurement=None,
+        device_class=None,
+        state_class=None,
+        entity_category=EntityCategory.DIAGNOSTIC,
+    ),
+    BLEMonitorSensorEntityDescription(
+        key="minor",
+        sensor_class="StateChangedSensor",
+        name="ble minor",
+        unique_id="minor_",
+        icon="mdi:counter",
+        native_unit_of_measurement=None,
+        device_class=None,
+        state_class=None,
+        entity_category=EntityCategory.DIAGNOSTIC,
     ),
     BLEMonitorSensorEntityDescription(
         key="consumable",
@@ -477,7 +557,7 @@ SENSOR_TYPES: tuple[BLEMonitorSensorEntityDescription, ...] = (
         unique_id="e_",
         native_unit_of_measurement=ENERGY_KILO_WATT_HOUR,
         device_class=SensorDeviceClass.ENERGY,
-        state_class=SensorStateClass.MEASUREMENT,
+        state_class=SensorStateClass.TOTAL_INCREASING,
     ),
     BLEMonitorSensorEntityDescription(
         key="power",
@@ -648,6 +728,33 @@ SENSOR_TYPES: tuple[BLEMonitorSensorEntityDescription, ...] = (
         device_class=None,
         state_class=SensorStateClass.MEASUREMENT,
     ),
+    BLEMonitorSensorEntityDescription(
+        key="co2",
+        sensor_class="MeasuringSensor",
+        name="co2 sensor",
+        unique_id="co2_",
+        icon="mdi:molecule-co2",
+        native_unit_of_measurement=CONCENTRATION_PARTS_PER_MILLION,
+        device_class=SensorDeviceClass.CO2,
+    ),
+    BLEMonitorSensorEntityDescription(
+        key="pm2.5",
+        sensor_class="MeasuringSensor",
+        name="PM2.5 sensor",
+        unique_id="pm25_",
+        icon="mdi:molecule-co2",
+        native_unit_of_measurement=CONCENTRATION_MICROGRAMS_PER_CUBIC_METER,
+        device_class=SensorDeviceClass.PM25,
+    ),
+    BLEMonitorSensorEntityDescription(
+        key="pm10",
+        sensor_class="MeasuringSensor",
+        name="PM10 sensor",
+        unique_id="pm10_",
+        icon="mdi:molecule-co2",
+        native_unit_of_measurement=CONCENTRATION_MICROGRAMS_PER_CUBIC_METER,
+        device_class=SensorDeviceClass.PM10,
+    ),
 )
 
 
@@ -678,15 +785,18 @@ MEASUREMENT_DICT = {
     'M1S-T500'                : [["battery", "rssi"], [], ["toothbrush"]],
     'ZNMS16LM'                : [["battery", "rssi"], [], ["lock", "fingerprint"]],
     'ZNMS17LM'                : [["battery", "rssi"], [], ["lock", "fingerprint"]],
+    'MJZNMSQ01YD'             : [["battery", "rssi"], [], ["lock", "fingerprint"]],
+    'XMZNMST02YD'             : [["battery", "rssi"], [], ["lock", "fingerprint"]],
     'CGC1'                    : [["temperature", "humidity", "battery", "rssi"], [], []],
     'CGD1'                    : [["temperature", "humidity", "battery", "rssi"], [], []],
     'CGDK2'                   : [["temperature", "humidity", "battery", "rssi"], [], []],
-    'CGG1'                    : [["temperature", "humidity", "battery", "rssi"], [], []],
-    'CGG1-ENCRYPTED'          : [["temperature", "humidity", "battery", "rssi"], [], []],
+    'CGG1'                    : [["temperature", "humidity", "battery", "voltage", "rssi"], [], []],
+    'CGG1-ENCRYPTED'          : [["temperature", "humidity", "battery", "voltage", "rssi"], [], []],
     'CGH1'                    : [["battery", "rssi"], [], ["opening"]],
     'CGP1W'                   : [["temperature", "humidity", "battery", "pressure", "rssi"], [], []],
     'CGPR1'                   : [["illuminance", "battery", "rssi"], [], ["light", "motion"]],
-    'MHO-C401'                : [["temperature", "humidity", "battery", "rssi"], [], []],
+    'CGDN1'                   : [["temperature", "humidity", "co2", "pm2.5", "pm10", "rssi"], [], []],
+    'MHO-C401'                : [["temperature", "humidity", "battery", "voltage", "rssi"], [], []],
     'MHO-C303'                : [["temperature", "humidity", "battery", "rssi"], [], []],
     'JQJCY01YM'               : [["temperature", "humidity", "battery", "formaldehyde", "rssi"], [], []],
     'JTYJGD03MI'              : [["rssi"], ["button", "battery"], ["smoke detector"]],
@@ -738,10 +848,16 @@ MEASUREMENT_DICT = {
     'b-parasite V1.0.0'       : [["temperature", "humidity", "moisture", "voltage", "rssi"], [], []],
     'b-parasite V1.1.0'       : [["temperature", "humidity", "moisture", "voltage", "rssi", "illuminance"], [], []],
     'SmartSeries 7000'        : [["rssi"], [], ["toothbrush"]],
+    'iBBQ-1'                  : [["temperature probe 1", "rssi"], [], []],
     'iBBQ-2'                  : [["temperature probe 1", "temperature probe 2", "rssi"], [], []],
     'iBBQ-4'                  : [["temperature probe 1", "temperature probe 2", "temperature probe 3", "temperature probe 4", "rssi"], [], []],
     'iBBQ-6'                  : [["temperature probe 1", "temperature probe 2", "temperature probe 3", "temperature probe 4", "temperature probe 5", "temperature probe 6", "rssi"], [], []],
     'IBS-TH'                  : [["temperature", "humidity", "battery", "rssi"], [], []],
+    'BEC07-5'                 : [["temperature", "humidity", "rssi"], [], []],
+    'iBeacon'                 : [["rssi", "measured power", "cypress temperature", "cypress humidity"], ["uuid", "mac", "major", "minor"], []],  # mac can be dynamic
+    'AltBeacon'               : [["rssi", "measured power"], ["uuid", "mac", "major", "minor"], []],  # mac can be dynamic
+    'MyCO2'                   : [["temperature", "humidity", "co2", "rssi"], [], []],
+    'HA BLE DIY'              : [["temperature", "rssi"], [], []],
 }
 
 
@@ -768,6 +884,8 @@ MANUFACTURER_DICT = {
     'M1S-T500'                : 'Xiaomi Soocas',
     'ZNMS16LM'                : 'Xiaomi Aqara',
     'ZNMS17LM'                : 'Xiaomi Aqara',
+    'MJZNMSQ01YD'             : 'Xiaomi',
+    'XMZNMST02YD'             : 'Xiaomi',
     'CGC1'                    : 'Qingping',
     'CGD1'                    : 'Qingping',
     'CGDK2'                   : 'Qingping',
@@ -776,6 +894,7 @@ MANUFACTURER_DICT = {
     'CGH1'                    : 'Qingping',
     'CGP1W'                   : 'Qingping',
     'CGPR1'                   : 'Qingping',
+    'CGDN1'                   : 'Qingping',
     'MHO-C401'                : 'Miaomiaoce',
     'MHO-C303'                : 'Miaomiaoce',
     'JQJCY01YM'               : 'Honeywell',
@@ -822,16 +941,22 @@ MANUFACTURER_DICT = {
     'Blue Puck RHT'           : 'Teltonika',
     'HTP.xw'                  : 'SensorPush',
     'HT.w'                    : 'SensorPush',
+    'MyCO2'                   : 'Sensirion',
     'Moat S2'                 : 'Moat',
     'Tempo Disc THD'          : 'BlueMaestro',
     'Tempo Disc THPD'         : 'BlueMaestro',
     'b-parasite V1.0.0'       : 'rbaron',
     'b-parasite V1.1.0'       : 'rbaron',
     'SmartSeries 7000'        : 'Oral-B',
+    'iBBQ-1'                  : 'Inkbird',
     'iBBQ-2'                  : 'Inkbird',
     'iBBQ-4'                  : 'Inkbird',
     'iBBQ-6'                  : 'Inkbird',
     'IBS-TH'                  : 'Inkbird',
+    'BEC07-5'                 : 'Jinou',
+    'iBeacon'                 : 'Apple',
+    'AltBeacon'               : 'Radius Networks',
+    'HA BLE DIY'              : 'Home Assistant DIY',
 }
 
 # Renamed model dictionary
@@ -846,8 +971,11 @@ REPORT_UNKNOWN_LIST = [
     "BlueMaestro",
     "Brifit",
     "Govee",
+    "HA BLE",
     "Inkbird",
     "iNode",
+    "iBeacon",
+    "Jinou"
     "Kegtron",
     "Mi Scale",
     "Moat",
@@ -855,6 +983,7 @@ REPORT_UNKNOWN_LIST = [
     "Qingping",
     "rbaron",
     "Ruuvitag",
+    "Sensirion",
     "SensorPush",
     "Teltonika",
     "Thermoplus",
