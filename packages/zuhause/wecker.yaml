@@ -290,8 +290,8 @@ automation:
           media_content_type: sound
           media_content_id: amzn_sfx_scifi_alarm_04
           
-  - alias: "Aufstehen - Schlafen ausschalten"
-    id: "aufstehen_schlafen_ausschalten"
+  - alias: "Aufstehen"
+    id: "aufstehen"
     trigger:
       - id: bewegungsmelder
         platform: state
@@ -335,61 +335,36 @@ automation:
                   {% set alarmDay = as_timestamp(alarmSensor, 0) | timestamp_custom('%d', 0) %}
                   {% set now = as_timestamp(now()) | timestamp_custom('%d', 0) %}
 
-                  {{ alarmSensor == 'unknown' or alarmDay != now }}
-              
+                  {{ alarmSensor == 'unknown' or alarmDay != now }}              
     action:
       - service: input_boolean.turn_off
         entity_id: input_boolean.schlafen_aktiv, input_boolean.wecker_aktiv, input_boolean.wecker_erinnerung_morgen, input_boolean.wecker_zeit_geaendert
       - service: input_boolean.turn_on
         entity_id: input_boolean.schlafen_fernseher_einschalten
       - service: light.turn_off
-        entity_id: light.bett 
+        entity_id: light.bett
+      - service: switch.turn_on
+        entity_id: switch.computer
+      - service: switch.turn_off
+        entity_id: switch.schlafzimmer_radio                   
       - choose:
           - conditions:
               - "{{ trigger.id != 'schalter_badezimmer' }}"                    
             sequence:
-              - service: input_boolean.turn_on
-                entity_id: input_boolean.aufstehen_begruessung
+              - wait_for_trigger:
+                - platform: state
+                  entity_id: binary_sensor.bewegungsmelder_badezimmer
+                  to: 'on'                       
+              - service: script.aufstehen_begruessung                          
         default:
           - service: script.aufstehen_begruessung
-        
-  - alias: "Aufstehen - Geräte einschalten"
-    id: "aufstehen_geraete_einschalten"
-    trigger:
-      - platform: state
-        entity_id: binary_sensor.schlafen_aktiv
-        to: 'off'
-    condition:
-      - condition: state
-        entity_id: input_boolean.aufstehen_aktiviert
-        state: 'off'        
-    action:      
-      - service: input_boolean.turn_on
-        entity_id: input_boolean.aufstehen_aktiviert      
-      - service: switch.turn_on
-        entity_id: switch.computer
-      - service: switch.turn_off
-        entity_id: switch.schlafzimmer_radio        
-      - delay: '00:00:03'
       - choose:
           - conditions:
-              - condition: state
-                entity_id: switch.alle_radios
-                state: 'off'
-            sequence:                
-              - service: script.wohnung_radios_einschalten       
-                    
-  - alias: "Aufstehen - Begrüßung"
-    id: "aufstehen_begruessung"
-    trigger:
-      - platform: state
-        entity_id: binary_sensor.bewegungsmelder_badezimmer
-        to: 'on'
-    condition:
-      - condition: state
-        entity_id: input_boolean.aufstehen_begruessung
-        state: 'on'        
-    action:      
-      - service: input_boolean.turn_off
-        entity_id: input_boolean.aufstehen_begruessung   
-      - service: script.aufstehen_begruessung
+              condition: or
+              conditions:
+                - "{{ is_state('switch.badezimmer_radio', 'off') }}"
+                - "{{ is_state('switch.wohnzimmer_radio', 'off') }}"
+                - "{{ is_state('switch.flur_radio', 'off') }}"
+                - "{{ is_state('switch.kueche_radio', 'off') }}"
+            sequence:                 
+              - service: script.wohnung_radios_einschalten

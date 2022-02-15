@@ -214,8 +214,8 @@ automation:
             sequence:       
               - service: input_boolean.turn_on
                 entity_id: input_boolean.firefox_wohnzimmer_pausiert
-              - service: switch.turn_on
-                entity_id: switch.computer_wiedergabe
+              - service: button.press
+                entity_id: button.computer_wiedergabe   
       - choose:
           - conditions:
               - condition: state
@@ -349,8 +349,8 @@ automation:
                         entity_id: binary_sensor.firefox_wohnzimmer_aktiv
                         state: 'on'
                     sequence:
-                      - service: switch.turn_on
-                        entity_id: switch.computer_wiedergabe
+                      - service: button.press
+                        entity_id: button.computer_wiedergabe   
       - choose:
           - conditions:
               - condition: state

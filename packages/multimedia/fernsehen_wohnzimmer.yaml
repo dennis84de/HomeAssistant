@@ -27,7 +27,20 @@ binary_sensor:
         friendly_name: Firefox aktiv
         icon_template: "mdi:youtube-tv"
         value_template: "{{ is_state('input_boolean.firefox_wohnzimmer_aktiv', 'on') }}"
-        
+    
+button:   
+  - platform: mqtt
+    unique_id: computer_kodi
+    name: "Computer Kodi"
+    command_topic: "iotlink/workgroup/computer/commands/run"
+    payload_press: '{ "command": "C:\\Program Files\\Kodi\\kodi.exe", "visible": true, "fallback": true }'
+    
+  - platform: mqtt
+    unique_id: computer_wiedergabe
+    name: "Computer Wiedergabe"
+    command_topic: "iotlink/workgroup/computer/commands/media/playpause"
+    payload_press: ""
+    
 cover:
   - platform: template
     covers:
@@ -161,7 +174,35 @@ script:
               - service: switch.turn_on
                 entity_id: light.balkon_licht  
                 
-automation:      
+automation:    
+  - alias: "Kodi Wohnzimmer - Einschalten"
+    id: "kodi_wohnzimmer_einschalten"
+    trigger:
+      - platform: device
+        device_id: 32e19680f91711eaa516c9e368eb4fd0
+        domain: kodi
+        entity_id: media_player.kodi_wohnzimmer
+        type: turn_on
+    action:
+      - service: button.press
+        data: {}
+        target:
+          entity_id: button.computer_kodi
+    
+  - alias: "Kodi Wohnzimmer - Ausschalten"
+    id: "kodi_wohnzimmer_ausschalten"
+    trigger:
+      - platform: device
+        device_id: 32e19680f91711eaa516c9e368eb4fd0
+        domain: kodi
+        entity_id: media_player.kodi_wohnzimmer
+        type: turn_off
+    action:
+      - service: kodi.call_method
+        data:
+          entity_id: media_player.kodi_wohnzimmer
+          method: Application.Quit
+  
   - alias: "Kodi Wohnzimmer - Musik ausschalten"
     id: "kodi_wohnzimmer_musik_ausschalten"
     trigger:
@@ -368,8 +409,8 @@ automation:
     action:
       - service: input_boolean.turn_on
         entity_id: input_boolean.firefox_wohnzimmer_pausiert
-      - service: switch.turn_on
-        entity_id: switch.computer_wiedergabe                
+      - service: button.press
+        entity_id: button.computer_wiedergabe               
 
   - alias: "Firefox Wohnzimmer - Status ändern"
     id: "firefox_wohnzimmer_status_geaendert"
@@ -403,8 +444,8 @@ automation:
     action:
       - service: input_boolean.turn_off
         entity_id: input_boolean.firefox_wohnzimmer_pausiert      
-      - service: switch.turn_on
-        entity_id: switch.computer_wiedergabe
+      - service: button.press
+        entity_id: button.computer_wiedergabe   
       - service: homeassistant.turn_off
         entity_id: group.licht_fernsehen              
       - condition: state

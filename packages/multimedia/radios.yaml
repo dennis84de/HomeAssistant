@@ -220,18 +220,18 @@ script:
             sequence:            
               - service: switch.turn_on
                 entity_id: switch.balkon_radio
-      - wait_template: >-
-          {% if not is_state('media_player.radio_kueche', 'unavailable') 
-            and not is_state('media_player.radio_badezimmer', 'unavailable') 
-            and not is_state('media_player.radio_wohnzimmer', 'unavailable') 
-            and not is_state('media_player.radio_flur', 'unavailable') 
-          %}
-            True
-          {% else %}
-            False
-          {% endif %}
-      - service: media_player.media_play
-        entity_id: media_player.radio_flur
+#      - wait_template: >-
+#          {% if not is_state('media_player.radio_kueche', 'unavailable') 
+#            and not is_state('media_player.radio_badezimmer', 'unavailable') 
+#            and not is_state('media_player.radio_wohnzimmer', 'unavailable') 
+#            and not is_state('media_player.radio_flur', 'unavailable') 
+#          %}
+#            True
+#          {% else %}
+#            False
+#          {% endif %}
+#      - service: media_player.media_play
+#        entity_id: media_player.radio_flur
       
   radio_playlist_wiedergeben:
     alias: "Radio - Playlist wiedergeben"

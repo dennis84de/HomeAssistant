@@ -76,7 +76,7 @@ cards:
     show:
       fill: false
       icon: false
-      points: false
+      points: false    
     entities:
       - entity: sensor.parkplatz_temperatur
         name: Parkplatz

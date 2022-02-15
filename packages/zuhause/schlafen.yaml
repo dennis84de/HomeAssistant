@@ -78,13 +78,7 @@ script:
           message: "Alle Geräte werden jetzt ausgeschaltet. Gute Nacht."
       - delay: '00:00:05'
       - service: input_boolean.turn_on
-        entity_id: input_boolean.schlafen_aktiv
-      - service: input_boolean.turn_off
-        entity_id: input_boolean.aufstehen_aktiviert        
-      - service: input_datetime.set_datetime
-        entity_id: input_datetime.schlafen_uhrzeit
-        data:
-          datetime: "{{ now().strftime('%Y-%m-%d %H:%M:%S') }}"
+        entity_id: input_boolean.schlafen_einschalten_aktiv
       - service: script.radios_ausschalten
         data:
           badezimmerEingeschaltetLassen: True
@@ -123,10 +117,42 @@ script:
             sequence:
               - service: switch.turn_on
                 entity_id: switch.watchtv_schlafzimmer   
+              - service: timer.start
+                entity_id: timer.sleeptimer
+                data:
+                  duration: "{{ states('input_number.timer_schlafzimmer') | int(0) * 60 }}"
               - service: input_boolean.turn_on
-                entity_id: input_boolean.timer_schlafzimmer_aktiv        
+                entity_id: input_boolean.timer_schlafzimmer_aktiv    
 
 automation:
+  - alias: "Schlafen einschalten"
+    id: "schlafen_einschalten"
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.im_bett
+        to: 'on'  
+    condition:
+      - condition: state
+        entity_id: input_boolean.schlafen_einschalten_aktiv
+        state: 'on'
+    action:
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.schlafen_einschalten_aktiv            
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.schlafen_aktiv      
+      - service: input_datetime.set_datetime
+        entity_id: input_datetime.schlafen_uhrzeit
+        data:
+          datetime: "{{ now().strftime('%Y-%m-%d %H:%M:%S') }}"   
+      - choose:
+          - conditions:
+              - condition: state
+                entity_id: switch.badezimmer_radio
+                state: 'on'                       
+            sequence:
+              - service: switch.turn_off
+                entity_id: switch.badezimmer_radio               
+            
   - alias: "Schlafen gehen - Countdown starten"
     id: "schlafen_gehen_countdown_starten"
     trigger:
@@ -267,7 +293,7 @@ automation:
         entity_id: input_boolean.timer_schlafzimmer_aktiv
         to: 'on'
       - platform: state
-        entity_id: input_number.timer_schlafzimmer        
+        entity_id: input_number.timer_schlafzimmer
     condition:
       - condition: state
         entity_id: binary_sensor.schlafen_aktiv

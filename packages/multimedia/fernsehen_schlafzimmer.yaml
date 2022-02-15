@@ -1,8 +1,3 @@
-media_player:
-  - platform: androidtv
-    host: !secret firetv_schlafzimmer_host
-    name: Fire TV Schlafzimmer
-
 switch: 
   - platform: broadlink
     mac: 'B4:43:0D:F9:2F:E5'
@@ -40,23 +35,6 @@ switch:
             data:
               entity_id: media_player.kodi_schlafzimmer
               method: Input.Home
-          - service: media_player.select_source
-            data:
-              entity_id: media_player.fire_tv_schlafzimmer
-              source: "com.amazon.tv.launcher"
-
-      netflix_schlafzimmer:
-        friendly_name: Netflix
-        icon_template: >-
-          mdi:netflix
-        value_template: >-
-          {{ state_attr('media_player.fire_tv_schlafzimmer', 'source') == "Netflix" }}
-        turn_on:
-          - service: media_player.select_source
-            data:
-              entity_id: media_player.fire_tv_schlafzimmer
-              source: "Netflix"
-        turn_off:
           - service: media_player.select_source
             data:
               entity_id: media_player.fire_tv_schlafzimmer
@@ -121,10 +99,20 @@ script:
         entity_id: input_boolean.timer_schlafzimmer_aktiv
 
 automation:       
-  - alias: "Schlafzimmer - Kodi Wiedergabe"
-    id: "schlafzimmer_kodi_wiedergabe"
+  - alias: "Schlafzimmer - Wiedergabe"
+    id: "schlafzimmer_wiedergabe" 
     trigger:
-      - id: schalter_schlafzimmer
+      - id: pause
+        platform: state
+        entity_id: binary_sensor.bewegungsmelder_bett
+        to: 'on'
+      - id: play
+        platform: state        
+        entity_id: binary_sensor.im_bett
+        to: 'on'
+        for:
+          seconds: 1          
+      - id: play_pause
         platform: event
         event_type: zha_event
         event_data:
@@ -134,96 +122,31 @@ automation:
             attribute_id: 0
             attribute_name: on_off     
             value: 1
-      - platform: state        
-        entity_id: binary_sensor.im_bett
-        to: 'on'
-        for:
-          seconds: 1   
     condition:
-      - condition: state        
-        entity_id: binary_sensor.im_bett
-        state: 'on'   
-        for:
-          seconds: 1
+      - "{{ is_state('binary_sensor.schlafen_aktiv', 'on') }}"
       - condition: or
         conditions:
-        - condition: state
-          entity_id: media_player.kodi_schlafzimmer
-          state: 'playing'
-        - condition: state
-          entity_id: media_player.kodi_schlafzimmer
-          state: 'paused'
-    action:
-      - service: media_player.media_play_pause
-        entity_id: media_player.kodi_schlafzimmer  
-        
-  - alias: "Schlafzimmer - Kodi pausieren"
-    id: "schlafzimmer_kodi_pausieren"
-    trigger:
-      - platform: state
-        entity_id: binary_sensor.bewegungsmelder_bett
-        to: 'on'
-    condition:
-      - condition: state
-        entity_id: media_player.kodi_schlafzimmer
-        state: 'playing'
-      - condition: state
-        entity_id: binary_sensor.schlafen_aktiv
-        state: 'on'
-    action:
-      - service: media_player.media_pause
-        entity_id: media_player.kodi_schlafzimmer  
+          - "{{ states('media_player.kodi_schlafzimmer') in ['playing', 'paused']}}"
+          - "{{ states('media_player.fire_tv_schlafzimmer') in ['playing', 'paused']}}"
+      - condition: template
+        value_template: >-
+          {% set now = as_timestamp(now()) | int(0) %}
+          {% set last = as_timestamp(state_attr("automation.schlafzimmer_wiedergabe", "last_triggered"), None) | int(0) %}
 
-  - alias: "Schlafzimmer - Netflix Wiedergabe"
-    id: "schlafzimmer_netflix_wiedergabe"
-    trigger:
-      - id: schalter_schlafzimmer
-        platform: event
-        event_type: zha_event
-        event_data:
-          device_ieee: 00:15:8d:00:02:13:45:68
-          command: attribute_updated
-          args:
-            attribute_id: 0
-            attribute_name: on_off     
-            value: 1
-      - platform: state        
-        entity_id: binary_sensor.im_bett
-        to: 'on'
-        for:
-          seconds: 1   
-    condition:
-      - condition: state        
-        entity_id: binary_sensor.im_bett
-        state: 'on'   
-        for:
-          seconds: 1
-      - condition: state
-        entity_id: switch.netflix_schlafzimmer
-        state: 'on'
+          {{now - last > 5 }}          
     action:
-      - service: media_player.media_play_pause
-        entity_id: media_player.fire_tv_schlafzimmer  
-
-  - alias: "Schlafzimmer - Netflix pausieren"
-    id: "schlafzimmer_netflix_pausieren"
-    trigger:
-      - platform: state
-        entity_id: binary_sensor.bewegungsmelder_bett
-        to: 'on'
-    condition:
-      - condition: state
-        entity_id: media_player.fire_tv_schlafzimmer
-        state: 'playing'
-      - condition: state
-        entity_id: switch.netflix_schlafzimmer
-        state: 'on'
-      - condition: state
-        entity_id: binary_sensor.schlafen_aktiv
-        state: 'on'
-    action:
-      - service: media_player.media_pause
-        entity_id: media_player.fire_tv_schlafzimmer
+      - choose:
+          - conditions:
+              - "{{ states('media_player.kodi_schlafzimmer') in ['playing', 'paused']}}"
+            sequence: 
+              - service: media_player.media_{{ trigger.id }}
+                entity_id: media_player.kodi_schlafzimmer              
+          - conditions:
+              - "{{ states('media_player.fire_tv_schlafzimmer') in ['playing', 'paused']}}"
+              - "{{ state_attr('media_player.fire_tv_schlafzimmer', 'source') in ['Netflix', 'Disney+']}}"
+            sequence: 
+              - service: media_player.media_{{ trigger.id }}
+                entity_id: media_player.fire_tv_schlafzimmer
 
   - alias: "Schlafzimmer - Fernseher ausschalten"
     id: "schlafzimmer_fernseher_ausschalten"

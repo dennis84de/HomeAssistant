@@ -15,11 +15,24 @@ sensor:
 binary_sensor:
   - platform: mqtt
     name: "Computer"
-    state_topic: "homeassistant/sensor/COMPUTER/availability"
-    payload_on: "online"
-    payload_off: "offline"
+    state_topic: "iotlink/workgroup/computer/lwt"
+    payload_on: "ON"
+    payload_off: "OFF"
     device_class: connectivity
   
+button:
+  - platform: mqtt
+    unique_id: computer_herunterfahren
+    name: "Computer Herunterfahren"
+    command_topic: "iotlink/workgroup/computer/commands/shutdown"
+    payload_press: ""
+    
+  - platform: mqtt
+    unique_id: computer_ruhezustand
+    name: "Computer Ruhezustand"
+    command_topic: "iotlink/workgroup/computer/commands/hibernate"
+    payload_press: ""
+    
 switch:
   - platform: template
     switches:
@@ -38,13 +51,13 @@ switch:
               - conditions:
                   - "{{ is_state('input_select.computer_ausschalten', 'Ruhezustand') }}"
                 sequence:
-                  - service: switch.turn_on
-                    entity_id: switch.computer_ruhezustand
+                  - service: button.press
+                    entity_id: button.computer_ruhezustand                  
               - conditions:
                   - "{{ is_state('input_select.computer_ausschalten', 'Herunterfahren') }}"
                 sequence:
-                  - service: switch.turn_on
-                    entity_id: switch.computer_herunterfahren            
+                  - service: button.press
+                    entity_id: button.computer_herunterfahren         
                     
       computer:
         friendly_name: Computer

@@ -1,7 +1,7 @@
-media_player:
-  - platform: androidtv
-    host: !secret firetv_sportzimmer_host
-    name: Fire TV Sportzimmer
+#media_player:
+#  - platform: androidtv
+#    host: !secret firetv_sportzimmer_host
+#    name: Fire TV Sportzimmer
    
 notify:
   - platform: kodi

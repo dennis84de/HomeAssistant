@@ -75,7 +75,7 @@ zone:
     longitude: !secret work_longitude
     radius: 70
     icon: mdi:wan 
-            
+    
 sensor:
   - platform: sql
     db_url: !secret mariadb_url
@@ -84,13 +84,9 @@ sensor:
         query: 'SELECT table_schema "database", Round(Sum(data_length + index_length) / 1024 / 1024, 1) "value" FROM information_schema.tables WHERE table_schema="homeassistant" GROUP BY table_schema;'
         column: 'value'
         unit_of_measurement: MB
-
+    
   - platform: uptime
     name: Letzter Neustart
-
-  - platform: version
-    name: HASS Current Version
-    source: pypi
 
   - platform: command_line
     name: Installierte Version
@@ -233,7 +229,7 @@ automation:
         data:                  
           message: "Home Assistant wurde gestoppt."        
       - service: homeassistant.restart
-      
+
   - alias: "Home Assistant - Fehler Neustart"
     id: "home_assistant_fehler_neustart"
     trigger:

@@ -103,7 +103,7 @@ homeassistant:
     device_tracker.tablet*:
       icon: mdi:tablet-android
     device_tracker.echo*:
-      icon: mdi:amazon-alexa
+      icon: mdi:microphone
     device_tracker.shelly*:
       icon: mdi:connection
     device_tracker.handy*:

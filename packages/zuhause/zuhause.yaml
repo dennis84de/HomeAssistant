@@ -163,14 +163,17 @@ automation:
           device_ieee: 00:15:8d:00:01:c3:08:67
           command: click
           args:
-            click_type: double              
+            click_type: double   
+      - id: handy
+        platform: tag
+        tag_id: alles_ausschalten            
     condition:    
       - condition: template
-        value_template: "{{ is_state('person.dennis', 'not_home') if trigger.id == 'schalter_flur' else True }}"
+        value_template: "{{ is_state('person.dennis', 'not_home') if trigger.id in ('schalter_flur', 'handy') else True }}"
       - condition: template
         value_template: >-
           {% set now = as_timestamp(now()) %}
-          {% set last = as_timestamp(state_attr("script.alles_ausschalten_nfc", "last_triggered"), None) | int(0) %}
+          {% set last = as_timestamp(state_attr("script.alles_ausschalten", "last_triggered"), None) | int(0) %}
           {% set diff = ((now - last) / 60) | int(0) %}
 
           {{ diff >= 10 }}        

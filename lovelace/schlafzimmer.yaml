@@ -35,7 +35,6 @@ cards:
     entities:
       - entity: switch.watchtv_schlafzimmer
       - entity: switch.kodi_schlafzimmer
-      - entity: switch.netflix_schlafzimmer
       - entity: cover.fernseher_schlafzimmer_lautstaerke
       - type: custom:mini-media-player
         name: Kodi
