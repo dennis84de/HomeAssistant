@@ -9,12 +9,12 @@ cards:
     title: Fritzbox
     show_header_toggle: false
     entities:
-      - entity: sensor.fritz_box_7272_device_uptime
+      - entity: sensor.fritz_box_7272_connection_uptime
         name: "Letzter Neustart"
       - entity: sensor.fritz_box_7272_external_ip
         name: Öffentliche IP
-      - entity: binary_sensor.fritz_box_7272_firmware_update
-        name: Firmware
+#      - entity: binary_sensor.fritz_box_7272_firmware_update
+#        name: Firmware
       - entity: sensor.fritz_box_7272_gb_received
         name: Daten empfangen
       - entity: sensor.fritz_box_7272_gb_sent

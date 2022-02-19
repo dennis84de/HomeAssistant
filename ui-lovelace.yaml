@@ -2,7 +2,7 @@ title: Home Assistant
 views:
   - !include lovelace/information.yaml
   - !include lovelace/system.yaml  
-  - !include lovelace/heimnetz.yaml
+#  - !include lovelace/heimnetz.yaml
   - !include lovelace/geraete.yaml
   - !include lovelace/batterien.yaml
   - !include lovelace/wetter.yaml
