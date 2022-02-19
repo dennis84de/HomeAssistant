@@ -399,6 +399,9 @@ automation:
       - condition: state
         entity_id: 'sensor.handy'
         state: 'idle'           
+      - condition: state
+        entity_id: calendar.borussia_dortmund
+        state: 'off'            
       - condition: template       
         value_template: >-         
           {% if trigger.id == 'bewegungsmelder_balkon' or trigger.id == 'schalter_balkon' %}
@@ -417,9 +420,9 @@ automation:
     trigger:
       - platform: state
         entity_id: binary_sensor.computer_mozilla_firefox_fullscreen
-#        entity_id: binary_sensor.computer_firefox
     condition:
-      - "{{ is_state('binary_sensor.computer_mozilla_firefox_fullscreen', 'unavailable') == False }}"
+      - "{{ not is_state('binary_sensor.computer_mozilla_firefox_fullscreen', 'unavailable') }}"
+      - "{{ not is_state('binary_sensor.computer_mozilla_firefox_fullscreen', 'unknown') }}"
       - "{{ trigger.to_state.state != states('input_boolean.firefox_wohnzimmer_aktiv') }}"
     action:
       - service: input_boolean.toggle

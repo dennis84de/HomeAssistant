@@ -234,7 +234,10 @@ automation:
                 state: 'off'      
               - condition: state
                 entity_id: switch.wiedergabe_aktiv
-                state: 'off'                              
+                state: 'off'           
+              - condition: state
+                entity_id: calendar.borussia_dortmund
+                state: 'off'                     
             sequence:       
               - service: media_player.volume_mute
                 data:

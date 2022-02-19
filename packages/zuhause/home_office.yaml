@@ -160,7 +160,7 @@ script:
           - conditions:
               - condition: numeric_state
                 entity_id: sensor.bewegungsmelder_balkon_temperatur
-                above: 0
+                above: -5
             sequence:
               - service: switch.turn_on
                 entity_id: switch.balkon_radio        

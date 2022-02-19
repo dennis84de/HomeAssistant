@@ -12,6 +12,14 @@ automation:
         event_data:
           device_ieee: 00:15:8d:00:01:10:0d:7a
           command: drop    
+      - id: schalter_wohnzimmer
+        platform: event
+        event_type: zha_event
+        event_data:
+          device_ieee: 00:15:8d:00:02:c8:c4:8b
+          command: click
+          args:
+            click_type: single            
       - id: schalter_balkon
         platform: event
         event_type: zha_event
@@ -21,11 +29,8 @@ automation:
           args:
             click_type: single
     condition:
-      - condition: state
-        entity_id: calendar.borussia_dortmund
-        state: 'on'
-      - condition: template
-        value_template: '{{ True if not "(T.B.A.)" in state_attr("calendar.borussia_dortmund", "message") else False }}'
+      - "{{ is_state('calendar.borussia_dortmund', 'on') }}"
+      - "{{ True if not '(T.B.A.)' in state_attr('calendar.borussia_dortmund', 'message') else False }}"
     action:
       - service: media_player.play_media
         data:
@@ -127,19 +132,3 @@ automation:
       - service: media_player.clear_playlist
         data:
           entity_id: media_player.squeezebox        
-                    
-  - alias: "Radio Badezimmer - BVB"
-    id: "radio_badezimmer_bvb"
-    trigger:
-      - platform: state
-        entity_id: media_player.radio_badezimmer
-        to: 'playing'
-    condition:  
-      - "{{ is_state('calendar.borussia_dortmund', 'on') }}"          
-      - "{{ True if not '(T.B.A.)' in state_attr('calendar.borussia_dortmund', 'message') else False }}"    
-      - "{{ not is_state_attr('media_player.radio_badezimmer', 'media_artist', 'Borussia Dortmund') }}"    
-    action:
-      - service: script.radio_playlist_wiedergeben
-        data:
-          mediaplayer: media_player.radio_badezimmer
-          playlist: 'BVB'

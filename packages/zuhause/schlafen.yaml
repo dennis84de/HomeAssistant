@@ -220,6 +220,15 @@ automation:
         event_type: timer.finished
         event_data:
           entity_id: timer.schlafen_einschalten
+      - platform: tag
+        tag_id: tag_wohnzimmer
+    condition:
+      - condition: state
+        entity_id: binary_sensor.schlafen_aktiv
+        state: 'off'
+#      - condition: time
+#        after: '20:00'
+#        before: '06:00'          
     action:   
       - service: script.schlafen_gehen
 

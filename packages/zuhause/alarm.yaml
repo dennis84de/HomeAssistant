@@ -1,143 +1,23 @@
-alarm_control_panel:
-  - platform: manual
-    name: Alarm
-    arming_time: 60
-    delay_time: 60
-    trigger_time: 10
-    disarmed:
-      trigger_time: 0
-    armed_home:
-      arming_time: 0
-      delay_time: 0
-    armed_away:
-      arming_time: 0
-
-automation:      
-  - alias: "Alarm - Aktiviert"
-    id: "alarm_aktiviert"
-    trigger:
-      - platform: state
-        entity_id: person.dennis
-        to: 'not_home'
-        for:
-          minutes: 1
-    action:
-      - service: alarm_control_panel.alarm_arm_away
-        entity_id: alarm_control_panel.alarm
-      - service: switch.turn_on
-        entity_id: switch.kamera_wohnzimmer
-
-  - alias: "Alarm - Ausgelöst"
-    id: "alarm_ausgeloest"
-    trigger:
-      - platform: state
-        entity_id: binary_sensor.tuersensor
-        to: 'on'
-    condition:
-      - condition: state
-        entity_id: alarm_control_panel.alarm
-        state: armed_away
-      - condition: state
-        entity_id: person.dennis
-        state: 'not_home'
-    action:
-      service: alarm_control_panel.alarm_trigger
-      entity_id: alarm_control_panel.alarm
-
-  - alias: "Alarm - Nachricht Telegram"
-    id: "alarm_nachricht_telegram"
-    trigger:
-      - platform: state
-        entity_id: alarm_control_panel.alarm
-        to: 'triggered'
-    action:
+script:
+  alarm_ausgeloest:    
+    alias: "Alarm ausgelöst"
+    sequence:
       - choose:
-          conditions:
-            - condition: state
-              entity_id: switch.kamera_wohnzimmer
-              state: 'on'      
-          sequence:
-            - service: notify.telegram
-              data:
-                title: "Alarm"
-                message: "Der Alarm in der Wohnung wurde ausgelöst."            
-            - service: telegram_bot.send_photo
-              data:
-                caption: 'Kamera'
-                url: 'http://192.168.2.75:8123/api/camera_proxy/camera.kamera_wohnzimmer?token={{ state_attr("camera.kamera_wohnzimmer", "access_token") }}'
+          - conditions:
+              - condition: state
+                entity_id: switch.kamera_wohnzimmer
+                state: 'on'                    
+            sequence:
+              - service: notify.telegram
+                data:
+                  title: "Alarm"
+                  message: "Der Alarm in der Wohnung wurde ausgelöst."            
+              - service: telegram_bot.send_photo
+                data:
+                  caption: 'Kamera'
+                  url: 'http://192.168.2.75:8123/api/camera_proxy/camera.kamera_wohnzimmer?token={{ state_attr("camera.kamera_wohnzimmer", "access_token") }}'
         default:
           - service: notify.telegram
             data:
               title: "Alarm"
-              message: "Der Alarm in der Wohnung wurde ausgelöst, aber die Kamera ist nicht eingeschaltet."               
-
-  - alias: "Alarm - Nachricht Bewegungsmelder"
-    id: "alarm_nachricht_bewegungsmelder"
-    trigger:
-      - platform: state
-        entity_id:
-          - binary_sensor.bewegungsmelder_arbeitszimmer
-          - binary_sensor.bewegungsmelder_badezimmer
-          - binary_sensor.bewegungsmelder_balkon
-          - binary_sensor.bewegungsmelder_flur_hinten
-          - binary_sensor.bewegungsmelder_flur_vorne
-          - binary_sensor.bewegungsmelder_kueche
-          - binary_sensor.bewegungsmelder_schlafzimmer
-          - binary_sensor.bewegungsmelder_sportzimmer
-          - binary_sensor.bewegungsmelder_wohnzimmer
-          - binary_sensor.bewegungsmelder_bett       
-        to: 'on'           
-    condition:
-      - condition: state
-        entity_id: person.dennis
-        state: 'not_home'
-      - condition: state
-        entity_id: alarm_control_panel.alarm
-        state: 'armed_away'
-      - condition: state
-        entity_id: 'vacuum.staubsauger'
-        state: 'docked'
-    action:
-      service: notify.telegram
-      data:
-        title: "Bewegung erkannt"
-        message: >-          
-          {% if trigger.entity_id == 'binary_sensor.bewegungsmelder_balkon' %}
-            Auf dem Balkon wurde eine Bewegung erkannt.        
-          {% elif trigger.entity_id == 'binary_sensor.bewegungsmelder_kueche' %}
-            In der Küche wurde eine Bewegung erkannt.
-          {% else %}
-            Im {{ trigger.to_state.attributes.friendly_name }} wurde eine Bewegung erkannt.
-          {% endif %}
-
-  - alias: "Alarm - Nachricht Fenster"
-    id: "alarm_nachricht_fenster"
-    trigger:
-      - platform: state
-        entity_id: 
-          - binary_sensor.balkontuer
-          - binary_sensor.fenster_wohnzimmer
-          - binary_sensor.fenster_schlafzimmer
-          - binary_sensor.fenster_kueche
-          - binary_sensor.fenster_arbeitszimmer
-          - binary_sensor.fenster_sportzimmer
-        to: 'on'
-    condition:
-      - condition: state
-        entity_id: person.dennis
-        state: 'not_home'
-      - condition: state
-        entity_id: alarm_control_panel.alarm
-        state: 'armed_away'
-    action:
-      service: notify.telegram
-      data:
-        title: "Fenster geöffnet"
-        message: >-
-          {% if trigger.entity_id == 'binary_sensor.balkontuer' %}
-            Die Balkontür wurde geöffnet.
-          {% elif trigger.entity_id == 'binary_sensor.fenster_kueche' %}
-            Das Fenster in der Küche wurde geöffnet.        
-          {% else %}
-            Das Fenster im {{ trigger.to_state.attributes.friendly_name }} wurde geöffnet.
-          {% endif %} 
+              message: "Der Alarm in der Wohnung wurde ausgelöst, aber die Kamera ist nicht eingeschaltet."

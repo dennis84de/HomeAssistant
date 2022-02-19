@@ -24,6 +24,10 @@ recorder:
       - person
       - counter
       - climate
+      - proximity
+      - alarm_control_panel
+    entity_globs:
+      - devicve_tracker.handy*  
   exclude:
     entities:
       - sensor.home_assistant_overhead_satellites
@@ -42,10 +46,10 @@ logbook:
       - entity_controller
       - person    
       - climate
-    entities:  
-      - devicve_tracker.handy
-      - devicve_tracker.handygps
-      - devicve_tracker.handyping
+      - proximity
+      - alarm_control_panel
+    entity_globs:  
+      - devicve_tracker.handy*  
   exclude:
     entities:     
       - switch.schlafzimmer_fernseher_licht

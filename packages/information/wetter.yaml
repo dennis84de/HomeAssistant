@@ -386,7 +386,7 @@ automation:
           - conditions:
               - condition: state
                 entity_id: person.dennis
-                state: 'not_home'
+                state: 'home'
             sequence:             
               - service: notify.telegram
                 data:

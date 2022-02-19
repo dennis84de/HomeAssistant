@@ -23,8 +23,9 @@ automation:
       - "{{ is_state('person.dennis', 'home') }}"
       - "{{ is_state('binary_sensor.besuch', 'off') }}"
       - "{{ is_state('binary_sensor.sonne_tagsueber', 'off') }}"
+      - "{{ is_state('binary_sensor.balkontuer', 'on') }}"
       - "{{ is_state('calendar.borussia_dortmund', 'off') or trigger.id == 'bewegungsmelder_balkon' }}"
-      - "{{ is_state('input_boolean.bewegungsmelder_balkon_deaktiviert', 'off') }}"
+      - "{{ is_state('input_boolean.bewegungsmelder_balkon_deaktiviert', 'off') }}"      
     action:
       - service: light.turn_on
         entity_id: light.balkon_licht

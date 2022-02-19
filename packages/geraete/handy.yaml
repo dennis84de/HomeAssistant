@@ -416,8 +416,26 @@ automation:
               {% set messageString = 'einer unbekannten Rufnummer' %}            
             {% endif %}
 
-            Ein eingehender Anruf von {{ messageString }}.
-          
+            Ein eingehender Anruf von {{ messageString }}.         
+
+  - alias: "Handy aktiv - Anruf verpasst"
+    id: "handy_aktiv_anruf_verpasst"
+    trigger:
+      - platform: state
+        entity_id: sensor.handy
+        from: 'ringing'
+        to: 'idle'
+    condition:
+      - condition: state
+        entity_id: person.dennis
+        state: 'home'
+    action:
+      - service: persistent_notification.create
+        data:
+          title: "Anruf verpasst"
+          notification_id: anruf_verpasst
+          message: "Ein Anruf auf dem Handy wurde verpasst."
+
   - alias: "Handy - Neue SMS"
     id: "handy_neue_sms"
     trigger:

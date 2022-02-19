@@ -141,16 +141,19 @@ script:
             {% set uhrzeitSatz = as_timestamp(now()) | timestamp_custom('%H:%M') %}         
              
             {{ 'Guten Morgen. Es ist ' ~ uhrzeitSatz ~ ' Uhr. Du hast ' ~ schlafenSatz ~ ' geschlafen.' }}      
-                       
-            {% set temperatur = states('sensor.parkplatz_temperatur') |int %}
-            {% set bueroHeute = is_state('binary_sensor.buero_heute', 'on') %}
-            
+                                   
+            {% set bueroHeute = is_state('binary_sensor.buero_heute', 'on') %}           
             {% if bueroHeute %}
+              {% set temperatur = states('sensor.parkplatz_temperatur') |int %}
               {{ 'Die Temperatur beträgt aktuell ' ~ temperatur ~ ' Grad.' }}
             {% endif %}           
             
-            {% set count_heimnetz_entities = states('sensor.heimnetz_offline') | int(0) -%}
+            {% set count_mails = states('sensor.ungelesene_mails') | int(0) -%}            
+            {% if count_mails > 0 %}
+              {{ "Du hast " ~ count_mails ~ " ungelesene " ~ ("Mail" if count_mails == 1 else "Mails") }}
+            {% endif %}
             
+            {% set count_heimnetz_entities = states('sensor.heimnetz_offline') | int(0) -%}            
             {% if count_heimnetz_entities > 0 %}
               {{ "Die folgenden Geräte sind offline." if count_heimnetz_entities > 1 else "Das folgende Gerät ist offline."}}
 

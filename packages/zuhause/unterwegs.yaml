@@ -11,7 +11,7 @@ automation:
     id: alles_ausschalten
     trigger:
       - platform: tag
-        tag_id: alles_ausschalten
+        tag_id: tag_flur
     condition: 
       - condition: state
         entity_id: person.dennis
@@ -84,18 +84,34 @@ automation:
           title: "Status Home Assistant"
           message: >-
             Das System ist seit {{ states('sensor.laufzeit_stunden') }} Stunden online.
+            
             {%- if is_state('group.alles_ausschalten', 'off') %}
-            Alle Geräte sind ausgeschaltet.
+              Alle Geräte sind ausgeschaltet.
             {% endif %}
-      - condition: state
-        entity_id: group.alles_ausschalten
-        state: 'on'
-      - service: notify.telegram
-        data:
-          message: "Es sind noch Geräte eingeschaltet."
-          data:
-            inline_keyboard:
-              - 'Geräte anzeigen:/geraete'
+            
+            {%- if is_state('alarm_control_panel.alarmo', 'armed') %}
+              Der Alarm ist eingeschaltet.            
+            {% endif %}            
+      - choose:
+          - conditions:
+              - "{{ is_state('group.alles_ausschalten', 'on') }}"
+            sequence:                       
+              - service: notify.telegram
+                data:
+                  message: "Es sind noch Geräte eingeschaltet."
+                  data:
+                    inline_keyboard:
+                      - 'Geräte anzeigen:/geraete'
+      - choose:
+          - conditions:
+              - "{{ not is_state('alarm_control_panel.alarmo', 'armed') }}"
+            sequence:                       
+              - service: notify.telegram
+                data:
+                  message: "Der Alarm ist nicht eingeschaltet."
+                  data:
+                    inline_keyboard:
+                      - 'Alarm einschalten:/alarm_einschalten'
 
   - alias: "Telegram - Eingeschaltete Geräte"
     id: "telegram_eingeschaltete_geraete"
@@ -130,6 +146,29 @@ automation:
           inline_keyboard:
             - 'Alles Ausschalten:/alles_ausschalten'
 
+  - alias: "Telegram - Alarm einschalten"
+    id: "telegram_alarm_einschalten"
+    trigger:
+      platform: event
+      event_type: telegram_callback
+      event_data:
+        data: '/alarm_einschalten'
+    action:
+      - service: telegram_bot.edit_replymarkup
+        data:
+          message_id: '{{ trigger.event.data.message.message_id }}'
+          chat_id: '{{ trigger.event.data.user_id }}'
+          inline_keyboard: []
+      - service: telegram_bot.send_message
+        data:
+          target: '{{ trigger.event.data.chat_id }}'
+          message: 'Der Alarm wird eingeschaltet'
+      - service: alarmo.arm
+        data:
+          entity_id: alarm_control_panel.alarmo
+          skip_delay: true
+          force: true
+          
   - alias: "Telegram - Alles ausschalten"
     id: "telegram_alles_ausschalten"
     trigger:
@@ -238,4 +277,7 @@ script:
            payload: not_home
            retain: true            
       - service: homeassistant.turn_off
-        entity_id: group.alles_ausschalten
+        entity_id: group.alles_ausschalten           
+      - service: alarmo.arm
+        data:
+          entity_id: alarm_control_panel.alarmo

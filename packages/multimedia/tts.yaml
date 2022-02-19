@@ -1,8 +1,4 @@
-tts:
-  - platform: google_cloud
-    key_file: !secret google_cloud_key
-    language: 'de-DE'
-    
+tts:    
   - platform: google_translate
     language: 'de'
 
