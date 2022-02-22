@@ -1,0 +1,6 @@
+kalender_edg:
+  name: Kalender EDG
+  entities:
+    - calendar.edg_papier
+    - calendar.edg_restmuell
+    - calendar.edg_wertstoff

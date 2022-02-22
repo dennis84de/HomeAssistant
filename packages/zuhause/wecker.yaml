@@ -153,6 +153,15 @@ script:
               {{ "Du hast " ~ count_mails ~ " ungelesene " ~ ("Mail" if count_mails == 1 else "Mails") }}
             {% endif %}
             
+            {% set kalenderEdg = expand('group.kalender_edg')
+                | selectattr('state','eq','on') 
+                | map(attribute='name')
+                | list %}              
+
+            {% for edgHeute in kalenderEdg  %}
+              Die {{ edgHeute }}-Tonne wird heute geleert.
+            {% endfor %}   
+            
             {% set count_heimnetz_entities = states('sensor.heimnetz_offline') | int(0) -%}            
             {% if count_heimnetz_entities > 0 %}
               {{ "Die folgenden Geräte sind offline." if count_heimnetz_entities > 1 else "Das folgende Gerät ist offline."}}
@@ -177,25 +186,7 @@ script:
                 {%- if not loop.first %}, {% endif -%}
                 {{- x.name -}}
               {% endfor %}       
-            {% endif %}             
-            
-            {% set tablets = expand('group.tablets') %}
-            {% set ns = namespace(found=0) -%}
-
-            {% for x in tablets if x.state|int > 99 and x.attributes.is_charging == True %}
-              {% set ns.found = ns.found + 1 -%}
-            {% endfor %}
-
-            {% if (ns.found | int(0)) == 1 %}
-              Das folgende Gerät wurde vollständig aufgeladen.
-            {% elif (ns.found | int(0)) > 1 %}
-              Die folgenden Geräte wurden vollständig aufgeladen.
-            {% endif %}
-
-            {% for x in tablets if x.state|int > 99 and x.attributes.is_charging == True %}
-              {%- if not loop.first %}, {% endif -%}
-              {{- x.name -}}
-            {% endfor %}     
+            {% endif %}              
             
 automation:
   - alias: "Wecker - Starten"
