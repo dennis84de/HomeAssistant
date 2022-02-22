@@ -183,6 +183,8 @@ automation:
         domain: kodi
         entity_id: media_player.kodi_wohnzimmer
         type: turn_on
+    condition:
+      - "{{ is_state('media_player.kodi_wohnzimmer', 'off') }}"    
     action:
       - service: button.press
         data: {}
@@ -197,6 +199,8 @@ automation:
         domain: kodi
         entity_id: media_player.kodi_wohnzimmer
         type: turn_off
+    condition:
+      - "{{ not is_state('media_player.kodi_wohnzimmer', 'off') }}"            
     action:
       - service: kodi.call_method
         data:
