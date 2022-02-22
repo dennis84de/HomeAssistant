@@ -89,7 +89,7 @@ automation:
               Alle Geräte sind ausgeschaltet.
             {% endif %}
             
-            {%- if is_state('alarm_control_panel.alarmo', 'armed') %}
+            {%- if is_state('alarm_control_panel.alarmo', 'armed_away') %}
               Der Alarm ist eingeschaltet.            
             {% endif %}            
       - choose:
@@ -104,7 +104,7 @@ automation:
                       - 'Geräte anzeigen:/geraete'
       - choose:
           - conditions:
-              - "{{ not is_state('alarm_control_panel.alarmo', 'armed') }}"
+              - "{{ not is_state('alarm_control_panel.alarmo', 'armed_away') }}"
             sequence:                       
               - service: notify.telegram
                 data:
@@ -281,3 +281,5 @@ script:
       - service: alarmo.arm
         data:
           entity_id: alarm_control_panel.alarmo
+      - service: switch.turn_on
+        entity_id: switch.kamera_wohnzimmer    
