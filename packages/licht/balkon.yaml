@@ -3,6 +3,13 @@ input_boolean:
     name: Bewegungsmelder deaktiviert    
     icon: mdi:sync-off
 
+binary_sensor:
+  - platform: template
+    sensors:
+      sonne_balkon:
+        friendly_name: "Sonne Balkon"
+        value_template: "{{ states('sensor.balkon_helligkeit_durchschnitt') | float(0) > 100 }}"
+          
 automation:
   - alias: 'Licht Balkon - Einschalten'
     id: "licht_balkon_einschalten"
@@ -22,7 +29,7 @@ automation:
     condition:
       - "{{ is_state('person.dennis', 'home') }}"
       - "{{ is_state('binary_sensor.besuch', 'off') }}"
-      - "{{ is_state('binary_sensor.sonne_tagsueber', 'off') }}"
+      - "{{ is_state('binary_sensor.sonne_balkon', 'off') }}"
       - "{{ is_state('binary_sensor.balkontuer', 'on') }}"
       - "{{ is_state('calendar.borussia_dortmund', 'off') or trigger.id == 'bewegungsmelder_balkon' }}"
       - "{{ is_state('input_boolean.bewegungsmelder_balkon_deaktiviert', 'off') }}"      
