@@ -330,7 +330,7 @@ automation:
               - service: input_boolean.turn_off
                 entity_id: input_boolean.kodi_sportzimmer_pausiert
               - service: media_player.media_play
-                entity_id: media_player.kodi_spotzimmer
+                entity_id: media_player.kodi_sportzimmer
               - service: notify.kodi_sportzimmer
                 data:
                   title: 'Telefon'

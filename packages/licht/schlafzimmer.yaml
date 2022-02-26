@@ -109,6 +109,3 @@ homeassistant:
     light.fernseher_schlafzimmer:
       icon: mdi:television-classic
       friendly_name: Fernseher
-
-    switch.licht_fernseher_schlafzimmer:
-      assumed_state: false

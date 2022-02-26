@@ -112,20 +112,12 @@ homeassistant:
       icon: mdi:power-socket-eu
       
   customize:
-    sensor.fritz_box_7272_device_uptime:
-      friendly_name: Fritzbox Laufzeit
     sensor.fritz_box_7272_external_ip:
       friendly_name: Externe IP
-    binary_sensor.fritz_box_7272_firmware_update:
-      friendly_name: Firmware Update
     sensor.fritz_box_7272_gb_received:
       friendly_name: GB empfangen
     sensor.fritz_box_7272_gb_sent:
       friendly_name: GB gesendet
-      
-    sensor.netmonitor:
-      friendly_name: Fritzbox
-      icon: mdi:router-wireless
       
     sensor.speedtest_download:
       icon: mdi:download-network
@@ -141,8 +133,6 @@ homeassistant:
     device_tracker.computerarbeit:
       icon: mdi:desktop-classic
       friendly_name: Computer Arbeit
-    device_tracker.pihomeassistant:
-      icon: mdi:home-assistant
     device_tracker.broadlinkschlafzimmer:
       icon: mdi:remote
     device_tracker.diskstation:
@@ -231,10 +221,6 @@ homeassistant:
       friendly_name: Tablet Schafzimmer
     device_tracker.tabletbalkon:
       friendly_name: Tablet Balkon
-    device_tracker.tabletmultimedia:
-      friendly_name: Tablet Multimedia
-    device_tracker.tabletbackup:
-      friendly_name: Tablet Backup      
       
     device_tracker.magichomeflurvorne:
       friendly_name: MagicHome Flur vorne
@@ -255,9 +241,9 @@ homeassistant:
       friendly_name: Tasmota Wohnzimmer Strahler
     device_tracker.tasmotawohnzimmercouch:
       friendly_name: Tasmota Wohnzimm Couch
-    device_tracker.tasmotawohnzimmer_radio:
+    device_tracker.tasmotawohnzimmerradio:
       friendly_name: Tasmota Wohnzimm Radio
-    device_tracker.tasmotawohnzimmer_schrank:
+    device_tracker.tasmotawohnzimmerschrank:
       friendly_name: Tasmota Wohnzimmer Strahler
     device_tracker.tasmotaarbeitszimmerlampe:
       friendly_name: Tasmota Arbeitszimmer Lampe

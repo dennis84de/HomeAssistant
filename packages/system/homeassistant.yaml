@@ -260,15 +260,9 @@ homeassistant:
     sensor.memory_use_percent:
       friendly_name: Benutzter Arbeitsspeicher
       icon: mdi:database-plus
-    sensor.processor_use:
-      friendly_name: CPU Auslastung
-      icon: mdi:creation
     sensor.processor_temperature:
       friendly_name: CPU Temperatur
       icon: mdi:creation
-          
-    sensor.gpu_temperatur:
-      icon: mdi:thermometer-low
         
     sensor.database_size:
       friendly_name: Größe Datenbank

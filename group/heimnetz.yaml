@@ -5,15 +5,15 @@ heimnetz:
     - device_tracker.soundbar   
     - device_tracker.kamerawohnzimmer
     - device_tracker.xiaomivacuum
-    - device_tracker.squeezebox
+    - device_tracker.squeezebox      
     - device_tracker.tplinkwohnzimmermonitor        
-    - device_tracker.tplinkwohnzimmerradio            
     - device_tracker.tplinkschlafzimmerradio      
     - device_tracker.tplinkflurradio      
     - device_tracker.tplinkbadezimmerradio      
     - device_tracker.tplinkkuecheradio      
     - device_tracker.tplinkschlafzimmerfernseher      
-    - device_tracker.tplinksportzimmerfernseher           
+    - device_tracker.tplinksportzimmerfernseher     
+    - device_tracker.tasmotawohnzimmerradio
     - device_tracker.tasmotawohnzimmerstrahler         
     - device_tracker.tasmotawohnzimmercouch
     - device_tracker.tasmotaarbeitszimmerlampe      

@@ -151,7 +151,7 @@ script:
       - choose:
           - conditions:
               - condition: state
-                entity_id: sensor.sonne_tagsueber
+                entity_id: binary_sensor.sonne_tagsueber
                 state: 'off'
             sequence:
               - service: light.turn_on

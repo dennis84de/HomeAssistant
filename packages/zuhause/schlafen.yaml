@@ -223,77 +223,10 @@ automation:
       - platform: tag
         tag_id: tag_wohnzimmer
     condition:
-      - condition: state
-        entity_id: binary_sensor.schlafen_aktiv
-        state: 'off'
-#      - condition: time
-#        after: '20:00'
-#        before: '06:00'          
+      - "{{ is_state('binary_sensor.schlafen_aktiv', 'off') }}"
+      - "{{ is_state('binary_sensor.nachts', 'on') }}"   
     action:   
-      - service: script.schlafen_gehen
-
-  - alias: "Schlafen gehen - Wecker Arbeit"
-    id: "schlafen_gehen_wecker_arbeit"
-    trigger:
-      - platform: state
-        entity_id: binary_sensor.im_bett
-        to: 'on'   
-        for:
-          seconds: 2        
-    condition:
-      - condition: state
-        entity_id: binary_sensor.schlafen_aktiv
-        state: 'on'
-      - condition: state
-        entity_id: binary_sensor.alarm_aktiv
-        state: 'off'        
-      - condition: state
-        entity_id: input_boolean.wecker_erinnerung_morgen
-        state: 'off'    
-      - condition: state
-        entity_id: binary_sensor.wecker_richtig_gestellt
-        state: 'off'
-      - condition: or
-        conditions:
-          - condition: and
-            conditions:
-              - condition: time
-                before: '00:00:00'
-              - condition: state
-                entity_id: binary_sensor.arbeitstag_morgen
-                state: 'on'         
-              - condition: state
-                entity_id: binary_sensor.urlaub_morgen
-                state: 'off'
-              - condition: state
-                entity_id: binary_sensor.krank_morgen
-                state: 'off'                
-          - condition: and
-            conditions:
-              - condition: time
-                after: '00:00:00'
-              - condition: state
-                entity_id: binary_sensor.arbeitstag
-                state: 'on'         
-              - condition: state
-                entity_id: calendar.urlaub
-                state: 'off'
-              - condition: state
-                entity_id: calendar.krank
-                state: 'off'
-    action:
-      - service: input_boolean.turn_on
-        entity_id: input_boolean.wecker_erinnerung_morgen    
-      - service: !secret tts_service
-        data:
-          echo: "schlafzimmer"
-          override: true
-          message: >-
-            {% if states('sensor.tablet_schlafzimmer_next_alarm') == 'unavailable' %}
-              Der Wecker ist noch nicht gestellt.
-            {% else %}
-              Der Wecker ist noch nicht richtig gestellt.
-            {% endif %}            
+      - service: script.schlafen_gehen   
             
   - alias: 'Sleeptimer - Starten'
     id: 'sleeptimer_starten'

@@ -97,6 +97,9 @@ automation:
         entity_id: vacuum.staubsauger
       - service: input_boolean.turn_on
         entity_id: input_boolean.staubsauger_automatische_reinigung_gestartet
+      - service: alarmo.disarm
+        data:
+          entity_id: alarm_control_panel.alarmo        
       - service: notify.telegram
         data:          
           message: 'Das Saugen der Wohnung wurde gestartet.'
@@ -133,6 +136,9 @@ automation:
               - service: notify.telegram
                 data:                  
                   message: 'Die Wohnung wurde vollständig gesaugt.'
+              - service: alarmo.arm
+                data:
+                  entity_id: alarm_control_panel.alarmo                         
       - choose:
           - conditions:
               - condition: numeric_state

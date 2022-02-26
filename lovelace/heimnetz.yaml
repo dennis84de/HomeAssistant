@@ -4,23 +4,7 @@ type: custom:horizontal-layout
 layout:
   width: 400
   max_cols: 3
-cards:     
-  - type: entities
-    title: Fritzbox
-    show_header_toggle: false
-    entities:
-      - entity: sensor.fritz_box_7272_connection_uptime
-        name: "Letzter Neustart"
-      - entity: sensor.fritz_box_7272_external_ip
-        name: Öffentliche IP
-#      - entity: binary_sensor.fritz_box_7272_firmware_update
-#        name: Firmware
-      - entity: sensor.fritz_box_7272_gb_received
-        name: Daten empfangen
-      - entity: sensor.fritz_box_7272_gb_sent
-        name: Daten gesendet        
-      - entity: sensor.heimnetz_offline  
-      
+cards:          
   - type: entities
     title: Netzwerk
     show_header_toggle: false
@@ -41,6 +25,7 @@ cards:
       - entity: device_tracker.soundbar  
       - entity: device_tracker.squeezebox
       - entity: device_tracker.kamerawohnzimmer
+        name: Kamera
 
   - type: entities
     title: Haushalt
@@ -50,7 +35,36 @@ cards:
         name: Staubsauger
       - entity: device_tracker.xiaomifan
         name: Ventilator
-
+       
+  - type: entities
+    title: Tasmota
+    show_header_toggle: false
+    entities:
+      - entity: device_tracker.tasmotawohnzimmerstrahler
+        name: Wohnzimmer Strahler      
+      - entity: device_tracker.tasmotawohnzimmercouch
+        name: Wohnzimmer Couch        
+      - entity: device_tracker.tasmotawohnzimmerradio
+        name: Wohnzimmer Radio      
+      - entity: device_tracker.tasmotawohnzimmerschrank
+        name: Wohnzimmer Schrank        
+      - entity: device_tracker.tasmotaarbeitszimmerlampe
+        name: Arbeitszimmer Lampe
+      - entity: device_tracker.tasmotaarbeitszimmerradio
+        name: Arbeitszimmer Radio
+      - entity: device_tracker.tasmotaarbeitszimmerladegeraet
+        name: Arbeitszimmer Ladegerät
+      - entity: device_tracker.tasmotaarbeitszimmermonitore
+        name: Arbeitszimmer Monitore        
+      - entity: device_tracker.tasmotasportzimmerregal
+        name: Sportzimmer Regal        
+      - entity: device_tracker.tasmotabalkonradio
+        name: Balkon Radio
+      - entity: device_tracker.tasmotakuechenschrank
+        name: Küchenschrank  
+      - entity: device_tracker.tasmotaspuelmaschine
+        name: Spülmaschine
+        
   - type: entities
     title: Computer
     show_header_toggle: false
@@ -80,7 +94,18 @@ cards:
         name: Balkon
       - entity: device_tracker.radiokeller
         name: Keller
-
+        
+  - type: entities
+    title: Fire TV
+    show_header_toggle: false
+    entities:
+      - entity: device_tracker.firetvschlafzimmer
+        name: Schlafzimmer
+      - entity: device_tracker.firetvsportzimmer
+        name: Sportzimmer        
+      - entity: device_tracker.firetvbadezimmer
+        name: Badezimmer
+                
   - type: entities
     title: TP-Link
     show_header_toggle: false
@@ -112,15 +137,11 @@ cards:
         name: Schlafzimmer
 
   - type: entities
-    title: Fire TV
+    title: Shelly
     show_header_toggle: false
     entities:
-      - entity: device_tracker.firetvschlafzimmer
-        name: Schlafzimmer
-      - entity: device_tracker.firetvsportzimmer
-        name: Sportzimmer        
-      - entity: device_tracker.firetvbadezimmer
-        name: Badezimmer
+      - entity: device_tracker.shellysportzimmerladegeraet
+        name: Sportzimmer Ladegerät
 
   - type: entities
     title: Tablets
@@ -152,44 +173,8 @@ cards:
       - entity: device_tracker.magichomearbeitszimmer
         name: Arbeitszimmer
       - entity: device_tracker.magichomebalkon
-        name: Balkon
-      
-  - type: entities
-    title: Tasmota
-    show_header_toggle: false
-    entities:
-      - entity: device_tracker.tasmotawohnzimmerstrahler
-        name: Wohnzimmer Strahler      
-      - entity: device_tracker.tasmotawohnzimmercouch
-        name: Wohnzimmer Couch        
-      - entity: device_tracker.tasmotawohnzimmerradio
-        name: Wohnzimmer Radio      
-      - entity: device_tracker.tasmotawohnzimmerschrank
-        name: Wohnzimmer Schrank        
-      - entity: device_tracker.tasmotaarbeitszimmerlampe
-        name: Arbeitszimmer Lampe
-      - entity: device_tracker.tasmotaarbeitszimmerradio
-        name: Arbeitszimmer Radio
-      - entity: device_tracker.tasmotaarbeitszimmerladegeraet
-        name: Arbeitszimmer Ladegerät
-      - entity: device_tracker.tasmotaarbeitszimmermonitore
-        name: Arbeitszimmer Monitore        
-      - entity: device_tracker.tasmotasportzimmerregal
-        name: Sportzimmer Regal        
-      - entity: device_tracker.tasmotabalkonradio
-        name: Balkon Radio
-      - entity: device_tracker.tasmotakuechenschrank
-        name: Küchenschrank  
-      - entity: device_tracker.tasmotaspuelmaschine
-        name: Spülmaschine
-          
-  - type: entities
-    title: Shelly
-    show_header_toggle: false
-    entities:
-      - entity: device_tracker.shellysportzimmerladegeraet
-        name: Sportzimmer Ladegerät
-        
+        name: Balkon      
+
   - type: entities
     title: Broadlink
     show_header_toggle: false

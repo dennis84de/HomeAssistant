@@ -150,7 +150,7 @@ script:
             
             {% set count_mails = states('sensor.ungelesene_mails') | int(0) -%}            
             {% if count_mails > 0 %}
-              {{ "Du hast " ~ count_mails ~ " ungelesene " ~ ("Mail" if count_mails == 1 else "Mails") }}
+              {{ "Du hast " ~ ("eine" if count_mails == 1 else count_mails) ~ " ungelesene " ~ ("Mail" if count_mails == 1 else "Mails") }}
             {% endif %}
             
             {% set kalenderEdg = expand('group.kalender_edg')

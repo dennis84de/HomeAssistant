@@ -44,7 +44,7 @@ cards:
         {% for i in range(advance_count) %}
           {% set headline = state_attr("sensor.wetterwarnungen_advance_warning_level", "warning_" ~ loop.index ~ "_headline") %}
           {% set description = state_attr("sensor.wetterwarnungen_advance_warning_level", "warning_" ~ loop.index ~ "_description") %}
-          {% set level = state_attr("sensor.sensor.wetterwarnungen_advance_warning_level", "warning_" ~ loop.index ~ "_level") %}
+          {% set level = state_attr("sensor.wetterwarnungen_advance_warning_level", "warning_" ~ loop.index ~ "_level") %}
           {% set time_start = state_attr("sensor.wetterwarnungen_advance_warning_level", "warning_" ~ loop.index ~ "_start") %}
           {% set weekday_start = as_timestamp(time_start) | timestamp_custom("%w", True) | int %}
           {% set time_end = state_attr("sensor.wetterwarnungen_advance_warning_level", "warning_" ~ loop.index ~ "_end") %}

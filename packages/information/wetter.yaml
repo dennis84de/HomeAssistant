@@ -172,8 +172,8 @@ sensor:
         friendly_name: 'Wetterlage'
         icon_template: mdi:weather-windy-variant
         value_template: >
-          {% if is_state('sensor.darksky_precip' , 'snow') %} Schnee
-          {% elif ((states('sensor.darksky_overnight_low_temperature') | int(0) < 4) and (states('sensor.darksky_dew_point') | int(0) < 6)
+          {% if is_state('sensor.darksky_precip_0d' , 'snow') %} Schnee
+          {% elif ((states('sensor.darksky_overnight_low_temperature_0d') | int(0) < 4) and (states('sensor.darksky_dew_point') | int(0) < 6)
             and (states('sensor.darksky_wind_speed') | int(0) < 12) and (states('sensor.darksky_cloud_coverage') | int(0) < 20)
             and (states('sensor.darksky_humidity') | int(0) > 50)) %} Frost
           {% elif (states('sensor.darksky_precip_intensity') | int(0) > 7) %} Regen
@@ -461,8 +461,6 @@ automation:
             
 homeassistant:
   customize:
-    sensor.darksky_precip_type:
-      friendly_name: Heutige Niederschlagsart      
     sensor.darksky_precip_probability:
       friendly_name: Heutige Regenwahrscheinlichkeit
     sensor.darksky_precip_intensity:
@@ -485,14 +483,12 @@ homeassistant:
       friendly_name: Ozon
     sensor.darksky_hourly_summary:
       friendly_name: Zusammenfassung
-    sensor.darksky_daytime_high_temperature_d0:
+    sensor.darksky_daytime_high_apparent_temperature_0d:
       friendly_name: Heutige Höchsttemperatur      
-    sensor.darksky_overnight_low_temperature_d0:
+    sensor.darksky_overnight_low_temperature_0d:
       friendly_name: Heutige Tiefsttemperatur      
     sensor.darksky_dew_point:
       friendly_name: Taupunkt      
-    sensor.darksky_nearest_storm_distance:
-      friendly_name: Nächster Sturm
     sensor.darksky_summary:
       friendly_name: Aktuelles Wetter
     sensor.regenradar:
@@ -502,5 +498,3 @@ homeassistant:
       icon: mdi:biohazard
     binary_sensor.iss:
       icon: mdi:earth
-    sensor.strommix:
-      icon: mdi:solar-power

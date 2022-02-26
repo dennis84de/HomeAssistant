@@ -214,11 +214,11 @@ binary_sensor:
   - platform: tod
     name: Abends
     after: "18:00"
-    before: "22:00"        
+    before: "21:00"        
     
   - platform: tod
     name: Nachts
-    after: "22:00"
+    after: "21:00"
     before: "06:00"
     
 automation:
@@ -284,9 +284,9 @@ automation:
         data:
           title: "Aktuelle Benzinpreise"
           message: >
-            Real: {% if states('sensor.tankstelle_real') != 'unknown' %}{{ states('sensor.tankstelle_real') }}€{% else %}{%if states('sensor.tankstelle_real_status') == 'off' %}geschlossen{% else %}-{% endif %}{% endif %}
+            Real: {% if states('sensor.tankstelle_real') != 'unknown' %}{{ states('sensor.tankstelle_real') }}€{% else %}{%if states('binary_sensor.tankstelle_real_status') == 'off' %}geschlossen{% else %}-{% endif %}{% endif %}
 
-            Jet: {% if states('sensor.tankstelle_jet') != 'unknown' %}{{ states('sensor.tankstelle_jet') }}€{% else %}{%if states('sensor.tankstelle_jet_status') == 'off' %}geschlossen{% else %}-{% endif %}{% endif %}
+            Jet: {% if states('sensor.tankstelle_jet') != 'unknown' %}{{ states('sensor.tankstelle_jet') }}€{% else %}{%if states('binary_sensor.tankstelle_jet_status') == 'off' %}geschlossen{% else %}-{% endif %}{% endif %}
                   
 panel_iframe:
   infoscreen:
@@ -305,8 +305,6 @@ homeassistant:
     sensor.next_holiday:
       friendly_name: Nächster Feiertag
       
-    sensor.tankerkoenig_dortmund_borussiastrasse_118_e10:
-      friendly_name: Tankstelle Borussiastraße
     sensor.tankerkoenig_jet_muelheim_strassburger_allee_75_e10:
       friendly_name: Tankstelle Jet
     sensor.tankerkoenig_supermarkt_tankstelle_am_real_markt_dortmund_wulfshofstr_e10:
