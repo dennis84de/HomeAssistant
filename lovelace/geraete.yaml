@@ -4,6 +4,35 @@ type: custom:horizontal-layout
 layout:
   width: 400
   max_cols: 3
+popup_cards:
+  sensor.watchman_missing_entities:
+    title: Fehlende Entitäten
+    card:
+      type: markdown
+      content: >-        
+        {%- for item in state_attr("sensor.watchman_missing_entities", "entities") %}
+        {% if loop.index > 1 %}<hr>{% endif %} <table><tr> <td>
+        <ha-icon icon='mdi:
+        {%- if item.state=="missing"-%}cloud-alert'
+        {%- elif item.state=="unavail" -%}cloud-off-outline' {%- else-%}cloud-question'
+        {%- endif -%} ></ha-icon>
+        {{ item.id }} [{{item.state}}] <br><a title="{{item.occurrences}}">
+        {{item.occurrences.split('/')[-1].split(':')[0]}}</a>
+        </td></tr></table>
+        {%- endfor %}       
+  sensor.watchman_missing_services:
+    title: Fehlende Dienste
+    card:
+      type: markdown
+      content: >-    
+        {%- for item in state_attr("sensor.watchman_missing_services", "services") %}
+        {% if loop.index > 1 %}<hr>{% endif %}
+        <table><tr> <td>  
+          <ha-icon icon='mdi:cloud-alert'></ha-icon> {{ item.id }}
+          <br><a title="{{item.occurrences}}">{{item.occurrences.split('/')[-1].split(':')[0]}}</a>
+        </td></tr></table>
+        {%- endfor %}
+ 
 cards:
   - type: entities
     title: Raspberry
@@ -14,17 +43,57 @@ cards:
       - entity: sensor.memory_use_percent
       - entity: binary_sensor.rpi_power_status
       - entity: sensor.rpi_letzter_neustart
-
-  - type: entities
-    title: Computer
-    show_header_toggle: false
-    entities:
-      - entity: sensor.computer_generic_hard_disk_load_used_space
-      - entity: sensor.computer_wdc_wd20spzx_22ua7t0_load_used_space
-      - entity: sensor.computer_wdc_wd20spzx_22ua7t0_temperatures_temperature
-      - entity: sensor.computer_generic_memory_load_memory
-      - entity: sensor.computer_intel_core_i5_8259u_load_cpu_total
-      - entity: sensor.computer_intel_core_i5_8259u_temperatures_cpu_package
+      
+  - type: custom:stack-in-card
+    cards:
+      - type: horizontal-stack
+        title: Computer
+        cards:
+          - type: custom:mini-graph-card
+            name: Temperatur
+            line_width: 3
+            animate: true
+            hour24: true
+            show:
+              fill: false
+              icon: false
+              points: false
+            entities:
+              - entity: sensor.computer_intel_core_i5_8259u_temperatures_cpu_package
+                name: CPU
+              - entity: sensor.computer_wdc_wd20spzx_22ua7t0_temperatures_temperature
+                name: HDD     
+          - type: custom:mini-graph-card
+            name: Auslastung
+            line_width: 3
+            animate: true
+            hour24: true
+            show:
+              fill: false
+              icon: false
+              points: false
+            entities:
+              - entity: sensor.computer_intel_core_i5_8259u_load_cpu_total
+                name: CPU
+              - entity: sensor.computer_generic_memory_load_memory
+                name: RAM    
+      - type: horizontal-stack
+        title: Speicherplatz
+        cards:                
+          - type: gauge
+            entity: sensor.computer_generic_hard_disk_load_used_space
+            name: SSD
+            severity:
+              green: 0
+              yellow: 40
+              red: 80
+          - type: gauge          
+            entity: sensor.computer_wdc_wd20spzx_22ua7t0_load_used_space        
+            name: HDD
+            severity:
+              green: 0
+              yellow: 40
+              red: 80            
 
   - type: 'custom:zha-network-card'    
     clickable: true
@@ -50,6 +119,8 @@ cards:
       - entity: binary_sensor.uptime_robot_nextcloud        
       - entity: binary_sensor.healthchecks_djaeschke           
 
+  - type: custom:layout-break
+
   - type: entities
     title: Nextcloud
     show_header_toggle: false
@@ -57,4 +128,13 @@ cards:
       - entity: sensor.nextcloud_zertifikat_tage
         name: Zertifikat
       - entity: sensor.nextcloud_system_version     
-        name: Installierte Version       
+        name: Installierte Version         
+
+  - type: entities
+    title: Watchman
+    show_header_toggle: false
+    entities:      
+      - entity: sensor.watchman_missing_entities
+        name: Fehlende Entitäten
+      - entity: sensor.watchman_missing_services 
+        name: Fehlende Dienste          

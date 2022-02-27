@@ -270,3 +270,12 @@ homeassistant:
       
     sensor.installierte_version:      
       icon: mdi:shield-check
+      
+    sensor.watchman_missing_entities:
+      icon: mdi:note-alert-outline
+      friendly_name: Fehlende Entitäten
+      unit_of_measurement: Entitäten
+    sensor.watchman_missing_services:
+      icon: mdi:note-alert-outline
+      friendly_name: Fehlende Dienste
+      unit_of_measurement: Dienste

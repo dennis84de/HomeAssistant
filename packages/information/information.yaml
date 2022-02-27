@@ -148,11 +148,7 @@ sensor:
         value_template: >-
           {% set price = states('sensor.tankerkoenig_supermarkt_tankstelle_am_real_markt_dortmund_wulfshofstr_e10') %}
 
-          {% if price == 'unknown' %}
-            -
-          {% else %}
-            {{ price }}
-          {% endif %}          
+          {{ '-' if price == 'unknown' else price }}       
       
       tankstelle_jet:
         friendly_name: 'Tankstelle Jet'    
@@ -161,11 +157,7 @@ sensor:
         value_template: >-
           {% set price = states('sensor.tankerkoenig_jet_muelheim_strassburger_allee_75_e10') %}
 
-          {% if price == 'unknown' %}
-            -
-          {% else %}
-            {{ price }}
-          {% endif %}
+          {{ '-' if price == 'unknown' else price }}
           
       next_launch_day_de:
         friendly_name: 'Nächster Start - Datum'

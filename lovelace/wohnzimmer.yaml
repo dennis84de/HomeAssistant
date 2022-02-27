@@ -29,41 +29,6 @@ cards:
         name: Schrank        
 
   - type: entities
-    title: Geräte
-    show_header_toggle: false
-    entities:
-      - entity: switch.wohnzimmer_radio
-        name: Radio             
-        
-  - type: entities
-    title: Balkon
-    show_header_toggle: false
-    entities:
-      - entity: binary_sensor.bewegungsmelder_balkon
-        name: Bewegungsmelder
-      - entity: light.balkon_licht
-        name: Licht      
-      - entity: switch.balkon_radio
-        name: Radio
-      - type: custom:mini-media-player
-        entity: media_player.radio_balkon
-        hide:
-          source: true
-          progress: true           
-
-  - type: entities
-    title: Multimedia
-    show_header_toggle: false
-    entities:
-      - entity: switch.watchtv_wohnzimmer
-      - entity: input_boolean.musik_ausschalten
-      - entity: input_boolean.firefox_wohnzimmer_aktiv
-        name: Firefox
-      - entity: cover.kodi_untertitel
-      - entity: cover.fernseher_sender
-        name: Sender       
-        
-  - type: entities
     title: Mediaplayer
     show_header_toggle: false
     entities:      
@@ -94,19 +59,64 @@ cards:
         name: Radio
         hide:
           source: true
-          progress: true                 
+          progress: true   
+
+  - type: entities
+    title: Balkon
+    show_header_toggle: false
+    entities:
+      - entity: binary_sensor.bewegungsmelder_balkon
+        name: Bewegungsmelder
+      - entity: light.balkon_licht
+        name: Licht      
+      - entity: switch.balkon_radio
+        name: Radio
+      - type: custom:mini-media-player
+        entity: media_player.radio_balkon
+        hide:
+          source: true
+          progress: true    
           
+  - type: entities
+    title: Multimedia
+    show_header_toggle: false
+    entities:
+      - entity: switch.watchtv_wohnzimmer
+      - entity: input_boolean.musik_ausschalten
+      - entity: input_boolean.firefox_wohnzimmer_aktiv
+        name: Firefox
+      - entity: cover.kodi_untertitel
+      - entity: cover.fernseher_sender
+        name: Sender                         
+          
+  - type: entities
+    title: Geräte
+    show_header_toggle: false
+    entities:
+      - entity: switch.wohnzimmer_radio
+        name: Radio                                  
+                 
+  
+  - type: entities
+    title: Computer
+    show_header_toggle: false
+    entities:
+      - entity: switch.computer        
+      - entity: input_select.computer_ausschalten       
+        
   - type: glance
-    title: Heizung
+    title: Sensoren
     show_header_toggle: false
     entities:
       - entity: binary_sensor.balkontuer
         name: Balkontür      
       - entity: binary_sensor.fenster_wohnzimmer
-        name: Fenster
-      - entity: climate.wohnzimmer
-        name: Heizung
-        
+        name: Fenster            
+      - entity: binary_sensor.bewegungsmelder_wohnzimmer
+        name: Bewegungsmelder
+      - entity: sensor.wohnzimmer_helligkeit
+        name: Helligkeit                
+      
   - type: glance
     title: Thermometer
     show_header_toggle: false
@@ -115,23 +125,10 @@ cards:
         name: Temperatur
       - entity: sensor.wohnzimmer_luftfeuchtigkeit       
         name: Luftfeuchtigkeit
+     
+  - type: thermostat
+    entity: climate.wohnzimmer
 
-  - type: glance
-    title: Sensoren
-    show_header_toggle: false
-    entities:
-      - entity: binary_sensor.bewegungsmelder_wohnzimmer
-        name: Bewegungsmelder
-      - entity: sensor.wohnzimmer_helligkeit
-        name: Helligkeit  
-
-  - type: entities
-    title: Computer
-    show_header_toggle: false
-    entities:
-      - entity: switch.computer        
-      - entity: input_select.computer_ausschalten                     
-      
   - type: conditional
     conditions:
       - entity: device_tracker.xiaomifan

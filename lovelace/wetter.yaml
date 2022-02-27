@@ -121,10 +121,8 @@ cards:
     title: Sonne und Mond
     show_header_toggle: false
     entities:
-      - entity: sensor.sonnenaufgang
-      - entity: sensor.sonnenuntergang
       - entity: sensor.tageszeit
-      - entity: sensor.mondphasen
+      - entity: sensor.mondphase
 
   - type: entities
     title: Regen und Wind

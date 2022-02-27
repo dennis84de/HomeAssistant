@@ -237,7 +237,7 @@ sensor:
         value_template: "{{ as_timestamp(state_attr('sun.sun', 'next_setting'), None) | timestamp_custom('%d.%m.%Y %H:%M') }}"
         icon_template: mdi:weather-sunset-down
 
-      mondphasen:
+      mondphase:
         friendly_name: Mondphase
         value_template: >-
           {% if is_state('sensor.moon', 'new_moon') %}

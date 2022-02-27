@@ -340,7 +340,10 @@ automation:
       - service: switch.turn_on
         entity_id: switch.computer
       - service: switch.turn_off
-        entity_id: switch.schlafzimmer_radio                   
+        entity_id: switch.schlafzimmer_radio         
+      - service: alarmo.disarm
+        data:
+          entity_id: alarm_control_panel.alarmo        
       - choose:
           - conditions:
               - "{{ trigger.id != 'schalter_badezimmer' }}"                    

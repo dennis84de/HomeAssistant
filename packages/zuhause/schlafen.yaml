@@ -151,7 +151,11 @@ automation:
                 state: 'on'                       
             sequence:
               - service: switch.turn_off
-                entity_id: switch.badezimmer_radio               
+                entity_id: switch.badezimmer_radio          
+      - service: alarmo.arm
+        data:
+          entity_id: alarm_control_panel.alarmo
+          mode: night
             
   - alias: "Schlafen gehen - Countdown starten"
     id: "schlafen_gehen_countdown_starten"
