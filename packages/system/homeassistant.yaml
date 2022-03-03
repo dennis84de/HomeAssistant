@@ -9,7 +9,6 @@ discovery:
 wake_on_lan:
 system_health:
 map:
-updater:  
 lovelace:
   mode: yaml
   resources:
@@ -104,11 +103,6 @@ sensor:
 
   - platform: template
     sensors:
-      neuste_version:
-        friendly_name: "Neuste Version"
-        icon_template: "mdi:update"
-        value_template: "{{ state_attr('binary_sensor.updater', 'newest_version') }}"
-          
       rpi_letzter_neustart:
         friendly_name: "Letzter Neustart"
         icon_template: >-
@@ -187,7 +181,7 @@ automation:
     id: "home_assistant_update_verfuegbar"
     trigger:
       - platform: state
-        entity_id: binary_sensor.updater
+        entity_id: binary_sensor.hass_current_version_update_available
         to: 'on'
     action:
       - choose:
@@ -199,12 +193,12 @@ automation:
               - service: notify.telegram
                 data:
                   title: 'Neue Version'
-                  message: "Home Assistant {{ states('sensor.neuste_version') }} ist jetzt verfügbar."
+                  message: "Home Assistant {{ states('sensor.hass_current_version') }} ist jetzt verfügbar."
         default:
           - service: persistent_notification.create
             data:
               title: "Update verfügbar"
-              message: "Home Assistant {{ states('sensor.neuste_version') }} ist jetzt verfügbar."
+              message: "Home Assistant {{ states('sensor.hass_current_version') }} ist jetzt verfügbar."
               notification_id: neue_version
                
   - alias: "Home Assistant - Gestartet"
@@ -244,6 +238,16 @@ automation:
 
 homeassistant:
   customize:
+    sensor.watchman_missing_entities:
+      icon: mdi:note-alert-outline
+      friendly_name: Fehlende Entitäten
+      unit_of_measurement: Entitäten
+      
+    sensor.watchman_missing_services:
+      icon: mdi:note-alert-outline
+      friendly_name: Fehlende Dienste
+      unit_of_measurement: Dienste
+      
     zone.home:
       friendy_name: Zu Hause
   
@@ -268,14 +272,5 @@ homeassistant:
       friendly_name: Größe Datenbank
       icon: mdi:database
       
-    sensor.installierte_version:      
-      icon: mdi:shield-check
-      
-    sensor.watchman_missing_entities:
-      icon: mdi:note-alert-outline
-      friendly_name: Fehlende Entitäten
-      unit_of_measurement: Entitäten
-    sensor.watchman_missing_services:
-      icon: mdi:note-alert-outline
-      friendly_name: Fehlende Dienste
-      unit_of_measurement: Dienste
+    sensor.hass_current_version:
+      friendly_name: Aktuelle Version

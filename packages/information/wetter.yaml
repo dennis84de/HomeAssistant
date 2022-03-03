@@ -33,8 +33,6 @@ binary_sensor:
   - platform: snowtire
     name: Autoreifen    
     weather: weather.dwd_weather_dortmund
-    
-  - platform: iss
 
   - platform: template
     sensors:

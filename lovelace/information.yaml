@@ -225,12 +225,72 @@ cards:
       entities:
         - entity: sensor.fahrzeit_zur_arbeit
         - entity: sensor.fahrzeit_nach_hause      
-        
-  - type: glance
-    title: Tanken
-    show_header_toggle: false
-    entities:
-      - entity: sensor.tankstelle_real
-      - entity: binary_sensor.tankstelle_real_status
-      - entity: sensor.tankstelle_jet
-      - entity: binary_sensor.tankstelle_jet_status                 
+       
+  - type: custom:stack-in-card    
+    cards:
+      - type: horizontal-stack
+        cards:          
+          - type: custom:mini-graph-card            
+            line_width: 2
+            animate: true
+            hour24: true
+            hours_to_show: 72
+            show:
+              fill: false
+              icon: false
+              points: false
+            state_map:
+              - value: "unknown"
+                label: Geschlossen              
+            entities:
+              - entity: sensor.tankerkoenig_supermarkt_tankstelle_am_real_markt_dortmund_wulfshofstr_e10
+                name: Real
+              - entity: sensor.tankerkoenig_jet_dortmund_provinzialstr_229_e10
+                name: Jet Dortmund
+              - entity: sensor.tankerkoenig_jet_muelheim_strassburger_allee_75_e10
+                name: Jet Mülheim
+      - type: horizontal-stack
+        cards:               
+          - type: glance
+            entities:              
+              - entity: binary_sensor.tankstelle_real_status
+                name: Real     
+          - type: glance
+            entities:              
+              - entity: binary_sensor.tankstelle_jet_dortmund_status
+                name: Jet Dortmund    
+          - type: glance
+            entities:              
+              - entity: binary_sensor.tankstelle_jet_mulheim_status
+                name: Jet Mülheim                    
+#          
+#          - type: vertical-stack
+#            cards:
+#              - type: glance
+#                entities:              
+#                  - entity: sensor.tankstelle_real
+#                    name: Real         
+#              - type: glance
+#                entities:              
+#                  - entity: binary_sensor.tankstelle_real_status
+#                    name: Status          
+#          - type: vertical-stack
+#            cards:
+#              - type: glance
+#                entities:              
+#                  - entity: sensor.tankstelle_jet_dortmund
+#                    name: Jet Dortmund           
+#              - type: glance
+#                entities:              
+#                  - entity: binary_sensor.tankstelle_jet_dortmund_status
+#                    name: Status  
+#          - type: vertical-stack
+#            cards:
+#              - type: glance
+#                entities:              
+#                  - entity: sensor.tankstelle_jet_mulheim
+#                    name: Jet Mülheim          
+#              - type: glance
+#                entities:              
+#                  - entity: binary_sensor.tankstelle_jet_mulheim_status
+#                    name: Status              

@@ -1,12 +1,3 @@
-tankerkoenig:
-  api_key: !secret tankerkoenig_apikey 
-  fuel_types:
-    - 'e10'
-  radius: 1
-  stations:
-    - !secret tankerkoenig_id_real
-    - !secret tankerkoenig_id_jet
-
 input_number:
   alexa_timer:
     name: Alexa Timer
@@ -140,25 +131,7 @@ sensor:
         state: "NW"
 
   - platform: template
-    sensors:
-      tankstelle_real:
-        friendly_name: 'Tankstelle Real'        
-        unit_of_measurement: €
-        icon_template: mdi:gas-station
-        value_template: >-
-          {% set price = states('sensor.tankerkoenig_supermarkt_tankstelle_am_real_markt_dortmund_wulfshofstr_e10') %}
-
-          {{ '-' if price == 'unknown' else price }}       
-      
-      tankstelle_jet:
-        friendly_name: 'Tankstelle Jet'    
-        unit_of_measurement: €
-        icon_template: mdi:gas-station
-        value_template: >-
-          {% set price = states('sensor.tankerkoenig_jet_muelheim_strassburger_allee_75_e10') %}
-
-          {{ '-' if price == 'unknown' else price }}
-          
+    sensors:          
       next_launch_day_de:
         friendly_name: 'Nächster Start - Datum'
         icon_template: mdi:calendar
@@ -170,19 +143,7 @@ sensor:
         icon_template: mdi:clock-outline
         unit_of_measurement: 'Uhr'          
           
-binary_sensor:   
-  - platform: template
-    sensors:
-      tankstelle_real_status:
-        friendly_name: 'Status'
-        device_class: door
-        value_template: "{{ is_state_attr('sensor.tankerkoenig_supermarkt_tankstelle_am_real_markt_dortmund_wulfshofstr_e10', 'is_open', True) }}"
-
-      tankstelle_jet_status:
-        friendly_name: 'Status'
-        device_class: door
-        value_template: "{{ is_state_attr('sensor.tankerkoenig_jet_muelheim_strassburger_allee_75_e10', 'is_open', True) }}"
-                             
+binary_sensor:                      
   - platform: tod
     name: Morgens
     after: "06:00"
@@ -263,23 +224,7 @@ automation:
                   data:
                     displaytime: 5000
                     icon: "info"
-
-  - alias: "Telegram - Tanken"
-    id: "telegram_tanken"
-    trigger:
-      platform: event
-      event_type: telegram_command
-      event_data:
-        command: '/tanken'
-    action:
-      - service: notify.telegram
-        data:
-          title: "Aktuelle Benzinpreise"
-          message: >
-            Real: {% if states('sensor.tankstelle_real') != 'unknown' %}{{ states('sensor.tankstelle_real') }}€{% else %}{%if states('binary_sensor.tankstelle_real_status') == 'off' %}geschlossen{% else %}-{% endif %}{% endif %}
-
-            Jet: {% if states('sensor.tankstelle_jet') != 'unknown' %}{{ states('sensor.tankstelle_jet') }}€{% else %}{%if states('binary_sensor.tankstelle_jet_status') == 'off' %}geschlossen{% else %}-{% endif %}{% endif %}
-                  
+            
 panel_iframe:
   infoscreen:
     title: Infoscreen

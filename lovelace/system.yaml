@@ -117,7 +117,7 @@ cards:
       - entity: sensor.laufzeit_stunden
         name: Laufzeit
       - entity: sensor.installierte_version
-      - entity: sensor.neuste_version
+      - entity: sensor.hass_current_version
       - entity: sensor.wichtige_anderungen
       - entity: sensor.hacs
       - entity: script.homeassistant_neustart

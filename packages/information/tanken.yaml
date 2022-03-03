@@ -1,0 +1,62 @@
+tankerkoenig:
+  api_key: !secret tankerkoenig_apikey 
+  fuel_types:
+    - 'e10'
+  radius: 1
+  stations:
+    - !secret tankerkoenig_id_real
+    - !secret tankerkoenig_id_jet_mh
+    - !secret tankerkoenig_id_jet_do
+
+template:          
+  - binary_sensor:
+      - name: "Tankstelle Real Status"
+        device_class: door
+        state: "{{ is_state_attr('sensor.tankerkoenig_supermarkt_tankstelle_am_real_markt_dortmund_wulfshofstr_e10', 'is_open', True) }}"
+
+      - name: "Tankstelle Jet Mülheim Status"
+        device_class: door
+        state: "{{ is_state_attr('sensor.tankerkoenig_jet_muelheim_strassburger_allee_75_e10', 'is_open', True) }}"
+   
+      - name: "Tankstelle Jet Dortmund Status"
+        device_class: door
+        state: "{{ is_state_attr('sensor.tankerkoenig_jet_dortmund_provinzialstr_229_e10', 'is_open', True) }}"
+        
+automation:
+  - alias: "Telegram - Tanken"
+    id: "telegram_tanken"
+    trigger:
+      platform: event
+      event_type: telegram_command
+      event_data:
+        command: '/tanken'
+    action:
+      - service: notify.telegram
+        data:
+          title: "Aktuelle Benzinpreise"
+          message: >
+            {% set realPrice = states('sensor.tankerkoenig_supermarkt_tankstelle_am_real_markt_dortmund_wulfshofstr_e10') %}
+            {% set RealText = (realPrice | float) ~ '€' if realPrice != 'unknown' else ('geschlossen' if is_state('binary_sensor.tankstelle_real_status', 'off') else '-') %}
+
+            {% set jetDoPrice = states('sensor.tankerkoenig_jet_dortmund_provinzialstr_229_e10') %}
+            {% set jetDoText = (jetDoPrice | float) ~ '€' if jetDoPrice != 'unknown' else ('geschlossen' if is_state('binary_sensor.tankstelle_jet_dortmund_status', 'off') else '-') %}
+
+            {% set jetMhPrice = states('sensor.tankerkoenig_jet_muelheim_strassburger_allee_75_e10') %}
+            {% set jetMhText = (jetMhPrice | float) ~ '€' if jetMhPrice != 'unknown' else ('geschlossen' if is_state('binary_sensor.tankstelle_jet_mulheim_status', 'off') else '-') %}
+
+            {{ 'Real: ' ~ RealText }}       
+            
+            {{ 'Jet Dortmund: ' ~ jetDoText }}    
+            
+            {{ 'Jet Mülheim: ' ~ jetMhText }}    
+
+homeassistant:
+  customize:           
+    sensor.tankerkoenig_jet_muelheim_strassburger_allee_75_e10:
+      friendly_name: Tankstelle Jet Mülheim
+    sensor.tankerkoenig_jet_dortmund_provinzialstr_229_e10:
+      friendly_name: Tankstelle Jet Dortmund      
+    sensor.tankerkoenig_supermarkt_tankstelle_am_real_markt_dortmund_wulfshofstr_e10:
+      friendly_name: Tankstelle Real
+    sensor.tankerkoenig_sb_dortmund_borussiastrasse_118_e10:
+      friendly_name: Tankstelle Borussiastraße
