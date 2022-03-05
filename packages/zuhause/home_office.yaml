@@ -26,12 +26,52 @@ input_select:
       - Herunterfahren
       - Nichts unternehmen
     
+button:
+  - platform: mqtt
+    unique_id: computer_arbeit_herunterfahren
+    name: "Computer Arbeit Herunterfahren"
+    command_topic: "iotlink/schenck/pc-djaeschke/commands/shutdown"
+    payload_press: ""
+    
+  - platform: mqtt
+    unique_id: computer_arbeit_ruhezustand
+    name: "Computer Arbeit Ruhezustand"
+    command_topic: "iotlink/schenck/pc-djaeschke/commands/hibernate"
+    payload_press: ""
+    
+sensor:
+  - platform: template
+    sensors:
+      computer_arbeit_teams_status:
+        friendly_name: 'Microsoft Teams'
+        icon_template: mdi:microsoft-teams
+        value_template: >-
+          {% set teamsStatus = states('sensor.computer_arbeit_teams') %}
+          {% set availableStates = {
+            'Available': 'Verfügbar',
+            'Away': 'Weg',
+            'BeRightBack': 'Gleich zurück',
+            'Busy': 'Beschäftigt',
+            'ConnectionError': 'Verbindungsfehler',
+            'DoNotDisturb': 'Nicht stören',
+            'Offline': 'Offline',
+            'onThePhone': 'Am Telefon',
+            'NotInACall': 'Nicht im Gespräch',
+            'InACall': 'Im Gespräch',
+            'InAMeeting': 'In einer Besprechung',
+            'unavailable': 'Nicht verfügbar',
+            'Unknown': 'Unbekannt',
+            'unknown': 'Unbekannt',
+          } %}
+          
+          {{ availableStates[teamsStatus] }}
+          
 binary_sensor:
   - platform: mqtt
     name: "Computer Arbeit"
-    state_topic: "homeassistant/sensor/PC-DJAESCHKE/availability"
-    payload_on: "online"
-    payload_off: "offline"
+    state_topic: "iotlink/schenck/pc-djaeschke/lwt"
+    payload_on: "ON"
+    payload_off: "OFF"
     device_class: connectivity
     
   - platform: template
@@ -77,15 +117,15 @@ switch:
                     entity_id: input_select.computer_arbeit_ausschalten
                     state: 'Ruhezustand'
                 sequence:
-                  - service: switch.turn_on
-                    entity_id: switch.computer_arbeit_ruhezustand
+                  - service: button.press
+                    entity_id: button.computer_arbeit_ruhezustand
               - conditions:
                   - condition: state
                     entity_id: input_select.computer_arbeit_ausschalten
                     state: 'Herunterfahren'
                 sequence:
-                  - service: switch.turn_on
-                    entity_id: switch.computer_arbeit_herunterfahren
+                  - service: button.press
+                    entity_id: button.computer_arbeit_herunterfahren
 
       computer_arbeit:
         friendly_name: Computer Arbeit

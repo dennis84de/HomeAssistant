@@ -72,7 +72,8 @@ cards:
       - entity: input_select.computer_arbeit_ausschalten
         name: Computer ausschalten        
       - entity: input_boolean.home_office_pause
-        name: Pause            
+        name: Pause           
+      - entity: sensor.computer_arbeit_teams_status
 
   - type: entities
     title: Staubsauger

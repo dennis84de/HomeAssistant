@@ -108,7 +108,5 @@ history:
       - switch.adguard_protection
       - switch.adguard_safe_browsing
       - switch.adguard_safe_search
-      - switch.computer_arbeit_herunterfahren
-      - switch.computer_arbeit_ruhezustand  
       - switch.fritz_box_7272_call_deflection_0
       - switch.fritz_box_7272_call_deflection_1
