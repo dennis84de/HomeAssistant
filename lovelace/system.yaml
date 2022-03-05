@@ -121,6 +121,7 @@ cards:
       - entity: sensor.wichtige_anderungen
       - entity: sensor.hacs
       - entity: script.homeassistant_neustart
+        name: Neustart
 
   - type: entities
     title: Benachrichtigungen
