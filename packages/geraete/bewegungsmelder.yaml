@@ -12,6 +12,7 @@ template:
           - binary_sensor.bewegungsmelder_sportzimmer
           - binary_sensor.bewegungsmelder_wohnzimmer
           - binary_sensor.bewegungsmelder_bett
+        from: 'off'
         to: 'on'
     sensor:      
       - name: Letzte Bewegung
