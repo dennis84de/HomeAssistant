@@ -36,11 +36,11 @@ cards:
         entity: media_player.fernseher_wohnzimmer
         name: Fernseher        
         hide:
-          progress: true
           controls: true
           volume: true
           volume_level: true
-          mute: true          
+          mute: true         
+          source: true
       - type: custom:mini-media-player
         entity: media_player.soundbar
         hide:
