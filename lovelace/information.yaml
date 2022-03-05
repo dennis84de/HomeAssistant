@@ -238,16 +238,13 @@ cards:
             show:
               fill: false
               icon: false
-              points: false
-            state_map:
-              - value: "unknown"
-                label: Geschlossen              
+              points: false        
             entities:
-              - entity: sensor.tankerkoenig_supermarkt_tankstelle_am_real_markt_dortmund_wulfshofstr_e10
+              - entity: sensor.tankstelle_real
                 name: Real
-              - entity: sensor.tankerkoenig_jet_dortmund_provinzialstr_229_e10
+              - entity: sensor.tankstelle_jet_dortmund
                 name: Jet Dortmund
-              - entity: sensor.tankerkoenig_jet_muelheim_strassburger_allee_75_e10
+              - entity: sensor.tankstelle_jet_mulheim
                 name: Jet Mülheim
       - type: horizontal-stack
         cards:               
@@ -262,35 +259,4 @@ cards:
           - type: glance
             entities:              
               - entity: binary_sensor.tankstelle_jet_mulheim_status
-                name: Jet Mülheim                    
-#          
-#          - type: vertical-stack
-#            cards:
-#              - type: glance
-#                entities:              
-#                  - entity: sensor.tankstelle_real
-#                    name: Real         
-#              - type: glance
-#                entities:              
-#                  - entity: binary_sensor.tankstelle_real_status
-#                    name: Status          
-#          - type: vertical-stack
-#            cards:
-#              - type: glance
-#                entities:              
-#                  - entity: sensor.tankstelle_jet_dortmund
-#                    name: Jet Dortmund           
-#              - type: glance
-#                entities:              
-#                  - entity: binary_sensor.tankstelle_jet_dortmund_status
-#                    name: Status  
-#          - type: vertical-stack
-#            cards:
-#              - type: glance
-#                entities:              
-#                  - entity: sensor.tankstelle_jet_mulheim
-#                    name: Jet Mülheim          
-#              - type: glance
-#                entities:              
-#                  - entity: binary_sensor.tankstelle_jet_mulheim_status
-#                    name: Status              
+                name: Jet Mülheim

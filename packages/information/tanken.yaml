@@ -8,7 +8,23 @@ tankerkoenig:
     - !secret tankerkoenig_id_jet_mh
     - !secret tankerkoenig_id_jet_do
 
-template:          
+sensor:
+  - platform: mqtt
+    name: "Tankstelle Real"
+    unit_of_measurement: '€'    
+    state_topic: "tanken/real"
+
+  - platform: mqtt
+    name: "Tankstelle Jet Dortmund"
+    unit_of_measurement: '€'
+    state_topic: "tanken/jet_do"
+    
+  - platform: mqtt
+    name: "Tankstelle Jet Mülheim"
+    unit_of_measurement: '€'
+    state_topic: "tanken/jet_mh"
+    
+template:         
   - binary_sensor:
       - name: "Tankstelle Real Status"
         device_class: door
@@ -23,8 +39,8 @@ template:
         state: "{{ is_state_attr('sensor.tankerkoenig_jet_dortmund_provinzialstr_229_e10', 'is_open', True) }}"
         
 automation:
-  - alias: "Telegram - Tanken"
-    id: "telegram_tanken"
+  - alias: "Tanken Telegram"
+    id: "tanken_telegram"
     trigger:
       platform: event
       event_type: telegram_command
@@ -49,6 +65,30 @@ automation:
             {{ 'Jet Dortmund: ' ~ jetDoText }}    
             
             {{ 'Jet Mülheim: ' ~ jetMhText }}    
+
+  - alias: "Tanken Preis"
+    id: "tanken_preis"
+    trigger:
+      - platform: state
+        entity_id: 
+          - sensor.tankerkoenig_supermarkt_tankstelle_am_real_markt_dortmund_wulfshofstr_e10
+          - sensor.tankerkoenig_jet_dortmund_provinzialstr_229_e10
+          - sensor.tankerkoenig_jet_muelheim_strassburger_allee_75_e10 
+    condition:
+      - "{{ trigger.to_state.state != 'unknown' }}"
+    action:
+      - service: mqtt.publish
+        data:
+          topic: >-
+            {% if trigger.entity_id == 'sensor.tankerkoenig_supermarkt_tankstelle_am_real_markt_dortmund_wulfshofstr_e10' %}
+              tanken/real
+            {% elif trigger.entity_id == 'sensor.tankerkoenig_jet_dortmund_provinzialstr_229_e10' %}
+              tanken/jet_do
+            {% elif trigger.entity_id == 'sensor.tankerkoenig_jet_muelheim_strassburger_allee_75_e10' %}
+              tanken/jet_mh
+            {% endif %}
+          retain: true
+          payload: "{{ states(trigger.entity_id) }}"   
 
 homeassistant:
   customize:           
