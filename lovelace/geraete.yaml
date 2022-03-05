@@ -138,3 +138,12 @@ cards:
         name: Fehlende Entitäten
       - entity: sensor.watchman_missing_services 
         name: Fehlende Dienste          
+
+  - type: custom:layout-break
+  
+  - type: entities
+    title: Steckdosen
+    show_header_toggle: false
+    entities:      
+      - entity: sensor.steckdosen_offline
+        name: Geräte offline

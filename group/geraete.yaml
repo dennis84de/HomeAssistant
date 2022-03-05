@@ -29,3 +29,28 @@ tablets:
     - sensor.tablet_schlafzimmer_battery_level
     - sensor.tablet_badezimmer_battery_level
     - sensor.tablet_balkon_battery_level
+
+steckdosen:
+  name: Steckdosen
+  entities:
+    - switch.monitor
+    - switch.schlafzimmer_radio
+    - switch.flur_radio
+    - switch.badezimmer_radio
+    - switch.kueche_radio
+    - switch.keller_radio
+    - switch.sportzimmer_fernseher
+    - switch.schlafzimmer_fernseher
+    - switch.waschmaschine
+    - switch.trockner
+    - switch.wohnzimmer_strahler
+    - switch.wohnzimmer_couch
+    - switch.wohnzimmer_radio
+    - switch.wohnzimmer_schrank
+    - switch.arbeitszimmer_lampe
+    - switch.arbeitszimmer_radio
+    - switch.arbeitszimmer_ladegerat
+    - switch.arbeitszimmer_monitore
+    - switch.sportzimmer_regal
+    - switch.balkon_radio
+    - switch.spuelmaschine
