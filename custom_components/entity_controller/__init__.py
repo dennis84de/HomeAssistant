@@ -587,7 +587,7 @@ class Model:
     def override_state_change(self, entity, old, new):
         """ State change callback for override entities """
         self.log.debug("override_state_change :: Override state change entity=%s, old=%s, new=%s" % ( entity, old, new))
-        if self.matches(new.state, self.OVERRIDE_ON_STATE) and (
+        if new and self.matches(new.state, self.OVERRIDE_ON_STATE) and (
             self.is_active()
             or self.is_active_timer()
             or self.is_idle()
@@ -598,7 +598,8 @@ class Model:
             self.override()
             self.update(overridden_at=str(datetime.now()))
         if (
-            self.matches(new.state, self.OVERRIDE_OFF_STATE)
+            new
+            and self.matches(new.state, self.OVERRIDE_OFF_STATE)
             and self.is_override_state_off()
             and self.is_overridden()
         ):
@@ -608,13 +609,19 @@ class Model:
     @callback
     def state_entity_state_change(self, entity, old, new):
         """ State change callback for state entities. This can be called with either a state change or an attribute change. """
-        self.log.debug(
-            "state_entity_state_change :: [ Entity: %s, Context: %s ]\n\tOld state: %s\n\tNew State: %s",
-            str(entity),
-            str(new.context),
-            str(old),
-            str(new)
-        )
+        if new:
+            self.log.debug(
+                "state_entity_state_change :: [ Entity: %s, Context: %s ]\n\tOld state: %s\n\tNew State: %s",
+                str(entity),
+                str(new.context),
+                str(old),
+                str(new)
+            )
+
+        if not new:
+            self.log.debug("state_entity_state_change :: Ignoring this state change because new state is unknown")
+            return
+
         if self.is_ignored_context(new.context):
             self.log.debug("state_entity_state_change :: Ignoring this state change because it came from %s" % (new.context.id))
             return

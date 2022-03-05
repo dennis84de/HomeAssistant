@@ -114,7 +114,7 @@ class HealthchecksioData:
                 await asyncio.sleep(1)  # needed for self-hosted instances
                 await session.get(check_url)
         except Exception as error:  # pylint: disable=broad-except
-            Logger("custom_components.healthchecksio").error(
+            Logger("custom_components.healthchecksio").warning(
                 f"Could not update data - {error}"
             )
 
