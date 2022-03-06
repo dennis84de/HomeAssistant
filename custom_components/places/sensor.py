@@ -690,7 +690,10 @@ class Places(Entity):
                     if "street" in display_options:
                         user_display.append(street)
                 if "city" in display_options:
-                    user_display.append(city)
+                    if city != "-":
+                        user_display.append(city)
+                    else:
+                        user_display.append(county)
                 if "county" in display_options:
                     user_display.append(county)
                 if "state" in display_options:
