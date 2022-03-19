@@ -55,9 +55,8 @@ automation:
       - service: scene.create
         data:
           scene_id: eingehender_anruf_licht_status
-          entities:
-            light.wohnzimmer_schrank:
-              state: "{{ states('light.wohnzimmer_schrank') }}"     
+          snapshot_entities:
+              - light.wohnzimmer_schrank
       - service: input_boolean.turn_on
         entity_id: input_boolean.licht_aktiv
       - alias: 'Eingehender Anruf - Licht schalten'
@@ -417,13 +416,13 @@ automation:
                     {% endif %}                      
           - conditions:
               - condition: state
-                entity_id: binary_sensor.redmi_note_8t_bluetooth_status
+                entity_id: binary_sensor.handy_bluetooth_status
                 state: 'on'      
               - condition: state
                 entity_id: input_boolean.nicht_stoeren
                 state: 'off'
             sequence:
-              - service: notify.mobile_app_redmi_note_8t
+              - service: notify.mobile_app_handy
                 data:
                   title: Eingehender Anruf
                   message: "{{message }}"  

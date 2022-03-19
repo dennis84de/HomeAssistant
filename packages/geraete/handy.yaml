@@ -51,15 +51,6 @@ sensor:
     home_zone: zone.home
     
   - platform: mqtt
-    name: "Handy Battery Level"
-    device_class: battery
-    unit_of_measurement: '%'
-    state_topic: "handy/batterie"
-    value_template: "{{ value_json.battery }}"
-    json_attributes_topic: "handy/batterie"
-    json_attributes_template: "{{ value_json | tojson }}"   
-    
-  - platform: mqtt
     name: "Handy"
     state_topic: "handy/status"
     value_template: "{{ value_json.status }}"   
@@ -99,7 +90,7 @@ sensor:
 automation: 
   - alias: "Handy aktiv - Wiedergabe pausieren"
     id: "handy_aktiv_wiedergabe_pausieren"
-    trigger:
+    trigger:     
       - platform: state
         entity_id: sensor.handy
         from: 'idle'
@@ -273,7 +264,7 @@ automation:
 
   - alias: "Handy inaktiv - Wiedergabe starten"
     id: "handy_inaktiv_wiedergabe_starten"
-    trigger:
+    trigger:       
       - platform: state
         entity_id: sensor.handy
         from:                    
@@ -398,7 +389,7 @@ automation:
     trigger:
       - platform: state
         entity_id: sensor.handy
-        to: 'ringing'
+        to: 'ringing'                 
     condition:
       - condition: state
         entity_id: input_boolean.nicht_stoeren
@@ -539,11 +530,10 @@ automation:
       - platform: state
         entity_id: sensor.handy_battery_level
     condition:
-      - condition: template        
-        value_template: -<
-          {% set min_battery_level = states('input_number.batteriestand_warnlevel') | int(0) -%}
-
-          {{ (trigger.to_state.state | int(0)) <= min_battery_level and trigger.to_state.attributes.is_charging == False }}
+      - "{{ trigger.to_state.state is defined and trigger.to_state.state != 'unknown' }}"
+      - "{{ trigger.to_state.state | int(0) < trigger.from_state.state | int(0) }}"
+      - "{{ (trigger.to_state.state | int(0)) <= states('input_number.batteriestand_warnlevel') | int(0) }}"
+      - "{{ is_state('person.dennis', 'home') }}"      
     action:
       - service: !secret tts_service
         data:
@@ -574,8 +564,6 @@ automation:
 
 homeassistant:
   customize:
-    sensor.handy_battery_level:
-      friendly_name: Handy
     sensor.handy:
       friendly_name: Handy Status
     device_tracker.handygps:

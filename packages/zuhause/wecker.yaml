@@ -166,24 +166,14 @@ script:
             {% if count_heimnetz_entities > 0 %}
               {{ "Die folgenden Geräte sind offline." if count_heimnetz_entities > 1 else "Das folgende Gerät ist offline."}}
 
-              {% set heimnetzOffline = expand('group.heimnetz')
-                | selectattr('state','eq','not_home') 
-                | map(attribute='name')
-                | list %}              
-
-              {{ heimnetzOffline | join(', ') }}                            
+              {{ state_attr('sensor.heimnetz_offline', 'geraete') | join(', ') }}                         
             {% endif %}
 
             {% set count_steckdosen_offline = states('sensor.steckdosen_offline') | int(0) -%}            
             {% if count_steckdosen_offline > 0 %}
               {{ "Die folgenden Geräte sind nicht verfügbar." if count_steckdosen_offline > 1 else "Das folgende Gerät ist nicht verfügbar."}}
 
-              {% set steckdosenOffline = expand('group.steckdosen')
-                | selectattr('state','eq','unavailable') 
-                | map(attribute='name')
-                | list %}              
-
-              {{ steckdosenOffline | join(', ') }}                            
+              {{ state_attr('sensor.steckdosen_offline', 'geraete') | join(', ') }}                         
             {% endif %}
             
             {% set min_battery_level = states('input_number.batteriestand_warnlevel') | int(0) -%}                       

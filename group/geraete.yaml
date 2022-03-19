@@ -21,14 +21,6 @@ alles_ausschalten:
     - light.kueche_schrank
     - light.balkon_licht
     - fan.ventilator
-        
-tablets:
-  name: Tablets
-  entities:
-    - sensor.tablet_wohnzimmer_battery_level
-    - sensor.tablet_schlafzimmer_battery_level
-    - sensor.tablet_badezimmer_battery_level
-    - sensor.tablet_balkon_battery_level
 
 steckdosen:
   name: Steckdosen

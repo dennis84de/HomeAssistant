@@ -26,6 +26,12 @@ input_select:
       - Herunterfahren
       - Nichts unternehmen
     
+input_number:
+  home_office_heute_gearbeitet:
+    name: Home Office Heute gearbeitet
+    min: 0
+    max: 540
+        
 button:
   - platform: mqtt
     unique_id: computer_arbeit_herunterfahren
@@ -38,34 +44,7 @@ button:
     name: "Computer Arbeit Ruhezustand"
     command_topic: "iotlink/schenck/pc-djaeschke/commands/hibernate"
     payload_press: ""
-    
-sensor:
-  - platform: template
-    sensors:
-      computer_arbeit_teams_status:
-        friendly_name: 'Microsoft Teams'
-        icon_template: mdi:microsoft-teams
-        value_template: >-
-          {% set teamsStatus = states('sensor.computer_arbeit_teams') %}
-          {% set availableStates = {
-            'Available': 'Verfügbar',
-            'Away': 'Weg',
-            'BeRightBack': 'Gleich zurück',
-            'Busy': 'Beschäftigt',
-            'ConnectionError': 'Verbindungsfehler',
-            'DoNotDisturb': 'Nicht stören',
-            'Offline': 'Offline',
-            'onThePhone': 'Am Telefon',
-            'NotInACall': 'Nicht im Gespräch',
-            'InACall': 'Im Gespräch',
-            'InAMeeting': 'In einer Besprechung',
-            'unavailable': 'Nicht verfügbar',
-            'Unknown': 'Unbekannt',
-            'unknown': 'Unbekannt',
-          } %}
-          
-          {{ availableStates[teamsStatus] }}
-          
+
 binary_sensor:
   - platform: mqtt
     name: "Computer Arbeit"
@@ -186,8 +165,14 @@ script:
         entity_id: input_boolean.home_office_aktiv
       - service: switch.turn_off
         entity_id: switch.arbeitszimmer_radio, switch.computer_arbeit
+      - service: input_number.set_value        
+        data:
+          entity_id: input_number.home_office_heute_gearbeitet
+          value: 0             
       - service: switch.turn_on
         entity_id: switch.computer, switch.watchtv_wohnzimmer
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.home_office_pause      
       - choose:
           - conditions:
               - condition: state

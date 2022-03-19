@@ -9,14 +9,14 @@ cards:
     entity: weather.dwd_weather_dortmund
     icons: "/local/icons/weather_icons/static/"    
     name: Wetter
-
+    
   - type: entities
     title: Wetter
     show_header_toggle: false
     entities:
-      - entity: sensor.darksky_temperature
-      - entity: sensor.darksky_apparent_temperature
-      - entity: sensor.wetterlage
+      - entity: sensor.weatherbit_air_temperature
+      - entity: sensor.weatherbit_apparent_temperature
+      - entity: sensor.weatherbit_weather_description
 
   - type: markdown
     title: Wetterwarnungen
@@ -73,8 +73,7 @@ cards:
     hours_to_show: 168
     points_per_hour: 5
     hour24: true
-    show:
-      fill: false
+    show:      
       icon: false
       points: false    
     entities:
@@ -92,7 +91,6 @@ cards:
     hour24: true
     upper_bound: 1000
     show:
-      fill: false
       icon: false
       points: false
     entities:
@@ -129,19 +127,17 @@ cards:
     show_header_toggle: false
     entities:
       - entity: sensor.regenradar
-      - entity: sensor.darksky_precip_intensity
-      - entity: sensor.darksky_precip_probability
-      - entity: sensor.darksky_cloud_coverage
-      - entity: sensor.darksky_wind_speed      
+      - entity: sensor.weatherbit_precipitation      
+      - entity: sensor.weatherbit_cloud_coverage
+      - entity: sensor.weatherbit_wind_speed      
       - entity: sensor.windrichtung
 
   - type: entities
     title: Luft
     show_header_toggle: false
     entities:
-      - entity: sensor.darksky_humidity
-      - entity: sensor.darksky_pressure
-      - entity: sensor.darksky_ozone
+      - entity: sensor.weatherbit_relative_humidity
+      - entity: sensor.weatherbit_station_pressure      
       - entity: sensor.co2_intensity        
       - entity: sensor.grid_fossil_fuel_percentage
 

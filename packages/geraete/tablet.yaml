@@ -121,15 +121,4 @@ automation:
                       {% set tabletName = '' %}
                     {% endif %}
 
-                    {{ "Das Tablet " ~ tabletName ~ " wurde vollständig aufgeladen." }}
-    
-homeassistant:
-  customize:
-    sensor.tablet_schlafzimmer_battery_level:
-      friendly_name: Tablet Schlafzimmer
-    sensor.tablet_badezimmer_battery_level:
-      friendly_name: Tablet Badezimmer 
-    sensor.tablet_wohnzimmer_battery_level:
-      friendly_name: Tablet Wohnzimmer
-    sensor.tablet_balkon_battery_level:
-      friendly_name: Tablet Balkon
+                    {{ "Das Tablet " ~ tabletName ~ " wurde vollständig aufgeladen." }}   

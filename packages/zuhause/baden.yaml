@@ -39,7 +39,7 @@ automation:
         entity_id: switch.watchtv_wohnzimmer, switch.computer
       - service: script.radios_ausschalten
       - service: light.turn_off
-        entity_id: light.wohnzimmer_couch, light.wohnzimmer_strahler, light.wohnzimmer_schrank
+        entity_id: light.wohnzimmer_couch, light.wohnzimmer_strahler, light.wohnzimmer_schrank, light.kueche_regal, light.kueche_schrank
         
   - alias: "Baden - Beenden"
     id: "baden_beenden"

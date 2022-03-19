@@ -9,8 +9,7 @@ binary_sensor:
       besuch:
         friendly_name: "Besuch"
         device_class: presence        
-        value_template: >-
-          {{ True if is_state('input_boolean.besuch', 'on') else False }}     
+        value_template: "{{ True if is_state('input_boolean.besuch', 'on') else False }}"
               
 automation:
   - alias: "Zu Hause - Besuch Schalter"

@@ -30,6 +30,10 @@ script:
     sequence:      
       - service: switch.turn_on
         entity_id: switch.arbeitszimmer_radio, switch.computer_arbeit
+      - service: input_number.set_value        
+        data:
+          entity_id: input_number.home_office_heute_gearbeitet
+          value: 0      
       - choose:
           - conditions:
               - condition: or
@@ -95,29 +99,18 @@ script:
               "Der Staubsaugerbehälter muss geleert werden."
             {% endif %}
 
-            {% set count_heimnetz_entities = states('sensor.heimnetz_offline') | int(0) -%}
-            
+            {% set count_heimnetz_entities = states('sensor.heimnetz_offline') | int(0) -%}            
             {% if count_heimnetz_entities > 0 %}
               {{ "Die folgenden Geräte sind offline." if count_heimnetz_entities > 1 else "Das folgende Gerät ist offline."}}
 
-              {% set heimnetzOffline = expand('group.heimnetz')
-                | selectattr('state','eq','not_home') 
-                | map(attribute='name')
-                | list %}              
-
-              {{ heimnetzOffline | join(', ') }}                            
+              {{ state_attr('sensor.heimnetz_offline', 'geraete') | join(', ') }}                         
             {% endif %}
 
             {% set count_steckdosen_offline = states('sensor.steckdosen_offline') | int(0) -%}            
             {% if count_steckdosen_offline > 0 %}
               {{ "Die folgenden Geräte sind nicht verfügbar." if count_steckdosen_offline > 1 else "Das folgende Gerät ist nicht verfügbar."}}
 
-              {% set steckdosenOffline = expand('group.steckdosen')
-                | selectattr('state','eq','unavailable') 
-                | map(attribute='name')
-                | list %}              
-
-              {{ steckdosenOffline | join(', ') }}                            
+              {{ state_attr('sensor.steckdosen_offline', 'geraete') | join(', ') }}                         
             {% endif %}
             
             {% set min_battery_level = states('input_number.batteriestand_warnlevel') | int(0) -%}                       
@@ -132,25 +125,7 @@ script:
                 {%- if not loop.first %}, {% endif -%}
                 {{- x.name -}}
               {% endfor %}       
-            {% endif %}             
-            
-            {% set tablets = expand('group.tablets') %}
-            {% set ns = namespace(found=0) -%}
-
-            {% for x in tablets if x.state|int > 99 and x.attributes.is_charging == True %}
-              {% set ns.found = ns.found + 1 -%}
-            {% endfor %}
-
-            {% if (ns.found | int(0)) == 1 %}
-              Das folgende Gerät wurde vollständig aufgeladen.
-            {% elif (ns.found | int(0)) > 1 %}
-              Die folgenden Geräte wurden vollständig aufgeladen.
             {% endif %}
-
-            {% for x in tablets if x.state|int > 99 and x.attributes.is_charging == True %}
-              {%- if not loop.first %}, {% endif -%}
-              {{- x.name -}}
-            {% endfor %}            
                               
   zu_hause_begruessung_abends:
       alias: "Zu Hause - Begrüßung abends"
@@ -205,24 +180,29 @@ automation:
       - service: alarmo.disarm
         data:
           entity_id: alarm_control_panel.alarmo
+      - service: presence_simulation.stop          
       - service: switch.turn_off
         entity_id: switch.kamera_wohnzimmer    
       - service: input_select.select_option
         data:
           entity_id: input_select.computer_ausschalten  
           option: 'Herunterfahren'        
-      - choose:
+      - choose:    
           - conditions:
               - condition: or
                 conditions:
-                  - condition: state
-                    entity_id: binary_sensor.home_office_aktiv
-                    state: 'on'
+                  - "{{ is_state('binary_sensor.home_office_aktiv', 'on') }}"
                   - condition: and
                     conditions:
-                      - condition: state
-                        entity_id: binary_sensor.buero_heute
-                        state: 'on'                            
+                      - "{{ states('input_number.home_office_heute_gearbeitet') > 0 }}"
+                      - condition: template
+                        value_template: >-
+                          {% set now = as_timestamp(now()) %}
+                          {% set last = as_timestamp(state_attr("script.alles_ausschalten", "last_triggered"), None) | int(0) %}
+                          {% set minutenUnterwegs = ((now - last) / 60) | int(0) %}
+                          {% set minuenHomeOffice = states('input_number.home_office_heute_gearbeitet') | int(0) %}
+                          
+                          {{ diff + durationHomeOffice < 540 }}                              
             sequence:              
               - service: script.zu_hause_home_office        
           - conditions:
@@ -230,7 +210,7 @@ automation:
                 entity_id: binary_sensor.home_office_aktiv
                 state: 'off'
               - condition: time
-                after: '08:00'
+                after: '06:00'
                 before: '20:00'
             sequence:          
               - service: script.zu_hause
@@ -239,14 +219,7 @@ automation:
                 after: '20:00'
                 before: '23:30'
             sequence:           
-              - service: script.zu_hause_abends      
-      - choose:              
-        - conditions:
-            - condition: state
-              entity_id: switch.presence_simulation
-              state: 'on'
-          sequence:
-            - service: presence_simulation.stop
+              - service: script.zu_hause_abends
                 
   - alias: "Zu Hause - Tür geöffnet"
     id: "zu_hause_tuer_geoeffnet"

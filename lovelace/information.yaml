@@ -109,7 +109,7 @@ cards:
         type: "custom:secondaryinfo-entity-row"              
         secondary_info: "[[ sensor.wecker_startdatum ]]"       
       - entity: binary_sensor.wecker_aktiv       
-           
+  
   - type: conditional
     view_layout:
       column: 3  
@@ -184,10 +184,9 @@ cards:
     line_width: 2
     animate: true
     hour24: true
-    show:
-      fill: false
+    show:            
       icon: false
-      points: false
+      points: false      
     entities:
       - entity: sensor.wohnzimmer_temperatur
         name: Wohnzimmer
@@ -234,11 +233,11 @@ cards:
             line_width: 2
             animate: true
             hour24: true
-            hours_to_show: 72
-            show:
-              fill: false
+            hours_to_show: 120
+            lower_bound: 1.8
+            show:                            
               icon: false
-              points: false        
+              points: false
             entities:
               - entity: sensor.tankstelle_real
                 name: Real

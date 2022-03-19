@@ -33,7 +33,15 @@ sensor:
             | map(attribute='name')
             | list %}
 
-          {{ wifiOffline | length }}            
+          {{ wifiOffline | length }}       
+        attribute_templates:
+          geraete: >
+            {% set wifiOffline = expand('group.heimnetz')
+              | selectattr('state','eq','not_home') 
+              | map(attribute='name')
+              | list %}
+
+              {{ wifiOffline }}         
 
 automation:
   - alias: "Gäste-Wlan eingeschaltet"

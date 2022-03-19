@@ -17,3 +17,11 @@ sensor:
             | list %}
 
           {{ steckdosenOffline | length }}      
+        attribute_templates:
+          geraete: >
+            {% set steckdosenOffline = expand('group.steckdosen')
+              | selectattr('state','eq','unavailable') 
+              | map(attribute='name')
+              | list %}
+
+              {{ steckdosenOffline }}                  

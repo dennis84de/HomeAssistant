@@ -1,7 +1,7 @@
 input_boolean:
   bvb_tor_aktiv:
     name: BVB Tor aktiv     
-    
+
 automation:
   - alias: "BVB - Torhymne"
     id: "bvb_torhymne"
@@ -38,11 +38,10 @@ automation:
           media_content_id: http://192.168.2.75:8123/local/sounds/torhymne.mp3
           media_content_type: music
       - service: scene.create
-        data:
+        data:          
           scene_id: bvb_tor
-          entities:
-            light.wohnzimmer_schrank:
-              state: "{{ states('light.wohnzimmer_schrank') }}"     
+          snapshot_entities:
+            - light.wohnzimmer_schrank
       - service: input_boolean.turn_on
         entity_id: input_boolean.bvb_tor_aktiv              
       - alias: 'BVB Tor - Licht'

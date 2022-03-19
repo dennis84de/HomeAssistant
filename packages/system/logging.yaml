@@ -26,6 +26,7 @@ recorder:
       - climate
       - proximity
       - alarm_control_panel
+      - vacuum
     entity_globs:
       - devicve_tracker.handy*  
   exclude:
@@ -48,6 +49,7 @@ logbook:
       - climate
       - proximity
       - alarm_control_panel
+      - vacuum
     entity_globs:  
       - devicve_tracker.handy*  
   exclude:
@@ -74,6 +76,7 @@ history:
       - entity_controller
       - person
       - climate
+      - vacuum
   exclude:
     entities:
       - switch.sportzimmer_regal
@@ -86,23 +89,10 @@ history:
       - switch.schlafzimmer_fernseher_remote
       - switch.schlafzimmer_fernseher_licht      
       - switch.echo_badezimmer_do_not_disturb_switch
-      - switch.echo_badezimmer_repeat_switch
-      - switch.echo_badezimmer_shuffle_switch
-      - switch.echo_flur_do_not_disturb_switch
-      - switch.echo_flur_repeat_switch
-      - switch.echo_flur_shuffle_switch
       - switch.echo_kueche_do_not_disturb_switch
-      - switch.echo_kueche_repeat_switch
-      - switch.echo_kueche_shuffle_switch
       - switch.echo_schlafzimmer_do_not_disturb_switch
-      - switch.echo_schlafzimmer_repeat_switch
-      - switch.echo_schlafzimmer_shuffle_switch
       - switch.echo_wohnzimmer_do_not_disturb_switch
-      - switch.echo_wohnzimmer_repeat_switch
-      - switch.echo_wohnzimmer_shuffle_switch
-      - switch.firetv_badezimmer_do_not_disturb_switch
-      - switch.firetv_schlafzimmer_do_not_disturb_switch
-      - switch.firetv_sportzimmer_do_not_disturb_switch      
+      - switch.echo_flur_do_not_disturb_switch 
       - switch.adguard_filtering
       - switch.adguard_parental_control
       - switch.adguard_protection

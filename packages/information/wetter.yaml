@@ -56,48 +56,7 @@ binary_sensor:
         value_template: "{{ now().timetuple().tm_isdst > 0 }}"  
     
 sensor:
-  - platform: moon
-      
-  - platform: darksky
-    api_key: !secret darksky_key
-    name: Darksky
-    language: de
-    forecast:
-      - 0
-      - 1
-      - 2
-      - 3
-      - 4
-      - 5
-    scan_interval:
-      minutes: 5
-    monitored_conditions:
-      - icon
-      - summary
-      - nearest_storm_distance
-      - nearest_storm_bearing
-      - humidity
-      - temperature
-      - temperature_high
-      - temperature_low
-      - apparent_temperature
-      - apparent_temperature_high
-      - apparent_temperature_low
-      - wind_speed
-      - wind_bearing
-      - precip_type
-      - precip_probability
-      - precip_accumulation
-      - precip_intensity
-      - precip_intensity_max
-      - uv_index
-      - daily_summary
-      - pressure
-      - visibility
-      - cloud_cover
-      - ozone
-      - hourly_summary
-      - dew_point
+  - platform: moon      
 
   - platform: mold_indicator
     name: Schimmelindikator
@@ -120,13 +79,6 @@ sensor:
   - platform: opensky
     name: Flugzeuge
     radius: 10
-      
-#  - platform: rest
-#    name: Strommix
-#    resource: !secret strommix_url
-#    unit_of_measurement: '%'
-#    scan_interval: 3600
-#    value_template: '{{ value_json[0].eevalue }}'
 
   - platform: rest
     name: regenradar
@@ -170,11 +122,11 @@ sensor:
         friendly_name: 'Wetterlage'
         icon_template: mdi:weather-windy-variant
         value_template: >
-          {% if is_state('sensor.darksky_precip_0d' , 'snow') %} Schnee
-          {% elif ((states('sensor.darksky_overnight_low_temperature_0d') | int(0) < 4) and (states('sensor.darksky_dew_point') | int(0) < 6)
-            and (states('sensor.darksky_wind_speed') | int(0) < 12) and (states('sensor.darksky_cloud_coverage') | int(0) < 20)
-            and (states('sensor.darksky_humidity') | int(0) > 50)) %} Frost
-          {% elif (states('sensor.darksky_precip_intensity') | int(0) > 7) %} Regen
+          {% if states('sensor.weatherbit_snow') | int(0) > 0 %} Schnee
+          {% elif ((state_attr('sensor.weatherbit_forecast_day_1', 'temperature') | int(0) < 4) and (states('sensor.weatherbit_dew_point') | int(0) < 6)
+            and (states('sensor.weatherbit_wind_speed') | int(0) < 12) and (states('sensor.weatherbit_cloud_coverage') | int(0) < 20)
+            and (states('sensor.weatherbit_relative_humidity') | int(0) > 50)) %} Frost
+          {% elif (states('sensor.weatherbit_precipitation') | int(0) > 7) %} Regen
           {% else %} Klar {% endif %}
 
       helligkeit_wetter:
@@ -185,7 +137,7 @@ sensor:
                    
           {%- set irradiance_pct = irradiance / 10 %}
           {%- set elevation = state_attr('sun.sun','elevation') | float(0) %}
-          {%- set cloud_coverage = states('sensor.darksky_cloud_coverage') | float(0) %}
+          {%- set cloud_coverage = states('sensor.weatherbit_cloud_coverage') | float(0) %}
           {%- set adjusted_clouds = cloud_coverage -  irradiance_pct %}
           {%- set cloud_factor = (1 - (0.75 * ( adjusted_clouds / 100) ** 3 )) %}
           {%- set min_elevation = -6 %}
@@ -301,12 +253,12 @@ sensor:
         friendly_name: 'Windrichtung'
         icon_template: mdi:compass
         value_template: >-
-          {% set winbearing = (states('sensor.darksky_wind_bearing') | float(0) / 45) | int(0) | round + 1 %}
+          {% set winbearing = (states('sensor.weatherbit_wind_direction') | float(0) / 45) | int(0) | round + 1 %}
           {% set winddir = ['Nord', 'NO','Ost','SO','Süd','SW','West','NW']%}
           
           {{ winddir[winbearing]}}
         entity_picture_template: >-
-          {% set winbearing = (states('sensor.darksky_wind_bearing') | float(0) / 45) | int(0) | round + 1 %}
+          {% set winbearing = (states('sensor.weatherbit_wind_direction') | float(0) / 45) | int(0) | round + 1 %}
           {% set winddir = ['0', '45','90','135','180','225','270','315'] %}
           
           {{ "/local/wind/" ~ winddir[winbearing] ~ ".png" }}
@@ -459,36 +411,6 @@ automation:
             
 homeassistant:
   customize:
-    sensor.darksky_precip_probability:
-      friendly_name: Heutige Regenwahrscheinlichkeit
-    sensor.darksky_precip_intensity:
-      friendly_name: Heutige Regenmenge
-    sensor.darksky_temperature:
-      friendly_name: Temperatur
-    sensor.darksky_apparent_temperature:
-      friendly_name: Gefühlte Temperatur
-    sensor.darksky_wind_speed:
-      friendly_name: Windgeschwindigkeit
-    sensor.darksky_wind_bearing:      
-      friendly_name: Windrichtung
-    sensor.darksky_cloud_coverage:
-      friendly_name: Wolkendecke
-    sensor.darksky_humidity:
-      friendly_name: Luftfeuchtigkeit
-    sensor.darksky_pressure:
-      friendly_name: Luftdruck
-    sensor.darksky_ozone:
-      friendly_name: Ozon
-    sensor.darksky_hourly_summary:
-      friendly_name: Zusammenfassung
-    sensor.darksky_daytime_high_apparent_temperature_0d:
-      friendly_name: Heutige Höchsttemperatur      
-    sensor.darksky_overnight_low_temperature_0d:
-      friendly_name: Heutige Tiefsttemperatur      
-    sensor.darksky_dew_point:
-      friendly_name: Taupunkt      
-    sensor.darksky_summary:
-      friendly_name: Aktuelles Wetter
     sensor.regenradar:
       friendly_name: Regenradar
       icon: mdi:weather-pouring

@@ -27,7 +27,7 @@ input_number:
     min: 0
     max: 12
     step: 1
-
+        
 sensor:
   - platform: here_travel_time
     name: Fahrzeit zur Arbeit
