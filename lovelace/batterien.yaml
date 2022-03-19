@@ -12,34 +12,50 @@ cards:
       - entity: input_number.batteriestand_warnlevel
       - entity: sensor.batteriestand_niedrig
 
-  - type: entities
+  - type: custom:battery-state-card
     title: Geräte
-    show_header_toggle: false
+    tap_action: more-info
+    color_thresholds:
+      - value: 10
+        color: "red"
+      - value: 30
+        color: "yellow"      
     entities:
       - entity: sensor.handy_battery_level
-        name: Handy
-        type: "custom:secondaryinfo-entity-row"
-        secondary_info: "Zuletzt geladen: [[ sensor.handy_zuletzt_geladen ]]"      
+        name: Handy        
+        charging_state:
+          entity_id: sensor.handy_akku_status
+          state: "charging"                  
       - entity: sensor.tablet_wohnzimmer_battery_level     
         name: Tablet Wohnzimmer
-        type: "custom:secondaryinfo-entity-row"
-        secondary_info: "Zuletzt geladen: [[ sensor.tablet_wohnzimmer_zuletzt_geladen ]]"              
+        charging_state:
+          entity_id: sensor.tablet_wohnzimmer_akku_status
+          state: "charging"                       
       - entity: sensor.tablet_badezimmer_battery_level
         name: Tablet Badezimmer
-        type: "custom:secondaryinfo-entity-row"
-        secondary_info: "Zuletzt geladen: [[ sensor.tablet_badezimmer_zuletzt_geladen ]]"         
+        charging_state:
+          entity_id: sensor.tablet_badezimmer_akkustatus
+          state: "charging"                   
       - entity: sensor.tablet_schlafzimmer_battery_level
         name: Tablet Schlafzimmer
-        type: "custom:secondaryinfo-entity-row"
-        secondary_info: "Zuletzt geladen: [[ sensor.tablet_schlafzimmer_zuletzt_geladen ]]"         
+        charging_state:
+          entity_id: sensor.tablet_schlafzimmer_akku_status
+          state: "charging"                     
       - entity: sensor.tablet_balkon_battery_level
         name: Tablet Balkon
-        type: "custom:secondaryinfo-entity-row"
-        secondary_info: "Zuletzt geladen: [[ sensor.tablet_balkon_zuletzt_geladen ]]"         
-
-  - type: entities
+        charging_state:
+          entity_id: sensor.tablet_balkon_akkustatus
+          state: "charging"               
+          
+  - type: custom:battery-state-card
     title: Sensoren
-    show_header_toggle: false
+    tap_action: more-info
+    sort_by_level: asc
+    color_thresholds:
+      - value: 10
+        color: "red"
+      - value: 30
+        color: "yellow"      
     entities:
       - entity: sensor.tuersensor_battery_level
       - entity: sensor.bett_battery_level      
@@ -47,9 +63,15 @@ cards:
       - entity: sensor.helligkeit_balkon_battery_level
         name: Helligkeit
 
-  - type: entities
+  - type: custom:battery-state-card
     title: Schalter
-    show_header_toggle: false
+    tap_action: more-info
+    sort_by_level: asc
+    color_thresholds:
+      - value: 10
+        color: "red"
+      - value: 30
+        color: "yellow"    
     entities:
       - entity: sensor.schalter_wohnzimmer_battery_level       
         name: Wohnzimmer
@@ -64,12 +86,16 @@ cards:
       - entity: sensor.schalter_badezimmer_battery_level        
         name: Badezimmer
 
-  - type: entities
+  - type: custom:battery-state-card
     title: Thermometer
-    show_header_toggle: false
+    tap_action: more-info
+    sort_by_level: asc
+    color_thresholds:
+      - value: 10
+        color: "red"
+      - value: 30
+        color: "yellow"        
     entities:
-#      - entity: sensor.thermometer_wohnzimmer_ble_battery_level
-#        name: Wohnzimmer
       - entity: sensor.thermometer_flur_battery_level      
         name: Flur
       - entity: sensor.thermometer_parkplatz_battery_level        
@@ -83,9 +109,15 @@ cards:
       - entity: sensor.thermometer_sportzimmer_battery_level        
         name: Sportzimmer
 
-  - type: entities
+  - type: custom:battery-state-card
     title: Fenster
-    show_header_toggle: false
+    tap_action: more-info
+    sort_by_level: asc
+    color_thresholds:
+      - value: 10
+        color: "red"
+      - value: 30
+        color: "yellow"    
     entities:
       - entity: sensor.balkontuer_battery_level    
         name: Balkontür
@@ -100,9 +132,15 @@ cards:
       - entity: sensor.fenster_sportzimmer_battery_level        
         name: Sportzimmer
 
-  - type: entities
+  - type: custom:battery-state-card
     title: Bewegungsmelder
-    show_header_toggle: false
+    tap_action: more-info
+    sort_by_level: asc
+    color_thresholds:
+      - value: 10
+        color: "red"
+      - value: 30
+        color: "yellow"    
     entities:
       - entity: sensor.bewegungsmelder_wohnzimmer_battery_level        
         name: Wohnzimmer
@@ -125,15 +163,41 @@ cards:
       - entity: sensor.bewegungsmelder_bett_battery_level        
         name: Bett
 
-  - type: entities
+  - type: custom:battery-state-card
     title: Heizung
-    show_header_toggle: false
+    tap_action: more-info
+    sort_by_level: asc
+    color_thresholds:
+      - value: 10
+        color: "red"
+      - value: 30
+        color: "yellow"    
     entities:
       - entity: binary_sensor.heizung_arbeitszimmer_batterie
         name: Arbeitszimmer
+        state_map:
+          - from: "off"
+            to: 100
+          - from: "on"
+            to: 25              
       - entity: binary_sensor.heizung_badezimmer_batterie
         name: Badezimmer
+        state_map:
+          - from: "off"
+            to: 100
+          - from: "on"
+            to: 25          
       - entity: binary_sensor.heizung_kueche_batterie
         name: Küche
+        state_map:
+          - from: "off"
+            to: 100
+          - from: "on"
+            to: 25          
       - entity: binary_sensor.heizung_wohnzimmer_batterie
         name: Wohnzimmer
+        state_map:
+          - from: "off"
+            to: 100
+          - from: "on"
+            to: 25                  

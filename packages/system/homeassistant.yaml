@@ -38,6 +38,8 @@ lovelace:
       type: module      
     - url: /hacsfiles/flipdown-timer-card/flipdown-timer-card.js
       type: module         
+    - url: /hacsfiles/battery-state-card/battery-state-card.js
+      type: module
     
   dashboards:      
     lovelace-rooms:
