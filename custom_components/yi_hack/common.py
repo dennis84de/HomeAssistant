@@ -6,7 +6,13 @@ import logging
 import requests
 from requests.auth import HTTPBasicAuth
 
-from homeassistant.const import CONF_HOST, CONF_PASSWORD, CONF_PORT, CONF_USERNAME
+from homeassistant.const import (
+    CONF_HOST,
+    CONF_NAME,
+    CONF_PASSWORD,
+    CONF_PORT,
+    CONF_USERNAME,
+)
 from homeassistant.util import dt as dt_util
 
 from .const import (
@@ -14,13 +20,11 @@ from .const import (
     END_OF_POWER_OFF,
     END_OF_POWER_ON,
     HTTP_TIMEOUT,
+    PRIVACY,
 )
 
 _LOGGER = logging.getLogger(__name__)
 
-#device_is_on = None
-#end_of_power_off = None
-#end_of_power_on = None
 
 def get_status(config):
     """Get system status from camera."""
@@ -169,7 +173,7 @@ def get_privacy(hass, device_name, config=None):
         return False
 
     if config is None:
-        return hass.data[DOMAIN][device_name]
+        return hass.data[DOMAIN][device_name][PRIVACY]
 
     host = config[CONF_HOST]
     port = config[CONF_PORT]
@@ -213,7 +217,7 @@ def get_privacy(hass, device_name, config=None):
 def set_privacy(hass, device_name, newstatus, config=None):
     """Set status of privacy to device. Return true if web service completes successfully."""
     if config is None:
-        hass.data[DOMAIN][device_name] = newstatus
+        hass.data[DOMAIN][device_name][PRIVACY] = newstatus
         return
 
     host = config[CONF_HOST]
@@ -254,24 +258,33 @@ def set_privacy(hass, device_name, newstatus, config=None):
     if error:
         return False
 
-    hass.data[DOMAIN][device_name] = newstatus
+    hass.data[DOMAIN][device_name][PRIVACY] = newstatus
 
     return True
 
 def set_power_off_in_progress(hass, device_name):
-    hass.data[DOMAIN][device_name + END_OF_POWER_OFF] = dt_util.utcnow() + timedelta(seconds=5)
+    device_conf = get_device_conf(hass, device_name)
+    device_conf[END_OF_POWER_OFF] = dt_util.utcnow() + timedelta(seconds=5)
 
 def power_off_in_progress(hass, device_name):
+    device_conf = get_device_conf(hass, device_name)
     return (
-        hass.data[DOMAIN][device_name + END_OF_POWER_OFF] is not None
-        and hass.data[DOMAIN][device_name + END_OF_POWER_OFF] > dt_util.utcnow()
+        device_conf[END_OF_POWER_OFF] is not None
+        and device_conf[END_OF_POWER_OFF] > dt_util.utcnow()
     )
 
 def set_power_on_in_progress(hass, device_name):
-    hass.data[DOMAIN][device_name + END_OF_POWER_ON] = dt_util.utcnow() + timedelta(seconds=5)
+    device_conf = get_device_conf(hass, device_name)
+    device_conf[END_OF_POWER_ON] = dt_util.utcnow() + timedelta(seconds=5)
 
 def power_on_in_progress(hass, device_name):
+    device_conf = get_device_conf(hass, device_name)
     return (
-        hass.data[DOMAIN][device_name + END_OF_POWER_ON] is not None
-        and hass.data[DOMAIN][device_name + END_OF_POWER_ON] > dt_util.utcnow()
+        device_conf[END_OF_POWER_ON] is not None
+        and device_conf[END_OF_POWER_ON] > dt_util.utcnow()
     )
+
+def get_device_conf(hass, device_name, param=None):
+    if param is None:
+        return hass.data[DOMAIN][device_name]
+    return hass.data[DOMAIN][device_name][param]

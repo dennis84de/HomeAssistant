@@ -6,6 +6,7 @@ import logging
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_MAC, CONF_NAME
 from homeassistant.core import HomeAssistant
+from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
 from .common import get_mqtt_conf, get_system_conf
 from .const import (ALLWINNER, ALLWINNERV2, CONF_BABY_CRYING_MSG,
@@ -16,7 +17,9 @@ from .const import (ALLWINNER, ALLWINNERV2, CONF_BABY_CRYING_MSG,
                     CONF_TOPIC_MOTION_DETECTION_IMAGE,
                     CONF_TOPIC_SOUND_DETECTION, CONF_TOPIC_STATUS,
                     CONF_WILL_MSG, DEFAULT_BRAND, DOMAIN, END_OF_POWER_OFF,
-                    END_OF_POWER_ON, MSTAR, SONOFF, V5)
+                    END_OF_POWER_ON, MSTAR, PRIVACY, SONOFF, V5)
+
+from .views import VideoProxyView
 
 PLATFORMS = ["camera", "binary_sensor", "media_player", "switch"]
 PLATFORMS_NOMEDIA = ["camera", "binary_sensor", "switch"]
@@ -27,11 +30,13 @@ _LOGGER = logging.getLogger(__name__)
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up yi-hack from a config entry."""
 
+    device_name=entry.data[CONF_NAME]
+
     hass.data.setdefault(DOMAIN, {})
-    hass.data[DOMAIN][entry.entry_id] = entry.data[CONF_MAC]
-    hass.data[DOMAIN][entry.data[CONF_NAME]] = None
-    hass.data[DOMAIN][entry.data[CONF_NAME] + END_OF_POWER_OFF] = None
-    hass.data[DOMAIN][entry.data[CONF_NAME] + END_OF_POWER_ON] = None
+    hass.data[DOMAIN][device_name] = {}
+    hass.data[DOMAIN][device_name][PRIVACY] = False
+    hass.data[DOMAIN][device_name][END_OF_POWER_OFF] = None
+    hass.data[DOMAIN][device_name][END_OF_POWER_ON] = None
 
     conf = await hass.async_add_executor_job(get_system_conf, entry.data)
     mqtt = await hass.async_add_executor_job(get_mqtt_conf, entry.data)
@@ -79,6 +84,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
                 hass.async_create_task(
                     hass.config_entries.async_forward_entry_setup(entry, component)
                 )
+
+        session = async_get_clientsession(hass)
+        hass.http.register_view(VideoProxyView(hass, session))
 
         return True
     else:
