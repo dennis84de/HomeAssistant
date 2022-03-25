@@ -384,6 +384,17 @@ automation:
         entity_id: input_boolean.home_office_musik_pausiert
       - service: switch.turn_on
         entity_id: switch.radios_lautlos
+      - choose:
+          - conditions:
+              - condition: or
+                conditions:
+                  - "{{ is_state('binary_sensor.balkontuer', 'on') }}"
+                  - "{{ is_state('binary_sensor.home_office_pause', 'on') }}"   
+            sequence:
+              - service: !secret tts_service
+                data:
+                  echo: "wohnzimmer"
+                  message: "Ein eingehender Anruf im Arbeitszimmer"
 
   - alias: "Home Office - Radios starten"
     id: "home_office_radios_starten"
