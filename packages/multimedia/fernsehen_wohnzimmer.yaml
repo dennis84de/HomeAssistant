@@ -426,6 +426,9 @@ automation:
         entity_id: binary_sensor.firefox_vollbild
     condition:
       - "{{ trigger.to_state.state != states('input_boolean.firefox_wohnzimmer_aktiv') }}"
+      - "{{ not is_state('binary_sensor.firefox_vollbild', 'unavailable') }}"
+      - "{{ not is_state('binary_sensor.firefox_vollbild', 'unknown') }}"
+            
     action:
       - service: input_boolean.toggle
         entity_id: input_boolean.firefox_wohnzimmer_aktiv           
