@@ -1,7 +1,7 @@
 input_boolean:
   baden_aktiv:
     name: "Baden aktiv"
-    
+        
 automation:
   - alias: "Baden - Starten"
     id: "baden_starten"  
@@ -64,7 +64,7 @@ automation:
       - service: input_boolean.turn_off
         entity_id: input_boolean.baden_aktiv
       - service: entity_controller.disable_stay_mode
-        entity_id: entity_controller.bewegung_badezimmer        
+        entity_id: entity_controller.bewegung_badezimmer       
       - service: light.turn_off
         entity_id: light.badezimmerschrank
       - service: switch.turn_on
