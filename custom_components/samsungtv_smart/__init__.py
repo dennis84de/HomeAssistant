@@ -5,6 +5,7 @@ import asyncio
 import async_timeout
 import logging
 import os
+from pathlib import Path
 import socket
 import voluptuous as vol
 from websocket import WebSocketException
@@ -69,6 +70,7 @@ from .const import (
     AppLoadMethod,
     __min_ha_version__,
 )
+from .logo import LOCAL_IMAGE_BASE_URL
 
 DEVICE_INFO = {
     ATTR_DEVICE_ID: "id",
@@ -427,6 +429,10 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
                 if DOMAIN not in hass.data:
                     hass.data[DOMAIN] = {}
                 hass.data[DOMAIN][valid_entries[0]] = {DATA_CFG_YAML: data_yaml}
+
+    # Register path for local lago
+    files_path = Path(__file__).parent / "static"
+    hass.http.register_static_path(LOCAL_IMAGE_BASE_URL, str(files_path), False)
 
     return True
 

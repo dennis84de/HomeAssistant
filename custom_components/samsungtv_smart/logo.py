@@ -1,16 +1,19 @@
 
-import aiohttp
 import aiofiles
+from aiofiles import os as aiopath
+import aiohttp
 import asyncio
+from datetime import timedelta, datetime
+from enum import Enum
 import json
 import logging
 import os
+from pathlib import Path
 import re
 import traceback
-
-from datetime import timedelta, datetime
-from enum import Enum
 from typing import Optional
+
+from .const import DOMAIN
 
 
 # Logo feature constants
@@ -23,6 +26,9 @@ class LogoOption(Enum):
     TransparentColor = 6
     TransparentWhite = 7
 
+
+LOCAL_IMAGE_BASE_URL = f"/api/{DOMAIN}/static"
+CHAR_REPLACE = {" ": "", "+": "plus", "_": "", ".": ""}
 
 LOGO_OPTIONS_MAPPING = {
     LogoOption.Disabled: "none",
@@ -45,6 +51,53 @@ LOGO_NO_MATCH = "NO_MATCH"
 MAX_LOGO_CACHE = 200
 
 _LOGGER = logging.getLogger(__name__)
+
+
+class LocalImageUrl:
+    """Class to manage the local image url."""
+
+    def __init__(self):
+        """Initialise the local image url class."""
+        self._local_image_url = None
+        self._last_media_title = None
+
+    def get_image_url(self, media_title, local_logo_file=None):
+        """Check local image is present."""
+        if not media_title and not local_logo_file:
+            return None
+
+        cf_local_logo_file = None
+        if local_logo_file:
+            cf_local_logo_file = local_logo_file.casefold()
+            if cf_local_logo_file == self._last_media_title:
+                return self._local_image_url
+        if media_title == self._last_media_title:
+            return self._local_image_url
+
+        self._last_media_title = cf_local_logo_file or media_title
+        self._local_image_url = None
+        files_list = [local_logo_file] if local_logo_file else []
+
+        logo_file = media_title
+        for searcher, replacer in CHAR_REPLACE.items():
+            logo_file = logo_file.replace(searcher, replacer)
+        logo_file += ".png"
+        files_list.append(logo_file)
+
+        found_logo = None
+        dir_path = Path(__file__).parent / "static"
+        for logo_file in Path(dir_path).iterdir():
+            for file_name in files_list:
+                if logo_file.name.casefold() == file_name.casefold():
+                    found_logo = logo_file.name
+                    break
+            if found_logo:
+                self._local_image_url = f"{LOCAL_IMAGE_BASE_URL}/{found_logo}"
+                if self._last_media_title != found_logo.casefold():
+                    self._last_media_title = media_title
+                break
+
+        return self._local_image_url
 
 
 class Logo:
@@ -109,10 +162,10 @@ class Logo:
             return
 
         check_time = datetime.utcnow().astimezone()
-        update_file = not os.path.isfile(self._logo_file_download_path)
+        update_file = not await aiopath.path.isfile(self._logo_file_download_path)
         if not update_file:
             file_date = datetime.utcfromtimestamp(
-                os.path.getmtime(self._logo_file_download_path)
+                await aiopath.path.getmtime(self._logo_file_download_path)
             ).astimezone()
             if file_date > check_time-timedelta(days=LOGO_FILE_DAYS_BEFORE_UPDATE):
                 self._last_check = file_date
@@ -182,9 +235,9 @@ class Logo:
             return
 
         logo_file = None
-        if os.path.isfile(self._logo_file_download_path):
+        if await aiopath.path.isfile(self._logo_file_download_path):
             logo_file = self._logo_file_download_path
-        elif os.path.isfile(self._logo_file_path):
+        elif await aiopath.path.isfile(self._logo_file_path):
             logo_file = self._logo_file_path
 
         if not logo_file:
