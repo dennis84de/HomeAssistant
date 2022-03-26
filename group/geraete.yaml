@@ -1,7 +1,7 @@
 alles_ausschalten:
   name: Alles auschalten
   entities:
-    - switch.alle_radios
+    - group.alle_radios
     - switch.computer
     - switch.computer_arbeit
     - switch.watchtv_wohnzimmer

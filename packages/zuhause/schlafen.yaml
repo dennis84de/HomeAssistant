@@ -169,15 +169,10 @@ automation:
           args:
             click_type: double      
     condition:
-      - condition: state
-        entity_id: binary_sensor.schlafen_aktiv
-        state: 'off'
-      - condition: state
-        entity_id: timer.schlafen_einschalten
-        state: 'idle'
-      - condition: time
-        after: '20:00'
-        before: '06:00'  
+      - "{{ is_state('binary_sensor.besuch', 'off') }}"
+      - "{{ is_state('binary_sensor.schlafen_aktiv', 'off') }}"
+      - "{{ is_state('timer.schlafen_einschalten', 'idle') }}"
+      - "{{ is_state('binary_sensor.spatabends', 'on') or is_state('binary_sensor.nachts', 'on')}}"
     action:
       - service: !secret tts_service
         data:
@@ -228,7 +223,7 @@ automation:
         tag_id: tag_wohnzimmer
     condition:
       - "{{ is_state('binary_sensor.schlafen_aktiv', 'off') }}"
-      - "{{ is_state('binary_sensor.nachts', 'on') }}"   
+      - "{{ is_state('binary_sensor.spatabends', 'on') or is_state('binary_sensor.nachts', 'on')}}"
     action:   
       - service: script.schlafen_gehen   
             

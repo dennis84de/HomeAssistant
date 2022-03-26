@@ -76,27 +76,14 @@ automation:
       - condition: state
         entity_id: binary_sensor.sonne_tagsueber
         state: 'on'
-        for: '00:01:00'
-      - condition: time
-        after: '15:00'
-      - condition: state
-        entity_id: person.dennis
-        state: 'home'
-      - condition: state
-        entity_id: binary_sensor.home_office_aktiv
-        state: 'off'
-      - condition: state
-        entity_id: light.wohnzimmer_couch
-        state: 'off'
-      - condition: state
-        entity_id: light.wohnzimmer_strahler
-        state: 'off'
-      - condition: state
-        entity_id: light.wohnzimmer_schrank
-        state: 'off'        
-      - condition: state
-        entity_id: input_boolean.baden_aktiv
-        state: 'off'        
+        for: '00:01:00'      
+      - "{{ is_state('binary_sensor.nachmittags', 'on') or is_state('binary_sensor.abends', 'on')}}"
+      - "{{ is_state('person.dennis', 'home') }}"
+      - "{{ is_state('binary_sensor.home_office_aktiv', 'off') }}"
+      - "{{ is_state('light.wohnzimmer_couch', 'off') }}"
+      - "{{ is_state('light.wohnzimmer_strahler', 'off') }}"
+      - "{{ is_state('light.wohnzimmer_schrank', 'off') }}"
+      - "{{ is_state('input_boolean.baden_aktiv', 'off') }}"      
     action:
       - service: light.turn_on
         entity_id: light.wohnzimmer_schrank

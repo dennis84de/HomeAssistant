@@ -315,16 +315,11 @@ automation:
         state: 'on'
       - condition: or
         conditions:
-          - condition: state
-            entity_id: binary_sensor.wecker_aktiv
-            state: 'on'
-          - condition: template
-            value_template: "{{ trigger.id == 'schalter_badezimmer' }}"              
+          - "{{ is_state('binary_sensor.wecker_aktiv', 'on') }}"
+          - "{{ trigger.id == 'schalter_badezimmer' }}"
           - condition: and
             conditions:
-              - condition: time
-                after: '06:00'
-                before: '20:00'
+              - "{{ is_state('binary_sensor.nachts', 'off') }}"
               - condition: template                   
                 value_template: >-
                   {% set alarmSensor = states('sensor.tablet_schlafzimmer_next_alarm') %}

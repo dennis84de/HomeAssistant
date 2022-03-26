@@ -170,8 +170,13 @@ binary_sensor:
     before: "21:00"        
     
   - platform: tod
-    name: Nachts
+    name: Spätabends
     after: "21:00"
+    before: "23:30"
+    
+  - platform: tod
+    name: Nachts
+    after: "23:30"
     before: "06:00"
     
 automation:

@@ -11,39 +11,17 @@ automation:
         value_template: "{{ now().strftime('%M')|int == 0 }}"      
       - platform: template
         value_template: "{{ now().strftime('%M')|int == 30 }}"    
-    condition:
-      - condition: time
-        after: '07:30'
-        before: '00:30'
-      - condition: state
-        entity_id: input_boolean.uhr_einschalten
-        state: 'on'
-      - condition: state
-        entity_id: input_boolean.baden_aktiv
-        state: 'off'
-      - condition: state
-        entity_id: calendar.borussia_dortmund
-        state: 'off'
-      - condition: state
-        entity_id: person.dennis
-        state: 'home'
-      - condition: state
-        entity_id: binary_sensor.home_office_aktiv
-        state: 'off'
-      - condition: state
-        entity_id: binary_sensor.schlafen_aktiv
-        state: 'off'     
-      - condition: state
-        entity_id: binary_sensor.firefox_wohnzimmer_aktiv
-        state: 'off'     
-      - condition: state
-        entity_id: calendar.formel1_rennen
-        state: 'off'
-      - condition: state
-        entity_id: calendar.formel1_qualifikation
-        state: 'off'        
-      - condition: template
-        value_template: '{{ is_state("media_player.kodi_wohnzimmer", "playing") == False }}'
+    condition:  
+      - "{{ is_state('input_boolean.uhr_einschalten', 'on') }}"
+      - "{{ is_state('input_boolean.baden_aktiv', 'off') }}"     
+      - "{{ is_state('person.dennis', 'home') }}"
+      - "{{ is_state('binary_sensor.home_office_aktiv', 'off') }}"
+      - "{{ is_state('binary_sensor.schlafen_aktiv', 'off') }}"
+      - "{{ is_state('binary_sensor.firefox_wohnzimmer_aktiv', 'off') }}"
+      - "{{ not is_state('media_player.kodi_wohnzimmer', 'playing') }}"
+      - "{{ is_state('calendar.borussia_dortmund', 'off') }}"
+      - "{{ is_state('calendar.formel1_rennen', 'off') }}"
+      - "{{ is_state('calendar.formel1_qualifikation', 'off') }}"           
     action:
       - service: media_player.play_media
         data:

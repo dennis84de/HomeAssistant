@@ -1,0 +1,40 @@
+radios:
+  name: Radios
+  entities:
+    - switch.wohnzimmer_radio
+    - switch.schlafzimmer_radio
+    - switch.flur_radio
+    - switch.badezimmer_radio
+    - switch.arbeitszimmer_radio
+    - switch.kueche_radio
+
+alle_radios:
+  name: Alle Radios
+  entities:
+    - switch.wohnzimmer_radio
+    - switch.balkon_radio
+    - switch.schlafzimmer_radio
+    - switch.flur_radio
+    - switch.badezimmer_radio
+    - switch.arbeitszimmer_radio
+    - switch.kueche_radio
+    
+radios_ohne_badezimmer:
+  name: Radios mit Balkon
+  entities:
+    - switch.wohnzimmer_radio
+    - switch.balkon_radio
+    - switch.schlafzimmer_radio
+    - switch.flur_radio
+    - switch.arbeitszimmer_radio
+    - switch.kueche_radio
+    
+radio_mediaplayer:
+  name: Radio Mediaplayer
+  entities:
+    - media_player.radio_kueche
+    - media_player.radio_badezimmer
+    - media_player.radio_wohnzimmer
+    - media_player.radio_schlafzimmer
+    - media_player.radio_arbeitszimmer
+    - media_player.radio_flur    

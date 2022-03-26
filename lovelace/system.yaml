@@ -5,7 +5,7 @@ layout:
   width: 400
   max_cols: 3
 popup_cards:
-  switch.alle_radios:
+  sensor.radios_eingeschaltet:
     title: Radios
     card:
       type: entities
@@ -136,7 +136,7 @@ cards:
     title: Radios
     show_header_toggle: false
     entities:   
-      - entity: switch.alle_radios      
+      - entity: sensor.radios_eingeschaltet      
       - entity: switch.wiedergabe_aktiv
       - entity: switch.radios_lautlos
       - entity: script.sync_radios

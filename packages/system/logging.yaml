@@ -2,6 +2,8 @@ logger:
   default: error
   logs:
     fritzconnection: info
+    homeassistant.components.gdacs: fatal
+    custom_components.satellitetracker: fatal
     
 recorder:
   purge_keep_days: 7

@@ -74,24 +74,13 @@ automation:
       - platform: time
         at: '7:00:00'        
     condition:
-      - condition: time
-        after: '06:00'
-        before: '22:00'
-      - condition: state
-        entity_id: vacuum.staubsauger
-        state: 'docked'
-      - condition: state
-        entity_id: person.dennis
-        state: 'not_home'
-      - condition: state
-        entity_id: input_boolean.staubsauger_automatische_reinigung
-        state: 'on'        
-      - condition: state
-        entity_id: binary_sensor.staubsauger_reinigung_heute
-        state: 'on'
-      - condition: state
-        entity_id:  calendar.urlaub
-        state: 'off'
+      - "{{ is_state('binary_sensor.spatabends', 'off') }}"
+      - "{{ is_state('binary_sensor.nachts', 'off') }}"
+      - "{{ is_state('vacuum.staubsauger', 'docked') }}"
+      - "{{ is_state('person.dennis', 'not_home') }}"
+      - "{{ is_state('input_boolean.staubsauger_automatische_reinigung', 'on') }}"
+      - "{{ is_state('binary_sensor.staubsauger_reinigung_heute', 'on') }}"
+      - "{{ is_state('calendar.urlaub', 'off') }}"
     action:
       - service: vacuum.start
         entity_id: vacuum.staubsauger
