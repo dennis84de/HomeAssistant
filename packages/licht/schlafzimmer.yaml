@@ -64,7 +64,7 @@ automation:
         entity_id: binary_sensor.im_bett
         to: 'on'   
         for:
-          seconds: 1
+          seconds: 2
     condition:
       - condition: state
         entity_id: binary_sensor.schlafen_aktiv
@@ -79,7 +79,7 @@ automation:
         entity_id: binary_sensor.im_bett
         state: 'on'   
         for:
-          seconds: 1               
+          seconds: 2          
     action:
       - service: homeassistant.turn_off
         entity_id: group.licht_wohnung

@@ -460,8 +460,3 @@ automation:
             {% else %}
               Ein verpasster Anruf von {{ from_name }}.
             {% endif %}            
-          
-homeassistant:
-  customize:
-    sensor.telefon:
-      icon: mdi:phone-classic      

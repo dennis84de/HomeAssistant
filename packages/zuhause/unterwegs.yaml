@@ -93,6 +93,8 @@ automation:
 
             {%- if is_state('alarm_control_panel.alarmo', 'armed_away') -%}
               {{ 'Der Alarm ist eingeschaltet.' }}
+            {%- elif not is_state('vacuum.staubsauger', 'docked') -%}
+              {{ 'Die Wohnung wird gerade gesaugt. Der Alarm wird danach wieder eingeschaltet.' }}
             {% endif %}                             
       - choose:
           - conditions:
@@ -109,6 +111,7 @@ automation:
           - conditions:
               - "{{ not is_state('alarm_control_panel.alarmo', 'armed_away') }}"
               - "{{ is_state('person.dennis', 'not_home') }}"
+              - "{{ not is_state('vacuum.staubsauger', 'docked') }}"
             sequence:                       
               - service: notify.telegram
                 data:
@@ -134,21 +137,43 @@ automation:
         data:
           target: '{{ trigger.event.data.chat_id }}'
           message: >-
-            {%- set comma = joiner(",") -%}
-            {%- set deviceFound = false -%}
+            {% set eingeschalteteGeraete = expand('group.alles_ausschalten')
+              | selectattr('state','eq','on') 
+              | map(attribute='name')
+              | list %}
 
-            {% for entity_id in state_attr('group.alles_ausschalten', 'entity_id') -%}
-              {%- if states(entity_id) == 'on' -%}
-                {%- set deviceFound = true -%}
-                {{ comma() }} {{ state_attr(entity_id, 'friendly_name') }}
-              {%- endif -%}
-            {%- endfor -%}
+            {% set qty = eingeschalteteGeraete | length %}  
+            {% set p1 = 'Das folgende' if qty == 1 else 'Die folgenden' %}
+            {% set p2 = 'Gerät' if qty == 1 else 'Geräte' %}
+            {% set p3 = 'ist' if qty == 1 else 'sind' %}
+            {% set geraeteMessage = '' if qty == 0 else '{} {} {} eingeschaltet: {}.'.format(p1, p2, p3, eingeschalteteGeraete | join(', ')) %}
 
-            {%- if deviceFound == true -%}
+            {%- if qty == 0 -%}
               Alle Geräte sind ausgeschaltet.
+            {%- else -%}
+              {{ geraeteMessage }}
             {%- endif -%}
           inline_keyboard:
             - 'Alles Ausschalten:/alles_ausschalten'
+          
+  - alias: "Telegram - Alles ausschalten"
+    id: "telegram_alles_ausschalten"
+    trigger:
+      - platform: event
+        event_type: telegram_callback
+        event_data:
+          data: '/alles_ausschalten'
+    action:
+      - service: script.alles_ausschalten
+      - service: telegram_bot.edit_replymarkup
+        data:
+          message_id: '{{ trigger.event.data.message.message_id }}'
+          chat_id: '{{ trigger.event.data.user_id }}'
+          inline_keyboard: []
+      - service: telegram_bot.send_message
+        data:
+          target: '{{ trigger.event.data.chat_id }}'
+          message: "Alle Geräte werden ausgeschaltet."
 
   - alias: "Telegram - Alarm einschalten"
     id: "telegram_alarm_einschalten"
@@ -172,25 +197,6 @@ automation:
           entity_id: alarm_control_panel.alarmo
           skip_delay: true
           force: true
-          
-  - alias: "Telegram - Alles ausschalten"
-    id: "telegram_alles_ausschalten"
-    trigger:
-      - platform: event
-        event_type: telegram_callback
-        event_data:
-          data: '/alles_ausschalten'
-    action:
-      - service: script.alles_ausschalten
-      - service: telegram_bot.edit_replymarkup
-        data:
-          message_id: '{{ trigger.event.data.message.message_id }}'
-          chat_id: '{{ trigger.event.data.user_id }}'
-          inline_keyboard: []
-      - service: telegram_bot.send_message
-        data:
-          target: '{{ trigger.event.data.chat_id }}'
-          message: "Alle Geräte werden ausgeschaltet."              
           
   - alias: "Telegram - Aufenthaltsort"
     id: "telegram_aufenthaltsort"

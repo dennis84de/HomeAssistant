@@ -81,6 +81,8 @@ cards:
       - entity: switch.schlafzimmer_radio
         name: Radio
 
+  - type: custom:layout-break
+
   - type: glance
     title: Thermometer
     show_header_toggle: false
@@ -91,23 +93,29 @@ cards:
         name: Luftfeuchtigkeit
       - entity: sensor.schlafzimmer_luftdruck
         name: Luftdruck
-        
-  - type: entities
-    title: Heizung
-    show_header_toggle: false
-    entities:
-      - entity: binary_sensor.fenster_schlafzimmer   
-        name: Fenster
 
   - type: glance
-    title: Sensoren
+    title: Bewegungsmelder
     show_header_toggle: false
     entities:
       - entity: binary_sensor.bewegungsmelder_schlafzimmer       
         name: Schlafzimmer
       - entity: binary_sensor.bewegungsmelder_bett
         name: Bett        
+      
+  - type: glance
+    title: Sensoren
+    show_header_toggle: false
+    entities:   
       - entity: sensor.schlafzimmer_helligkeit
         name: Helligkeit
-      - entity: binary_sensor.im_bett
+      - entity: binary_sensor.im_bett      
+             
+  - type: entities
+    title: Heizung
+    show_header_toggle: false
+    entities:
+      - entity: binary_sensor.fenster_schlafzimmer   
+        name: Fenster
+      
 

@@ -55,11 +55,3 @@ automation:
                 Das Fenster {{ zimmer }} wurde {{ status }}.
               data:
                 displaytime: 5000
-          
-homeassistant:
-  customize:
-    binary_sensor.balkontuer:
-      device_class: door
-  customize_glob:
-    binary_sensor.fenster_*:
-      device_class: window      

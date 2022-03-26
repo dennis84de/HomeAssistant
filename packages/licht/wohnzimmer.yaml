@@ -29,37 +29,40 @@ binary_sensor:
           
       wohnzimmer_schrank_inaktiv:
         friendly_name: "Wohnzimmer Schrank inaktiv"   
-        value_template: >-          
-          {% set hour = now().strftime("%H") | int(0) %}
+        value_template: "{{ is_state('binary_sensor.spatabends', 'on') or is_state('binary_sensor.nachts', 'on') }}"
           
-          {{ True if (hour < 7 or hour >= 20 ) else False }}
-          
-      wohnzimmer_licht_inaktiv:
-        friendly_name: "Wohnzimmer Licht inaktiv"    
+      wohnzimmer_couch_inaktiv:
+        friendly_name: "Wohnzimmer Couch inaktiv"    
         value_template: "{{ is_state('binary_sensor.wohnzimmer_schrank_inaktiv', 'off') }}"          
           
 entity_controller:
-  bewegung_wohnzimmer:
-    friendly_name: "Bewegung Wohnzimmer"
+  bewegung_wohnzimmer_couch:
+    friendly_name: "Bewegung Wohnzimmer Couch"
     sensor: binary_sensor.bewegungsmelder_wohnzimmer
     entities: light.wohnzimmer_couch
     delay: 60
+    behaviours:
+      on_enter_overridden: 'off'    
     overrides:
       - binary_sensor.sonne_tagsueber  
-      - binary_sensor.wohnzimmer_licht_inaktiv  
+      - binary_sensor.home_office_pause  
+      - binary_sensor.wohnzimmer_couch_inaktiv        
       - binary_sensor.bewegungsmelder_inaktiv_tagsueber         
       - binary_sensor.bewegungsmelder_inaktiv_unterwegs
       - binary_sensor.bewegungsmelder_inaktiv_staubsauger
       - input_boolean.bewegungsmelder_wohnzimmer_deaktiviert      
       
-  bewegung_wohnzimmerschrank:
-    friendly_name: "Bewegung Wohnzimmerschrank"
+  bewegung_wohnzimmer_schrank:
+    friendly_name: "Bewegung Wohnzimmer Schrank"
     sensor: binary_sensor.bewegungsmelder_wohnzimmer
     entities: light.wohnzimmer_schrank
     delay: 60
+    behaviours:
+      on_enter_overridden: 'off'    
     overrides:
       - binary_sensor.sonne_tagsueber  
-      - binary_sensor.wohnzimmer_schrank_inaktiv  
+      - binary_sensor.home_office_pause
+      - binary_sensor.wohnzimmer_schrank_inaktiv        
       - binary_sensor.bewegungsmelder_inaktiv_tagsueber         
       - binary_sensor.bewegungsmelder_inaktiv_unterwegs
       - binary_sensor.bewegungsmelder_inaktiv_staubsauger
@@ -77,13 +80,17 @@ automation:
         entity_id: binary_sensor.sonne_tagsueber
         state: 'on'
         for: '00:01:00'      
-      - "{{ is_state('binary_sensor.nachmittags', 'on') or is_state('binary_sensor.abends', 'on')}}"
+      - condition: or
+        conditions:            
+          - "{{ is_state('binary_sensor.nachmittags', 'on') }}"
+          - "{{ is_state('binary_sensor.abends', 'on') }}"
+          - "{{ is_state('binary_sensor.spatabends', 'on') }}"
       - "{{ is_state('person.dennis', 'home') }}"
       - "{{ is_state('binary_sensor.home_office_aktiv', 'off') }}"
       - "{{ is_state('light.wohnzimmer_couch', 'off') }}"
       - "{{ is_state('light.wohnzimmer_strahler', 'off') }}"
       - "{{ is_state('light.wohnzimmer_schrank', 'off') }}"
-      - "{{ is_state('input_boolean.baden_aktiv', 'off') }}"      
+      - "{{ is_state('input_boolean.baden_aktiv', 'off') }}"
     action:
       - service: light.turn_on
         entity_id: light.wohnzimmer_schrank

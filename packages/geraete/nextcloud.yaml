@@ -14,9 +14,44 @@ sensor:
           {% set nextcloudTimestamp = as_timestamp(states("sensor.cert_expiry_timestamp_cloud_djaeschke_de"), None) %}
         
           {{ 'mdi:network-off-outline' if nextcloudTimestamp == None else 'mdi:network-outline' }}        
-        unit_of_measurement: 'Tage'
+        unit_of_measurement: 'Tage'   
 
+binary_sensor:
+  - platform: template
+    sensors:            
+      nextcloud_update_available:
+        friendly_name: "Nextcloud Update verfügbar"
+        device_class: update
+        value_template: "{{ true if 'beta' not in states('sensor.nextcloud_server_latest_tag') else false }}"
+        icon_template: "{{ 'mdi:cog-sync' if 'beta' not in states('sensor.nextcloud_server_latest_tag') else 'mdi:cog' }}"             
+        
 nextcloud:
     url: !secret nextcloud_url_https
     username: !secret nextcloud_username
     password: !secret nextcloud_app_password           
+    
+automation:
+  - alias: "Nextcloud - Update verfügbar"
+    id: "nextcloud_update_verfuegbar"
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.nextcloud_update_available
+        to: 'on'
+    action:
+      - choose:
+          - conditions:
+            - condition: state
+              entity_id: person.dennis
+              state: 'not_home'
+            sequence:
+              - service: notify.telegram
+                data:
+                  title: 'Neue Version'
+                  message: "Nextcloud {{ states('sensor.nextcloud_server_latest_tag') }} ist jetzt verfügbar."
+        default:
+          - service: persistent_notification.create
+            data:
+              title: "Update verfügbar"
+              message: "Nextcloud {{ states('sensor.nextcloud_server_latest_tag') }} ist jetzt verfügbar."
+              notification_id: nextcloud_neue_version
+                   

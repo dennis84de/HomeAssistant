@@ -223,8 +223,7 @@ automation:
       - delay: "00:{{ states('input_number.wecker_verzoegerung') | int }}:00" 
       - service: script.wohnung_radios_einschalten
         data:
-          homeOfficeHeute: "{{ is_state('binary_sensor.home_office_heute', 'on') }}"
-          bueroHeute: "{{ is_state('binary_sensor.buero_heute', 'on') }}"
+          radioBalkon: false
 
   - alias: "Wecker - Zeit geändert"
     id: "wecker_zeit_geaendert"
@@ -310,9 +309,8 @@ automation:
           args:
             click_type: single           
     condition:
-      - condition: state
-        entity_id: binary_sensor.schlafen_aktiv
-        state: 'on'
+      - "{{ is_state('binary_sensor.besuch', 'off') }}"
+      - "{{ is_state('binary_sensor.schlafen_aktiv', 'on') }}"
       - condition: or
         conditions:
           - "{{ is_state('binary_sensor.wecker_aktiv', 'on') }}"
@@ -340,7 +338,8 @@ automation:
         entity_id: switch.schlafzimmer_radio         
       - service: alarmo.disarm
         data:
-          entity_id: alarm_control_panel.alarmo        
+          entity_id: alarm_control_panel.alarmo      
+      - service: script.wohnung_radios_einschalten          
       - choose:
           - conditions:
               - "{{ trigger.id != 'schalter_badezimmer' }}"                    
@@ -351,14 +350,4 @@ automation:
                   to: 'on'                       
               - service: script.aufstehen_begruessung                          
         default:
-          - service: script.aufstehen_begruessung
-      - choose:
-          - conditions:
-              condition: or
-              conditions:
-                - "{{ is_state('switch.badezimmer_radio', 'off') }}"
-                - "{{ is_state('switch.wohnzimmer_radio', 'off') }}"
-                - "{{ is_state('switch.flur_radio', 'off') }}"
-                - "{{ is_state('switch.kueche_radio', 'off') }}"
-            sequence:                 
-              - service: script.wohnung_radios_einschalten
+          - service: script.aufstehen_begruessung  

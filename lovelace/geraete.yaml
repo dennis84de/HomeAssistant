@@ -129,6 +129,8 @@ cards:
         name: Zertifikat
       - entity: sensor.nextcloud_system_version     
         name: Installierte Version         
+      - entity: binary_sensor.nextcloud_update_available
+        name: Update verfügbar
 
   - type: entities
     title: Watchman

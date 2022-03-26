@@ -6,7 +6,7 @@ batteriestand:
     - sensor.tablet_badezimmer_battery_level    
     - sensor.tablet_balkon_battery_level
     - sensor.tablet_schlafzimmer_battery_level    
-    - sensor.tuersensor_battery_level   
+    - sensor.wohnungstuer_battery_level   
     - sensor.bett_battery_level
     - sensor.cube_battery_level
     - sensor.schalter_wohnzimmer_battery_level

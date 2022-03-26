@@ -57,7 +57,7 @@ cards:
       - value: 30
         color: "yellow"      
     entities:
-      - entity: sensor.tuersensor_battery_level
+      - entity: sensor.wohnungstuer_battery_level
       - entity: sensor.bett_battery_level      
       - entity: sensor.cube_battery_level
       - entity: sensor.helligkeit_balkon_battery_level

@@ -8,9 +8,7 @@ automation:
     id: "uhr_glocke_starten"
     trigger:
       - platform: template
-        value_template: "{{ now().strftime('%M')|int == 0 }}"      
-      - platform: template
-        value_template: "{{ now().strftime('%M')|int == 30 }}"    
+        value_template: "{{ now().strftime('%M')|int in [0,30] }}"
     condition:  
       - "{{ is_state('input_boolean.uhr_einschalten', 'on') }}"
       - "{{ is_state('input_boolean.baden_aktiv', 'off') }}"     

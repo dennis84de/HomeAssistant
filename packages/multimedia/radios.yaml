@@ -11,6 +11,7 @@ input_boolean:
 template:
   - sensor:
       - name: Radios eingeschaltet
+        icon: mdi:cast
         state: >-
           {% set radiosEingeschaltet = expand('group.alle_radios')
               | selectattr('state','eq','on') 
@@ -184,11 +185,11 @@ script:
         entity_id: switch.badezimmer_radio, switch.wohnzimmer_radio, switch.flur_radio, switch.kueche_radio          
       - choose:
           - conditions:
-              - "{{ is_state('binary_sensor.home_office_aktiv', 'off') and (homeOfficeHeute is not defined or homeOfficeHeute == False) }}"
-              - "{{ bueroHeute is not defined or bueroHeute == False }}"              
+              - "{{ radioBalkon is not defined or radioBalkon == True }}"              
               - "{{ now().isoweekday() == 6 or is_state('binary_sensor.arbeitstag', 'on') }}"
-              - "{{ (states('sensor.bewegungsmelder_balkon_temperatur') | int(0)) > -5 }}"
-              - "{{ 21 > now().strftime('%H') | int(0) >= 6 }}"
+              - "{{ (states('sensor.bewegungsmelder_balkon_temperatur') | int(0)) > -5 }}"              
+              - "{{ is_state('binary_sensor.spatabends', 'off') }}"
+              - "{{ is_state('binary_sensor.nachts', 'off') }}"
             sequence:            
               - service: switch.turn_on
                 entity_id: switch.balkon_radio
@@ -274,32 +275,12 @@ automation:
         state: 'playing'
     action:
       - service: script.sync_radios
-
-  - alias: 'Radio Badezimmer - Schlafen'
-    id: "radio_badezimmer_schlafen"
-    trigger:
-      - platform: state
-        entity_id: binary_sensor.im_bett
-        to: 'on'
-    condition:
-      - condition: state
-        entity_id: binary_sensor.schlafen_aktiv
-        state: 'on'
-      - condition: state
-        entity_id: binary_sensor.wecker_aktiv
-        state: 'off'        
-      - condition: state
-        entity_id: switch.badezimmer_radio
-        state: 'on'        
-    action:
-      - service: switch.turn_off
-        entity_id: switch.badezimmer_radio     
             
   - alias: 'Tür - Radios pausieren'
     id: "tuer_radios_pausieren"
     trigger:
       - platform: state
-        entity_id: binary_sensor.tuersensor
+        entity_id: binary_sensor.wohnungstuer
         to: 'on'
     condition:
       - "{{ is_state('switch.wiedergabe_aktiv', 'on') }}"
@@ -319,7 +300,7 @@ automation:
     id: "tuer_radios_starten"
     trigger:
       - platform: state
-        entity_id: binary_sensor.tuersensor
+        entity_id: binary_sensor.wohnungstuer
         to: 'off'  
     condition:
       - condition: state
@@ -336,13 +317,3 @@ homeassistant:
     script.sync_radios:
       can_cancel: false
       icon: mdi:sync
-      
-    sensor.radios_eingeschaltet:
-      icon: mdi:cast-off
-
-#    switch.wohnzimmer_radio:
-#      icon: mdi:radio
-#    switch.schlafzimmer_radio:
-#      icon: mdi:radio   
-#    switch.balkon_radio:
-#      icon: mdi:radio

@@ -239,17 +239,7 @@ automation:
           message: "Während des Neustarts ist ein Fehler aufgetreten."
 
 homeassistant:
-  customize:
-    sensor.watchman_missing_entities:
-      icon: mdi:note-alert-outline
-      friendly_name: Fehlende Entitäten
-      unit_of_measurement: Entitäten
-      
-    sensor.watchman_missing_services:
-      icon: mdi:note-alert-outline
-      friendly_name: Fehlende Dienste
-      unit_of_measurement: Dienste
-      
+  customize:      
     zone.home:
       friendy_name: Zu Hause
   
@@ -276,3 +266,6 @@ homeassistant:
       
     sensor.hass_current_version:
       friendly_name: Aktuelle Version
+      icon: mdi:cloud-sync-outline
+    sensor.installierte_version:
+      icon: mdi:cloud-sync

@@ -23,7 +23,7 @@ cards:
     title: Sensoren
     show_header_toggle: false
     entities:
-      - entity: binary_sensor.tuersensor
+      - entity: binary_sensor.wohnungstuer
       - entity: binary_sensor.bewegungsmelder_flur_vorne
         name: Flur vorne
       - entity: binary_sensor.bewegungsmelder_flur_hinten

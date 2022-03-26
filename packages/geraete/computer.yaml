@@ -65,7 +65,7 @@ switch:
                   - "{{ is_state('input_select.computer_ausschalten', 'Herunterfahren') }}"
                 sequence:
                   - service: button.press
-                    entity_id: button.computer_herunterfahren         
+                    entity_id: button.computer_herunterfahren
                     
       computer:
         friendly_name: Computer

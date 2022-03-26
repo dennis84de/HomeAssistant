@@ -34,6 +34,9 @@ script:
         data:
           entity_id: input_number.home_office_heute_gearbeitet
           value: 0      
+      - service: script.wohnung_radios_einschalten   
+        data:
+          radioBalkon: false          
       - choose:
           - conditions:
               - condition: or
@@ -54,8 +57,7 @@ script:
             data:
               entity_id: input_select.computer_arbeit_ausschalten  
               option: 'Ruhezustand'
-      - service: script.wohnung_radios_einschalten   
-             
+            
   zu_hause_abends:
     alias: "Zu Hause - abends"
     sequence:
@@ -74,12 +76,7 @@ script:
     sequence:
       - service: shell_command.send_position
         data:
-          url: !secret phonetracker_send_position_url
-      - service: device_tracker.see
-        data:
-          dev_id: handygps
-          location_name: 'home'
-          gps: ["{{ state_attr('zone.home', 'latitude') }}", "{{ state_attr('zone.home', 'longitude') }}"]
+          url: !secret phonetrack_send_position_url
       - service: mqtt.publish
         data:
            topic: 'handy/tracker'
@@ -186,7 +183,7 @@ automation:
       - service: input_select.select_option
         data:
           entity_id: input_select.computer_ausschalten  
-          option: 'Ruhezustand'        
+          option: 'Ruhezustand'              
       - choose:    
           - conditions:
               - condition: or
@@ -220,7 +217,7 @@ automation:
     id: "zu_hause_tuer_geoeffnet"
     trigger:
       - platform: state
-        entity_id: binary_sensor.tuersensor
+        entity_id: binary_sensor.wohnungstuer
         to: 'on'
     condition:    
       - condition: state
@@ -238,9 +235,9 @@ automation:
   - alias: "Zu Hause - Begrüßung"
     id: "zu_hause_begruessung"
     trigger:
-      - id: tuersensor
+      - id: wohnungstuer
         platform: state
-        entity_id: binary_sensor.tuersensor
+        entity_id: binary_sensor.wohnungstuer
         to: 'off' 
       - id: handy
         platform: state
@@ -251,7 +248,7 @@ automation:
       - condition: or
         conditions:
           - "{{ trigger.id == 'handy' and is_state('input_select.zu_hause_begruessung', 'Tür') }}"     
-          - "{{ trigger.id == 'tuersensor' and is_state('input_select.zu_hause_begruessung', 'Handy') }}"      
+          - "{{ trigger.id == 'wohnungstuer' and is_state('input_select.zu_hause_begruessung', 'Handy') }}"      
     action:      
       - service: input_select.select_option
         entity_id: input_select.zu_hause_begruessung

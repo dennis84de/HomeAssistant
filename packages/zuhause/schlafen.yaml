@@ -85,19 +85,11 @@ script:
       - service: switch.turn_off
         entity_id: switch.watchtv_wohnzimmer, switch.computer
       - service: light.turn_off
-        entity_id: light.wohnzimmer_strahler, light.wohnzimmer_schrank, light.balkon_licht
-      - choose:
-          - conditions:
-              - condition: state
-                entity_id: light.wohnzimmer_couch
-                state: 'off'
-            sequence:
-              - service: light.turn_on
-                entity_id: light.wohnzimmer_couch  
+        entity_id: light.balkon_licht
       - service: input_select.select_option
         data:
           entity_id: input_select.computer_ausschalten  
-          option: 'Ruhezustand'
+          option: 'Ruhezustand'              
       - choose:
           - conditions:
               - condition: state
@@ -111,9 +103,8 @@ script:
             entity_id: light.bett, light.kleiderschrank
       - choose:
           - conditions:
-              - condition: state
-                entity_id: input_boolean.schlafen_fernseher_einschalten
-                state: 'on'
+              - "{{ is_state('input_boolean.schlafen_fernseher_einschalten', 'on') }}"
+              - "{{ is_state('binary_sensor.besuch', 'off') }}"
             sequence:
               - service: switch.turn_on
                 entity_id: switch.watchtv_schlafzimmer   
@@ -144,14 +135,8 @@ automation:
         entity_id: input_datetime.schlafen_uhrzeit
         data:
           datetime: "{{ now().strftime('%Y-%m-%d %H:%M:%S') }}"   
-      - choose:
-          - conditions:
-              - condition: state
-                entity_id: switch.badezimmer_radio
-                state: 'on'                       
-            sequence:
-              - service: switch.turn_off
-                entity_id: switch.badezimmer_radio          
+      - service: switch.turn_off
+        entity_id: switch.badezimmer_radio          
       - service: alarmo.arm
         data:
           entity_id: alarm_control_panel.alarmo

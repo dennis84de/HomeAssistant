@@ -21,7 +21,7 @@ entity_controller:
     friendly_name: "Bewegung Flur hinten"
     sensor: binary_sensor.bewegungsmelder_flur_hinten
     entity: light.flur_hinten
-    delay: 120
+    delay: 180
     grace_period: 60
     behaviours:
       on_enter_overridden: 'off'

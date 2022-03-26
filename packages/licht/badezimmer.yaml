@@ -10,8 +10,6 @@ entity_controller:
     entity: light.badezimmerschrank
     sensor_type_duration: True
     delay: 180
-#    behaviours:
-#      on_enter_overridden: 'off'
     overrides:
       - binary_sensor.sonne_tagsueber
       - binary_sensor.bewegungsmelder_inaktiv_unterwegs      

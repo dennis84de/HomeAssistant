@@ -23,6 +23,7 @@ device_tracker:
   - platform: mqtt
     devices:
       handymqtt: "handy/tracker"
+      source_type: router
       
 proximity:
   home:
@@ -561,10 +562,8 @@ automation:
               - service: !secret tts_service
                 data:
                   message: "Das Handy wurde vollständig aufgeladen."
-
+                  
 homeassistant:
   customize:
-    sensor.handy:
-      friendly_name: Handy Status
-    device_tracker.handygps:
-      friendly_name: Handy MQTT      
+    device_tracker.handymqtt:
+      friendly_name: Handy MQTT

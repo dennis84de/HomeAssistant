@@ -107,16 +107,23 @@ cards:
   - type: glance
     title: Sensoren
     show_header_toggle: false
-    entities:
-      - entity: binary_sensor.balkontuer
-        name: Balkontür      
-      - entity: binary_sensor.fenster_wohnzimmer
-        name: Fenster            
+    entities:     
       - entity: binary_sensor.bewegungsmelder_wohnzimmer
         name: Bewegungsmelder
       - entity: sensor.wohnzimmer_helligkeit
         name: Helligkeit                
       
+  - type: glance
+    title: Heizung
+    show_header_toggle: false
+    entities:
+      - entity: binary_sensor.balkontuer
+        name: Balkontür      
+      - entity: binary_sensor.fenster_wohnzimmer
+        name: Fenster            
+      - entity: climate.wohnzimmer
+        name: Heizung
+        
   - type: glance
     title: Thermometer
     show_header_toggle: false
@@ -125,9 +132,6 @@ cards:
         name: Temperatur
       - entity: sensor.wohnzimmer_luftfeuchtigkeit       
         name: Luftfeuchtigkeit
-     
-  - type: thermostat
-    entity: climate.wohnzimmer
 
   - type: conditional
     conditions:

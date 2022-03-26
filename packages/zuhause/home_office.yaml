@@ -439,10 +439,8 @@ automation:
                 entity_id: binary_sensor.home_office_pause
                 state: 'off'     
             sequence:
-              - service: light.turn_off
-                entity_id: light.wohnzimmer_couch, light.wohnzimmer_strahler, light.wohnzimmer_schrank 
               - service: input_boolean.turn_on
-                entity_id: input_boolean.bewegungsmelder_wohnzimmer_deaktiviert, input_boolean.home_office_pause                
+                entity_id: input_boolean.home_office_pause                
         default:          
           - service: input_boolean.turn_off
-            entity_id: input_boolean.bewegungsmelder_wohnzimmer_deaktiviert, input_boolean.home_office_pause
+            entity_id: input_boolean.home_office_pause

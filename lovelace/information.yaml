@@ -16,6 +16,8 @@ popup_cards:
           name: Ping
         - entity: device_tracker.handymqtt
           name: MQTT          
+        - entity: device_tracker.handygps
+          name: Gps                 
      
 cards:             
   - type: conditional
