@@ -141,6 +141,15 @@ automation:
         data:
           entity_id: alarm_control_panel.alarmo
           mode: night
+      - choose:
+          - conditions:
+              - "{{ is_state('binary_sensor.wecker_richtig_gestellt', 'off') }}"
+            sequence:
+              - service: !secret tts_service
+                data:
+                  echo: "schlafzimmer"
+                  override: true
+                  message: "Der Wecker ist noch nicht richtig gestellt."     
             
   - alias: "Schlafen gehen - Countdown starten"
     id: "schlafen_gehen_countdown_starten"
@@ -244,7 +253,8 @@ automation:
         entity_id: input_boolean.timer_schlafzimmer_aktiv
         state: 'on'                    
     action:      
-      - service: script.watchtv_schlafzimmer_off
+      - service: switch.turn_off
+        entity_id: switch.watchtv_schlafzimmer
       - service: homeassistant.turn_off
         entity_id: group.licht_wohnung
 
@@ -267,9 +277,3 @@ automation:
         entity_id: timer.sleeptimer
       - service: input_boolean.turn_off
         entity_id: input_boolean.timer_schlafzimmer_aktiv
-
-homeassistant:
-  customize:
-    script.schlafen_gehen:
-      icon: mdi:power-sleep
-      can_cancel: false      

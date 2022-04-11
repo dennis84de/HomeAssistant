@@ -15,9 +15,28 @@ switch:
         friendly_name: Fernsehen
         value_template: "{{ is_state('switch.schlafzimmer_fernseher', 'on') }}"
         turn_on:
-          service: script.watchtv_schlafzimmer_on
+          - service: switch.turn_on
+            entity_id: switch.schlafzimmer_fernseher
+          - delay: '00:00:05'
+          - service: light.turn_on
+            entity_id: light.fernseher_schlafzimmer
+          - service: switch.turn_on
+            entity_id: switch.schlafzimmer_fernseher_remote
+          - service: media_player.turn_on
+            entity_id: media_player.fire_tv_schlafzimmer
+          - service: switch.turn_on
+            entity_id: switch.kodi_schlafzimmer
         turn_off:
-          service: script.watchtv_schlafzimmer_off
+          - service: switch.turn_off
+            entity_id: switch.kodi_schlafzimmer
+          - service: media_player.turn_off
+            entity_id: media_player.fire_tv_schlafzimmer
+          - service: switch.turn_off
+            entity_id: switch.schlafzimmer_fernseher, switch.schlafzimmer_fernseher_remote
+          - service: light.turn_off
+            entity_id: light.fernseher_schlafzimmer
+          - service: input_boolean.turn_off
+            entity_id: input_boolean.timer_schlafzimmer_aktiv
           
       kodi_schlafzimmer:
         friendly_name: Kodi
@@ -67,36 +86,6 @@ cover:
           {% else %}
             mdi:volume-low
           {% endif %}
-
-script:
-  watchtv_schlafzimmer_on:
-    alias: "Fernsehen Schlafzimmer einschalten"
-    sequence:
-      - service: switch.turn_on
-        entity_id: switch.schlafzimmer_fernseher
-      - delay: '00:00:05'
-      - service: light.turn_on
-        entity_id: light.fernseher_schlafzimmer
-      - service: switch.turn_on
-        entity_id: switch.schlafzimmer_fernseher_remote
-      - service: media_player.turn_on
-        entity_id: media_player.fire_tv_schlafzimmer
-      - service: switch.turn_on
-        entity_id: switch.kodi_schlafzimmer
-
-  watchtv_schlafzimmer_off:
-    alias: "Fernsehen Schlafzimmer ausschalten"
-    sequence:
-      - service: switch.turn_off
-        entity_id: switch.kodi_schlafzimmer
-      - service: media_player.turn_off
-        entity_id: media_player.fire_tv_schlafzimmer
-      - service: switch.turn_off
-        entity_id: switch.schlafzimmer_fernseher, switch.schlafzimmer_fernseher_remote
-      - service: light.turn_off
-        entity_id: light.fernseher_schlafzimmer
-      - service: input_boolean.turn_off
-        entity_id: input_boolean.timer_schlafzimmer_aktiv
 
 automation:       
   - alias: "Schlafzimmer - Wiedergabe"

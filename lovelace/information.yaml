@@ -130,11 +130,7 @@ cards:
           type: "custom:secondaryinfo-entity-row"              
           secondary_info: "[[ if(binary_sensor.schlechtes_wetter.state == 'on', '<b style='color:red'>Schlechtes Wetter</b>', '') ]]"        
         - entity: input_datetime.arbeit_beginn
-          name: Arbeitsbeginn
-        - entity: input_number.arbeit_beginn_wecker
-          name: Vorlauf Wecker
-          type: "custom:secondaryinfo-entity-row"              
-          secondary_info: "[[ input_datetime.alarm_standard_buero ]]"            
+          name: Arbeitsbeginn    
          
       
   - type: conditional
@@ -202,8 +198,6 @@ cards:
         name: Küche
       - entity: sensor.arbeitszimmer_temperatur
         name: Arbeitszimmer
-      - entity: sensor.sportzimmer_temperatur
-        name: Sportzimmer
         
   - type: conditional
     view_layout:
@@ -251,13 +245,13 @@ cards:
         cards:               
           - type: glance
             entities:              
-              - entity: binary_sensor.tankstelle_real_status
+              - entity: binary_sensor.supermarkt_tankstelle_wulfshofstrasse_6_8_status
                 name: Real     
           - type: glance
             entities:              
-              - entity: binary_sensor.tankstelle_jet_dortmund_status
+              - entity: binary_sensor.jet_provinzialstr_229_status
                 name: Jet Dortmund    
           - type: glance
             entities:              
-              - entity: binary_sensor.tankstelle_jet_mulheim_status
+              - entity: binary_sensor.jet_strassburger_allee_75_status
                 name: Jet Mülheim

@@ -171,6 +171,10 @@ script:
           value: 0             
       - service: switch.turn_on
         entity_id: switch.computer, switch.watchtv_wohnzimmer
+      - service: input_select.select_option
+        data:
+          entity_id: input_select.computer_ausschalten  
+          option: 'Ruhezustand'          
       - service: input_boolean.turn_off
         entity_id: input_boolean.home_office_pause      
       - choose:

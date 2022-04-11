@@ -126,7 +126,7 @@ automation:
                   message: >-
                     {% set name = state_attr('sensor.handy', 'caller') %}
                     {% set number = state_attr('sensor.handy', 'number') %}
-
+                    
                     {% if is_state("sensor.handy", "dialing") %}
                       {% if name == number %}
                         {{ name }} wird angerufen.
@@ -135,7 +135,9 @@ automation:
                       {% endif %}
 
                     {% elif is_state("sensor.handy", "ringing") %}
-                      {% if name == number %}
+                      {% if name == '0' or number == '0' %}
+                        Ein eingehener Anruf.
+                      {% elif name == number %}
                         Eingehender Anruf von {{ name }}.
                       {% else %}
                         Eingehender Anruf von {{ name }} ({{ number }}).
@@ -169,7 +171,9 @@ automation:
                       {% endif %}
 
                     {% elif is_state("sensor.handy", "ringing") %}
-                      {% if name == number %}
+                      {% if name == '0' or number == '0' %}
+                        Ein eingehener Anruf.
+                      {% elif name == number %}
                         Eingehender Anruf von {{ name }}.
                       {% else %}
                         Eingehender Anruf von {{ name }} ({{ number }}).
@@ -203,7 +207,9 @@ automation:
                       {% endif %}
 
                     {% elif is_state("sensor.handy", "ringing") %}
-                      {% if name == number %}
+                      {% if name == '0' or number == '0' %}
+                        Ein eingehener Anruf.
+                      {% elif name == number %}
                         Eingehender Anruf von {{ name }}.
                       {% else %}
                         Eingehender Anruf von {{ name }} ({{ number }}).
@@ -394,15 +400,17 @@ automation:
     condition:
       - condition: state
         entity_id: input_boolean.nicht_stoeren
-        state: 'off'
-      - condition: state
-        entity_id: binary_sensor.besuch
-        state: 'off'        
+        state: 'off'     
     action:
       - service: !secret tts_service
         data:
           message: >-                   
-            {% if is_state_attr('sensor.handy', 'caller', None) == False and state_attr('sensor.handy', 'caller') != '-' and state_attr('sensor.handy', 'caller').startswith('+') == False %}
+            {% if state_attr('sensor.handy', 'caller') != '0' 
+              and state_attr('sensor.handy', 'caller') != '-'    
+              and is_state('binary_sensor.besuch', 'off')
+              and not is_state_attr('sensor.handy', 'caller', None) 
+              and not state_attr('sensor.handy', 'caller').startswith('+')
+            %}
               {% set messageString = state_attr('sensor.handy', 'caller') %}
             {% else %}
               {% set messageString = 'einer unbekannten Rufnummer' %}            

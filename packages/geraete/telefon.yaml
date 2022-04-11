@@ -389,7 +389,9 @@ automation:
         to: 'ringing'
     variables:
       message: >-
-        {% if state_attr('sensor.telefon', 'from') == None or state_attr('sensor.telefon', 'from') == '' %}
+        {% if is_state('binary_sensor.besuch', 'on') %}
+          Ein eingehender Anruf.
+        {% elif state_attr('sensor.telefon', 'from') == None or state_attr('sensor.telefon', 'from') == '' %}
           Ein eingehender Anruf ohne Rufnummer.
         {% elif state_attr('sensor.telefon', 'from_name') == None or state_attr('sensor.telefon', 'from_name') == 'unknown' %}
           Ein eingehender Anruf von einer unbekannten Rufnummer.
@@ -425,13 +427,13 @@ automation:
               - service: notify.mobile_app_handy
                 data:
                   title: Eingehender Anruf
-                  message: "{{message }}"  
+                  message: "{{ message }}"  
                   data:
                     timeout: 5
         default:
           - service: !secret tts_service
             data:
-              message: "{{message }}"          
+              message: "{{ message }}"          
 
   - alias: "Telefon aktiv - Anruf verpasst"
     id: "telefon_aktiv_anruf_verpasst"

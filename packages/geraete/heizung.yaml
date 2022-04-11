@@ -21,80 +21,8 @@ binary_sensor:
         friendly_name: Küche
         device_class: battery
         value_template: "{{ state_attr('climate.kueche', 'battery_low') }}"
-      heizung_wohnzimmer_batterie:
-        friendly_name: Wohnzimmer
-        device_class: battery
-        value_template: "{{ state_attr('climate.wohnzimmer', 'battery_low') }}"
 
 automation:
-  - alias: "Heizung Wohnzimmer - Fenster geöffnet"
-    id: "heizung_wohnzimmer_fenster_geoeffnet"
-    trigger:
-      - platform: state
-        entity_id: binary_sensor.balkontuer
-        to: 'on'
-        for:
-          seconds: 30      
-      - platform: state
-        entity_id: binary_sensor.fenster_wohnzimmer
-        to: 'on'
-        for:
-          seconds: 30
-    condition:
-      - "{{ is_state('climate.wohnzimmer', 'heat') }}"
-      - "{{ state_attr('climate.wohnzimmer', 'preset_mode') == 'comfort' }}"
-    action:
-      - service: climate.set_preset_mode
-        data:
-          entity_id: climate.wohnzimmer
-          preset_mode: 'eco'
-      - service: input_boolean.turn_on
-        entity_id: input_boolean.heizung_ausgeschaltet_wohnzimmer
-
-  - alias: "Heizung Wohnzimmer - Fenster geschlossen"
-    id: "heizung_wohnzimmer_fenster_geschlossen"
-    trigger:
-      - platform: state
-        entity_id: binary_sensor.balkontuer
-        to: 'off'      
-      - platform: state
-        entity_id: binary_sensor.fenster_wohnzimmer
-        to: 'off'
-    condition:
-      - condition: state
-        entity_id: input_boolean.heizung_ausgeschaltet_wohnzimmer
-        state: 'on'
-    action:
-      - service: climate.set_preset_mode
-        data:
-          entity_id: climate.wohnzimmer
-          preset_mode: 'comfort'
-      - service: input_boolean.turn_off
-        entity_id: input_boolean.heizung_ausgeschaltet_wohnzimmer
-
-  - alias: "Heizung Wohnzimmer - Heizung eingeschaltet"
-    id: "heizung_wohnzimmer_heizung_eingeschaltet"
-    trigger:
-      - platform: state
-        entity_id: climate.wohnzimmer
-        to: 'heat'
-      - platform: template
-        value_template: '{{ state_attr("climate.wohnzimmer", "preset_mode") == "comfort" }}'
-    condition:
-      - condition: state
-        entity_id: binary_sensor.balkontuer
-        state: 'on'
-      - condition: state
-        entity_id: binary_sensor.fenster_wohnzimmer
-        state: 'on'        
-    action:
-      - service: climate.set_preset_mode
-        data:
-          entity_id: climate.wohnzimmer
-          preset_mode: 'eco'
-      - service: input_boolean.turn_on
-        entity_id: input_boolean.heizung_ausgeschaltet_wohnzimmer
-
   - alias: "Heizung Küche - Fenster geöffnet"
     id: "heizung_kueche_fenster_geoeffnet"
     trigger:
@@ -139,7 +67,7 @@ automation:
         entity_id: climate.kueche
         to: 'heat'
       - platform: template
-        value_template: '{{ state_attr("climate.wohnzimmer", "preset_mode") == "comfort" }}'        
+        value_template: '{{ state_attr("climate.kueche", "preset_mode") == "comfort" }}'        
     condition:
       - condition: state
         entity_id: binary_sensor.fenster_kueche

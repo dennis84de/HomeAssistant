@@ -315,5 +315,4 @@ automation:
 homeassistant:
   customize:
     script.sync_radios:
-      can_cancel: false
       icon: mdi:sync

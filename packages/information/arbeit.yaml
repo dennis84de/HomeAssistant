@@ -14,14 +14,7 @@ input_datetime:
     has_time: true
     icon: mdi:timer
 
-input_number:
-  arbeit_beginn_wecker:
-    name: Arbeit Beginn Wecker
-    min: 0   
-    max: 180
-    step: 5
-    icon: mdi:timer-sand
-    
+input_number:   
   arbeit_dauer:
     name: Arbeit Dauer
     min: 0
@@ -132,38 +125,7 @@ automation:
         data:
           message: >-
             "Es ist Zeit zur Arbeit zu fahren. Die aktuelle Fahrzeit beträgt {{ states('sensor.fahrzeit_zur_arbeit') }} Minuten.{% if is_state('binary_sensor.schlechtes_wetter', 'on') %} Aktuell ist mit {{ states('sensor.wetterlage') }} zu rechnen.{% endif %}"
-
-  - alias: 'Arbeitsbeginn geändert'
-    id: "arbeitsbeginn_geaendert"
-    trigger:
-      - platform: state
-        entity_id: input_datetime.arbeit_beginn
-      - platform: state
-        entity_id: input_number.arbeit_beginn_wecker        
-    condition:
-      - condition: or
-        conditions:
-          - condition: state
-            entity_id: binary_sensor.buero_heute
-            state: 'on'
-          - condition: state
-            entity_id: binary_sensor.buero_morgen
-            state: 'on'
-    action:
-      - service: input_datetime.set_datetime
-        target:
-          entity_id: input_datetime.alarm_standard_buero
-        data:
-          time: >-
-            {% set arbeitBeginnInMinuten = (state_attr('input_datetime.arbeit_beginn', 'timestamp') | int(0) / 60 ) %}
-            {% set vorlaufInMinuten = states('input_number.arbeit_beginn_wecker') | int(0) %}
-            {% set weckerInMinuten = (arbeitBeginnInMinuten -  vorlaufInMinuten) | int(0) %}
-
-            {% set weckerStunden = (weckerInMinuten / 60) | int(0) %}
-            {% set weckerMinuten = (weckerInMinuten - (weckerStunden * 60)) | int(0) %}
-            {% set weckerUhrzeit = "%0.02d:%0.02d" | format(weckerStunden, weckerMinuten ) %}
-
-            {{ weckerUhrzeit }}          
+     
 
   - alias: "Fahrzeit nach Hause"
     id: "fahrzeit_nach_hause"

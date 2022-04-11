@@ -1,14 +1,3 @@
-sun:
-
-camera:
-  - platform: generic
-    still_image_url: https://api.sat24.com/mostrecent/DE/visual5hdcomplete
-    name: Wetter
-
-  - platform: generic
-    still_image_url: https://www.grueninger.com/webcam/current.jpg
-    name: Dortmund
-
 gdacs:
   radius: 100
 
@@ -58,8 +47,6 @@ binary_sensor:
         value_template: "{{ now().timetuple().tm_isdst > 0 }}"  
     
 sensor:
-  - platform: moon      
-
   - platform: mold_indicator
     name: Schimmelindikator
     indoor_temp_sensor: sensor.mold_wohnzimmer_temperatur

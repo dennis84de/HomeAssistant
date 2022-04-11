@@ -121,8 +121,6 @@ cards:
         name: Balkontür      
       - entity: binary_sensor.fenster_wohnzimmer
         name: Fenster            
-      - entity: climate.wohnzimmer
-        name: Heizung
         
   - type: glance
     title: Thermometer

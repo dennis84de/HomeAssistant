@@ -106,8 +106,6 @@ cards:
         name: Arbeitszimmer
       - entity: sensor.thermometer_kueche_battery_level        
         name: Küche
-      - entity: sensor.thermometer_sportzimmer_battery_level        
-        name: Sportzimmer
 
   - type: custom:battery-state-card
     title: Fenster
@@ -193,11 +191,4 @@ cards:
           - from: "off"
             to: 100
           - from: "on"
-            to: 25          
-      - entity: binary_sensor.heizung_wohnzimmer_batterie
-        name: Wohnzimmer
-        state_map:
-          - from: "off"
-            to: 100
-          - from: "on"
-            to: 25                  
+            to: 25

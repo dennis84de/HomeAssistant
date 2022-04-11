@@ -29,9 +29,7 @@ lovelace:
     - url: /hacsfiles/secondaryinfo-entity-row/secondaryinfo-entity-row.js
       type: module
     - url: /hacsfiles/lovelace-card-tools/card-tools.js
-      type: module    
-    - url: /hacsfiles/lovelace-grocy-chores-card/grocy-chores-card.js
-      type: module          
+      type: module            
     - url: /hacsfiles/home-assistant-sun-card/home-assistant-sun-card.js
       type: module         
     - url: /hacsfiles/zha-network-card/zha-network-card.js
@@ -84,10 +82,6 @@ sensor:
       - name: database_size
         query: 'SELECT table_schema "database", Round(Sum(data_length + index_length) / 1024 / 1024, 1) "value" FROM information_schema.tables WHERE table_schema="homeassistant" GROUP BY table_schema;'
         column: 'value'
-        unit_of_measurement: MB
-    
-  - platform: uptime
-    name: Letzter Neustart
 
   - platform: command_line
     name: Installierte Version

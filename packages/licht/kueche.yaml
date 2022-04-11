@@ -55,6 +55,7 @@ homeassistant:
   customize:
     light.kueche_regal:      
       friendly_name: Küche Regal
+      
     entity_controller.bewegung_kuechenregal:      
       friendly_name: Bewegung Küchenregal
     entity_controller.bewegung_kuechenschrank:      
