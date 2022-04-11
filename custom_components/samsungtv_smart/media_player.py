@@ -101,6 +101,7 @@ from .const import (
     DEFAULT_POWER_ON_DELAY,
     DEFAULT_SOURCE_LIST,
     DEFAULT_TIMEOUT,
+    LOCAL_LOGO_PATH,
     MAX_WOL_REPEAT,
     SERVICE_SELECT_PICTURE_MODE,
     SERVICE_SET_ART_MODE,
@@ -178,6 +179,7 @@ async def async_setup_entry(
 
     # session used by aiohttp
     session = hass.helpers.aiohttp_client.async_get_clientsession()
+    local_logo_path = hass.data[DOMAIN].get(LOCAL_LOGO_PATH)
 
     config = entry.data.copy()
     add_conf = hass.data[DOMAIN][entry.entry_id].get(DATA_CFG_YAML, {})
@@ -204,6 +206,7 @@ async def async_setup_entry(
                 session,
                 update_token_func,
                 logo_file,
+                local_logo_path,
             )
         ],
         True,
@@ -250,7 +253,7 @@ class SamsungTVDevice(MediaPlayerEntity):
     """Representation of a Samsung TV."""
 
     def __init__(
-            self, config, unique_id, entry_data, session: ClientSession, update_token_func, logo_file
+            self, config, unique_id, entry_data, session: ClientSession, update_token_func, logo_file, local_logo_path
     ):
         """Initialize the Samsung device."""
 
@@ -368,7 +371,7 @@ class SamsungTVDevice(MediaPlayerEntity):
         self._st_error_count = 0
         self._setvolumebyst = False
 
-        self._local_image_url = LocalImageUrl()
+        self._local_image_url = LocalImageUrl(local_logo_path)
         self._logo_option = LOGO_OPTION_DEFAULT
         self._logo = Logo(
             logo_option=self._logo_option,

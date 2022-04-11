@@ -56,6 +56,7 @@ RESTORE_ATTRIBUTES = [
     "status",
     "last_motion",
     "action",
+    "door_action",
     "method",
     "error",
     "key_id",
@@ -206,7 +207,7 @@ class BLEupdaterBinary:
             if data:
                 _LOGGER.debug("Data binary sensor received: %s", data)
                 ble_adv_cnt += 1
-                key = dict_get_or(data)
+                key = identifier_clean(dict_get_or(data))
                 batt_attr = None
                 device_model = data["type"]
                 # migrate to new model name if changed
@@ -463,12 +464,14 @@ class BaseBinarySensor(RestoreEntity, BinarySensorEntity):
         if self.entity_description.key == "opening":
             if "status" in data:
                 self._extra_state_attributes["status"] = data["status"]
-        if self.entity_description.key == "lock":
+        if "locktype" in data and self.entity_description.key == data["locktype"]:
             self._extra_state_attributes["action"] = data["action"]
             self._extra_state_attributes["method"] = data["method"]
             self._extra_state_attributes["error"] = data["error"]
             self._extra_state_attributes["key_id"] = data["key id"]
             self._extra_state_attributes["timestamp"] = data["timestamp"]
+        if self.entity_description.key == "door":
+            self._extra_state_attributes["door_action"] = data["door action"]
         if self.entity_description.key == "fingerprint":
             self._extra_state_attributes["result"] = data["result"]
             self._extra_state_attributes["key_id"] = data["key id"]

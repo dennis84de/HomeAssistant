@@ -1,21 +1,24 @@
 """Parser for passive BLE advertisements."""
 import logging
 
+from .acconeer import parse_acconeer
 from .airmentor import parse_airmentor
 from .altbeacon import parse_altbeacon
 from .atc import parse_atc
 from .bluemaestro import parse_bluemaestro
 from .bparasite import parse_bparasite
 from .brifit import parse_brifit
-from .const import GATT_CHARACTERISTICS
+from .const import GATT_CHARACTERISTICS, TILT_TYPES
 from .govee import parse_govee
 from .ha_ble import parse_ha_ble
 from .ha_ble_legacy import parse_ha_ble_legacy
+from .hhcc import parse_hhcc
 from .ibeacon import parse_ibeacon
 from .inkbird import parse_inkbird
 from .inode import parse_inode
 from .jinou import parse_jinou
 from .kegtron import parse_kegtron
+from .laica import parse_laica
 from .miscale import parse_miscale
 from .moat import parse_moat
 from .oral_b import parse_oral_b
@@ -27,6 +30,7 @@ from .sensirion import parse_sensirion
 from .switchbot import parse_switchbot
 from .teltonika import parse_teltonika
 from .thermoplus import parse_thermoplus
+from .tilt import parse_tilt
 from .xiaomi import parse_xiaomi
 from .xiaogui import parse_xiaogui
 
@@ -144,9 +148,18 @@ class BleParser:
                     elif uuid16 in [0x181C, 0x181E]:
                         # UUID16 = User Data and Bond Management (used by BLE HA)
                         sensor_data = parse_ha_ble(self, service_data, uuid16, mac, rssi)
+                        break
                     elif uuid16 in [0xAA20, 0xAA21, 0xAA22] and complete_local_name == "ECo":
                         # UUID16 = Relsib
                         sensor_data = parse_relsib(self, service_data, mac, rssi)
+                        break
+                    elif uuid16 in [0xFD3D, 0x0D00]:
+                        # UUID16 = unknown (used by Switchbot)
+                        sensor_data = parse_switchbot(self, service_data, mac, rssi)
+                        break
+                    elif uuid16 == 0xFD50:
+                        # UUID16 = Hangzhou Tuya Information Technology Co., Ltd (HHCC)
+                        sensor_data = parse_hhcc(self, service_data, mac, rssi)
                         break
                     elif uuid16 == 0xFDCD:
                         # UUID16 = Qingping
@@ -163,10 +176,6 @@ class BleParser:
                     elif uuid16 == 0xFFF9:
                         # UUID16 = FIDO (used by Cleargrass)
                         sensor_data = parse_qingping(self, service_data, mac, rssi)
-                        break
-                    elif uuid16 in [0x0D00, 0xFD3D]:
-                        # UUID16 = unknown (used by Switchbot)
-                        sensor_data = parse_switchbot(self, service_data, mac, rssi)
                         break
                     elif uuid16 in GATT_CHARACTERISTICS and shortened_local_name == "HA_BLE":
                         # HA BLE legacy (deprecated)
@@ -192,7 +201,10 @@ class BleParser:
                         break
                     elif comp_id == 0x004C and man_spec_data[4] == 0x02:
                         # iBeacon
-                        sensor_data, tracker_data = parse_ibeacon(self, man_spec_data, mac, rssi)
+                        if int.from_bytes(man_spec_data[6:22], byteorder='big') in TILT_TYPES:
+                            sensor_data, tracker_data = parse_tilt(self, man_spec_data, mac, rssi)
+                        else:
+                            sensor_data, tracker_data = parse_ibeacon(self, man_spec_data, mac, rssi)
                         break
                     elif comp_id == 0x00DC and data_len == 0x0E:
                         # Oral-b
@@ -234,6 +246,10 @@ class BleParser:
                         # Kegtron
                         sensor_data = parse_kegtron(self, man_spec_data, mac, rssi)
                         break
+                    elif comp_id == 0xA0AC and data_len == 0x0F and man_spec_data[14] in [0x06, 0x0D]:
+                        # Laica
+                        sensor_data = parse_laica(self, man_spec_data, mac, rssi)
+                        break
 
                     # Filter on part of the UUID16
                     elif man_spec_data[2] == 0xC0 and data_len == 0x10:
@@ -265,10 +281,10 @@ class BleParser:
                             # Thermoplus
                             sensor_data = parse_thermoplus(self, man_spec_data, mac, rssi)
                             break
-                        elif (comp_id in [0x0000, 0x0001] or complete_local_name == "iBBQ") and (
-                            data_len in [0x0D, 0x0F, 0x13, 0x17]
+                        elif (comp_id in [0x0000, 0x0001] or complete_local_name in ["iBBQ", "sps", "tps"]) and (
+                            data_len in [0x0A, 0x0D, 0x0F, 0x13, 0x17]
                         ):
-                            # Inkbird iBBQ
+                            # Inkbird
                             sensor_data = parse_inkbird(self, man_spec_data, complete_local_name, mac, rssi)
                             break
                         else:
@@ -292,6 +308,10 @@ class BleParser:
                     elif data_len == 0x1B and ((man_spec_data[4] << 8) | man_spec_data[5]) == 0xBEAC:
                         # AltBeacon
                         sensor_data, tracker_data = parse_altbeacon(self, man_spec_data, comp_id, mac, rssi)
+                        break
+
+                    elif man_spec_data[0] == 0x12 and comp_id == 0xACC0:  # Acconeer
+                        sensor_data = parse_acconeer(self, man_spec_data, mac, rssi)
                         break
                     else:
                         unknown_sensor = True

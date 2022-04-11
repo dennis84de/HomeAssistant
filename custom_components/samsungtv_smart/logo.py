@@ -27,7 +27,8 @@ class LogoOption(Enum):
     TransparentWhite = 7
 
 
-LOCAL_IMAGE_BASE_URL = f"/api/{DOMAIN}/static"
+CUSTOM_IMAGE_BASE_URL = f"/api/{DOMAIN}/custom"
+STATIC_IMAGE_BASE_URL = f"/api/{DOMAIN}/static"
 CHAR_REPLACE = {" ": "", "+": "plus", "_": "", ".": ""}
 
 LOGO_OPTIONS_MAPPING = {
@@ -56,8 +57,9 @@ _LOGGER = logging.getLogger(__name__)
 class LocalImageUrl:
     """Class to manage the local image url."""
 
-    def __init__(self):
+    def __init__(self, custom_logo_path=None):
         """Initialise the local image url class."""
+        self._custom_logo_path = custom_logo_path
         self._local_image_url = None
         self._last_media_title = None
 
@@ -76,26 +78,25 @@ class LocalImageUrl:
 
         self._last_media_title = cf_local_logo_file or media_title
         self._local_image_url = None
-        files_list = [local_logo_file] if local_logo_file else []
 
-        logo_file = media_title
+        media_logo_file = media_title
         for searcher, replacer in CHAR_REPLACE.items():
-            logo_file = logo_file.replace(searcher, replacer)
-        logo_file += ".png"
-        files_list.append(logo_file)
+            media_logo_file = media_logo_file.replace(searcher, replacer)
+        media_logo_file += ".png"
 
-        found_logo = None
-        dir_path = Path(__file__).parent / "static"
-        for logo_file in Path(dir_path).iterdir():
-            for file_name in files_list:
-                if logo_file.name.casefold() == file_name.casefold():
-                    found_logo = logo_file.name
-                    break
-            if found_logo:
-                self._local_image_url = f"{LOCAL_IMAGE_BASE_URL}/{found_logo}"
-                if self._last_media_title != found_logo.casefold():
+        if self._custom_logo_path:
+            for logo_file in Path(self._custom_logo_path).iterdir():
+                if logo_file.name.casefold() == media_logo_file.casefold():
+                    self._local_image_url = f"{CUSTOM_IMAGE_BASE_URL}/{logo_file.name}"
                     self._last_media_title = media_title
-                break
+                    break
+
+        if not self._local_image_url and local_logo_file:
+            dir_path = Path(__file__).parent / "static"
+            for logo_file in Path(dir_path).iterdir():
+                if logo_file.name.casefold() == local_logo_file.casefold():
+                    self._local_image_url = f"{STATIC_IMAGE_BASE_URL}/{logo_file.name}"
+                    break
 
         return self._local_image_url
 

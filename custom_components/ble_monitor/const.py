@@ -244,11 +244,38 @@ BINARY_SENSOR_TYPES: tuple[BLEMonitorBinarySensorEntityDescription, ...] = (
         force_update=True,
     ),
     BLEMonitorBinarySensorEntityDescription(
+        key="door",
+        sensor_class="BaseBinarySensor",
+        update_behavior="Instantly",
+        name="ble door",
+        unique_id="do_",
+        device_class=BinarySensorDeviceClass.DOOR,
+        force_update=False,
+    ),
+    BLEMonitorBinarySensorEntityDescription(
         key="lock",
         sensor_class="BaseBinarySensor",
         update_behavior="Instantly",
         name="ble lock",
         unique_id="lock_",
+        device_class=BinarySensorDeviceClass.LOCK,
+        force_update=True,
+    ),
+    BLEMonitorBinarySensorEntityDescription(
+        key="antilock",
+        sensor_class="BaseBinarySensor",
+        update_behavior="Instantly",
+        name="ble antilock",
+        unique_id="antilock_",
+        device_class=BinarySensorDeviceClass.LOCK,
+        force_update=True,
+    ),
+    BLEMonitorBinarySensorEntityDescription(
+        key="childlock",
+        sensor_class="BaseBinarySensor",
+        update_behavior="Instantly",
+        name="ble childlock",
+        unique_id="childlock_",
         device_class=BinarySensorDeviceClass.LOCK,
         force_update=True,
     ),
@@ -542,6 +569,17 @@ SENSOR_TYPES: tuple[BLEMonitorSensorEntityDescription, ...] = (
         icon="mdi:molecule",
         native_unit_of_measurement=CONCENTRATION_MICROGRAMS_PER_CUBIC_METER,
         device_class=SensorDeviceClass.PM10,
+    ),
+    BLEMonitorSensorEntityDescription(
+        key="gravity",
+        sensor_class="MeasuringSensor",
+        update_behavior="Averaging",
+        name="ble gravity",
+        unique_id="gr_",
+        icon="mdi:transfer-down",
+        native_unit_of_measurement=None,
+        device_class=None,
+        state_class=SensorStateClass.MEASUREMENT,
     ),
     BLEMonitorSensorEntityDescription(
         key="tvoc",
@@ -924,8 +962,8 @@ MEASUREMENT_DICT = {
     'RTCGQ02LM'               : [["battery", "rssi"], ["button"], ["light", "motion"]],
     'MMC-T201-1'              : [["temperature", "battery", "rssi"], [], []],
     'M1S-T500'                : [["battery", "rssi"], [], ["toothbrush"]],
-    'ZNMS16LM'                : [["battery", "rssi"], [], ["lock", "fingerprint"]],
-    'ZNMS17LM'                : [["battery", "rssi"], [], ["lock", "fingerprint"]],
+    'ZNMS16LM'                : [["battery", "rssi"], [], ["lock", "door", "fingerprint"]],
+    'ZNMS17LM'                : [["battery", "rssi"], [], ["lock", "door", "fingerprint", "antilock", "childlock"]],
     'MJZNMSQ01YD'             : [["battery", "rssi"], [], ["lock", "fingerprint"]],
     'XMZNMST02YD'             : [["battery", "rssi"], [], ["lock", "fingerprint"]],
     'CGC1'                    : [["temperature", "humidity", "battery", "rssi"], [], []],
@@ -998,7 +1036,7 @@ MEASUREMENT_DICT = {
     'iBBQ-4'                  : [["temperature probe 1", "temperature probe 2", "temperature probe 3", "temperature probe 4", "rssi"], [], []],
     'iBBQ-6'                  : [["temperature probe 1", "temperature probe 2", "temperature probe 3", "temperature probe 4", "temperature probe 5", "temperature probe 6", "rssi"], [], []],
     'IBS-TH'                  : [["temperature", "humidity", "battery", "rssi"], [], []],
-    'IBS-TH2/P01R'            : [["temperature", "battery", "rssi"], [], []],
+    'IBS-TH2/P01B'            : [["temperature", "battery", "rssi"], [], []],
     'BEC07-5'                 : [["temperature", "humidity", "rssi"], [], []],
     'iBeacon'                 : [["rssi", "measured power", "cypress temperature", "cypress humidity"], ["uuid", "mac", "major", "minor"], []],  # mac can be dynamic
     'AltBeacon'               : [["rssi", "measured power"], ["uuid", "mac", "major", "minor"], []],  # mac can be dynamic
@@ -1006,6 +1044,8 @@ MEASUREMENT_DICT = {
     'Air Mentor Pro 2'        : [["temperature", "temperature calibrated", "humidity", "co2", "tvoc", "aqi", "air quality", "pm2.5", "pm10", "rssi"], [], []],
     'Meter TH S1'             : [["temperature", "humidity", "battery", "rssi"], [], []],
     'Meter TH plus'           : [["temperature", "humidity", "battery", "rssi"], [], []],
+    'Laica Smart Scale'       : [["weight", "impedance", "rssi"], [], []],
+    "Acconeer XM122"          : [["temperature", "battery", "rssi"], [], ["motion"]],
 }
 
 # Sensor manufacturer dictionary
@@ -1103,7 +1143,7 @@ MANUFACTURER_DICT = {
     'iBBQ-4'                  : 'Inkbird',
     'iBBQ-6'                  : 'Inkbird',
     'IBS-TH'                  : 'Inkbird',
-    'IBS-TH2/P01R'            : 'Inkbird',
+    'IBS-TH2/P01B'            : 'Inkbird',
     'BEC07-5'                 : 'Jinou',
     'iBeacon'                 : 'Apple',
     'AltBeacon'               : 'Radius Networks',
@@ -1111,6 +1151,8 @@ MANUFACTURER_DICT = {
     'Air Mentor Pro 2'        : 'Air Mentor',
     'Meter TH S1'             : 'Switchbot',
     'Meter TH plus'           : 'Switchbot',
+    'Laica Smart Scale'       : 'Laica',
+    'Acconeer XM122'          : 'Acconeer',
 }
 
 
@@ -1119,52 +1161,68 @@ RENAMED_MODEL_DICT = {
     'H5051/H5074': 'H5074',
     'H5051': 'H5051/H5071',
     'IBS-TH2': 'IBS-TH',
-    'IBS-TH2 (T only)': 'IBS-TH2/P01R',
+    'IBS-TH2 (T only)': 'IBS-TH2/P01B',
+    'IBS-TH2/P01R': 'IBS-TH2/P01B',
 }
 
 
 # Sensors that support automatic adding of sensors and binary sensors
 AUTO_MANUFACTURER_DICT = {
     'HA BLE DIY'              : 'Home Assistant DIY',
+    'Tilt Red'                : 'Tilt',
+    'Tilt Green'              : 'Tilt',
+    'Tilt Black'              : 'Tilt',
+    'Tilt Purple'             : 'Tilt',
+    'Tilt Orange'             : 'Tilt',
+    'Tilt Blue'               : 'Tilt',
+    'Tilt Yellow'             : 'Tilt',
+    'Tilt Pink'               : 'Tilt',
+    'Tilt Green'              : 'Tilt',
+    'HHCCJCY10'               : 'HHCC',
 }
 
 
 # Binary Sensors that are automatically added if device is in AUTO_MANUFACTURER_DICT
 AUTO_BINARY_SENSOR_LIST = [
     "binary",
-    "switch",
     "opening",
+    "switch",
 ]
 
 
 # Sensors that are automatically added if device is in AUTO_MANUFACTURER_DICT
 AUTO_SENSOR_LIST = [
     "battery",
-    "temperature",
-    "humidity",
-    "pressure",
-    "illuminance",
-    "weight",
-    "dewpoint",
+    "conductivity",
     "count",
+    "dewpoint",
     "energy",
-    "power",
-    "voltage",
+    "gravity",
+    "humidity",
+    "illuminance",
+    "moisture",
     "pm2.5",
     "pm10",
+    "power",
+    "pressure",
     "rssi",
+    "temperature",
+    "voltage",
+    "weight",
 ]
 
 
 # Selection list for report_uknown
 REPORT_UNKNOWN_LIST = [
     "Off",
-    "Air Mentor"
+    "Acconeer",
+    "Air Mentor",
     "ATC",
     "BlueMaestro",
     "Brifit",
     "Govee",
     "HA BLE",
+    "HHCC",
     "Inkbird",
     "iNode",
     "iBeacon",
@@ -1182,6 +1240,7 @@ REPORT_UNKNOWN_LIST = [
     "Switchbot",
     "Teltonika",
     "Thermoplus",
+    "Tilt",
     "Xiaogui",
     "Xiaomi",
     "Other",
