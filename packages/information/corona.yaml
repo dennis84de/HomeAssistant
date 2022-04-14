@@ -16,27 +16,6 @@ sensor:
     scan_interval: 3600    
     json_attributes:
       - data
-    
-  - platform: rest
-    name: "Corona Impfungen Deutschland"
-    resource: https://rki-vaccination-data.vercel.app/api
-    json_attributes:
-      - vaccinated
-      - quote
-      - difference_to_the_previous_day
-    value_template: '{{ as_timestamp(value_json.lastUpdate, None) | timestamp_local(None) }}'
-    device_class: timestamp
-
-  - platform: rest
-    name: "Corona Impfungen NRW"
-    resource: https://rki-vaccination-data.vercel.app/api
-    json_attributes_path: $.states.Nordrhein-Westfalen
-    json_attributes:
-      - vaccinated
-      - quote
-      - difference_to_the_previous_day    
-    value_template: '{{ as_timestamp(value_json.lastUpdate, None) | timestamp_local(None) }}'
-    device_class: timestamp    
 
   - platform: template
     sensors:
@@ -63,33 +42,3 @@ sensor:
           icon_template: mdi:emoticon-happy-outline
           value_template: "{{ state_attr('sensor.corona_deutschland','data')['Total Recovered'] | replace(',','') | int(0) }}"
           unit_of_measurement: Personen  
-
-      coronavirus_vaccination_brd_vaccinated:
-        value_template: "{{ state_attr('sensor.corona_impfungen_deutschland', 'vaccinated') }}"
-        friendly_name: 'Geimpfte'
-        unit_of_measurement: 'Personen'
-
-      coronavirus_vaccination_brd_quote:
-        value_template: "{{ state_attr('sensor.corona_impfungen_deutschland', 'quote') }}"
-        friendly_name: 'Impfquote'
-
-      coronavirus_vaccination_brd_difference:
-        value_template: "{{ state_attr('sensor.corona_impfungen_deutschland', 'difference_to_the_previous_day') }}"
-        friendly_name: 'Neu-Geimpfte'
-        unit_of_measurement: 'Personen'
-
-      coronavirus_vaccination_nrw_vaccinated:
-        value_template: "{{ state_attr('sensor.corona_impfungen_nrw', 'vaccinated') }}"
-        friendly_name: 'Geimpfte'
-        unit_of_measurement: 'Personen'
-
-      coronavirus_vaccination_nrw_quote:
-        value_template: "{{ state_attr('sensor.corona_impfungen_nrw', 'quote') }}"
-        friendly_name: 'Impfquote'    
-    
-  - platform: template
-    sensors: 
-      coronavirus_vaccination_nrw_difference:
-        value_template: "{{ state_attr('sensor.corona_impfungen_nrw', 'difference_to_the_previous_day') }}"
-        friendly_name: 'Neu-Geimpfte'
-        unit_of_measurement: 'Personen'    

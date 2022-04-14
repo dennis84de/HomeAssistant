@@ -111,7 +111,7 @@ automation:
           - conditions:
               - "{{ not is_state('alarm_control_panel.alarmo', 'armed_away') }}"
               - "{{ is_state('person.dennis', 'not_home') }}"
-              - "{{ not is_state('vacuum.staubsauger', 'docked') }}"
+              - "{{ is_state('vacuum.staubsauger', 'docked') }}"
             sequence:                       
               - service: notify.telegram
                 data:

@@ -92,78 +92,46 @@ cards:
     entities:
       - entity: calendar.serien     
       
-  - type: entities
-    view_layout:
-      column: 3
-    title: Corona Virus
-    show_header_toggle: false
-    entities:
-      - entity: sensor.coronavirus_deutschland_bestaetigt
-        name: Bestätigt
-      - entity: sensor.coronavirus_deutschland_aktuell
-        name: Aktuell
-      - entity: sensor.coronavirus_deutschland_genesene
-        name: Genesene
-      - entity: sensor.coronavirus_deutschland_tote
-        name: Tote                 
-
-  - type: custom:mini-graph-card
-    view_layout:
-      column: 3    
-    line_width: 2
-    animate: true
-    hours_to_show: 168
-    points_per_hour: 1
-    hour24: true
-    show:
-      icon: false
-      points: false
-    entities:
-      - entity: sensor.deutschland_weekincidence
-        name: Deutschland
-      - entity: sensor.bl_nordrhein_westfalen_weekincidence
-        name: NRW             
-      - entity: sensor.sk_dortmund_weekincidence
-        name: Dortmund
-      - entity: sensor.sk_mulheim_a_d_ruhr_weekincidence
-        name: Mülheim an der Ruhr
-
-  - type: horizontal-stack
-    view_layout:
-      column: 3  
+  - type: custom:stack-in-card    
     cards:
-      - type: custom:mini-graph-card
-        name: Impfungen
-        unit: "P."
-        line_width: 2
-        animate: true
-        hours_to_show: 168
-        points_per_hour: 1
-        hour24: true
-        show:
-          icon: false
-          points: false          
-        entities:
-          - entity: sensor.coronavirus_vaccination_brd_vaccinated
-            name: Deutschland            
-          - entity: sensor.coronavirus_vaccination_nrw_vaccinated
-            name: NRW            
-      - type: custom:mini-graph-card
-        name: Impfquote
-        unit: "%"
-        line_width: 2
-        animate: true
-        hours_to_show: 168
-        points_per_hour: 1
-        hour24: true
-        show:
-          icon: false
-          points: false
-        entities:
-          - entity: sensor.coronavirus_vaccination_brd_quote
-            name: Deutschland
-          - entity: sensor.coronavirus_vaccination_nrw_quote
-            name: NRW
+      - type: horizontal-stack
+        cards:          
+          - type: entities
+            view_layout:
+              column: 3
+            title: Corona Virus
+            show_header_toggle: false
+            entities:
+              - entity: sensor.coronavirus_deutschland_bestaetigt
+                name: Bestätigt
+              - entity: sensor.coronavirus_deutschland_aktuell
+                name: Aktuell
+              - entity: sensor.coronavirus_deutschland_genesene
+                name: Genesene
+              - entity: sensor.coronavirus_deutschland_tote
+                name: Tote           
+      - type: horizontal-stack
+        cards:               
+          - type: custom:mini-graph-card
+            view_layout:
+              column: 3    
+            line_width: 2
+            animate: true
+            hours_to_show: 168
+            points_per_hour: 1
+            hour24: true
+            show:
+              icon: false
+              points: false
+            entities:
+              - entity: sensor.deutschland_weekincidence
+                name: Deutschland
+              - entity: sensor.bl_nordrhein_westfalen_weekincidence
+                name: NRW             
+              - entity: sensor.sk_dortmund_weekincidence
+                name: Dortmund
+              - entity: sensor.sk_mulheim_a_d_ruhr_weekincidence
+                name: Mülheim an der Ruhr            
                 
   - type: entities
     view_layout:

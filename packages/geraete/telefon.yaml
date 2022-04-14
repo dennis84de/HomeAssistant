@@ -416,20 +416,6 @@ automation:
                     {% else %}
                       Ein Anruf von {{ state_attr('sensor.telefon', 'from_name') }} ({{ state_attr('sensor.telefon', 'from') }}).
                     {% endif %}                      
-          - conditions:
-              - condition: state
-                entity_id: binary_sensor.handy_bluetooth_status
-                state: 'on'      
-              - condition: state
-                entity_id: input_boolean.nicht_stoeren
-                state: 'off'
-            sequence:
-              - service: notify.mobile_app_handy
-                data:
-                  title: Eingehender Anruf
-                  message: "{{ message }}"  
-                  data:
-                    timeout: 5
         default:
           - service: !secret tts_service
             data:

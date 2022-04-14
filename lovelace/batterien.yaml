@@ -106,7 +106,9 @@ cards:
         name: Arbeitszimmer
       - entity: sensor.thermometer_kueche_battery_level        
         name: Küche
-
+      - entity: sensor.thermometer_sportzimmer_battery_level        
+        name: Sportzimmer
+        
   - type: custom:battery-state-card
     title: Fenster
     tap_action: more-info

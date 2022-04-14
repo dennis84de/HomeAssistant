@@ -43,37 +43,6 @@ binary_sensor:
         device_class: sound
         value_template: "{{ True if is_state('input_boolean.wecker_aktiv', 'on') else False }}"
 
-      wecker_richtig_gestellt:
-        friendly_name: Wecker richtig gestellt
-        value_template: >-
-          {% set vor_mitternacht = now().strftime('%H') | int(0) <= 23 %}
-          
-          {% set wecker_zeit = as_timestamp(states('sensor.tablet_schlafzimmer_next_alarm'), None) | timestamp_custom("%H:%M:%S", True) %}          
-          {% set wecker_standard_homeoffice = states('input_datetime.alarm_standard_homeoffice') %}     
-
-          {% set tagWecker = as_timestamp(states('sensor.tablet_schlafzimmer_next_alarm'), None) | timestamp_custom("%d", True) | int(0) %}
-          {% set tagHeute = as_timestamp(now()) | timestamp_custom("%d", True) | int(0) %}
-
-          {% set buero_heute = is_state('binary_sensor.buero_heute', 'on') %}
-          {% set buero_morgen = is_state('binary_sensor.buero_morgen', 'on') %}          
-                
-          {% set arbeitstag_morgen = is_state('binary_sensor.arbeitstag_morgen', 'on') %}
-          {% set arbeitstag_heute = is_state('binary_sensor.arbeitstag', 'on') %}
-                    
-          {% if vor_mitternacht and arbeitstag_morgen %}
-            {% if not wecker_zeit or (buero_morgen == False and wecker_zeit != wecker_standard_homeoffice) or tagHeute + 1 != tagWecker %}
-              False
-            {% else %}
-              True
-            {% endif %}          
-          {% elif not vor_mitternacht and arbeitstag_heute %}                      
-            {% if not wecker_zeit or (buero_heute == False and wecker_zeit != wecker_standard_homeoffice) or tagHeute != tagWecker %}
-              False
-            {% else %}
-              True
-            {% endif %}
-          {% endif %}
-          
 sensor:
   - platform: template
     sensors:
