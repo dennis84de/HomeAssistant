@@ -22,8 +22,31 @@ binary_sensor:
       nextcloud_update_available:
         friendly_name: "Nextcloud Update verfügbar"
         device_class: update
-        value_template: "{{ true if 'beta' not in states('sensor.nextcloud_server_latest_tag') else false }}"
-        icon_template: "{{ 'mdi:cog-sync' if 'beta' not in states('sensor.nextcloud_server_latest_tag') else 'mdi:cog' }}"             
+        value_template: >-
+          {% if 'beta' not in states('sensor.nextcloud_server_latest_tag') and 'rc' not in states('sensor.nextcloud_server_latest_tag') %}
+            {% set currentVersion = states('sensor.nextcloud_system_version').split('.') %}
+            {% set latestVersion = states('sensor.nextcloud_server_latest_tag').replace('v', '').split('.') %}
+
+            {{ currentVersion[0] != latestVersion[0] 
+              or currentVersion[1] != latestVersion[1] 
+              or currentVersion[2] != latestVersion[2]
+            }}
+          {% else %}
+            false
+          {% endif %}
+        icon_template: >-
+          {% if 'beta' not in states('sensor.nextcloud_server_latest_tag') and 'rc' not in states('sensor.nextcloud_server_latest_tag') %}
+            {% set currentVersion = states('sensor.nextcloud_system_version').split('.') %}
+            {% set latestVersion = states('sensor.nextcloud_server_latest_tag').replace('v', '').split('.') %}
+
+            {{ 'mdi:cog-sync' if currentVersion[0] != latestVersion[0] 
+              or currentVersion[1] != latestVersion[1] 
+              or currentVersion[2] != latestVersion[2]
+              else 'mdi:cog'
+            }}                                          
+          {% else %}
+            mdi:cog
+          {% endif %}                  
         
 nextcloud:
     url: !secret nextcloud_url_https
