@@ -92,29 +92,29 @@ switch:
       radios_lautlos:
         friendly_name: Radios lautlos
         value_template: >-
-          {% if (is_state('media_player.radio_wohnzimmer', 'playing') and state_attr('media_player.radio_wohnzimmer', 'volume_level') == None)
-            or (is_state('media_player.radio_arbeitszimmer', 'playing') and state_attr('media_player.radio_arbeitszimmer', 'volume_level') == None)
-            or (is_state('media_player.radio_badezimmer', 'playing') and state_attr('media_player.radio_badezimmer', 'volume_level') == None)
-            or (is_state('media_player.radio_kueche', 'playing') and state_attr('media_player.radio_kueche', 'volume_level') == None)
-            or (is_state('media_player.radio_schlafzimmer', 'playing') and state_attr('media_player.radio_schlafzimmer', 'volume_level') == None)
-            or (is_state('media_player.radio_balkon', 'playing') and state_attr('media_player.radio_balkon', 'volume_level') == None)
+          {% if is_state_attr('media_player.radio_wohnzimmer', 'is_volume_muted', True)
+            or is_state_attr('media_player.radio_arbeitszimmer', 'is_volume_muted', True)
+            or is_state_attr('media_player.radio_badezimmer', 'is_volume_muted', True)
+            or is_state_attr('media_player.radio_kueche', 'is_volume_muted', True)
+            or is_state_attr('media_player.radio_schlafzimmer', 'is_volume_muted', True)
+            or is_state_attr('media_player.radio_balkon', 'is_volume_muted', True)
           %}
             True
           {% else %}
             False
-          {% endif %}
+          {% endif %}        
         icon_template: >-
-          {% if (is_state('media_player.radio_wohnzimmer', 'playing') and state_attr('media_player.radio_wohnzimmer', 'volume_level') == None)
-            or (is_state('media_player.radio_arbeitszimmer', 'playing') and state_attr('media_player.radio_arbeitszimmer', 'volume_level') == None)
-            or (is_state('media_player.radio_badezimmer', 'playing') and state_attr('media_player.radio_badezimmer', 'volume_level') == None)
-            or (is_state('media_player.radio_kueche', 'playing') and state_attr('media_player.radio_kueche', 'volume_level') == None)
-            or (is_state('media_player.radio_schlafzimmer', 'playing') and state_attr('media_player.radio_schlafzimmer', 'volume_level') == None)
-            or (is_state('media_player.radio_balkon', 'playing') and state_attr('media_player.radio_balkon', 'volume_level') == None)
+          {% if is_state_attr('media_player.radio_wohnzimmer', 'is_volume_muted', True)
+            or is_state_attr('media_player.radio_arbeitszimmer', 'is_volume_muted', True)
+            or is_state_attr('media_player.radio_badezimmer', 'is_volume_muted', True)
+            or is_state_attr('media_player.radio_kueche', 'is_volume_muted', True)
+            or is_state_attr('media_player.radio_schlafzimmer', 'is_volume_muted', True)
+            or is_state_attr('media_player.radio_balkon', 'is_volume_muted', True)
           %}
             mdi:volume-off
           {% else %}
             mdi:volume-high
-          {% endif %}      
+          {% endif %}                
         turn_on:
           service: script.radios_lautlos
         turn_off:
@@ -161,22 +161,18 @@ script:
   radios_lautlos:
       alias: Radios lautlos
       sequence:
-        - service: media_player.volume_set          
+        - service: media_player.volume_mute          
           data:
             entity_id: group.radio_mediaplayer, media_player.radio_balkon
-            volume_level: 0
+            is_volume_muted: True
           
   radios_laut:
       alias: Radios laut
       sequence:
-        - service: media_player.volume_set          
+        - service: media_player.volume_mute          
           data:
-            entity_id: group.radio_mediaplayer
-            volume_level: 0.4
-        - service: media_player.volume_set          
-          data:
-            entity_id: media_player.radio_balkon
-            volume_level: 0.2            
+            entity_id: group.radio_mediaplayer, media_player.radio_balkon
+            is_volume_muted: False       
 
   wohnung_radios_einschalten:
     alias: "Wohnung - Radios einschalten"
