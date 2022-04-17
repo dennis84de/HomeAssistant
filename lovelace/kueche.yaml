@@ -41,6 +41,8 @@ cards:
         name: Luftfeuchtigkeit
       - entity: sensor.kueche_luftdruck
         name: Luftdruck
+      - entity: sensor.kueche_perception
+        name: Klima        
 
   - type: glance
     title: Sensoren

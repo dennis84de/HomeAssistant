@@ -110,29 +110,6 @@ cards:
         name: Sportzimmer
         
   - type: custom:battery-state-card
-    title: Fenster
-    tap_action: more-info
-    sort_by_level: asc
-    color_thresholds:
-      - value: 10
-        color: "red"
-      - value: 30
-        color: "yellow"    
-    entities:
-      - entity: sensor.balkontuer_battery_level    
-        name: Balkontür
-      - entity: sensor.fenster_wohnzimmer_battery_level        
-        name: Wohnzimmer
-      - entity: sensor.fenster_schlafzimmer_battery_level        
-        name: Schlafzimmer
-      - entity: sensor.fenster_kueche_battery_level        
-        name: Küche
-      - entity: sensor.fenster_arbeitszimmer_battery_level        
-        name: Arbeitszimmer
-      - entity: sensor.fenster_sportzimmer_battery_level        
-        name: Sportzimmer
-
-  - type: custom:battery-state-card
     title: Bewegungsmelder
     tap_action: more-info
     sort_by_level: asc
@@ -162,6 +139,29 @@ cards:
         name: Schlafzimmer
       - entity: sensor.bewegungsmelder_bett_battery_level        
         name: Bett
+        
+  - type: custom:battery-state-card
+    title: Fenster
+    tap_action: more-info
+    sort_by_level: asc
+    color_thresholds:
+      - value: 10
+        color: "red"
+      - value: 30
+        color: "yellow"    
+    entities:
+      - entity: sensor.balkontuer_battery_level    
+        name: Balkontür
+      - entity: sensor.fenster_wohnzimmer_battery_level        
+        name: Wohnzimmer
+      - entity: sensor.fenster_schlafzimmer_battery_level        
+        name: Schlafzimmer
+      - entity: sensor.fenster_kueche_battery_level        
+        name: Küche
+      - entity: sensor.fenster_arbeitszimmer_battery_level        
+        name: Arbeitszimmer
+      - entity: sensor.fenster_sportzimmer_battery_level        
+        name: Sportzimmer
 
   - type: custom:battery-state-card
     title: Heizung

@@ -93,6 +93,8 @@ cards:
         name: Luftfeuchtigkeit
       - entity: sensor.schlafzimmer_luftdruck
         name: Luftdruck
+      - entity: sensor.schlafzimmer_perception
+        name: Klima        
 
   - type: glance
     title: Bewegungsmelder

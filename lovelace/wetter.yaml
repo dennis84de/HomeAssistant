@@ -59,7 +59,6 @@ cards:
       
   - type: entities
     title: Thermometer
-    show_header_toggle: false
     entities:
       - entity: sensor.parkplatz_luftfeuchtigkeit
         name: Luftfeuchtigkeit
@@ -104,24 +103,6 @@ cards:
     language: 'de' 
     
   - type: entities
-    title: Sonne
-    show_header_toggle: false
-    entities:
-      - entity: sensor.helligkeit_draussen
-        name: Helligkeit
-      - entity: sensor.uv_index_current
-      - entity: sensor.uv_index_max
-      - entity: sensor.zeit_sonne
-      - entity: binary_sensor.sommerzeit
-      
-  - type: entities
-    title: Sonne und Mond
-    show_header_toggle: false
-    entities:
-      - entity: sensor.tageszeit
-      - entity: sensor.mondphase
-
-  - type: entities
     title: Regen und Wind
     show_header_toggle: false
     entities:
@@ -130,7 +111,14 @@ cards:
       - entity: sensor.weatherbit_cloud_coverage
       - entity: sensor.weatherbit_wind_speed      
       - entity: sensor.windrichtung
-
+    
+  - type: entities
+    title: Sonne und Mond
+    show_header_toggle: false
+    entities:
+      - entity: sensor.tageszeit
+      - entity: sensor.mondphase
+      
   - type: entities
     title: Luft
     show_header_toggle: false
@@ -138,7 +126,7 @@ cards:
       - entity: sensor.weatherbit_relative_humidity
       - entity: sensor.weatherbit_station_pressure      
       - entity: sensor.co2_intensity        
-      - entity: sensor.grid_fossil_fuel_percentage
+      - entity: sensor.grid_fossil_fuel_percentage            
 
   - type: entities
     title: Pollen
@@ -149,14 +137,13 @@ cards:
       - entity: sensor.pollenflug_birke
         name: Birke
       - entity: sensor.pollenflug_roggen
-        name: Roggen
-
-  - type: picture-glance
-    title: Wetter
-    entities: []
-    camera_image: camera.wetter
-
-  - type: picture-glance
-    title: Dortmund
-    entities: []
-    camera_image: camera.dortmund
+        name: Roggen 
+            
+  - type: entities
+    title: Sonne
+    show_header_toggle: false
+    entities:
+      - entity: sensor.uv_index_current
+      - entity: sensor.uv_index_max
+      - entity: sensor.zeit_sonne
+      - entity: binary_sensor.sommerzeit        

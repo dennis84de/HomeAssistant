@@ -43,25 +43,9 @@ cards:
       - entity: sensor.arbeitszimmer_luftfeuchtigkeit   
         name: Luftfeuchtigkeit
       - entity: sensor.arbeitszimmer_luftdruck
-        name: Luftdruck        
-
-  - type: glance
-    title: Sensoren
-    show_header_toggle: false
-    entities:
-      - entity: binary_sensor.bewegungsmelder_arbeitszimmer
-        name: Bewegungsmelder
-      - entity: sensor.arbeitszimmer_helligkeit
-        name: Helligkeit
-
-  - type: glance
-    title: Heizung
-    show_header_toggle: false
-    entities:
-      - entity: binary_sensor.fenster_arbeitszimmer   
-        name: Fenster
-      - entity: climate.arbeitszimmer
-        name: Heizung
+        name: Luftdruck      
+      - entity: sensor.arbeitszimmer_perception
+        name: Klima        
 
   - type: entities
     title: Arbeit
@@ -72,8 +56,17 @@ cards:
       - entity: input_select.computer_arbeit_ausschalten
         name: Computer ausschalten        
       - entity: input_boolean.home_office_pause
-        name: Pause           
-
+        name: Pause     
+        
+  - type: glance
+    title: Sensoren
+    show_header_toggle: false
+    entities:
+      - entity: binary_sensor.bewegungsmelder_arbeitszimmer
+        name: Bewegungsmelder
+      - entity: sensor.arbeitszimmer_helligkeit
+        name: Helligkeit
+        
   - type: entities
     title: Staubsauger
     show_header_toggle: false
@@ -93,18 +86,16 @@ cards:
       - entity: sensor.staubsauger_reinigung_filter
       - entity: sensor.staubsauger_reinigung_buerste
       - entity: sensor.staubsauger_reinigung_seitenbuerste
-      - entity: sensor.staubsauger_reinigung_sensor    
-
-  - type: entities
-    title: Multimedia
+      - entity: sensor.staubsauger_reinigung_sensor                
+          
+  - type: glance
+    title: Heizung
     show_header_toggle: false
     entities:
-      - type: custom:mini-media-player
-        entity: media_player.radio_arbeitszimmer
-        name: Radio
-        hide:
-          source: true
-          progress: true
+      - entity: binary_sensor.fenster_arbeitszimmer   
+        name: Fenster
+      - entity: climate.arbeitszimmer
+        name: Heizung    
 
   - type: entities
     title: Drucker
@@ -116,3 +107,17 @@ cards:
       - entity: sensor.patrone_gelb
       - entity: sensor.patrone_cyan
       - entity: sensor.patrone_abfall
+      
+  - type: custom:layout-break  
+      
+  - type: entities
+    title: Multimedia
+    show_header_toggle: false
+    entities:
+      - type: custom:mini-media-player
+        entity: media_player.radio_arbeitszimmer
+        name: Radio
+        hide:
+          source: true
+          progress: true
+      

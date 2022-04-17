@@ -51,6 +51,8 @@ cards:
         name: Luftfeuchtigkeit
       - entity: sensor.sportzimmer_luftdruck
         name: Luftdruck
+      - entity: sensor.sportzimmer_perception
+        name: Klima           
         
   - type: entities
     title: Multimedia

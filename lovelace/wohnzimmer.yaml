@@ -94,8 +94,7 @@ cards:
     show_header_toggle: false
     entities:
       - entity: switch.wohnzimmer_radio
-        name: Radio                                  
-                 
+        name: Radio                                                   
   
   - type: entities
     title: Computer
@@ -130,6 +129,8 @@ cards:
         name: Temperatur
       - entity: sensor.wohnzimmer_luftfeuchtigkeit       
         name: Luftfeuchtigkeit
+      - entity: sensor.wohnzimmer_perception
+        name: Klima
 
   - type: conditional
     conditions:

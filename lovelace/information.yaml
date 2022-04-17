@@ -131,8 +131,7 @@ cards:
           secondary_info: "[[ if(binary_sensor.schlechtes_wetter.state == 'on', '<b style='color:red'>Schlechtes Wetter</b>', '') ]]"        
         - entity: input_datetime.arbeit_beginn
           name: Arbeitsbeginn    
-         
-      
+               
   - type: conditional
     conditions:
       - entity: sensor.bvb_spiel
@@ -222,38 +221,20 @@ cards:
       entities:
         - entity: sensor.fahrzeit_zur_arbeit
         - entity: sensor.fahrzeit_nach_hause      
-       
-  - type: custom:stack-in-card    
-    cards:
-      - type: horizontal-stack
-        cards:          
-          - type: custom:mini-graph-card            
-            line_width: 2
-            animate: true
-            hour24: true
-            hours_to_show: 120
-            lower_bound: 1.8
-            show:                            
-              icon: false
-              points: false
-            entities:
-              - entity: sensor.tankstelle_real
-                name: Real
-              - entity: sensor.tankstelle_jet_dortmund
-                name: Jet Dortmund
-              - entity: sensor.tankstelle_jet_mulheim
-                name: Jet Mülheim
-      - type: horizontal-stack
-        cards:               
-          - type: glance
-            entities:              
-              - entity: binary_sensor.supermarkt_tankstelle_wulfshofstrasse_6_8_status
-                name: Real     
-          - type: glance
-            entities:              
-              - entity: binary_sensor.jet_provinzialstr_229_status
-                name: Jet Dortmund    
-          - type: glance
-            entities:              
-              - entity: binary_sensor.jet_strassburger_allee_75_status
-                name: Jet Mülheim
+      
+  - type: custom:mini-graph-card            
+    line_width: 2
+    animate: true
+    hour24: true
+    hours_to_show: 120
+    lower_bound: 1.8
+    show:                            
+      icon: false
+      points: false
+    entities:
+      - entity: sensor.tankstelle_real
+        name: Real
+      - entity: sensor.tankstelle_jet_dortmund
+        name: Jet Dortmund
+      - entity: sensor.tankstelle_jet_mulheim
+        name: Jet Mülheim

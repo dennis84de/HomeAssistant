@@ -39,6 +39,8 @@ cards:
         name: Luftfeuchtigkeit
       - entity: sensor.flur_luftdruck
         name: Luftdruck
+      - entity: sensor.flur_perception
+        name: Klima             
 
   - type: entities
     title: Multimedia
