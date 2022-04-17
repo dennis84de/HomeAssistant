@@ -228,6 +228,11 @@ automation:
         entity_id: persistent_notification.homeassistant_check_config
         to: 'notifying'
     action:
+      - service: media_player.play_media
+        data:
+          entity_id: media_player.squeezebox
+          media_content_id: http://192.168.2.75:8123/local/sounds/winxp_error.mp3
+          media_content_type: music  
       - service: !secret tts_service
         data:
           echo: "wohnzimmer"

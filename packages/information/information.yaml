@@ -237,6 +237,10 @@ panel_iframe:
     url: http://192.168.2.100/infoscreen/
 
 homeassistant:
+  customize_glob:
+    sensor.*_perception:
+      icon: mdi:home-thermometer-outline     
+      
   customize:      
     binary_sensor.arbeitstag:
       icon: mdi:account-hard-hat

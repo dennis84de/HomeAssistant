@@ -32,14 +32,7 @@ binary_sensor:
 
       sonne_tagsueber:
         friendly_name: "Sonne tagsüber"
-        value_template: >-         
-          {% if is_state('sensor.balkon_helligkeit', None) or is_state('sensor.balkon_helligkeit', 'unknown') or is_state('sensor.balkon_helligkeit', '0') %}
-            {% set helligkeit = states('sensor.helligkeit_draussen') | float(0) %}           
-          {% else %}
-            {% set helligkeit = states('sensor.balkon_helligkeit_durchschnitt') | float(0) %}            
-          {% endif %}
-          
-          {{ helligkeit > states('input_number.helligkeit_grenzwert') | float(500) }}
+        value_template: "{{ states('sensor.balkon_helligkeit_durchschnitt') | float(0) > states('input_number.helligkeit_grenzwert') | float(500) }}"
           
       sommerzeit:
         friendly_name: "Sommerzeit"     
@@ -49,9 +42,9 @@ binary_sensor:
 sensor:
   - platform: mold_indicator
     name: Schimmelindikator
-    indoor_temp_sensor: sensor.mold_wohnzimmer_temperatur
-    indoor_humidity_sensor: sensor.mold_wohnzimmer_luftfeuchtigkeit
-    outdoor_temp_sensor: sensor.mold_balkon_temperatur
+    indoor_temp_sensor: sensor.wohnzimmer_temperatur
+    indoor_humidity_sensor: sensor.wohnzimmer_luftfeuchtigkeit
+    outdoor_temp_sensor: sensor.bewegungsmelder_balkon_temperatur
     calibration_factor: 1.16
 
   - platform: average
@@ -89,31 +82,6 @@ sensor:
     
   - platform: template
     sensors:
-      mold_wohnzimmer_temperatur:
-        value_template: >-
-          {% if is_state('sensor.wohnzimmer_temperatur', 'unavailable') %}
-            {{ 0.00 | float(0) }}
-          {% else %}
-            {{ states('sensor.wohnzimmer_temperatur') | float(0) }}
-          {% endif %}
-        unit_of_measurement: '°C'
-      mold_wohnzimmer_luftfeuchtigkeit:
-        value_template: >-
-          {% if is_state('sensor.wohnzimmer_luftfeuchtigkeit', 'unavailable') %}
-            {{ 0.00 | float(0) }}
-          {% else %}
-            {{ states('sensor.wohnzimmer_luftfeuchtigkeit') | float(0) }}
-          {% endif %}        
-        unit_of_measurement: '%'
-      mold_balkon_temperatur:
-        value_template: >-        
-          {% if is_state('sensor.bewegungsmelder_balkon_temperatur', 'unavailable') %}
-            {{ 0.00 | float(0) }}
-          {% else %}
-            {{ states('sensor.bewegungsmelder_balkon_temperatur') | float(0) }}
-          {% endif %}          
-        unit_of_measurement: '°C'
-
       wetterlage:
         friendly_name: 'Wetterlage'
         icon_template: mdi:weather-windy-variant
@@ -124,75 +92,6 @@ sensor:
             and (states('sensor.weatherbit_relative_humidity') | int(0) > 50)) %} Frost
           {% elif (states('sensor.weatherbit_precipitation') | int(0) > 7) %} Regen
           {% else %} Klar {% endif %}
-
-      helligkeit_draussen:
-          friendly_name: Helligkeit
-          icon_template: mdi:brightness-auto
-          unit_of_measurement: lx
-          attribute_templates:
-            current_condition: |
-              {%- set factors = namespace(current_condition='') %}
-              
-              {%- set weather_sensors = [
-                "weather.buienradar",
-                "weather.dwd_weather_dortmund",
-                "weather.weatherbit"
-              ] %}
-              
-              {%- for sensor in weather_sensors if states(sensor) != "unknown" and factors.current_condition == "" %}
-                {%- set factors.current_condition = states(sensor) %}
-              {%- endfor %}
-              
-              {%- set current_condition = factors.current_condition|lower|replace("partly cloudy w/ ","")|replace("mostly cloudy w/ ","")|replace("freezing","")|replace("and","")|replace("-", " ")|replace("_", " ")|replace("(","")|replace(")","")|replace(" ", "") %}
-              
-              {{ current_condition }}
-            condition_factor: |
-              {% set factors = namespace(condition='') %}
-              {% set current_condition = state_attr("sensor.helligkeit_draussen","current_condition") %}
-              
-              {%- set condition_factors = {
-                "10000": ("clear", "clearnight", "sunny", "windy", "exceptional"),
-                "7500": ("partlycloudy", "partlysunny", "mostlysunny", "mostlyclear", "hazy", "hazysunshine", "intermittentclouds"),
-                "2500": ("cloudy", "mostlycloudy"),
-                "1000": ("fog", "rainy", "showers", "pouring", "snowy", "snowyheavy", "snowyrainy", "flurries", "chanceflurries", "chancerain", "chancesleet", "drearyovercast", "sleet"),
-                "200": ("hail", "lightning", "tstorms")
-              } %}
-              
-              {%- for factor in condition_factors if current_condition in condition_factors[factor] %}
-                {%- set factors.condition = factor %}
-              {%- endfor %}
-              
-              {{ factors.condition }}
-            sun_factor: |
-              {% set factors = namespace(sun='') %}
-              {%- set right_now = now() | as_timestamp %}
-              {%- set sunrise = states("sensor.sunrise") | as_timestamp %}
-              {%- set sunrise_begin = states("sensor.dawn") | as_timestamp %}
-              {%- set sunrise_end = sunrise + (40 * 60) %}
-              {%- set sunset = states("sensor.sunset") | as_timestamp %}
-              {%- set sunset_begin = sunset - (40 * 60) %}
-              {%- set sunset_end = states("sensor.dusk") | as_timestamp %}
-              
-              {%- if sunrise_end < right_now and right_now < sunset_begin %}
-                {%- set factors.sun = 1 %}
-              {%- elif sunset_end < right_now or right_now < sunrise_begin %}
-                {%- set factors.sun = 0 %}
-              {%- elif right_now <= sunrise_end %}
-                {%- set factors.sun = (right_now - sunrise_begin) / (60*60) %}
-              {%- else %}
-                {%- set factors.sun = (sunset_end - right_now) / (60*60) %}
-              {%- endif %}
-
-              {%- set factors.sun = 1 if factors.sun > 1 else factors.sun %}
-
-              {{ factors.sun }}
-          value_template: |
-            {%- set sun_factor = state_attr("sensor.helligkeit_draussen","sun_factor") %}
-            {%- set condition_factor = state_attr("sensor.helligkeit_draussen","condition_factor") %}
-
-            {%- set illuminance = (sun_factor|float * condition_factor|float) | round %}
-            {%- set illuminance = 10 if illuminance < 10 else illuminance %}
-            {{ illuminance }}
 
       tageszeit:
         friendly_name: Tageszeit
@@ -294,7 +193,7 @@ sensor:
         icon_template: mdi:compass
         value_template: >-
           {% set winbearing = (states('sensor.weatherbit_wind_direction') | float(0) / 45) | int(0) | round + 1 %}
-          {% set winddir = ['Nord', 'NO','Ost','SO','Süd','SW','West','NW']%}
+          {% set winddir = ['Nord', 'Nordost','Ost','Südost','Süd','Südwest','West','Nordwest']%}
           
           {{ winddir[winbearing]}}
         entity_picture_template: >-

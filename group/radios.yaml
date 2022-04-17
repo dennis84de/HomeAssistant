@@ -37,4 +37,4 @@ radio_mediaplayer:
     - media_player.radio_wohnzimmer
     - media_player.radio_schlafzimmer
     - media_player.radio_arbeitszimmer
-    - media_player.radio_flur    
+    - media_player.radio_flur
