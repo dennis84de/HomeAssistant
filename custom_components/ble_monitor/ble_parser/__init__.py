@@ -8,16 +8,16 @@ from .atc import parse_atc
 from .bluemaestro import parse_bluemaestro
 from .bparasite import parse_bparasite
 from .brifit import parse_brifit
-from .const import GATT_CHARACTERISTICS, TILT_TYPES
+from .const import TILT_TYPES
 from .govee import parse_govee
 from .ha_ble import parse_ha_ble
-from .ha_ble_legacy import parse_ha_ble_legacy
 from .hhcc import parse_hhcc
 from .ibeacon import parse_ibeacon
 from .inkbird import parse_inkbird
 from .inode import parse_inode
 from .jinou import parse_jinou
 from .kegtron import parse_kegtron
+from .kkm import parse_kkm
 from .laica import parse_laica
 from .miscale import parse_miscale
 from .moat import parse_moat
@@ -170,16 +170,17 @@ class BleParser:
                         sensor_data = parse_xiaomi(self, service_data, mac, rssi)
                         break
                     elif uuid16 == 0xFEAA:
-                        # UUID16 = Google (used by Ruuvitag V2/V4)
-                        sensor_data = parse_ruuvitag(self, service_data, mac, rssi)
-                        break
+                        if len(service_data) == 19:
+                            # UUID16 = Google (used by KKM)
+                            sensor_data = parse_kkm(self, service_data, mac, rssi)
+                            break
+                        elif len(service_data) >= 23:
+                            # UUID16 = Google (used by Ruuvitag V2/V4)
+                            sensor_data = parse_ruuvitag(self, service_data, mac, rssi)
+                            break
                     elif uuid16 == 0xFFF9:
                         # UUID16 = FIDO (used by Cleargrass)
                         sensor_data = parse_qingping(self, service_data, mac, rssi)
-                        break
-                    elif uuid16 in GATT_CHARACTERISTICS and shortened_local_name == "HA_BLE":
-                        # HA BLE legacy (deprecated)
-                        sensor_data = parse_ha_ble_legacy(self, service_data_list, mac, rssi)
                         break
                     elif uuid16 == 0x2A6E or uuid16 == 0x2A6F:
                         # UUID16 = Temperature and Humidity (used by Teltonika)
@@ -274,6 +275,10 @@ class BleParser:
                         break
                     elif service_class_uuid16 == 0x5183 and data_len == 0x11:
                         # Govee H5183
+                        sensor_data = parse_govee(self, man_spec_data, mac, rssi)
+                        break
+                    elif service_class_uuid16 == 0x5185 and data_len == 0x17:
+                        # Govee H5185
                         sensor_data = parse_govee(self, man_spec_data, mac, rssi)
                         break
                     elif service_class_uuid16 == 0xF0FF:
