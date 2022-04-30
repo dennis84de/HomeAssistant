@@ -18,3 +18,37 @@ template:
       - name: Letzte Bewegung
         icon: mdi:run
         state: "{{ trigger.to_state.attributes.friendly_name }}"          
+        
+automation:
+  - alias: "Bewegungsmelder zurücksetzen"
+    id: "bewegungsmelder_zuruecksetzen"
+    mode: parallel
+    max: 10    
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.bewegungsmelder_arbeitszimmer
+      - platform: state
+        entity_id: binary_sensor.bewegungsmelder_flur_vorne
+      - platform: state
+        entity_id: binary_sensor.bewegungsmelder_flur_hinten
+      - platform: state
+        entity_id: binary_sensor.bewegungsmelder_kueche
+      - platform: state
+        entity_id: binary_sensor.bewegungsmelder_sportzimmer    
+      - platform: state
+        entity_id: binary_sensor.bewegungsmelder_schlafzimmer    
+      - platform: state
+        entity_id: binary_sensor.bewegungsmelder_bett        
+    condition:
+      - condition: template
+        value_template: '{{ trigger.to_state.state == "on" }}'
+    action:
+      - delay:
+          seconds: 5
+      - service: zha.set_zigbee_cluster_attribute
+        data:
+          ieee: '{{ device_attr(trigger.entity_id, "identifiers") | first | last }}'
+          endpoint_id: 1
+          cluster_id: 1280
+          attribute: 2
+          value: '0'

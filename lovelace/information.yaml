@@ -19,7 +19,7 @@ popup_cards:
         - entity: device_tracker.handygps
           name: Gps                 
      
-cards:             
+cards:                 
   - type: conditional
     view_layout:
       column: 1
