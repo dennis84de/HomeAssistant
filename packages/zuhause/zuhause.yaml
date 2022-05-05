@@ -206,7 +206,7 @@ automation:
               - service: script.zu_hause     
       - choose:    
           - conditions:      
-              - "{{ states('input_number.home_office_heute_gearbeitet') > 0 }}"
+              - "{{ (states('input_number.home_office_heute_gearbeitet') | int(0)) > 0 }}"
             sequence:                 
               - service: input_number.set_value        
                 data:

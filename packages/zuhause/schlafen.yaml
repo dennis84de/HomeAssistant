@@ -180,7 +180,7 @@ automation:
                           message: "Der Wecker ist noch nicht gestellt."
               - choose:
                   - conditions:
-                      - "{{ weckerZeit }}"
+                      - "{{ weckerZeit is defined }}"
                       - "{{ tagWecker != tagHeute + 1 }}"
                     sequence:
                       - service: !secret tts_service
@@ -190,7 +190,7 @@ automation:
                           message: "Der Wecker ist noch nicht für morgen gestellt."                         
               - choose:
                   - conditions:
-                      - "{{ weckerZeit }}"
+                      - "{{ weckerZeit is defined }}"
                       - "{{ tagWecker == tagHeute + 1 }}"
                       - "{{ bueroMorgen }}"
                       - "{{ weckerZeit == weckerHomeOfficeZeit }}"
@@ -202,7 +202,7 @@ automation:
                           message: "Morgen ist Büro, aber der Wecker ist noch für das Home Office gestellt."                         
               - choose:
                   - conditions:
-                      - "{{ weckerZeit }}"
+                      - "{{ weckerZeit is defined }}"
                       - "{{ tagWecker == tagHeute + 1 }}"                    
                       - "{{ not bueroMorgen }}"
                       - "{{ weckerZeit != weckerHomeOfficeZeit }}"
@@ -238,7 +238,7 @@ automation:
                           message: "Der Wecker ist noch nicht gestellt."
               - choose:
                   - conditions:
-                      - "{{ weckerZeit }}"
+                      - "{{ weckerZeit is defined }}"
                       - "{{ tagWecker != tagHeute }}"
                     sequence:
                       - service: !secret tts_service
@@ -248,7 +248,7 @@ automation:
                           message: "Der Wecker ist noch nicht für heute gestellt."                  
               - choose:
                   - conditions:
-                      - "{{ weckerZeit }}"
+                      - "{{ weckerZeit is defined }}"
                       - "{{ tagWecker == tagHeute }}"                    
                       - "{{ bueroHeute }}"
                       - "{{ weckerZeit == weckerHomeOfficeZeit }}"
@@ -260,7 +260,7 @@ automation:
                           message: "Heute ist Büro, aber der Wecker ist noch für das Home Office gestellt."                         
               - choose:
                   - conditions:
-                      - "{{ weckerZeit }}"
+                      - "{{ weckerZeit is defined }}"
                       - "{{ tagWecker == tagHeute }}"                        
                       - "{{ not bueroHeute }}"
                       - "{{ weckerZeit != weckerHomeOfficeZeit }}"

@@ -197,8 +197,6 @@ cards:
         name: Küche
       - entity: sensor.arbeitszimmer_temperatur
         name: Arbeitszimmer
-      - entity: sensor.sportzimmer_temperatur        
-        name: Sportzimmer
         
   - type: conditional
     view_layout:

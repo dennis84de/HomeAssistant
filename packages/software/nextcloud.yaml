@@ -56,9 +56,14 @@ nextcloud:
 automation:
   - alias: "Nextcloud - Update verfügbar"
     id: "nextcloud_update_verfuegbar"
+    variables:       
+      aktuelle_version: >-
+        {% set latestVersion = states('sensor.nextcloud_server_latest_tag').replace('v', '').split('.') %}
+        {{ latestVersion[0] ~ '.' ~ latestVersion[1] ~ '.' ~ latestVersion[2] }}
     trigger:
       - platform: state
         entity_id: binary_sensor.nextcloud_update_available
+        from: 'off'
         to: 'on'
     action:
       - choose:
@@ -70,11 +75,14 @@ automation:
               - service: notify.telegram
                 data:
                   title: 'Neue Version'
-                  message: "Nextcloud {{ states('sensor.nextcloud_server_latest_tag') }} ist jetzt verfügbar."
+                  message: >-
+                    {% set latestVersion = states('sensor.nextcloud_server_latest_tag').replace('v', '').split('.') %}
+                    
+                    "Nextcloud {{ aktuelle_version }} ist jetzt verfügbar."
         default:
           - service: persistent_notification.create
             data:
               title: "Update verfügbar"
-              message: "Nextcloud {{ states('sensor.nextcloud_server_latest_tag') }} ist jetzt verfügbar."
+              message: "Nextcloud {{ aktuelle_version }} ist jetzt verfügbar."
               notification_id: nextcloud_neue_version
                    

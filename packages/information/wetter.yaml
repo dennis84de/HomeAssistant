@@ -47,12 +47,12 @@ sensor:
     outdoor_temp_sensor: sensor.bewegungsmelder_balkon_temperatur
     calibration_factor: 1.16
 
-  - platform: average
-    name: 'Balkon Helligkeit Durchschnitt'
-    duration:
-      minutes: 30
-    entities:
-      - sensor.balkon_helligkeit
+#  - platform: average
+#    name: 'Balkon Helligkeit Durchschnitt'
+#    duration:
+#      minutes: 30
+#    entities:
+#      - sensor.balkon_helligkeit
           
   - platform: dwd_weather_warnings
     region_name: Stadt Dortmund

@@ -29,17 +29,18 @@ automation:
         data:
           echo: "badezimmer"
           message: "Alle Geräte werden ausgeschaltet. Viel Spaß beim Baden."
-      - service: entity_controller.enable_stay_mode
-        entity_id: entity_controller.bewegung_badezimmer
-      - service: light.turn_on
-        entity_id: light.badezimmerschrank        
-      - service: input_boolean.turn_on
-        entity_id: input_boolean.baden_aktiv
-      - service: switch.turn_off
-        entity_id: switch.watchtv_wohnzimmer, switch.computer
-      - service: script.radios_ausschalten
-      - service: light.turn_off
-        entity_id: light.wohnzimmer_couch, light.wohnzimmer_strahler, light.wohnzimmer_schrank, light.kueche_regal, light.kueche_schrank
+      - parallel:           
+          - service: entity_controller.enable_stay_mode
+            entity_id: entity_controller.bewegung_badezimmer
+          - service: light.turn_on
+            entity_id: light.badezimmerschrank        
+          - service: input_boolean.turn_on
+            entity_id: input_boolean.baden_aktiv
+          - service: switch.turn_off
+            entity_id: switch.watchtv_wohnzimmer, switch.computer
+          - service: script.radios_ausschalten
+          - service: light.turn_off
+            entity_id: light.wohnzimmer_couch, light.wohnzimmer_strahler, light.wohnzimmer_schrank, light.kueche_regal, light.kueche_schrank
         
   - alias: "Baden - Beenden"
     id: "baden_beenden"
@@ -60,32 +61,33 @@ automation:
       - service: !secret tts_service
         data:
           echo: "badezimmer"
-          message: "Alle Geräte werden wieder eingeschaltet."          
-      - service: input_boolean.turn_off
-        entity_id: input_boolean.baden_aktiv
-      - service: entity_controller.disable_stay_mode
-        entity_id: entity_controller.bewegung_badezimmer       
-      - service: light.turn_off
-        entity_id: light.badezimmerschrank
-      - service: switch.turn_on
-        entity_id: switch.computer     
-      - choose:
-          conditions:
-            - condition: state
-              entity_id: binary_sensor.sonne_tagsueber
-              state: 'off'
-          sequence:
-            - service: light.turn_on
-              entity_id: light.wohnzimmer_schrank        
-      - choose:
-          conditions:
-            - "{{ is_state('binary_sensor.nachts', 'off') }}"
-            - "{{ is_state('binary_sensor.spatabends', 'off') }}"            
-          sequence:
-            - service: script.wohnung_radios_einschalten
-        default:
+          message: "Alle Geräte werden wieder eingeschaltet."     
+      - parallel:           
+          - service: input_boolean.turn_off
+            entity_id: input_boolean.baden_aktiv
+          - service: entity_controller.disable_stay_mode
+            entity_id: entity_controller.bewegung_badezimmer       
+          - service: light.turn_off
+            entity_id: light.badezimmerschrank
           - service: switch.turn_on
-            entity_id: switch.watchtv_wohnzimmer, switch.badezimmer_radio       
-          - wait_template: "{{ is_state('media_player.radio_badezimmer', 'playing') }}"
-          - service: media_player.media_pause
-            entity_id: media_player.radio_badezimmer
+            entity_id: switch.computer     
+          - choose:
+              conditions:
+                - condition: state
+                  entity_id: binary_sensor.sonne_tagsueber
+                  state: 'off'
+              sequence:
+                - service: light.turn_on
+                  entity_id: light.wohnzimmer_schrank        
+          - choose:
+              conditions:
+                - "{{ is_state('binary_sensor.nachts', 'off') }}"
+                - "{{ is_state('binary_sensor.spatabends', 'off') }}"            
+              sequence:
+                - service: script.wohnung_radios_einschalten
+            default:
+              - service: switch.turn_on
+                entity_id: switch.watchtv_wohnzimmer, switch.badezimmer_radio       
+              - wait_template: "{{ is_state('media_player.radio_badezimmer', 'playing') }}"
+              - service: media_player.media_pause
+                entity_id: media_player.radio_badezimmer

@@ -35,7 +35,7 @@ recorder:
       - alarm_control_panel
       - vacuum
     entity_globs:
-      - devicve_tracker.handy*  
+      - device_tracker.handy*  
   exclude:
     entities:
       - sensor.home_assistant_overhead_satellites
@@ -73,6 +73,8 @@ logbook:
       - switch.pc_arbeit   
       - switch.arbeitszimmer_lampe
       - switch.kuechenschrank
+    entity_globs:
+      - switch.*_led
 
 history:
   include:
@@ -95,15 +97,10 @@ history:
       - switch.kuechenschrank
       - switch.schlafzimmer_fernseher_remote
       - switch.schlafzimmer_fernseher_licht      
-      - switch.echo_badezimmer_do_not_disturb_switch
-      - switch.echo_kueche_do_not_disturb_switch
-      - switch.echo_schlafzimmer_do_not_disturb_switch
-      - switch.echo_wohnzimmer_do_not_disturb_switch
-      - switch.echo_flur_do_not_disturb_switch 
-      - switch.adguard_filtering
-      - switch.adguard_parental_control
-      - switch.adguard_protection
-      - switch.adguard_safe_browsing
-      - switch.adguard_safe_search
+
       - switch.fritz_box_7272_call_deflection_0
       - switch.fritz_box_7272_call_deflection_1
+    entity_globs:
+      - switch.*_led      
+      - switch.echo_*_do_not_disturb_switch
+      - switch.adguard_*

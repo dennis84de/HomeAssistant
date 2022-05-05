@@ -50,15 +50,12 @@ lovelace:
 panel_custom:
   - name: panel-redirect
     url_path: redirect-server-controls
-    sidebar_title: Serversteuerung
-    sidebar_icon: mdi:server
+    sidebar_title: Logs
+    sidebar_icon: mdi:text
     module_url: /local/scripts/panel-redirect.js
     config:
-      target: /config/server_control
-
-breaking_changes:
-  name: Wichtige Änderungen
-
+      target: /config/logs
+      
 browser_mod:
   disable:
     - all
@@ -76,14 +73,6 @@ zone:
     icon: mdi:wan 
     
 sensor:
-  - platform: sql
-    db_url: !secret mariadb_url    
-    queries:
-      - name: database_size
-        query: 'SELECT table_schema "database", Round(Sum(data_length + index_length) / 1024 / 1024, 1) "value" FROM information_schema.tables WHERE table_schema="homeassistant" GROUP BY table_schema;'
-        column: 'value'
-        unit_of_measurement: 'MB'
-
   - platform: command_line
     name: Installierte Version
     command: "head -5 /config/.HA_VERSION"
@@ -100,12 +89,20 @@ sensor:
 
   - platform: template
     sensors:
+      hass_installierte_version:
+        friendly_name: "Installierte Version"
+        icon_template: mdi:cloud-sync
+        value_template: "{{ state_attr('update.home_assistant_core_update', 'installed_version') }}"
+        
+      hass_aktuelle_version:
+        friendly_name: "Aktuelle Version"
+        icon_template: mdi:cloud-sync-outline
+        value_template: "{{ state_attr('update.home_assistant_core_update', 'latest_version') }}"
+        
       rpi_letzter_neustart:
         friendly_name: "Letzter Neustart"
-        icon_template: >-
-          mdi:av-timer
-        value_template: >-
-          {{ as_timestamp(states('sensor.last_boot'), None) | timestamp_custom("%d.%m.%Y") | string }}
+        icon_template: mdi:av-timer
+        value_template: "{{ as_timestamp(states('sensor.last_boot'), None) | timestamp_custom('%d.%m.%Y') | string }}"
           
       laufzeit_minuten:
         friendly_name: "Laufzeit Minuten"
@@ -150,17 +147,13 @@ script:
       - service: hassio.addon_stdin
         data:
           addon: 15d21743_samba_backup
-          input: restore-sensor          
-      - choose:
-          - conditions:
-            - condition: state
-              entity_id: person.dennis
-              state: 'not_home'
-            sequence:
-              - service: notify.telegram
-                data:                  
-                  message: "Home Assistant wurde neugestartet."
-        default:
+          input: restore-sensor     
+      - if: "{{ is_state('person.dennis', 'not_home') }}"
+        then:
+          - service: notify.telegram
+            data:                  
+              message: "Home Assistant wurde neugestartet."    
+        else:
           - service: script.zu_hause_standort
           - service: media_player.play_media
             data:
@@ -171,14 +164,14 @@ script:
           - service: !secret tts_service
             data:
               echo: "wohnzimmer"
-              message: "Home Assistant wurde neugestartet."      
+              message: "Home Assistant wurde neugestartet."              
       
 automation:
   - alias: "Home Assisant - Update verfügbar"
     id: "home_assistant_update_verfuegbar"
     trigger:
       - platform: state
-        entity_id: binary_sensor.hass_current_version_update_available
+        entity_id: update.home_assistant_core_update
         to: 'on'
     action:
       - choose:
@@ -190,12 +183,12 @@ automation:
               - service: notify.telegram
                 data:
                   title: 'Neue Version'
-                  message: "Home Assistant {{ states('sensor.hass_current_version') }} ist jetzt verfügbar."
+                  message: "Home Assistant {{ states('sensor.hass_aktuelle_version') }} ist jetzt verfügbar."
         default:
           - service: persistent_notification.create
             data:
               title: "Update verfügbar"
-              message: "Home Assistant {{ states('sensor.hass_current_version') }} ist jetzt verfügbar."
+              message: "Home Assistant {{ states('sensor.hass_aktuelle_version') }} ist jetzt verfügbar."
               notification_id: neue_version
                
   - alias: "Home Assistant - Gestartet"
@@ -263,9 +256,3 @@ homeassistant:
     sensor.database_size:
       friendly_name: Größe Datenbank
       icon: mdi:database
-      
-    sensor.hass_current_version:
-      friendly_name: Aktuelle Version
-      icon: mdi:cloud-sync-outline
-    sensor.installierte_version:
-      icon: mdi:cloud-sync
