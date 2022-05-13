@@ -8,7 +8,7 @@ binary_sensor:
     sensors:
       sonne_balkon:
         friendly_name: "Sonne Balkon"
-        value_template: "{{ states('sensor.balkon_helligkeit_durchschnitt') | float(0) > 100 }}"
+        value_template: "{{ states('sensor.balkon_helligkeit_mittelwert') | float(0) > 100 }}"
           
 automation:
   - alias: 'Licht Balkon - Einschalten'

@@ -18,35 +18,17 @@ device_tracker:
       computer_ping: !secret computer_host
 
 binary_sensor: 
-  - platform: mqtt
-    name: "Firefox Vollbild"
-    availability_topic: "iotlink/workgroup/computer/lwt"
-    payload_available: "ON"
-    payload_not_available: "OFF"    
-    state_topic: "iotlink/workgroup/computer/process-monitor/processes/firefox/sensor"
-    payload_on: "True"
-    payload_off: "False"
-    value_template: "{{ value_json.FullScreen if value_json is defined else False }}"
-    
-button:
-  - platform: mqtt
-    unique_id: computer_herunterfahren
-    name: "Computer Herunterfahren"
-    command_topic: "iotlink/workgroup/computer/commands/shutdown"
-    payload_press: ""
-    
-  - platform: mqtt
-    unique_id: computer_ruhezustand
-    name: "Computer Ruhezustand"
-    command_topic: "iotlink/workgroup/computer/commands/hibernate"
-    payload_press: ""
+  - platform: ping
+    host: !secret computer_host    
+    name: "Computer Ping"    
+    scan_interval: 30
     
 switch:
   - platform: template
     switches:
       pc:
         friendly_name: PC
-        value_template: "{{ is_state('device_tracker.computer_ping', 'home') }}"
+        value_template: "{{ is_state('binary_sensor.computer_ping', 'on') }}"
         icon_template: mdi:desktop-tower
         turn_on:
           - service: wake_on_lan.send_magic_packet

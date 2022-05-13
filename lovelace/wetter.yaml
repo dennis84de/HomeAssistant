@@ -95,8 +95,10 @@ cards:
     entities:
       - entity: sensor.balkon_helligkeit
         name: Helligkeit
-      - entity: sensor.balkon_helligkeit_durchschnitt
-        name: Durchschnitt               
+      - entity: sensor.balkon_helligkeit_mittelwert
+        name: Mittelwert        
+      - entity: sensor.bewegungsmelder_balkon_helligkeit
+        name: Bewegungsmelder            
         
   - type: custom:sun-card
     title: Sonnenstand

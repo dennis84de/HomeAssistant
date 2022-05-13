@@ -221,11 +221,11 @@ automation:
       - choose:
           - conditions:
               - condition: state
-                entity_id: binary_sensor.firefox_wohnzimmer_aktiv
+                entity_id: binary_sensor.youtube_aktiv
                 state: 'on'      
             sequence:
               - service: input_boolean.turn_on
-                entity_id: input_boolean.firefox_wohnzimmer_pausiert
+                entity_id: input_boolean.youtube_wohnzimmer_pausiert
               - service: button.press
                 entity_id: button.computer_wiedergabe                    
       - choose:
@@ -242,7 +242,7 @@ automation:
                     entity_id: media_player.kodi_wohnzimmer
                     state: 'idle'            
               - condition: state
-                entity_id: binary_sensor.firefox_wohnzimmer_aktiv
+                entity_id: binary_sensor.youtube_aktiv
                 state: 'off'     
               - condition: state
                 entity_id: switch.wiedergabe_aktiv
@@ -350,15 +350,15 @@ automation:
       - choose:
           - conditions:
               - condition: state
-                entity_id: input_boolean.firefox_wohnzimmer_pausiert
+                entity_id: input_boolean.youtube_wohnzimmer_pausiert
                 state: 'on'            
             sequence:       
               - service: input_boolean.turn_off
-                entity_id: input_boolean.firefox_wohnzimmer_pausiert      
+                entity_id: input_boolean.youtube_wohnzimmer_pausiert      
               - choose:
                   - conditions:
                       - condition: state
-                        entity_id: binary_sensor.firefox_wohnzimmer_aktiv
+                        entity_id: binary_sensor.youtube_aktiv
                         state: 'on'
                     sequence:
                       - service: button.press

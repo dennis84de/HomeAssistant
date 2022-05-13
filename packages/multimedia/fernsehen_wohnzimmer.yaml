@@ -13,34 +13,21 @@ input_boolean:
   kodi_wohnzimmer_pausiert:
     name: Kodi Wohnzimmer pausiert    
 
-  firefox_wohnzimmer_aktiv:
-    name: Firefox Wohnzimmer aktiv
+  youtube_wohnzimmer_aktiv:
+    name: Youtube Wohnzimmer aktiv
     icon: mdi:youtube-tv
     
-  firefox_wohnzimmer_pausiert:
-    name: Firefox Wohnzimmer pausiert    
+  youtube_wohnzimmer_pausiert:
+    name: Youtube Wohnzimmer pausiert    
     
 binary_sensor:
   - platform: template
     sensors:
-      firefox_wohnzimmer_aktiv:
-        friendly_name: Firefox aktiv
+      youtube_aktiv:
+        friendly_name: Youtube aktiv
         icon_template: "mdi:youtube-tv"
-        value_template: "{{ is_state('input_boolean.firefox_wohnzimmer_aktiv', 'on') }}"
-    
-button:   
-  - platform: mqtt
-    unique_id: computer_kodi
-    name: "Computer Kodi"
-    command_topic: "iotlink/workgroup/computer/commands/run"
-    payload_press: '{ "command": "C:\\Program Files\\Kodi\\kodi.exe", "visible": true, "fallback": true }'
-    
-  - platform: mqtt
-    unique_id: computer_wiedergabe
-    name: "Computer Wiedergabe"
-    command_topic: "iotlink/workgroup/computer/commands/media/playpause"
-    payload_press: ""
-    
+        value_template: "{{ 'YouTube - Mozilla Firefox' in states('sensor.computer_aktives_fenster') }}" 
+        
 cover:
   - platform: template
     covers:
@@ -366,8 +353,8 @@ automation:
         target:
           entity_id: media_player.kodi_wohnzimmer
         
-  - alias: "Firefox Wohnzimmer - Pausieren"
-    id: "firefox_wohnzimmer_pausieren"
+  - alias: "Youtube Wohnzimmer - Pausieren"
+    id: "youtube_wohnzimmer_pausieren"
     trigger:
       - platform: state
         entity_id: binary_sensor.bewegungsmelder_flur_vorne
@@ -389,10 +376,10 @@ automation:
         id: schalter_balkon
     condition:
       - condition: state
-        entity_id: binary_sensor.firefox_wohnzimmer_aktiv
+        entity_id: binary_sensor.youtube_aktiv
         state: 'on'
       - condition: state
-        entity_id: input_boolean.firefox_wohnzimmer_pausiert
+        entity_id: input_boolean.youtube_wohnzimmer_pausiert
         state: 'off'        
       - condition: state
         entity_id: binary_sensor.besuch
@@ -415,33 +402,33 @@ automation:
           {% endif %}        
     action:
       - service: input_boolean.turn_on
-        entity_id: input_boolean.firefox_wohnzimmer_pausiert
+        entity_id: input_boolean.youtube_wohnzimmer_pausiert
       - service: button.press
         entity_id: button.computer_wiedergabe               
 
-  - alias: "Firefox Wohnzimmer - Status ändern"
-    id: "firefox_wohnzimmer_status_geaendert"
+  - alias: "Youtube Wohnzimmer - Status ändern"
+    id: "youtube_wohnzimmer_status_geaendert"
     trigger:
       - platform: state
-        entity_id: binary_sensor.firefox_vollbild
+        entity_id: binary_sensor.youtube_aktiv
     condition:
-      - "{{ trigger.to_state.state != states('input_boolean.firefox_wohnzimmer_aktiv') }}"
-      - "{{ not is_state('binary_sensor.firefox_vollbild', 'unavailable') }}"
-      - "{{ not is_state('binary_sensor.firefox_vollbild', 'unknown') }}"
+      - "{{ trigger.to_state.state != states('input_boolean.youtube_wohnzimmer_aktiv') }}"
+      - "{{ not is_state('binary_sensor.youtube_aktiv', 'unavailable') }}"
+      - "{{ not is_state('binary_sensor.youtube_aktiv', 'unknown') }}"
             
     action:
       - service: input_boolean.toggle
-        entity_id: input_boolean.firefox_wohnzimmer_aktiv           
+        entity_id: input_boolean.youtube_wohnzimmer_aktiv           
         
-  - alias: "Firefox Wohnzimmer - Starten"
-    id: "firefox_wohnzimmer_starten"
+  - alias: "Youtube Wohnzimmer - Starten"
+    id: "youtube_wohnzimmer_starten"
     trigger:
       - platform: state
         entity_id: binary_sensor.bewegungsmelder_wohnzimmer
         to: 'on'
     condition:
       - condition: state
-        entity_id: input_boolean.firefox_wohnzimmer_pausiert
+        entity_id: input_boolean.youtube_wohnzimmer_pausiert
         state: 'on'
       - condition: state
         entity_id: sensor.telefon
@@ -451,7 +438,7 @@ automation:
         state: 'idle'   
     action:
       - service: input_boolean.turn_off
-        entity_id: input_boolean.firefox_wohnzimmer_pausiert      
+        entity_id: input_boolean.youtube_wohnzimmer_pausiert      
       - service: button.press
         entity_id: button.computer_wiedergabe   
       - service: homeassistant.turn_off
