@@ -15,7 +15,7 @@ from homeassistant.components.camera import (SUPPORT_ON_OFF, SUPPORT_STREAM,
 from homeassistant.components.ffmpeg import CONF_EXTRA_ARGUMENTS, DATA_FFMPEG
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import (CONF_HOST, CONF_MAC, CONF_NAME, CONF_PASSWORD,
-                                 CONF_PORT, CONF_USERNAME)
+                                 CONF_PORT, CONF_USERNAME, STATE_OFF, STATE_ON)
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers import entity_platform
 from homeassistant.helpers.aiohttp_client import async_aiohttp_proxy_stream
@@ -138,10 +138,16 @@ class YiHackCamera(Camera):
 
     def update(self):
         """Return the state of the camera (privacy off = state on)."""
-        self._state = not get_privacy(self.hass, self._device_name)
+        conf = dict([
+            (CONF_HOST, self._host),
+            (CONF_PORT, self._port),
+            (CONF_USERNAME, self._user),
+            (CONF_PASSWORD, self._password),
+        ])
+        self._state = not get_privacy(self.hass, self._device_name, conf)
 
     def turn_off(self):
-        """Turn on privacy (set camera off)."""
+        """Set privacy true (set camera off)."""
         conf = dict([
             (CONF_HOST, self._host),
             (CONF_PORT, self._port),
@@ -150,11 +156,13 @@ class YiHackCamera(Camera):
         ])
         if not get_privacy(self.hass, self._device_name):
             _LOGGER.debug("Turn off camera %s", self._name)
-            set_power_on_in_progress(self.hass, self._device_name)
+            set_power_off_in_progress(self.hass, self._device_name)
             set_privacy(self.hass, self._device_name, True, conf)
+            self._state = False
+            self.schedule_update_ha_state(force_refresh=True)
 
     def turn_on(self):
-        """Turn off privacy (set camera on)."""
+        """Set privacy false (set camera on)."""
         conf = dict([
             (CONF_HOST, self._host),
             (CONF_PORT, self._port),
@@ -163,8 +171,10 @@ class YiHackCamera(Camera):
         ])
         if get_privacy(self.hass, self._device_name):
             _LOGGER.debug("Turn on Camera %s", self._name)
-            set_power_off_in_progress(self.hass, self._device_name)
+            set_power_on_in_progress(self.hass, self._device_name)
             set_privacy(self.hass, self._device_name, False, conf)
+            self._state = True
+            self.schedule_update_ha_state(force_refresh=True)
 
     async def stream_source(self) -> str:
         """Return the stream source."""
@@ -295,6 +305,8 @@ class YiHackCamera(Camera):
         await self.hass.async_add_executor_job(self._perform_ptz, movement, travel_time_str)
 
     def _perform_speak(self, language, sentence):
+        response = None
+
         auth = None
         if self._user or self._password:
             auth = HTTPBasicAuth(self._user, self._password)
@@ -343,7 +355,17 @@ class YiHackCamera(Camera):
     @property
     def is_on(self):
         """Determine whether the camera is on."""
+        # Hack: force a state update
+        self._state = not get_privacy(self.hass, self._device_name)
+        self.schedule_update_ha_state(force_refresh=False)
         return self._state
+
+    @property
+    def state(self):
+        """Return "on" if entity is on."""
+        if self._state:
+            return STATE_ON
+        return STATE_OFF
 
     @property
     def unique_id(self):
@@ -364,6 +386,7 @@ class YiHackCamera(Camera):
             "identifiers": {(DOMAIN, self._mac)},
             "manufacturer": DEFAULT_BRAND,
             "model": DOMAIN,
+            "configuration_url": self._http_base_url,
         }
 
 class YiHackMqttCamera(Camera):
@@ -377,6 +400,10 @@ class YiHackMqttCamera(Camera):
         self._name = self._device_name  + "_motion_detection_cam"
         self._unique_id = self._device_name + "_camd"
         self._mac = config.data[CONF_MAC]
+        self._host = config.data[CONF_HOST]
+        self._port = config.data[CONF_PORT]
+        self._user = config.data[CONF_USERNAME]
+        self._password = config.data[CONF_PASSWORD]
         self._state_topic = config.data[CONF_MQTT_PREFIX] + "/" + config.data[CONF_TOPIC_MOTION_DETECTION_IMAGE]
         self._last_image = None
         self._mqtt_subscription = None
@@ -384,7 +411,13 @@ class YiHackMqttCamera(Camera):
 
     def update(self):
         """Return the state of the camera (privacy off = state on)."""
-        self._state = not get_privacy(self.hass, self._device_name)
+        conf = dict([
+            (CONF_HOST, self._host),
+            (CONF_PORT, self._port),
+            (CONF_USERNAME, self._user),
+            (CONF_PASSWORD, self._password),
+        ])
+        self._state = not get_privacy(self.hass, self._device_name, conf)
 
     async def async_added_to_hass(self):
         """Subscribe to MQTT events."""
@@ -425,7 +458,17 @@ class YiHackMqttCamera(Camera):
     @property
     def is_on(self):
         """Determine whether the camera is on."""
+        # Hack: force a state update
+        self._state = not get_privacy(self.hass, self._device_name)
+        self.schedule_update_ha_state(force_refresh=False)
         return self._state
+
+    @property
+    def state(self):
+        """Return "on" if entity is on."""
+        if self._state:
+            return STATE_ON
+        return STATE_OFF
 
     @property
     def unique_id(self):

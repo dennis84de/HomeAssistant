@@ -31,7 +31,7 @@ class YiHackSwitch(SwitchEntity):
         self._port = config.data[CONF_PORT]
         self._user = config.data[CONF_USERNAME]
         self._password = config.data[CONF_PASSWORD]
-        self._state = None
+        self._state = False
 
     def update(self):
         """Return the state of the switch."""
@@ -42,7 +42,6 @@ class YiHackSwitch(SwitchEntity):
             (CONF_PASSWORD, self._password),
         ])
         self._state = get_privacy(self.hass, self._device_name, conf)
-        set_privacy(self.hass, self._device_name, self._state)
 
     def turn_off(self):
         """Turn off privacy (set camera on)."""
@@ -54,10 +53,12 @@ class YiHackSwitch(SwitchEntity):
         ])
         if get_privacy(self.hass, self._device_name):
             _LOGGER.debug("Turn off privacy, camera %s", self._name)
-            set_power_off_in_progress(self.hass, self._device_name)
-            #self.hass.async_add_executor_job(set_privacy, self.hass, False, conf)
+            # Turn off the privacy switch:
+            # power on the cam and set privacy false
+            set_power_on_in_progress(self.hass, self._device_name)
             set_privacy(self.hass, self._device_name, False, conf)
             self._state = False
+            self.schedule_update_ha_state(force_refresh=True)
 
     def turn_on(self):
         """Turn on privacy (set camera off)."""
@@ -69,10 +70,12 @@ class YiHackSwitch(SwitchEntity):
         ])
         if not get_privacy(self.hass, self._device_name):
             _LOGGER.debug("Turn on privacy, camera %s", self._name)
-            set_power_on_in_progress(self.hass, self._device_name)
-            #self.hass.async_add_executor_job(set_privacy, self.hass, True, conf)
+            # Turn on the privacy switch:
+            # power off the cam and set privacy true
+            set_power_off_in_progress(self.hass, self._device_name)
             set_privacy(self.hass, self._device_name, True, conf)
             self._state = True
+            self.schedule_update_ha_state(force_refresh=True)
 
     @property
     def is_on(self):

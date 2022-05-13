@@ -38,6 +38,7 @@ def get_status(config):
     if user or password:
         auth = HTTPBasicAuth(user, password)
 
+    response = None
     try:
         response = requests.get("http://" + host + ":" + str(port) + "/cgi-bin/status.json", timeout=HTTP_TIMEOUT, auth=auth)
         if response.status_code >= 300:
@@ -65,6 +66,7 @@ def get_system_conf(config):
     if user or password:
         auth = HTTPBasicAuth(user, password)
 
+    response = None
     try:
         response = requests.get("http://" + host + ":" + str(port) + "/cgi-bin/get_configs.sh?conf=system", timeout=HTTP_TIMEOUT, auth=auth)
         if response.status_code >= 300:
@@ -92,6 +94,7 @@ def get_mqtt_conf(config):
     if user or password:
         auth = HTTPBasicAuth(user, password)
 
+    response = None
     try:
         response = requests.get("http://" + host + ":" + str(port) + "/cgi-bin/get_configs.sh?conf=mqtt", timeout=HTTP_TIMEOUT, auth=auth)
         if response.status_code >= 300:
@@ -107,69 +110,13 @@ def get_mqtt_conf(config):
 
     return response.json()
 
-def get_services(config):
-    """Get status of services."""
-    host = config[CONF_HOST]
-    port = config[CONF_PORT]
-    user = config[CONF_USERNAME]
-    password = config[CONF_PASSWORD]
-    error = False
-
-    auth = None
-    if user or password:
-        auth = HTTPBasicAuth(user, password)
-
-    try:
-        response = requests.get("http://" + host + ":" + str(port) + "/cgi-bin/service.sh?name=all&action=status", timeout=HTTP_TIMEOUT, auth=auth)
-        if response.status_code >= 300:
-            _LOGGER.error("Failed to get status of services from device %s", host)
-            error = True
-    except requests.exceptions.RequestException as e:
-        _LOGGER.error("Error getting status of services from %s: error %s", host, e)
-        error = True
-
-    if error:
-        return False
-
-    status_dict: dict = response.json()
-    status: str = status_dict.get("status")
-
-    if status != "started":
-        return False
-
-    return True
-
-def set_services(hass, config, newstatus):
-    """Set status of services."""
-    host = config[CONF_HOST]
-    port = config[CONF_PORT]
-    user = config[CONF_USERNAME]
-    password = config[CONF_PASSWORD]
-    error = False
-
-    auth = None
-    if user or password:
-        auth = HTTPBasicAuth(user, password)
-
-    try:
-        response = requests.get("http://" + host + ":" + str(port) + "/cgi-bin/service.sh?name=all&action=" + newstatus, timeout=HTTP_TIMEOUT, auth=auth)
-        if response.status_code >= 300:
-            _LOGGER.error("Failed to set status of services to device %s", host)
-            error = True
-    except requests.exceptions.RequestException as e:
-        _LOGGER.error("Error setting status of services to %s: error %s", host, e)
-        error = True
-
-    if error:
-        return False
-
-    return True
-
 def get_privacy(hass, device_name, config=None):
     """Get status of privacy from device."""
-    if power_on_in_progress(hass, device_name):
-        return True
+    # Privacy is true when the cam is off
     if power_off_in_progress(hass, device_name):
+        return True
+    # Privacy is false when the cam is on
+    if power_on_in_progress(hass, device_name):
         return False
 
     if config is None:
@@ -195,6 +142,9 @@ def get_privacy(hass, device_name, config=None):
         _LOGGER.error("Error getting status of device %s: error %s", host, e)
         error = True
 
+    if error:
+        return None
+
     if response is not None:
         try:
             privacy_dict: dict = response.json()
@@ -209,8 +159,14 @@ def get_privacy(hass, device_name, config=None):
     if error:
         return None
 
+
     if privacy != "on":
+        # Update local var
+        hass.data[DOMAIN][device_name][PRIVACY] = False
         return False
+
+    # Update local var
+    hass.data[DOMAIN][device_name][PRIVACY] = True
 
     return True
 
@@ -234,6 +190,7 @@ def set_privacy(hass, device_name, newstatus, config=None):
     if user or password:
         auth = HTTPBasicAuth(user, password)
 
+    response = None
     try:
         response = requests.get("http://" + host + ":" + str(port) + "/cgi-bin/privacy.sh?value=" + newstatus_string, timeout=HTTP_TIMEOUT, auth=auth)
         if response.status_code >= 300:
@@ -242,6 +199,9 @@ def set_privacy(hass, device_name, newstatus, config=None):
     except requests.exceptions.RequestException as e:
         _LOGGER.error("Failed to switch on device %s: error %s", host, e)
         error = True
+
+    if error:
+        return None
 
     if response is not None:
         try:

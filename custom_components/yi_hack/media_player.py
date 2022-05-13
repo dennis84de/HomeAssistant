@@ -3,6 +3,7 @@
 import asyncio
 import logging
 import subprocess
+import threading
 
 import requests
 from requests.auth import HTTPBasicAuth
@@ -78,7 +79,7 @@ class YiHackMediaPlayer(MediaPlayerEntity):
         self._hack_name = config.data[CONF_HACK_NAME]
         # Assume that the media player is not in Play mode
         self._state = None
-        self._playing = False
+        self._playing = threading.Lock()
         try:
             self._boost_speaker = config.data[CONF_BOOST_SPEAKER]
         except KeyError:
@@ -86,7 +87,13 @@ class YiHackMediaPlayer(MediaPlayerEntity):
 
     def update(self):
         """Return the state of the media player (privacy off = state on)."""
-        self._state = not get_privacy(self.hass, self._device_name)
+        conf = dict([
+            (CONF_HOST, self._host),
+            (CONF_PORT, self._port),
+            (CONF_USERNAME, self._user),
+            (CONF_PASSWORD, self._password),
+        ])
+        self._state = not get_privacy(self.hass, self._device_name, conf)
 
     @property
     def brand(self):
@@ -107,7 +114,7 @@ class YiHackMediaPlayer(MediaPlayerEntity):
     def state(self):
         """Return the state of the device."""
         if self._state:
-            if self._playing:
+            if self._playing.locked():
                 return STATE_PLAYING
             else:
                 return STATE_IDLE
@@ -150,8 +157,10 @@ class YiHackMediaPlayer(MediaPlayerEntity):
         ])
         if not get_privacy(self.hass, self._device_name):
             _LOGGER.debug("Turn off camera %s", self._name)
-            set_power_on_in_progress(self.hass, self._device_name)
+            set_power_off_in_progress(self.hass, self._device_name)
             set_privacy(self.hass, self._device_name, True, conf)
+            self._state = False
+            self.schedule_update_ha_state(force_refresh=True)
 
     def turn_on(self):
         """Turn on camera (set privacy off)."""
@@ -163,8 +172,10 @@ class YiHackMediaPlayer(MediaPlayerEntity):
         ])
         if get_privacy(self.hass, self._device_name):
             _LOGGER.debug("Turn on Camera %s", self._name)
-            set_power_off_in_progress(self.hass, self._device_name)
+            set_power_on_in_progress(self.hass, self._device_name)
             set_privacy(self.hass, self._device_name, False, conf)
+            self._state = True
+            self.schedule_update_ha_state(force_refresh=True)
 
     async def async_play_media(self, media_type, media_id, **kwargs):
         """Send the play_media command to the media player."""
@@ -174,7 +185,9 @@ class YiHackMediaPlayer(MediaPlayerEntity):
             if self._user or self._password:
                 auth = HTTPBasicAuth(self._user, self._password)
 
-            self._playing = True
+            self._playing.acquire()
+
+            response = None
 
             try:
                 url_speaker = "http://" + self._host + ":" + str(self._port) + "/cgi-bin/speaker.sh"
@@ -195,7 +208,7 @@ class YiHackMediaPlayer(MediaPlayerEntity):
             if response is None:
                 _LOGGER.error("Failed to send speak command to device %s: error unknown", self._host)
 
-            self._playing = False
+            self._playing.release()
 
         def _perform_cmd(p_cmd):
             return subprocess.run(p_cmd, check=False, shell=False, stdout=subprocess.PIPE).stdout
@@ -208,7 +221,7 @@ class YiHackMediaPlayer(MediaPlayerEntity):
             )
             return
 
-        if self._playing:
+        if self._playing.locked():
             _LOGGER.error("Failed to send speaker command, device %s is busy", self._host)
             return
 
