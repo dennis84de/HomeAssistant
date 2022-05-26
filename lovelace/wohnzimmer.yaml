@@ -83,8 +83,8 @@ cards:
     entities:
       - entity: switch.watchtv_wohnzimmer
       - entity: input_boolean.musik_ausschalten
-      - entity: input_boolean.youtube_wohnzimmer_aktiv
-        name: Youtube
+      - entity: input_boolean.wohnzimmer_multimedia_aktiv
+        name: Multimedia
       - entity: cover.kodi_untertitel
       - entity: cover.fernseher_sender
         name: Sender                         

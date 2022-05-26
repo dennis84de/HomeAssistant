@@ -13,21 +13,26 @@ input_boolean:
   kodi_wohnzimmer_pausiert:
     name: Kodi Wohnzimmer pausiert    
 
-  youtube_wohnzimmer_aktiv:
-    name: Youtube Wohnzimmer aktiv
+  wohnzimmer_multimedia_aktiv:
+    name: Multimedia aktiv
     icon: mdi:youtube-tv
     
-  youtube_wohnzimmer_pausiert:
-    name: Youtube Wohnzimmer pausiert    
+  wohnzimmer_multimedia_pausiert:
+    name:  Multimedia pausiert    
     
 binary_sensor:
   - platform: template
     sensors:
-      youtube_aktiv:
-        friendly_name: Youtube aktiv
+      wohnzimmer_multimedia_aktiv:
+        friendly_name: Multimedia aktiv
         icon_template: "mdi:youtube-tv"
-        value_template: "{{ 'YouTube - Mozilla Firefox' in states('sensor.computer_aktives_fenster') }}" 
+        value_template: "{{ is_state('input_boolean.wohnzimmer_multimedia_aktiv', 'on') }}"    
         
+media_player: 
+  - platform: hass_agent_mediaplayer
+    name: "Computer"  
+    host: !secret computer_host
+  
 cover:
   - platform: template
     covers:
@@ -113,6 +118,8 @@ switch:
             continue_on_timeout: 'true'          
           - service: media_player.turn_off
             entity_id: media_player.fernseher_wohnzimmer
+#          - service: input_boolean.turn_off
+#            entity_id: input_boolean.wohnzimmer_multimedia_aktiv                 
           - choose:
               - conditions:
                   - condition: state
@@ -351,10 +358,44 @@ automation:
     action:
       - service: homeassistant.update_entity
         target:
-          entity_id: media_player.kodi_wohnzimmer
+          entity_id: media_player.kodi_wohnzimmer        
         
-  - alias: "Youtube Wohnzimmer - Pausieren"
-    id: "youtube_wohnzimmer_pausieren"
+  - alias: "Multimedia Wohnzimmer - Starten"
+    id: "multimedia_wohnzimmer_starten"
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.bewegungsmelder_wohnzimmer
+        to: 'on'
+    condition:
+      - condition: state
+        entity_id: media_player.computer
+        state: 'paused'      
+      - condition: state
+        entity_id: input_boolean.wohnzimmer_multimedia_pausiert
+        state: 'on'
+      - condition: state
+        entity_id: sensor.telefon
+        state: 'idle'
+      - condition: state
+        entity_id: 'sensor.handy'
+        state: 'idle'   
+    action:
+      - service: media_player.media_play
+        entity_id: media_player.computer         
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.wohnzimmer_multimedia_pausiert      
+#      - service: button.press
+#        entity_id: button.computer_wiedergabe   
+      - service: homeassistant.turn_off
+        entity_id: group.licht_fernsehen              
+      - condition: state
+        entity_id: media_player.radio_badezimmer
+        state: 'playing'
+      - service: media_player.media_pause
+        entity_id: media_player.radio_badezimmer   
+        
+  - alias: "Multimedia Wohnzimmer - Pausieren"
+    id: "multimedia_wohnzimmer_pausieren"
     trigger:
       - platform: state
         entity_id: binary_sensor.bewegungsmelder_flur_vorne
@@ -375,11 +416,14 @@ automation:
             click_type: double 
         id: schalter_balkon
     condition:
+#      - condition: state
+#        entity_id: binary_sensor.wohnzimmer_multimedia_aktiv
+#        state: 'on'      
       - condition: state
-        entity_id: binary_sensor.youtube_aktiv
-        state: 'on'
+        entity_id: media_player.computer
+        state: 'playing'
       - condition: state
-        entity_id: input_boolean.youtube_wohnzimmer_pausiert
+        entity_id: input_boolean.wohnzimmer_multimedia_pausiert
         state: 'off'        
       - condition: state
         entity_id: binary_sensor.besuch
@@ -401,53 +445,41 @@ automation:
             True
           {% endif %}        
     action:
+      - service: media_player.media_pause
+        entity_id: media_player.computer   
       - service: input_boolean.turn_on
-        entity_id: input_boolean.youtube_wohnzimmer_pausiert
-      - service: button.press
-        entity_id: button.computer_wiedergabe               
+        entity_id: input_boolean.wohnzimmer_multimedia_pausiert
+#      - service: button.press
+#        entity_id: button.computer_wiedergabe               
 
-  - alias: "Youtube Wohnzimmer - Status ändern"
-    id: "youtube_wohnzimmer_status_geaendert"
+  - alias: "Multimedia Wohnzimmer - Status ändern"
+    id: "multimedia_wohnzimmer_status_geaendert"
     trigger:
       - platform: state
-        entity_id: binary_sensor.youtube_aktiv
+        entity_id: binary_sensor.computer_disney
+      - platform: state
+        entity_id: binary_sensor.computer_netflix
+      - platform: state
+        entity_id: binary_sensor.computer_youtube        
     condition:
-      - "{{ trigger.to_state.state != states('input_boolean.youtube_wohnzimmer_aktiv') }}"
-      - "{{ not is_state('binary_sensor.youtube_aktiv', 'unavailable') }}"
-      - "{{ not is_state('binary_sensor.youtube_aktiv', 'unknown') }}"
-            
+      - condition: template
+        value_template: >-
+          {{
+            ((
+              is_state('binary_sensor.computer_disney', 'on') or
+              is_state('binary_sensor.computer_netflix', 'on') or
+              is_state('binary_sensor.computer_youtube', 'on')
+            ) and is_state('input_boolean.wohnzimmer_multimedia_aktiv', 'off')) or
+            (
+              not is_state('binary_sensor.computer_disney', 'on') and
+              not is_state('binary_sensor.computer_netflix', 'on') and
+              not is_state('binary_sensor.computer_youtube', 'on') and
+              is_state('input_boolean.wohnzimmer_multimedia_aktiv', 'on')
+            )
+          }}
     action:
       - service: input_boolean.toggle
-        entity_id: input_boolean.youtube_wohnzimmer_aktiv           
-        
-  - alias: "Youtube Wohnzimmer - Starten"
-    id: "youtube_wohnzimmer_starten"
-    trigger:
-      - platform: state
-        entity_id: binary_sensor.bewegungsmelder_wohnzimmer
-        to: 'on'
-    condition:
-      - condition: state
-        entity_id: input_boolean.youtube_wohnzimmer_pausiert
-        state: 'on'
-      - condition: state
-        entity_id: sensor.telefon
-        state: 'idle'
-      - condition: state
-        entity_id: 'sensor.handy'
-        state: 'idle'   
-    action:
-      - service: input_boolean.turn_off
-        entity_id: input_boolean.youtube_wohnzimmer_pausiert      
-      - service: button.press
-        entity_id: button.computer_wiedergabe   
-      - service: homeassistant.turn_off
-        entity_id: group.licht_fernsehen              
-      - condition: state
-        entity_id: media_player.radio_badezimmer
-        state: 'playing'
-      - service: media_player.media_pause
-        entity_id: media_player.radio_badezimmer                                 
+        entity_id: input_boolean.wohnzimmer_multimedia_aktiv
 
 homeassistant:
   customize:

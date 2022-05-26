@@ -221,13 +221,18 @@ automation:
       - choose:
           - conditions:
               - condition: state
-                entity_id: binary_sensor.youtube_aktiv
-                state: 'on'      
+                entity_id: media_player.computer
+                state: 'playing'            
+#              - condition: state
+#                entity_id: binary_sensor.wohnzimmer_multimedia_aktiv
+#                state: 'on'      
             sequence:
               - service: input_boolean.turn_on
-                entity_id: input_boolean.youtube_wohnzimmer_pausiert
-              - service: button.press
-                entity_id: button.computer_wiedergabe                    
+                entity_id: input_boolean.wohnzimmer_multimedia_pausiert
+              - service: media_player.media_pause
+                entity_id: media_player.computer                   
+#              - service: button.press
+#                entity_id: button.computer_wiedergabe                    
       - choose:
           - conditions:
               - condition: state
@@ -241,9 +246,10 @@ automation:
                   - condition: state
                     entity_id: media_player.kodi_wohnzimmer
                     state: 'idle'            
-              - condition: state
-                entity_id: binary_sensor.youtube_aktiv
-                state: 'off'     
+#              - condition: state
+#                entity_id: binary_sensor.wohnzimmer_multimedia_aktiv
+#                state: 'off'     
+              - "{{ not is_state('media_player.computer', 'playing') }}"                  
               - condition: state
                 entity_id: switch.wiedergabe_aktiv
                 state: 'off'                      
@@ -350,19 +356,21 @@ automation:
       - choose:
           - conditions:
               - condition: state
-                entity_id: input_boolean.youtube_wohnzimmer_pausiert
+                entity_id: input_boolean.wohnzimmer_multimedia_pausiert
                 state: 'on'            
             sequence:       
               - service: input_boolean.turn_off
-                entity_id: input_boolean.youtube_wohnzimmer_pausiert      
-              - choose:
-                  - conditions:
-                      - condition: state
-                        entity_id: binary_sensor.youtube_aktiv
-                        state: 'on'
-                    sequence:
-                      - service: button.press
-                        entity_id: button.computer_wiedergabe   
+                entity_id: input_boolean.wohnzimmer_multimedia_pausiert    
+              - service: media_player.media_play
+                entity_id: media_player.computer                     
+#              - choose:
+#                  - conditions:
+#                      - condition: state
+#                        entity_id: binary_sensor.wohnzimmer_multimedia_aktiv
+#                        state: 'on'
+#                    sequence:
+#                      - service: button.press
+#                        entity_id: button.computer_wiedergabe   
       - choose:
           - conditions:
               - condition: state
