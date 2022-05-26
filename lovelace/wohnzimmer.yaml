@@ -55,6 +55,13 @@ cards:
           progress: true
           volume: true
       - type: custom:mini-media-player
+        entity: media_player.computer
+        name: Computer
+        hide:
+          source: true
+          progress: true
+          volume: true          
+      - type: custom:mini-media-player
         entity: media_player.radio_wohnzimmer
         name: Radio
         hide:
