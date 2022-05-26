@@ -34,6 +34,7 @@ recorder:
       - proximity
       - alarm_control_panel
       - vacuum
+      - zone
     entity_globs:
       - device_tracker.handy*  
   exclude:
@@ -57,8 +58,9 @@ logbook:
       - proximity
       - alarm_control_panel
       - vacuum
+      - zone
     entity_globs:  
-      - devicve_tracker.handy*  
+      - device_tracker.handy*  
   exclude:
     entities:     
       - switch.schlafzimmer_fernseher_licht
@@ -86,6 +88,7 @@ history:
       - person
       - climate
       - vacuum
+      - zone
   exclude:
     entities:
       - switch.sportzimmer_regal
@@ -96,8 +99,7 @@ history:
       - switch.arbeitszimmer_lampe
       - switch.kuechenschrank
       - switch.schlafzimmer_fernseher_remote
-      - switch.schlafzimmer_fernseher_licht      
-
+      - switch.schlafzimmer_fernseher_licht
       - switch.fritz_box_7272_call_deflection_0
       - switch.fritz_box_7272_call_deflection_1
     entity_globs:
