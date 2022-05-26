@@ -55,6 +55,13 @@ cards:
           progress: true
           volume: true
       - type: custom:mini-media-player
+        entity: media_player.computer
+        name: Computer
+        hide:
+          source: true
+          progress: true
+          volume: true          
+      - type: custom:mini-media-player
         entity: media_player.radio_wohnzimmer
         name: Radio
         hide:
@@ -83,8 +90,8 @@ cards:
     entities:
       - entity: switch.watchtv_wohnzimmer
       - entity: input_boolean.musik_ausschalten
-      - entity: input_boolean.wohnzimmer_multimedia_aktiv
-        name: Multimedia
+#      - entity: input_boolean.wohnzimmer_multimedia_aktiv
+#        name: Multimedia
       - entity: cover.kodi_untertitel
       - entity: cover.fernseher_sender
         name: Sender                         
