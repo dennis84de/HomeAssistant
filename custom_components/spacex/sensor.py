@@ -360,7 +360,7 @@ class SpaceXSensor(CoordinatorEntity):
                 self.attrs["fairings_reused"] = "NA"
         
         elif self._kind == "spacex_next_launch_payload":
-            if len(launch_data["payloads_detail"]):
+            if len(launch_data["payloads_detail"]) > 0:
                 if len(launch_data["payloads_detail"][0]["nationalities"]):
                     self.attrs["nationality"] = launch_data["payloads_detail"][0]["nationalities"][0]
                 else:
@@ -370,20 +370,20 @@ class SpaceXSensor(CoordinatorEntity):
                 else:
                     self.attrs["manufacturer"] = "NA"
 
-            self.attrs["payload_type"] = launch_data["payloads_detail"][0]["type"]
-            self.attrs["payload_mass"] = (
-                str(
-                    launch_data["payloads_detail"][0]["mass_kg"]
+                self.attrs["payload_type"] = launch_data["payloads_detail"][0]["type"]
+                self.attrs["payload_mass"] = (
+                    str(
+                        launch_data["payloads_detail"][0]["mass_kg"]
+                    )
+                    + " kg"
                 )
-                + " kg"
-            )
-            self.attrs["payload_mass_us"] = (
-                str(
-                    launch_data["payloads_detail"][0]["mass_lbs"]
+                self.attrs["payload_mass_us"] = (
+                    str(
+                        launch_data["payloads_detail"][0]["mass_lbs"]
+                    )
+                    + " lbs"
                 )
-                + " lbs"
-            )
-            self.attrs["orbit"] = launch_data["payloads_detail"][0]["orbit"]
+                self.attrs["orbit"] = launch_data["payloads_detail"][0]["orbit"]
 
         elif self._kind == "spacex_latest_launch_mission":
             self.attrs["mission_patch"] = latest_launch_data["links"].get("patch",{}).get("large")
@@ -556,7 +556,10 @@ class SpaceXSensor(CoordinatorEntity):
             self._state = launch_data["rocket"]["name"]
 
         elif self._kind == "spacex_next_launch_payload":
-            self._state = launch_data["payloads_detail"][0]["name"]
+            if len(launch_data["payloads_detail"]) == 0:
+                self._state = None
+            else:
+                self._state = launch_data["payloads_detail"][0]["name"]
 
         elif self._kind == "spacex_latest_launch_mission":
             self._state = latest_launch_data["name"]
