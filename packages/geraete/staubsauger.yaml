@@ -115,35 +115,27 @@ automation:
       - service: counter.decrement
         entity_id: counter.staubsauger_behaelter_leeren        
       - service: input_boolean.turn_off
-        entity_id: input_boolean.staubsauger_automatische_reinigung_gestartet        
-      - choose:
-          - conditions:
-              - condition: state
-                entity_id: person.dennis
-                state: 'not_home'      
-            sequence:
-              - service: notify.telegram
-                data:                  
-                  message: 'Die Wohnung wurde vollständig gesaugt.'
-              - service: alarmo.arm
-                data:
-                  entity_id: alarm_control_panel.alarmo                         
-      - choose:
-          - conditions:
-              - condition: numeric_state
-                entity_id: counter.staubsauger_behaelter_leeren
-                below: 1
-            sequence:
-              - service: persistent_notification.create
-                data:
-                  title: "Staubsauger"
-                  message: "Der Staubsaugerbehälter muss geleert werden."
-                  notification_id: staubsauger_leeren
-              - service: vacuum.send_command
-                data:
-                  entity_id: vacuum.staubsauger
-                  command: app_goto_target
-                  params: [33463,24839]     
+        entity_id: input_boolean.staubsauger_automatische_reinigung_gestartet    
+      - if: "{{ is_state('person.dennis', 'not_home') }}"
+        then:
+          - service: notify.telegram
+            data:                  
+              message: 'Die Wohnung wurde vollständig gesaugt.'
+          - service: alarmo.arm
+            data:
+              entity_id: alarm_control_panel.alarmo                   
+      - if: "{{ states('counter.staubsauger_behaelter_leeren') | int(0) < 1 }}"   
+        then:
+          - service: persistent_notification.create
+            data:
+              title: "Staubsauger"
+              message: "Der Staubsaugerbehälter muss geleert werden."
+              notification_id: staubsauger_leeren
+          - service: vacuum.send_command
+            data:
+              entity_id: vacuum.staubsauger
+              command: app_goto_target
+              params: [33463,24839] 
           
   - alias: "Staubsaugen - Fehler"
     id: "staubsaugen_fehler"
