@@ -358,14 +358,15 @@ automation:
           args:
             click_type: double            
     condition:
+      - condition: or
+        conditions:
+          - "{{ is_state('input_boolean.kodi_wohnzimmer_pausiert', 'off') and is_state('media_player.kodi_wohnzimmer', 'playing') }}"
+          - "{{ is_state('input_boolean.multimedia_wohnzimmer_pausiert', 'off') and is_state('media_player.computer', 'playing') }}"      
       - "{{ is_state('binary_sensor.besuch', 'off') }}"
       - "{{ is_state('sensor.telefon', 'idle') }}"
       - "{{ is_state('sensor.handy', 'idle') }}"
       - "{{ is_state('input_boolean.wiedergabe_pausieren', 'on') }}"
-      - condition: or
-        conditions:
-          - "{{ is_state('input_boolean.kodi_wohnzimmer_pausiert', 'off') and is_state('media_player.kodi_wohnzimmer', 'playing') }}"
-          - "{{ is_state('input_boolean.multimedia_wohnzimmer_pausiert', 'off') and is_state('media_player.computer', 'playing') }}"
+      - "{{ ((as_timestamp(now()) | int) - (as_timestamp(state_attr('automation.wohnzimmer_wiedergabe_pausieren', 'last_triggered'), None) | int(0))) > 5 }}"
       - condition: template       
         value_template: >-  
           {% if trigger.id == 'bewegungsmelder_balkon' or trigger.id == 'schalter_balkon' %}
