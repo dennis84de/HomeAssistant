@@ -243,17 +243,8 @@ homeassistant:
       
   customize:      
     binary_sensor.arbeitstag:
-      icon: mdi:account-hard-hat
-      
+      icon: mdi:account-hard-hat      
     sensor.time:
-      friendly_name: Uhrzeit
-      
+      friendly_name: Uhrzeit      
     sensor.next_holiday:
-      friendly_name: Nächster Feiertag
-      
-    sensor.sk_dortmund_weekincidence:
-      icon: mdi:home-analytics
-      friendly_name: "Dortmund"
-    sensor.sk_mulheim_a_d_ruhr_weekincidence:
-      icon: mdi:briefcase
-      friendly_name: "Mülheim an der Ruhr"
+      friendly_name: Nächster Feiertag      
