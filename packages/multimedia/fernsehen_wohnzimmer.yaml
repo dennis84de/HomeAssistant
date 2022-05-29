@@ -364,8 +364,8 @@ automation:
       - "{{ is_state('input_boolean.wiedergabe_pausieren', 'on') }}"
       - condition: or
         conditions:
-          - "{{ is_state('media_player.kodi_wohnzimmer', 'playing') }}"
-          - "{{ is_state('media_player.computer', 'playing') }}"
+          - "{{ is_state('input_boolean.kodi_wohnzimmer_pausiert', 'off') and is_state('media_player.kodi_wohnzimmer', 'playing') }}"
+          - "{{ is_state('input_boolean.multimedia_wohnzimmer_pausiert', 'off') and is_state('media_player.computer', 'playing') }}"
       - condition: template       
         value_template: >-  
           {% if trigger.id == 'bewegungsmelder_balkon' or trigger.id == 'schalter_balkon' %}
