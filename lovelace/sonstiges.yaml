@@ -79,63 +79,11 @@ cards:
       - entity: sensor.starman_distance
         name: Entfernung
       - entity: sensor.starman_speed 
-        name: Geschwindigkeit
-
-  - type: custom:atomic-calendar-revive
-    view_layout:
-      column: 2  
-    name: Serien
-    maxDaysToShow: 30
-    maxEventCount: 10
-    showLocation: false
-    disableEventLink: true
-    entities:
-      - entity: calendar.serien     
-      
-  - type: custom:stack-in-card    
-    cards:
-      - type: horizontal-stack
-        cards:          
-          - type: entities
-            view_layout:
-              column: 3
-            title: Corona Virus
-            show_header_toggle: false
-            entities:
-              - entity: sensor.coronavirus_deutschland_bestaetigt
-                name: Bestätigt
-              - entity: sensor.coronavirus_deutschland_aktuell
-                name: Aktuell
-              - entity: sensor.coronavirus_deutschland_genesene
-                name: Genesene
-              - entity: sensor.coronavirus_deutschland_tote
-                name: Tote           
-      - type: horizontal-stack
-        cards:               
-          - type: custom:mini-graph-card
-            view_layout:
-              column: 3    
-            line_width: 2
-            animate: true
-            hours_to_show: 168
-            points_per_hour: 1
-            hour24: true
-            show:
-              icon: false
-              points: false
-            entities:
-              - entity: sensor.deutschland_weekincidence
-                name: Deutschland
-              - entity: sensor.bl_nordrhein_westfalen_weekincidence
-                name: NRW             
-              - entity: sensor.sk_dortmund_weekincidence
-                name: Dortmund
-              - entity: sensor.sk_mulheim_a_d_ruhr_weekincidence
-                name: Mülheim an der Ruhr            
-                
+        name: Geschwindigkeit    
+              
   - type: entities
     view_layout:
-      column: 3    
+      column: 2 
     title: Bitcoin
     show_header_toggle: false
     entities:
@@ -143,3 +91,14 @@ cards:
         name: Kurs (1 BTC)
       - entity: sensor.trade_volume
         name: Handelsvolumen
+              
+  - type: custom:atomic-calendar-revive
+    view_layout:
+      column: 3
+    name: Serien
+    maxDaysToShow: 30
+    maxEventCount: 10
+    showLocation: false
+    disableEventLink: true
+    entities:
+      - entity: calendar.serien            
