@@ -176,8 +176,6 @@ automation:
         data:
           entity_id: alarm_control_panel.alarmo
       - service: presence_simulation.stop          
-      - service: switch.turn_off
-        entity_id: switch.kamera_wohnzimmer    
       - service: input_select.select_option
         data:
           entity_id: input_select.computer_ausschalten  

@@ -90,8 +90,7 @@ cards:
     entities:
       - entity: switch.watchtv_wohnzimmer
       - entity: input_boolean.musik_ausschalten
-#      - entity: input_boolean.wohnzimmer_multimedia_aktiv
-#        name: Multimedia
+      - entity: input_boolean.wiedergabe_pausieren
       - entity: cover.kodi_untertitel
       - entity: cover.fernseher_sender
         name: Sender                         
@@ -128,16 +127,37 @@ cards:
       - entity: binary_sensor.fenster_wohnzimmer
         name: Fenster            
         
-  - type: glance
-    title: Thermometer
-    show_header_toggle: false
-    entities:
-      - entity: sensor.wohnzimmer_temperatur
-        name: Temperatur
-      - entity: sensor.wohnzimmer_luftfeuchtigkeit       
-        name: Luftfeuchtigkeit
-      - entity: sensor.wohnzimmer_perception
-        name: Klima
+  - type: custom:stack-in-card
+    cards:
+      - type: horizontal-stack
+        cards:
+          - type: custom:mini-graph-card
+            name: Temperatur
+            line_width: 3
+            animate: true
+            hour24: true
+            show:
+              fill: false
+              icon: false
+              points: false
+            entities:
+              - entity: sensor.wohnzimmer_temperatur
+          - type: custom:mini-graph-card
+            name: Luftfeuchtigkeit
+            line_width: 3
+            animate: true
+            hour24: true
+            show:
+              fill: false
+              icon: false
+              points: false
+            entities:
+              - entity: sensor.wohnzimmer_luftfeuchtigkeit        
+      - type: entities        
+        show_header_toggle: false
+        entities:
+          - entity: sensor.wohnzimmer_perception
+            name: Klima   
 
   - type: conditional
     conditions:
@@ -157,15 +177,3 @@ cards:
         - entity: sensor.ventilator_timer
         - entity: input_boolean.ventilator_timer_aktiv
         - entity: input_select.ventilator_timer
-          
-  - type: conditional
-    conditions:
-      - entity: switch.kamera_wohnzimmer
-        state: "on"
-    card:
-      type: picture-glance
-      title: Kamera
-      entities:
-        - binary_sensor.kamera_wohnzimmer_bewegung
-        - switch.kamera_wohnzimmer
-      camera_image: camera.kamera_wohnzimmer           

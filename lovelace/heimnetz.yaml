@@ -24,8 +24,6 @@ cards:
         name: Fernseher
       - entity: device_tracker.soundbar  
       - entity: device_tracker.squeezebox
-      - entity: device_tracker.kamerawohnzimmer
-        name: Kamera
 
   - type: entities
     title: Haushalt
@@ -35,6 +33,8 @@ cards:
         name: Staubsauger
       - entity: device_tracker.xiaomifan
         name: Ventilator
+      - entity: device_tracker.epsondrucker
+        name: Drucker
        
   - type: entities
     title: Tasmota

@@ -292,8 +292,6 @@ script:
           - service: alarmo.arm
             data:
               entity_id: alarm_control_panel.alarmo
-          - service: switch.turn_on
-            entity_id: switch.kamera_wohnzimmer    
           - choose:
               - conditions:
                   - "{{ is_state('binary_sensor.home_office_aktiv', 'on') }}"

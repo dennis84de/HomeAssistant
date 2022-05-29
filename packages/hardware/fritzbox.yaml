@@ -161,9 +161,6 @@ homeassistant:
     device_tracker.fernseherwohnzimmer:
       icon: mdi:television
       friendly_name: Fernseher Wohnzimmer
-    device_tracker.kamerawohnzimmer:
-      icon: mdi:cctv
-      friendly_name: Kamera Wohnzimmer
       
     device_tracker.radiowohnzimmer:
       friendly_name: Radio Wohnzimmer

@@ -3,7 +3,6 @@ heimnetz:
   entities:    
     - device_tracker.fernseherwohnzimmer
     - device_tracker.soundbar   
-    - device_tracker.kamerawohnzimmer
     - device_tracker.xiaomivacuum
     - device_tracker.squeezebox      
     - device_tracker.tplinkwohnzimmermonitor        

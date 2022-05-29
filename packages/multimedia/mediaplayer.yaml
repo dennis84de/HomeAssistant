@@ -15,7 +15,6 @@ automation:
       - "{{ is_state('person.dennis', 'home') }}"
       - "{{ is_state('binary_sensor.home_office_aktiv', 'off') }}"
       - "{{ is_state('binary_sensor.schlafen_aktiv', 'off') }}"
-#      - "{{ is_state('binary_sensor.wohnzimmer_multimedia_aktiv', 'off') }}"
       - "{{ not is_state('media_player.computer', 'playing') }}"
       - "{{ not is_state('media_player.kodi_wohnzimmer', 'playing') }}"
       - "{{ is_state('calendar.borussia_dortmund', 'off') }}"

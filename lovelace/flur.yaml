@@ -28,20 +28,50 @@ cards:
         name: Flur vorne
       - entity: binary_sensor.bewegungsmelder_flur_hinten
         name: Flur hinten
-        
-  - type: glance
-    title: Thermometer
-    show_header_toggle: false
-    entities:
-      - entity: sensor.flur_temperatur
-        name: Temperatur
-      - entity: sensor.flur_luftfeuchtigkeit
-        name: Luftfeuchtigkeit
-      - entity: sensor.flur_luftdruck
-        name: Luftdruck
-      - entity: sensor.flur_perception
-        name: Klima             
 
+  - type: custom:stack-in-card
+    cards:
+      - type: horizontal-stack
+        cards:
+          - type: custom:mini-graph-card
+            name: Temperatur
+            line_width: 3
+            animate: true
+            hour24: true
+            show:
+              fill: false
+              icon: false
+              points: false
+            entities:
+              - entity: sensor.flur_temperatur
+          - type: custom:mini-graph-card
+            name: Luftfeuchtigkeit
+            line_width: 3
+            animate: true
+            hour24: true
+            show:
+              fill: false
+              icon: false
+              points: false
+            entities:
+              - entity: sensor.flur_luftfeuchtigkeit        
+          - type: custom:mini-graph-card
+            name: Luftdruck
+            line_width: 3
+            animate: true
+            hour24: true
+            show:
+              fill: false
+              icon: false
+              points: false
+            entities:
+              - entity: sensor.flur_luftdruck                     
+      - type: entities        
+        show_header_toggle: false
+        entities:
+          - entity: sensor.flur_perception
+            name: Klima   
+            
   - type: entities
     title: Multimedia
     show_header_toggle: false

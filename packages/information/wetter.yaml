@@ -66,9 +66,9 @@ sensor:
     region_name: Stadt Dortmund
     name: Wetterwarnungen
     
-  - platform: opensky
-    name: Flugzeuge
-    radius: 10
+#  - platform: opensky
+#    name: Flugzeuge
+#    radius: 10
 
   - platform: sun2
     monitored_conditions:

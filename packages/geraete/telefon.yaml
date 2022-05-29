@@ -25,6 +25,9 @@ sensor:
           {% endif %}
    
 input_boolean:
+  multimedia_pausiert:
+    name: Multimedia pausiert
+    
   licht_aktiv:
     name: Licht aktiv     
         
@@ -113,16 +116,12 @@ automation:
         entity_id: sensor.telefon
         to: 'dialing'
     condition:
-      - condition: state
-        entity_id: person.dennis
-        state: 'home'         
-      - condition: state
-        entity_id: input_boolean.nicht_stoeren
-        state: 'off'
-      - condition: state
-        entity_id: binary_sensor.besuch
-        state: 'off'          
+      - "{{ is_state('person.dennis', 'home') }}"
+      - "{{ is_state('input_boolean.nicht_stoeren', 'off') }}"
+      - "{{ is_state('binary_sensor.besuch', 'off') }}"
     action:
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.multimedia_pausiert      
       - choose:
           - conditions:
               - condition: state
@@ -212,16 +211,11 @@ automation:
               - condition: state
                 entity_id: media_player.computer
                 state: 'playing'                   
-#              - condition: state
-#                entity_id: binary_sensor.wohnzimmer_multimedia_aktiv
-#                state: 'on'      
             sequence:       
               - service: input_boolean.turn_on
-                entity_id: input_boolean.wohnzimmer_multimedia_pausiert
+                entity_id: input_boolean.multimedia_wohnzimmer_pausiert
               - service: media_player.media_pause
                 entity_id: media_player.computer                   
-#              - service: button.press
-#                entity_id: button.computer_wiedergabe   
       - choose:
           - conditions:
               - condition: state
@@ -234,10 +228,7 @@ automation:
                     state: 'off'          
                   - condition: state
                     entity_id: media_player.kodi_wohnzimmer
-                    state: 'idle'   
-#              - condition: state
-#                entity_id: binary_sensor.wohnzimmer_multimedia_aktiv
-#                state: 'off'      
+                    state: 'idle'     
               - "{{ not is_state('media_player.computer', 'playing') }}"
               - condition: state
                 entity_id: switch.wiedergabe_aktiv
@@ -278,13 +269,12 @@ automation:
           - 'talking'        
         to: 'idle'    
     condition:
-      - condition: state
-        entity_id: person.dennis
-        state: 'home'        
-      - condition: state
-        entity_id: 'sensor.handy'
-        state: 'idle'      
+      - "{{ is_state('person.dennis', 'home') }}"
+      - "{{ is_state('sensor.handy', 'idle') }}"
+      - "{{ is_state('input_boolean.multimedia_pausiert', 'on') }}"  
     action:
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.multimedia_pausiert
       - choose:
           - conditions:
               - condition: state
@@ -348,21 +338,13 @@ automation:
       - choose:
           - conditions:
               - condition: state
-                entity_id: input_boolean.wohnzimmer_multimedia_pausiert
+                entity_id: input_boolean.multimedia_wohnzimmer_pausiert
                 state: 'on'           
             sequence:       
               - service: input_boolean.turn_off
-                entity_id: input_boolean.wohnzimmer_multimedia_pausiert      
+                entity_id: input_boolean.multimedia_wohnzimmer_pausiert      
               - service: media_player.media_play
                 entity_id: media_player.computer                   
-#              - choose:
-#                  - conditions:
-#                      - condition: state
-#                        entity_id: binary_sensor.wohnzimmer_multimedia_aktiv
-#                        state: 'on'
-#                    sequence:
-#                      - service: button.press
-#                        entity_id: button.computer_wiedergabe   
       - choose:
           - conditions:
               - condition: state

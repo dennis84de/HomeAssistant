@@ -10,23 +10,15 @@ input_boolean:
     name: Musik ausschalten
     icon: mdi:music-off
     
+  wiedergabe_pausieren:
+    name: Wiedergabe pausieren
+    icon: mdi:play-pause
+
   kodi_wohnzimmer_pausiert:
     name: Kodi Wohnzimmer pausiert    
-
-  wohnzimmer_multimedia_aktiv:
-    name: Multimedia aktiv
-    icon: mdi:youtube-tv
     
-  wohnzimmer_multimedia_pausiert:
+  multimedia_wohnzimmer_pausiert:
     name:  Multimedia pausiert    
-    
-binary_sensor:
-  - platform: template
-    sensors:
-      wohnzimmer_multimedia_aktiv:
-        friendly_name: Multimedia aktiv
-        icon_template: "mdi:youtube-tv"
-        value_template: "{{ is_state('input_boolean.wohnzimmer_multimedia_aktiv', 'on') }}"    
         
 media_player: 
   - platform: hass_agent_mediaplayer
@@ -117,9 +109,7 @@ switch:
             timeout: '00:00:02'
             continue_on_timeout: 'true'          
           - service: media_player.turn_off
-            entity_id: media_player.fernseher_wohnzimmer
-#          - service: input_boolean.turn_off
-#            entity_id: input_boolean.wohnzimmer_multimedia_aktiv                 
+            entity_id: media_player.fernseher_wohnzimmer           
           - choose:
               - conditions:
                   - condition: state
@@ -130,33 +120,53 @@ switch:
                     entity_id: media_player.soundbar
      
 script:
-  kodi_wohnzimmer_starten:
-    alias: "Kodi Wohnzimmer - Starten"
+  wohnzimmer_wiedergabe_starten:
+    alias: "Wohnzimmer - Wiedergabe starten"
     sequence:
-      - service: media_player.media_play
-        entity_id: media_player.kodi_wohnzimmer
-      - service: input_boolean.turn_off
-        entity_id: input_boolean.kodi_wohnzimmer_pausiert
       - service: homeassistant.turn_off
         entity_id: group.licht_fernsehen         
       - choose:
           - conditions:
-              - condition: state
-                entity_id: media_player.radio_badezimmer
-                state: 'playing'          
+              - "{{ device == 'kodi' }}"             
+            sequence:
+              - service: media_player.media_play
+                entity_id: media_player.kodi_wohnzimmer
+              - service: input_boolean.turn_off
+                entity_id: input_boolean.kodi_wohnzimmer_pausiert
+          - conditions:
+              - "{{ device == 'computer' }}"             
+            sequence:
+              - service: media_player.media_play
+                entity_id: media_player.computer
+              - service: input_boolean.turn_off
+                entity_id: input_boolean.multimedia_wohnzimmer_pausiert
+      - choose:
+          - conditions:
+              - "{{ is_state('media_player.radio_badezimmer', 'playing') }}"      
             sequence:
               - service: media_player.media_pause
                 entity_id: media_player.radio_badezimmer
         
-  kodi_wohnzimmer_pausieren:
-    alias: "Kodi Wohnzimmer - Pausieren"
+  wohnzimmer_wiedergabe_pausieren:
+    alias: "Wohnzimmer - Wiedergabe pausieren"
     sequence:
-      - service: media_player.media_pause
-        entity_id: media_player.kodi_wohnzimmer        
-      - service: input_boolean.turn_on
-        entity_id: input_boolean.kodi_wohnzimmer_pausiert
       - choose:
           - conditions:
+              - "{{ device == 'kodi' }}"             
+            sequence:
+              - service: media_player.media_pause
+                entity_id: media_player.kodi_wohnzimmer        
+              - service: input_boolean.turn_on
+                entity_id: input_boolean.kodi_wohnzimmer_pausiert
+          - conditions:
+              - "{{ device == 'computer' }}"             
+            sequence:
+              - service: media_player.media_pause
+                entity_id: media_player.computer   
+              - service: input_boolean.turn_on
+                entity_id: input_boolean.multimedia_wohnzimmer_pausiert
+      - choose:
+          - conditions:              
               - condition: template
                 value_template: >-
                   {% if triggerId and (triggerId == 'bewegungsmelder_balkon' or triggerId == 'schalter_balkon') %}
@@ -212,111 +222,12 @@ automation:
       - "{{ (states('sensor.laufzeit_minuten') | int(0)) > 1 }}"   
       - "{{ is_state('input_boolean.musik_ausschalten', 'on') }}"
       - "{{ is_state('binary_sensor.besuch', 'off') }}"
+      - "{{ (states('sensor.radios_eingeschaltet') | int(0)) > 1 }}"   
     action:  
       - service: script.radios_ausschalten
         data:
           badezimmerEingeschaltetLassen: True
-          
-  - alias: "Kodi Wohnzimmer - Wiedergabe"
-    id: "kodi_wohnzimmer_wiedergabe"    
-    trigger:
-      - id: schalter_wohnzimmer
-        platform: event
-        event_type: zha_event
-        event_data:
-          device_ieee: 00:15:8d:00:02:c8:c4:8b
-          command: click
-          args:
-            click_type: single   
-      - id: cube_wohnzimmer
-        platform: event
-        event_type: zha_event
-        event_data:
-          device_ieee: 00:15:8d:00:01:10:0d:7a
-          command: flip      
-    condition:           
-      - condition: or
-        conditions:
-          - condition: state
-            entity_id: media_player.kodi_wohnzimmer
-            state: 'playing'
-          - condition: state
-            entity_id: media_player.kodi_wohnzimmer
-            state: 'paused'
-    action:
-      - service: media_player.media_play_pause
-        entity_id: media_player.kodi_wohnzimmer
-
-  - alias: "Kodi Wohnzimmer - Starten"
-    id: "kodi_wohnzimmer_starten"
-    trigger:
-      - platform: state
-        entity_id: binary_sensor.bewegungsmelder_wohnzimmer
-        to: 'on'
-    condition:
-      - condition: state
-        entity_id: media_player.kodi_wohnzimmer
-        state: 'paused'
-      - condition: state
-        entity_id: input_boolean.kodi_wohnzimmer_pausiert
-        state: 'on'
-      - condition: state
-        entity_id: sensor.telefon
-        state: 'idle'
-      - condition: state
-        entity_id: 'sensor.handy'
-        state: 'idle'
-    action:
-      - service: script.kodi_wohnzimmer_starten
-        
-  - alias: "Kodi Wohnzimmer - Pausieren"
-    id: "kodi_wohnzimmer_pausieren"
-    trigger:
-      - id: bewegungsmelder_flur_vorne
-        platform: state
-        entity_id: binary_sensor.bewegungsmelder_flur_vorne
-        to: 'on'
-      - id: bewegungsmelder_flur_hinten
-        platform: state
-        entity_id: binary_sensor.bewegungsmelder_flur_hinten
-        to: 'on'
-      - id: bewegungsmelder_balkon
-        platform: state
-        entity_id: binary_sensor.bewegungsmelder_balkon
-        to: 'on'            
-      - id: schalter_balkon
-        platform: event
-        event_type: zha_event
-        event_data:
-          device_ieee: 00:15:8d:00:02:c7:62:ce
-          command: click
-          args:
-            click_type: double            
-    condition:
-      - condition: state
-        entity_id: media_player.kodi_wohnzimmer
-        state: 'playing'
-      - condition: state
-        entity_id: binary_sensor.besuch
-        state: 'off'        
-      - condition: state
-        entity_id: sensor.telefon
-        state: 'idle'
-      - condition: state
-        entity_id: 'sensor.handy'
-        state: 'idle'   
-      - condition: template       
-        value_template: >-  
-          {% if trigger.id == 'bewegungsmelder_balkon' or trigger.id == 'schalter_balkon' %}
-            {{ is_state('binary_sensor.balkontuer', 'on') }}
-          {% else %}
-            True
-          {% endif %}
-    action:
-      - service: script.kodi_wohnzimmer_pausieren
-        data:
-          triggerId: trigger.id          
-        
+                 
   - alias: "Kodi Wohnzimmer - Nächster Titel"
     id: "kodi_wohnzimmer_naechster_titel"
     trigger:
@@ -358,128 +269,126 @@ automation:
     action:
       - service: homeassistant.update_entity
         target:
-          entity_id: media_player.kodi_wohnzimmer        
-        
-  - alias: "Multimedia Wohnzimmer - Starten"
-    id: "multimedia_wohnzimmer_starten"
+          entity_id: media_player.kodi_wohnzimmer
+          
+  - alias: "Wohnzimmer - Wiedergabe"
+    id: "wohnzimmer_wiedergabe"    
+    trigger:
+      - id: schalter_wohnzimmer
+        platform: event
+        event_type: zha_event
+        event_data:
+          device_ieee: 00:15:8d:00:02:c8:c4:8b
+          command: click
+          args:
+            click_type: single   
+      - id: cube_wohnzimmer
+        platform: event
+        event_type: zha_event
+        event_data:
+          device_ieee: 00:15:8d:00:01:10:0d:7a
+          command: flip      
+    condition:           
+      - condition: or
+        conditions:
+          - "{{ states('media_player.kodi_wohnzimmer') in ['playing', 'paused'] }}"
+          - "{{ states('media_player.computer') in ['playing', 'paused'] }}"
+    action:
+      - choose:
+          - conditions:
+              - "{{ states('media_player.kodi_wohnzimmer') in ['playing', 'paused'] }}"
+            sequence:
+              - service: media_player.media_play_pause
+                entity_id: media_player.kodi_wohnzimmer
+          - conditions:
+              - "{{ states('media_player.computer') in ['playing', 'paused'] }}"
+            sequence:
+              - service: media_player.media_play_pause
+                entity_id: media_player.computer                
+
+  - alias: "Wohnzimmer - Wiedergabe starten"
+    id: "wohnzimmer_wiedergabe_starten"
     trigger:
       - platform: state
         entity_id: binary_sensor.bewegungsmelder_wohnzimmer
         to: 'on'
     condition:
-      - condition: state
-        entity_id: media_player.computer
-        state: 'paused'      
-      - condition: state
-        entity_id: input_boolean.wohnzimmer_multimedia_pausiert
-        state: 'on'
-      - condition: state
-        entity_id: sensor.telefon
-        state: 'idle'
-      - condition: state
-        entity_id: 'sensor.handy'
-        state: 'idle'   
+      - "{{ is_state('sensor.telefon', 'idle') }}"
+      - "{{ is_state('sensor.handy', 'idle') }}"
+      - condition: or
+        conditions:
+          - "{{ is_state('input_boolean.kodi_wohnzimmer_pausiert', 'on') and is_state('media_player.kodi_wohnzimmer', 'paused') }}"
+          - "{{ is_state('input_boolean.multimedia_wohnzimmer_pausiert', 'on') and is_state('media_player.computer', 'paused') }}"
     action:
-      - service: media_player.media_play
-        entity_id: media_player.computer         
-      - service: input_boolean.turn_off
-        entity_id: input_boolean.wohnzimmer_multimedia_pausiert      
-#      - service: button.press
-#        entity_id: button.computer_wiedergabe   
-      - service: homeassistant.turn_off
-        entity_id: group.licht_fernsehen              
-      - condition: state
-        entity_id: media_player.radio_badezimmer
-        state: 'playing'
-      - service: media_player.media_pause
-        entity_id: media_player.radio_badezimmer   
+      - choose:
+          - conditions:
+              - "{{ is_state('input_boolean.kodi_wohnzimmer_pausiert', 'on') }}"
+            sequence:              
+              - service: script.wohnzimmer_wiedergabe_starten
+                data: 
+                  device: 'kodi'        
+          - conditions:
+              - "{{ is_state('input_boolean.multimedia_wohnzimmer_pausiert', 'on') }}"
+            sequence:              
+              - service: script.wohnzimmer_wiedergabe_starten
+                data: 
+                  device: 'computer'                      
         
-  - alias: "Multimedia Wohnzimmer - Pausieren"
-    id: "multimedia_wohnzimmer_pausieren"
+  - alias: "Wohnzimmer - Wiedergabe pausieren"
+    id: "wohnzimmer_wiedergabe_pausieren"
     trigger:
-      - platform: state
+      - id: bewegungsmelder_flur_vorne
+        platform: state
         entity_id: binary_sensor.bewegungsmelder_flur_vorne
         to: 'on'
-      - platform: state
+      - id: bewegungsmelder_flur_hinten
+        platform: state
         entity_id: binary_sensor.bewegungsmelder_flur_hinten
         to: 'on'
-      - platform: state
+      - id: bewegungsmelder_balkon
+        platform: state
         entity_id: binary_sensor.bewegungsmelder_balkon
-        to: 'on'     
-        id: bewegungsmelder_balkon
-      - platform: event
+        to: 'on'            
+      - id: schalter_balkon
+        platform: event
         event_type: zha_event
         event_data:
           device_ieee: 00:15:8d:00:02:c7:62:ce
           command: click
           args:
-            click_type: double 
-        id: schalter_balkon
+            click_type: double            
     condition:
-#      - condition: state
-#        entity_id: binary_sensor.wohnzimmer_multimedia_aktiv
-#        state: 'on'      
-      - condition: state
-        entity_id: media_player.computer
-        state: 'playing'
-      - condition: state
-        entity_id: input_boolean.wohnzimmer_multimedia_pausiert
-        state: 'off'        
-      - condition: state
-        entity_id: binary_sensor.besuch
-        state: 'off'        
-      - condition: state
-        entity_id: sensor.telefon
-        state: 'idle'
-      - condition: state
-        entity_id: 'sensor.handy'
-        state: 'idle'           
-      - condition: state
-        entity_id: calendar.borussia_dortmund
-        state: 'off'            
+      - "{{ is_state('binary_sensor.besuch', 'off') }}"
+      - "{{ is_state('sensor.telefon', 'idle') }}"
+      - "{{ is_state('sensor.handy', 'idle') }}"
+      - "{{ is_state('input_boolean.wiedergabe_pausieren', 'on') }}"
+      - condition: or
+        conditions:
+          - "{{ is_state('media_player.kodi_wohnzimmer', 'playing') }}"
+          - "{{ is_state('media_player.computer', 'playing') }}"
       - condition: template       
-        value_template: >-         
+        value_template: >-  
           {% if trigger.id == 'bewegungsmelder_balkon' or trigger.id == 'schalter_balkon' %}
             {{ is_state('binary_sensor.balkontuer', 'on') }}
           {% else %}
             True
-          {% endif %}        
+          {% endif %}
     action:
-      - service: media_player.media_pause
-        entity_id: media_player.computer   
-      - service: input_boolean.turn_on
-        entity_id: input_boolean.wohnzimmer_multimedia_pausiert
-#      - service: button.press
-#        entity_id: button.computer_wiedergabe               
-
-  - alias: "Multimedia Wohnzimmer - Status ändern"
-    id: "multimedia_wohnzimmer_status_geaendert"
-    trigger:
-      - platform: state
-        entity_id: binary_sensor.computer_disney
-      - platform: state
-        entity_id: binary_sensor.computer_netflix
-      - platform: state
-        entity_id: binary_sensor.computer_youtube        
-    condition:
-      - condition: template
-        value_template: >-
-          {{
-            ((
-              is_state('binary_sensor.computer_disney', 'on') or
-              is_state('binary_sensor.computer_netflix', 'on') or
-              is_state('binary_sensor.computer_youtube', 'on')
-            ) and is_state('input_boolean.wohnzimmer_multimedia_aktiv', 'off')) or
-            (
-              not is_state('binary_sensor.computer_disney', 'on') and
-              not is_state('binary_sensor.computer_netflix', 'on') and
-              not is_state('binary_sensor.computer_youtube', 'on') and
-              is_state('input_boolean.wohnzimmer_multimedia_aktiv', 'on')
-            )
-          }}
-    action:
-      - service: input_boolean.toggle
-        entity_id: input_boolean.wohnzimmer_multimedia_aktiv
+      - choose:
+          - conditions:
+              - "{{ is_state('media_player.kodi_wohnzimmer', 'playing') }}"
+            sequence:              
+              - service: script.wohnzimmer_wiedergabe_pausieren
+                data: 
+                  triggerId: trigger.id   
+                  device: 'kodi'        
+          - conditions:
+              - "{{ is_state('media_player.computer', 'playing') }}"
+            sequence:              
+              - service: script.wohnzimmer_wiedergabe_pausieren
+                data: 
+                  triggerId: trigger.id   
+                  device: 'computer'
 
 homeassistant:
   customize:

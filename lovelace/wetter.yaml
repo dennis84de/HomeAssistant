@@ -57,13 +57,32 @@ cards:
         {% endfor %}
       {% endif %}  
       
-  - type: entities
-    title: Thermometer
-    entities:
-      - entity: sensor.parkplatz_luftfeuchtigkeit
-        name: Luftfeuchtigkeit
-      - entity: sensor.parkplatz_luftdruck
-        name: Luftdruck
+  - type: custom:stack-in-card
+    cards:
+      - type: horizontal-stack
+        cards:
+          - type: custom:mini-graph-card
+            name: Luftfeuchtigkeit
+            line_width: 3
+            animate: true
+            hour24: true
+            show:
+              fill: false
+              icon: false
+              points: false
+            entities:
+              - entity: sensor.parkplatz_luftfeuchtigkeit
+          - type: custom:mini-graph-card
+            name: Luftdruck
+            line_width: 3
+            animate: true
+            hour24: true
+            show:
+              fill: false
+              icon: false
+              points: false
+            entities:
+              - entity: sensor.parkplatz_luftdruck
 
   - type: custom:mini-graph-card
     name: Temperatur
@@ -93,12 +112,8 @@ cards:
       icon: false
       points: false
     entities:
-      - entity: sensor.balkon_helligkeit
-        name: Helligkeit
       - entity: sensor.balkon_helligkeit_mittelwert
-        name: Mittelwert        
-      - entity: sensor.bewegungsmelder_balkon_helligkeit
-        name: Bewegungsmelder            
+        name: Helligkeit
         
   - type: custom:sun-card
     title: Sonnenstand

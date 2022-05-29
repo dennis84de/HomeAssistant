@@ -220,7 +220,8 @@ cards:
         - entity: sensor.fahrzeit_zur_arbeit
         - entity: sensor.fahrzeit_nach_hause      
       
-  - type: custom:mini-graph-card            
+  - type: custom:mini-graph-card     
+    name: Tanken
     line_width: 2
     animate: true
     hour24: true
