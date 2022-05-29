@@ -107,13 +107,12 @@ cards:
     hours_to_show: 120
     points_per_hour: 5
     hour24: true
-    upper_bound: 1000
     show:
       icon: false
       points: false
     entities:
       - entity: sensor.balkon_helligkeit_mittelwert
-        name: Helligkeit
+        name: Helligkeit  
         
   - type: custom:sun-card
     title: Sonnenstand
