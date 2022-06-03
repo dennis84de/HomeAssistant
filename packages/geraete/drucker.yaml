@@ -6,33 +6,30 @@ sensor:
       - yellow
       - magenta
       - cyan
-      - clean    
+      - clean
+    
+mqtt:
+  sensor:
+    - name: "Patrone Schwarz"
+      unit_of_measurement: '%'
+      state_topic: "printer/black"
 
-  - platform: mqtt
-    name: "Patrone Schwarz"
-    unit_of_measurement: '%'
-    state_topic: "printer/black"
-        
-  - platform: mqtt
-    name: "Patrone Magenta"
-    unit_of_measurement: '%'
-    state_topic: "printer/magenta"
-    
-  - platform: mqtt
-    name: "Patrone Gelb"
-    unit_of_measurement: '%'
-    state_topic: "printer/yellow"
-    
-  - platform: mqtt
-    name: "Patrone Cyan"
-    unit_of_measurement: '%'
-    state_topic: "printer/cyan"    
-    
-  - platform: mqtt
-    name: "Patrone Abfall"
-    unit_of_measurement: '%'
-    state_topic: "printer/waste"    
-    
+    - name: "Patrone Magenta"
+      unit_of_measurement: '%'
+      state_topic: "printer/magenta"
+
+    - name: "Patrone Gelb"
+      unit_of_measurement: '%'
+      state_topic: "printer/yellow"
+
+    - name: "Patrone Cyan"
+      unit_of_measurement: '%'
+      state_topic: "printer/cyan"    
+
+    - name: "Patrone Abfall"
+      unit_of_measurement: '%'
+      state_topic: "printer/waste"    
+      
 automation:
   - alias: "Drucker - Tintenstand"
     id: "drucker_tintenstand"

@@ -4,7 +4,7 @@ notify:
     host: !secret computer_host
     username: !secret kodi_username
     password: !secret kodi_password
-    
+  
 input_boolean:
   musik_ausschalten:
     name: Musik ausschalten
@@ -22,7 +22,7 @@ input_boolean:
         
 media_player: 
   - platform: hass_agent_mediaplayer
-    name: "Computer"  
+    name: Computer
     host: !secret computer_host
   
 cover:
@@ -360,8 +360,8 @@ automation:
     condition:
       - condition: or
         conditions:
-          - "{{ is_state('input_boolean.kodi_wohnzimmer_pausiert', 'off') and is_state('media_player.kodi_wohnzimmer', 'playing') }}"
-          - "{{ is_state('input_boolean.multimedia_wohnzimmer_pausiert', 'off') and is_state('media_player.computer', 'playing') }}"      
+          - "{{ is_state('media_player.kodi_wohnzimmer', 'playing') }}"
+          - "{{ is_state('media_player.computer', 'playing') }}"      
       - "{{ is_state('binary_sensor.besuch', 'off') }}"
       - "{{ is_state('sensor.telefon', 'idle') }}"
       - "{{ is_state('sensor.handy', 'idle') }}"

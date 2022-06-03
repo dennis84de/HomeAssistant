@@ -92,24 +92,24 @@ switch:
       radios_lautlos:
         friendly_name: Radios lautlos
         value_template: >-
-          {% if (is_state('media_player.radio_wohnzimmer', 'playing') and (state_attr('media_player.radio_wohnzimmer', 'volume_level') | float) == 0)
-            or (is_state('media_player.radio_arbeitszimmer', 'playing') and (state_attr('media_player.radio_arbeitszimmer', 'volume_level') | float) == 0)
-            or (is_state('media_player.radio_badezimmer', 'playing') and (state_attr('media_player.radio_badezimmer', 'volume_level') | float) == 0)
-            or (is_state('media_player.radio_kueche', 'playing') and (state_attr('media_player.radio_kueche', 'volume_level') | float) == 0)
-            or (is_state('media_player.radio_schlafzimmer', 'playing') and (state_attr('media_player.radio_schlafzimmer', 'volume_level') | float) == 0)
-            or (is_state('media_player.radio_balkon', 'playing') and (state_attr('media_player.radio_balkon', 'volume_level') | float) == 0)
+          {% if (is_state('media_player.radio_wohnzimmer', 'playing') and (state_attr('media_player.radio_wohnzimmer', 'volume_level') | float(0)) == 0)
+            or (is_state('media_player.radio_arbeitszimmer', 'playing') and (state_attr('media_player.radio_arbeitszimmer', 'volume_level') | float(0)) == 0)
+            or (is_state('media_player.radio_badezimmer', 'playing') and (state_attr('media_player.radio_badezimmer', 'volume_level') | float(0)) == 0)
+            or (is_state('media_player.radio_kueche', 'playing') and (state_attr('media_player.radio_kueche', 'volume_level') | float(0)) == 0)
+            or (is_state('media_player.radio_schlafzimmer', 'playing') and (state_attr('media_player.radio_schlafzimmer', 'volume_level') | float(0)) == 0)
+            or (is_state('media_player.radio_balkon', 'playing') and (state_attr('media_player.radio_balkon', 'volume_level') | float(0)) == 0)
           %}
             True
           {% else %}
             False
           {% endif %}       
         icon_template: >-
-          {% if (is_state('media_player.radio_wohnzimmer', 'playing') and (state_attr('media_player.radio_wohnzimmer', 'volume_level') | float) == 0)
-            or (is_state('media_player.radio_arbeitszimmer', 'playing') and (state_attr('media_player.radio_arbeitszimmer', 'volume_level') | float) == 0)
-            or (is_state('media_player.radio_badezimmer', 'playing') and (state_attr('media_player.radio_badezimmer', 'volume_level') | float) == 0)
-            or (is_state('media_player.radio_kueche', 'playing') and (state_attr('media_player.radio_kueche', 'volume_level') | float) == 0)
-            or (is_state('media_player.radio_schlafzimmer', 'playing') and (state_attr('media_player.radio_schlafzimmer', 'volume_level') | float) == 0)
-            or (is_state('media_player.radio_balkon', 'playing') and (state_attr('media_player.radio_balkon', 'volume_level') | float) == 0)
+          {% if (is_state('media_player.radio_wohnzimmer', 'playing') and (state_attr('media_player.radio_wohnzimmer', 'volume_level') | float(0)) == 0)
+            or (is_state('media_player.radio_arbeitszimmer', 'playing') and (state_attr('media_player.radio_arbeitszimmer', 'volume_level') | float(0)) == 0)
+            or (is_state('media_player.radio_badezimmer', 'playing') and (state_attr('media_player.radio_badezimmer', 'volume_level') | float(0)) == 0)
+            or (is_state('media_player.radio_kueche', 'playing') and (state_attr('media_player.radio_kueche', 'volume_level') | float(0)) == 0)
+            or (is_state('media_player.radio_schlafzimmer', 'playing') and (state_attr('media_player.radio_schlafzimmer', 'volume_level') | float(0)) == 0)
+            or (is_state('media_player.radio_balkon', 'playing') and (state_attr('media_player.radio_balkon', 'volume_level') | float(0)) == 0)
           %}
             mdi:volume-off
           {% else %}
@@ -161,17 +161,6 @@ script:
   radios_lautlos:
       alias: Radios lautlos
       sequence:
-#        - service: scene.create
-#          data:
-#            scene_id: radios_lautstaerke
-#            snapshot_entities:
-#              - media_player.radio_kueche
-#              - media_player.radio_badezimmer
-#              - media_player.radio_wohnzimmer
-#              - media_player.radio_schlafzimmer
-#              - media_player.radio_arbeitszimmer
-#              - media_player.radio_flur   
-#              - media_player.radio_balkon
         - service: media_player.volume_set          
           data:
             entity_id: group.radio_mediaplayer, media_player.radio_balkon
@@ -179,9 +168,7 @@ script:
             
   radios_laut:
       alias: Radios laut
-      sequence:
-#        - service: scene.turn_on
-#          entity_id: scene.radios_lautstaerke        
+      sequence:   
         - service: media_player.volume_set          
           data:
             entity_id: group.radio_mediaplayer
