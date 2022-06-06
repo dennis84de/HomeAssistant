@@ -148,9 +148,9 @@ automation:
         to: 'on'      
     variables:       
       vorMitternacht: "{{ now().strftime('%H') | int(0) <= 23 and now().strftime('%H') | int(0) > 6 }}"
-      weckerZeit: "{{ as_timestamp(states('sensor.tablet_schlafzimmer_next_alarm'), None) | timestamp_custom('%H:%M:%S', True) }}"
+      weckerZeit: "{{ as_timestamp(states('sensor.tablet_schlafzimmer_next_alarm'), None) | timestamp_custom('%H:%M:%S', True, 0) }}"
       weckerHomeOfficeZeit: "{{ states('input_datetime.alarm_standard_homeoffice') }}"
-      tagWecker: "{{ as_timestamp(states('sensor.tablet_schlafzimmer_next_alarm'), None) | timestamp_custom('%d', True) | int(0) }}"
+      tagWecker: "{{ as_timestamp(states('sensor.tablet_schlafzimmer_next_alarm'), None) | timestamp_custom('%d', True, 0) | int(0) }}"
       tagHeute: "{{ as_timestamp(now()) | timestamp_custom('%d', True) | int(0) }}"
       bueroHeute: "{{ is_state('binary_sensor.buero_heute', 'on') }}"
       bueroMorgen: "{{ is_state('binary_sensor.buero_morgen', 'on') }}"

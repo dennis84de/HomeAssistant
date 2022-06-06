@@ -214,8 +214,8 @@ automation:
         state: 'on'
       - condition: template
         value_template: >-
-          {% set wecker = as_timestamp(states('sensor.tablet_schlafzimmer_next_alarm'), None) / 86400 %}
-          {% set now = as_timestamp(as_timestamp(now()) | timestamp_custom("%Y-%m-%d 00:00:00",true), None) / 86400 %}
+          {% set wecker = as_timestamp(states('sensor.tablet_schlafzimmer_next_alarm'), None) | int(0) / 86400 %}
+          {% set now = as_timestamp(as_timestamp(now()) | timestamp_custom("%Y-%m-%d 00:00:00", true, 0), None) / 86400 %}
 
           {{ wecker - now > 1 }}
     action:
