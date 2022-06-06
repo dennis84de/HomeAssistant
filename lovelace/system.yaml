@@ -86,6 +86,7 @@ popup_cards:
             progress: true
             controls: true  
             info: true             
+            
   sensor.bewegungsmelder_deaktiviert:
     title: Bewegungsmelder deaktiviert
     card:
@@ -207,31 +208,55 @@ cards:
       - entity: sensor.fritz_box_7272_gb_sent
         name: Daten gesendet        
       - entity: sensor.heimnetz_offline                   
-        
-  - type: markdown
-    title: Letzte Automationen
-    content: |
-      {% for state in (states.automation
-        | selectattr('attributes.last_triggered')
-        | sort(attribute='attributes.last_triggered', reverse=true)) [0:20] -%}
-        {% if (now() - state.attributes.last_triggered).total_seconds() < 86400 %}
-          {%- set t = (as_timestamp(state.attributes.last_triggered) | timestamp_custom('%H:%M')) -%}
-          {{t}} &nbsp;&nbsp; {{state.name}}
-        {% endif -%}
-      {% endfor %}                     
-   
-  - type: markdown
-    title: Letzte Skripte
-    content: |
-      {% for state in (states.script
-        | selectattr('attributes.last_triggered')
-        | sort(attribute='attributes.last_triggered', reverse=true)) [0:20] -%}
-        {% if (now() - state.attributes.last_triggered).total_seconds() < 86400 %}
-          {%- set t = (as_timestamp(state.attributes.last_triggered) | timestamp_custom('%H:%M')) -%}
-          {{t}} &nbsp;&nbsp; {{state.name}}
-        {% endif -%}
-      {% endfor %}   
+
+  - type: custom:auto-entities
+    card:
+      type: markdown
+      title: Letzte Automationen
+      show_header_toggle: false
+      content: |
+        {% for x in config.entities %}
+          {%- set time = (as_timestamp(state_attr(x.entity, 'last_triggered')) | timestamp_custom('%H:%M')) -%}          
+          {{ time }} &nbsp;&nbsp; {{ state_attr(x.entity, 'friendly_name') }}
+        {% endfor %}    
+    filter:
+      include:
+        - domain: automation
+          last_triggered: '<= 1440'
+      exclude:
+        - attributes:
+            last_triggered: null
+    sort:
+      method: last_triggered
+      numeric: true
+      reverse: true
+      first: 0
+      count: 20              
       
+  - type: custom:auto-entities
+    card:
+      type: markdown
+      title: Letzte Scripte
+      show_header_toggle: false
+      content: |
+        {% for x in config.entities %}
+          {%- set time = (as_timestamp(state_attr(x.entity, 'last_triggered')) | timestamp_custom('%H:%M')) -%}          
+          {{ time }} &nbsp;&nbsp; {{ state_attr(x.entity, 'friendly_name') }}
+        {% endfor %}
+    filter:
+      include:
+        - domain: script
+          last_triggered: '<= 1440'
+      exclude:
+        - attributes:
+            last_triggered: null             
+    sort:
+      method: last_triggered
+      numeric: true
+      reverse: true
+      first: 0
+      count: 20    
+
   - type: entities
     title: Sonstiges
     show_header_toggle: false

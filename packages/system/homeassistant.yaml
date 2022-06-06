@@ -36,6 +36,10 @@ lovelace:
       type: module         
     - url: /hacsfiles/battery-state-card/battery-state-card.js
       type: module
+    - url: /hacsfiles/lovelace-auto-entities/auto-entities.js
+      type: module      
+    - url: /hacsfiles/lovelace-template-entity-row/template-entity-row.js
+      type: module    
     
   dashboards:      
     lovelace-rooms:
