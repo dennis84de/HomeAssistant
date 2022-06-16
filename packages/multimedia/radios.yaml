@@ -133,6 +133,22 @@ script:
       - service: media_player.turn_on
         entity_id: media_player.radio_wohnzimmer
 
+  radios_einschalten:
+    alias: Radios einschalten
+    sequence:
+      - service: switch.turn_on
+        entity_id: switch.badezimmer_radio, switch.wohnzimmer_radio, switch.flur_radio, switch.kueche_radio          
+      - choose:
+          - conditions:
+              - "{{ radioBalkon is not defined or radioBalkon == True }}"              
+              - "{{ now().isoweekday() == 6 or is_state('binary_sensor.arbeitstag', 'on') }}"
+              - "{{ (states('sensor.bewegungsmelder_balkon_temperatur') | int(0)) > -5 }}"              
+              - "{{ is_state('binary_sensor.spatabends', 'off') }}"
+              - "{{ is_state('binary_sensor.nachts', 'off') }}"
+            sequence:            
+              - service: switch.turn_on
+                entity_id: switch.balkon_radio
+                
   radios_ausschalten:
     alias: Radios ausschalten
     sequence:      
@@ -177,22 +193,6 @@ script:
           data:
             entity_id: media_player.radio_balkon
             volume_level: 0.2             
-
-  wohnung_radios_einschalten:
-    alias: "Wohnung - Radios einschalten"
-    sequence:
-      - service: switch.turn_on
-        entity_id: switch.badezimmer_radio, switch.wohnzimmer_radio, switch.flur_radio, switch.kueche_radio          
-      - choose:
-          - conditions:
-              - "{{ radioBalkon is not defined or radioBalkon == True }}"              
-              - "{{ now().isoweekday() == 6 or is_state('binary_sensor.arbeitstag', 'on') }}"
-              - "{{ (states('sensor.bewegungsmelder_balkon_temperatur') | int(0)) > -5 }}"              
-              - "{{ is_state('binary_sensor.spatabends', 'off') }}"
-              - "{{ is_state('binary_sensor.nachts', 'off') }}"
-            sequence:            
-              - service: switch.turn_on
-                entity_id: switch.balkon_radio
             
 automation:       
   - alias: 'Radio Balkon - Bewegung erkannt'

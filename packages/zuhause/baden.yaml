@@ -84,7 +84,7 @@ automation:
                 - "{{ is_state('binary_sensor.nachts', 'off') }}"
                 - "{{ is_state('binary_sensor.spatabends', 'off') }}"            
               sequence:
-                - service: script.wohnung_radios_einschalten
+                - service: script.radios_einschalten
             default:
               - service: switch.turn_on
                 entity_id: switch.watchtv_wohnzimmer, switch.badezimmer_radio       

@@ -23,14 +23,14 @@ script:
             sequence:
               - service: light.turn_on
                 entity_id: light.wohnzimmer_schrank           
-      - service: script.wohnung_radios_einschalten               
+      - service: script.radios_einschalten               
 
   zu_hause_home_office:
     alias: "Zu Hause - Home Office"
     sequence:      
       - service: switch.turn_on
         entity_id: switch.arbeitszimmer_radio, switch.computer_arbeit   
-      - service: script.wohnung_radios_einschalten   
+      - service: script.radios_einschalten   
         data:
           radioBalkon: false         
       - service: input_boolean.turn_on

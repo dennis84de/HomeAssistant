@@ -119,7 +119,7 @@ automation:
                   data:
                     inline_keyboard:
                       - 'Alarm einschalten:/alarm_einschalten'
-
+          
   - alias: "Telegram - Eingeschaltete Geräte"
     id: "telegram_eingeschaltete_geraete"
     trigger:
@@ -130,7 +130,7 @@ automation:
     action:
       - service: telegram_bot.edit_replymarkup
         data:
-          message_id: '{{ trigger.event.data.message.message_id }}'
+          message_id: 'last'
           chat_id: '{{ trigger.event.data.user_id }}'
           inline_keyboard: []
       - service: telegram_bot.send_message
@@ -167,7 +167,7 @@ automation:
       - service: script.alles_ausschalten
       - service: telegram_bot.edit_replymarkup
         data:
-          message_id: '{{ trigger.event.data.message.message_id }}'
+          message_id: 'last'
           chat_id: '{{ trigger.event.data.user_id }}'
           inline_keyboard: []
       - service: telegram_bot.send_message
@@ -185,7 +185,7 @@ automation:
     action:
       - service: telegram_bot.edit_replymarkup
         data:
-          message_id: '{{ trigger.event.data.message.message_id }}'
+          message_id: 'last'
           chat_id: '{{ trigger.event.data.user_id }}'
           inline_keyboard: []
       - service: telegram_bot.send_message
@@ -210,22 +210,6 @@ automation:
         data:
           title: "Aufenthaltsort"
           message: "{{ states('sensor.aufenthaltsort_handy') }} {% if states('proximity.home') | int(0) > 0 %}({{ states('proximity.home') }}km von zu Hause.){% endif %}"                   
-              
-  - alias: "Urlaub - Lichtsimulation einschalten"
-    id: "urlaub_lichtsimulation_einschalten"
-    trigger:
-      - platform: state
-        entity_id: person.dennis
-        to: 'not_home'
-    condition:
-      - condition: state
-        entity_id: calendar.urlaub
-        state: 'on'        
-    action:
-      - service: presence_simulation.start
-      - service: notify.telegram
-        data:
-          message: "Die Lichtsimulation wurde eingeschaltet."    
                
   - alias: "Telegram - Lichtsimulation einschalten"
     id: "telegram_lichsimulation_einschalten"
@@ -307,3 +291,14 @@ script:
                         {{ ((now - last) / 60) | int }}                  
                   - service: input_boolean.turn_off
                     entity_id: input_boolean.home_office_aktiv
+          - choose:
+              - conditions:          
+                  - "{{ is_state('calendar.urlaub', 'on') }}"                    
+                  - condition: template
+                    value_template: >-
+                      {% set urlaubStart = (as_timestamp(state_attr('calendar.urlaub', 'start_time'), None) | timestamp_custom('%d', True)) | int(0) %}
+                      {% set urlaubEnde = (as_timestamp(state_attr('calendar.urlaub', 'end_time'), None) | timestamp_custom('%d', True)) | int(0) %}
+
+                      {{ urlaubStart != urlaubEnde }}      
+                sequence:
+                  - service: presence_simulation.start                

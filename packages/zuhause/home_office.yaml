@@ -109,7 +109,7 @@ script:
       - service: input_boolean.turn_on
         entity_id: input_boolean.home_office_aktiv
       - service: switch.turn_off
-        entity_id: switch.balkon_radio, switch.computer, switch.watchtv_wohnzimmer
+        entity_id: switch.computer, switch.watchtv_wohnzimmer
       - service: switch.turn_on
         entity_id: switch.arbeitszimmer_radio, switch.computer_arbeit
       - choose:
@@ -347,16 +347,9 @@ automation:
           - service: input_boolean.turn_on
             entity_id: input_boolean.home_office
       
-  - alias: "Home Office - Radios pausieren"
-    id: "home_office_radios_pausieren"
+  - alias: "Home Office - Telefon aktiv"
+    id: "home_office_telefon_aktiv"
     trigger:
-      - platform: event
-        event_type: zha_event
-        event_data:
-          device_ieee: 00:15:8d:00:01:83:77:4a
-          command: click
-          args:
-            click_type: single   
       - platform: state
         entity_id: binary_sensor.computer_arbeit_mikrofon
         from: 'off'
@@ -369,6 +362,8 @@ automation:
         entity_id: binary_sensor.home_office_aktiv
         state: 'on'        
     action:
+      - service: button.press
+        entity_id: button.computer_arbeit_lautlos          
       - service: input_boolean.turn_on
         entity_id: input_boolean.home_office_musik_pausiert
       - service: switch.turn_on
@@ -384,17 +379,10 @@ automation:
                 data:
                   echo: "wohnzimmer"
                   message: "Ein eingehender Anruf im Arbeitszimmer"
-
-  - alias: "Home Office - Radios starten"
-    id: "home_office_radios_starten"
+                  
+  - alias: "Home Office - Telefon inaktiv"
+    id: "home_office_telefon_inaktiv"
     trigger:
-      - platform: event
-        event_type: zha_event
-        event_data:
-          device_ieee: 00:15:8d:00:01:83:77:4a
-          command: click
-          args:
-            click_type: single   
       - platform: state
         entity_id: binary_sensor.computer_arbeit_mikrofon
         from: 'on'
@@ -404,10 +392,43 @@ automation:
         entity_id: input_boolean.home_office_musik_pausiert
         state: 'on'
     action:
+      - service: button.press
+        entity_id: button.computer_arbeit_lautlos               
       - service: input_boolean.turn_off
         entity_id: input_boolean.home_office_musik_pausiert
       - service: switch.turn_off
-        entity_id: switch.radios_lautlos      
+        entity_id: switch.radios_lautlos                      
+     
+  - alias: "Home Office - Radios Schalter"
+    id: "home_office_radios_schalter"
+    trigger:
+      - platform: event
+        event_type: zha_event
+        event_data:
+          device_ieee: 00:15:8d:00:01:83:77:4a
+          command: click
+          args:
+            click_type: single   
+    condition:       
+      - condition: state
+        entity_id: binary_sensor.home_office_aktiv
+        state: 'on'        
+    action:
+      - choose:
+          - conditions:
+              - condition: state
+                entity_id: input_boolean.home_office_musik_pausiert
+                state: 'on'            
+            sequence:
+              - service: input_boolean.turn_off
+                entity_id: input_boolean.home_office_musik_pausiert
+              - service: switch.turn_off
+                entity_id: switch.radios_lautlos       
+        default:
+          - service: input_boolean.turn_on
+            entity_id: input_boolean.home_office_musik_pausiert
+          - service: switch.turn_on
+            entity_id: switch.radios_lautlos                
         
   - alias: "Home Office - Pause"
     id: "home_office_pause"    

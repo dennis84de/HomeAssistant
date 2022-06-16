@@ -104,7 +104,7 @@ cards:
     name: Helligkeit
     line_width: 2
     animate: true
-    hours_to_show: 120
+    hours_to_show: 168
     points_per_hour: 5
     hour24: true
     show:

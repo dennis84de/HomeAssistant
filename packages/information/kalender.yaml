@@ -15,9 +15,7 @@ binary_sensor:
         friendly_name: 'Urlaub morgen'
         device_class: opening
         value_template: >-
-          {% set nextVacation = state_attr('calendar.urlaub', 'start_time') %}
-          
-          {% if nextVacation == None %}
+          {% if state_attr('calendar.urlaub', 'start_time') == None %}
             False
           {% else %}
             {% set nextVacationTime = strptime(state_attr('calendar.urlaub', 'start_time'),'%Y-%m-%d %H:%M:%S', None) %}
@@ -271,9 +269,10 @@ sensor:
             {% endif %}
           tage: >
             {% set start = as_timestamp(state_attr('calendar.urlaub', 'start_time'), None) | int(0) %}
-
-            {{ 0 if start == 0 else ((start - as_timestamp(now())) | int / 60 / 60 / 24) | int(0) }}             
-        
+            {% set heute = as_timestamp(now().replace(hour=0, minute=0, second=0)) | int(0) %}
+            
+            {{ 0 if start == 0 else ((start - heute) | int / 60 / 60 / 24) | int(0) }}   
+             
       naechste_ferien:
         friendly_name: Nächste Ferien
         icon_template: mdi:calendar-star
@@ -293,6 +292,7 @@ sensor:
               -
             {% endif %}
           tage: >
-            {% set start = as_timestamp(state_attr('calendar.ferien', 'start_time')) | int(0) %}
-
-            {{ 0 if start == 0 else ((start - as_timestamp(now())) | int / 60 / 60 / 24) | int(0) }}                  
+            {% set start = as_timestamp(state_attr('calendar.ferien', 'start_time'), None) | int(0) %}
+            {% set heute = as_timestamp(now().replace(hour=0, minute=0, second=0)) | int(0) %}
+            
+            {{ 0 if start == 0 else ((start - heute) | int / 60 / 60 / 24) | int(0) }}            

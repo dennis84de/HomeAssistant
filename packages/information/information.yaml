@@ -1,14 +1,28 @@
-input_number:
-  alexa_timer:
-    name: Alexa Timer
-    min: 1
-    max: 120
-    step: 1
-    initial: 5      
-    
 zodiac:
   
 template:
+  - trigger:
+      - platform: state
+        entity_id:
+          - sensor.echo_wohnzimmer_next_timer
+          - sensor.echo_flur_next_timer
+          - sensor.echo_badezimmer_next_timer
+          - sensor.echo_schlafzimmer_next_timer
+          - sensor.echo_kueche_next_timer
+    binary_sensor:
+      - name: "Timer aktiv"
+        state: >-
+          {% if not is_state('sensor.echo_wohnzimmer_next_timer', 'unavailable') or
+            not is_state('sensor.echo_flur_next_timer', 'unavailable') or
+            not is_state('sensor.echo_badezimmer_next_timer', 'unavailable') or
+            not is_state('sensor.echo_schlafzimmer_next_timer', 'unavailable') or
+            not is_state('sensor.echo_kueche_next_timer', 'unavailable') 
+          %}
+            True
+          {% else %}
+            False
+          {% endif %}
+          
   - trigger:
     - platform: time
       at: "00:00:00"

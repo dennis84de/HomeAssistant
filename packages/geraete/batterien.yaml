@@ -12,16 +12,19 @@ sensor:
         friendly_name: Bewegungsmelder Wohnzimmer
         value_template: "{{ states('sensor.bewegungsmelder_wohnzimmer_battery_level_original') | int(0) }}"
         device_class: battery
+        unit_of_measurement: "%"
         
       bewegungsmelder_badezimmer_battery_level:
         friendly_name: Bewegungsmelder Badezimmer
         value_template: "{{ states('sensor.bewegungsmelder_badezimmer_battery_level_original') | int(0) }}"
         device_class: battery
+        unit_of_measurement: "%"
         
       bewegungsmelder_balkon_battery_level:
         friendly_name: Bewegungsmelder Balkon
         value_template: "{{ states('sensor.bewegungsmelder_balkon_battery_level_original') | int(0) }}"
         device_class: battery
+        unit_of_measurement: "%"
         
       batteriestand_niedrig:
         friendly_name: Batteriestand niedrig

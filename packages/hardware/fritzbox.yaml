@@ -4,7 +4,7 @@ input_text:
     
   guest_wifi_password:
     name: 'Gäste Wlan - Password'
-
+          
 sensor:    
   - platform: template
     sensors:

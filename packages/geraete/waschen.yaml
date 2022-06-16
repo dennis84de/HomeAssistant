@@ -155,7 +155,7 @@ automation:
         entity_id: switch.waschmaschine
       - service: telegram_bot.edit_replymarkup
         data:
-          message_id: '{{ trigger.event.data.message.message_id }}'
+          message_id: 'last'
           chat_id: '{{ trigger.event.data.user_id }}'
           inline_keyboard: []
       - service: telegram_bot.send_message
@@ -286,7 +286,7 @@ automation:
         entity_id: switch.trockner
       - service: telegram_bot.edit_replymarkup
         data:
-          message_id: '{{ trigger.event.data.message.message_id }}'
+          message_id: 'last'
           chat_id: '{{ trigger.event.data.user_id }}'
           inline_keyboard: []
       - service: telegram_bot.send_message

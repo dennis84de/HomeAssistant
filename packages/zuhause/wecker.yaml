@@ -63,7 +63,7 @@ sensor:
         friendly_name: Wecker Startdatum
         icon_template: mdi:calendar-clock
         value_template: >-
-          {% set alarmSensor = states('sensor.tablet_schlafzimmer_next_alarm')%}
+          {% set alarmSensor = states('sensor.tablet_schlafzimmer_next_alarm') %}
 
           {% if alarmSensor == 'unavailable' %}
             -
@@ -180,7 +180,7 @@ automation:
           entity_id: light.bett      
           effect: colorloop             
       - delay: "00:{{ states('input_number.wecker_verzoegerung') | int }}:00" 
-      - service: script.wohnung_radios_einschalten
+      - service: script.radios_einschalten
         data:
           radioBalkon: false
 
@@ -266,7 +266,15 @@ automation:
           device_ieee: 00:15:8d:00:02:e9:58:3a
           command: click
           args:
-            click_type: single           
+            click_type: single        
+    variables:
+      radioBalkonEinschalten: >-
+        {% set istSamstag = now().isoweekday() == 6 %}
+        {% set istArbeitstag =  is_state('binary_sensor.arbeitstag', 'on') %}
+        {% set istUrlaub = is_state('calendar.urlaub', 'on') %}
+        {% set istKrankheit = is_state('calendar.arbeit_krank', 'on') %}
+        
+        {{ istSamstag or (istArbeitstag and (istUrlaub or istKrankheit)) }}        
     condition:
       - "{{ is_state('binary_sensor.besuch', 'off') }}"
       - "{{ is_state('binary_sensor.schlafen_aktiv', 'on') }}"
@@ -299,7 +307,9 @@ automation:
       - service: alarmo.disarm
         data:
           entity_id: alarm_control_panel.alarmo      
-      - service: script.wohnung_radios_einschalten          
+      - service: script.radios_einschalten       
+        data:
+          radioBalkon: "{{ radioBalkonEinschalten }}"
       - choose:
           - conditions:
               - "{{ trigger.id != 'schalter_badezimmer' }}"                    

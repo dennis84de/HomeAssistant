@@ -19,67 +19,24 @@ popup_cards:
         - entity: device_tracker.handygps
           name: Gps                 
      
-cards:                 
+cards:    
   - type: conditional
     view_layout:
       column: 1
     conditions:
-      - entity: sensor.echo_wohnzimmer_next_timer
-        state_not: "unavailable"
+      - entity: binary_sensor.timer_aktiv
+        state: 'on'
     card:
-      type: entities
-      entities:
-      - entity: sensor.echo_wohnzimmer_next_timer
-        name: Timer Wohnzimmer   
-
-  - type: conditional
-    view_layout:
-      column: 1
-    conditions:
-      - entity: sensor.echo_flur_next_timer
-        state_not: "unavailable"
-    card:
-      type: entities
-      entities:
-      - entity: sensor.echo_flur_next_timer
-        name: Timer Flur   
-        
-  - type: conditional
-    view_layout:
-      column: 1  
-    conditions:
-      - entity: sensor.echo_badezimmer_next_timer
-        state_not: "unavailable"
-    card:
-      type: entities
-      entities:
-      - entity: sensor.echo_badezimmer_next_timer
-        name: Timer Badezimmer   
-               
-  - type: conditional
-    view_layout:
-      column: 1  
-    conditions:
-      - entity: sensor.echo_schlafzimmer_next_timer
-        state_not: "unavailable"
-    card:
-      type: entities
-      entities:
-      - entity: sensor.echo_schlafzimmer_next_timer
-        name: Timer Schlafzimmer          
-                        
-  - type: conditional
-    view_layout:
-      column: 1  
-    conditions:
-      - entity: sensor.echo_kueche_next_timer
-        state_not: "unavailable"
-    card:
-      type: entities
-      entities:
-      - entity: sensor.echo_kueche_next_timer
-        name: Timer Küche     
-
+      type: custom:auto-entities
+      card:
+        type: entities
+        title: Timer
+      filter:
+        include:
+          - entity_id: "sensor.echo_*_next_timer"
+        exclude:          
+          - state: "unavailable"
+            
   - type: custom:layout-break
         
   - type: entities
@@ -159,11 +116,42 @@ cards:
     show_header_toggle: false
     entities:
       - entity: calendar.kalender            
-      - entity: sensor.naechste_ferien      
-        type: "custom:secondaryinfo-entity-row"   
-      - entity: sensor.next_holiday
-        type: "custom:secondaryinfo-entity-row"                      
-      - entity: sensor.naechster_urlaub     
+      - type: custom:template-entity-row
+        entity: sensor.naechste_ferien
+        secondary: >-
+          {% set tage = state_attr('sensor.naechste_ferien', 'tage') | int(0) %}
+          
+          {% if tage == 1 %}
+            {{ tage }} Tag
+          {% elif tage > 1 %}
+            {{ tage }} Tage
+          {% else %}
+            Heute
+          {% endif %}       
+      - type: custom:template-entity-row
+        entity: sensor.next_holiday
+        secondary: >-
+          {% set tage = state_attr('sensor.next_holiday', 'days_until_next_holiday') | int(0) %}
+          
+          {% if tage == 1 %}
+            {{ tage }} Tag
+          {% elif tage > 1 %}
+            {{ tage }} Tage
+          {% else %}
+            Heute
+          {% endif %}        
+      - type: custom:template-entity-row
+        entity: sensor.naechster_urlaub
+        secondary: >-
+          {% set tage = state_attr('sensor.naechster_urlaub', 'tage') | int(0) %}
+          
+          {% if tage == 1 %}
+            {{ tage }} Tag
+          {% elif tage > 1 %}
+            {{ tage }} Tage
+          {% else %}
+            Heute
+          {% endif %}                
       - entity: sensor.naechstes_buero
         name: Büro
             

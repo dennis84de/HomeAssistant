@@ -157,7 +157,7 @@ automation:
       arbeitstagHeute: "{{ is_state('binary_sensor.arbeitstag', 'on') }}"
       arbeitstagMorgen: "{{ is_state('binary_sensor.arbeitstag_morgen', 'on') }}"
       urlaubHeute: "{{ state_attr('sensor.naechster_urlaub', 'tage') | int(0) <= 0 }}"
-      urlaubMorgen: "{{ is_state_attr('sensor.naechster_urlaub', 'tage', 1) }}"      
+      urlaubMorgen: "{{ is_state_attr('sensor.naechster_urlaub', 'tage', 1) }}"         
     condition:
       condition: or
       conditions:
