@@ -360,7 +360,7 @@ class SpaceXSensor(CoordinatorEntity):
                 self.attrs["fairings_reused"] = "NA"
         
         elif self._kind == "spacex_next_launch_payload":
-            if len(launch_data["payloads_detail"]) > 0:
+            if len(launch_data["payloads_detail"]):
                 if len(launch_data["payloads_detail"][0]["nationalities"]):
                     self.attrs["nationality"] = launch_data["payloads_detail"][0]["nationalities"][0]
                 else:
@@ -370,6 +370,7 @@ class SpaceXSensor(CoordinatorEntity):
                 else:
                     self.attrs["manufacturer"] = "NA"
 
+            if launch_data["payloads_detail"]:
                 self.attrs["payload_type"] = launch_data["payloads_detail"][0]["type"]
                 self.attrs["payload_mass"] = (
                     str(
@@ -384,6 +385,11 @@ class SpaceXSensor(CoordinatorEntity):
                     + " lbs"
                 )
                 self.attrs["orbit"] = launch_data["payloads_detail"][0]["orbit"]
+            else:
+                self.attrs["payload_type"] = ""
+                self.attrs["payload_mass"] = ""
+                self.attrs["payload_mass_us"] = ""
+           
 
         elif self._kind == "spacex_latest_launch_mission":
             self.attrs["mission_patch"] = latest_launch_data["links"].get("patch",{}).get("large")
@@ -556,10 +562,10 @@ class SpaceXSensor(CoordinatorEntity):
             self._state = launch_data["rocket"]["name"]
 
         elif self._kind == "spacex_next_launch_payload":
-            if len(launch_data["payloads_detail"]) == 0:
-                self._state = None
-            else:
+            if launch_data["payloads_detail"]:
                 self._state = launch_data["payloads_detail"][0]["name"]
+            else:
+                self._state = ""
 
         elif self._kind == "spacex_latest_launch_mission":
             self._state = latest_launch_data["name"]
