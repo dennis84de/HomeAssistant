@@ -202,12 +202,11 @@ automation:
           args:
             click_type: double   
     condition:
-      - condition: state
-        entity_id: binary_sensor.home_office_heute
-        state: 'on'       
-      - condition: state
-        entity_id: binary_sensor.home_office_aktiv
-        state: 'off'     
+      - condition: or
+        conditions:
+          - "{{ is_state('binary_sensor.home_office_heute', 'on') }}"
+          - "{{ is_state('binary_sensor.buero_heute', 'on') }}"
+      - "{{ is_state('binary_sensor.home_office_aktiv', 'off') }}" 
     action:
       - service: script.home_office_start
 
