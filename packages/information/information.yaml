@@ -199,19 +199,10 @@ automation:
     trigger:
       - platform: state
         entity_id: sensor.ungelesene_mails
-    condition:
-      - condition: state
-        entity_id: person.dennis
-        state: 'home'
-      - condition: state
-        entity_id: binary_sensor.schlafen_aktiv
-        state: 'off'        
-      - condition: template     
-        value_template: >-
-          {% set oldMailCount = trigger.from_state.state | int(0) %}
-          {% set newMailCount = trigger.to_state.state | int(0) %}
-          
-          {{ newMailCount > oldMailCount }}        
+    condition: 
+      - "{{ is_state('person.dennis', 'home') }}"
+      - "{{ is_state('binary_sensor.schlafen_aktiv', 'off') }}"
+      - "{{ (trigger.to_state.state | int(0)) > (trigger.from_state.state | int(0)) }}"  
     action:
       - service: !secret tts_service
         data:
@@ -261,4 +252,12 @@ homeassistant:
     sensor.time:
       friendly_name: Uhrzeit      
     sensor.next_holiday:
-      friendly_name: Nächster Feiertag      
+      friendly_name: Nächster Feiertag
+    sensor.satelliten:
+      unit_of_measurement: Satelliten
+    sensor.katastrophenalarm:
+      unit_of_measurement: Warnungen
+    sensor.watchman_missing_entities:
+      unit_of_measurement: Entität(en)
+    sensor.watchman_missing_services:
+      unit_of_measurement: Dienst(e)

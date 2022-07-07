@@ -75,6 +75,17 @@ script:
       - service: shell_command.send_position
         data:
           url: !secret phonetrack_send_position_url
+      - service: device_tracker.see
+        data:
+          dev_id: 'handygps'
+          location_name: home
+          source_type: gps
+          gps_accuracy: 20
+          battery: "{{ states('sensor.handy_battery_level') | int(0) }}"
+          gps: 
+            - !secret home_latitude
+            - !secret home_longitude
+                  
       - service: mqtt.publish
         data:
            topic: 'handy/tracker'
@@ -191,8 +202,9 @@ automation:
                       {% set last = as_timestamp(state_attr("script.alles_ausschalten", "last_triggered"), None) | int(0) %}
                       {% set minutenUnterwegs = ((now - last) / 60) | int(0) %}
                       {% set minuenHomeOffice = states('input_number.home_office_heute_gearbeitet') | int(0) %}
+                      {% set heuteBuero = is_state('binary_sensor.buero_heute', 'on') %}
 
-                      {{ (minutenUnterwegs + minuenHomeOffice < 540) if minuenHomeOffice > 0 else false }}                              
+                      {{ (minutenUnterwegs + minuenHomeOffice < 540) if (minuenHomeOffice > 0 or heuteBuero) else false }}                              
             sequence:              
               - service: script.zu_hause_home_office       
           - conditions:

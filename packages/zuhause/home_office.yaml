@@ -32,6 +32,27 @@ input_number:
     min: 0
     max: 540
 
+input_text:
+  teams_status:
+    name: Microsoft Teams Status
+    icon: mdi:microsoft-teams
+  teams_activity:
+    name: Microsoft Teams Aktivität
+    icon: mdi:phone-off
+     
+sensor:
+  - platform: template
+    sensors:
+      teams_status:
+        friendly_name: "Microsoft Teams Status"
+        value_template: "{{states('input_text.teams_status')}}"
+        icon_template: "{{state_attr('input_text.teams_status','icon')}}"
+        unique_id: sensor.teams_status
+      teams_activity:
+        friendly_name: "Microsoft Teams Aktivität"
+        value_template: "{{states('input_text.teams_activity')}}"
+        unique_id: sensor.teams_activity
+            
 binary_sensor:
   - platform: ping
     host: !secret computer_arbeit_host    

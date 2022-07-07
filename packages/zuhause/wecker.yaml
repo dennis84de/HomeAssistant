@@ -169,16 +169,18 @@ automation:
         state: 'on'
     action:
       - service: input_boolean.turn_on
-        entity_id: input_boolean.wecker_aktiv          
+        entity_id: input_boolean.wecker_aktiv         
+      - if: "{{ states('sensor.balkon_helligkeit_mittelwert') | int(0) < 50 }}"
+        then:
+          - service: light.turn_on
+            data:
+              entity_id: light.bett      
+              effect: colorloop             
       - service: switch.turn_on
-        entity_id: switch.schlafzimmer_radio               
+        entity_id: switch.schlafzimmer_radio             
       - wait_template: "{{ not is_state('media_player.radio_schlafzimmer', 'unavailable') }}"  
       - service: media_player.media_play
-        entity_id: media_player.radio_schlafzimmer
-      - service: light.turn_on
-        data:
-          entity_id: light.bett      
-          effect: colorloop             
+        entity_id: media_player.radio_schlafzimmer                  
       - delay: "00:{{ states('input_number.wecker_verzoegerung') | int }}:00" 
       - service: script.radios_einschalten
         data:

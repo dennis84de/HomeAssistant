@@ -39,7 +39,7 @@ recorder:
       - device_tracker.handy*  
   exclude:
     entities:
-      - sensor.home_assistant_overhead_satellites
+      - sensor.satelliten
       - sensor.time
       - sensor.date_time      
       

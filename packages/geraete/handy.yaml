@@ -526,7 +526,8 @@ automation:
       - platform: state
         entity_id: sensor.handy_battery_level
     condition:
-      - "{{ trigger.to_state.state is defined and trigger.to_state.state != 'unknown' }}"
+      - "{{ trigger.to_state.state is defined }}"
+      - "{{ trigger.to_state.state not in ('unknown', 'unavailable') }}"      
       - "{{ trigger.to_state.state | int(0) < trigger.from_state.state | int(0) }}"
       - "{{ (trigger.to_state.state | int(0)) <= states('input_number.batteriestand_warnlevel') | int(0) }}"
       - "{{ is_state('person.dennis', 'home') }}"      

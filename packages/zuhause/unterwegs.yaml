@@ -265,14 +265,24 @@ script:
             {% set windowMessage = '' if qty == 0 else '{} Fenster {} geöffnet: {}.'.format(p1, p2, openWindows | join(', ')) %}
             
             {{ vacuumMessage }} {{ windowMessage }} Alle Geräte werden ausgeschaltet. Auf Wiedersehen.
-      - parallel:            
+      - parallel:          
+          - service: homeassistant.turn_off
+            entity_id: group.alles_ausschalten            
           - service: mqtt.publish
             data:
                topic: 'handy/tracker'
                payload: not_home
-               retain: true            
-          - service: homeassistant.turn_off
-            entity_id: group.alles_ausschalten           
+               retain: true         
+          - service: device_tracker.see
+            data:
+              dev_id: 'handygps'
+              location_name: not_home
+              source_type: gps
+              gps_accuracy: 20
+              battery: "{{ states('sensor.handy_battery_level') | int(0) }}"
+              gps: 
+                - !secret home_latitude
+                - !secret home_longitude                     
           - service: alarmo.arm
             data:
               entity_id: alarm_control_panel.alarmo

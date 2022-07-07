@@ -11,9 +11,8 @@ cards:
     title: Sonstiges
     show_header_toggle: false
     entities:
-#      - entity: sensor.flugzeuge
       - entity: binary_sensor.iss
-      - entity: sensor.home_assistant_overhead_satellites
+      - entity: sensor.satelliten
       - entity: sensor.schimmelindikator
       - entity: binary_sensor.auto_waschen
       - entity: binary_sensor.autoreifen

@@ -123,10 +123,12 @@ cards:
           
           {% if tage == 1 %}
             {{ tage }} Tag
+          {% elif tage == 0 %}
+            Heute           
           {% elif tage > 1 %}
-            {{ tage }} Tage
+            {{ tage }} Tage            
           {% else %}
-            Heute
+            Aktiv
           {% endif %}       
       - type: custom:template-entity-row
         entity: sensor.next_holiday
@@ -135,11 +137,13 @@ cards:
           
           {% if tage == 1 %}
             {{ tage }} Tag
+          {% elif tage == 0 %}
+            Heute           
           {% elif tage > 1 %}
-            {{ tage }} Tage
+            {{ tage }} Tage            
           {% else %}
-            Heute
-          {% endif %}        
+            Aktiv
+          {% endif %}       
       - type: custom:template-entity-row
         entity: sensor.naechster_urlaub
         secondary: >-
@@ -147,11 +151,13 @@ cards:
           
           {% if tage == 1 %}
             {{ tage }} Tag
+          {% elif tage == 0 %}
+            Heute           
           {% elif tage > 1 %}
-            {{ tage }} Tage
+            {{ tage }} Tage            
           {% else %}
-            Heute
-          {% endif %}                
+            Aktiv
+          {% endif %}                  
       - entity: sensor.naechstes_buero
         name: Büro
             
