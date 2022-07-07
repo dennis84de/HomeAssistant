@@ -5,13 +5,13 @@ import logging
 
 from homeassistant.components.weather import (
     ATTR_FORECAST_CONDITION,
-    ATTR_FORECAST_PRECIPITATION,
+    ATTR_FORECAST_NATIVE_PRECIPITATION,
     ATTR_FORECAST_PRECIPITATION_PROBABILITY,
-    ATTR_FORECAST_TEMP,
-    ATTR_FORECAST_TEMP_LOW,
+    ATTR_FORECAST_NATIVE_TEMP,
+    ATTR_FORECAST_NATIVE_TEMP_LOW,
     ATTR_FORECAST_TIME,
     ATTR_FORECAST_WIND_BEARING,
-    ATTR_FORECAST_WIND_SPEED,
+    ATTR_FORECAST_NATIVE_WIND_SPEED,
     Forecast,
     WeatherEntity,
     WeatherEntityDescription,
@@ -99,9 +99,9 @@ class WeatherbitWeatherEntity(WeatherbitEntity, WeatherEntity):
         )
         self.daily_forecast = self.entity_description.key in _WEATHER_DAILY
         self._attr_name = self.entity_description.name
-        self._attr_precipitation_unit = LENGTH_MILLIMETERS
+        self._attr_native_precipitation_unit = LENGTH_MILLIMETERS
         self._attr_precision = PRECISION_TENTHS
-        self._attr_temperature_unit = TEMP_CELSIUS
+        self._attr_native_temperature_unit = TEMP_CELSIUS
 
     @property
     def condition(self):
@@ -109,7 +109,7 @@ class WeatherbitWeatherEntity(WeatherbitEntity, WeatherEntity):
         return getattr(self.forecast_coordinator.data, "condition")
 
     @property
-    def temperature(self):
+    def native_temperature(self):
         """Return the temperature."""
         return getattr(self.coordinator.data, "temp")
 
@@ -119,7 +119,7 @@ class WeatherbitWeatherEntity(WeatherbitEntity, WeatherEntity):
         return getattr(self.coordinator.data, "humidity")
 
     @property
-    def pressure(self):
+    def native_pressure(self):
         """Return the pressure."""
         if getattr(self.coordinator.data, "slp") is None:
             return None
@@ -127,7 +127,7 @@ class WeatherbitWeatherEntity(WeatherbitEntity, WeatherEntity):
         return getattr(self.coordinator.data, "slp")
 
     @property
-    def wind_speed(self):
+    def native_wind_speed(self):
         """Return the wind speed."""
         if getattr(self.coordinator.data, "wind_spd") is None:
             return None
@@ -140,7 +140,7 @@ class WeatherbitWeatherEntity(WeatherbitEntity, WeatherEntity):
         return getattr(self.coordinator.data, "wind_dir")
 
     @property
-    def visibility(self):
+    def native_visibility(self):
         """Return the visibility."""
         return getattr(self.coordinator.data, "vis")
 
@@ -171,12 +171,12 @@ class WeatherbitWeatherEntity(WeatherbitEntity, WeatherEntity):
                 data.append(
                     {
                         ATTR_FORECAST_TIME: item.utc_time,
-                        ATTR_FORECAST_TEMP: item.max_temp,
-                        ATTR_FORECAST_TEMP_LOW: item.min_temp,
-                        ATTR_FORECAST_PRECIPITATION: item.precip,
+                        ATTR_FORECAST_NATIVE_TEMP: item.max_temp,
+                        ATTR_FORECAST_NATIVE_TEMP_LOW: item.min_temp,
+                        ATTR_FORECAST_NATIVE_PRECIPITATION: item.precip,
                         ATTR_FORECAST_PRECIPITATION_PROBABILITY: item.pop,
                         ATTR_FORECAST_CONDITION: item.condition,
-                        ATTR_FORECAST_WIND_SPEED: item.wind_spd,
+                        ATTR_FORECAST_NATIVE_WIND_SPEED: item.wind_spd,
                         ATTR_FORECAST_WIND_BEARING: item.wind_dir,
                     }
                 )

@@ -9,15 +9,9 @@
   ],
   "after_dependencies": [
     "light",
-    "script",
-    "sensor",
-    "binary_sensor",
-    "cover",
-    "fan",
-    "media_player",
-    "input_boolean"
+    "script"
   ],
   "codeowners": ["@danobot"],
   "homeassistant": "0.117.0",
-  "version": "9.2.10"
+  "version": "9.4.0"
 }
