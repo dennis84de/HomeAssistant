@@ -348,7 +348,7 @@ automation:
     condition:
       - "{{ is_state('binary_sensor.schlafen_aktiv', 'off') }}"
       - "{{ is_state('binary_sensor.spatabends', 'on') or is_state('binary_sensor.nachts', 'on')}}"
-    action:   
+    action:      
       - service: script.schlafen_gehen   
             
   - alias: 'Sleeptimer - Starten'

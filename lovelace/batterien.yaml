@@ -34,7 +34,7 @@ cards:
       - entity: sensor.tablet_badezimmer_battery_level
         name: Tablet Badezimmer
         charging_state:
-          entity_id: sensor.tablet_badezimmer_akkustatus
+          entity_id: sensor.tablet_badezimmer_akku_status
           state: "charging"                   
       - entity: sensor.tablet_schlafzimmer_battery_level
         name: Tablet Schlafzimmer
@@ -44,7 +44,7 @@ cards:
       - entity: sensor.tablet_balkon_battery_level
         name: Tablet Balkon
         charging_state:
-          entity_id: sensor.tablet_balkon_akkustatus
+          entity_id: sensor.tablet_balkon_akku_status
           state: "charging"               
           
   - type: custom:battery-state-card

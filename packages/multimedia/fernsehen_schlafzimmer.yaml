@@ -24,8 +24,6 @@ switch:
             entity_id: switch.schlafzimmer_fernseher_remote
           - service: media_player.turn_on
             entity_id: media_player.fire_tv_schlafzimmer
-          - service: switch.turn_on
-            entity_id: switch.kodi_schlafzimmer
         turn_off:
           - service: switch.turn_off
             entity_id: switch.kodi_schlafzimmer
