@@ -1,8 +1,8 @@
 {
   "state": {
     "car_wash__": {
-      "off": "Nicht waschen",
-      "on": "Waschen"
+      "off": "Waschen sinnlos",
+      "on": "Jetzt waschen"
     }
   }
 }
