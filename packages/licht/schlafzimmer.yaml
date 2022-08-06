@@ -1,16 +1,42 @@
-light:
-  - platform: switch
-    name: Kleiderschrank
-    entity_id: switch.kleiderschrank
-    
-  - platform: switch
-    name: Fernseher Schlafzimmer
-    entity_id: switch.schlafzimmer_fernseher_licht
-
 input_boolean:
   bewegungsmelder_schlafzimmer_deaktiviert:
     name: Bewegungsmelder deaktiviert    
     icon: mdi:sync-off
+    
+  schlafzimmer_fernseher_licht:
+    name: Schlafzimmer Fernseher Licht  
+            
+light:
+  - platform: template
+    lights:
+      schlafzimmer_fernseher:
+        friendly_name: Schlafzimmer Fernseher
+        value_template: "{{ is_state('input_boolean.schlafzimmer_fernseher_licht', 'on') }}"
+        icon_template: mdi:television-classic
+        turn_on:
+          - service: remote.send_command
+            target:
+              entity_id: remote.broadlink_schlafzimmer_remote
+            data:             
+              device: schlafzimmer_licht
+              command:
+                - turn_on    
+          - service: input_boolean.turn_on
+            entity_id: input_boolean.schlafzimmer_fernseher_licht           
+        turn_off:
+          - service: remote.send_command
+            target:
+              entity_id: remote.broadlink_schlafzimmer_remote
+            data:                       
+              device: schlafzimmer_licht
+              command:
+                - turn_off
+          - service: input_boolean.turn_off
+            entity_id: input_boolean.schlafzimmer_fernseher_licht
+            
+  - platform: switch
+    name: Kleiderschrank
+    entity_id: switch.kleiderschrank
 
 entity_controller:           
   bewegung_schlafzimmer_bett:
@@ -106,6 +132,5 @@ homeassistant:
       icon: mdi:bed-queen
     light.kleiderschrank:
       icon: mdi:wardrobe 
-    light.fernseher_schlafzimmer:
-      icon: mdi:television-classic
+    light.schlafzimmer_fernseher:
       friendly_name: Fernseher

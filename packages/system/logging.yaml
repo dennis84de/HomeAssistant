@@ -63,7 +63,6 @@ logbook:
       - device_tracker.handy*  
   exclude:
     entities:     
-      - switch.schlafzimmer_fernseher_licht
       - switch.sportzimmer_regal
       - switch.wohnzimmer_couch
       - switch.wohnzimmer_strahler
@@ -98,8 +97,6 @@ history:
       - switch.wohnzimmer_schrank
       - switch.arbeitszimmer_lampe
       - switch.kuechenschrank
-      - switch.schlafzimmer_fernseher_remote
-      - switch.schlafzimmer_fernseher_licht
       - switch.fritz_box_7272_call_deflection_0
       - switch.fritz_box_7272_call_deflection_1
     entity_globs:

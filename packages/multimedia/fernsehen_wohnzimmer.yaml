@@ -131,15 +131,11 @@ script:
             sequence:
               - service: media_player.media_play
                 entity_id: media_player.kodi_wohnzimmer
-              - service: input_boolean.turn_off
-                entity_id: input_boolean.kodi_wohnzimmer_pausiert
           - conditions:
               - "{{ device == 'computer' }}"             
             sequence:
               - service: media_player.media_play
                 entity_id: media_player.computer
-              - service: input_boolean.turn_off
-                entity_id: input_boolean.multimedia_wohnzimmer_pausiert
       - choose:
           - conditions:
               - "{{ is_state('media_player.radio_badezimmer', 'playing') }}"      
@@ -391,6 +387,32 @@ automation:
                   triggerId: trigger.id   
                   device: 'computer'
 
+  - alias: "Wohnzimmer - Wiedergabe gestartet"
+    id: "wohnzimmer_wiedergabe_gestartet"
+    trigger:
+      - id: kodi
+        platform: state
+        entity_id: media_player.kodi_wohnzimmer
+        to: 'playing'
+      - id: computer
+        platform: state
+        entity_id: media_player.computer
+        to: 'playing'        
+    condition:
+      - condition: or
+        conditions:
+          - "{{ is_state('input_boolean.kodi_wohnzimmer_pausiert', 'on') }}"
+          - "{{ is_state('input_boolean.multimedia_wohnzimmer_pausiert', 'on') }}"
+    action:
+      - if: "{{ is_state('input_boolean.kodi_wohnzimmer_pausiert', 'on') }}"
+        then:
+          - service: input_boolean.turn_off
+            entity_id: input_boolean.kodi_wohnzimmer_pausiert    
+      - if: "{{ is_state('input_boolean.multimedia_wohnzimmer_pausiert', 'on') }}"
+        then:
+          - service: input_boolean.turn_off
+            entity_id: input_boolean.multimedia_wohnzimmer_pausiert          
+      
 homeassistant:
   customize:
     media_player.soundbar:

@@ -1,16 +1,10 @@
+input_boolean:  
+  multimedia_schlafzimer_pausiert:
+    name:  Multimedia pausiert    
+
 switch: 
-  - platform: broadlink
-    mac: 'B4:43:0D:F9:2F:E5'
-    switches:
-      - name: Schlafzimmer Fernseher Remote
-        command_on: 'JgAYAZaSFDYUNRU1FBEUERQRFBAVEBQ2FDYUNRQRFBEUERQQFRAUERQ2FBEUEBUQFBEUERQRFDUUERQ2FDUVNRQ2FDUUNhQABgGWkhQ2FDUUNhQRFBEUEBUQFBEUNhQ1FDYUERQRFBAUERQRFBEUNRUQFBEUERQRFBAVEBQ2FBEUNRU1FDYUNRQ2FDUVAAYBlpIUNRU1FDYUERQQFRAUERQRFDUVNRQ2FBEUEBQRFBEUERQRFDUUERQRFBEUEBUQFRAUNhQRFDUUNhQ1FTUUNhQ1FQAGAJeSFDUUNhQ1FRAVEBQRFBEUERQ1FTUUNhQQFRAUERQRFBEUERQ1FBEUERQRFBAVEBQRFDYUEBU1FDYUNRQ2FDUVNRQADQU=='
-        command_off: 'JgAYAZaSFDYUNRU1FBEUERQRFBAVEBQ2FDYUNRQRFBEUERQQFRAUERQ2FBEUEBUQFBEUERQRFDUUERQ2FDUVNRQ2FDUUNhQABgGWkhQ2FDUUNhQRFBEUEBUQFBEUNhQ1FDYUERQRFBAUERQRFBEUNRUQFBEUERQRFBAVEBQ2FBEUNRU1FDYUNRQ2FDUVAAYBlpIUNRU1FDYUERQQFRAUERQRFDUVNRQ2FBEUEBQRFBEUERQRFDUUERQRFBEUEBUQFRAUNhQRFDUUNhQ1FTUUNhQ1FQAGAJeSFDUUNhQ1FRAVEBQRFBEUERQ1FTUUNhQQFRAUERQRFBEUERQ1FBEUERQRFBAVEBQRFDYUEBU1FDYUNRQ2FDUVNRQADQU=='
-      - name: Schlafzimmer Fernseher Licht
-        command_on: 'JgBYAAABL5EWDxYQFRAVERUQFREVEBYPFTUVNRY0FjQVNBY0FTUVNRY0FjMWEBUQFhAVEBURFTQWEBURFDUVNRU1FTQUNhQSEwAFIgABLEkUAAxbAAEsSRQADQU=='
-        command_off: 'JgBYAAABK5QTEhMTExMSEhMTExITEhMTEzcUNRM3EzcTNxM2EzcTNxMSEzcTEhMTExITEhMTEzcTNhMTEzYTNxM3EzcTNxMSEwAFIgABLUgUAAxbAAEsSBUADQU=='
-  
   - platform: template
-    switches:
+    switches:      
       watchtv_schlafzimmer:
         friendly_name: Fernsehen
         value_template: "{{ is_state('switch.schlafzimmer_fernseher', 'on') }}"
@@ -19,9 +13,13 @@ switch:
             entity_id: switch.schlafzimmer_fernseher
           - delay: '00:00:05'
           - service: light.turn_on
-            entity_id: light.fernseher_schlafzimmer
-          - service: switch.turn_on
-            entity_id: switch.schlafzimmer_fernseher_remote
+            entity_id: light.schlafzimmer_fernseher
+          - service: remote.send_command
+            data:
+              entity_id: remote.broadlink_schlafzimmer_remote
+              device: schlafzimmer_fernseher
+              command:
+                - toggle            
           - service: media_player.turn_on
             entity_id: media_player.fire_tv_schlafzimmer
         turn_off:
@@ -29,12 +27,18 @@ switch:
             entity_id: switch.kodi_schlafzimmer
           - service: media_player.turn_off
             entity_id: media_player.fire_tv_schlafzimmer
+          - service: remote.send_command
+            data:
+              entity_id: remote.broadlink_schlafzimmer_remote
+              device: schlafzimmer_fernseher
+              command:
+                - toggle                
           - service: switch.turn_off
-            entity_id: switch.schlafzimmer_fernseher, switch.schlafzimmer_fernseher_remote
+            entity_id: switch.schlafzimmer_fernseher
           - service: light.turn_off
-            entity_id: light.fernseher_schlafzimmer
+            entity_id: light.schlafzimmer_fernseher
           - service: input_boolean.turn_off
-            entity_id: input_boolean.timer_schlafzimmer_aktiv
+            entity_id: input_boolean.timer_schlafzimmer_aktiv          
           
       kodi_schlafzimmer:
         friendly_name: Kodi

@@ -70,7 +70,7 @@ cards:
     entities:
       - entity: light.bett
       - entity: light.kleiderschrank
-      - entity: light.fernseher_schlafzimmer
+      - entity: light.schlafzimmer_fernseher
 
   - type: entities
     title: Geräte

@@ -80,8 +80,8 @@ cards:
       title: Arbeit
       show_header_toggle: false
       entities:
-        - entity: sensor.fahrzeit_zur_arbeit
-        - entity: sensor.fahrzeit_nach_hause
+        - entity: sensor.fahrzeit_zur_arbeit_duration_in_traffic
+        - entity: sensor.fahrzeit_nach_hause_duration_in_traffic
         - type: divider
         - entity: sensor.abfahrzeit      
           type: "custom:secondaryinfo-entity-row"              
@@ -211,8 +211,8 @@ cards:
         points: false
         state: false
       entities:
-        - entity: sensor.fahrzeit_zur_arbeit
-        - entity: sensor.fahrzeit_nach_hause      
+        - entity: sensor.fahrzeit_zur_arbeit_duration_in_traffic
+        - entity: sensor.fahrzeit_nach_hause_duration_in_traffic      
       
   - type: custom:mini-graph-card     
     name: Tanken
