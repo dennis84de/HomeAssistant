@@ -220,7 +220,7 @@ cards:
     animate: true
     hour24: true
     hours_to_show: 120
-    lower_bound: 1.6
+#    lower_bound: 1.5
     show:                            
       icon: false
       points: false

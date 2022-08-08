@@ -12,7 +12,7 @@ input_number:
     min: 100
     max: 1000
     step: 50 
-    
+
 binary_sensor:
   - platform: car_wash
     name: Auto waschen
@@ -137,41 +137,21 @@ sensor:
       mondphase:
         friendly_name: Mondphase
         value_template: >-
-          {% if is_state('sensor.moon', 'new_moon') %}
-            Neumond
-          {% elif is_state('sensor.moon', 'waxing_crescent') %}
-            Zunehmender Sichelmond
-          {% elif is_state('sensor.moon', 'first_quarter') %}
-            Zunehmender Halbmond
-          {% elif is_state('sensor.moon', 'waxing_gibbous') %}
-            Zunehmender Dreiviertelmond
-          {% elif is_state('sensor.moon', 'full_moon') %}
-            Vollmond
-          {% elif is_state('sensor.moon', 'waning_gibbous') %}
-            Abnehmender Dreiviertelmond
-          {% elif is_state('sensor.moon', 'last_quarter') %}
-            Abnehmender Halbmond
-          {% elif is_state('sensor.moon', 'waning_crescent') %}
-            Abnehmender Sichelmond
-          {% endif %}
+          {% set phase = states('sensor.moon') %}
+          {% set mapper = {'new_moon':'Neumond',
+                           'waxing_crescent':'Zunehmender Sichelmond',
+                           'first_quarter':'Zunehmender Halbmond',
+                           'waxing_gibbous':'Zunehmender Dreiviertelmond',
+                           'full_moon':'Vollmond',
+                           'waning_gibbous':'Abnehmender Dreiviertelmond',
+                           'last_quarter':'Abnehmender Halbmond'} %}
+                           
+          {{mapper.get(phase,'Abnehmender Sichelmond')}}
+
         entity_picture_template: >-
-          {% if is_state('sensor.moon', 'new_moon') %}
-            /local/mond/NewMoon.jpg
-          {% elif is_state('sensor.moon', 'waxing_crescent') %}
-            /local/mond/WaxingCrescent.jpg
-          {% elif is_state('sensor.moon', 'first_quarter') %}
-            /local/mond/FirstQuarter.jpg
-          {% elif is_state('sensor.moon', 'waxing_gibbous') %}
-            /local/mond/WaxingGibbous.jpg
-          {% elif is_state('sensor.moon', 'full_moon') %}
-            /local/mond/FullMoon.jpg
-          {% elif is_state('sensor.moon', 'waning_gibbous') %}
-            /local/mond/WaningGibbous.jpg
-          {% elif is_state('sensor.moon', 'last_quarter') %}
-            /local/mond/LastQuarter.jpg
-          {% elif is_state('sensor.moon', 'waning_crescent') %}
-            /local/mond/WaningCrescent.jpg
-          {% endif %}
+          {% set state = states('sensor.moon') %}
+                    
+          /local/mond/{{state}}.jpg
 
       uv_index_current:
         friendly_name: 'UV Index'

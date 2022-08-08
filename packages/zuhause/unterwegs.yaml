@@ -280,17 +280,7 @@ script:
             data:
                topic: 'handy/tracker'
                payload: not_home
-               retain: true         
-          - service: device_tracker.see
-            data:
-              dev_id: 'handygps'
-              location_name: not_home
-              source_type: gps
-              gps_accuracy: 20
-              battery: "{{ states('sensor.handy_battery_level') | int(0) }}"
-              gps: 
-                - !secret home_latitude
-                - !secret home_longitude                     
+               retain: true                          
           - service: alarmo.arm
             data:
               entity_id: alarm_control_panel.alarmo
