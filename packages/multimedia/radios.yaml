@@ -151,16 +151,26 @@ script:
                 
   radios_ausschalten:
     alias: Radios ausschalten
-    sequence:      
-      - service: script.radios_pausieren 
-      - service: switch.turn_off
-        entity_id: group.radios_ohne_badezimmer
-      - choose:
-          - conditions:
-              - "{{ badezimmerEingeschaltetLassen is not defined or badezimmerEingeschaltetLassen == False }}"
-            sequence:            
-              - service: switch.turn_off
-                entity_id: switch.badezimmer_radio     
+    sequence: 
+      - if: >-
+          {% 
+            if (states('sensor.radios_eingeschaltet') | int(0) > 1) or
+            (states('sensor.radios_eingeschaltet') | int(0) == 1 and is_state('switch.badezimmer_radio ', 'off'))
+          %}
+            True
+          {% else %}
+            False
+          {% endif %}
+        then:           
+          - service: script.radios_pausieren 
+          - service: switch.turn_off
+            entity_id: group.radios_ohne_badezimmer
+          - choose:
+              - conditions:
+                  - "{{ badezimmerEingeschaltetLassen is not defined or badezimmerEingeschaltetLassen == False }}"
+                sequence:            
+                  - service: switch.turn_off
+                    entity_id: switch.badezimmer_radio     
                 
   radios_starten:
     alias: Radios abspielen

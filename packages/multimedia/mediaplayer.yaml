@@ -56,8 +56,8 @@ automation:
       - service: input_boolean.turn_on
         entity_id: input_boolean.uhr_einschalten
                 
-  - alias: "Schlafzimmer - Tablet Wiedergabe"
-    id: "schlafzimmer_tablet_wiedergabe"
+  - alias: "Schlafzimmer - Tablet starten"
+    id: "schlafzimmer_tablet_starten"
     trigger:
       - platform: event
         event_type: zha_event
@@ -74,39 +74,30 @@ automation:
         for:
           seconds: 1
     condition:
-      - condition: state        
-        entity_id: binary_sensor.im_bett
-        state: 'on'   
-        for:
-          seconds: 1
-      - condition: state
-        entity_id: binary_sensor.schlafen_aktiv
-        state: 'on'      
-      - condition: or
-        conditions:
-        - condition: state
-          entity_id: media_player.tablet_schlafzimmer
-          state: 'playing'
-        - condition: state
-          entity_id: media_player.tablet_schlafzimmer
-          state: 'paused'
+      - "{{ is_state('binary_sensor.schlafen_aktiv', 'on') }}"
+      - "{{ is_state('media_player.tablet_schlafzimmer', 'paused') }}"
     action:
-      - service: media_player.media_play_pause
+      - service: media_player.media_play
         entity_id: media_player.tablet_schlafzimmer         
         
   - alias: "Schlafzimmer - Tablet pausieren"
     id: "schlafzimmer_tablet_pausieren"
     trigger:
-      platform: state
-      entity_id: binary_sensor.bewegungsmelder_bett
-      to: 'on'
+      - platform: event
+        event_type: zha_event
+        event_data:
+          device_ieee: 00:15:8d:00:02:13:45:68
+          command: attribute_updated
+          args:
+            attribute_id: 0
+            attribute_name: on_off     
+            value: 1      
+      - platform: state
+        entity_id: binary_sensor.bewegungsmelder_bett
+        to: 'on'
     condition:
-      - condition: state
-        entity_id: media_player.tablet_schlafzimmer
-        state: 'playing'
-      - condition: state
-        entity_id: binary_sensor.schlafen_aktiv
-        state: 'on'   
+      - "{{  is_state('binary_sensor.schlafen_aktiv', 'on') }}"
+      - "{{  is_state('media_player.tablet_schlafzimmer', 'playing') }}"      
     action:
       - service: media_player.media_pause
         entity_id: media_player.tablet_schlafzimmer                            

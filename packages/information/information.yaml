@@ -132,13 +132,7 @@ sensor:
       - 'time'
       - 'date'
       - 'date_time'
-
-  - platform: bitcoin
-    currency: 'EUR'
-    display_options:
-      - exchangerate
-      - trade_volume_btc
-
+      
   - platform: next_holiday
     sources: 
       - country: "DE"

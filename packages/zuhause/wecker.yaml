@@ -226,7 +226,7 @@ automation:
           echo: "schlafzimmer"
           override: true
           message: >-
-            {% set stunde = now().strftime("%H") %}
+            {% set stunde = now().strftime("%H") | int(0) %}
             
             {% if stunde >= 5 and stunde < 12 %}
               {% set message = 'Guten Morgen!' %}

@@ -11,7 +11,7 @@ cards:
     title: Sonstiges
     show_header_toggle: false
     entities:
-      - entity: binary_sensor.iss
+#      - entity: binary_sensor.iss
       - entity: sensor.satelliten
       - entity: sensor.schimmelindikator
       - entity: binary_sensor.auto_waschen
@@ -79,18 +79,7 @@ cards:
         name: Entfernung
       - entity: sensor.starman_speed 
         name: Geschwindigkeit    
-              
-  - type: entities
-    view_layout:
-      column: 2 
-    title: Bitcoin
-    show_header_toggle: false
-    entities:
-      - entity: sensor.exchange_rate_1_btc
-        name: Kurs (1 BTC)
-      - entity: sensor.trade_volume
-        name: Handelsvolumen
-              
+
   - type: custom:atomic-calendar-revive
     view_layout:
       column: 3
