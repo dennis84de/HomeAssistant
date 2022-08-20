@@ -41,10 +41,7 @@ popup_cards:
             </td></tr>
             </table>
           {%- endfor %}       
-        {% endif %}      
-      
-      
-
+        {% endif %}                
  
 cards:     
   - type: custom:stack-in-card
@@ -145,6 +142,40 @@ cards:
       - attr: lqi
         name: LQI
         
+  - type: custom:stack-in-card
+    cards:
+      - type: horizontal-stack        
+        title: Handy
+        cards:                  
+          - type: gauge
+            entity: sensor.handy_battery_level
+            name: Batterie
+            segments:
+              - from: 0
+                color: '#db4437'
+              - from: 10
+                color: '#ffa600'
+              - from: 30
+                color: '#43a047'
+          - type: gauge
+            entity: sensor.handy_battery_temperature
+            name: Temperatur
+            severity:
+              green: 0
+              yellow: 40
+              red: 80
+                   
+#  - type: entities
+#    show_header_toggle: false
+#    title: Handy
+#    entities:      
+#      - entity: sensor.handy_battery_level
+#        name: Batterie
+#      - entity: sensor.handy_battery_temperature
+#        name: Temperatur
+                  
+  - type: custom:layout-break
+  
   - type: entities
     title: Watchman
     show_header_toggle: false
