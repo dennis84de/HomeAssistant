@@ -436,9 +436,7 @@ automation:
     action:
       - choose:
           - conditions:
-              - condition: state
-                entity_id: binary_sensor.besuch
-                state: 'on'
+              - "{{ is_state('binary_sensor.besuch', 'on') }}"
             sequence:
               - service: !secret tts_service
                 data:
@@ -458,12 +456,8 @@ automation:
           notification_id: neue_sms                  
       - choose:
           - conditions:
-              - condition: state
-                entity_id: media_player.kodi_wohnzimmer
-                state: 'playing'
-              - condition: state
-                entity_id: binary_sensor.besuch
-                state: 'off'             
+              - "{{ is_state('media_player.kodi_wohnzimmer', 'playing') }}"
+              - "{{ is_state('binary_sensor.besuch', 'off') }}"      
             sequence:
               - service: notify.kodi_wohnzimmer
                 data:

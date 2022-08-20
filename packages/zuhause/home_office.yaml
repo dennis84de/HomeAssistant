@@ -382,8 +382,7 @@ automation:
         entity_id: binary_sensor.home_office_aktiv
         state: 'on'        
     action:
-      - service: button.press
-        entity_id: button.computer_arbeit_lautlos          
+    
       - service: input_boolean.turn_on
         entity_id: input_boolean.home_office_musik_pausiert
       - service: switch.turn_on
@@ -411,9 +410,7 @@ automation:
       - condition: state
         entity_id: input_boolean.home_office_musik_pausiert
         state: 'on'
-    action:
-      - service: button.press
-        entity_id: button.computer_arbeit_lautlos               
+    action:                 
       - service: input_boolean.turn_off
         entity_id: input_boolean.home_office_musik_pausiert
       - service: switch.turn_off

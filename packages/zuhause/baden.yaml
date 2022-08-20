@@ -15,15 +15,9 @@ automation:
           args:
             click_type: single           
     condition:
-      - condition: state
-        entity_id: binary_sensor.besuch
-        state: 'off'
-      - condition: state
-        entity_id: input_boolean.baden_aktiv
-        state: 'off'       
-      - condition: state
-        entity_id: binary_sensor.schlafen_aktiv
-        state: 'off'             
+      - "{{ is_state('binary_sensor.besuch', 'off') }}"
+      - "{{ is_state('input_boolean.baden_aktiv', 'off') }}"
+      - "{{ is_state('binary_sensor.schlafen_aktiv', 'off') }}"        
     action:
       - service: !secret tts_service
         data:

@@ -76,12 +76,8 @@ automation:
           args:
             click_type: triple
     condition:
-      - condition: state
-        entity_id: binary_sensor.besuch
-        state: 'off'
-      - condition: state
-        entity_id: input_boolean.training_aktiv
-        state: 'off'        
+      - "{{ is_state('binary_sensor.besuch', 'off') }}"
+      - "{{ is_state('input_boolean.training_aktiv', 'off') }}"      
     action:
       - service: script.training_einschalten
       

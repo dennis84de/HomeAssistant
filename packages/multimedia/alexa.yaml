@@ -50,9 +50,7 @@ automation:
           args:
             click_type: single           
     condition:
-      - condition: state
-        entity_id: binary_sensor.besuch
-        state: 'on'
+      - "{{ is_state('binary_sensor.besuch', 'on') }}"
     action:
       - service: script.alexa_witz
         data:

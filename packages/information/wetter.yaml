@@ -226,17 +226,19 @@ automation:
     trigger:
       - platform: template
         value_template: "{{ states('sensor.bewegungsmelder_balkon_temperatur') | float(0) > states('sensor.wohnzimmer_temperatur') | float(0) + 2 }}"
+      - platform: state
+        entity_id: binary_sensor.balkontuer
+        to: 'on'
+        for:
+          minutes: 10
     condition:       
+      - "{{ states('sensor.wohnzimmer_temperatur') | float(0) > 0 }}"
+      - "{{ states('sensor.bewegungsmelder_balkon_temperatur') | float(0) > 23 }}"      
+      - "{{ states('sensor.bewegungsmelder_balkon_temperatur') | float(0) > states('sensor.wohnzimmer_temperatur') | float(0) + 2 }}"
       - condition: or
         conditions:
-          - condition: state
-            entity_id: binary_sensor.balkontuer
-            state: 'on'
-          - condition: state
-            entity_id: binary_sensor.fenster_wohnzimmer
-            state: 'on'
-      - "{{ (states('sensor.wohnzimmer_temperatur') | float(0)) > 0 }}"
-      - "{{ (states('sensor.bewegungsmelder_balkon_temperatur') | float(0)) > 23 }}"  
+          - "{{ is_state('binary_sensor.balkontuer', 'on') }}"
+          - "{{ is_state('binary_sensor.fenster_wohnzimmer', 'on') }}"
     action:
       - service: !secret tts_service
         data:
@@ -256,7 +258,7 @@ automation:
     condition:
       - "{{ is_state('binary_sensor.schlafen_aktiv', 'off') }}" 
       - "{{ is_state('input_boolean.wetter_warnungen_einschalten', 'on') }}" 
-      - "{{ is_state('input_boolean.besuch', 'off') }}"   
+      - "{{ is_state('binary_sensor.besuch', 'off') }}"   
       - "{{ trigger.to_state.state > trigger.from_state.state }}" 
     action:
       - choose:
@@ -343,5 +345,5 @@ homeassistant:
       icon: mdi:weather-pouring
     sensor.schimmelindikator:
       icon: mdi:biohazard
-    binary_sensor.iss:
-      icon: mdi:earth
+#    binary_sensor.iss:
+#      icon: mdi:earth
