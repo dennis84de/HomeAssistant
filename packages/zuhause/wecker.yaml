@@ -278,7 +278,7 @@ automation:
         
         {{ istSamstag or (istArbeitstag and (istUrlaub or istKrankheit)) }}        
     condition:
-      - "{{ is_state('binary_sensor.besuch', 'off') }}"
+      - "{{ trigger.id == 'schalter_badezimmer' or is_state('binary_sensor.besuch', 'off') }}"
       - "{{ is_state('binary_sensor.schlafen_aktiv', 'on') }}"
       - condition: or
         conditions:
@@ -320,6 +320,6 @@ automation:
                 - platform: state
                   entity_id: binary_sensor.bewegungsmelder_badezimmer
                   to: 'on'                       
-              - service: script.aufstehen_begruessung                          
+              - service: script.aufstehen_begruessung     
         default:
           - service: script.aufstehen_begruessung  
