@@ -59,7 +59,13 @@ automation:
     variables:       
       aktuelle_version: >-
         {% set latestVersion = states('sensor.nextcloud_server_latest_tag').replace('v', '').split('.') %}
-        {{ latestVersion[0] ~ '.' ~ latestVersion[1] ~ '.' ~ latestVersion[2] }}
+        {% if latestVersion[0] == 'unaailable' %}
+          false
+        {% else %}
+          {{ latestVersion[0] ~ '.' ~ latestVersion[1] ~ '.' ~ latestVersion[2] }}
+        {% endif %}
+    condition:
+      - "{{ aktuelle_version is not false }}"
     trigger:
       - platform: state
         entity_id: binary_sensor.nextcloud_update_available
@@ -75,9 +81,7 @@ automation:
               - service: notify.telegram
                 data:
                   title: 'Neue Version'
-                  message: >-
-                    {% set latestVersion = states('sensor.nextcloud_server_latest_tag').replace('v', '').split('.') %}
-                    
+                  message: >-                    
                     "Nextcloud {{ aktuelle_version }} ist jetzt verfügbar."
         default:
           - service: persistent_notification.create
