@@ -51,6 +51,7 @@ automation:
             click_type: single           
     condition:
       - "{{ is_state('binary_sensor.besuch', 'on') }}"
+      - "{{ is_state('binary_sensor.schlafen_inaktiv', 'on') }}"
     action:
       - service: script.alexa_witz
         data:

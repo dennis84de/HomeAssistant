@@ -3,45 +3,7 @@ path: geraete
 type: custom:horizontal-layout
 layout:
   width: 400
-  max_cols: 3
-popup_cards:
-  sensor.watchman_missing_entities:
-    title: Fehlende Entitäten
-    card:
-      type: markdown
-      content: >-        
-        {% if (is_state('sensor.watchman_missing_entities', '0')) %}
-          **<font color=#c5e566>Alle Entitäten sind verfügbar.</font>**
-        {% else %}
-          {%- for item in state_attr("sensor.watchman_missing_entities", "entities") %}
-            {% if loop.index > 1 %}<hr>{% endif %} <table><tr> <td>
-            <ha-icon icon='mdi:
-            {%- if item.state=="missing"-%}cloud-alert'
-            {%- elif item.state=="unavail" -%}cloud-off-outline' {%- else-%}cloud-question'
-            {%- endif -%} ></ha-icon>
-            {{ item.id }} [{{item.state}}] <br><a title="{{item.occurrences}}">
-            {{item.occurrences.split('/')[-1].split(':')[0]}}</a>
-            </td></tr></table>
-          {%- endfor %}           
-        {% endif %}
-              
-  sensor.watchman_missing_services:
-    title: Fehlende Dienste
-    card:
-      type: markdown
-      content: >-    
-        {% if (is_state('sensor.watchman_missing_services', '0')) %}
-          **<font color=#c5e566>Alle Dienste sind verfügbar.</font>**
-        {% else %}
-          {%- for item in state_attr("sensor.watchman_missing_services", "services") %}
-            {% if loop.index > 1 %}<hr>{% endif %}
-            <table><tr> <td>  
-              <ha-icon icon='mdi:cloud-alert'></ha-icon> {{ item.id }}
-              <br><a title="{{item.occurrences}}">{{item.occurrences.split('/')[-1].split(':')[0]}}</a>
-            </td></tr>
-            </table>
-          {%- endfor %}       
-        {% endif %}                
+  max_cols: 3            
  
 cards:     
   - type: custom:stack-in-card
@@ -74,8 +36,10 @@ cards:
         show_header_toggle: false
         entities:
           - entity: binary_sensor.rpi_power_status
-          - entity: sensor.rpi_letzter_neustart      
-           
+          - type: custom:template-entity-row
+            entity : sensor.raspberry_letzter_neustart
+            state: "{{ as_timestamp(states('sensor.raspberry_letzter_neustart'), None) | timestamp_custom('%d.%m.%Y') | string }}"
+
   - type: custom:stack-in-card
     cards:
       - type: horizontal-stack
@@ -125,7 +89,13 @@ cards:
             severity:
               green: 0
               yellow: 40
-              red: 80            
+              red: 80        
+      - type: entities
+        show_header_toggle: false
+        entities:
+          - type: custom:template-entity-row
+            entity : sensor.computer_letzter_neustart
+            state: "{{ as_timestamp(states('sensor.computer_letzter_neustart'), None) | timestamp_custom('%d.%m.%Y') | string }}"              
 
   - type: 'custom:zha-network-card'    
     clickable: true
@@ -164,16 +134,7 @@ cards:
               green: 0
               yellow: 40
               red: 80
-                   
-#  - type: entities
-#    show_header_toggle: false
-#    title: Handy
-#    entities:      
-#      - entity: sensor.handy_battery_level
-#        name: Batterie
-#      - entity: sensor.handy_battery_temperature
-#        name: Temperatur
-                  
+
   - type: custom:layout-break
   
   - type: entities
@@ -182,9 +143,52 @@ cards:
     entities:      
       - entity: sensor.watchman_missing_entities
         name: Fehlende Entitäten
+        tap_action:
+          action: fire-dom-event
+          browser_mod:
+            service: browser_mod.popup
+            data:              
+              content:          
+                type: markdown
+                content: >-        
+                  {% if (is_state('sensor.watchman_missing_entities', '0')) %}
+                    **<font color=#c5e566>Alle Entitäten sind verfügbar.</font>**
+                  {% else %}
+                    {%- for item in state_attr("sensor.watchman_missing_entities", "entities") %}
+                      {% if loop.index > 1 %}<hr>{% endif %} <table><tr> <td>
+                      <ha-icon icon='mdi:
+                      {%- if item.state=="missing"-%}cloud-alert'
+                      {%- elif item.state=="unavail" -%}cloud-off-outline' {%- else-%}cloud-question'
+                      {%- endif -%} ></ha-icon>
+                      {{ item.id }} [{{item.state}}] <br><a title="{{item.occurrences}}">
+                      {{item.occurrences.split('/')[-1].split(':')[0]}}</a>
+                      </td></tr></table>
+                    {%- endfor %}           
+                  {% endif %}    
+                  
       - entity: sensor.watchman_missing_services 
-        name: Fehlende Dienste           
-
+        name: Fehlende Dienste          
+        tap_action:
+          action: fire-dom-event
+          browser_mod:
+            service: browser_mod.popup
+            data:              
+              content:           
+                type: markdown
+                content: >-   
+                  {% if (is_state('sensor.watchman_missing_services', '0')) %}
+                    **<font color=#c5e566>Alle Dienste sind verfügbar.</font>**
+                  {% else %}
+                    {%- for item in state_attr("sensor.watchman_missing_services", "services") %}
+                      {% if loop.index > 1 %}<hr>{% endif %}
+                      <table><tr> <td>  
+                        <ha-icon icon='mdi:cloud-alert'></ha-icon> {{ item.id }}
+                        <br><a title="{{item.occurrences}}">{{item.occurrences.split('/')[-1].split(':')[0]}}</a>
+                      </td></tr>
+                      </table>
+                    {%- endfor %}       
+                  {% endif %}   
+      
   - type: custom:layout-break
 
   - type: entities

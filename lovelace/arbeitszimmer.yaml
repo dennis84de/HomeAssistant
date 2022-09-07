@@ -4,19 +4,6 @@ type: custom:horizontal-layout
 layout:
   width: 400
   max_cols: 3
-popup_cards:
-  switch.computer_arbeit:
-    title: Computer
-    card:
-      type: entities
-      entities:          
-        - entity: switch.pc_arbeit
-          name: PC
-          secondary_info: last-changed
-        - entity: switch.arbeitszimmer_monitore
-          name: Monitore
-          secondary_info: last-changed
-
 cards:
   - type: entities
     title: Geräte
@@ -83,11 +70,25 @@ cards:
     entities:
       - entity: switch.computer_arbeit
         name: Computer
+        tap_action:
+          action: fire-dom-event
+          browser_mod:
+            service: browser_mod.popup
+            data:              
+              content:       
+                type: entities
+                entities:          
+                  - entity: switch.pc_arbeit
+                    name: PC
+                    secondary_info: last-changed
+                  - entity: switch.arbeitszimmer_monitore
+                    name: Monitore
+                    secondary_info: last-changed                      
       - entity: input_select.computer_arbeit_ausschalten
         name: Computer ausschalten        
       - entity: input_boolean.home_office_pause
         name: Pause     
-        
+      
   - type: glance
     title: Sensoren
     show_header_toggle: false

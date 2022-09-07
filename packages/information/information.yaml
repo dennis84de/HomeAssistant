@@ -2,6 +2,10 @@ zodiac:
   
 template:
   - trigger:
+      - platform: homeassistant
+        event: start    
+      - platform: event
+        event_type: event_template_reloaded           
       - platform: state
         entity_id:
           - sensor.echo_wohnzimmer_next_timer

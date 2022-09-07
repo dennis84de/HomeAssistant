@@ -25,6 +25,19 @@ media_player:
     name: Computer
     host: !secret computer_host
   
+template:
+  - binary_sensor:
+      - name: Multimedia aktiv
+        state: >-
+          {{ is_state('media_player.computer', 'playing')
+            and (
+              is_state('binary_sensor.computer_disney', 'on') 
+                or is_state('binary_sensor.computer_netflix', 'on')
+                or is_state('binary_sensor.computer_youtube', 'on')
+                or is_state('binary_sensor.computer_prime_video', 'on')
+            )
+          }}  
+          
 cover:
   - platform: template
     covers:
@@ -351,7 +364,7 @@ automation:
       - condition: or
         conditions:
           - "{{ is_state('media_player.kodi_wohnzimmer', 'playing') }}"
-          - "{{ is_state('media_player.computer', 'playing') }}"      
+          - "{{ is_state('binary_sensor.multimedia_aktiv', 'on') }}"      
       - "{{ is_state('binary_sensor.besuch', 'off') }}"
       - "{{ is_state('sensor.telefon', 'idle') }}"
       - "{{ is_state('sensor.handy', 'idle') }}"

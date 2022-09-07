@@ -4,18 +4,6 @@ type: custom:horizontal-layout
 layout:
   width: 400
   max_cols: 3           
-popup_cards:
-  switch.computer:
-    title: Computer
-    card:
-      type: entities
-      entities:          
-        - entity: switch.pc
-          name: PC
-          secondary_info: last-changed
-        - entity: switch.monitor
-          name: Monitor
-          secondary_info: last-changed
 cards:
   - type: entities
     title: Licht
@@ -107,8 +95,22 @@ cards:
     show_header_toggle: false
     entities:
       - entity: switch.computer        
+        tap_action:
+          action: fire-dom-event
+          browser_mod:
+            service: browser_mod.popup
+            data:              
+              content:    
+                type: entities
+                entities:          
+                  - entity: switch.pc
+                    name: PC
+                    secondary_info: last-changed
+                  - entity: switch.monitor
+                    name: Monitor
+                    secondary_info: last-changed                 
       - entity: input_select.computer_ausschalten       
-        
+          
   - type: glance
     title: Sensoren
     show_header_toggle: false

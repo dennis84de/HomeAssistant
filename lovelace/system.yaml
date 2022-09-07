@@ -3,112 +3,7 @@ path: system
 type: custom:horizontal-layout
 layout:
   width: 400
-  max_cols: 3
-popup_cards:
-  sensor.radios_eingeschaltet:
-    title: Radios
-    card:
-      type: entities
-      entities:
-        - entity: switch.wohnzimmer_radio     
-          name: Wohnzimmer
-        - entity: switch.balkon_radio        
-          name: Balkon
-        - entity: switch.flur_radio        
-          name: Flur
-        - entity: switch.kueche_radio        
-          name: Küche
-        - entity: switch.badezimmer_radio        
-          name: Badezimmer          
-        - entity: switch.schlafzimmer_radio        
-          name: Schlafzimmer
-        - entity: switch.arbeitszimmer_radio
-          name: Arbeitszimmer
-        
-  switch.wiedergabe_aktiv:
-    title: Radios
-    card:
-      type: entities
-      entities:
-        - type: custom:mini-media-player
-          entity: media_player.radio_wohnzimmer
-          name: Wohnzimmer
-          hide:
-            source: true
-            progress: true
-            controls: true  
-            info: true
-        - type: custom:mini-media-player
-          entity: media_player.radio_balkon
-          name: Balkon    
-          hide:
-            source: true
-            progress: true
-            controls: true  
-            info: true         
-        - type: custom:mini-media-player
-          entity: media_player.radio_flur
-          name: Flur    
-          hide:
-            source: true
-            progress: true
-            controls: true  
-            info: true
-        - type: custom:mini-media-player
-          entity: media_player.radio_kueche
-          name: Küche    
-          hide:
-            source: true
-            progress: true
-            controls: true  
-            info: true         
-        - type: custom:mini-media-player
-          entity: media_player.radio_badezimmer
-          name: Badezimmer
-          hide:
-            source: true
-            progress: true
-            controls: true  
-            info: true            
-        - type: custom:mini-media-player
-          entity: media_player.radio_schlafzimmer
-          name: Schlafzimmer    
-          hide:
-            source: true
-            progress: true
-            controls: true  
-            info: true
-        - type: custom:mini-media-player
-          entity: media_player.radio_arbeitszimmer
-          name: Arbeitszimmer    
-          hide:
-            source: true
-            progress: true
-            controls: true  
-            info: true             
-            
-  sensor.bewegungsmelder_deaktiviert:
-    title: Bewegungsmelder deaktiviert
-    card:
-      type: entities
-      entities:    
-        - entity: input_boolean.bewegungsmelder_wohnzimmer_deaktiviert
-          name: Wohnzimmer
-        - entity: input_boolean.bewegungsmelder_schlafzimmer_deaktiviert
-          name: Schlafzimmer
-        - entity: input_boolean.bewegungsmelder_kueche_deaktiviert
-          name: Küche
-        - entity: input_boolean.bewegungsmelder_badezimmer_deaktiviert
-          name: Badezimmer
-        - entity: input_boolean.bewegungsmelder_flur_deaktiviert
-          name: Flur
-        - entity: input_boolean.bewegungsmelder_arbeitszimmer_deaktiviert
-          name: Arbeitszimmer
-        - entity: input_boolean.bewegungsmelder_sportzimmer_deaktiviert
-          name: Sportzimmer  
-        - entity: input_boolean.bewegungsmelder_balkon_deaktiviert
-          name: Balkon   
-            
+  max_cols: 3        
 cards:
   - type: entities
     title: Home Assistant
@@ -137,7 +32,93 @@ cards:
     show_header_toggle: false
     entities:   
       - entity: sensor.radios_eingeschaltet      
+        tap_action:
+          action: fire-dom-event
+          browser_mod:
+            service: browser_mod.popup
+            data:              
+              content:        
+                type: entities
+                entities:
+                  - entity: switch.wohnzimmer_radio     
+                    name: Wohnzimmer
+                  - entity: switch.balkon_radio        
+                    name: Balkon
+                  - entity: switch.flur_radio        
+                    name: Flur
+                  - entity: switch.kueche_radio        
+                    name: Küche
+                  - entity: switch.badezimmer_radio        
+                    name: Badezimmer          
+                  - entity: switch.schlafzimmer_radio        
+                    name: Schlafzimmer
+                  - entity: switch.arbeitszimmer_radio
+                    name: Arbeitszimmer                   
       - entity: switch.wiedergabe_aktiv
+        tap_action:
+          action: fire-dom-event
+          browser_mod:
+            service: browser_mod.popup
+            data:              
+              content:          
+                type: entities
+                entities:
+                  - type: custom:mini-media-player
+                    entity: media_player.radio_wohnzimmer
+                    name: Wohnzimmer
+                    hide:
+                      source: true
+                      progress: true
+                      controls: true  
+                      info: true
+                  - type: custom:mini-media-player
+                    entity: media_player.radio_balkon
+                    name: Balkon    
+                    hide:
+                      source: true
+                      progress: true
+                      controls: true  
+                      info: true         
+                  - type: custom:mini-media-player
+                    entity: media_player.radio_flur
+                    name: Flur    
+                    hide:
+                      source: true
+                      progress: true
+                      controls: true  
+                      info: true
+                  - type: custom:mini-media-player
+                    entity: media_player.radio_kueche
+                    name: Küche    
+                    hide:
+                      source: true
+                      progress: true
+                      controls: true  
+                      info: true         
+                  - type: custom:mini-media-player
+                    entity: media_player.radio_badezimmer
+                    name: Badezimmer
+                    hide:
+                      source: true
+                      progress: true
+                      controls: true  
+                      info: true            
+                  - type: custom:mini-media-player
+                    entity: media_player.radio_schlafzimmer
+                    name: Schlafzimmer    
+                    hide:
+                      source: true
+                      progress: true
+                      controls: true  
+                      info: true
+                  - type: custom:mini-media-player
+                    entity: media_player.radio_arbeitszimmer
+                    name: Arbeitszimmer    
+                    hide:
+                      source: true
+                      progress: true
+                      controls: true  
+                      info: true                        
       - entity: switch.radios_lautlos
       - entity: script.sync_radios
       - type: custom:mini-media-player
@@ -148,7 +129,7 @@ cards:
           progress: true
           controls: true  
           info: true
-
+                    
   - type: glance
     title: Gäste Wlan
     show_header_toggle: false
@@ -262,5 +243,29 @@ cards:
     show_header_toggle: false
     entities:          
       - entity: sensor.bewegungsmelder_deaktiviert
+        tap_action:
+          action: fire-dom-event
+          browser_mod:
+            service: browser_mod.popup
+            data:              
+              content:          
+                type: entities
+                entities:    
+                  - entity: input_boolean.bewegungsmelder_wohnzimmer_deaktiviert
+                    name: Wohnzimmer
+                  - entity: input_boolean.bewegungsmelder_schlafzimmer_deaktiviert
+                    name: Schlafzimmer
+                  - entity: input_boolean.bewegungsmelder_kueche_deaktiviert
+                    name: Küche
+                  - entity: input_boolean.bewegungsmelder_badezimmer_deaktiviert
+                    name: Badezimmer
+                  - entity: input_boolean.bewegungsmelder_flur_deaktiviert
+                    name: Flur
+                  - entity: input_boolean.bewegungsmelder_arbeitszimmer_deaktiviert
+                    name: Arbeitszimmer
+                  - entity: input_boolean.bewegungsmelder_sportzimmer_deaktiviert
+                    name: Sportzimmer  
+                  - entity: input_boolean.bewegungsmelder_balkon_deaktiviert
+                    name: Balkon                      
       - entity: script.alexa_witz_gestartet
         name: Witz erzählen      

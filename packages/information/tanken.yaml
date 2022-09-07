@@ -1,18 +1,16 @@
-sensor:
-  - platform: mqtt
-    name: "Tankstelle Real"
-    unit_of_measurement: '€'    
-    state_topic: "tanken/real"
+mqtt:
+  sensor:
+    - name: "Tankstelle Real"
+      unit_of_measurement: '€'    
+      state_topic: "tanken/real"
 
-  - platform: mqtt
-    name: "Tankstelle Jet Dortmund"
-    unit_of_measurement: '€'
-    state_topic: "tanken/jet_do"
-    
-  - platform: mqtt
-    name: "Tankstelle Jet Mülheim"
-    unit_of_measurement: '€'
-    state_topic: "tanken/jet_mh"
+    - name: "Tankstelle Jet Dortmund"
+      unit_of_measurement: '€'
+      state_topic: "tanken/jet_do"
+
+    - name: "Tankstelle Jet Mülheim"
+      unit_of_measurement: '€'
+      state_topic: "tanken/jet_mh"
 
 automation:
   - alias: "Tanken Telegram"

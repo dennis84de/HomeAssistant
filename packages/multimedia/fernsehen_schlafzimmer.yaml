@@ -114,6 +114,7 @@ automation:
             attribute_name: on_off     
             value: 1
     condition:
+      - "{{ trigger.id != 'pause' or is_state('input_boolean.multimedia_schlafzimer_pausiert', 'off') }}"
       - "{{ is_state('binary_sensor.schlafen_aktiv', 'on') }}"
       - condition: or
         conditions:
@@ -126,6 +127,15 @@ automation:
 
           {{now - last > 5 }}          
     action:
+      - choose:
+          - conditions:
+              - "{{ is_state('input_boolean.multimedia_schlafzimer_pausiert', 'on') }}"
+            sequence:   
+              - service: input_boolean.turn_off
+                entity_id: input_boolean.multimedia_schlafzimer_pausiert      
+        default:
+          - service: input_boolean.turn_on
+            entity_id: input_boolean.multimedia_schlafzimer_pausiert
       - choose:
           - conditions:
               - "{{ states('media_player.kodi_schlafzimmer') in ['playing', 'paused']}}"

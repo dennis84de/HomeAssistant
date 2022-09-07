@@ -92,15 +92,10 @@ automation:
         for:
           seconds: 2
     condition:
-      - condition: state
-        entity_id: binary_sensor.schlafen_aktiv
-        state: 'on'
-      - condition: state
-        entity_id: binary_sensor.wecker_aktiv
-        state: 'off'        
-      - condition: state
-        entity_id: binary_sensor.sonne_tagsueber
-        state: 'off'             
+      - "{{ is_state('binary_sensor.schlafen_aktiv', 'on') }}"
+      - "{{ is_state('binary_sensor.wecker_aktiv', 'off') }}"
+      - "{{ is_state('binary_sensor.sonne_tagsueber', 'off') }}"
+      - "{{ is_state('binary_sensor.besuch', 'off') }}"                
       - condition: state        
         entity_id: binary_sensor.im_bett
         state: 'on'   

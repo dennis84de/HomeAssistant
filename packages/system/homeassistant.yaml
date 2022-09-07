@@ -57,10 +57,6 @@ panel_custom:
     module_url: /local/scripts/panel-redirect.js
     config:
       target: /config/logs
-      
-browser_mod:
-  disable:
-    - all
 
 zone:
   - name: Home
@@ -100,18 +96,13 @@ sensor:
         friendly_name: "Aktuelle Version"
         icon_template: mdi:cloud-sync-outline
         value_template: "{{ state_attr('update.home_assistant_core_update', 'latest_version') }}"
-        
-      rpi_letzter_neustart:
-        friendly_name: "Letzter Neustart"
-        icon_template: mdi:av-timer
-        value_template: "{{ as_timestamp(states('sensor.last_boot'), None) | timestamp_custom('%d.%m.%Y') | string }}"
-          
+
       laufzeit_minuten:
         friendly_name: "Laufzeit Minuten"
         icon_template: mdi:clock
         unit_of_measurement: 'Minuten'
         value_template: >-
-          {% set up_time =  states('sensor.letzter_neustart') %}
+          {% set up_time =  states('sensor.home_assistant_letzter_neustart') %}
      
           {{ '-' if up_time == 'unknown' else ((as_timestamp(now()) - as_timestamp(up_time, None)) / 60) | int(0) }}
               
@@ -120,7 +111,7 @@ sensor:
         icon_template: mdi:clock
         unit_of_measurement: 'Stunden'
         value_template: >-
-          {% set up_time =  states('sensor.letzter_neustart') %}
+          {% set up_time =  states('sensor.home_assistant_letzter_neustart') %}
      
           {{ '-' if up_time == 'unknown' else ((as_timestamp(now()) - as_timestamp(up_time, None)) / 60 / 60) | round(2, 0) }}
 

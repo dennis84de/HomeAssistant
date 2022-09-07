@@ -4,21 +4,6 @@ type: custom:horizontal-layout
 layout:
   width: 400
   max_cols: 3
-popup_cards:
-  person.dennis:
-    title: Zu Hause
-    card:
-      type: history-graph
-      entities:          
-        - entity: device_tracker.handy  
-          name: Wlan
-        - entity: device_tracker.handyping
-          name: Ping
-        - entity: device_tracker.handymqtt
-          name: MQTT          
-        - entity: device_tracker.handygps
-          name: Gps                 
-     
 cards:    
   - type: conditional
     view_layout:
@@ -38,7 +23,7 @@ cards:
           - state: "unavailable"
             
   - type: custom:layout-break
-        
+      
   - type: entities
     title: Infos
     show_header_toggle: false
@@ -46,11 +31,27 @@ cards:
       - entity: sensor.countdown_neuhaus
       - entity: person.dennis
         secondary_info: last-changed
+        tap_action:
+          action: fire-dom-event
+          browser_mod:
+            service: browser_mod.popup
+            data:              
+              content:
+                type: history-graph
+                entities:          
+                  - entity: device_tracker.handy  
+                    name: Wlan
+                  - entity: device_tracker.handyping
+                    name: Ping
+                  - entity: device_tracker.handymqtt
+                    name: MQTT          
+                  - entity: device_tracker.handygps
+                    name: Gps                                     
       - entity: sensor.aufenthaltsort_handy
         secondary_info: last-changed
       - entity: proximity.home
-      - entity: sensor.letzte_bewegung          
-              
+      - entity: sensor.letzte_bewegung                 
+
   - type: entities
     title: Benachrichtigungen
     show_header_toggle: false

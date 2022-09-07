@@ -200,9 +200,7 @@ automation:
                     icon: "info"                                  
       - choose:
           - conditions:
-              - condition: state
-                entity_id: media_player.computer
-                state: 'playing'                   
+              - "{{ is_state('binary_sensor.multimedia_aktiv', 'on') }}"              
             sequence:       
               - service: input_boolean.turn_on
                 entity_id: input_boolean.multimedia_wohnzimmer_pausiert
@@ -221,7 +219,7 @@ automation:
                   - condition: state
                     entity_id: media_player.kodi_wohnzimmer
                     state: 'idle'     
-              - "{{ not is_state('media_player.computer', 'playing') }}"
+              - "{{ is_state('binary_sensor.multimedia_aktiv', 'off') }}"   
               - condition: state
                 entity_id: switch.wiedergabe_aktiv
                 state: 'off'           
