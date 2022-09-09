@@ -208,14 +208,13 @@ automation:
             sequence:              
               - service: script.zu_hause_home_office       
           - conditions:
-              - "{{ is_state('binary_sensor.spatabends', 'on') }}"
-              - "{{ is_state('binary_sensor.nachts', 'off') }}"
+              - "{{ is_state('binary_sensor.nachts', 'on') }}"
             sequence:           
-              - service: script.zu_hause_abends              
+              - service: script.zu_hause_abends         
           - conditions:
               - "{{ is_state('binary_sensor.nachts', 'off') }}"
             sequence:           
-              - service: script.zu_hause     
+              - service: script.zu_hause                 
       - choose:    
           - conditions:      
               - "{{ (states('input_number.home_office_heute_gearbeitet') | int(0)) > 0 }}"

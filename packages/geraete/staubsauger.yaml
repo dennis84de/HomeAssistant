@@ -78,7 +78,6 @@ automation:
       - platform: time
         at: '7:00:00'        
     condition:
-      - "{{ is_state('binary_sensor.spatabends', 'off') }}"
       - "{{ is_state('binary_sensor.nachts', 'off') }}"
       - "{{ is_state('vacuum.staubsauger', 'docked') }}"
       - "{{ is_state('person.dennis', 'not_home') }}"

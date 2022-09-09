@@ -75,8 +75,7 @@ automation:
                   entity_id: light.wohnzimmer_schrank        
           - choose:
               conditions:
-                - "{{ is_state('binary_sensor.nachts', 'off') }}"
-                - "{{ is_state('binary_sensor.spatabends', 'off') }}"            
+                - "{{ is_state('binary_sensor.radio_balkon_einschalten', 'on') }}"         
               sequence:
                 - service: script.radios_einschalten
             default:

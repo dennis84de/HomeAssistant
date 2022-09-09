@@ -371,8 +371,7 @@ automation:
     id: "home_office_telefon_aktiv"
     trigger:
       - platform: state
-        entity_id: binary_sensor.computer_arbeit_mikrofon
-        from: 'off'
+        entity_id: binary_sensor.computer_arbeit_mikrofon        
         to: 'on'
     condition:       
       - condition: state

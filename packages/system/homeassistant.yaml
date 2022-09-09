@@ -157,8 +157,16 @@ script:
           - service: !secret tts_service
             data:
               echo: "wohnzimmer"
-              message: "Home Assistant wurde neugestartet."              
-      
+              message: "Home Assistant wurde neugestartet."    
+      - if: "{{ not is_state('button.computer_sensoren_aktualisieren', 'unavailable') }}"
+        then:
+          - service: button.press
+            entity_id: button.computer_sensoren_aktualisieren                 
+      - if: "{{ not is_state('button.computer_arbeit_sensoren_aktualisieren', 'unavailable') }}"
+        then:
+          - service: button.press
+            entity_id: button.computer_arbeit_sensoren_aktualisieren                
+            
 automation:
   - alias: "Home Assisant - Update verfügbar"
     id: "home_assistant_update_verfuegbar"

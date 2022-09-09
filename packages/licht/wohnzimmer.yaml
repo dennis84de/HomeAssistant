@@ -29,11 +29,11 @@ binary_sensor:
           
       wohnzimmer_schrank_inaktiv:
         friendly_name: "Wohnzimmer Schrank inaktiv"   
-        value_template: "{{ is_state('binary_sensor.spatabends', 'on') or is_state('binary_sensor.nachts', 'on') }}"
+        value_template: "{{ is_state('binary_sensor.nachts', 'on') }}"
           
       wohnzimmer_couch_inaktiv:
         friendly_name: "Wohnzimmer Couch inaktiv"    
-        value_template: "{{ is_state('binary_sensor.wohnzimmer_schrank_inaktiv', 'off') }}"          
+        value_template: "{{ is_state('binary_sensor.nachts', 'off') }}"          
           
 entity_controller:
   bewegung_wohnzimmer_couch:
@@ -75,16 +75,9 @@ automation:
       - platform: state
         entity_id: binary_sensor.sonne_tagsueber
         to: 'off'
+        for: '00:01:00'
     condition:
-      - condition: state
-        entity_id: binary_sensor.sonne_tagsueber
-        state: 'on'
-        for: '00:01:00'      
-      - condition: or
-        conditions:            
-          - "{{ is_state('binary_sensor.nachmittags', 'on') }}"
-          - "{{ is_state('binary_sensor.abends', 'on') }}"
-          - "{{ is_state('binary_sensor.spatabends', 'on') }}"
+      - "{{ is_state('binary_sensor.licht_wohnzimmer_einschalten', 'on') }}"          
       - "{{ is_state('person.dennis', 'home') }}"
       - "{{ is_state('binary_sensor.home_office_aktiv', 'off') }}"
       - "{{ is_state('light.wohnzimmer_couch', 'off') }}"

@@ -287,7 +287,6 @@ automation:
           - condition: and
             conditions:
               - "{{ is_state('binary_sensor.nachts', 'off') }}"
-              - "{{ is_state('binary_sensor.spatabends', 'off') }}"
               - condition: template                   
                 value_template: >-
                   {% set alarmSensor = states('sensor.tablet_schlafzimmer_next_alarm') %}
