@@ -87,7 +87,8 @@ automation:
             attribute_id: 0
             attribute_name: on_off     
             value: 1
-      - platform: state        
+      - id: sensor_bett
+        platform: state        
         entity_id: binary_sensor.im_bett
         to: 'on'   
         for:
@@ -96,16 +97,15 @@ automation:
       - "{{ is_state('binary_sensor.schlafen_aktiv', 'on') }}"
       - "{{ is_state('binary_sensor.wecker_aktiv', 'off') }}"
       - "{{ is_state('binary_sensor.sonne_tagsueber', 'off') }}"
-      - "{{ is_state('binary_sensor.besuch', 'off') }}"                
+      - "{{ trigger.id == 'schalter_schlafzimmer' or is_state('binary_sensor.besuch', 'off') }}"                
       - condition: state        
         entity_id: binary_sensor.im_bett
         state: 'on'   
         for:
           seconds: 2          
     action:
-      - service: homeassistant.turn_off
-        entity_id: group.licht_wohnung
-
+      - service: script.licht_wohnung_ausschalten
+      
   - alias: "Kleiderschrank - Licht ausschalten"
     id: "kleiderschrank_licht_ausschalten"
     trigger:

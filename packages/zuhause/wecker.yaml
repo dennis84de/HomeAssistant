@@ -160,6 +160,14 @@ automation:
           {% set wecker = as_timestamp(states('sensor.tablet_schlafzimmer_next_alarm'), None) | int(0) %}
           
           {{ wecker == jetzt + vorlauf }}
+    variables:
+      radioBalkonEinschalten: >-
+        {% set istSamstag = now().isoweekday() == 6 %}
+        {% set istArbeitstag =  is_state('binary_sensor.arbeitstag', 'on') %}
+        {% set istUrlaub = is_state('calendar.urlaub', 'on') %}
+        {% set istKrankheit = is_state('calendar.arbeit_krank', 'on') %}
+        
+        {{ istSamstag or (istArbeitstag and (istUrlaub or istKrankheit)) }}              
     condition:
       - condition: state
         entity_id: input_boolean.wecker_aktiv
@@ -184,7 +192,7 @@ automation:
       - delay: "00:{{ states('input_number.wecker_verzoegerung') | int }}:00" 
       - service: script.radios_einschalten
         data:
-          radioBalkon: false
+          radioBalkon: "{{ radioBalkonEinschalten }}"
 
   - alias: "Wecker - Zeit geändert"
     id: "wecker_zeit_geaendert"

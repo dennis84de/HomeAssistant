@@ -76,10 +76,11 @@ automation:
         entity_id: binary_sensor.sonne_tagsueber
         to: 'off'
         for: '00:01:00'
-    condition:
-      - "{{ is_state('binary_sensor.licht_wohnzimmer_einschalten', 'on') }}"          
+    condition:      
+      - "{{ (now().hour | int) >= 15 }}"
       - "{{ is_state('person.dennis', 'home') }}"
       - "{{ is_state('binary_sensor.home_office_aktiv', 'off') }}"
+      - "{{ is_state('binary_sensor.multimedia_aktiv', 'off') }}"
       - "{{ is_state('light.wohnzimmer_couch', 'off') }}"
       - "{{ is_state('light.wohnzimmer_strahler', 'off') }}"
       - "{{ is_state('light.wohnzimmer_schrank', 'off') }}"

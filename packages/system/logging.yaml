@@ -3,15 +3,14 @@ logger:
   logs:
     homeassistant.components.gdacs: fatal
     custom_components.satellitetracker: fatal
+    homeassistant.components.bluetooth: fatal
   filters:
     homeassistant.components.tplink.coordinator:
       - "Unable to connect to the device"
       - "Unable to query the device"
     homeassistant.components.flux_led.coordinator:
       - "Bulb stopped responding"
-    homeassistant.components.bluetooth:
-      - "Error stopping scanner: [org.bluez.Error.Failed] No discovery started"
-      
+
 recorder:
   purge_keep_days: 7
   db_url: !secret mariadb_url

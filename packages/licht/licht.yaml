@@ -10,3 +10,47 @@ template:
             | length %}
             
           {{ motionSensorDeactivated }}
+          
+script:
+  licht_wohnung_ausschalten:
+    alias: Licht Wohnung ausschalten
+    sequence:
+      - if: "{{ is_state('input_boolean.bewegungsmelder_wohnzimmer_deaktiviert', 'off') }}"
+        then:
+          - service: light.turn_off
+            entity_id: light.wohnzimmer_couch, light.wohnzimmer_strahler, light.wohnzimmer_schrank   
+            
+      - if: "{{ is_state('input_boolean.bewegungsmelder_schlafzimmer_deaktiviert', 'off') }}"
+        then:
+          - service: light.turn_off
+            entity_id: light.bett, light.kleiderschrank
+            
+      - if: "{{ is_state('input_boolean.bewegungsmelder_kueche_deaktiviert', 'off') }}"
+        then:
+          - service: light.turn_off
+            entity_id: light.kueche_regal, light.kueche_schrank
+            
+      - if: "{{ is_state('input_boolean.bewegungsmelder_badezimmer_deaktiviert', 'off') }}"
+        then:
+          - service: light.turn_off
+            entity_id: light.badezimmerschrank
+            
+      - if: "{{ is_state('input_boolean.bewegungsmelder_flur_deaktiviert', 'off') }}"
+        then:
+          - service: light.turn_off
+            entity_id: light.flur_vorne, light.flur_hinten
+            
+      - if: "{{ is_state('input_boolean.bewegungsmelder_arbeitszimmer_deaktiviert', 'off') }}"
+        then:
+          - service: light.turn_off
+            entity_id: light.schreibtisch, light.arbeitszimmer_lampe
+            
+      - if: "{{ is_state('input_boolean.bewegungsmelder_sportzimmer_deaktiviert', 'off') }}"
+        then:
+          - service: light.turn_off
+            entity_id: light.sportzimmer_regal
+            
+      - if: "{{ is_state('input_boolean.bewegungsmelder_balkon_deaktiviert', 'off') }}"
+        then:
+          - service: light.turn_off
+            entity_id: light.balkon_licht

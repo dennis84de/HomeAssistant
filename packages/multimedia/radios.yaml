@@ -142,8 +142,8 @@ script:
           - conditions:
               - "{{ radioBalkon is not defined or radioBalkon == True }}"              
               - "{{ now().isoweekday() == 6 or is_state('binary_sensor.arbeitstag', 'on') }}"
-              - "{{ (states('sensor.bewegungsmelder_balkon_temperatur') | int(0)) > -5 }}"   
-              - "{{ is_state('binary_sensor.radio_balkon_einschalten', 'on') }}"
+              - "{{ (states('sensor.bewegungsmelder_balkon_temperatur') | int(0)) > -5 }}"                
+              - "{{ is_state('binary_sensor.nachts', 'off') }}"
             sequence:            
               - service: switch.turn_on
                 entity_id: switch.balkon_radio

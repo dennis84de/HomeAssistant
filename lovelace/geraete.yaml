@@ -179,7 +179,7 @@ cards:
                   {% if (is_state('sensor.watchman_missing_services', '0')) %}
                     **<font color=#c5e566>Alle Dienste sind verfügbar.</font>**
                   {% else %}
-                    {%- for item in state_attr("sensor.watchman_missing_services", "services") %}
+                    {%- for item in state_attr("sensor.watchman_missing_services", "entities") %}
                       {% if loop.index > 1 %}<hr>{% endif %}
                       <table><tr> <td>  
                         <ha-icon icon='mdi:cloud-alert'></ha-icon> {{ item.id }}
