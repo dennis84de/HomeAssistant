@@ -125,7 +125,7 @@ cards:
     entities:
       - entity: binary_sensor.fenster_arbeitszimmer   
         name: Fenster
-      - entity: climate.arbeitszimmer
+      - entity: climate.heizung_arbeitszimmer
         name: Heizung    
               
   - type: entities

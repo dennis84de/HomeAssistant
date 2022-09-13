@@ -115,8 +115,7 @@ cards:
       - entity: device_tracker.tplinkflurradio        
       - entity: device_tracker.tplinkbadezimmerradio        
       - entity: device_tracker.tplinkkuecheradio           
-      - entity: device_tracker.tplinkkellerradio        
-      - entity: device_tracker.tplinksportzimmerfernseher        
+      - entity: device_tracker.tplinkkellerradio                    
       - entity: device_tracker.tplinkschlafzimmerfernseher        
       - entity: device_tracker.tplinkwaschmaschine
       - entity: device_tracker.tplinktrockner        
@@ -140,8 +139,8 @@ cards:
     title: Shelly
     show_header_toggle: false
     entities:
-      - entity: device_tracker.shellysportzimmerladegeraet
-        name: Sportzimmer Ladegerät
+      - entity: device_tracker.shellysportzimmerfernseher
+        name: Sportzimmer Fernseher
 
   - type: entities
     title: Tablets

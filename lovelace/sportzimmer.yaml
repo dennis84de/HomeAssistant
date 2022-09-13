@@ -29,17 +29,6 @@ cards:
       - entity: switch.sportzimmer_fernseher
         name: Fernseher
       - entity: switch.crosstrainer
-        
-  - type: glance
-    title: Ladegerät
-    show_header_toggle: false
-    entities:
-      - entity: switch.sportzimmer_ladegerat
-        name: Ladegerät
-      - entity: sensor.sportzimmer_ladegeraet_status
-        name: Status
-      - entity: sensor.sportzimmer_ladegeraet_verbrauch
-        name: Verbrauch
 
   - type: entities
     title: Multimedia

@@ -10,8 +10,7 @@ heimnetz:
     - device_tracker.tplinkflurradio      
     - device_tracker.tplinkbadezimmerradio      
     - device_tracker.tplinkkuecheradio      
-    - device_tracker.tplinkschlafzimmerfernseher      
-    - device_tracker.tplinksportzimmerfernseher     
+    - device_tracker.tplinkschlafzimmerfernseher     
     - device_tracker.tasmotawohnzimmerradio
     - device_tracker.tasmotawohnzimmerstrahler         
     - device_tracker.tasmotawohnzimmercouch
@@ -35,5 +34,5 @@ heimnetz:
     - device_tracker.magichomeschlafzimmer
     - device_tracker.magichomearbeitszimmer
     - device_tracker.magichomebalkon          
-    - device_tracker.shellysportzimmerladegeraet
+    - device_tracker.shellysportzimmerfernseher
     - device_tracker.broadlinkschlafzimmer 

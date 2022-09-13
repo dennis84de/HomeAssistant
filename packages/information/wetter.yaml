@@ -153,29 +153,6 @@ sensor:
                     
           /local/mond/{{state}}.jpg
 
-      uv_index_current:
-        friendly_name: 'UV Index'
-        unit_of_measurement: 'UV'
-        value_template: '{{ states("sensor.current_uv_index") | float(0) | round(2, 0) }}'
-        icon_template: '{{ state_attr("sensor.current_uv_index","icon") }}'
-
-      uv_index_max:
-        friendly_name: 'Maximaler UV Index'
-        unit_of_measurement: 'UV'
-        value_template: '{{ states("sensor.max_uv_index") | float(0) | round(2, 0) }}'
-        icon_template: '{{ state_attr("sensor.max_uv_index","icon") }}'
-
-      zeit_sonne:
-        friendly_name: 'Zeit in der Sonne'
-        value_template: >-
-          {% if is_state('sensor.skin_type_3_safe_exposure_time', 'unknown') %}
-            0
-          {% else %}
-            {{ states('sensor.skin_type_3_safe_exposure_time') | int(0) }}
-          {% endif %}
-        icon_template: '{{ state_attr("sensor.skin_type_3_safe_exposure_time","icon") }}'        
-        unit_of_measurement: 'Minuten'
-
       windrichtung:
         friendly_name: 'Windrichtung'
         icon_template: mdi:compass

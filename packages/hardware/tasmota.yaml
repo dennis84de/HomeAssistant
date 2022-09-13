@@ -1,6 +1,0 @@
-homeassistant:
-  customize:
-    switch.arbeitszimmer_ladegerat:
-      icon: mdi:battery-charging-wireless
-    switch.sportzimmer_ladegerat:
-      icon: mdi:battery-charging-wireless

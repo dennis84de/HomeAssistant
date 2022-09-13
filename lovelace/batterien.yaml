@@ -166,6 +166,8 @@ cards:
       - value: 30
         color: "yellow"    
     entities:
+      - entity: sensor.heizung_wohnzimmer_batterie
+        name: Wohnzimmer     
       - entity: binary_sensor.heizung_arbeitszimmer_batterie
         name: Arbeitszimmer
         state_map:

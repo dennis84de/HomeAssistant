@@ -127,7 +127,9 @@ cards:
       - entity: binary_sensor.balkontuer
         name: Balkontür      
       - entity: binary_sensor.fenster_wohnzimmer
-        name: Fenster            
+        name: Fenster         
+      - entity: climate.heizung_wohnzimmer
+        name: Heizung        
         
   - type: custom:stack-in-card
     cards:

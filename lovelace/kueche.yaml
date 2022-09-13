@@ -89,7 +89,7 @@ cards:
     entities:
       - entity: binary_sensor.fenster_kueche
         name: Fenster
-      - entity: climate.kueche
+      - entity: climate.heizung_kueche
         name: Heizung
 
   - type: entities

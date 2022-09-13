@@ -56,34 +56,11 @@ cards:
         {% if not loop.last %}***{% endif %}
         {% endfor %}
       {% endif %}  
-      
-  - type: custom:stack-in-card
-    cards:
-      - type: horizontal-stack
-        cards:
-          - type: custom:mini-graph-card
-            name: Luftfeuchtigkeit
-            line_width: 3
-            animate: true
-            hour24: true
-            show:
-              fill: false
-              icon: false
-              points: false
-            entities:
-              - entity: sensor.parkplatz_luftfeuchtigkeit
-          - type: custom:mini-graph-card
-            name: Luftdruck
-            line_width: 3
-            animate: true
-            hour24: true
-            show:
-              fill: false
-              icon: false
-              points: false
-            entities:
-              - entity: sensor.parkplatz_luftdruck
-
+              
+  - type: custom:sun-card
+    title: Sonnenstand
+    language: 'de' 
+    
   - type: custom:mini-graph-card
     name: Temperatur
     line_width: 2
@@ -113,11 +90,34 @@ cards:
     entities:
       - entity: sensor.balkon_helligkeit_mittelwert
         name: Helligkeit  
-        
-  - type: custom:sun-card
-    title: Sonnenstand
-    language: 'de' 
     
+  - type: custom:stack-in-card
+    cards:
+      - type: horizontal-stack
+        cards:
+          - type: custom:mini-graph-card
+            name: Luftfeuchtigkeit
+            line_width: 3
+            animate: true
+            hour24: true
+            show:
+              fill: false
+              icon: false
+              points: false
+            entities:
+              - entity: sensor.parkplatz_luftfeuchtigkeit
+          - type: custom:mini-graph-card
+            name: Luftdruck
+            line_width: 3
+            animate: true
+            hour24: true
+            show:
+              fill: false
+              icon: false
+              points: false
+            entities:
+              - entity: sensor.parkplatz_luftdruck
+              
   - type: entities
     title: Regen und Wind
     show_header_toggle: false
@@ -134,15 +134,7 @@ cards:
     entities:
       - entity: sensor.tageszeit
       - entity: sensor.mondphase
-      
-  - type: entities
-    title: Luft
-    show_header_toggle: false
-    entities:
-      - entity: sensor.weatherbit_relative_humidity
-      - entity: sensor.weatherbit_station_pressure      
-      - entity: sensor.co2_intensity        
-      - entity: sensor.grid_fossil_fuel_percentage            
+      - entity: binary_sensor.sommerzeit       
 
   - type: entities
     title: Pollen
@@ -154,12 +146,14 @@ cards:
         name: Birke
       - entity: sensor.pollenflug_roggen
         name: Roggen 
-            
+              
   - type: entities
-    title: Sonne
+    view_layout:
+      column: 3  
+    title: Luft
     show_header_toggle: false
     entities:
-      - entity: sensor.uv_index_current
-      - entity: sensor.uv_index_max
-      - entity: sensor.zeit_sonne
-      - entity: binary_sensor.sommerzeit        
+      - entity: sensor.weatherbit_relative_humidity
+      - entity: sensor.weatherbit_station_pressure      
+      - entity: sensor.co2_intensity        
+      - entity: sensor.grid_fossil_fuel_percentage                 

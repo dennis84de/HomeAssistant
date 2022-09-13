@@ -191,8 +191,6 @@ homeassistant:
       friendly_name: Küche Radio
     device_tracker.tplinkkellerradio:
       friendly_name: Keller Radio
-    device_tracker.tplinksportzimmerfernseher:
-      friendly_name: Sportzimmer Fernseher        
     device_tracker.tplinkschlafzimmerfernseher:
       friendly_name: Schlafzimmer Fernseher   
     device_tracker.tplinkwaschmaschine:
@@ -265,7 +263,4 @@ homeassistant:
     device_tracker.tasmotakuechenschrank:
       friendly_name: Tasmota Küchenschrank
     device_tracker.tasmotaspuelmaschine:
-      friendly_name: Tasmota Spülmaschine
-      
-    device_tracker.shellysportzimmerladegeraet:
-      friendly_name: Shelly Sportzimmer Ladegerät
+      friendly_name: Tasmota Spülmaschine     

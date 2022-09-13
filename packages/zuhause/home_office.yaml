@@ -136,12 +136,12 @@ script:
       - choose:
           - conditions:
               - condition: state
-                entity_id: climate.arbeitszimmer
+                entity_id: climate.heizung_arbeitszimmer
                 state: 'on'
             sequence:
               - service: climate.set_preset_mode
                 data:
-                  entity_id: climate.arbeitszimmer
+                  entity_id: climate.heizung_arbeitszimmer
                   preset_mode: 'comfort'
       - choose:
           - conditions:
@@ -202,13 +202,13 @@ script:
       - choose:
           - conditions:
               - condition: state
-                entity_id: climate.arbeitszimmer
+                entity_id: climate.heizung_arbeitszimmer
                 attribute: preset_mode
                 state: 'heat'
             sequence:              
               - service: climate.set_preset_mode
                 data:
-                  entity_id: climate.arbeitszimmer
+                  entity_id: climate.heizung_arbeitszimmer
                   preset_mode: 'eco'                   
         
 automation:
