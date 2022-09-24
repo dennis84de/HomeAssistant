@@ -114,10 +114,18 @@ cards:
       - entity: counter.staubsauger_behaelter_leeren
       - type: divider
       - entity: input_select.staubsauger_reinigen
-      - entity: sensor.staubsauger_reinigung_filter
-      - entity: sensor.staubsauger_reinigung_buerste
-      - entity: sensor.staubsauger_reinigung_seitenbuerste
-      - entity: sensor.staubsauger_reinigung_sensor                
+      - type: custom:template-entity-row
+        entity : sensor.staubsauger_reinigung_filter
+        state: "{{ ((states('sensor.staubsauger_reinigung_filter') | int(0)) / 60 / 60) | round(2) }} Stunden"      
+      - type: custom:template-entity-row
+        entity : sensor.staubsauger_reinigung_buerste
+        state: "{{ ((states('sensor.staubsauger_reinigung_buerste') | int(0)) / 60 / 60) | round(2) }} Stunden"    
+      - type: custom:template-entity-row
+        entity : sensor.staubsauger_reinigung_seitenbuerste
+        state: "{{ ((states('sensor.staubsauger_reinigung_seitenbuerste') | int(0)) / 60 / 60) | round(2) }} Stunden"    
+      - type: custom:template-entity-row
+        entity : sensor.staubsauger_reinigung_sensor
+        state: "{{ ((states('sensor.staubsauger_reinigung_sensor') | int(0)) / 60 / 60) | round(2) }} Stunden"                       
           
   - type: glance
     title: Heizung
@@ -133,10 +141,10 @@ cards:
     show_header_toggle: false
     entities:      
       - entity: sensor.patrone_schwarz
+      - entity: sensor.patrone_photoschwarz
       - entity: sensor.patrone_magenta
       - entity: sensor.patrone_gelb
-      - entity: sensor.patrone_cyan
-      - entity: sensor.patrone_abfall
+      - entity: sensor.patrone_cyan      
       
   - type: custom:layout-break  
       

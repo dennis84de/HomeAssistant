@@ -37,22 +37,19 @@ mqtt:
       json_attributes_topic: "handy/sms"
       json_attributes_template: "{{ value_json | tojson }}"   
        
-  device_tracker:
+  sensor:
     - name: "Handy"
       state_topic: "handy/status"
       value_template: "{{ value_json.status }}"   
       json_attributes_topic: "handy/status"
       json_attributes_template: "{{ value_json | tojson }}"       
+      
+  device_tracker:
+    - name: "Handy MQTT"
+      unique_id: handymqtt
+      state_topic: "handy/location"     
     
 sensor:
-  - platform: places
-    name: Aufenthaltsort Handy
-    devicetracker_id: device_tracker.handygps
-    options: street_street_number,city
-    api_key: !secret openstreetmap_email
-    map_provider: google
-    home_zone: zone.home
-
   - platform: template
     sensors:
       handy_status:

@@ -11,7 +11,7 @@ cards:
     title: Sonstiges
     show_header_toggle: false
     entities:
-#      - entity: binary_sensor.iss
+      - entity: sensor.iss
       - entity: sensor.satelliten
       - entity: sensor.schimmelindikator
       - entity: binary_sensor.auto_waschen

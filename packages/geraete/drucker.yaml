@@ -3,10 +3,10 @@ sensor:
     host: !secret drucker_host
     monitored_conditions:
       - black
+      - photoblack
       - yellow
       - magenta
       - cyan
-      - clean
     
 mqtt:
   sensor:
@@ -14,6 +14,10 @@ mqtt:
       unit_of_measurement: '%'
       state_topic: "printer/black"
 
+    - name: "Patrone Photoschwarz"
+      unit_of_measurement: '%'
+      state_topic: "printer/photoblack"
+      
     - name: "Patrone Magenta"
       unit_of_measurement: '%'
       state_topic: "printer/magenta"
@@ -25,44 +29,33 @@ mqtt:
     - name: "Patrone Cyan"
       unit_of_measurement: '%'
       state_topic: "printer/cyan"    
-
-    - name: "Patrone Abfall"
-      unit_of_measurement: '%'
-      state_topic: "printer/waste"    
       
 automation:
   - alias: "Drucker - Tintenstand"
     id: "drucker_tintenstand"
     trigger:
       - platform: state
+        id: 'black'
         entity_id: sensor.ink_level_black
       - platform: state
+        id: 'photoblack'
+        entity_id: sensor.ink_level_photoblack        
+      - platform: state
+        id: 'magenta'
         entity_id: sensor.ink_level_magenta
       - platform: state
+        id: 'yellow'
         entity_id: sensor.ink_level_yellow
       - platform: state
-        entity_id: sensor.ink_level_cyan
-      - platform: state
-        entity_id: sensor.cleaning_level        
+        id: 'cyan'
+        entity_id: sensor.ink_level_cyan    
     condition:
-      - condition: state
-        entity_id: device_tracker.epsondrucker
-        state: 'home'
+      - "{{ trigger.to_state.state != 'unavailable'}} "
+      - "{{ is_state('device_tracker.epsondrucker', 'home') }}"
     action:
       - service: mqtt.publish
         data:
-          topic: >-
-            {% if trigger.entity_id == 'sensor.ink_level_black' %}
-              printer/black
-            {% elif trigger.entity_id == 'sensor.ink_level_magenta' %}
-              printer/magenta
-            {% elif trigger.entity_id == 'sensor.ink_level_yellow' %}
-              printer/yellow
-            {% elif trigger.entity_id == 'sensor.ink_level_cyan' %}
-              printer/cyan
-            {% elif trigger.entity_id == 'sensor.cleaning_level' %}
-              printer/waste
-            {% endif %}
+          topic: printer/{{ trigger.id }}
           retain: true
           payload: "{{ states(trigger.entity_id) }}"          
 
@@ -71,6 +64,9 @@ homeassistant:
     sensor.patrone_schwarz:
       friendly_name: Schwarz
       entity_picture: /local/drucker/icon_ink_schwarz.png
+    sensor.patrone_photoschwarz:
+      friendly_name: Photoschwarz
+      entity_picture: /local/drucker/icon_ink_photoschwarz.png      
     sensor.patrone_magenta:
       friendly_name: Magenta
       entity_picture: /local/drucker/icon_ink_magenta.png
@@ -80,6 +76,3 @@ homeassistant:
     sensor.patrone_cyan:
       friendly_name: Cyan
       entity_picture: /local/drucker/icon_ink_cyan.png
-    sensor.patrone_abfall:
-      friendly_name: Abfall
-      entity_picture: /local/drucker/icon_ink_abfall.png

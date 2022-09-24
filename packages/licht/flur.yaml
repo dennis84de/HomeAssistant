@@ -16,6 +16,12 @@ entity_controller:
       - binary_sensor.bewegungsmelder_inaktiv_unterwegs
       - binary_sensor.bewegungsmelder_inaktiv_staubsauger
       - input_boolean.bewegungsmelder_flur_deaktiviert
+    night_mode:
+      delay: 120
+      service_data:
+        brightness: 30
+      start_time: '23:00:00'
+      end_time: '07:00:00'              
 
   bewegung_flur_hinten:
     friendly_name: "Bewegung Flur hinten"
@@ -30,6 +36,12 @@ entity_controller:
       - binary_sensor.bewegungsmelder_inaktiv_unterwegs
       - binary_sensor.bewegungsmelder_inaktiv_staubsauger
       - input_boolean.bewegungsmelder_flur_deaktiviert  
+    night_mode:
+      delay: 120
+      service_data:
+        brightness: 30
+      start_time: '23:00:00'
+      end_time: '07:00:00'
 
 homeassistant:
   customize:

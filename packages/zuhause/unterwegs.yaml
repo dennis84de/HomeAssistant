@@ -217,7 +217,15 @@ automation:
       - service: notify.telegram
         data:
           title: "Aufenthaltsort"
-          message: "{{ states('sensor.aufenthaltsort_handy') }} {% if states('proximity.home') | int(0) > 0 %}({{ states('proximity.home') }}km von zu Hause.){% endif %}"                   
+          message: ->
+            {% if is_state('sensor.aufenthaltsort', 'home') %}
+              Zu Hause
+            {% else %}
+              {{ states('sensor.aufenthaltsort') }} 
+              {%- if states('proximity.home') | int(0) > 0 -%} 
+                {{ ' (' ~ states('proximity.home') ~ 'km von zu Hause)' }}
+              {% endif %}              
+            {% endif %}          
                
   - alias: "Telegram - Lichtsimulation einschalten"
     id: "telegram_lichsimulation_einschalten"
@@ -278,7 +286,7 @@ script:
             entity_id: group.alles_ausschalten            
           - service: mqtt.publish
             data:
-               topic: 'handy/tracker'
+               topic: 'handy/location'
                payload: not_home
                retain: true                          
           - service: alarmo.arm

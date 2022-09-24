@@ -36,6 +36,7 @@ recorder:
       - alarm_control_panel
       - vacuum
       - zone
+      - schedule
     entity_globs:
       - device_tracker.handy*  
   exclude:
@@ -60,6 +61,7 @@ logbook:
       - alarm_control_panel
       - vacuum
       - zone
+      - schedule
     entity_globs:  
       - device_tracker.handy*  
   exclude:
@@ -89,6 +91,7 @@ history:
       - climate
       - vacuum
       - zone
+      - schedule
   exclude:
     entities:
       - switch.sportzimmer_regal

@@ -46,10 +46,13 @@ cards:
                   - entity: device_tracker.handymqtt
                     name: MQTT          
                   - entity: device_tracker.handygps
-                    name: Gps                                     
-      - entity: sensor.aufenthaltsort_handy
-        secondary_info: last-changed
-      - entity: proximity.home
+                    name: Gps             
+      - type: custom:template-entity-row
+        entity : sensor.aufenthaltsort
+        condition: "{{ not is_state('sensor.aufenthaltsort', 'home') }}"
+      - type: custom:template-entity-row
+        entity : proximity.home
+        condition: "{{ states('proximity.home') | int(0) > 0 }}"      
       - entity: sensor.letzte_bewegung                 
 
   - type: entities

@@ -174,24 +174,14 @@ automation:
       - platform: state
         entity_id: update.home_assistant_core_update
         to: 'on'
+    condition:
+      - "{{ is_state('person.dennis', 'not_home') }}"
     action:
-      - choose:
-          - conditions:
-            - condition: state
-              entity_id: person.dennis
-              state: 'not_home'
-            sequence:
-              - service: notify.telegram
-                data:
-                  title: 'Neue Version'
-                  message: "Home Assistant {{ states('sensor.hass_aktuelle_version') }} ist jetzt verfügbar."
-        default:
-          - service: persistent_notification.create
-            data:
-              title: "Update verfügbar"
-              message: "Home Assistant {{ states('sensor.hass_aktuelle_version') }} ist jetzt verfügbar."
-              notification_id: neue_version
-               
+      - service: notify.telegram
+        data:
+          title: 'Neue Version'
+          message: "Home Assistant {{ states('sensor.hass_aktuelle_version') }} ist jetzt verfügbar."
+
   - alias: "Home Assistant - Gestartet"
     id: "home_assistant_gestartet"
     trigger:
@@ -235,7 +225,7 @@ automation:
 homeassistant:
   customize:      
     zone.home:
-      friendy_name: Zu Hause
+      friendly_name: Zu Hause
   
     script.homeassistant_neustart:
       icon: mdi:home-assistant

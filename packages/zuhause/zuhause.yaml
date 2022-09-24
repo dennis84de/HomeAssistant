@@ -88,7 +88,7 @@ script:
                   
       - service: mqtt.publish
         data:
-           topic: 'handy/tracker'
+           topic: 'handy/location'
            payload: home
            retain: true          
         
@@ -271,8 +271,7 @@ automation:
 
 homeassistant:
   customize:
-    sensor.aufenthaltsort_handy:
-      friendly_name: Aufenthaltsort
+    sensor.aufenthaltsort:
       icon: mdi:google-maps
     proximity.home:
       friendly_name: Entfernung

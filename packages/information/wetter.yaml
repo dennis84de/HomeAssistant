@@ -322,5 +322,6 @@ homeassistant:
       icon: mdi:weather-pouring
     sensor.schimmelindikator:
       icon: mdi:biohazard
-#    binary_sensor.iss:
-#      icon: mdi:earth
+    sensor.iss:
+      icon: mdi:earth
+      friendly_name: Personen auf der ISS
