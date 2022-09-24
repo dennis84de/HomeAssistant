@@ -32,14 +32,26 @@ from homeassistant.const import (
     CONF_PLATFORM,
     CONF_SCAN_INTERVAL,
     EVENT_HOMEASSISTANT_START,
+    Platform,
 )
 from homeassistant.helpers.entity import Entity
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.event import async_call_later, async_track_state_change_event
-from homeassistant.helpers.issue_registry import IssueSeverity, async_create_issue
+
+try:
+    from homeassistant.helpers.issue_registry import IssueSeverity, async_create_issue
+except:
+    from homeassistant.components.repairs.issue_handler import (
+        async_create_issue,
+    )
+    from homeassistant.components.repairs.models import (
+        IssueSeverity,
+    )
+
 from homeassistant.helpers.typing import ConfigType, DiscoveryInfoType
 from homeassistant.util import Throttle
 from homeassistant.util.location import distance
+from urllib3.exceptions import NewConnectionError
 
 from .const import (
     ATTR_CITY,
@@ -97,6 +109,7 @@ from .const import (
     DEFAULT_MAP_ZOOM,
     DEFAULT_OPTION,
     DOMAIN,
+    HOME_LOCATION_DOMAINS,
     TRACKING_DOMAINS,
 )
 
@@ -144,7 +157,7 @@ async def async_setup_platform(
         )
 
     import_config = dict(config)
-    # _LOGGER.debug("[YAML Import] initial import_config: " + str(import_config))
+    _LOGGER.debug("[YAML Import] initial import_config: " + str(import_config))
     import_config.pop(CONF_PLATFORM, 1)
     import_config.pop(CONF_SCAN_INTERVAL, 1)
 
@@ -181,36 +194,39 @@ async def async_setup_platform(
         )
         _LOGGER.error(ERROR)
         return
-    _LOGGER.debug(
-        "[YAML Import] devicetracker_id: "
-        + str(import_config[CONF_DEVICETRACKER_ID])
-        + " - "
-        + CONF_LATITUDE
-        + "= "
-        + str(
-            hass.states.get(import_config[CONF_DEVICETRACKER_ID]).attributes.get(
-                CONF_LATITUDE
-            )
-        )
-    )
-    _LOGGER.debug(
-        "[YAML Import] devicetracker_id: "
-        + str(import_config[CONF_DEVICETRACKER_ID])
-        + " - "
-        + CONF_LONGITUDE
-        + "= "
-        + str(
-            hass.states.get(import_config[CONF_DEVICETRACKER_ID]).attributes.get(
-                CONF_LONGITUDE
-            )
-        )
-    )
-    if not (
+
+    if import_config[CONF_DEVICETRACKER_ID].split(".")[0] not in [
+        Platform.SENSOR
+    ] and not (
         CONF_LATITUDE
         in hass.states.get(import_config[CONF_DEVICETRACKER_ID]).attributes
         and CONF_LONGITUDE
         in hass.states.get(import_config[CONF_DEVICETRACKER_ID]).attributes
     ):
+        _LOGGER.debug(
+            "[YAML Import] devicetracker_id: "
+            + str(import_config[CONF_DEVICETRACKER_ID])
+            + " - "
+            + CONF_LATITUDE
+            + "= "
+            + str(
+                hass.states.get(import_config[CONF_DEVICETRACKER_ID]).attributes.get(
+                    CONF_LATITUDE
+                )
+            )
+        )
+        _LOGGER.debug(
+            "[YAML Import] devicetracker_id: "
+            + str(import_config[CONF_DEVICETRACKER_ID])
+            + " - "
+            + CONF_LONGITUDE
+            + "= "
+            + str(
+                hass.states.get(import_config[CONF_DEVICETRACKER_ID]).attributes.get(
+                    CONF_LONGITUDE
+                )
+            )
+        )
         ERROR = (
             "[YAML Import] Not importing: devicetracker_id: "
             + import_config[CONF_DEVICETRACKER_ID]
@@ -218,6 +234,35 @@ async def async_setup_platform(
         )
         _LOGGER.error(ERROR)
         return
+
+    if CONF_HOME_ZONE in import_config:
+        if import_config[CONF_HOME_ZONE] is None:
+            # home zone not defined in config
+            ERROR = "[YAML Import] Not importing: home_zone is blank in the YAML places sensor definition"
+            _LOGGER.error(ERROR)
+            return
+        _LOGGER.debug("[YAML Import] home_zone: " +
+                      str(import_config[CONF_HOME_ZONE]))
+
+        if import_config[CONF_HOME_ZONE].split(".")[0] not in HOME_LOCATION_DOMAINS:
+            # entity isn't in supported type
+            ERROR = (
+                "[YAML Import] Not importing: home_zone: "
+                + str(import_config[CONF_HOME_ZONE])
+                + " is not one of the supported types: "
+                + str(list(HOME_LOCATION_DOMAINS))
+            )
+            _LOGGER.error(ERROR)
+            return
+        elif not hass.states.get(import_config[CONF_HOME_ZONE]):
+            # entity doesn't exist
+            ERROR = (
+                "[YAML Import] Not importing: home_zone: "
+                + str(import_config[CONF_HOME_ZONE])
+                + " doesn't exist"
+            )
+            _LOGGER.error(ERROR)
+            return
 
     # Generate pseudo-unique id using MD5 and store in config to try to prevent reimporting already imported yaml sensors.
     string_to_hash = (
@@ -234,7 +279,7 @@ async def async_setup_platform(
     #    "[YAML Import] yaml_hash: " + str(yaml_hash)
     # )
     import_config.setdefault(CONF_YAML_HASH, yaml_hash)
-    # _LOGGER.debug("[YAML Import] final import_config: " + str(import_config))
+    _LOGGER.debug("[YAML Import] final import_config: " + str(import_config))
 
     all_yaml_hashes = []
     if (
@@ -246,8 +291,9 @@ async def async_setup_platform(
             if CONF_YAML_HASH in m:
                 all_yaml_hashes.append(m[CONF_YAML_HASH])
 
-    # _LOGGER.debug("[YAML Import] New yaml hash: " + str(data.get(CONF_YAML_HASH)))
-    # _LOGGER.debug("[YAML Import] All yaml hashes: " + str(all_yaml_hashes))
+    _LOGGER.debug("[YAML Import] yaml hash: " +
+                  str(import_config.get(CONF_YAML_HASH)))
+    _LOGGER.debug("[YAML Import] All yaml hashes: " + str(all_yaml_hashes))
     if import_config[CONF_YAML_HASH] not in all_yaml_hashes:
         _LOGGER.warning(
             "[YAML Import] New YAML sensor, importing: "
@@ -278,9 +324,15 @@ async def async_setup_entry(
 ) -> None:
     """Setup the sensor platform with a config_entry (config_flow)."""
 
+    # _LOGGER.debug("[aync_setup_entity] all entities: " +
+    #              str(hass.data[DOMAIN]))
+
     config = hass.data[DOMAIN][config_entry.entry_id]
     unique_id = config_entry.entry_id
     name = config.get(CONF_NAME)
+    # _LOGGER.debug("[async_setup_entry] name: " + str(name))
+    # _LOGGER.debug("[async_setup_entry] unique_id: " + str(unique_id))
+    # _LOGGER.debug("[async_setup_entry] config: " + str(config))
 
     async_add_entities(
         [Places(hass, config, config_entry, name, unique_id)], update_before_add=True
@@ -320,15 +372,35 @@ class Places(Entity):
         )
         self._state = "Initializing..."
 
-        home_latitude = str(hass.states.get(
-            self._home_zone).attributes.get("latitude"))
-        if not self.is_float(home_latitude):
-            home_latitude = None
-        home_longitude = str(
-            hass.states.get(self._home_zone).attributes.get("longitude")
-        )
-        if not self.is_float(home_longitude):
-            home_longitude = None
+        home_latitude = None
+        home_longitude = None
+        if (
+            hasattr(self, "_home_zone")
+            and hass.states.get(self._home_zone) is not None
+            and CONF_LATITUDE in hass.states.get(self._home_zone).attributes
+            and hass.states.get(self._home_zone).attributes.get(CONF_LATITUDE)
+            is not None
+            and self.is_float(
+                hass.states.get(self._home_zone).attributes.get(CONF_LATITUDE)
+            )
+        ):
+            home_latitude = str(
+                hass.states.get(self._home_zone).attributes.get(CONF_LATITUDE)
+            )
+        if (
+            hasattr(self, "_home_zone")
+            and hass.states.get(self._home_zone) is not None
+            and CONF_LONGITUDE in hass.states.get(self._home_zone).attributes
+            and hass.states.get(self._home_zone).attributes.get(CONF_LONGITUDE)
+            is not None
+            and self.is_float(
+                hass.states.get(self._home_zone).attributes.get(CONF_LONGITUDE)
+            )
+        ):
+            home_longitude = str(
+                hass.states.get(self._home_zone).attributes.get(CONF_LONGITUDE)
+            )
+
         self._entity_picture = (
             hass.states.get(self._devicetracker_id).attributes.get(
                 "entity_picture")
@@ -388,23 +460,16 @@ class Places(Entity):
             + self._devicetracker_id
         )
 
-        # async_track_state_change(
-        #    hass,
-        #    self._devicetracker_id,
-        #    self.tsc_update,
-        #    from_state=None,
-        #    to_state=None,
-        # )
         async_track_state_change_event(
             hass,
             self._devicetracker_id,
             self.tsc_update,
         )
-        _LOGGER.debug(
-            "("
-            + self._name
-            + ") [Init] Subscribed to DeviceTracker state change events"
-        )
+        # _LOGGER.debug(
+        #    "("
+        #    + self._name
+        #    + ") [Init] Subscribed to DeviceTracker state change events"
+        # )
 
     @property
     def name(self):
@@ -517,58 +582,73 @@ class Places(Entity):
         return return_attr
 
     def is_devicetracker_set(self):
+        # if self._hass.states.get(self._devicetracker_id) is not None:
         # _LOGGER.debug(
         #    "("
         #    + self._name
-        #    + ") [is_devicetracker_set] DeviceTracker State: "
-        #    + str(
-        #        self._hass.states.get(self._devicetracker_id).state
-        #        if self._hass.states.get(self._devicetracker_id) is not None
-        #        else None
-        #    )
+        #    + ") [is_devicetracker_set] DeviceTracker: "
+        #    + str(self._hass.states.get(self._devicetracker_id))
         # )
-
         if (
             hasattr(self, "_devicetracker_id")
             and self._hass.states.get(self._devicetracker_id) is not None
-            and self._hass.states.get(self._devicetracker_id).state.lower() != "notset"
+            and CONF_LATITUDE
+            in self._hass.states.get(self._devicetracker_id).attributes
+            and CONF_LONGITUDE
+            in self._hass.states.get(self._devicetracker_id).attributes
+            and self._hass.states.get(self._devicetracker_id).attributes.get(
+                CONF_LATITUDE
+            )
+            is not None
+            and self._hass.states.get(self._devicetracker_id).attributes.get(
+                CONF_LONGITUDE
+            )
+            is not None
         ):
+            # _LOGGER.debug(
+            #    "(" + self._name +
+            #    ") [is_devicetracker_set] Devicetracker is set"
+            # )
             return True
         else:
+            # _LOGGER.debug(
+            #    "(" + self._name +
+            #    ") [is_devicetracker_set] Devicetracker is not set"
+            # )
             return False
 
     def tsc_update(self, tscarg=None):
         """Call the do_update function based on the TSC (track state change) event"""
         if self.is_devicetracker_set():
-            #    _LOGGER.debug(
-            #        "("
-            #        + self._name
-            #        + ") [TSC Update] Running Update - Devicetracker is set"
-            #    )
+            # _LOGGER.debug(
+            #    "("
+            #    + self._name
+            #    + ") [TSC Update] Running Update - Devicetracker is set"
+            # )
             self.do_update("Track State Change")
         # else:
-        #    _LOGGER.debug(
-        #        "("
-        #        + self._name
-        #        + ") [TSC Update] Not Running Update - Devicetracker is not set"
-        #    )
+        # _LOGGER.debug(
+        #    "("
+        #    + self._name
+        #    + ") [TSC Update] Not Running Update - Devicetracker is not set"
+        # )
 
     @Throttle(THROTTLE_INTERVAL)
     async def async_update(self):
         """Call the do_update function based on scan interval and throttle"""
         if self.is_devicetracker_set():
-            #    _LOGGER.debug(
-            #        "("
-            #        + self._name
-            #        + ") [Async Update] Running Update - Devicetracker is set"
-            #    )
+            # _LOGGER.debug(
+            #    "("
+            #    + self._name
+            #    + ") [Async Update] Running Update - Devicetracker is set"
+            # )
             await self._hass.async_add_executor_job(self.do_update, "Scan Interval")
         # else:
-        #    _LOGGER.debug(
-        #        "("
-        #        + self._name
-        #        + ") [Async Update] Not Running Update - Devicetracker is not set"
-        #    )
+        # _LOGGER.debug(
+        #    "("
+        #    + self._name
+        #    + ") [Async Update] Not Running Update - Devicetracker is not set"
+        # )
 
     def haversine(self, lon1, lat1, lon2, lat2):
         """
@@ -620,10 +700,13 @@ class Places(Entity):
         devicetracker_zone = None
         devicetracker_zone_id = None
         devicetracker_zone_name_state = None
+        devicetracker_zone_name = None
         home_latitude = None
         home_longitude = None
         old_latitude = None
         old_longitude = None
+        new_latitude = None
+        new_longitude = None
         last_distance_m = None
         last_updated = None
         current_location = None
@@ -853,6 +936,11 @@ class Places(Entity):
                 devicetracker_zone_name = devicetracker_zone_name_state.name
             else:
                 devicetracker_zone_name = devicetracker_zone
+            if (
+                devicetracker_zone_name is not None
+                and devicetracker_zone_name.lower() == devicetracker_zone_name
+            ):
+                devicetracker_zone_name = devicetracker_zone_name.title()
             _LOGGER.debug(
                 "("
                 + self._name
@@ -877,7 +965,7 @@ class Places(Entity):
             _LOGGER.error(
                 "("
                 + self._name
-                + ") Problem with updated lat/long, this will likely error: new_latitude="
+                + ") Problem with updated lat/long, this update will likely fail: new_latitude="
                 + str(new_latitude)
                 + ", new_longitude="
                 + str(new_longitude)
@@ -991,12 +1079,47 @@ class Places(Entity):
             # osm_response = get(osm_url)
             try:
                 osm_response = requests.get(osm_url)
-            except requests.exceptions.Timeout:
+            except requests.exceptions.Timeout as e:
                 osm_response = None
                 _LOGGER.warning(
                     "("
                     + self._name
-                    + ") Timeout Connecting to OpenStreetMaps: "
+                    + ") Timeout connecting to OpenStreetMaps [Error: "
+                    + e
+                    + "]: "
+                    + str(osm_url)
+                )
+            except OSError as e:
+                # Includes error code 101, network unreachable
+                osm_response = None
+                _LOGGER.warning(
+                    "("
+                    + self._name
+                    + ") Network unreachable error when connecting to OpenStreetMaps [Error "
+                    + e.errno
+                    + ": "
+                    + e
+                    + "]: "
+                    + str(osm_url)
+                )
+            except NewConnectionError as e:
+                osm_response = None
+                _LOGGER.warning(
+                    "("
+                    + self._name
+                    + ") Connection Error connecting to OpenStreetMaps [Error: "
+                    + e
+                    + "]: "
+                    + str(osm_url)
+                )
+            except Exception as e:
+                osm_response = None
+                _LOGGER.warning(
+                    "("
+                    + self._name
+                    + ") Unknown Error connecting to OpenStreetMaps [Error: "
+                    + e
+                    + "]: "
                     + str(osm_url)
                 )
             if osm_response is not None:
@@ -1428,14 +1551,50 @@ class Places(Entity):
                             try:
                                 osm_details_response = requests.get(
                                     osm_details_url)
-                            except requests.exceptions.Timeout:
+                            except requests.exceptions.Timeout as e:
                                 osm_details_response = None
                                 _LOGGER.warning(
                                     "("
                                     + self._name
-                                    + ") Timeout Connecting to OpenStreetMaps Details: "
+                                    + ") Timeout connecting to OpenStreetMaps Details [Error: "
+                                    + e
+                                    + "]: "
                                     + str(osm_details_url)
                                 )
+                            except OSError as e:
+                                # Includes error code 101, network unreachable
+                                osm_details_response = None
+                                _LOGGER.warning(
+                                    "("
+                                    + self._name
+                                    + ") Network unreachable error when connecting to OpenStreetMaps Details [Error "
+                                    + e.errno
+                                    + ": "
+                                    + e
+                                    + "]: "
+                                    + str(osm_details_url)
+                                )
+                            except NewConnectionError as e:
+                                osm_details_response = None
+                                _LOGGER.warning(
+                                    "("
+                                    + self._name
+                                    + ") Connection Error connecting to OpenStreetMaps Details [Error: "
+                                    + e
+                                    + "]: "
+                                    + str(osm_details_url)
+                                )
+                            except Exception as e:
+                                osm_details_response = None
+                                _LOGGER.warning(
+                                    "("
+                                    + self._name
+                                    + ") Unknown Error connecting to OpenStreetMaps Details [Error: "
+                                    + e
+                                    + "]: "
+                                    + str(osm_details_url)
+                                )
+
                             if (
                                 osm_details_response is not None
                                 and "error_message" in osm_details_response
@@ -1498,14 +1657,50 @@ class Places(Entity):
                                     try:
                                         wikidata_response = requests.get(
                                             wikidata_url)
-                                    except requests.exceptions.Timeout:
+                                    except requests.exceptions.Timeout as e:
                                         wikidata_response = None
                                         _LOGGER.warning(
                                             "("
                                             + self._name
-                                            + ") Timeout Connecting to Wikidata: "
+                                            + ") Timeout connecting to Wikidata [Error: "
+                                            + e
+                                            + "]: "
                                             + str(wikidata_url)
                                         )
+                                    except OSError as e:
+                                        # Includes error code 101, network unreachable
+                                        wikidata_response = None
+                                        _LOGGER.warning(
+                                            "("
+                                            + self._name
+                                            + ") Network unreachable error when connecting to Wikidata [Error "
+                                            + e.errno
+                                            + ": "
+                                            + e
+                                            + "]: "
+                                            + str(wikidata_url)
+                                        )
+                                    except NewConnectionError as e:
+                                        wikidata_response = None
+                                        _LOGGER.warning(
+                                            "("
+                                            + self._name
+                                            + ") Connection Error connecting to Wikidata [Error: "
+                                            + e
+                                            + "]: "
+                                            + str(wikidata_url)
+                                        )
+                                    except Exception as e:
+                                        wikidata_response = None
+                                        _LOGGER.warning(
+                                            "("
+                                            + self._name
+                                            + ") Unknown Error connecting to Wikidata [Error: "
+                                            + e
+                                            + "]: "
+                                            + str(wikidata_url)
+                                        )
+
                                     if (
                                         wikidata_response is not None
                                         and "error_message" in wikidata_response
