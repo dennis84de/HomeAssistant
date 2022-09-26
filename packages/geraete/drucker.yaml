@@ -8,6 +8,15 @@ sensor:
       - magenta
       - cyan
     
+template:
+  - button:
+      - name: Drucker
+        unique_id: 'drucker'
+        icon: mdi:printer
+        press:
+          service: switch.turn_on
+          target:
+            entity_id: switch.drucker
 mqtt:
   sensor:
     - name: "Patrone Schwarz"
