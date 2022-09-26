@@ -14,16 +14,16 @@ device_tracker:
     url: !secret phonetrack_url
     token: !secret phonetrack_token
     devices:
-      - HandyGPS
+      - Handy_GPS
       
   - platform: ping
     hosts:
-      handyping: !secret handy_host
+      handy_ping: !secret handy_host
            
 proximity:
   home:
     devices:      
-      - device_tracker.handygps
+      - device_tracker.handy_gps
       - device_tracker.handy
     tolerance: 50
            
@@ -46,7 +46,6 @@ mqtt:
       
   device_tracker:
     - name: "Handy MQTT"
-      unique_id: handymqtt
       state_topic: "handy/location"     
     
 sensor:
@@ -542,8 +541,3 @@ automation:
               - service: !secret tts_service
                 data:
                   message: "Das Handy wurde vollständig aufgeladen."
-                  
-homeassistant:
-  customize:
-    device_tracker.handymqtt:
-      friendly_name: Handy MQTT

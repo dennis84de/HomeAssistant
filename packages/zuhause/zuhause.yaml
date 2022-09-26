@@ -77,7 +77,7 @@ script:
           url: !secret phonetrack_send_position_url
       - service: device_tracker.see
         data:
-          dev_id: 'handygps'
+          dev_id: 'handy_gps'
           location_name: home
           source_type: gps
           gps_accuracy: 20
@@ -97,8 +97,8 @@ script:
     sequence:
       - delay: '00:00:15'
       - choose:
-          - conditions:              
-              - "{{ abends is defined and abends == True }}"              
+          - conditions:          
+              - "{{ is_state('binary_sensor.nachts', 'on') }}"          
             sequence:
               - service: !secret tts_service
                 data:
@@ -266,8 +266,6 @@ automation:
         data:
           option: 'Deaktiviert'     
       - service: script.zu_hause_begruessung    
-        data:
-          abends: "{{ is_state('binary_sensor.nachts', 'on') }}"
 
 homeassistant:
   customize:

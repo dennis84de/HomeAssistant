@@ -217,7 +217,7 @@ automation:
       - service: notify.telegram
         data:
           title: "Aufenthaltsort"
-          message: ->
+          message: >-
             {% if is_state('sensor.aufenthaltsort', 'home') %}
               Zu Hause
             {% else %}
