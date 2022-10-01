@@ -236,6 +236,7 @@ automation:
       - "{{ is_state('binary_sensor.schlafen_aktiv', 'off') }}" 
       - "{{ is_state('input_boolean.wetter_warnungen_einschalten', 'on') }}" 
       - "{{ is_state('binary_sensor.besuch', 'off') }}"   
+      - "{{ is_state('person.dennis', 'not_home') or is_state('calendar.borussia_dortmund', 'off') }}"
       - "{{ trigger.to_state.state > trigger.from_state.state }}" 
     action:
       - choose:
