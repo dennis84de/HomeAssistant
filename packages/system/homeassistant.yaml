@@ -42,6 +42,8 @@ lovelace:
       type: module    
     - url: /hacsfiles/lovelace-fold-entity-row/fold-entity-row.js
       type: module      
+    - url: /hacsfiles/ha-teamtracker-card/ha-teamtracker-card.js
+      type: module      
     
   dashboards:      
     lovelace-rooms:
@@ -66,6 +68,7 @@ zone:
     longitude: !secret home_longitude
     radius: 50
     icon: mdi:home-account
+    
   - name: Arbeit
     latitude: !secret work_latitude
     longitude: !secret work_longitude
@@ -225,7 +228,7 @@ automation:
           message: "Während des Neustarts ist ein Fehler aufgetreten."
 
 homeassistant:
-  customize:      
+  customize:       
     zone.home:
       friendly_name: Zu Hause
   

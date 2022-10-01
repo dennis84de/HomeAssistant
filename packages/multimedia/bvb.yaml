@@ -131,3 +131,27 @@ automation:
       - service: media_player.clear_playlist
         data:
           entity_id: media_player.squeezebox        
+          
+  - alias: "BVB - Benachrichtigung Tor"
+    id: "bvb_benachrichtigung_tor"
+    trigger:
+      - platform: template
+        value_template: "{{ state_attr('sensor.borussia_dortmund', 'team_score') }}"
+      - platform: template
+        value_template: "{{ state_attr('sensor.borussia_dortmund', 'opponent_score') }}"        
+    condition:
+      - "{{ is_state('sensor.borussia_dortmund', 'IN') }}"      
+      - "{{ is_state('person.dennis', 'not_home') }}"      
+    action:
+      - service: notify.telegram
+        data:
+          title: "Tor"
+          message: >-
+            {% set scoreTeam = state_attr('sensor.borussia_dortmund', 'team_score') %}
+            {% set scoreOpponent = state_attr('sensor.borussia_dortmund', 'opponent_score') %}
+            
+            {% set nameTeam = state_attr('sensor.borussia_dortmund', 'team_name') %}
+            {% set nameOpponent = state_attr('sensor.borussia_dortmund', 'opponent_name') %}
+            
+            {{ nameTeam ~ ' ' ~ scoreTeam ~ ' - ' ~ scoreOpponent ~ ' ' ~ nameOpponent }}
+ 
