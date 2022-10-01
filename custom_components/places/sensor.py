@@ -25,6 +25,7 @@ from homeassistant import config_entries, core
 from homeassistant.components.sensor import PLATFORM_SCHEMA
 from homeassistant.const import (
     ATTR_FRIENDLY_NAME,
+    ATTR_GPS_ACCURACY,
     CONF_API_KEY,
     CONF_LATITUDE,
     CONF_LONGITUDE,
@@ -98,12 +99,14 @@ from .const import (
     CONF_MAP_PROVIDER,
     CONF_MAP_ZOOM,
     CONF_OPTIONS,
+    CONF_SHOW_TIME,
     CONF_YAML_HASH,
     DEFAULT_EXTENDED_ATTR,
     DEFAULT_HOME_ZONE,
     DEFAULT_MAP_PROVIDER,
     DEFAULT_MAP_ZOOM,
     DEFAULT_OPTION,
+    DEFAULT_SHOW_TIME,
     DOMAIN,
     HOME_LOCATION_DOMAINS,
     TRACKING_DOMAINS,
@@ -124,6 +127,7 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
         vol.Optional(CONF_MAP_ZOOM, default=DEFAULT_MAP_ZOOM): cv.positive_int,
         vol.Optional(CONF_LANGUAGE): cv.string,
         vol.Optional(CONF_EXTENDED_ATTR, default=DEFAULT_EXTENDED_ATTR): cv.boolean,
+        vol.Optional(CONF_SHOW_TIME, default=DEFAULT_SHOW_TIME): cv.boolean,
     }
 )
 
@@ -358,6 +362,7 @@ class Places(Entity):
         """Initialize the sensor."""
         _LOGGER.info("(" + str(name) + ") [Init] Places sensor: " + str(name))
 
+        self.initial_update = True
         self._config = config
         self._config_entry = config_entry
         self._hass = hass
@@ -382,10 +387,12 @@ class Places(Entity):
         self._extended_attr = config.setdefault(
             CONF_EXTENDED_ATTR, DEFAULT_EXTENDED_ATTR
         )
-        self._state = "Initializing..."
+        self._state = None
+        self._show_time = config.setdefault(CONF_SHOW_TIME, DEFAULT_SHOW_TIME)
 
         home_latitude = None
         home_longitude = None
+
         if (
             hasattr(self, "_home_zone")
             and hass.states.get(self._home_zone) is not None
@@ -436,24 +443,18 @@ class Places(Entity):
         self._place_neighbourhood = None
         self._home_latitude = home_latitude
         self._home_longitude = home_longitude
-        self._latitude_old = home_latitude
-        self._longitude_old = home_longitude
-        self._latitude = home_latitude
-        self._longitude = home_longitude
-        self._devicetracker_zone = "Home"
-        self._devicetracker_zone_name = "Home"
+        self._latitude_old = None
+        self._longitude_old = None
+        self._latitude = None
+        self._longitude = None
+        self._devicetracker_zone = None
+        self._devicetracker_zone_name = None
         self._mtime = str(datetime.now())
         self._last_place_name = None
         self._distance_km = 0
         self._distance_m = 0
-        if home_latitude is not None and home_longitude is not None:
-            self._location_current = str(
-                home_latitude) + "," + str(home_longitude)
-            self._location_previous = str(
-                home_latitude) + "," + str(home_longitude)
-        else:
-            self._location_current = None
-            self._location_previous = None
+        self._location_current = None
+        self._location_previous = None
         self._updateskipped = 0
         self._direction = "stationary"
         self._map_link = None
@@ -472,16 +473,20 @@ class Places(Entity):
             + self._devicetracker_id
         )
 
-        async_track_state_change_event(
-            hass,
-            self._devicetracker_id,
-            self.tsc_update,
+    async def async_added_to_hass(self) -> None:
+        """Added to hass."""
+        self.async_on_remove(
+            async_track_state_change_event(
+                self.hass,
+                self._devicetracker_id,
+                self.tsc_update,
+            )
         )
-        # _LOGGER.debug(
-        #    "("
-        #    + self._name
-        #    + ") [Init] Subscribed to DeviceTracker state change events"
-        # )
+        _LOGGER.debug(
+            "("
+            + self._name
+            + ") [Init] Subscribed to DeviceTracker state change events"
+        )
 
     @property
     def name(self):
@@ -706,7 +711,10 @@ class Places(Entity):
         """Get the latest data and updates the states."""
 
         _LOGGER.info("(" + self._name + ") Starting Update...")
-        previous_state = self._state
+        if self._state is not None and self._show_time:
+            previous_state = self._state[:-14]
+        else:
+            previous_state = self._state
         new_state = None
         distance_traveled = 0
         devicetracker_zone = None
@@ -729,6 +737,8 @@ class Places(Entity):
         maplink_osm = None
         last_place_name = None
         prev_last_place_name = None
+        # Will update with real value if it exists and then places will only only update if >0
+        gps_accuracy = 1
 
         _LOGGER.info(
             "(" + self._name + ") Calling update due to: " + str(reason))
@@ -806,6 +816,38 @@ class Places(Entity):
                     "longitude"
                 )
             )
+
+        # GPS Accuracy
+        if (
+            self._hass.states.get(self._devicetracker_id)
+            and self._hass.states.get(self._devicetracker_id).attributes
+            and ATTR_GPS_ACCURACY
+            in self._hass.states.get(self._devicetracker_id).attributes
+            and self._hass.states.get(self._devicetracker_id).attributes.get(
+                ATTR_GPS_ACCURACY
+            )
+            is not None
+            and self.is_float(
+                self._hass.states.get(self._devicetracker_id).attributes.get(
+                    ATTR_GPS_ACCURACY
+                )
+            )
+        ):
+            gps_accuracy = float(
+                self._hass.states.get(self._devicetracker_id).attributes.get(
+                    ATTR_GPS_ACCURACY
+                )
+            )
+            _LOGGER.debug(
+                "(" + self._name + ") GPS Accuracy: " + str(gps_accuracy))
+        else:
+            _LOGGER.debug(
+                "("
+                + self._name
+                + ") GPS Accuracy attribute not found in: "
+                + str(self._devicetracker_id)
+            )
+
         if self.is_float(self._home_latitude):
             home_latitude = str(self._home_latitude)
         if self.is_float(self._home_longitude):
@@ -862,8 +904,12 @@ class Places(Entity):
         )
 
         maplink_google = (
-            "https://www.google.com/maps/search/?api=1&basemap=roadmap&layer=traffic&query="
+            "https://maps.google.com/?q="
             + str(current_location)
+            + "&ll="
+            + str(current_location)
+            + "&z="
+            + str(self._map_zoom)
         )
         maplink_osm = (
             "https://www.openstreetmap.org/?mlat="
@@ -877,6 +923,7 @@ class Places(Entity):
             + "/"
             + str(new_longitude)[:9]
         )
+        proceed_with_update = True
         if (
             new_latitude is not None
             and new_longitude is not None
@@ -891,18 +938,21 @@ class Places(Entity):
             )
             distance_km = round(distance_m / 1000, 3)
 
-            deviation = self.haversine(
-                float(old_latitude),
-                float(old_longitude),
-                float(new_latitude),
-                float(new_longitude),
-            )
-            if deviation <= 0.2:  # in kilometers
-                direction = "stationary"
-            elif last_distance_m > distance_m:
-                direction = "towards home"
-            elif last_distance_m < distance_m:
-                direction = "away from home"
+            if old_latitude is not None and old_longitude is not None:
+                deviation = self.haversine(
+                    float(old_latitude),
+                    float(old_longitude),
+                    float(new_latitude),
+                    float(new_longitude),
+                )
+                if deviation <= 0.2:  # in kilometers
+                    direction = "stationary"
+                elif last_distance_m > distance_m:
+                    direction = "towards home"
+                elif last_distance_m < distance_m:
+                    direction = "away from home"
+                else:
+                    direction = "stationary"
             else:
                 direction = "stationary"
 
@@ -960,12 +1010,13 @@ class Places(Entity):
                 + str(devicetracker_zone_name)
             )
 
-            distance_traveled = distance(
-                float(new_latitude),
-                float(new_longitude),
-                float(old_latitude),
-                float(old_longitude),
-            )
+            if old_latitude is not None and old_longitude is not None:
+                distance_traveled = distance(
+                    float(new_latitude),
+                    float(new_longitude),
+                    float(old_latitude),
+                    float(old_longitude),
+                )
 
             _LOGGER.info(
                 "("
@@ -974,10 +1025,16 @@ class Places(Entity):
                 + str(round(distance_traveled, 1))
             )
         else:
-            _LOGGER.error(
+            proceed_with_update = False
+            _LOGGER.info(
                 "("
                 + self._name
-                + ") Problem with updated lat/long, this update will likely fail: new_latitude="
+                + ") Problem with updated lat/long, not performing update: "
+                + "old_latitude="
+                + str(old_latitude)
+                + ", old_longitude="
+                + str(old_longitude)
+                + ", new_latitude="
                 + str(new_latitude)
                 + ", new_longitude="
                 + str(new_longitude)
@@ -987,12 +1044,22 @@ class Places(Entity):
                 + str(home_longitude)
             )
 
-        proceed_with_update = True
-        initial_update = False
-
-        if current_location == previous_location:
+        if not proceed_with_update:
+            proceed_with_update = False
+        elif gps_accuracy == 0:
+            proceed_with_update = False
             _LOGGER.info(
-                "(" + self._name + ") Stopping update because coordinates are identical"
+                "(" + self._name + ") GPS Accuracy is 0, not performing update"
+            )
+        elif self.initial_update:
+            _LOGGER.info(
+                "(" + self._name + ") Performing Initial Update for user...")
+            proceed_with_update = True
+        elif current_location == previous_location:
+            _LOGGER.info(
+                "("
+                + self._name
+                + ") Not performing update because coordinates are identical"
             )
             proceed_with_update = False
         elif int(distance_traveled) > 0 and self._updateskipped > 3:
@@ -1007,19 +1074,13 @@ class Places(Entity):
             _LOGGER.info(
                 "("
                 + self._name
-                + ") Stopping update because location changed "
+                + ") Not performing update because location changed "
                 + str(round(distance_traveled, 1))
                 + " < 10m  ("
                 + str(self._updateskipped)
                 + ")"
             )
             proceed_with_update = False
-
-        if previous_state == "Initializing...":
-            _LOGGER.info(
-                "(" + self._name + ") Performing Initial Update for user...")
-            proceed_with_update = True
-            initial_update = True
 
         if proceed_with_update and devicetracker_zone:
             _LOGGER.info(
@@ -1088,7 +1149,6 @@ class Places(Entity):
                 + str(self._longitude)
             )
             _LOGGER.debug("(" + self._name + ") OSM URL: " + str(osm_url))
-            # osm_response = get(osm_url)
             try:
                 osm_response = requests.get(osm_url)
             except requests.exceptions.Timeout as e:
@@ -1097,7 +1157,7 @@ class Places(Entity):
                     "("
                     + self._name
                     + ") Timeout connecting to OpenStreetMaps [Error: "
-                    + e
+                    + str(e)
                     + "]: "
                     + str(osm_url)
                 )
@@ -1108,9 +1168,9 @@ class Places(Entity):
                     "("
                     + self._name
                     + ") Network unreachable error when connecting to OpenStreetMaps [Error "
-                    + e.errno
+                    + str(e.errno)
                     + ": "
-                    + e
+                    + str(e)
                     + "]: "
                     + str(osm_url)
                 )
@@ -1120,7 +1180,7 @@ class Places(Entity):
                     "("
                     + self._name
                     + ") Connection Error connecting to OpenStreetMaps [Error: "
-                    + e
+                    + str(e)
                     + "]: "
                     + str(osm_url)
                 )
@@ -1130,21 +1190,31 @@ class Places(Entity):
                     "("
                     + self._name
                     + ") Unknown Error connecting to OpenStreetMaps [Error: "
-                    + e
+                    + str(e)
                     + "]: "
                     + str(osm_url)
                 )
-            if osm_response is not None:
+
+            osm_json_input = {}
+            if osm_response is not None and osm_response:
                 osm_json_input = osm_response.text
                 _LOGGER.debug(
                     "(" + self._name + ") OSM Response: " + osm_json_input)
-            else:
-                osm_json_input = {}
 
-            if osm_json_input:
-                osm_decoded = json.loads(osm_json_input)
-
-            if osm_decoded:
+            if osm_json_input is not None and osm_json_input:
+                try:
+                    osm_decoded = json.loads(osm_json_input)
+                except json.decoder.JSONDecodeError as e:
+                    osm_decoded = None
+                    _LOGGER.warning(
+                        "("
+                        + self._name
+                        + ") JSON Decode Error with OSM info [Error: "
+                        + str(e)
+                        + "]: "
+                        + str(osm_json_input)
+                    )
+            if osm_decoded is not None and osm_decoded:
                 place_type = None
                 place_name = None
                 place_category = None
@@ -1256,7 +1326,7 @@ class Places(Entity):
                 if osm_id is not None:
                     self._osm_id = str(osm_id)
                 self._osm_type = osm_type
-                if initial_update is True:
+                if self.initial_update is True:
                     last_place_name = self._last_place_name
                     _LOGGER.debug(
                         "("
@@ -1339,7 +1409,8 @@ class Places(Entity):
                                     + self._street.strip()
                                 )
                         if (
-                            self._place_type.lower() == "house"
+                            self._place_type is not None
+                            and self._place_type.lower() == "house"
                             and self._place_neighbourhood is not None
                         ):
                             formatted_place_array.append(
@@ -1502,18 +1573,18 @@ class Places(Entity):
                 current_time = "%02d:%02d" % (now.hour, now.minute)
 
                 if (
-                    previous_state is not None
-                    and new_state is not None
-                    and (
-                        (
-                            previous_state.lower().strip() != new_state.lower().strip()
-                            and previous_state.replace(" ", "").lower().strip()
-                            != new_state.lower().strip()
-                            and previous_state.lower().strip()
-                            != devicetracker_zone.lower().strip()
-                        )
-                        or previous_state.strip() == "Initializing..."
+                    (
+                        previous_state is not None
+                        and new_state is not None
+                        and previous_state.lower().strip() != new_state.lower().strip()
+                        and previous_state.replace(" ", "").lower().strip()
+                        != new_state.lower().strip()
+                        and previous_state.lower().strip()
+                        != devicetracker_zone.lower().strip()
                     )
+                    or previous_state is None
+                    or new_state is None
+                    or self.initial_update
                 ):
 
                     if self._extended_attr:
@@ -1569,7 +1640,7 @@ class Places(Entity):
                                     "("
                                     + self._name
                                     + ") Timeout connecting to OpenStreetMaps Details [Error: "
-                                    + e
+                                    + str(e)
                                     + "]: "
                                     + str(osm_details_url)
                                 )
@@ -1580,9 +1651,9 @@ class Places(Entity):
                                     "("
                                     + self._name
                                     + ") Network unreachable error when connecting to OpenStreetMaps Details [Error "
-                                    + e.errno
+                                    + str(e.errno)
                                     + ": "
-                                    + e
+                                    + str(e)
                                     + "]: "
                                     + str(osm_details_url)
                                 )
@@ -1592,7 +1663,7 @@ class Places(Entity):
                                     "("
                                     + self._name
                                     + ") Connection Error connecting to OpenStreetMaps Details [Error: "
-                                    + e
+                                    + str(e)
                                     + "]: "
                                     + str(osm_details_url)
                                 )
@@ -1602,7 +1673,7 @@ class Places(Entity):
                                     "("
                                     + self._name
                                     + ") Unknown Error connecting to OpenStreetMaps Details [Error: "
-                                    + e
+                                    + str(e)
                                     + "]: "
                                     + str(osm_details_url)
                                 )
@@ -1618,7 +1689,12 @@ class Places(Entity):
                                     + ") An error occurred contacting the web service for OSM Details"
                                 )
                             else:
-                                if osm_details_response is not None:
+                                osm_details_json_input = {}
+
+                                if (
+                                    osm_details_response is not None
+                                    and osm_details_response
+                                ):
                                     osm_details_json_input = osm_details_response.text
                                     _LOGGER.debug(
                                         "("
@@ -1626,13 +1702,25 @@ class Places(Entity):
                                         + ") OSM Details JSON: "
                                         + osm_details_json_input
                                     )
-                                else:
-                                    osm_details_json_input = {}
-                                if osm_details_json_input:
-                                    osm_details_dict = json.loads(
-                                        osm_details_json_input
-                                    )
 
+                                if (
+                                    osm_details_json_input is not None
+                                    and osm_details_json_input
+                                ):
+                                    try:
+                                        osm_details_dict = json.loads(
+                                            osm_details_json_input
+                                        )
+                                    except json.decoder.JSONDecodeError as e:
+                                        osm_details_dict = None
+                                        _LOGGER.warning(
+                                            "("
+                                            + self._name
+                                            + ") JSON Decode Error with OSM Details info [Error: "
+                                            + str(e)
+                                            + "]: "
+                                            + str(osm_details_json_input)
+                                        )
                                 # _LOGGER.debug("(" + self._name + ") OSM Details Dict: " + str(osm_details_dict))
                                 self._osm_details_dict = osm_details_dict
 
@@ -1675,7 +1763,7 @@ class Places(Entity):
                                             "("
                                             + self._name
                                             + ") Timeout connecting to Wikidata [Error: "
-                                            + e
+                                            + str(e)
                                             + "]: "
                                             + str(wikidata_url)
                                         )
@@ -1686,9 +1774,9 @@ class Places(Entity):
                                             "("
                                             + self._name
                                             + ") Network unreachable error when connecting to Wikidata [Error "
-                                            + e.errno
+                                            + str(e.errno)
                                             + ": "
-                                            + e
+                                            + str(e)
                                             + "]: "
                                             + str(wikidata_url)
                                         )
@@ -1698,7 +1786,7 @@ class Places(Entity):
                                             "("
                                             + self._name
                                             + ") Connection Error connecting to Wikidata [Error: "
-                                            + e
+                                            + str(e)
                                             + "]: "
                                             + str(wikidata_url)
                                         )
@@ -1708,7 +1796,7 @@ class Places(Entity):
                                             "("
                                             + self._name
                                             + ") Unknown Error connecting to Wikidata [Error: "
-                                            + e
+                                            + str(e)
                                             + "]: "
                                             + str(wikidata_url)
                                         )
@@ -1726,7 +1814,12 @@ class Places(Entity):
                                             + ") An error occurred contacting the web service for Wikidata"
                                         )
                                     else:
-                                        if wikidata_response is not None:
+                                        wikidata_json_input = {}
+
+                                        if (
+                                            wikidata_response is not None
+                                            and wikidata_response
+                                        ):
                                             wikidata_json_input = wikidata_response.text
                                             _LOGGER.debug(
                                                 "("
@@ -1734,12 +1827,25 @@ class Places(Entity):
                                                 + ") Wikidata JSON: "
                                                 + wikidata_json_input
                                             )
-                                        else:
-                                            wikidata_json_input = {}
-                                        if wikidata_json_input:
-                                            wikidata_dict = json.loads(
-                                                wikidata_json_input
-                                            )
+
+                                        if (
+                                            wikidata_json_input is not None
+                                            and wikidata_json_input
+                                        ):
+                                            try:
+                                                wikidata_dict = json.loads(
+                                                    wikidata_json_input
+                                                )
+                                            except json.decoder.JSONDecodeError as e:
+                                                wikidata_dict = None
+                                                _LOGGER.warning(
+                                                    "("
+                                                    + self._name
+                                                    + ") JSON Decode Error with Wikidata info [Error: "
+                                                    + str(e)
+                                                    + "]: "
+                                                    + str(wikidata_json_input)
+                                                )
                                         _LOGGER.debug(
                                             "("
                                             + self._name
@@ -1754,24 +1860,27 @@ class Places(Entity):
                                         # )
                                         self._wikidata_dict = wikidata_dict
                     if new_state is not None:
-                        self._state = new_state[:255]
+                        if self._show_time:
+                            self._state = (
+                                new_state[: 255 - 14] +
+                                " (since " + current_time + ")"
+                            )
+                        else:
+                            self._state = new_state[:255]
                         _LOGGER.info(
                             "(" + self._name + ") New State: " + str(self._state)
                         )
                     else:
-                        self._state = "<Unknown>"
+                        self._state = None
                         _LOGGER.warning(
-                            "("
-                            + self._name
-                            + ") New State is None, setting to: "
-                            + str(self._state)
-                        )
+                            "(" + self._name + ") New State is None")
                     _LOGGER.debug("(" + self._name + ") Building Event Data")
                     event_data = {}
                     event_data["entity"] = self._name
-                    event_data["from_state"] = previous_state
-                    event_data["to_state"] = new_state
-
+                    if previous_state is not None:
+                        event_data["from_state"] = previous_state
+                    if new_state is not None:
+                        event_data["to_state"] = new_state
                     if place_name is not None:
                         event_data[ATTR_PLACE_NAME] = place_name
                     if current_time is not None:
@@ -1839,6 +1948,7 @@ class Places(Entity):
                         + self._name
                         + ") No entity update needed, Previous State = New State"
                     )
+            self.initial_update = False
         _LOGGER.info("(" + self._name + ") End of Update")
 
     def _reset_attributes(self):
