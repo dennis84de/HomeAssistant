@@ -11,6 +11,7 @@ automation:
         value_template: "{{ now().strftime('%M')|int in [0,30] }}"
     condition:  
       - "{{ is_state('input_boolean.uhr_einschalten', 'on') }}"
+      - "{{ is_state('input_boolean.nicht_stoeren', 'off') }}"
       - "{{ is_state('input_boolean.baden_aktiv', 'off') }}"     
       - "{{ is_state('person.dennis', 'home') }}"
       - "{{ is_state('binary_sensor.home_office_aktiv', 'off') }}"
@@ -23,7 +24,7 @@ automation:
     action:
       - service: media_player.play_media
         data:
-          entity_id: media_player.squeezebox
+          entity_id: media_player.home_assistant
           media_content_id: >-
             {% if now().strftime("%M")|int == 30 %}
               http://192.168.2.75:8123/local/uhr/GrandFatherChime_half.mp3
@@ -47,12 +48,12 @@ automation:
           command: knock   
     condition:         
       - condition: state
-        entity_id: media_player.squeezebox
+        entity_id: media_player.home_assistant
         state: 'playing'
     action:
       - service: media_player.media_pause
         entity_id:
-          - media_player.squeezebox
+          - media_player.home_assistant
       - service: input_boolean.turn_on
         entity_id: input_boolean.uhr_einschalten
                 

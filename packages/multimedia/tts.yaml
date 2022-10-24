@@ -70,7 +70,7 @@ script:
             state: 'off'            
       - service: tts.google_translate_say
         data:
-          entity_id: media_player.squeezebox
+          entity_id: media_player.home_assistant
           message: "{{ message }}"
 
 automation:

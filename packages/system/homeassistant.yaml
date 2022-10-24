@@ -131,10 +131,10 @@ script:
       - delay: '00:00:05'      
       - service: media_player.play_media
         data:
-          entity_id: media_player.squeezebox
+          entity_id: media_player.home_assistant
           media_content_id:  http://192.168.2.75:8123/local/sounds/winxp_shutdown.mp3
           media_content_type: music
-      - wait_template: "{{is_state('media_player.squeezebox', 'idle')}}"
+      - wait_template: "{{is_state('media_player.home_assistant', 'idle')}}"
         timeout: '00:00:02'
         continue_on_timeout: 'true'      
       - service: homeassistant.restart
@@ -155,7 +155,7 @@ script:
           - service: script.zu_hause_standort
           - service: media_player.play_media
             data:
-              entity_id: media_player.squeezebox
+              entity_id: media_player.home_assistant
               media_content_id: http://192.168.2.75:8123/local/sounds/winxp_start.mp3
               media_content_type: music
           - delay: '00:00:02'
@@ -219,7 +219,7 @@ automation:
     action:
       - service: media_player.play_media
         data:
-          entity_id: media_player.squeezebox
+          entity_id: media_player.home_assistant
           media_content_id: http://192.168.2.75:8123/local/sounds/winxp_error.mp3
           media_content_type: music  
       - service: !secret tts_service

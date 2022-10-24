@@ -23,7 +23,6 @@ cards:
       - entity: device_tracker.fernseherwohnzimmer
         name: Fernseher
       - entity: device_tracker.soundbar  
-      - entity: device_tracker.squeezebox
 
   - type: entities
     title: Haushalt

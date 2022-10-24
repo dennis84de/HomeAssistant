@@ -122,8 +122,7 @@ cards:
       - entity: switch.radios_lautlos
       - entity: script.sync_radios
       - type: custom:mini-media-player
-        entity: media_player.squeezebox
-        name: Squeezebox
+        entity: media_player.home_assistant        
         hide:
           source: true
           progress: true

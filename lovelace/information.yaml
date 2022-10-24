@@ -65,7 +65,7 @@ cards:
             name: Gps          
       - type: custom:template-entity-row
         entity : sensor.aufenthaltsort
-        condition: "{{ not is_state('sensor.aufenthaltsort', 'home') }}"
+        condition: "{{ not is_state('sensor.aufenthaltsort', 'Home') }}"
       - type: custom:template-entity-row
         entity : proximity.home
         condition: "{{ states('proximity.home') | int(0) > 0 }}"      

@@ -13,7 +13,6 @@ cards:
     entities:
       - entity: sensor.iss
       - entity: sensor.satelliten
-      - entity: sensor.schimmelindikator
       - entity: binary_sensor.auto_waschen
       - entity: binary_sensor.autoreifen
       - entity: sensor.katastrophenalarm

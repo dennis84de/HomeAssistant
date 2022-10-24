@@ -34,15 +34,19 @@ binary_sensor:
           {% else %}
             {% set istArbeitstag = is_state('binary_sensor.arbeitstag', 'on') %}
             {% set istSamstag = now().isoweekday() | int == 6 %}        
-            
-            {% set urlaubAktiv = is_state('calendar.urlaub', 'on') %}           
-            {% set urlaubStart = (as_timestamp(state_attr('calendar.urlaub', 'start_time'), None) | timestamp_custom('%d', True)) | int(0) %}
-            {% set urlaubEnde = (as_timestamp(state_attr('calendar.urlaub', 'end_time'), None) | timestamp_custom('%d', True)) | int(0) %}
-            {% set keinUrlaub = not urlaubAktiv or (urlaubStart == urlaubEnde) %}
-            
+                        
+            {% if is_state('calendar.urlaub', 'off') %}
+              {% set keinUrlaub = True %}
+            {% else %}
+              {% set urlaubStart = (as_timestamp(state_attr('calendar.urlaub', 'start_time'), None) | timestamp_custom('%d', True, 0)) | int(0) %}
+              {% set urlaubEnde = (as_timestamp(state_attr('calendar.urlaub', 'end_time'), None) | timestamp_custom('%d', True, 0)) | int(0) %}
+              
+              {% set keinUrlaub = urlaubStart == urlaubEnde %}              
+            {% endif %}
+                                
             {% set heute = as_timestamp(now().replace(hour=0, minute=0, second=0)) %}
             {% set letzteReinigung = state_attr("automation.staubsaugen_beendet", "last_triggered") %}           
-            {% set abstandTage = now().strftime('%j')|int - letzteReinigung.strftime('%j')|int if letzteReinigung else 3 %}
+            {% set abstandTage = now().strftime('%j')|int - letzteReinigung.strftime('%j')|int(0) if letzteReinigung else 3 %}
 
             {{ True if keinUrlaub and (istArbeitstag or istSamstag) and abstandTage > 2 else False }}          
           {% endif %}

@@ -90,12 +90,17 @@ cards:
               green: 0
               yellow: 40
               red: 80        
-      - type: entities
-        show_header_toggle: false
-        entities:
-          - type: custom:template-entity-row
-            entity : sensor.computer_letzter_neustart
-            state: "{{ as_timestamp(states('sensor.computer_letzter_neustart'), None) | timestamp_custom('%d.%m.%Y') | string }}"              
+      - type: conditional
+        conditions:
+          - entity: sensor.computer_letzter_neustart 
+            state_not: "unavailable"
+        card:
+          type: entities          
+          show_header_toggle: false
+          entities:
+            - type: custom:template-entity-row
+              entity : sensor.computer_letzter_neustart
+              state: "{{ as_timestamp(states('sensor.computer_letzter_neustart'), None) | timestamp_custom('%d.%m.%Y') | string }}"         
 
   - type: 'custom:zha-network-card'    
     clickable: true

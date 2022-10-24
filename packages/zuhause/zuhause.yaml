@@ -204,7 +204,7 @@ automation:
                       {% set minuenHomeOffice = states('input_number.home_office_heute_gearbeitet') | int(0) %}
                       {% set heuteBuero = is_state('binary_sensor.buero_heute', 'on') %}
 
-                      {{ (minutenUnterwegs + minuenHomeOffice < 540) if (minuenHomeOffice > 0 or heuteBuero) else false }}                              
+                      {{ (minutenUnterwegs + minuenHomeOffice < 600) if (minuenHomeOffice > 0 or heuteBuero) else false }}                              
             sequence:              
               - service: script.zu_hause_home_office       
           - conditions:

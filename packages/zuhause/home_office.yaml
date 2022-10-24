@@ -258,7 +258,7 @@ automation:
         entity_id: timer.home_office_ende
       - service: media_player.play_media
         data:
-          entity_id: media_player.squeezebox
+          entity_id: media_player.home_assistant
           media_content_id: http://192.168.2.75:8123/local/sounds/countdown_5.mp3
           media_content_type: music
 
@@ -278,7 +278,7 @@ automation:
         state: 'active'
     action:
       - service: media_player.media_pause
-        entity_id: media_player.squeezebox
+        entity_id: media_player.home_assistant
       - service: !secret tts_service
         data:
           echo: "flur"

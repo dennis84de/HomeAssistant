@@ -40,35 +40,16 @@ binary_sensor:
         value_template: "{{ now().timetuple().tm_isdst > 0 }}"  
     
 sensor:
-  - platform: mold_indicator
-    name: Schimmelindikator
-    indoor_temp_sensor: sensor.wohnzimmer_temperatur
-    indoor_humidity_sensor: sensor.wohnzimmer_luftfeuchtigkeit
-    outdoor_temp_sensor: sensor.bewegungsmelder_balkon_temperatur
-    calibration_factor: 1.16
-
   - platform: average
     name: 'Balkon Helligkeit Mittelwert'
     duration:
       minutes: 30
     entities:
       - sensor.balkon_helligkeit
-    
-  - platform: statistics
-    name: 'Balkon Helligkeit Durchschnitt'
-    entity_id: sensor.balkon_helligkeit
-    state_characteristic: mean
-    max_age:
-      minutes: 30
-    unique_id: sensor.balkon_helligkeit_durchschnitt
-          
+              
   - platform: dwd_weather_warnings
     region_name: Stadt Dortmund
     name: Wetterwarnungen
-    
-#  - platform: opensky
-#    name: Flugzeuge
-#    radius: 10
 
   - platform: sun2
     monitored_conditions:
@@ -321,8 +302,6 @@ homeassistant:
     sensor.regenradar:
       friendly_name: Regenradar
       icon: mdi:weather-pouring
-    sensor.schimmelindikator:
-      icon: mdi:biohazard
     sensor.iss:
       icon: mdi:earth
       friendly_name: Personen auf der ISS

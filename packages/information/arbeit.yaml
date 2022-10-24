@@ -22,24 +22,6 @@ input_number:
     step: 1
         
 sensor:
-  - platform: here_travel_time
-    name: Fahrzeit zur Arbeit
-    api_key: !secret here_api_key
-    origin_latitude: !secret home_latitude
-    origin_longitude: !secret home_longitude
-    destination_latitude: !secret work_latitude
-    destination_longitude: !secret work_longitude
-    traffic_mode: true
-
-  - platform: here_travel_time
-    name: Fahrzeit nach Hause
-    api_key: !secret here_api_key
-    origin_latitude: !secret work_latitude
-    origin_longitude: !secret work_longitude    
-    destination_latitude: !secret home_latitude
-    destination_longitude: !secret home_longitude
-    traffic_mode: true
-
   - platform: template
     sensors:
       abfahrzeit:

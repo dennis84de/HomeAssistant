@@ -19,11 +19,6 @@ input_boolean:
     
   multimedia_wohnzimmer_pausiert:
     name:  Multimedia pausiert    
-        
-media_player: 
-  - platform: hass_agent_mediaplayer
-    name: Computer
-    host: !secret computer_host
   
 template:
   - binary_sensor:
@@ -229,7 +224,7 @@ automation:
     action:  
       - service: script.radios_ausschalten
         data:
-          badezimmerEingeschaltetLassen: True
+          badezimmerEingeschaltetLassen: True  
                  
   - alias: "Kodi Wohnzimmer - Nächster Titel"
     id: "kodi_wohnzimmer_naechster_titel"

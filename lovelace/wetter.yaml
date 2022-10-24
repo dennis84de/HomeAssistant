@@ -74,7 +74,7 @@ cards:
     entities:
       - entity: sensor.parkplatz_temperatur
         name: Parkplatz
-      - entity: sensor.bewegungsmelder_balkon_temperatur
+      - entity: sensor.balkon_temperatur
         name: Balkon 
         
   - type: custom:mini-graph-card

@@ -150,26 +150,17 @@ script:
                 
   radios_ausschalten:
     alias: Radios ausschalten
-    sequence: 
-      - if: >-
-          {% 
-            if (states('sensor.radios_eingeschaltet') | int(0) > 1) or
-            (states('sensor.radios_eingeschaltet') | int(0) == 1 and is_state('switch.badezimmer_radio ', 'off'))
-          %}
-            True
-          {% else %}
-            False
-          {% endif %}
-        then:           
-          - service: script.radios_pausieren 
+    sequence:         
+      - service: script.radios_pausieren 
+      - choose:
+          - conditions:
+              - "{{ badezimmerEingeschaltetLassen is not defined or badezimmerEingeschaltetLassen == False }}"
+            sequence:            
+              - service: switch.turn_off
+                entity_id: group.alle_radios            
+        default:
           - service: switch.turn_off
-            entity_id: group.radios_ohne_badezimmer
-          - choose:
-              - conditions:
-                  - "{{ badezimmerEingeschaltetLassen is not defined or badezimmerEingeschaltetLassen == False }}"
-                sequence:            
-                  - service: switch.turn_off
-                    entity_id: switch.badezimmer_radio     
+            entity_id: group.radios_ohne_badezimmer        
                 
   radios_starten:
     alias: Radios abspielen
@@ -256,8 +247,8 @@ automation:
             click_type: double 
     condition:
       - "{{ is_state('switch.balkon_radio', 'on') }}"
-      - "{{ is_state('switch.wiedergabe_aktiv', 'off') }}"
-      - "{{ not is_state('media_player.radio_balkon', 'payling') }}"                    
+      - "{{ is_state('switch.wiedergabe_aktiv', 'on') }}"
+      - "{{ not is_state('media_player.radio_balkon', 'playing') }}"                    
     action:
       - service: input_boolean.turn_on
         entity_id: input_boolean.radio_balkon_aktiv

@@ -101,7 +101,9 @@ cards:
         name: Arbeitszimmer
       - entity: sensor.thermometer_kueche_battery_level        
         name: Küche
-        
+      - entity: sensor.thermometer_balkon_battery_level        
+        name: Balkon        
+                
   - type: custom:battery-state-card
     title: Bewegungsmelder
     tap_action: more-info

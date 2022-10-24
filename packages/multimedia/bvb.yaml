@@ -34,7 +34,7 @@ automation:
     action:
       - service: media_player.play_media
         data:
-          entity_id: media_player.squeezebox
+          entity_id: media_player.home_assistant
           media_content_id: http://192.168.2.75:8123/local/sounds/torhymne.mp3
           media_content_type: music
       - service: scene.create
@@ -48,7 +48,7 @@ automation:
         repeat:
           while:                  
             - condition: state
-              entity_id: media_player.squeezebox
+              entity_id: media_player.home_assistant
               state: 'playing'   
             - condition: state
               entity_id: input_boolean.bvb_tor_aktiv
@@ -63,7 +63,7 @@ automation:
     id: "bvb_torhymne_ende"
     trigger:
       - platform: state
-        entity_id: media_player.squeezebox
+        entity_id: media_player.home_assistant
         to: 'idle'          
       - platform: state
         entity_id: input_boolean.bvb_tor_aktiv
@@ -98,12 +98,12 @@ automation:
       - condition: not
         conditions:
           - condition: state
-            entity_id: media_player.squeezebox
+            entity_id: media_player.home_assistant
             state: 'playing'
     action:
       - service: media_player.play_media
         data:
-          entity_id: media_player.squeezebox
+          entity_id: media_player.home_assistant
           media_content_id: http://192.168.2.75:8123/local/sounds/heja_bvb.mp3
           media_content_type: music
 
@@ -123,22 +123,24 @@ automation:
       - condition: template
         value_template: '{{ True if "(T.B.A.)" in state_attr("calendar.borussia_dortmund", "message") else False }}'
       - condition: state
-        entity_id: media_player.squeezebox
+        entity_id: media_player.home_assistant
         state: 'playing'
     action:
       - service: media_player.media_pause
-        entity_id: media_player.squeezebox      
+        entity_id: media_player.home_assistant      
       - service: media_player.clear_playlist
         data:
-          entity_id: media_player.squeezebox        
+          entity_id: media_player.home_assistant        
           
   - alias: "BVB - Benachrichtigung Tor"
     id: "bvb_benachrichtigung_tor"
     trigger:
-      - platform: template
-        value_template: "{{ state_attr('sensor.borussia_dortmund', 'team_score') }}"
-      - platform: template
-        value_template: "{{ state_attr('sensor.borussia_dortmund', 'opponent_score') }}"        
+      - platform: state
+        entity_id: sensor.borussia_dortmund
+        attribute: team_score    
+      - platform: state
+        entity_id: sensor.borussia_dortmund
+        attribute: opponent_score                  
     condition:
       - "{{ is_state('sensor.borussia_dortmund', 'IN') }}"      
       - "{{ is_state('person.dennis', 'not_home') }}"      

@@ -103,7 +103,7 @@ automation:
         conditions:          
           - "{{ is_state('calendar.borussia_dortmund', 'off') }}"
           - "{{ True if '(T.B.A.)' in state_attr('calendar.borussia_dortmund', 'message') else False }}"
-      - "{{ is_state('media_player.squeezebox', 'playing') == False }}"
+      - "{{ is_state('media_player.home_assistant', 'playing') == False }}"
     action:
       - service: light.toggle
         entity_id: light.wohnzimmer_schrank
