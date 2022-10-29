@@ -84,8 +84,7 @@ script:
           battery: "{{ states('sensor.handy_battery_level') | int(0) }}"
           gps: 
             - !secret home_latitude
-            - !secret home_longitude
-                  
+            - !secret home_longitude                  
       - service: mqtt.publish
         data:
            topic: 'handy/location'

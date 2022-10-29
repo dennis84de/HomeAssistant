@@ -151,9 +151,9 @@ automation:
           message: >-
             {% set scoreTeam = state_attr('sensor.borussia_dortmund', 'team_score') %}
             {% set scoreOpponent = state_attr('sensor.borussia_dortmund', 'opponent_score') %}
-            
+
             {% set nameTeam = state_attr('sensor.borussia_dortmund', 'team_name') %}
             {% set nameOpponent = state_attr('sensor.borussia_dortmund', 'opponent_name') %}
-            
-            {{ nameTeam ~ ' ' ~ scoreTeam ~ ' - ' ~ scoreOpponent ~ ' ' ~ nameOpponent }}
+
+            {{ nameTeam ~ ' ' ~ scoreTeam ~ ' - ' ~ scoreOpponent ~ ' ' ~ nameOpponent }}                
  

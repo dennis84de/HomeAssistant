@@ -23,9 +23,9 @@ binary_sensor:
         friendly_name: "Nextcloud Update verfügbar"
         device_class: update
         value_template: >-
-          {% if 'beta' not in states('sensor.nextcloud_server_latest_tag') and 'rc' not in states('sensor.nextcloud_server_latest_tag') %}
+          {% if 'beta' not in states('sensor.nextcloud_server_latest_release') and 'rc' not in states('sensor.nextcloud_server_latest_release') %}
             {% set currentVersion = states('sensor.nextcloud_system_version').split('.') %}
-            {% set latestVersion = states('sensor.nextcloud_server_latest_tag').replace('v', '').split('.') %}
+            {% set latestVersion = states('sensor.nextcloud_server_latest_release').replace('v', '').split('.') %}
 
             {{ currentVersion[0] != latestVersion[0] 
               or currentVersion[1] != latestVersion[1] 
@@ -35,9 +35,9 @@ binary_sensor:
             false
           {% endif %}
         icon_template: >-
-          {% if 'beta' not in states('sensor.nextcloud_server_latest_tag') and 'rc' not in states('sensor.nextcloud_server_latest_tag') %}
+          {% if 'beta' not in states('sensor.nextcloud_server_latest_release') and 'rc' not in states('sensor.nextcloud_server_latest_release') %}
             {% set currentVersion = states('sensor.nextcloud_system_version').split('.') %}
-            {% set latestVersion = states('sensor.nextcloud_server_latest_tag').replace('v', '').split('.') %}
+            {% set latestVersion = states('sensor.nextcloud_server_latest_release').replace('v', '').split('.') %}
 
             {{ 'mdi:cog-sync' if currentVersion[0] != latestVersion[0] 
               or currentVersion[1] != latestVersion[1] 
