@@ -132,18 +132,15 @@ script:
     alias: "Wohnzimmer - Wiedergabe starten"
     sequence:
       - service: homeassistant.turn_off
-        entity_id: group.licht_fernsehen         
-      - choose:
-          - conditions:
-              - "{{ device == 'kodi' }}"             
-            sequence:
-              - service: media_player.media_play
-                entity_id: media_player.kodi_wohnzimmer
-          - conditions:
-              - "{{ device == 'computer' }}"             
-            sequence:
-              - service: media_player.media_play
-                entity_id: media_player.computer
+        entity_id: group.licht_fernsehen                   
+      - if: "{{  device == 'kodi' }}"
+        then:
+          - service: media_player.media_play
+            entity_id: media_player.kodi_wohnzimmer     
+      - if: "{{  device == 'computer' }}"
+        then:        
+          - service: media_player.media_play
+            entity_id: media_player.computer   
         
   wohnzimmer_wiedergabe_pausieren:
     alias: "Wohnzimmer - Wiedergabe pausieren"
