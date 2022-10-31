@@ -31,6 +31,23 @@ licht_fernsehen:
     - light.kueche_schrank
     - light.balkon_licht
     
+licht_baden:
+  name: Licht Baden
+  entities:
+    - light.wohnzimmer_couch
+    - light.wohnzimmer_strahler
+    - light.wohnzimmer_schrank
+    - light.arbeitszimmer_lampe
+    - light.sportzimmer_regal
+    - light.schreibtisch
+    - light.flur_vorne
+    - light.flur_hinten
+    - light.bett
+    - light.kleiderschrank
+    - light.kueche_regal
+    - light.kueche_schrank
+    - light.balkon_licht
+    
 licht_unterwegs:
   name: Licht unterwegs
   entities:

@@ -1,13 +1,3 @@
-radios:
-  name: Radios
-  entities:
-    - switch.wohnzimmer_radio
-    - switch.schlafzimmer_radio
-    - switch.flur_radio
-    - switch.badezimmer_radio
-    - switch.arbeitszimmer_radio
-    - switch.kueche_radio
-
 alle_radios:
   name: Alle Radios
   entities:
