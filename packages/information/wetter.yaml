@@ -183,7 +183,7 @@ automation:
     id: "balkontuer_schliessen"
     trigger:
       - platform: template
-        value_template: "{{ states('sensor.bewegungsmelder_balkon_temperatur') | float(0) > states('sensor.wohnzimmer_temperatur') | float(0) + 2 }}"
+        value_template: "{{ states('sensor.balkon_temperatur') | float(0) > states('sensor.wohnzimmer_temperatur') | float(0) + 2 }}"
       - platform: state
         entity_id: binary_sensor.balkontuer
         to: 'on'
@@ -191,8 +191,8 @@ automation:
           minutes: 10
     condition:       
       - "{{ states('sensor.wohnzimmer_temperatur') | float(0) > 0 }}"
-      - "{{ states('sensor.bewegungsmelder_balkon_temperatur') | float(0) > 23 }}"      
-      - "{{ states('sensor.bewegungsmelder_balkon_temperatur') | float(0) > states('sensor.wohnzimmer_temperatur') | float(0) + 2 }}"
+      - "{{ states('sensor.balkon_temperatur') | float(0) > 23 }}"      
+      - "{{ states('sensor.balkon_temperatur') | float(0) > states('sensor.wohnzimmer_temperatur') | float(0) + 2 }}"
       - condition: or
         conditions:
           - "{{ is_state('binary_sensor.balkontuer', 'on') }}"
@@ -201,7 +201,7 @@ automation:
       - service: !secret tts_service
         data:
           message: >-
-            {% set temperaturBalkon = states('sensor.bewegungsmelder_balkon_temperatur') | float(0) %}
+            {% set temperaturBalkon = states('sensor.balkon_temperatur') | float(0) %}
             {% set temperaturWohnzimmer = states('sensor.wohnzimmer_temperatur') | float(0) %}
 
             {% set difference = (temperaturBalkon - temperaturWohnzimmer) | round(default=0) %}

@@ -194,7 +194,7 @@ script:
       - choose:
           - conditions:
               - condition: numeric_state
-                entity_id: sensor.bewegungsmelder_balkon_temperatur
+                entity_id: sensor.balkon_temperatur
                 above: -5
             sequence:
               - service: switch.turn_on

@@ -39,7 +39,7 @@ template:
             true
           {% else %}
             false
-          {% endif %}        
+          {% endif %}                   
       
 entity_controller:
   radio_badezimmer:
@@ -142,7 +142,7 @@ script:
           - conditions:
               - "{{ radioBalkon is not defined or radioBalkon == True }}"              
               - "{{ now().isoweekday() == 6 or is_state('binary_sensor.arbeitstag', 'on') }}"
-              - "{{ (states('sensor.bewegungsmelder_balkon_temperatur') | int(0)) > -5 }}"                
+              - "{{ (states('sensor.balkon_temperatur') | int(0)) > -5 }}"                
               - "{{ is_state('binary_sensor.nachts', 'off') }}"
             sequence:            
               - service: switch.turn_on
