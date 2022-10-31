@@ -305,12 +305,13 @@ automation:
       - id: besuch_ende
         platform: calendar
         event: end
-        entity_id: calendar.besuch_natalie     
-    action:
+        entity_id: calendar.besuch_natalie    
+        offset: 00:05:00
+    action:      
       - if: "{{ trigger.id == 'besuch_start' }}"
         then:
           - service: input_boolean.turn_on
-            entity_id: input_boolean.besuch, input_boolean.nicht_stoeren        
+            entity_id: input_boolean.besuch, input_boolean.nicht_stoeren
         else:
           - service: input_boolean.turn_off
             entity_id: input_boolean.besuch, input_boolean.nicht_stoeren              
