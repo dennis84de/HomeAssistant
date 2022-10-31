@@ -1,0 +1,12 @@
+{
+  "domain": "here_travel_time",
+  "name": "HERE Travel Time",
+  "config_flow": true,
+  "documentation": "https://github.com/eifinger/here_travel_time_route_sensor",
+  "requirements": ["herepy==2.0.0"],
+  "codeowners": ["@eifinger"],
+  "iot_class": "cloud_polling",
+  "loggers": ["herepy"],
+  "issue_tracker": "https://github.com/eifinger/here_travel_time_route_sensor/issues",
+  "version": "1.0.0"
+}
