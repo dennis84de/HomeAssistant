@@ -20,6 +20,7 @@ emulated_hue_ids.json
 /.storage/*
 /.cloud/*
 custom_components/**/__pycache__/
+custom_components/**/json_sensors/
 .cloud/production_auth.json
 alexa_media.amazon@*
 alexa_media.pickle*
