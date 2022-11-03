@@ -67,7 +67,7 @@ sensor:
       - rainin60min
       - rainin120min
     resource: !secret regenradar_url
-    value_template: "{{ value_json.raintext }}"
+    value_template: "{{ value_json.raintext if value_json is defined else '-' }}"
     
   - platform: template
     sensors:
