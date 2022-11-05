@@ -202,7 +202,7 @@ automation:
       - platform: numeric_state
         id: 'stop'
         entity_id: sensor.kueche_temperatur
-        above: input_number.heizung_stops         
+        above: input_number.heizung_stop         
     condition:
       - condition: or
         conditions:                  
