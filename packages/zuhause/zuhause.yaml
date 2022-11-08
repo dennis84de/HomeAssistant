@@ -161,7 +161,7 @@ automation:
         tag_id: tag_flur          
     condition:    
       - condition: template
-        value_template: "{{ is_state('person.dennis', 'not_home') if trigger.id in ('schalter_flur', 'handy') else True }}"
+        value_template: "{{ not is_state('person.dennis', 'home') if trigger.id in ('schalter_flur', 'handy') else True }}"
       - condition: template
         value_template: >-
           {% set now = as_timestamp(now()) %}

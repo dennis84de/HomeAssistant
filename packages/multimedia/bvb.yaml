@@ -143,7 +143,7 @@ automation:
         attribute: opponent_score                  
     condition:
       - "{{ is_state('sensor.borussia_dortmund', 'IN') }}"      
-      - "{{ is_state('person.dennis', 'not_home') }}"      
+      - "{{ not is_state('person.dennis', 'home') }}"      
     action:
       - service: notify.telegram
         data:

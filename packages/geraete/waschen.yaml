@@ -86,7 +86,7 @@ automation:
         from: 'Stillstand'
         to: 'Waschen'
     condition:
-      - "{{ is_state('person.dennis', 'not_home') }}"
+      - "{{ not is_state('person.dennis', 'home') }}"
     action:
       - service: notify.telegram
         data:          
@@ -102,7 +102,7 @@ automation:
     action:
       - choose:
           - conditions:
-              - "{{ is_state('person.dennis', 'not_home') }}"
+              - "{{ not is_state('person.dennis', 'home') }}"
             sequence:
               - service: notify.telegram
                 data:                  
@@ -130,7 +130,7 @@ automation:
     action:
       - choose:
           - conditions:
-              - "{{ is_state('person.dennis', 'not_home') }}"
+              - "{{ not is_state('person.dennis', 'home') }}"
             sequence:
               - service: notify.telegram
                 data:                  
@@ -220,7 +220,7 @@ automation:
         from: 'Stillstand'
         to: 'Trocknen'
     condition:
-      - "{{ is_state('person.dennis', 'not_home') }}"
+      - "{{ not is_state('person.dennis', 'home') }}"
     action:
       - service: notify.telegram
         data:          
@@ -236,7 +236,7 @@ automation:
     action:
       - choose:
           - conditions:
-              - "{{ is_state('person.dennis', 'not_home') }}"
+              - "{{ not is_state('person.dennis', 'home') }}"
             sequence:
               - service: notify.telegram
                 data:                  

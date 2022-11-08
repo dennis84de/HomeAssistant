@@ -82,9 +82,9 @@ automation:
       - platform: time
         at: '7:00:00'        
     condition:
+      - "{{ not is_state('person.dennis', 'home') }}"
       - "{{ is_state('binary_sensor.nachts', 'off') }}"
-      - "{{ is_state('vacuum.staubsauger', 'docked') }}"
-      - "{{ is_state('person.dennis', 'not_home') }}"
+      - "{{ is_state('vacuum.staubsauger', 'docked') }}"      
       - "{{ is_state('input_boolean.staubsauger_automatische_reinigung', 'on') }}"
       - "{{ is_state('binary_sensor.staubsauger_reinigung_heute', 'on') }}"
       - "{{ is_state('calendar.urlaub', 'off') }}"
@@ -123,7 +123,7 @@ automation:
         entity_id: counter.staubsauger_behaelter_leeren        
       - service: input_boolean.turn_off
         entity_id: input_boolean.staubsauger_automatische_reinigung_gestartet    
-      - if: "{{ is_state('person.dennis', 'not_home') }}"
+      - if: "{{ not is_state('person.dennis', 'home') }}"
         then:
           - service: notify.telegram
             data:                  

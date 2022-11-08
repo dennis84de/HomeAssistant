@@ -4,7 +4,7 @@ binary_sensor:
       bewegungsmelder_inaktiv_unterwegs:
         friendly_name: "Bewegungmelder inaktiv - Unterwegs"
         device_class: occupancy
-        value_template: "{{ is_state('person.dennis', 'not_home') }}"
+        value_template: "{{ not is_state('person.dennis', 'home') }}"
 
 automation:
   - alias: "Alles ausschalten"
@@ -107,7 +107,7 @@ automation:
       - choose:
           - conditions:
               - "{{ is_state('group.alles_ausschalten', 'on') }}"
-              - "{{ is_state('person.dennis', 'not_home') }}"
+              - "{{ not is_state('person.dennis', 'home') }}"
             sequence:                       
               - service: notify.telegram
                 data:
@@ -118,7 +118,7 @@ automation:
       - choose:
           - conditions:
               - "{{ not is_state('alarm_control_panel.alarmo', 'armed_away') }}"
-              - "{{ is_state('person.dennis', 'not_home') }}"
+              - "{{ not is_state('person.dennis', 'home') }}"
               - "{{ is_state('vacuum.staubsauger', 'docked') }}"
             sequence:                       
               - service: notify.telegram

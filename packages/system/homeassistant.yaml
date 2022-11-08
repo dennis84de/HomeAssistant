@@ -146,7 +146,7 @@ script:
         data:
           addon: 15d21743_samba_backup
           input: restore-sensor     
-      - if: "{{ is_state('person.dennis', 'not_home') }}"
+      - if: "{{ not is_state('person.dennis', 'home') }}"
         then:
           - service: notify.telegram
             data:                  
@@ -180,7 +180,7 @@ automation:
         entity_id: update.home_assistant_core_update
         to: 'on'
     condition:
-      - "{{ is_state('person.dennis', 'not_home') }}"
+      - "{{ not is_state('person.dennis', 'home') }}"
     action:
       - service: notify.telegram
         data:
