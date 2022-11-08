@@ -273,6 +273,28 @@ automation:
     action:
       - service: script.sync_radios
             
+  - alias: 'Radio Badezimmer - Pausieren'
+    id: "radio_badezimmer_pausieren"
+    trigger:
+      - platform: state
+        entity_id: media_player.kodi_wohnzimmer
+        to: 'playing'
+      - platform: state
+        entity_id: media_player.computer
+        to: 'playing'  
+      - platform: state
+        entity_id: binary_sensor.bewegungsmelder_wohnzimmer
+        to: 'on'          
+    condition:
+      - "{{ is_state('sensor.radios_eingeschaltet', '1') }}"
+      - "{{ is_state('media_player.radio_badezimmer', 'playing') }}"
+      - condition: or
+        conditions:          
+          - "{{ is_state('binary_sensor.besuch', 'off') }}"          
+    action:
+      - service: media_player.media_pause
+        entity_id: media_player.radio_badezimmer       
+      
   - alias: 'Tür - Radios pausieren'
     id: "tuer_radios_pausieren"
     trigger:

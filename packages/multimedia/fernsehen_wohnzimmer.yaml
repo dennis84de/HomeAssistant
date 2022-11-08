@@ -410,11 +410,7 @@ automation:
       - if: "{{ is_state('input_boolean.multimedia_wohnzimmer_pausiert', 'on') }}"
         then:
           - service: input_boolean.turn_off
-            entity_id: input_boolean.multimedia_wohnzimmer_pausiert         
-      - if: "{{ is_state('media_player.radio_badezimmer', 'playing') }}"
-        then:
-          - service: media_player.media_pause
-            entity_id: media_player.radio_badezimmer                         
+            entity_id: input_boolean.multimedia_wohnzimmer_pausiert
       
 homeassistant:
   customize:
