@@ -191,3 +191,20 @@ cards:
             to: 100
           - from: "on"
             to: 25
+            
+  - type: custom:battery-state-card
+    title: Bluetooth
+    tap_action: more-info
+    sort_by_level: asc
+    color_thresholds:
+      - value: 10
+        color: "red"
+      - value: 30
+        color: "yellow"    
+    entities:
+      - entity: sensor.thermometer_wohnzimmer_battery_level   
+        name: Thermometer Wohnzimmer
+      - entity: sensor.pflanze_wohnzimmer_battery_level       
+        name: Pflanze Wohnzimmer
+      - entity: sensor.pflanze_arbeitszimmer_battery_level       
+        name: Pflanze Arbeitszimmer  

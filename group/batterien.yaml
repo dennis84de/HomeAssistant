@@ -35,3 +35,6 @@ batteriestand:
     - sensor.bewegungsmelder_kueche_battery_level
     - sensor.bewegungsmelder_balkon_battery_level
     - sensor.bewegungsmelder_wohnzimmer_battery_level
+    - sensor.thermometer_wohnzimmer_battery_level
+    - sensor.pflanze_wohnzimmer_battery_level
+    - sensor.pflanze_arbeitszimmer_battery_level
