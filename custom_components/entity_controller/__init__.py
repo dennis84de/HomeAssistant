@@ -612,7 +612,7 @@ class Model:
     def override_state_change(self, entity, old, new):
         """ State change callback for override entities """
         self.log.debug("override_state_change :: Override state change entity=%s, old=%s, new=%s" % ( entity, old, new))
-        if self.matches(new.state, self.OVERRIDE_ON_STATE) and (
+        if new and self.matches(new.state, self.OVERRIDE_ON_STATE) and (
             self.is_active()
             or self.is_active_timer()
             or self.is_idle()
@@ -622,9 +622,8 @@ class Model:
             self.update(overridden_by=entity)
             self.override()
             self.update(overridden_at=str(datetime.now()))
-        if (
-            self.matches(new.state, self.OVERRIDE_OFF_STATE)
-            and self.is_override_state_off()
+        if new and self.matches(new.state, self.OVERRIDE_OFF_STATE) and (
+            self.is_override_state_off()
             and self.is_overridden()
         ):
             self.set_context(new.context)
