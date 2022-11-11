@@ -11,13 +11,6 @@ input_boolean:
 binary_sensor:
   - platform: template
     sensors:
-      kuechenschrank_inaktiv:
-        friendly_name: "Küchenschrank inaktiv"   
-        value_template: >-
-          {% set hour = now().strftime("%H") | int(0) %}
-          
-          {{ True if (hour < 7 or hour >= 20 ) else False }}
-          
       kuechelregal_inaktiv:
         friendly_name: "Küchenregal inaktiv"    
         value_template: "{{ is_state('binary_sensor.kuechenschrank_inaktiv', 'off') }}"
