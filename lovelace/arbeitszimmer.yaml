@@ -127,14 +127,33 @@ cards:
         entity : sensor.staubsauger_reinigung_sensor
         state: "{{ ((states('sensor.staubsauger_reinigung_sensor') | int(0)) / 60 / 60) | round(2) }} Stunden"                       
           
-  - type: glance
-    title: Heizung
-    show_header_toggle: false
-    entities:
-      - entity: binary_sensor.fenster_arbeitszimmer   
-        name: Fenster
-      - entity: climate.heizung_arbeitszimmer
-        name: Heizung    
+  - type: custom:stack-in-card
+    cards:
+      - type: horizontal-stack
+        title: Pflanze
+        cards:
+          - type: custom:mini-graph-card
+            name: Feuchtigkeit
+            line_width: 3
+            animate: true
+            hour24: true
+            show:
+              fill: false
+              icon: false
+              points: false
+            entities:
+              - entity: sensor.pflanze_arbeitszimmer_feuchtigkeit
+          - type: custom:mini-graph-card
+            name: Leitfähigkeit
+            line_width: 3
+            animate: true
+            hour24: true
+            show:
+              fill: false
+              icon: false
+              points: false
+            entities:
+              - entity: sensor.pflanze_arbeitszimmer_leitfaehigkeit
               
   - type: entities
     title: Drucker
@@ -148,7 +167,18 @@ cards:
       - entity: sensor.patrone_cyan      
       
   - type: custom:layout-break  
-      
+                             
+  - type: glance
+    title: Heizung
+    show_header_toggle: false
+    entities:
+      - entity: binary_sensor.fenster_arbeitszimmer   
+        name: Fenster
+      - entity: climate.heizung_arbeitszimmer
+        name: Heizung    
+        
+  - type: custom:layout-break  
+  
   - type: entities
     title: Multimedia
     show_header_toggle: false

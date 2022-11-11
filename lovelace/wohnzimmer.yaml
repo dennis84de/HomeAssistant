@@ -81,15 +81,19 @@ cards:
       - entity: input_boolean.wiedergabe_pausieren
       - entity: cover.kodi_untertitel
       - entity: cover.fernseher_sender
-        name: Sender                         
-          
-  - type: entities
-    title: Geräte
+        name: Sender                                                                      
+        
+  - type: glance
+    title: Heizung
     show_header_toggle: false
     entities:
-      - entity: switch.wohnzimmer_radio
-        name: Radio                                                   
-  
+      - entity: binary_sensor.balkontuer
+        name: Balkontür      
+      - entity: binary_sensor.fenster_wohnzimmer
+        name: Fenster         
+      - entity: climate.heizung_wohnzimmer
+        name: Heizung        
+        
   - type: entities
     title: Computer
     show_header_toggle: false
@@ -109,8 +113,15 @@ cards:
                   - entity: switch.monitor
                     name: Monitor
                     secondary_info: last-changed                 
-      - entity: input_select.computer_ausschalten       
+      - entity: input_select.computer_ausschalten                
           
+  - type: entities
+    title: Geräte
+    show_header_toggle: false
+    entities:
+      - entity: switch.wohnzimmer_radio
+        name: Radio     
+        
   - type: glance
     title: Sensoren
     show_header_toggle: false
@@ -118,18 +129,7 @@ cards:
       - entity: binary_sensor.bewegungsmelder_wohnzimmer
         name: Bewegungsmelder
       - entity: sensor.wohnzimmer_helligkeit
-        name: Helligkeit                
-      
-  - type: glance
-    title: Heizung
-    show_header_toggle: false
-    entities:
-      - entity: binary_sensor.balkontuer
-        name: Balkontür      
-      - entity: binary_sensor.fenster_wohnzimmer
-        name: Fenster         
-      - entity: climate.heizung_wohnzimmer
-        name: Heizung        
+        name: Helligkeit              
         
   - type: custom:stack-in-card
     cards:
@@ -162,7 +162,35 @@ cards:
         entities:
           - entity: sensor.wohnzimmer_perception
             name: Klima   
-
+     
+  - type: custom:stack-in-card
+    cards:
+      - type: horizontal-stack
+        title: Pflanze
+        cards:
+          - type: custom:mini-graph-card
+            name: Feuchtigkeit
+            line_width: 3
+            animate: true
+            hour24: true
+            show:
+              fill: false
+              icon: false
+              points: false
+            entities:
+              - entity: sensor.pflanze_wohnzimmer_feuchtigkeit
+          - type: custom:mini-graph-card
+            name: Leitfähigkeit
+            line_width: 3
+            animate: true
+            hour24: true
+            show:
+              fill: false
+              icon: false
+              points: false
+            entities:
+              - entity: sensor.pflanze_wohnzimmer_leitfaehigkeit
+              
   - type: conditional
     conditions:
       - entity: device_tracker.xiaomifan

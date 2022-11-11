@@ -118,6 +118,16 @@ script:
 
                   {{ state_attr('sensor.heimnetz_offline', 'geraete') | join(', ') }}                         
                 {% endif %}
+                
+                {% set count_flowers = states('sensor.pflanzen_giessen') | int(0) -%}            
+                {% if count_flowers > 0 %}
+                  {{ "Die folgenden Pflanzen müssen gegossen werden." if count_flowers > 1 else "Die folgende Pflanze muss gegossen werden."}}
+
+                  {% for x in expand('group.pflanzen') if x.state|int(100) < 20 %}
+                    {%- if not loop.first %}, {% endif -%}
+                    {{- x.name.split(' ')[1] -}}
+                  {% endfor %}                       
+                {% endif %}
 
                 {% set count_steckdosen_offline = states('sensor.steckdosen_offline') | int(0) -%}            
                 {% if count_steckdosen_offline > 0 %}
@@ -132,9 +142,7 @@ script:
                 {% if count_battery_entities > 0 %}
                   {{ "Der Batteriestand der folgenden Geräte ist niedrig." if count_battery_entities > 1 else "Der Batteriestand des folgenden Gerätes ist niedrig."}}
 
-                  {% set entities = expand('group.batteriestand') %}
-
-                  {% for x in entities if x.state|int(100) <= min_battery_level %}
+                  {% for x in expand('group.batteriestand') if x.state|int(100) <= min_battery_level %}
                     {%- if not loop.first %}, {% endif -%}
                     {{- x.name -}}
                   {% endfor %}       
