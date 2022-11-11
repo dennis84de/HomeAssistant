@@ -153,7 +153,7 @@ cards:
     title: Luft
     show_header_toggle: false
     entities:
-      - entity: sensor.weatherbit_relative_humidity
-      - entity: sensor.weatherbit_station_pressure      
-      - entity: sensor.co2_intensity        
-      - entity: sensor.grid_fossil_fuel_percentage                 
+      - entity: sensor.weatherbit_relative_humidity             
+      - type: custom:template-entity-row
+        entity: sensor.weatherbit_station_pressure
+        state: "{{ states('sensor.weatherbit_station_pressure')| int(0) ~ ' hPa' }}"      
