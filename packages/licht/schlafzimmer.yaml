@@ -74,6 +74,30 @@ entity_controller:
       - input_boolean.bewegungsmelder_schlafzimmer_deaktiviert     
            
 automation:
+  - alias: "Schlafzimmer - Licht einschalten"
+    id: "schlafzimmer_licht_einschalten"  
+    trigger:
+      - id: schalter_schlafzimmer
+        platform: event
+        event_type: zha_event
+        event_data:
+          device_ieee: 00:15:8d:00:02:13:45:68
+          command: attribute_updated
+          args:
+            attribute_id: 0
+            attribute_name: on_off     
+            value: 1
+    condition:
+      - "{{ is_state('sensor.lichter_eingeschaltet', '0') }}"
+      - "{{ is_state('binary_sensor.schlafen_aktiv', 'on') }}"
+      - "{{ is_state('binary_sensor.wecker_aktiv', 'off') }}"
+      - "{{ is_state('binary_sensor.sonne_tagsueber', 'off') }}"        
+      - "{{ not states('media_player.kodi_schlafzimmer') in ['playing', 'paused'] }}"
+      - "{{ not states('media_player.fire_tv_schlafzimmer') in ['playing', 'paused'] }}"
+    action:
+      - service: light.turn_off
+        entity_id: light.bett
+        
   - alias: "Schlafzimmer - Licht ausschalten"
     id: "schlafzimmer_licht_ausschalten"  
     trigger:
@@ -94,6 +118,7 @@ automation:
         for:
           seconds: 2
     condition:
+      - "{{ not is_state('sensor.lichter_eingeschaltet', '0') }}"
       - "{{ is_state('binary_sensor.schlafen_aktiv', 'on') }}"
       - "{{ is_state('binary_sensor.wecker_aktiv', 'off') }}"
       - "{{ is_state('binary_sensor.sonne_tagsueber', 'off') }}"
@@ -104,7 +129,7 @@ automation:
         for:
           seconds: 2          
     action:
-      - service: script.licht_wohnung_ausschalten
+      - service: script.licht_wohnung_ausschalten     
       
   - alias: "Kleiderschrank - Licht ausschalten"
     id: "kleiderschrank_licht_ausschalten"

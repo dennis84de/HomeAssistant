@@ -5,7 +5,81 @@ binary_sensor:
         friendly_name: "Bewegungmelder inaktiv - Unterwegs"
         device_class: occupancy
         value_template: "{{ not is_state('person.dennis', 'home') }}"
+          
+script:      
+  alles_ausschalten:
+    alias: "Alles ausschalten"
+    sequence:
+      - service: script.radios_pausieren
+      - service: !secret tts_service
+        data:
+          echo: "flur"          
+          message: >-
+            {% if is_state('binary_sensor.staubsauger_reinigung_heute', 'on') and is_state('input_boolean.staubsauger_automatische_reinigung', 'on') %}
+              {% set vacuumMessage = 'Die Wohnung wird heute gesaugt.' %}
+            {% else %}
+              {% set vacuumMessage = '' %}
+            {% endif %}
 
+            {% set openWindows = expand('group.fenster')
+              | selectattr('state','eq','on') 
+              | map(attribute='name')
+              | list %}
+              
+            {% set qty = openWindows | length %}  
+            {% set p1 = 'Das folgende' if qty == 1 else 'Die folgenden' %}
+            {% set p2 = 'ist' if qty == 1 else 'sind' %}
+            {% set windowMessage = '' if qty == 0 else '{} Fenster {} geöffnet: {}.'.format(p1, p2, openWindows | join(', ')) %}
+            
+            {{ vacuumMessage }} {{ windowMessage }} Alle Geräte werden ausgeschaltet. Auf Wiedersehen.
+      - parallel:          
+          - service: homeassistant.turn_off
+            entity_id: group.alles_ausschalten            
+          - service: mqtt.publish
+            data:
+               topic: 'handy/location'
+               payload: not_home
+               retain: true              
+          - service: device_tracker.see
+            data:
+              dev_id: 'handy_gps'
+              location_name: not_home
+              source_type: gps
+              gps_accuracy: 20
+              battery: "{{ states('sensor.handy_battery_level') | int(0) }}"
+              gps: 
+                - !secret home_latitude
+                - !secret home_longitude                   
+          - service: alarmo.arm
+            data:
+              entity_id: alarm_control_panel.alarmo
+          - choose:
+              - conditions:
+                  - "{{ is_state('binary_sensor.home_office_aktiv', 'on') }}"
+                  - "{{ is_state('binary_sensor.buero_heute', 'on') }}"
+                sequence:                
+                  - service: input_number.set_value        
+                    data:
+                      entity_id: input_number.home_office_heute_gearbeitet
+                      value: >-
+                        {% set now = as_timestamp(now()) | int %}
+                        {% set last = as_timestamp(states.input_boolean.home_office_aktiv.last_changed, None) | int(0) %}
+
+                        {{ ((now - last) / 60) | int }}                  
+                  - service: input_boolean.turn_off
+                    entity_id: input_boolean.home_office_aktiv
+          - choose:
+              - conditions:          
+                  - "{{ is_state('calendar.urlaub', 'on') }}"                    
+                  - condition: template
+                    value_template: >-
+                      {% set urlaubStart = (as_timestamp(state_attr('calendar.urlaub', 'start_time'), None) | timestamp_custom('%d', True)) | int(0) %}
+                      {% set urlaubEnde = (as_timestamp(state_attr('calendar.urlaub', 'end_time'), None) | timestamp_custom('%d', True)) | int(0) %}
+
+                      {{ urlaubStart != urlaubEnde }}      
+                sequence:
+                  - service: presence_simulation.start       
+                  
 automation:
   - alias: "Alles ausschalten"
     id: alles_ausschalten
@@ -218,7 +292,7 @@ automation:
         data:
           title: "Aufenthaltsort"
           message: >-
-            {% if is_state('sensor.aufenthaltsort', 'home') %}
+            {% if is_state('sensor.aufenthaltsort', 'Home') %}
               Zu Hause
             {% else %}
               {{ states('sensor.aufenthaltsort') }} 
@@ -253,68 +327,4 @@ automation:
       - service: telegram_bot.send_message
         data:
           target: '{{ trigger.event.data.chat_id }}'
-          message: "Die Lichtsimulation wird ausgeschaltet."
-          
-script:      
-  alles_ausschalten:
-    alias: "Alles ausschalten"
-    sequence:
-      - service: script.radios_pausieren
-      - service: !secret tts_service
-        data:
-          echo: "flur"          
-          message: >-
-            {% if is_state('binary_sensor.staubsauger_reinigung_heute', 'on') and is_state('input_boolean.staubsauger_automatische_reinigung', 'on') %}
-              {% set vacuumMessage = 'Die Wohnung wird heute gesaugt.' %}
-            {% else %}
-              {% set vacuumMessage = '' %}
-            {% endif %}
-
-            {% set openWindows = expand('group.fenster')
-              | selectattr('state','eq','on') 
-              | map(attribute='name')
-              | list %}
-              
-            {% set qty = openWindows | length %}  
-            {% set p1 = 'Das folgende' if qty == 1 else 'Die folgenden' %}
-            {% set p2 = 'ist' if qty == 1 else 'sind' %}
-            {% set windowMessage = '' if qty == 0 else '{} Fenster {} geöffnet: {}.'.format(p1, p2, openWindows | join(', ')) %}
-            
-            {{ vacuumMessage }} {{ windowMessage }} Alle Geräte werden ausgeschaltet. Auf Wiedersehen.
-      - parallel:          
-          - service: homeassistant.turn_off
-            entity_id: group.alles_ausschalten            
-          - service: mqtt.publish
-            data:
-               topic: 'handy/location'
-               payload: not_home
-               retain: true                          
-          - service: alarmo.arm
-            data:
-              entity_id: alarm_control_panel.alarmo
-          - choose:
-              - conditions:
-                  - "{{ is_state('binary_sensor.home_office_aktiv', 'on') }}"
-                  - "{{ is_state('binary_sensor.buero_heute', 'on') }}"
-                sequence:                
-                  - service: input_number.set_value        
-                    data:
-                      entity_id: input_number.home_office_heute_gearbeitet
-                      value: >-
-                        {% set now = as_timestamp(now()) | int %}
-                        {% set last = as_timestamp(states.input_boolean.home_office_aktiv.last_changed, None) | int(0) %}
-
-                        {{ ((now - last) / 60) | int }}                  
-                  - service: input_boolean.turn_off
-                    entity_id: input_boolean.home_office_aktiv
-          - choose:
-              - conditions:          
-                  - "{{ is_state('calendar.urlaub', 'on') }}"                    
-                  - condition: template
-                    value_template: >-
-                      {% set urlaubStart = (as_timestamp(state_attr('calendar.urlaub', 'start_time'), None) | timestamp_custom('%d', True)) | int(0) %}
-                      {% set urlaubEnde = (as_timestamp(state_attr('calendar.urlaub', 'end_time'), None) | timestamp_custom('%d', True)) | int(0) %}
-
-                      {{ urlaubStart != urlaubEnde }}      
-                sequence:
-                  - service: presence_simulation.start                
+          message: "Die Lichtsimulation wird ausgeschaltet."         

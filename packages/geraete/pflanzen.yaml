@@ -1,45 +1,27 @@
+input_number:
+  pflanzen_warnlevel:
+    name: Warnlevel
+    min: 5
+    max: 60
+    step: 5
+
+
 sensor:    
   - platform: template
     sensors:
       pflanzen_giessen:
         friendly_name: Pflanzen gießen
         value_template: >
+          {% set flower_warn_level = states('input_number.pflanzen_warnlevel') | int(0) -%}    
           {% set pflanzenGiessen = expand('group.pflanzen')
             | map(attribute='state') | map('float', 0)
-            | select('lt', 20) | list | count %}
+            | select('lt', flower_warn_level) | list | count %}
 
           {{ pflanzenGiessen | int(0) }}          
         icon_template: >
+          {% set flower_warn_level = states('input_number.pflanzen_warnlevel') | int(0) -%}    
           {% set pflanzenGiessen = expand('group.pflanzen')
             | map(attribute='state') | map('float', 0)
-            | select('lt', 20) | list | count %}
+            | select('lt', flower_warn_level) | list | count %}
 
           {{ 'mdi:flower' if pflanzenGiessen == 0 else 'mdi:flower-outline' }} 
-              
-automation:
-  - alias: "Pflanze gießen"
-    id: "pflanze_giessen"
-    trigger:
-      - id: wohnzimmer
-        platform: numeric_state
-        entity_id: sensor.pflanze_wohnzimmer_feuchtigkeit
-        below: 20 
-      - id: arbeitszimmer
-        platform: numeric_state
-        entity_id: sensor.pflanze_arbeitszimmer_feuchtigkeit
-        below: 20         
-    condition:
-      - "{{ is_state('person.dennis', 'home') }}"
-    action:
-      - service: !secret tts_service
-        data:
-          message: >-
-            {% if trigger.id == 'wohnzimmer' %}
-              {% set zimmer = 'im Wohnzimmer' %}
-            {% elif trigger.id == 'arbeitszimmer' %}
-              {% set zimmer = 'im Arbeitszimmer' %}       
-            {% else %}
-              {% set zimmer = '' %}
-            {% endif %}
-
-            {{ "Die Pflanze " ~ zimmer ~ " muss gegossen werden." }}   

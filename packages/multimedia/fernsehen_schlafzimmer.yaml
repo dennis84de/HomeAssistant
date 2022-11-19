@@ -118,8 +118,8 @@ automation:
       - "{{ is_state('binary_sensor.schlafen_aktiv', 'on') }}"
       - condition: or
         conditions:
-          - "{{ states('media_player.kodi_schlafzimmer') in ['playing', 'paused']}}"
-          - "{{ states('media_player.fire_tv_schlafzimmer') in ['playing', 'paused']}}"
+          - "{{ states('media_player.kodi_schlafzimmer') in ['playing', 'paused'] }}"
+          - "{{ states('media_player.fire_tv_schlafzimmer') in ['playing', 'paused'] }}"
       - condition: template
         value_template: >-
           {% set now = as_timestamp(now()) | int(0) %}

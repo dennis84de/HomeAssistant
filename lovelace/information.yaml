@@ -21,7 +21,7 @@ cards:
           - entity_id: "sensor.echo_*_next_timer"
         exclude:          
           - state: "unavailable"
-            
+          
   - type: custom:layout-break
       
   - type: entities
