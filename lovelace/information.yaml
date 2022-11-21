@@ -29,40 +29,24 @@ cards:
     show_header_toggle: false
     entities:
       - entity: sensor.countdown_neuhaus
-#      - entity: person.dennis
-#        secondary_info: last-changed           
-      - type: custom:fold-entity-row
-        head:
-          entity: person.dennis
-          secondary_info: last-changed  
-          tap_action:
-            action: fire-dom-event
-            browser_mod:
-              service: browser_mod.popup
-              data:              
-                content:
-                  type: history-graph
-                  entities:          
-                    - entity: device_tracker.handy  
-                      name: Wlan
-                    - entity: device_tracker.handy_ping
-                      name: Ping
-                    - entity: device_tracker.handy_mqtt
-                      name: MQTT          
-                    - entity: device_tracker.handy_gps
-                      name: Gps             
-        group_config:
-          secondary_info: last-changed    
-        padding: 10
-        entities:      
-          - entity: device_tracker.handy  
-            name: Wlan
-          - entity: device_tracker.handy_ping
-            name: Ping
-          - entity: device_tracker.handy_mqtt
-            name: MQTT          
-          - entity: device_tracker.handy_gps
-            name: Gps          
+      - entity: person.dennis
+        secondary_info: last-changed  
+        tap_action:
+          action: fire-dom-event
+          browser_mod:
+            service: browser_mod.popup
+            data:              
+              content:
+                type: history-graph
+                entities:          
+                  - entity: device_tracker.handy  
+                    name: Wlan
+                  - entity: device_tracker.handy_ping
+                    name: Ping
+                  - entity: device_tracker.handy_mqtt
+                    name: MQTT          
+                  - entity: device_tracker.handy_gps
+                    name: Gps             
       - type: custom:template-entity-row
         entity : sensor.aufenthaltsort
         condition: "{{ not is_state('sensor.aufenthaltsort', 'Home') }}"
@@ -203,8 +187,12 @@ cards:
     entities:
       - entity: sensor.gewicht   
       - entity: sensor.bmi
-      - entity: sensor.wasser
-      - entity: sensor.fett
+      - type: custom:template-entity-row
+        entity : sensor.wasser
+        condition: "{{ states('sensor.wasser') | int(0) > 0 }}"
+      - type: custom:template-entity-row
+        entity : sensor.fett
+        condition: "{{ states('sensor.fett') | int(0) > 0 }}"
                     
   - type: custom:mini-graph-card
     name: Temperatur
