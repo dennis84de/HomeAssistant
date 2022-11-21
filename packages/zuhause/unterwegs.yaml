@@ -295,7 +295,7 @@ automation:
             {% if is_state('sensor.aufenthaltsort', 'Home') %}
               Zu Hause
             {% else %}
-              {{ states('sensor.aufenthaltsort') }} 
+              {{ state_attr('sensor.aufenthaltsort', 'street') ~ ' ' ~ state_attr('sensor.aufenthaltsort', 'street_number') }}
               {%- if states('proximity.home') | int(0) > 0 -%} 
                 {{ ' (' ~ states('proximity.home') ~ 'km von zu Hause)' }}
               {% endif %}              
