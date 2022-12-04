@@ -1,0 +1,6 @@
+personen:
+  name: Personen
+  entities:
+    - person.dennis
+    - person.natalie
+    

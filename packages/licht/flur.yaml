@@ -3,6 +3,12 @@ input_boolean:
     name: Bewegungsmelder deaktiviert    
     icon: mdi:sync-off
 
+template:
+  - binary_sensor:
+      - name: "Bewegungsmelder Flur inaktiv"
+        unique_id: bewegungsmelder_flur_inaktiv
+        state: "{{ is_state('binary_sensor.allein_zu_hause', 'off') and is_state('binary_sensor.schlafen_aktiv', 'on') }}"
+        
 entity_controller:
   bewegung_flur_vorne:
     friendly_name: "Bewegung Flur vorne"
@@ -12,7 +18,7 @@ entity_controller:
     behaviours:
       on_enter_overridden: 'off'
     overrides:
-      - binary_sensor.sonne_tagsueber
+      - binary_sensor.sonne_tagsueber      
       - binary_sensor.bewegungsmelder_inaktiv_unterwegs
       - binary_sensor.bewegungsmelder_inaktiv_staubsauger
       - input_boolean.bewegungsmelder_flur_deaktiviert
@@ -33,6 +39,7 @@ entity_controller:
       on_enter_overridden: 'off'
     overrides:
       - binary_sensor.sonne_tagsueber
+      - binary_sensor.bewegungsmelder_flur_inaktiv
       - binary_sensor.bewegungsmelder_inaktiv_unterwegs
       - binary_sensor.bewegungsmelder_inaktiv_staubsauger
       - input_boolean.bewegungsmelder_flur_deaktiviert  

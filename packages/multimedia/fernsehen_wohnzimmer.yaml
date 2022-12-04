@@ -358,6 +358,7 @@ automation:
           - "{{ is_state('media_player.kodi_wohnzimmer', 'playing') }}"
           - "{{ is_state('binary_sensor.multimedia_aktiv', 'on') }}"      
       - "{{ is_state('binary_sensor.besuch', 'off') }}"
+      - "{{ is_state('binary_sensor.allein_zu_hause', 'on') }}"
       - "{{ is_state('sensor.telefon', 'idle') }}"
       - "{{ is_state('sensor.handy', 'idle') }}"
       - "{{ is_state('input_boolean.wiedergabe_pausieren', 'on') }}"

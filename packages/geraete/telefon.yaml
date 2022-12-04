@@ -43,10 +43,9 @@ automation:
         entity_id: sensor.handy
         to: 'ringing'        
     condition:
-      - "{{ is_state('input_boolean.nicht_stoeren', 'off') }}"
-      - "{{ is_state('input_boolean.baden_aktiv', 'off') }}"
-      - "{{ is_state('binary_sensor.besuch', 'off') }}"
       - "{{ is_state('person.dennis', 'home') }}"     
+      - "{{ is_state('binary_sensor.nicht_stoeren', 'off') }}"
+      - "{{ is_state('binary_sensor.baden_aktiv', 'off') }}"      
     action:
       - service: scene.create
         data:
@@ -109,8 +108,9 @@ automation:
         to: 'dialing'
     condition:
       - "{{ is_state('person.dennis', 'home') }}"
-      - "{{ is_state('input_boolean.nicht_stoeren', 'off') }}"
-      - "{{ is_state('binary_sensor.besuch', 'off') }}"
+      - "{{ is_state('binary_sensor.allein_zu_hause', 'on') }}"
+      - "{{ is_state('binary_sensor.nicht_stoeren', 'off') }}"
+      - "{{ is_state('binary_sensor.besuch', 'off') }}"      
     action:
       - service: input_boolean.turn_on
         entity_id: input_boolean.multimedia_pausiert      

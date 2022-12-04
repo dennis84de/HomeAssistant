@@ -44,6 +44,8 @@ lovelace:
       type: module      
     - url: /hacsfiles/ha-teamtracker-card/ha-teamtracker-card.js
       type: module      
+    - url: /hacsfiles/scheduler-card/scheduler-card.js
+      type: module    
     
   dashboards:      
     lovelace-rooms:

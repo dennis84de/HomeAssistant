@@ -292,26 +292,3 @@ sensor:
             {% set heute = as_timestamp(now().replace(hour=0, minute=0, second=0)) | int(0) %}
             
             {{ 0 if start == 0 else ((start - heute) | int / 60 / 60 / 24) | int(0) }}            
-            
-automation:
-  - alias: "Besuch Natalie"
-    id: "besuch_natalie"
-    trigger:
-      - id: besuch_start
-        platform: calendar
-        event: start
-        entity_id: calendar.besuch_natalie
-        offset: -00:05:00
-      - id: besuch_ende
-        platform: calendar
-        event: end
-        entity_id: calendar.besuch_natalie    
-        offset: 00:05:00
-    action:      
-      - if: "{{ trigger.id == 'besuch_start' }}"
-        then:
-          - service: input_boolean.turn_on
-            entity_id: input_boolean.besuch, input_boolean.nicht_stoeren
-        else:
-          - service: input_boolean.turn_off
-            entity_id: input_boolean.besuch, input_boolean.nicht_stoeren              

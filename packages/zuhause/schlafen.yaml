@@ -89,12 +89,13 @@ script:
       - service: input_select.select_option
         data:
           entity_id: input_select.computer_ausschalten  
-          option: 'Ruhezustand'          
+          option: 'Ruhezustand'        
       - choose:
           - conditions:
-              - condition: state
-                entity_id: binary_sensor.fenster_schlafzimmer
-                state: 'on'
+              - condition: or
+                conditions:
+                  - "{{ is_state('binary_sensor.fenster_schlafzimmer', 'on') }}"
+                  - "{{ is_state('binary_sensor.nicht_allein_zu_hause', 'on') }}"
             sequence:
               - service: light.turn_on
                 entity_id: light.bett
@@ -104,7 +105,7 @@ script:
       - choose:
           - conditions:
               - "{{ is_state('input_boolean.schlafen_fernseher_einschalten', 'on') }}"
-              - "{{ is_state('binary_sensor.besuch', 'off') }}"
+              - "{{ is_state('binary_sensor.allein_zu_hause', 'on') }}"
             sequence:
               - service: switch.turn_on
                 entity_id: switch.watchtv_schlafzimmer   

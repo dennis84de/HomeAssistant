@@ -298,7 +298,7 @@ automation:
         
         {{ istSamstag or (istArbeitstag and (istUrlaub or istKrankheit)) }}        
     condition:
-      - "{{ trigger.id == 'schalter_badezimmer' or is_state('binary_sensor.besuch', 'off') }}"
+      - "{{ trigger.id == 'schalter_badezimmer' or is_state('binary_sensor.allein_zu_hause', 'on') }}"
       - "{{ is_state('binary_sensor.schlafen_aktiv', 'on') }}"
       - condition: or
         conditions:
@@ -323,14 +323,9 @@ automation:
         entity_id: light.bett
       - service: switch.turn_on
         entity_id: switch.computer
-      - service: switch.turn_off
-        entity_id: switch.schlafzimmer_radio         
       - service: alarmo.disarm
         data:
-          entity_id: alarm_control_panel.alarmo      
-      - service: script.radios_einschalten       
-        data:
-          radioBalkon: "{{ radioBalkonEinschalten }}"
+          entity_id: alarm_control_panel.alarmo            
       - choose:
           - conditions:
               - "{{ trigger.id != 'schalter_badezimmer' }}"                    
@@ -341,4 +336,20 @@ automation:
                   to: 'on'                       
               - service: script.aufstehen_begruessung     
         default:
-          - service: script.aufstehen_begruessung  
+          - service: script.aufstehen_begruessung   
+      - if: "{{ states('sensor.radios_eingeschaltet') | int(0) == 1 and is_state('switch.schlafzimmer_radio', 'on') }}"
+        then:             
+          - service: media_player.media_pause
+            entity_id: media_player.radio_schlafzimmer             
+          - wait_template: "{{ is_state('media_player.radio_schlafzimmer', 'paused') }}"            
+          - service: switch.turn_off
+            entity_id: switch.schlafzimmer_radio      
+          - service: script.radios_einschalten       
+            data:
+              radioBalkon: "{{ radioBalkonEinschalten }}"            
+        else:
+          - service: switch.turn_off
+            entity_id: switch.schlafzimmer_radio             
+          - service: script.radios_einschalten       
+            data:
+              radioBalkon: "{{ radioBalkonEinschalten }}"

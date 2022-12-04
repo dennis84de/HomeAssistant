@@ -53,7 +53,7 @@ entity_controller:
     overrides:
       - binary_sensor.schlafen_inaktiv
       - binary_sensor.sonne_tagsueber    
-      - binary_sensor.besuch
+      - binary_sensor.nicht_allein_zu_hause
       - binary_sensor.bewegungsmelder_inaktiv_unterwegs
       - binary_sensor.bewegungsmelder_inaktiv_staubsauger
       - input_boolean.bewegungsmelder_schlafzimmer_deaktiviert
@@ -94,8 +94,9 @@ automation:
       - "{{ is_state('binary_sensor.sonne_tagsueber', 'off') }}"        
       - "{{ not states('media_player.kodi_schlafzimmer') in ['playing', 'paused'] }}"
       - "{{ not states('media_player.fire_tv_schlafzimmer') in ['playing', 'paused'] }}"
+      - "{{ not states('media_player.tablet_schlafzimmer') in ['playing', 'paused'] }}"
     action:
-      - service: light.turn_off
+      - service: light.turn_on
         entity_id: light.bett
         
   - alias: "Schlafzimmer - Licht ausschalten"
@@ -114,7 +115,7 @@ automation:
       - id: sensor_bett
         platform: state        
         entity_id: binary_sensor.im_bett
-        to: 'on'   
+        to: 'on'
         for:
           seconds: 2
     condition:
@@ -122,7 +123,7 @@ automation:
       - "{{ is_state('binary_sensor.schlafen_aktiv', 'on') }}"
       - "{{ is_state('binary_sensor.wecker_aktiv', 'off') }}"
       - "{{ is_state('binary_sensor.sonne_tagsueber', 'off') }}"
-      - "{{ trigger.id == 'schalter_schlafzimmer' or is_state('binary_sensor.besuch', 'off') }}"                
+      - "{{ trigger.id == 'schalter_schlafzimmer' or is_state('binary_sensor.allein_zu_hause', 'on') }}"                
       - condition: state        
         entity_id: binary_sensor.im_bett
         state: 'on'   

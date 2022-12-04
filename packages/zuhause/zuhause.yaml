@@ -4,11 +4,41 @@ input_select:
     options:
       - Deaktiviert
       - Tür
-      - Handy
-      
+      - Handy      
+    
+input_boolean:
+  nicht_stoeren:
+    name: Nicht stören
+    icon: mdi:minus-circle
+    
 shell_command:
   send_position: "curl -X POST '{{ url }}?lat={{ state_attr('zone.home', 'latitude') }}&lon={{ state_attr('zone.home', 'longitude') }}&timestamp={{ as_timestamp(now()) | int(0) }}'"
 
+template:
+  - sensor:
+      - name: "Personen zu Hause"
+        unique_id: personen_zu_hause
+        state: >
+          {% set personenZuHause = expand('group.personen')
+            | selectattr('state','eq','home') 
+            | list
+            | length %}
+            
+          {{ personenZuHause }}
+          
+  - binary_sensor:
+      - name: "Allein zu Hause"
+        unique_id: allein_zu_hause
+        state: "{{ is_state('sensor.personen_zu_hause', '1') }}"
+        
+      - name: "Nicht allein zu Hause"
+        unique_id: nicht_allein_zu_hause
+        state: "{{ states('sensor.personen_zu_hause') | int(0) > 1 }}"    
+   
+      - name: "Nicht stören"
+        unique_id: nicht_stoeren        
+        state: "{{ is_state('binary_sensor.nicht_stoeren', 'on') }}"           
+    
 script:
   zu_hause:
     alias: "Zu Hause"
@@ -97,7 +127,10 @@ script:
       - delay: '00:00:15'
       - choose:
           - conditions:          
-              - "{{ is_state('binary_sensor.nachts', 'on') }}"          
+              condition: or
+              conditions:               
+                - "{{ is_state('binary_sensor.nachts', 'on') }}"
+                - "{{ is_state('binary_sensor.allein_zu_hause', 'off') }}"
             sequence:
               - service: !secret tts_service
                 data:

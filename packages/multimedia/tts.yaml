@@ -14,24 +14,18 @@ input_boolean:
 script:
   alexa_tts:
     alias: "Alexa TTS"
-    sequence:      
-      - condition: and
+    sequence:   
+      - condition: and   
         conditions:
-          - condition: state
-            entity_id: person.dennis
-            state: 'home'        
+          - "{{ is_state('person.dennis', 'home') }}"
           - condition: or
-            conditions:      
+            conditions:            
+              - "{{ override is defined and override == true }}"
               - condition: and
-                conditions:
-                  - condition: state
-                    entity_id: binary_sensor.schlafen_aktiv
-                    state: 'off'      
-                  - condition: state
-                    entity_id: input_boolean.nicht_stoeren
-                    state: 'off'                          
-              - condition: template
-                value_template: "{{ override is defined and override == true }}"
+                conditions:    
+                  - "{{ is_state('binary_sensor.schlafen_aktiv', 'off') }}"
+                  - "{{ is_state('binary_sensor.nicht_stoeren', 'off') }}"
+
       - service: notify.alexa_media
         data:
           data:
@@ -57,17 +51,16 @@ script:
   google_tts:
     alias: "Google TTS"
     sequence:
-      - condition: and
+      - condition: and   
         conditions:
-          - condition: state
-            entity_id: person.dennis
-            state: 'home'
-          - condition: state
-            entity_id: binary_sensor.schlafen_aktiv
-            state: 'off'
-          - condition: state
-            entity_id: input_boolean.nicht_stoeren
-            state: 'off'            
+          - "{{ is_state('person.dennis', 'home') }}"
+          - condition: or
+            conditions:            
+              - "{{ override is defined and override == true }}"
+              - condition: and
+                conditions:    
+                  - "{{ is_state('binary_sensor.schlafen_aktiv', 'off') }}"
+                  - "{{ is_state('binary_sensor.nicht_stoeren', 'off') }}"
       - service: tts.google_translate_say
         data:
           entity_id: media_player.home_assistant

@@ -2,6 +2,12 @@ input_boolean:
   baden_aktiv:
     name: "Baden aktiv"
         
+template:
+  - binary_sensor:       
+      - name: "Baden aktiv"
+        unique_id: baden_aktiv        
+        state: "{{ is_state('input_boolean.baden_aktiv', 'on') }}"   
+        
 automation:
   - alias: "Baden - Starten"
     id: "baden_starten"  
@@ -16,7 +22,7 @@ automation:
             click_type: single           
     condition:
       - "{{ is_state('binary_sensor.besuch', 'off') }}"
-      - "{{ is_state('input_boolean.baden_aktiv', 'off') }}"
+      - "{{ is_state('binary_sensor.baden_aktiv', 'off') }}"
       - "{{ is_state('binary_sensor.schlafen_aktiv', 'off') }}"        
     action:
       - service: !secret tts_service
@@ -48,9 +54,7 @@ automation:
           args:
             click_type: single    
     condition:
-      - condition: state
-        entity_id: input_boolean.baden_aktiv
-        state: 'on'       
+      - "{{ is_state('binary_sensor.baden_aktiv', 'on') }}"    
     action:        
       - service: !secret tts_service
         data:

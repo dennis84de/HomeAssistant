@@ -135,16 +135,6 @@ script:
         entity_id: switch.arbeitszimmer_radio, switch.computer_arbeit
       - choose:
           - conditions:
-              - condition: state
-                entity_id: climate.heizung_arbeitszimmer
-                state: 'on'
-            sequence:
-              - service: climate.set_preset_mode
-                data:
-                  entity_id: climate.heizung_arbeitszimmer
-                  preset_mode: 'comfort'
-      - choose:
-          - conditions:
               - condition: or
                 conditions:
                   - condition: state
@@ -203,13 +193,12 @@ script:
           - conditions:
               - condition: state
                 entity_id: climate.heizung_arbeitszimmer
-                attribute: preset_mode
                 state: 'heat'
             sequence:              
-              - service: climate.set_preset_mode
+              - service: climate.set_hvac_mode
                 data:
                   entity_id: climate.heizung_arbeitszimmer
-                  preset_mode: 'eco'                   
+                  hvac_mode: 'off'                    
         
 automation:
   - alias: "Home Office - Start"
@@ -347,6 +336,21 @@ automation:
             data:          
               message: "Der Computer im Arbeitszimmer wurde eingeschaltet."
      
+  - alias: "Telegram - Computer Arbeitszimmer ausschalten"
+    id: "telegram_computer_arbeitszimmer_ausschalten"
+    trigger:
+      - platform: event
+        event_type: telegram_command
+        event_data:
+          command: '/computer_arbeitszimmer_ausschalten'
+    action:
+      - service: switch.turn_off
+        entity_id: switch.computer_arbeit
+      - service: telegram_bot.send_message
+        data:
+          target: '{{ trigger.event.data.chat_id }}'
+          message: "Der Computer im Arbeitszimmer wird ausgeschaltet."         
+               
   - alias: "Home Office - Status geändert"
     id: "home_office_status_geaendert"
     trigger:

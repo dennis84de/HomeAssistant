@@ -3,14 +3,13 @@ input_boolean:
     name: "Besuch"
     icon: mdi:account-multiple   
 
-binary_sensor:
-  - platform: template
-    sensors:         
-      besuch:
-        friendly_name: "Besuch"
-        device_class: presence        
-        value_template: "{{ True if is_state('input_boolean.besuch', 'on') else False }}"
-              
+template:
+  - binary_sensor:       
+      - name: "Besuch"
+        unique_id: besuch
+        device_class: presence 
+        state: "{{ is_state('input_boolean.besuch', 'on') }}"     
+        
 automation:
   - alias: "Zu Hause - Besuch Schalter"
     id: "zu_hause_besuch_schalter"
@@ -30,3 +29,21 @@ automation:
     action:
       - service: input_boolean.toggle
         entity_id: input_boolean.besuch  
+        
+  - alias: "Natalie - Kalender"
+    id: "natalie_kalender"
+    trigger:
+      - id: home
+        platform: calendar
+        event: start
+        entity_id: calendar.besuch_natalie
+      - id: not_home
+        platform: calendar
+        event: end
+        entity_id: calendar.besuch_natalie    
+    action:      
+      - service: mqtt.publish
+        data:
+           topic: 'handy_natalie/location'
+           payload: '{{ trigger.id }}'
+           retain: true             

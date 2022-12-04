@@ -9,14 +9,14 @@ input_boolean:
 input_number:
   heizung_start:
     name: Heizung Start
-    min: 15
-    max: 20
+    min: 18
+    max: 22
     step: 1
     
   heizung_stop:
     name: Heizung Stop
-    min: 18
-    max: 23
+    min: 20
+    max: 24
     step: 1
     
 schedule:
@@ -96,7 +96,11 @@ automation:
       - platform: numeric_state
         id: 'stop'
         entity_id: sensor.wohnzimmer_temperatur
-        above: input_number.heizung_stop         
+        above: input_number.heizung_stop        
+      - platform: state
+        id: 'stop'
+        entity_id: binary_sensor.schlafen_aktiv
+        to: 'on'            
     condition:
       - condition: or
         conditions:                  
@@ -110,8 +114,11 @@ automation:
             conditions:      
               - "{{ trigger.id == 'stop' }}"
               - "{{ is_state('climate.heizung_wohnzimmer', 'on') }}"
-              - "{{ is_state('schedule.heizung', 'off') }}"
-              - "{{ states('sensor.wohnzimmer_temperatur') | float(21) > states('input_number.heizung_stop') | float(0) }}"              
+              - condition: or
+                conditions:                   
+                  - "{{ is_state('schedule.heizung', 'off') }}"
+                  - "{{ states('sensor.wohnzimmer_temperatur') | float(21) > states('input_number.heizung_stop') | float(0) }}"
+                  - "{{ is_state('binary_sensor.schlafen_aktiv', 'on') }}"
     action:
       - choose:
           - conditions:
@@ -202,7 +209,11 @@ automation:
       - platform: numeric_state
         id: 'stop'
         entity_id: sensor.kueche_temperatur
-        above: input_number.heizung_stop         
+        above: input_number.heizung_stop    
+      - platform: state
+        id: 'stop'
+        entity_id: binary_sensor.schlafen_aktiv
+        to: 'on'           
     condition:
       - condition: or
         conditions:                  
@@ -213,11 +224,14 @@ automation:
               - "{{ is_state('schedule.heizung', 'on') }}"
               - "{{ states('sensor.kueche_temperatur') | float(18) < states('input_number.heizung_start') | float(0) }}"    
           - condition: and
-            conditions:      
+            conditions:   
               - "{{ trigger.id == 'stop' }}"
-              - "{{ is_state('climate.heizung_kueche', 'on') }}"
-              - "{{ is_state('schedule.heizung', 'off') }}"
-              - "{{ states('sensor.kueche_temperatur') | float(21) > states('input_number.heizung_stop') | float(0) }}"      
+              - "{{ is_state('climate.heizung_kueche', 'on') }}"       
+              - condition: or
+                conditions:                   
+                  - "{{ is_state('schedule.heizung', 'off') }}"
+                  - "{{ states('sensor.kueche_temperatur') | float(21) > states('input_number.heizung_stop') | float(0) }}"
+                  - "{{ is_state('binary_sensor.schlafen_aktiv', 'on') }}"
     action:
       - choose:
           - conditions:
@@ -260,20 +274,20 @@ automation:
               - "{{ is_state('input_boolean.heizung_ausgeschaltet_kueche', 'off') }}"
               - "{{ is_state('climate.heizung_kueche', 'heat') }}"
             sequence:
-              - service: climate.set_preset_mode
+              - service: climate.set_hvac_mode
                 data:
                   entity_id: climate.heizung_kueche
-                  preset_mode: 'eco'
+                  hvac_mode: 'off'   
               - service: input_boolean.turn_on
                 entity_id: input_boolean.heizung_ausgeschaltet_kueche           
           - conditions:
               - "{{ trigger.id == 'close' }}"
               - "{{ is_state('input_boolean.heizung_ausgeschaltet_kueche', 'on') }}"
             sequence:
-              - service: climate.set_preset_mode
+              - service: climate.set_hvac_mode
                 data:
                   entity_id: climate.heizung_kueche
-                  preset_mode: 'comfort'
+                  hvac_mode: 'heat'   
               - service: input_boolean.turn_off
                 entity_id: input_boolean.heizung_ausgeschaltet_kueche
         
@@ -296,7 +310,11 @@ automation:
       - platform: numeric_state
         id: 'stop'
         entity_id: sensor.arbeitszimmer_temperatur
-        above: input_number.heizung_stop         
+        above: input_number.heizung_stop          
+      - platform: state
+        id: 'stop'
+        entity_id: binary_sensor.home_office_aktiv
+        to: 'off'            
     condition:      
       - condition: or
         conditions:                  
@@ -308,11 +326,14 @@ automation:
               - "{{ states('sensor.arbeitszimmer_temperatur') | float(18) < states('input_number.heizung_start') | float(0) }}"
               - "{{ is_state('binary_sensor.home_office_heute', 'on') }}"
           - condition: and
-            conditions:      
+            conditions:    
               - "{{ trigger.id == 'stop' }}"
               - "{{ is_state('climate.heizung_arbeitszimmer', 'on') }}"
-              - "{{ is_state('schedule.heizung', 'off') }}"
-              - "{{ states('sensor.arbeitszimmer_temperatur') | float(21) > states('input_number.heizung_stop') | float(0) }}"      
+              - condition: or
+                conditions:                   
+                  - "{{ is_state('schedule.heizung', 'off') }}"
+                  - "{{ states('sensor.arbeitszimmer_temperatur') | float(21) > states('input_number.heizung_stop') | float(0) }}"
+                  - "{{ is_state('binary_sensor.home_office_aktiv', 'off') }}"
     action:
       - choose:
           - conditions:
@@ -355,20 +376,20 @@ automation:
               - "{{ is_state('input_boolean.heizung_ausgeschaltet_arbeitszimmer', 'off') }}"
               - "{{ is_state('climate.heizung_arbeitszimmer', 'heat') }}"
             sequence:
-              - service: climate.set_preset_mode
+              - service: climate.set_hvac_mode
                 data:
                   entity_id: climate.heizung_arbeitszimmer
-                  preset_mode: 'eco'
+                  hvac_mode: 'off'
               - service: input_boolean.turn_on
                 entity_id: input_boolean.heizung_ausgeschaltet_arbeitszimmer           
           - conditions:
               - "{{ trigger.id == 'close' }}"
               - "{{ is_state('input_boolean.heizung_ausgeschaltet_arbeitszimmer', 'on') }}"
             sequence:
-              - service: climate.set_preset_mode
+              - service: climate.set_hvac_mode
                 data:
                   entity_id: climate.heizung_arbeitszimmer
-                  preset_mode: 'comfort'
+                  hvac_mode: 'heat'   
               - service: input_boolean.turn_off
                 entity_id: input_boolean.heizung_ausgeschaltet_arbeitszimmer
         
@@ -404,7 +425,7 @@ automation:
           - condition: and
             conditions:      
               - "{{ trigger.id == 'stop' }}"
-              - "{{ is_state('climate.heizung_badezimmer', 'on') }}"
+              - "{{ is_state('climate.heizung_badezimmer', 'heat') }}"
               - "{{ is_state('schedule.heizung', 'off') }}"
               - "{{ states('sensor.badezimmer_temperatur') | float(21) > states('input_number.heizung_stop') | float(0) }}"      
     action:
