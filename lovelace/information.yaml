@@ -23,7 +23,7 @@ cards:
           - state: "unavailable"
           
   - type: custom:layout-break
-      
+
   - type: entities
     title: Infos
     show_header_toggle: false

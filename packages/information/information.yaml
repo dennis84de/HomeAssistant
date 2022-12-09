@@ -12,7 +12,7 @@ template:
           - sensor.echo_flur_next_timer
           - sensor.echo_badezimmer_next_timer
           - sensor.echo_schlafzimmer_next_timer
-          - sensor.echo_kueche_next_timer
+          - sensor.echo_kuche_next_timer
     binary_sensor:
       - name: "Timer aktiv"
         state: >-
@@ -20,7 +20,7 @@ template:
             not is_state('sensor.echo_flur_next_timer', 'unavailable') or
             not is_state('sensor.echo_badezimmer_next_timer', 'unavailable') or
             not is_state('sensor.echo_schlafzimmer_next_timer', 'unavailable') or
-            not is_state('sensor.echo_kueche_next_timer', 'unavailable') 
+            not is_state('sensor.echo_kuche_next_timer', 'unavailable') 
           %}
             True
           {% else %}

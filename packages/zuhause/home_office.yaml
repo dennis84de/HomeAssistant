@@ -3,6 +3,10 @@ timer:
     name: "Home Office beenden"
     duration: 7
              
+  headset_aufladen:
+    name: "Headset aufladen"
+    duration: "01:00:00"
+    
 input_boolean:
   home_office:
     name: Home Office    
@@ -158,21 +162,25 @@ script:
     alias: 'Home Office - Ende'
     sequence:
       - service: input_boolean.turn_off
-        entity_id: input_boolean.home_office_aktiv
+        entity_id: input_boolean.home_office_aktiv, input_boolean.home_office_musik_pausiert, input_boolean.home_office_pause
       - service: switch.turn_off
         entity_id: switch.arbeitszimmer_radio, switch.computer_arbeit
       - service: input_number.set_value        
         data:
           entity_id: input_number.home_office_heute_gearbeitet
           value: 0             
-      - service: switch.turn_on
-        entity_id: switch.computer, switch.watchtv_wohnzimmer
+      - if: "{{ is_state('input_select.computer_arbeit_ausschalten', 'Herunterfahren') }}"
+        then:          
+          - service: switch.turn_on
+            entity_id: switch.arbeitszimmer_ladegerat
+          - service: timer.start
+            entity_id: timer.headset_aufladen
       - service: input_select.select_option
         data:
-          entity_id: input_select.computer_ausschalten  
+          entity_id: input_select.computer_arbeit_ausschalten  
           option: 'Ruhezustand'          
-      - service: input_boolean.turn_off
-        entity_id: input_boolean.home_office_pause      
+      - service: switch.turn_on
+        entity_id: switch.computer, switch.watchtv_wohnzimmer              
       - choose:
           - conditions:
               - condition: state
@@ -474,3 +482,16 @@ automation:
         default:          
           - service: input_boolean.turn_off
             entity_id: input_boolean.home_office_pause
+                                
+  - alias: "Home Office - Headset aufgeladen"
+    id: "home_office_headset_aufgeladen"    
+    trigger:
+      - platform: event
+        event_type: timer.finished
+        event_data:
+          entity_id: timer.headset_aufladen    
+    condition:           
+      - "{{ is_state('switch.arbeitszimmer_ladegerat', 'on') }}"      
+    action:
+      - service: switch.turn_off
+        entity_id: switch.arbeitszimmer_ladegerat

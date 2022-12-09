@@ -53,7 +53,7 @@ sensor:
         value_template: >-
           {% set alarmSensor = states('sensor.tablet_schlafzimmer_next_alarm') %}
 
-          {% if alarmSensor == 'unavailable' %}
+          {% if alarmSensor in ['unavailable', 'unknown'] %}
             -
           {% else %}
             {{ as_timestamp(alarmSensor, None) | timestamp_custom("%H:%M", True) }}
@@ -65,7 +65,7 @@ sensor:
         value_template: >-
           {% set alarmSensor = states('sensor.tablet_schlafzimmer_next_alarm') %}
 
-          {% if alarmSensor == 'unavailable' %}
+          {% if alarmSensor in ['unavailable', 'unknown'] %}
             -
           {% else %}
             {% set weekday = as_timestamp(alarmSensor, None) | timestamp_custom("%w", True) | int(0) %}
@@ -100,7 +100,28 @@ script:
             {% set uhrzeitSatz = as_timestamp(now()) | timestamp_custom('%H:%M') %}         
              
             {{ 'Guten Morgen. Es ist ' ~ uhrzeitSatz ~ ' Uhr. Du hast ' ~ schlafenSatz ~ ' geschlafen.' }}      
-                                   
+                                                                     
+            {% set tageBisGeburtstag = states('sensor.geburtstag_natalie') | int(0) %}
+            {% set tagGeburtstag = (as_timestamp(state_attr('sensor.geburtstag_natalie', 'date')) | timestamp_custom("%d", True)) | int(0) %}
+            {% set tagHeute = (as_timestamp(now()) | timestamp_custom("%d", True)) | int(0) %}
+            {% set geburtstagSatz = '' %}
+            
+            {% if tageBisGeburtstag >= 30 and tagGeburtstag == tagHeute %}
+              {% set monatGeburtstag = (as_timestamp(state_attr('sensor.geburtstag_natalie', 'date')) | timestamp_custom("%m", True)) | int(0) %}
+              {% set monatHeute = (as_timestamp(now()) | timestamp_custom("%m", True)) | int(0) %}
+              {% set monateDifferenz = (monatGeburtstag - monatHeute) %}
+
+              {% set geburtstagSatz = ('einem Monat' if (monateDifferenz == 1) else monateDifferenz ~ ' Monaten') %}
+            {% elif tageBisGeburtstag < 7 %}
+              {% set geburtstagSatz = ('einem Tag' if (tageBisGeburtstag == 1) else tageBisGeburtstag ~ ' Tagen') %}
+            {% elif tageBisGeburtstag % 7 == 0 %}
+              {% set geburtstagSatz = ('einer Woche' if (tageBisGeburtstag == 7) else (tageBisGeburtstag / 7 ) | int(0) ~ ' Wochen') %}
+            {% endif %}                                   
+                        
+            {% if geburtstagSatz %}
+              {{ 'Natalie hat in ' ~ geburtstagSatz ~ ' Geburtstag.' }}
+            {% endif %}
+                                             
             {% set bueroHeute = is_state('binary_sensor.buero_heute', 'on') %}           
             {% if bueroHeute %}
               {% set temperatur = states('sensor.parkplatz_temperatur') |int %}

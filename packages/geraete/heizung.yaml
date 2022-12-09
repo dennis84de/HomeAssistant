@@ -58,23 +58,22 @@ schedule:
       - from: "17:00:00"
         to: "20:00:00"
         
-binary_sensor:
-  - platform: template
-    sensors:
-      heizung_arbeitszimmer_batterie:
-        friendly_name: Arbeitszimmer
+template:
+  - binary_sensor:
+      - name: "Heizung Arbeitszimmer Batterie"
+        unique_id: "heizung_arbeitszimmer_batterie"
         device_class: battery
-        value_template: "{{ state_attr('climate.heizung_arbeitszimmer', 'battery_low') }}"
+        state: "{{ state_attr('climate.heizung_arbeitszimmer', 'battery_low') }}"
+    
+      - name: "Heizung Badezimmer Batterie"
+        unique_id: "heizung_badezimmer_batterie"
+        device_class: battery
+        state: "{{ state_attr('climate.heizung_badezimmer', 'battery_low') }}"
         
-      heizung_badezimmer_batterie:
-        friendly_name: Badezimmer
+      - name: "Heizung Küche Batterie"
+        unique_id: "heizung_kueche_batterie"
         device_class: battery
-        value_template: "{{ state_attr('climate.heizung_badezimmer', 'battery_low') }}"
-        
-      heizung_kueche_batterie:
-        friendly_name: Küche
-        device_class: battery
-        value_template: "{{ state_attr('climate.heizung_kueche', 'battery_low') }}"
+        state: "{{ state_attr('climate.heizung_kueche', 'battery_low') }}"
 
 automation:
   - alias: "Heizung Wohnzimmer"
@@ -113,7 +112,7 @@ automation:
           - condition: and
             conditions:      
               - "{{ trigger.id == 'stop' }}"
-              - "{{ is_state('climate.heizung_wohnzimmer', 'on') }}"
+              - "{{ is_state('climate.heizung_wohnzimmer', 'heat') }}"
               - condition: or
                 conditions:                   
                   - "{{ is_state('schedule.heizung', 'off') }}"
@@ -226,7 +225,7 @@ automation:
           - condition: and
             conditions:   
               - "{{ trigger.id == 'stop' }}"
-              - "{{ is_state('climate.heizung_kueche', 'on') }}"       
+              - "{{ is_state('climate.heizung_kueche', 'heat') }}"       
               - condition: or
                 conditions:                   
                   - "{{ is_state('schedule.heizung', 'off') }}"
@@ -328,7 +327,7 @@ automation:
           - condition: and
             conditions:    
               - "{{ trigger.id == 'stop' }}"
-              - "{{ is_state('climate.heizung_arbeitszimmer', 'on') }}"
+              - "{{ is_state('climate.heizung_arbeitszimmer', 'heat') }}"
               - condition: or
                 conditions:                   
                   - "{{ is_state('schedule.heizung', 'off') }}"

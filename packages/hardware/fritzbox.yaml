@@ -7,7 +7,7 @@ input_text:
           
 sensor:    
   - platform: template
-    sensors:
+    sensors:     
       gaeste_wlan_ssid:
         friendly_name: "Gäste-Wlan SSID"
         value_template: "{{ states('input_text.guest_wifi_ssid') }}"
