@@ -22,7 +22,7 @@ cards:
                 
   - type: conditional
     view_layout:
-      column: 1  
+      column: 2
     conditions:
       - entity: sensor.formel1_datum
         state_not: "-"
@@ -37,7 +37,7 @@ cards:
         
   - type: conditional
     view_layout:
-      column: 1  
+      column: 2
     conditions:
       - entity: sensor.dfb_spiel
         state_not: "-"
@@ -50,34 +50,6 @@ cards:
         - entity: sensor.dfb_datum
         - entity: sensor.dfb_uhrzeit
         - entity: sensor.dfb_ort        
-        
-  - type: entities
-    view_layout:
-      column: 2  
-    title: SpaceX
-    show_header_toggle: false
-    entities:
-      - entity: sensor.next_launch_rocket
-        name: Rakete
-      - entity: sensor.next_launch_mission
-        name: Mission
-      - entity: sensor.next_launch_day_de
-        name: Datum
-      - entity: sensor.next_launch_time_de
-        name: Uhrzeit
-      - entity: sensor.next_launch_site
-        name: Startplatz
-
-  - type: entities
-    view_layout:
-      column: 2  
-    title: Starman
-    show_header_toggle: false
-    entities:
-      - entity: sensor.starman_distance
-        name: Entfernung
-      - entity: sensor.starman_speed 
-        name: Geschwindigkeit    
 
   - type: custom:atomic-calendar-revive
     view_layout:

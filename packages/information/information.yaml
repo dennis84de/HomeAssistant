@@ -115,19 +115,6 @@ sensor:
     sources: 
       - country: "DE"
         state: "NW"
-
-  - platform: template
-    sensors:          
-      next_launch_day_de:
-        friendly_name: 'Nächster Start - Datum'
-        icon_template: mdi:calendar
-        value_template: '{{ state_attr("sensor.next_launch_day", "launch_date_unix") | int(0) | timestamp_custom("%d.%m.%Y")}}'
-
-      next_launch_time_de:
-        friendly_name: 'Nächster Start - Uhrzeit'
-        value_template: '{{ state_attr("sensor.next_launch_day", "launch_date_unix") | int(0) | timestamp_custom("%H:%M")}}'
-        icon_template: mdi:clock-outline
-        unit_of_measurement: 'Uhr'          
     
 automation:
   - alias: "Neue E-Mail"
