@@ -138,16 +138,9 @@ cards:
   - type: glance
     title: Sensoren
     show_header_toggle: false
-    entities:   
-      - entity: sensor.schlafzimmer_helligkeit
-        name: Helligkeit
-      - entity: binary_sensor.im_bett      
-             
-  - type: entities
-    title: Heizung
-    show_header_toggle: false
-    entities:
+    entities:        
       - entity: binary_sensor.fenster_schlafzimmer   
         name: Fenster
-      
-
+      - entity: binary_sensor.im_bett           
+      - entity: sensor.schlafzimmer_helligkeit
+        name: Helligkeit        

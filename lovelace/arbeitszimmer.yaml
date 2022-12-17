@@ -95,6 +95,8 @@ cards:
     entities:
       - entity: binary_sensor.bewegungsmelder_arbeitszimmer
         name: Bewegungsmelder
+      - entity: binary_sensor.fenster_arbeitszimmer   
+        name: Fenster        
       - entity: sensor.arbeitszimmer_helligkeit
         name: Helligkeit
         
@@ -126,7 +128,24 @@ cards:
       - type: custom:template-entity-row
         entity : sensor.staubsauger_reinigung_sensor
         state: "{{ ((states('sensor.staubsauger_reinigung_sensor') | int(0)) / 60 / 60) | round(2) }} Stunden"                       
-          
+                                      
+  - type: thermostat
+    entity: climate.heizung_arbeitszimmer
+    name: Heizung              
+              
+  - type: entities
+    title: Drucker
+    show_header_toggle: false
+    entities:      
+      - entity: button.drucker
+      - entity: sensor.patrone_schwarz
+      - entity: sensor.patrone_photoschwarz
+      - entity: sensor.patrone_magenta
+      - entity: sensor.patrone_gelb
+      - entity: sensor.patrone_cyan      
+      
+  - type: custom:layout-break        
+  
   - type: custom:stack-in-card
     cards:
       - type: horizontal-stack
@@ -154,30 +173,6 @@ cards:
               points: false
             entities:
               - entity: sensor.pflanze_arbeitszimmer_leitfaehigkeit
-              
-  - type: entities
-    title: Drucker
-    show_header_toggle: false
-    entities:      
-      - entity: button.drucker
-      - entity: sensor.patrone_schwarz
-      - entity: sensor.patrone_photoschwarz
-      - entity: sensor.patrone_magenta
-      - entity: sensor.patrone_gelb
-      - entity: sensor.patrone_cyan      
-      
-  - type: custom:layout-break  
-                             
-  - type: glance
-    title: Heizung
-    show_header_toggle: false
-    entities:
-      - entity: binary_sensor.fenster_arbeitszimmer   
-        name: Fenster
-      - entity: climate.heizung_arbeitszimmer
-        name: Heizung    
-        
-  - type: custom:layout-break  
   
   - type: entities
     title: Multimedia

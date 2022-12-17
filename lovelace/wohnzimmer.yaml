@@ -76,27 +76,23 @@ cards:
     title: Multimedia
     show_header_toggle: false
     entities:
+      - entity: switch.wohnzimmer_radio
+        name: Radio           
       - entity: switch.watchtv_wohnzimmer
       - entity: input_boolean.musik_ausschalten
       - entity: input_boolean.wiedergabe_pausieren
       - entity: cover.kodi_untertitel
       - entity: cover.fernseher_sender
         name: Sender                                                                      
-        
-  - type: glance
-    title: Heizung
-    show_header_toggle: false
-    entities:
-      - entity: binary_sensor.balkontuer
-        name: Balkontür      
-      - entity: binary_sensor.fenster_wohnzimmer
-        name: Fenster         
-      - entity: climate.heizung_wohnzimmer
-        name: Heizung        
-        
+                
+  - type: thermostat
+    entity: climate.heizung_wohnzimmer
+    name: Heizung         
+                       
   - type: entities
     title: Computer
     show_header_toggle: false
+    view_layout:
     entities:
       - entity: switch.computer        
         tap_action:
@@ -113,24 +109,21 @@ cards:
                   - entity: switch.monitor
                     name: Monitor
                     secondary_info: last-changed                 
-      - entity: input_select.computer_ausschalten                
-          
-  - type: entities
-    title: Geräte
-    show_header_toggle: false
-    entities:
-      - entity: switch.wohnzimmer_radio
-        name: Radio     
-        
+      - entity: input_select.computer_ausschalten                     
+                 
   - type: glance
     title: Sensoren
     show_header_toggle: false
-    entities:     
+    view_layout:
+      column: 3    
+    entities:
+      - entity: binary_sensor.balkontuer
+        name: Balkontür      
+      - entity: binary_sensor.fenster_wohnzimmer
+        name: Fenster      
       - entity: binary_sensor.bewegungsmelder_wohnzimmer
-        name: Bewegungsmelder
-      - entity: sensor.wohnzimmer_helligkeit
-        name: Helligkeit              
-        
+        name: Bewegungsmelder        
+
   - type: custom:stack-in-card
     cards:
       - type: horizontal-stack
@@ -162,8 +155,10 @@ cards:
         entities:
           - entity: sensor.wohnzimmer_perception
             name: Klima   
-     
+           
   - type: custom:stack-in-card
+    view_layout:
+      column: 3    
     cards:
       - type: horizontal-stack
         title: Pflanze

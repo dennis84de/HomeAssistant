@@ -38,6 +38,19 @@ cards:
           source: true
           progress: true     
 
+  - type: thermostat
+    entity: climate.heizung_badezimmer
+    name: Heizung
+
+  - type: entities
+    title: Licht
+    show_header_toggle: false
+    entities:
+      - entity: light.badezimmerschrank
+
+  - type: custom:layout-break  
+
+     
   - type: glance
     title: Sensoren
     show_header_toggle: false
@@ -49,17 +62,3 @@ cards:
       - entity: sensor.badezimmer_helligkeit
         name: Helligkeit
         
-  - type: entities
-    title: Licht
-    show_header_toggle: false
-    entities:
-      - entity: light.badezimmerschrank
-
-  - type: custom:layout-break  
-  
-  - type: entities
-    title: Heizung
-    show_header_toggle: false
-    entities:
-      - entity: climate.heizung_badezimmer
-        name: Heizung
