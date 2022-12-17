@@ -5,23 +5,32 @@ layout:
   width: 400
   max_cols: 3
 cards:    
-  - type: conditional
+  - type: custom:auto-entities
     view_layout:
-      column: 1
-    conditions:
-      - entity: binary_sensor.timer_aktiv
-        state: 'on'
+      column: 1  
+    show_empty: false
     card:
-      type: custom:auto-entities
-      card:
-        type: entities
-        title: Timer
-      filter:
-        include:
-          - entity_id: "sensor.echo_*_next_timer"
-        exclude:          
-          - state: "unavailable"
-          
+      type: entities
+      title: Timer
+    filter:
+      include:
+        - entity_id: "sensor.echo_*_next_timer"
+      exclude:          
+        - state: "unavailable"
+
+  - type: custom:auto-entities
+    view_layout:
+      column: 1  
+    show_empty: false
+    card:
+      type: entities
+      title: Erinnerung
+    filter:
+      include:
+        - entity_id: "sensor.echo_*_next_reminder"
+      exclude:          
+        - state: "unavailable"
+
   - type: custom:layout-break
 
   - type: entities

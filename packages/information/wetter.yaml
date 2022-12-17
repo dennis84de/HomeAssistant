@@ -75,11 +75,14 @@ sensor:
         friendly_name: 'Wetterlage'
         icon_template: mdi:weather-windy-variant
         value_template: >
-          {% if states('sensor.weatherbit_snow') | int(0) > 0 %} Schnee
-          {% elif ((state_attr('sensor.weatherbit_forecast_day_1', 'temperature') | int(0) < 4) and (states('sensor.weatherbit_dew_point') | int(0) < 6)
+          {% if states('sensor.weatherbit_snow') | int(0) > 0 %}
+            Schnee
+          {% elif ((state_attr('sensor.weatherbit_forecast_day_1', 'native_temperature') | int(0) < 4) and (states('sensor.weatherbit_dew_point') | int(0) < 6)
             and (states('sensor.weatherbit_wind_speed') | int(0) < 12) and (states('sensor.weatherbit_cloud_coverage') | int(0) < 20)
-            and (states('sensor.weatherbit_relative_humidity') | int(0) > 50)) %} Frost
-          {% elif (states('sensor.weatherbit_precipitation') | int(0) > 7) %} Regen
+            and (states('sensor.weatherbit_relative_humidity') | int(0) > 50)) %}
+            Frost
+          {% elif (states('sensor.weatherbit_precipitation') | int(0) > 7) %}
+            Regen
           {% else %} Klar {% endif %}
 
       tageszeit:
@@ -258,10 +261,6 @@ automation:
                         {%endif%}                        
                       {%- endfor -%}              
                     {% endif %}
-              - service: telegram_bot.send_photo
-                data:
-                  caption: 'Kamera'
-                  url: 'http://192.168.2.75:8123/api/camera_proxy/camera.dortmund?token={{ state_attr("camera.dortmund", "access_token") }}'
 
         default:      
           - service: !secret tts_service

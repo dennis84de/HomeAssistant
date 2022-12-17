@@ -109,7 +109,7 @@ cards:
       - name: Name
         prop: name
       - attr: last_seen
-        name: Last Seen            
+        name: Zuletzt online           
       - attr: available
         id: available
         modify: x || "false"
@@ -139,9 +139,7 @@ cards:
               green: 0
               yellow: 40
               red: 80
-
-  - type: custom:layout-break
-  
+                  
   - type: entities
     title: Watchman
     show_header_toggle: false
@@ -194,8 +192,6 @@ cards:
                     {%- endfor %}       
                   {% endif %}   
       
-  - type: custom:layout-break
-
   - type: entities
     title: Steckdosen
     show_header_toggle: false
@@ -210,9 +206,7 @@ cards:
       - entity: binary_sensor.healthchecks_home_assistant  
       - entity: binary_sensor.healthchecks_diskstation        
       - entity: binary_sensor.uptime_robot_nextcloud        
-      - entity: binary_sensor.healthchecks_djaeschke      
-      
-  - type: custom:layout-break
+      - entity: binary_sensor.healthchecks_djaeschke            
   
   - type: entities
     title: Nextcloud

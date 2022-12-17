@@ -1,3 +1,7 @@
+notify:
+  - platform: alexa_media
+    name: Alexa
+    
 input_boolean:
   alexa_witz_gestartet:
     name: Alexa Witz - Gestartet
@@ -7,9 +11,102 @@ counter:
   alexa_witz_status:
     name: Alexa Witz - Statusänderungen    
     initial: 0
-    step: 1      
-        
+    step: 1           
+                                   
+script:
+  alexa_tts:
+    alias: "Alexa TTS"
+    sequence:   
+      - condition: and   
+        conditions:
+          - "{{ is_state('person.dennis', 'home') }}"
+          - condition: or
+            conditions:            
+              - "{{ override is defined and override == true }}"
+              - condition: and
+                conditions:    
+                  - "{{ is_state('binary_sensor.schlafen_aktiv', 'off') }}"
+                  - "{{ is_state('binary_sensor.nicht_stoeren', 'off') }}"
+
+      - service: notify.alexa_media
+        data:
+          data:
+            type: tts
+          target: >-
+            {% set letzteBewegung = states('sensor.letzte_bewegung') %}
+
+            {% if echo is defined and echo|length %}
+              media_player.echo_{{ echo }}
+            {% elif letzteBewegung == None %}
+              media_player.echo_wohnzimmer
+            {% elif letzteBewegung == 'Flur vorne' or letzteBewegung == 'Flur hinten' or letzteBewegung == 'Arbeitszimmer' %}
+              media_player.echo_flur
+            {% elif letzteBewegung == 'Badezimmer' %}
+              media_player.echo_badezimmer
+            {% elif letzteBewegung == 'Küche' %}
+              media_player.echo_kuche
+            {% else %}
+              media_player.echo_wohnzimmer
+            {% endif %}
+          message: "{{ message }}"
+          
+  alexa_witz_gestartet:
+    alias: "Alexa Witz - Gestartet"
+    sequence:
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.alexa_witz_gestartet
+      - service: media_player.play_media
+        data:
+          entity_id: media_player.echo_wohnzimmer
+          media_content_id: Alexa.Joke.Play
+          media_content_type: sequence
+      - service: switch.turn_on
+        entity_id: switch.radios_lautlos     
+       
+  alexa_witz_beendet:
+    alias: "Alexa Witz - Beendet"
+    sequence:
+      - service: counter.reset
+        entity_id: counter.alexa_witz_status
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.alexa_witz_gestartet        
+      - service: switch.turn_off
+        entity_id: switch.radios_lautlos
+          
+  alexa_witz:
+    alias: "Alexa Witz"
+    sequence:
+      - service: media_player.play_media
+        data:          
+          entity_id: media_player.echo_{{ echo }}
+          media_content_id: Alexa.Joke.Play
+          media_content_type: sequence      
+          
 automation:
+  - alias: "Echo Wohnzimmer - Timer ausschalten"
+    id: "echo_wohnzimmer_timers_ausschalten"
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.bewegungsmelder_flur_vorne
+        to: 'on'
+      - platform: state
+        entity_id: binary_sensor.bewegungsmelder_flur_hinten
+        to: 'on'        
+    condition:
+      - condition: not
+        conditions:
+          - condition: state
+            entity_id: sensor.echo_wohnzimmer_next_timer
+            state: 'unavailable'
+      - condition: template
+        value_template: "{{ (as_timestamp(states('sensor.echo_wohnzimmer_next_timer'), None) | int(0)) < (as_timestamp(now()) | int(0)) }}"        
+    action:
+      - service: media_player.play_media
+        data:
+          entity_id: media_player.echo_wohnzimmer
+          media_content_id: 'Alarm ausschalten'
+          media_content_type: custom        
+          
   - alias: "Alexa Witz - Aktiv"
     id: "alexa_witz_aktiv"
     trigger:
@@ -57,35 +154,3 @@ automation:
         data:
           echo: badezimmer
         
-script:
-  alexa_witz_gestartet:
-    alias: "Alexa Witz - Gestartet"
-    sequence:
-      - service: input_boolean.turn_on
-        entity_id: input_boolean.alexa_witz_gestartet
-      - service: media_player.play_media
-        data:
-          entity_id: media_player.echo_wohnzimmer
-          media_content_id: Alexa.Joke.Play
-          media_content_type: sequence
-      - service: switch.turn_on
-        entity_id: switch.radios_lautlos     
-       
-  alexa_witz_beendet:
-    alias: "Alexa Witz - Beendet"
-    sequence:
-      - service: counter.reset
-        entity_id: counter.alexa_witz_status
-      - service: input_boolean.turn_off
-        entity_id: input_boolean.alexa_witz_gestartet        
-      - service: switch.turn_off
-        entity_id: switch.radios_lautlos
-          
-  alexa_witz:
-    alias: "Alexa Witz"
-    sequence:
-      - service: media_player.play_media
-        data:          
-          entity_id: media_player.echo_{{ echo }}
-          media_content_id: Alexa.Joke.Play
-          media_content_type: sequence                    

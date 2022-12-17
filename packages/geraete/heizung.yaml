@@ -26,37 +26,37 @@ schedule:
       - from: "06:00:00"
         to: "07:00:00"
       - from: "16:00:00"
-        to: "18:00:00"        
+        to: "20:00:00"        
     tuesday:
       - from: "06:00:00"
         to: "07:00:00"
       - from: "16:00:00"
-        to: "18:00:00"    
+        to: "20:00:00"    
     wednesday:
       - from: "06:00:00"
         to: "07:00:00"
       - from: "16:00:00"
-        to: "18:00:00"    
+        to: "20:00:00"    
     thursday:
       - from: "06:00:00"
         to: "07:00:00"
       - from: "16:00:00"
-        to: "18:00:00"    
+        to: "20:00:00"    
     friday:
       - from: "06:00:00"
         to: "07:00:00"
       - from: "16:00:00"
-        to: "18:00:00"    
+        to: "20:00:00"    
     saturday:
       - from: "08:00:00"
         to: "09:00:00"
       - from: "17:00:00"
-        to: "20:00:00"    
+        to: "21:00:00"    
     sunday:
       - from: "08:00:00"
         to: "09:00:00"
       - from: "17:00:00"
-        to: "20:00:00"
+        to: "21:00:00"
         
 template:
   - binary_sensor:
@@ -411,7 +411,11 @@ automation:
       - platform: numeric_state
         id: 'stop'
         entity_id: sensor.badezimmer_temperatur
-        above: input_number.heizung_stop         
+        above: input_number.heizung_stop      
+      - platform: state
+        id: 'stop'
+        entity_id: binary_sensor.schlafen_aktiv
+        to: 'on'                  
     condition:
       - condition: or
         conditions:                  
@@ -422,11 +426,14 @@ automation:
               - "{{ is_state('schedule.heizung', 'on') }}"
               - "{{ states('sensor.badezimmer_temperatur') | float(18) < states('input_number.heizung_start') | float(0) }}"    
           - condition: and
-            conditions:      
+            conditions:    
               - "{{ trigger.id == 'stop' }}"
               - "{{ is_state('climate.heizung_badezimmer', 'heat') }}"
-              - "{{ is_state('schedule.heizung', 'off') }}"
-              - "{{ states('sensor.badezimmer_temperatur') | float(21) > states('input_number.heizung_stop') | float(0) }}"      
+              - condition: or
+                conditions:                   
+                  - "{{ is_state('schedule.heizung', 'off') }}"
+                  - "{{ states('sensor.badezimmer_temperatur') | float(21) > states('input_number.heizung_stop') | float(0) }}"
+                  - "{{ is_state('binary_sensor.schlafen_aktiv', 'on') }}"             
     action:
       - choose:
           - conditions:

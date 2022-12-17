@@ -89,9 +89,7 @@ automation:
             value: 1
     condition:
       - "{{ is_state('sensor.lichter_eingeschaltet', '0') }}"
-      - "{{ is_state('binary_sensor.schlafen_aktiv', 'on') }}"
-      - "{{ is_state('binary_sensor.wecker_aktiv', 'off') }}"
-      - "{{ is_state('binary_sensor.sonne_tagsueber', 'off') }}"        
+      - "{{ is_state('binary_sensor.wecker_aktiv', 'off') }}" 
       - "{{ not states('media_player.kodi_schlafzimmer') in ['playing', 'paused'] }}"
       - "{{ not states('media_player.fire_tv_schlafzimmer') in ['playing', 'paused'] }}"
       - "{{ not states('media_player.tablet_schlafzimmer') in ['playing', 'paused'] }}"
@@ -120,9 +118,7 @@ automation:
           seconds: 2
     condition:
       - "{{ not is_state('sensor.lichter_eingeschaltet', '0') }}"
-      - "{{ is_state('binary_sensor.schlafen_aktiv', 'on') }}"
       - "{{ is_state('binary_sensor.wecker_aktiv', 'off') }}"
-      - "{{ is_state('binary_sensor.sonne_tagsueber', 'off') }}"
       - "{{ trigger.id == 'schalter_schlafzimmer' or is_state('binary_sensor.allein_zu_hause', 'on') }}"                
       - condition: state        
         entity_id: binary_sensor.im_bett

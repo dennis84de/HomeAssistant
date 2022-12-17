@@ -135,25 +135,72 @@ automation:
   - alias: "BVB - Benachrichtigung Tor"
     id: "bvb_benachrichtigung_tor"
     trigger:
-      - platform: state
+      - id: tor_dortmund
+        platform: state
         entity_id: sensor.borussia_dortmund
         attribute: team_score    
-      - platform: state
+      - id: tor_gegner
+        platform: state
         entity_id: sensor.borussia_dortmund
-        attribute: opponent_score                  
+        attribute: opponent_score         
+      - id: spiel_zuende
+        platform: state
+        entity_id: sensor.borussia_dortmund
+        to: POST
     condition:
       - "{{ is_state('sensor.borussia_dortmund', 'IN') }}"      
       - "{{ not is_state('person.dennis', 'home') }}"      
     action:
-      - service: notify.telegram
-        data:
-          title: "Tor"
-          message: >-
-            {% set scoreTeam = state_attr('sensor.borussia_dortmund', 'team_score') %}
-            {% set scoreOpponent = state_attr('sensor.borussia_dortmund', 'opponent_score') %}
+      - choose:
+          - conditions:
+              - condition: or
+                conditions:
+                  - "{{ trigger.to_state.attributes.team_score | int > (trigger.from_state.attributes.team_score | int ) }}"
+                  - "{{ trigger.to_state.attributes.opponent_score | int > (trigger.from_state.attributes.opponent_score | int ) }}"
+            sequence:           
+              - service: notify.telegram
+                data:
+                  title: >-
+                    {{ 'Tor für ' ~ 'Dortmund' if trigger.id == 'tor_dortmund' else state_attr('sensor.borussia_dortmund', 'opponent_name') }}
+                  message: >-
+                    {% set scoreTeam = state_attr('sensor.borussia_dortmund', 'team_score') %}
+                    {% set scoreOpponent = state_attr('sensor.borussia_dortmund', 'opponent_score') %}
 
-            {% set nameTeam = state_attr('sensor.borussia_dortmund', 'team_name') %}
-            {% set nameOpponent = state_attr('sensor.borussia_dortmund', 'opponent_name') %}
+                    {% set nameTeam = state_attr('sensor.borussia_dortmund', 'team_name') %}
+                    {% set nameOpponent = state_attr('sensor.borussia_dortmund', 'opponent_name') %}
 
-            {{ nameTeam ~ ' ' ~ scoreTeam ~ ' - ' ~ scoreOpponent ~ ' ' ~ nameOpponent }}                
- 
+                    {{ nameTeam ~ ' ' ~ scoreTeam ~ ' - ' ~ scoreOpponent ~ ' ' ~ nameOpponent }}             
+      - choose:
+          - conditions:
+              - condition: or
+                conditions:
+                  - "{{ trigger.to_state.attributes.team_score | int < (trigger.from_state.attributes.team_score | int ) }}"
+                  - "{{ trigger.to_state.attributes.opponent_score | int < (trigger.from_state.attributes.opponent_score | int ) }}"
+            sequence:           
+              - service: notify.telegram
+                data:
+                  title: >-
+                    {{ 'Doch kein Tor für ' ~ 'Dortmund' if trigger.id == 'tor_dortmund' else state_attr('sensor.borussia_dortmund', 'opponent_name') }}
+                  message: >-
+                    {% set scoreTeam = state_attr('sensor.borussia_dortmund', 'team_score') %}
+                    {% set scoreOpponent = state_attr('sensor.borussia_dortmund', 'opponent_score') %}
+
+                    {% set nameTeam = state_attr('sensor.borussia_dortmund', 'team_name') %}
+                    {% set nameOpponent = state_attr('sensor.borussia_dortmund', 'opponent_name') %}
+
+                    {{ nameTeam ~ ' ' ~ scoreTeam ~ ' - ' ~ scoreOpponent ~ ' ' ~ nameOpponent }}                
+      - choose:
+          - conditions:
+              - "{{ trigger.id == 'spiel_zuende' }}"
+            sequence:           
+              - service: notify.telegram
+                data:
+                  title: "Das Spiel ist zu Ende"
+                  message: >-
+                    {% set scoreTeam = state_attr('sensor.borussia_dortmund', 'team_score') %}
+                    {% set scoreOpponent = state_attr('sensor.borussia_dortmund', 'opponent_score') %}
+
+                    {% set nameTeam = state_attr('sensor.borussia_dortmund', 'team_name') %}
+                    {% set nameOpponent = state_attr('sensor.borussia_dortmund', 'opponent_name') %}
+
+                    {{ nameTeam ~ ' ' ~ scoreTeam ~ ' - ' ~ scoreOpponent ~ ' ' ~ nameOpponent }}                       
