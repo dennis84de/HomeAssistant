@@ -5,6 +5,19 @@ input_text:
   guest_wifi_password:
     name: 'Gäste Wlan - Password'
           
+binary_sensor:
+  - platform: template
+    sensors:
+      wlan_tagsueber:
+        friendly_name: 'Wlan tagsüber'        
+        value_template: >-
+          {% set istHomeOffice = is_state('binary_sensor.home_office_heute', 'on') %}
+          {% set keinArbeitstag = is_state('binary_sensor.arbeitstag', 'off') %}
+          {% set istUrlaub = is_state('calendar.urlaub', 'on') %}
+          {% set istKrank = is_state('calendar.arbeit_krank', 'on') %}
+
+          {{ True if (istHomeOffice or keinArbeitstag or istUrlaub or istKrank) else False }}  
+          
 sensor:    
   - platform: template
     sensors:     
@@ -19,7 +32,8 @@ sensor:
         icon_template: "{{ 'mdi:wifi-strength-4-lock' if is_state('switch.fritz_box_7272_wi_fi_pretty_fly_for_a_wifi', 'on') else 'mdi:wifi-strength-lock-outline' }}"
             
       heimnetz_offline:
-        friendly_name: Geräte offline
+        friendly_name: Netzwerkgeräte offline
+        unit_of_measurement: Gerät(e)
         icon_template: >
           {% set wifiOffline = expand('group.heimnetz')
             | selectattr('state','eq','not_home') 
@@ -241,9 +255,9 @@ homeassistant:
     device_tracker.tasmotawohnzimmerstrahler:
       friendly_name: Tasmota Wohnzimmer Strahler
     device_tracker.tasmotawohnzimmercouch:
-      friendly_name: Tasmota Wohnzimm Couch
+      friendly_name: Tasmota Wohnzimmer Couch
     device_tracker.tasmotawohnzimmerradio:
-      friendly_name: Tasmota Wohnzimm Radio
+      friendly_name: Tasmota Wohnzimmer Radio
     device_tracker.tasmotawohnzimmerschrank:
       friendly_name: Tasmota Wohnzimmer Strahler
     device_tracker.tasmotaarbeitszimmerlampe:

@@ -137,7 +137,7 @@ cards:
     title: Drucker
     show_header_toggle: false
     entities:      
-      - entity: button.drucker
+      - entity: switch.drucker
       - entity: sensor.patrone_schwarz
       - entity: sensor.patrone_photoschwarz
       - entity: sensor.patrone_magenta

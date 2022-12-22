@@ -3,6 +3,7 @@ sensor:
     sensors:
       steckdosen_offline:
         friendly_name: Steckdosen offline
+        unit_of_measurement: Gerät(e)
         icon_template: >
           {% set steckdosenOffline = expand('group.steckdosen')
             | selectattr('state','eq','unavailable') 

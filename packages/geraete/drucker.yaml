@@ -7,16 +7,7 @@ sensor:
       - yellow
       - magenta
       - cyan
-    
-template:
-  - button:
-      - name: Drucker
-        unique_id: 'drucker'
-        icon: mdi:printer
-        press:
-          service: switch.turn_on
-          target:
-            entity_id: switch.drucker
+
 mqtt:
   sensor:
     - name: "Patrone Schwarz"
@@ -70,6 +61,8 @@ automation:
 
 homeassistant:
   customize:
+    switch.drucker:
+      icon: mdi:printer
     sensor.patrone_schwarz:
       friendly_name: Schwarz
       entity_picture: /local/drucker/icon_ink_schwarz.png

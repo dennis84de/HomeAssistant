@@ -106,20 +106,24 @@ script:
             {% set tagHeute = (as_timestamp(now()) | timestamp_custom("%d", True)) | int(0) %}
             {% set geburtstagSatz = '' %}
             
-            {% if tageBisGeburtstag >= 30 and tagGeburtstag == tagHeute %}
+            {% if tageBisGeburtstag == 0 %}
+              {% set geburtstagSatz = 'heute' %}
+            {% elif tageBisGeburtstag == 1 %}
+              {% set geburtstagSatz = 'morgen' %}
+            {% elif tageBisGeburtstag < 7 %}
+              {% set geburtstagSatz = 'in ' ~ tageBisGeburtstag ~ ' Tagen' %}
+            {% elif tageBisGeburtstag % 7 == 0 %}
+              {% set geburtstagSatz = ('in einer Woche' if (tageBisGeburtstag == 7) else 'in ' ~ (tageBisGeburtstag / 7 ) | int(0) ~ ' Wochen') %}
+            {% elif tageBisGeburtstag >= 30 and tagGeburtstag == tagHeute %}
               {% set monatGeburtstag = (as_timestamp(state_attr('sensor.geburtstag_natalie', 'date')) | timestamp_custom("%m", True)) | int(0) %}
               {% set monatHeute = (as_timestamp(now()) | timestamp_custom("%m", True)) | int(0) %}
               {% set monateDifferenz = (monatGeburtstag - monatHeute) %}
 
-              {% set geburtstagSatz = ('einem Monat' if (monateDifferenz == 1) else monateDifferenz ~ ' Monaten') %}
-            {% elif tageBisGeburtstag < 7 %}
-              {% set geburtstagSatz = ('einem Tag' if (tageBisGeburtstag == 1) else tageBisGeburtstag ~ ' Tagen') %}
-            {% elif tageBisGeburtstag % 7 == 0 %}
-              {% set geburtstagSatz = ('einer Woche' if (tageBisGeburtstag == 7) else (tageBisGeburtstag / 7 ) | int(0) ~ ' Wochen') %}
+              {% set geburtstagSatz = ('in einem Monat' if (monateDifferenz == 1) else 'in ' ~ monateDifferenz ~ ' Monaten') %}
             {% endif %}                                   
                         
             {% if geburtstagSatz %}
-              {{ 'Natalie hat in ' ~ geburtstagSatz ~ ' Geburtstag.' }}
+              {{ 'Natalie hat ' ~ geburtstagSatz ~ ' Geburtstag.' }}
             {% endif %}
                                              
             {% set bueroHeute = is_state('binary_sensor.buero_heute', 'on') %}           

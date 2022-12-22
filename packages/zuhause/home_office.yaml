@@ -495,3 +495,8 @@ automation:
     action:
       - service: switch.turn_off
         entity_id: switch.arbeitszimmer_ladegerat
+        
+homeassistant:
+  customize:
+    switch.arbeitszimmer_monitore:
+      icon: mdi:monitor        

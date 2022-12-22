@@ -335,3 +335,7 @@ homeassistant:
   customize:
     script.sync_radios:
       icon: mdi:sync
+
+  customize_glob:
+    switch.*_radio:
+      icon: mdi:radio      

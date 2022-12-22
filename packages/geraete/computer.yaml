@@ -96,6 +96,9 @@ automation:
           
 homeassistant:
   customize:
+    switch.monitor:
+      icon: mdi:monitor
+      
     sensor.computer_generic_hard_disk_load_used_space:
       friendly_name: SSD Speicherplatz
       icon: mdi:nas

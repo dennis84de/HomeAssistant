@@ -39,7 +39,7 @@ cards:
           - type: custom:template-entity-row
             entity : sensor.raspberry_letzter_neustart
             state: "{{ as_timestamp(states('sensor.raspberry_letzter_neustart'), None) | timestamp_custom('%d.%m.%Y') | string }}"
-
+        
   - type: custom:stack-in-card
     cards:
       - type: horizontal-stack
@@ -101,7 +101,7 @@ cards:
             - type: custom:template-entity-row
               entity : sensor.computer_letzter_neustart
               state: "{{ as_timestamp(states('sensor.computer_letzter_neustart'), None) | timestamp_custom('%d.%m.%Y') | string }}"         
-
+              
   - type: 'custom:zha-network-card'    
     clickable: true
     sort_by: last_seen
@@ -115,8 +115,8 @@ cards:
         modify: x || "false"
         name: Online
       - attr: lqi
-        name: LQI
-        
+        name: LQI                  
+                          
   - type: custom:stack-in-card
     cards:
       - type: horizontal-stack        
@@ -139,10 +139,12 @@ cards:
               green: 0
               yellow: 40
               red: 80
-                  
+              
   - type: entities
-    title: Watchman
+    title: Gerätestatus
     show_header_toggle: false
+    view_layout:
+      column: 1    
     entities:      
       - entity: sensor.watchman_missing_entities
         name: Fehlende Entitäten
@@ -192,25 +194,25 @@ cards:
                     {%- endfor %}       
                   {% endif %}   
       
-  - type: entities
-    title: Steckdosen
-    show_header_toggle: false
-    entities:      
+      - entity: sensor.heimnetz_offline
       - entity: sensor.steckdosen_offline
-        name: Geräte offline      
-
+        
   - type: entities
     title: Server
     show_header_toggle: false
+    view_layout:
+      column: 1    
     entities:
       - entity: binary_sensor.healthchecks_home_assistant  
       - entity: binary_sensor.healthchecks_diskstation        
       - entity: binary_sensor.uptime_robot_nextcloud        
-      - entity: binary_sensor.healthchecks_djaeschke            
-  
+      - entity: binary_sensor.healthchecks_djaeschke           
+      
   - type: entities
     title: Nextcloud
     show_header_toggle: false
+    view_layout:
+      column: 2    
     entities:      
       - entity: sensor.nextcloud_zertifikat_tage
         name: Zertifikat
@@ -218,3 +220,4 @@ cards:
         name: Installierte Version         
       - entity: binary_sensor.nextcloud_update_available
         name: Update verfügbar  
+           

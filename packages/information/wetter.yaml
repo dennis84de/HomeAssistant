@@ -239,27 +239,27 @@ automation:
                     {% if (current_count == None or advance_count == None) or (current_count == 0 and advance_count == 0) %}
                       Aktuell liegt keine Wetterwarnung vor.
                     {% else %}
-                      {%- for i in range(current_count) -%}
-                        {% set headline = state_attr("sensor.wetterwarnungen_current_warning_level", "warning_" ~ loop.index ~ "_headline") %}
-                        {% set description = state_attr("sensor.wetterwarnungen_current_warning_level", "warning_" ~ loop.index ~ "_description") %}
-                        {% set startTime = as_timestamp(state_attr("sensor.wetterwarnungen_current_warning_level", "warning_" ~ loop.index ~ "_start"), None) %}
-                        {% set endTime = as_timestamp(state_attr("sensor.wetterwarnungen_current_warning_level", "warning_" ~ loop.index ~ "_end"), None) %}
+                      {% for i in range(current_count) %}
+                        {%- set headline = state_attr("sensor.wetterwarnungen_current_warning_level", "warning_" ~ loop.index ~ "_headline") %}
+                        {%- set description = state_attr("sensor.wetterwarnungen_current_warning_level", "warning_" ~ loop.index ~ "_description") %}
+                        {%- set startTime = as_timestamp(state_attr("sensor.wetterwarnungen_current_warning_level", "warning_" ~ loop.index ~ "_start"), None) %}
+                        {%- set endTime = as_timestamp(state_attr("sensor.wetterwarnungen_current_warning_level", "warning_" ~ loop.index ~ "_end"), None) %}
             
-                        {% if startTime < as_timestamp(now()) < endTime %}
-                          {%- if headline != None -%} {{ headline }}. {% endif -%} {%- if description != None -%} {{ description }} {% endif -%}
-                        {%endif%}           
-                      {%- endfor -%}
-
-                      {%- for i in range(advance_count) -%}
-                        {% set headline = state_attr("sensor.wetterwarnungen_advance_warning_level", "warning_" ~ loop.index ~ "_headline") %}
-                        {% set description = state_attr("sensor.wetterwarnungen_advance_warning_level", "warning_" ~ loop.index ~ "_description") %}
-                        {% set startTime = as_timestamp(state_attr("sensor.wetterwarnungen_advance_warning_level", "warning_" ~ loop.index ~ "_start"), None) %}
-                        {% set endTime = as_timestamp(state_attr("sensor.wetterwarnungen_advance_warning_level", "warning_" ~ loop.index ~ "_end"), None) %}
+                        {%- if (startTime < as_timestamp(now()) < endTime) and headline != None -%}
+                          {{ headline  ~ '. ' ~ description if description != None else '' }}    
+                        {%- endif %}    
+                      {% endfor %}   
+                      
+                      {% for i in range(advance_count) %}
+                        {%- set headline = state_attr("sensor.wetterwarnungen_advance_warning_level", "warning_" ~ loop.index ~ "_headline") %}
+                        {%- set description = state_attr("sensor.wetterwarnungen_advance_warning_level", "warning_" ~ loop.index ~ "_description") %}
+                        {%- set startTime = as_timestamp(state_attr("sensor.wetterwarnungen_advance_warning_level", "warning_" ~ loop.index ~ "_start"), None) %}
+                        {%- set endTime = as_timestamp(state_attr("sensor.wetterwarnungen_advance_warning_level", "warning_" ~ loop.index ~ "_end"), None) %}
             
-                        {% if startTime < as_timestamp(now()) < endTime %}
-                          {%- if headline != None -%} {{ headline }}. {% endif -%} {%- if description != None -%} {{ description }} {% endif -%}
-                        {%endif%}                        
-                      {%- endfor -%}              
+                        {%- if (startTime < as_timestamp(now()) < endTime) and headline != None -%}
+                          {{ headline  ~ '. ' ~ description if description != None else '' }}    
+                        {%- endif %}                        
+                      {% endfor %}  
                     {% endif %}
 
         default:      

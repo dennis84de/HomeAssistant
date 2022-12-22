@@ -292,4 +292,11 @@ automation:
       - service: telegram_bot.send_message
         data:
           target: '{{ trigger.event.data.chat_id }}'
-          message: "Der Trockner wird ausgeschaltet."                                 
+          message: "Der Trockner wird ausgeschaltet."              
+          
+homeassistant:
+  customize:
+    switch.waschmaschine:
+      icon: mdi:washing-machine
+    switch.trockner:
+      icon: mdi:tumble-dryer          
