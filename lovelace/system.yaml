@@ -11,12 +11,14 @@ cards:
     entities:
       - entity: sensor.database_size
       - entity: sensor.laufzeit_stunden
-        name: Laufzeit
+        name: Laufzeit       
       - entity: sensor.hass_installierte_version
       - entity: sensor.hass_aktuelle_version
       - entity: sensor.hacs
       - entity: script.homeassistant_neustart
         name: Neustart
+        type: "custom:secondaryinfo-entity-row"              
+        secondary_info: "Dauer: [[ sensor.neustart_dauer ]] Sekunden"                
 
   - type: entities
     title: Benachrichtigungen

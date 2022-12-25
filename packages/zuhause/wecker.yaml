@@ -112,7 +112,7 @@ script:
               {% set geburtstagSatz = 'morgen' %}
             {% elif tageBisGeburtstag < 7 %}
               {% set geburtstagSatz = 'in ' ~ tageBisGeburtstag ~ ' Tagen' %}
-            {% elif tageBisGeburtstag % 7 == 0 %}
+            {% elif tageBisGeburtstag < 30 and tageBisGeburtstag % 7 == 0 %}
               {% set geburtstagSatz = ('in einer Woche' if (tageBisGeburtstag == 7) else 'in ' ~ (tageBisGeburtstag / 7 ) | int(0) ~ ' Wochen') %}
             {% elif tageBisGeburtstag >= 30 and tagGeburtstag == tagHeute %}
               {% set monatGeburtstag = (as_timestamp(state_attr('sensor.geburtstag_natalie', 'date')) | timestamp_custom("%m", True)) | int(0) %}

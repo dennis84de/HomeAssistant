@@ -61,6 +61,7 @@ sensor:
   - platform: rest
     name: regenradar
     scan_interval: 300
+    timeout: 60
     json_attributes:
       - raintext
       - rainin30min

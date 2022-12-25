@@ -331,6 +331,24 @@ automation:
       - service: switch.turn_off
         entity_id: switch.radios_lautlos   
       
+  - alias: 'Wiedergabe Radios'
+    id: "wiedergabe_radios"
+    trigger:
+      - id: schalter_wohnzimmer
+        platform: event
+        event_type: zha_event
+        event_data:
+          device_ieee: 00:15:8d:00:02:c8:c4:8b
+          command: click
+          args:
+            click_type: single  
+    condition:      
+      - "{{ states('sensor.radios_eingeschaltet') | int(0) > 1 }}"
+      - "{{ is_state('switch.radios_lautlos', 'off') }}"
+    action:
+      - service: switch.toggle
+        entity_id: switch.wiedergabe_aktiv  
+        
 homeassistant:
   customize:
     script.sync_radios:
