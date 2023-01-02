@@ -14,12 +14,12 @@ template:
       - name: "Lichter eingeschaltet"
         unique_id: licher_einggeschaltet        
         state: >
-          {% set licherEingeschaltet = expand('group.licht_wohnung')
+          {% set lichterEingeschaltet = expand('group.licht_wohnung')
             | selectattr('state','eq','on') 
             | list
             | length %}
             
-          {{ licherEingeschaltet }}          
+          {{ lichterEingeschaltet }}          
           
 script:
   licht_wohnung_ausschalten:
