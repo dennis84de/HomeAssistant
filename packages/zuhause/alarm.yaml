@@ -9,7 +9,7 @@ script:
               - service: !secret tts_service
                 data:
                   echo: "schlafzimmer"
-                  override: true
+                  override: "{{ is_state('sensor.personen_zu_hause', '1') }}"
                   message: "Der Alarm wurde ausgelöst."                  
         default:      
           - service: notify.telegram
