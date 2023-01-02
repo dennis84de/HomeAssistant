@@ -82,6 +82,28 @@ script:
           media_content_id: Alexa.Joke.Play
           media_content_type: sequence      
           
+  alexa_radio_suedtirol_eins:
+    alias: "Alexa Radio Südtirol 1"
+    sequence:
+      - service: media_player.play_media
+        data:
+          entity_id: "media_player.echo_flur"
+          media_content_id: "Südtirol Eins auf überall"
+          media_content_type: "TUNEIN"
+    mode: single
+    icon: mdi:play    
+    
+  alexa_radio_eins_live:
+    alias: "Alexa Radio Eins Live"
+    sequence:
+      - service: media_player.play_media
+        data:
+          entity_id: "media_player.echo_flur"
+          media_content_id: "Eins Live auf überall"
+          media_content_type: "TUNEIN"
+    mode: single
+    icon: mdi:play        
+          
 automation:
   - alias: "Echo Wohnzimmer - Timer ausschalten"
     id: "echo_wohnzimmer_timers_ausschalten"
