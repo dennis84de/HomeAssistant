@@ -98,7 +98,7 @@ script:
               - condition: or
                 conditions:
                   - "{{ is_state('binary_sensor.fenster_schlafzimmer', 'on') }}"
-                  - "{{ is_state('binary_sensor.nicht_allein_zu_hause', 'on') }}"
+                  - "{{ is_state('binary_sensor.allein_zu_hause', 'off') }}"
             sequence:
               - service: light.turn_on
                 entity_id: light.bett

@@ -55,7 +55,7 @@ cards:
               icon: false
               points: false
             entities:
-              - entity: sensor.computer_intel_core_i5_8259u_temperatures_cpu_package
+              - entity: sensor.computer_intel_core_i5_10210u_temperatures_cpu_package
                 name: CPU
               - entity: sensor.computer_wdc_wd20spzx_22ua7t0_temperatures_temperature
                 name: HDD     
@@ -69,7 +69,7 @@ cards:
               icon: false
               points: false
             entities:
-              - entity: sensor.computer_intel_core_i5_8259u_load_cpu_total
+              - entity: sensor.computer_intel_core_i5_10210u_load_cpu_total
                 name: CPU
               - entity: sensor.computer_generic_memory_load_memory
                 name: RAM    
@@ -140,68 +140,129 @@ cards:
               yellow: 40
               red: 80
               
-  - type: entities
-    title: Gerätestatus
-    show_header_toggle: false
+  - type: custom:stack-in-card
     view_layout:
-      column: 1    
-    entities:      
-      - entity: sensor.watchman_missing_entities
-        name: Fehlende Entitäten
-        tap_action:
-          action: fire-dom-event
-          browser_mod:
-            service: browser_mod.popup
-            data:              
-              content:          
-                type: markdown
-                content: >-        
-                  {% if (is_state('sensor.watchman_missing_entities', '0')) %}
-                    **<font color=#c5e566>Alle Entitäten sind verfügbar.</font>**
-                  {% else %}
-                    {%- for item in state_attr("sensor.watchman_missing_entities", "entities") %}
-                      {% if loop.index > 1 %}<hr>{% endif %} <table><tr> <td>
-                      <ha-icon icon='mdi:
-                      {%- if item.state=="missing"-%}cloud-alert'
-                      {%- elif item.state=="unavail" -%}cloud-off-outline' {%- else-%}cloud-question'
-                      {%- endif -%} ></ha-icon>
-                      {{ item.id }} [{{item.state}}] <br><a title="{{item.occurrences}}">
-                      {{item.occurrences.split('/')[-1].split(':')[0]}}</a>
-                      </td></tr></table>
-                    {%- endfor %}           
-                  {% endif %}    
-                  
-      - entity: sensor.watchman_missing_services 
-        name: Fehlende Dienste          
-        tap_action:
-          action: fire-dom-event
-          browser_mod:
-            service: browser_mod.popup
-            data:              
-              content:           
-                type: markdown
-                content: >-   
-                  {% if (is_state('sensor.watchman_missing_services', '0')) %}
-                    **<font color=#c5e566>Alle Dienste sind verfügbar.</font>**
-                  {% else %}
-                    {%- for item in state_attr("sensor.watchman_missing_services", "entities") %}
-                      {% if loop.index > 1 %}<hr>{% endif %}
-                      <table><tr> <td>  
-                        <ha-icon icon='mdi:cloud-alert'></ha-icon> {{ item.id }}
-                        <br><a title="{{item.occurrences}}">{{item.occurrences.split('/')[-1].split(':')[0]}}</a>
-                      </td></tr>
-                      </table>
-                    {%- endfor %}       
-                  {% endif %}   
-      
-      - entity: sensor.heimnetz_offline
-      - entity: sensor.steckdosen_offline
+      column: 1     
+    title: Gerätestatus
+    cards:         
+      - type: custom:mini-graph-card        
+        line_width: 2
+        animate: true
+        hour24: true        
+        hours_to_show: 12
+        show:
+          fill: false
+          icon: false
+          points: false
+        entities:
+          - entity: sensor.watchman_missing_entities
+            name: Entitäten
+          - entity: sensor.watchman_missing_services
+            name: Dienste
+          - entity: sensor.heimnetz_offline
+            name: Netzwerk
+          - entity: sensor.steckdosen_offline
+            name: Steckdosen     
+      - type: entities
+        show_header_toggle: false
+        entities:      
+          - entity: sensor.watchman_missing_entities
+            name: Fehlende Entitäten
+            secondary_info: last-changed  
+            tap_action:
+              action: fire-dom-event
+              browser_mod:
+                service: browser_mod.popup
+                data:              
+                  content:          
+                    type: markdown
+                    content: >-        
+                      {% if (is_state('sensor.watchman_missing_entities', '0')) %}
+                        **<font color=#c5e566>Alle Entitäten sind verfügbar.</font>**
+                      {% else %}                                         
+                        {%- for item in state_attr("sensor.watchman_missing_entities", "entities") %}
+                          {% if loop.index > 1 %}<hr>{% endif %} <table><tr> <td>
+                          <ha-icon icon='mdi:
+                          {%- if item.state=="missing"-%}cloud-alert'
+                          {%- elif item.state=="unavail" -%}cloud-off-outline' {%- else-%}cloud-question'
+                          {%- endif -%} ></ha-icon>
+                          {{ item.id }} [{{item.state}}] <br><a title="{{item.occurrences}}">
+                          {{item.occurrences.split('/')[-1].split(':')[0]}}</a>
+                          </td></tr></table>
+                        {%- endfor %}           
+                      {% endif %}    
+
+          - entity: sensor.watchman_missing_services 
+            name: Fehlende Dienste        
+            secondary_info: last-changed  
+            tap_action:
+              action: fire-dom-event
+              browser_mod:
+                service: browser_mod.popup
+                data:              
+                  content:           
+                    type: markdown
+                    content: >-   
+                      {% if (is_state('sensor.watchman_missing_services', '0')) %}
+                        **<font color=#c5e566>Alle Dienste sind verfügbar.</font>**
+                      {% else %}                     
+                        {%- for item in state_attr("sensor.watchman_missing_services", "entities") %}
+                          {% if loop.index > 1 %}<hr>{% endif %}
+                          <table><tr><td>  
+                            <ha-icon icon='mdi:cloud-alert'></ha-icon> {{ item.id }}
+                            <br><a title="{{item.occurrences}}">{{item.occurrences.split('/')[-1].split(':')[0]}}</a>
+                          </td></tr>
+                          </table>
+                        {%- endfor %}       
+                      {% endif %}   
+
+          - entity: sensor.heimnetz_offline
+            secondary_info: last-changed  
+            tap_action:
+              action: fire-dom-event
+              browser_mod:
+                service: browser_mod.popup
+                data:              
+                  content:          
+                    type: markdown
+                    content: >-        
+                      {% if (is_state('sensor.heimnetz_offline', '0')) %}
+                        **<font color=#c5e566>Alle Netzwerkgeräte sind online.</font>**
+                      {% else %}                        
+                        {%- for item in state_attr("sensor.heimnetz_offline", "geraete") %}
+                          {% if loop.index > 1 %}<hr>{% endif %}
+                          <table><tr><td>  
+                            <ha-icon icon='mdi:network-off'></ha-icon> {{ item }}                            
+                          </td></tr>
+                          </table>
+                        {%- endfor %}       
+                      {% endif %}   
+                      
+          - entity: sensor.steckdosen_offline
+            secondary_info: last-changed  
+            tap_action:
+              action: fire-dom-event
+              browser_mod:
+                service: browser_mod.popup
+                data:              
+                  content:          
+                    type: markdown
+                    content: >-        
+                      {% if (is_state('sensor.steckdosen_offline', '0')) %}
+                        **<font color=#c5e566>Alle Steckdosen sind verfügbar.</font>**
+                      {% else %}                        
+                        {%- for item in state_attr("sensor.steckdosen_offline", "geraete") %}
+                          {% if loop.index > 1 %}<hr>{% endif %}
+                          <table><tr><td>  
+                            <ha-icon icon='mdi:power-plug-off-outline'></ha-icon> {{ item }}                            
+                          </td></tr>
+                          </table>
+                        {%- endfor %}       
+                      {% endif %}                      
         
   - type: entities
     title: Server
     show_header_toggle: false
-    view_layout:
-      column: 1    
     entities:
       - entity: binary_sensor.healthchecks_home_assistant  
       - entity: binary_sensor.healthchecks_diskstation        

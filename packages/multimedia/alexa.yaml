@@ -115,13 +115,8 @@ automation:
         entity_id: binary_sensor.bewegungsmelder_flur_hinten
         to: 'on'        
     condition:
-      - condition: not
-        conditions:
-          - condition: state
-            entity_id: sensor.echo_wohnzimmer_next_timer
-            state: 'unavailable'
-      - condition: template
-        value_template: "{{ (as_timestamp(states('sensor.echo_wohnzimmer_next_timer'), None) | int(0)) < (as_timestamp(now()) | int(0)) }}"        
+      - "{{ not states('sensor.echo_wohnzimmer_next_timer') in ['unknown', 'unavailable'] }}"
+      - "{{ (as_timestamp(states('sensor.echo_wohnzimmer_next_timer'), None) | int(0)) < (as_timestamp(now()) | int(0)) }}"        
     action:
       - service: media_player.play_media
         data:

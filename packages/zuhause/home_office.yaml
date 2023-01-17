@@ -344,6 +344,28 @@ automation:
             data:          
               message: "Der Computer im Arbeitszimmer wurde eingeschaltet."
      
+  - alias: "Home Office - Headset ausgeschaltet"
+    id: "home_office_headset_ausgeschaltet"
+    trigger:
+      - id: home_office
+        platform: state
+        entity_id: binary_sensor.home_office_aktiv
+        to: 'on'
+        for: '00:05:00'
+      - id: bewegungsmelder
+        platform: state
+        entity_id: binary_sensor.bewegungsmelder_arbeitszimmer
+        to: 'on' 
+    condition:
+      - "{{ not is_state('sensor.computer_arbeit_bluetooth', 'unavailable') and (states('sensor.computer_arbeit_bluetooth') | int(0)) == 0 }}" 
+      - "{{ is_state('binary_sensor.home_office_aktiv', 'on') }}"
+      - "{{ is_state('sensor.letzte_bewegung', 'Arbeitszimmer') or trigger.id == 'bewegungsmelder'}}"         
+    action:
+      - service: notify.laptop
+        data:   
+          title: 'Headset ausgeschaltet'
+          message: 'Das Headaset ist noch ausgeschaltet.'
+      
   - alias: "Telegram - Computer Arbeitszimmer ausschalten"
     id: "telegram_computer_arbeitszimmer_ausschalten"
     trigger:

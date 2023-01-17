@@ -37,7 +37,7 @@ template:
    
       - name: "Nicht stören"
         unique_id: nicht_stoeren        
-        state: "{{ is_state('binary_sensor.nicht_stoeren', 'on') }}"           
+        state: "{{ is_state('input_boolean.nicht_stoeren', 'on') }}"           
     
 script:
   zu_hause:
@@ -202,8 +202,8 @@ automation:
         platform: tag
         tag_id: tag_flur          
     condition:    
-      - condition: template
-        value_template: "{{ not is_state('person.dennis', 'home') if trigger.id in ('schalter_flur', 'handy') else True }}"
+      - "{{ not is_state('person.dennis', 'home') if trigger.id in ('schalter_flur', 'handy') else True }}"
+      - "{{ is_state('binary_sensor.schlafen_aktiv', 'off') }}"
       - condition: template
         value_template: >-
           {% set now = as_timestamp(now()) %}
@@ -218,6 +218,7 @@ automation:
               entity_id: input_select.zu_hause_begruessung
               state: 'Deaktiviert'       
               for: '00:01:00'
+            - "{{ is_state('binary_sensor.schlafen_aktiv', 'off') }}"
           sequence:
             - service: input_select.select_option
               entity_id: input_select.zu_hause_begruessung
@@ -272,18 +273,15 @@ automation:
         entity_id: binary_sensor.wohnungstuer
         to: 'on'
     condition:    
-      - condition: state
-        entity_id: input_select.zu_hause_begruessung
-        state: 'Deaktiviert'        
-      - condition: state
-        entity_id: person.dennis
-        state: 'not_home'                 
+      - "{{ is_state('input_select.zu_hause_begruessung', 'Deaktiviert') }}"
+      - "{{ is_state('person.dennis', 'not_home') }}"
+      - "{{ is_state('binary_sensor.schlafen_aktiv', 'off') }}"
     action:    
       - service: input_select.select_option            
         entity_id: input_select.zu_hause_begruessung
         data:
           option: 'Tür'
-        
+                
   - alias: "Zu Hause - Begrüßung"
     id: "zu_hause_begruessung"
     trigger:

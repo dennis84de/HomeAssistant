@@ -140,11 +140,6 @@ homeassistant:
       friendly_name: GB empfangen
     sensor.fritz_box_7272_gb_sent:
       friendly_name: GB gesendet
-      
-    sensor.speedtest_download:
-      icon: mdi:download-network
-    sensor.speedtest_upload:
-      icon: mdi:upload-network
   
     device_tracker.fritzrepeater:
       icon: mdi:wifi

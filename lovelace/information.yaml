@@ -17,6 +17,7 @@ cards:
         - entity_id: "sensor.echo_*_next_timer"
       exclude:          
         - state: "unavailable"
+        - state: "unknown"
 
   - type: custom:auto-entities
     view_layout:
@@ -30,6 +31,7 @@ cards:
         - entity_id: "sensor.echo_*_next_reminder"
       exclude:          
         - state: "unavailable"
+        - state: "unknown"
 
   - type: custom:layout-break
 

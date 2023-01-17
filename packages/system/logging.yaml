@@ -5,6 +5,8 @@ logger:
     custom_components.satellitetracker: fatal
     homeassistant.components.bluetooth: fatal
   filters:
+    custom_components.average:
+      - "Unable to find an entity"
     homeassistant.components.tplink.coordinator:
       - "Unable to connect to the device"
       - "Unable to query the device"

@@ -26,6 +26,8 @@ cards:
     entities:          
       - entity: input_boolean.uhr_einschalten
       - entity: input_boolean.besuch
+      - entity: input_boolean.besuch_franzi
+        name: Franzi
       - entity: input_boolean.nicht_stoeren  
       - entity: input_boolean.wetter_warnungen_einschalten
 
@@ -210,24 +212,6 @@ cards:
     entities:
       - entity: sensor.samba_backup_status
       - entity: sensor.samba_letztes_backup
-
-  - type: custom:stack-in-card
-    title: Internet
-    cards:
-      - type: horizontal-stack
-        cards:
-          - type: sensor
-            entity: sensor.speedtest_download
-            name: Download
-            hours_to_show: 24
-            graph: line
-            detail: 1
-          - type: sensor
-            entity: sensor.speedtest_upload
-            name: Upload
-            hours_to_show: 24
-            graph: line
-            detail: 1
         
   - type: entities
     title: Fritzbox
@@ -241,6 +225,30 @@ cards:
         name: Daten empfangen
       - entity: sensor.fritz_box_7272_gb_sent
         name: Daten gesendet                          
+
+  - type: custom:auto-entities
+    card:
+      type: markdown
+      title: Letzte Scripte
+      show_header_toggle: false
+      content: |
+        {% for x in config.entities %}
+          {%- set time = (as_timestamp(state_attr(x.entity, 'last_triggered')) | timestamp_custom('%H:%M')) -%}          
+          {{ time }} &nbsp;&nbsp; {{ state_attr(x.entity, 'friendly_name') }}
+        {% endfor %}
+    filter:
+      include:
+        - domain: script
+          last_triggered: '<= 1440'
+      exclude:
+        - attributes:
+            last_triggered: null             
+    sort:
+      method: last_triggered
+      numeric: true
+      reverse: true
+      first: 0
+      count: 20    
 
   - type: custom:auto-entities
     card:
@@ -266,30 +274,6 @@ cards:
       first: 0
       count: 20              
       
-  - type: custom:auto-entities
-    card:
-      type: markdown
-      title: Letzte Scripte
-      show_header_toggle: false
-      content: |
-        {% for x in config.entities %}
-          {%- set time = (as_timestamp(state_attr(x.entity, 'last_triggered')) | timestamp_custom('%H:%M')) -%}          
-          {{ time }} &nbsp;&nbsp; {{ state_attr(x.entity, 'friendly_name') }}
-        {% endfor %}
-    filter:
-      include:
-        - domain: script
-          last_triggered: '<= 1440'
-      exclude:
-        - attributes:
-            last_triggered: null             
-    sort:
-      method: last_triggered
-      numeric: true
-      reverse: true
-      first: 0
-      count: 20    
-
   - type: entities
     title: Sonstiges
     show_header_toggle: false

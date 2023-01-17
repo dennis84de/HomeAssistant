@@ -44,9 +44,12 @@ mqtt:
     - name: "Handy MQTT"
       state_topic: "handy/location"     
       
-    - name: "Handy Natalie MQTT"
-      state_topic: "handy_natalie/location"         
+    - name: "Natalie MQTT"
+      state_topic: "presence/natalie"
     
+    - name: "Franzi MQTT"
+      state_topic: "presence/franzi"
+      
 sensor:
   - platform: template
     sensors:
