@@ -3,6 +3,7 @@ import logging
 import codecs
 
 from .utils import async_get_value
+from .set_cricket import async_set_cricket_values
 from .set_golf import async_set_golf_values
 from .set_mma import async_set_mma_values
 from .set_racing import async_set_racing_values
@@ -28,7 +29,7 @@ oppo_prob = {}
 async def async_set_values(new_values, event, competition_index, team_index, lang, sensor_name) -> bool:
 #    new_values = {}
 
-    _LOGGER.debug("%s: async_set_values() 1: %s", sensor_name, sensor_name)
+#    _LOGGER.debug("%s: async_set_values() 1: %s", sensor_name, sensor_name)
 
     if team_index == 0:
         oppo_index = 1
@@ -78,6 +79,8 @@ async def async_set_values(new_values, event, competition_index, team_index, lan
         rc = await async_set_mma_values(new_values, event, competition_index, team_index, lang, sensor_name)
     elif new_values["sport"] == "racing":
         rc = await async_set_racing_values(new_values, event, competition_index, team_index, lang, sensor_name)
+    elif new_values["sport"] == "cricket":
+        rc = await async_set_cricket_values(new_values, event, competition_index, team_index, lang, sensor_name)
 #    _LOGGER.debug("%s: async_set_values() 4: %s", sensor_name, sensor_name)
 
     new_values["private_fast_refresh"] = False
@@ -88,7 +91,7 @@ async def async_set_values(new_values, event, competition_index, team_index, lan
         _LOGGER.debug("%s: Event is within 20 minutes, setting refresh rate to 5 seconds.", sensor_name)
         new_values["private_fast_refresh"] = True
 
-    _LOGGER.debug("%s: async_set_values() 5: %s", sensor_name, new_values)
+#    _LOGGER.debug("%s: async_set_values() 5: %s", sensor_name, new_values)
 
     return True
 
@@ -98,7 +101,7 @@ async def async_set_values(new_values, event, competition_index, team_index, lan
 async def async_set_universal_values(new_values, event, competition_index, team_index, lang, sensor_name) -> bool:
     """Traverse JSON for universal values"""
 
-    _LOGGER.debug("%s: async_set_universal_values() 1: %s", sensor_name, sensor_name)
+#    _LOGGER.debug("%s: async_set_universal_values() 1: %s", sensor_name, sensor_name)
 
     if team_index == 0:
         oppo_index = 1
@@ -131,11 +134,22 @@ async def async_set_universal_values(new_values, event, competition_index, team_
     new_values["venue"] = await async_get_value(competition, "venue", "fullName",
         default=await async_get_value(event, "circuit", "fullName"))
 
-    try:
-        new_values["location"] = "%s, %s" % (competition["venue"]["address"]["city"], competition["venue"]["address"]["state"])
-    except:
-        new_values["location"] = await async_get_value(competition, "venue", "address", "city",
-            default=await async_get_value(competition, "venue", "address", "summary"))
+    state = await async_get_value(competition, "venue", "address", "state")
+    country = await async_get_value(competition, "venue", "address", "country")
+
+    new_values["location"] = await async_get_value(competition, "venue", "address", "city")
+    if state:
+        if new_values["location"]:
+            new_values["location"] = f'{new_values["location"]}, {state}'
+        else:
+            new_values["location"] = state
+    if country:
+        if new_values["location"]:
+            new_values["location"] = f'{new_values["location"]}, {country}'
+        else:
+            new_values["location"] = country
+    if new_values["location"] is None:
+        new_values["location"] = await async_get_value(competition, "venue", "address", "summary")
 
 #    _LOGGER.debug("%s: async_set_universal_values() 3: %s", sensor_name, sensor_name)
 
@@ -193,7 +207,7 @@ async def async_set_universal_values(new_values, event, competition_index, team_
 #
 async def async_set_team_values(new_values, event, competition_index, team_index, lang, sensor_name) -> bool:
 
-    _LOGGER.debug("%s: async_set_team_values() 1: %s", sensor_name, sensor_name)
+#    _LOGGER.debug("%s: async_set_team_values() 1: %s", sensor_name, sensor_name)
 
     if team_index == 0:
         oppo_index = 1
@@ -254,7 +268,7 @@ async def async_set_in_values(new_values, event, competition_index, team_index, 
     global team_prob
     global oppo_prob
 
-    _LOGGER.debug("%s: async_set_in_values() 1: %s", sensor_name, sensor_name)
+#    _LOGGER.debug("%s: async_set_in_values() 1: %s", sensor_name, sensor_name)
 
     if team_index == 0:
         oppo_index = 1

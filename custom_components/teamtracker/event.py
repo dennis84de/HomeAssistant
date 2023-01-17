@@ -3,6 +3,7 @@ import logging
 from datetime import date, datetime, timedelta
 
 from .const import (
+    API_LIMIT,
     CONF_CONFERENCE_ID,
     CONF_LEAGUE_ID,
     CONF_LEAGUE_PATH,
@@ -33,7 +34,7 @@ from .utils import async_get_value
 
 _LOGGER = logging.getLogger(__name__)
 
-async def async_process_event(values, sensor_name, data, sport_path, league_id, DEFAULT_LOGO, team_id, lang, url) -> bool:
+async def async_process_event(values, sensor_name, data, sport_path, league_id, DEFAULT_LOGO, team_id, lang) -> bool:
 #    values = {} 
     prev_values = {}
 
@@ -46,7 +47,13 @@ async def async_process_event(values, sensor_name, data, sport_path, league_id, 
     values["league_logo"] = await async_get_value(data, "leagues", 0, "logos", 0, "href",
         default=DEFAULT_LOGO)
 
+    if len(data["events"]) == API_LIMIT:
+        limit_hit = True
+    else:
+        limit_hit = False
+
     for event in data["events"]:
+        event_state = "NOT_FOUND"
 #        _LOGGER.debug("%s: event() Processing event: %s", sensor_name, str(await async_get_value(event, "shortName")))
         competition_index = -1
         for competition_index in range (0, len(await async_get_value(event, "competitions", default=[]))):
@@ -56,16 +63,16 @@ async def async_process_event(values, sensor_name, data, sport_path, league_id, 
                 competitor = await async_get_value(competition, "competitors", team_index)
                 matched_index = -1
                 if competitor["type"] == "team":
-                    if search_key == await async_get_value(competitor, "team", "abbreviation", default=""):
+                    if search_key == await async_get_value(competitor, "team", "abbreviation", default="") or (search_key == "*"):
                         matched_index = team_index
                         _LOGGER.debug("%s: Found competition for '%s' in team abbreviation; parsing data.", sensor_name, search_key)
                     else: # Abbreviations in event_name can be different than team_abbr so try that too
                         sn = await async_get_value(event, "shortName", default="")
-                        if sn.startswith(search_key + ' ') and str(await async_get_value(competition, "competitors", 1, "team", "abbreviation", default="")) != search_key:
+                        if sn.startswith(search_key + ' ') and str(await async_get_value(competition, "competitors", 0, "team", "abbreviation", default="")) != search_key and str(await async_get_value(competition, "competitors", 1, "team", "abbreviation", default="")) != search_key:
                             matched_index = 1     # Lazy, but assumes first team in short_name is always team_index 1.
                             values["api_message"] = "team_id '" + search_key + "' does not match team_abbr.  Matched on event_name."
                             _LOGGER.warn("%s: Found competition for '%s' in event_name; parsing data.  Rebuild sensor using team_abbr for better performance.", sensor_name, search_key)
-                        if sn.endswith(' ' + search_key) and str(await async_get_value(competition, "competitors", 0, "team", "abbreviation", default="")) != search_key: 
+                        if sn.endswith(' ' + search_key) and str(await async_get_value(competition, "competitors", 0, "team", "abbreviation", default="")) != search_key and str(await async_get_value(competition, "competitors", 1, "team", "abbreviation", default="")) != search_key: 
                             matched_index = 0     # Lazy, but assumes second team in short_name is always team_index 0.
                             values["api_message"] = "team_id '" + search_key + "' does not match team_abbr.  Matched on event_name."
                             _LOGGER.warn("%s: Found competition for '%s' in event_name; parsing data.  Rebuild sensor using team_abbr for better performance.", sensor_name, search_key)
@@ -76,6 +83,11 @@ async def async_process_event(values, sensor_name, data, sport_path, league_id, 
                 if matched_index != -1:
                         found_competitor = True
                         prev_values = values.copy()
+
+                        #
+                        # Capture the event state because in sports like tennis, it can be different that the competition state
+                        #
+                        event_state = str(await async_get_value(event, "status", "type", "state", default="NOT_FOUND")).upper()
                         rc = await async_set_values(values, event, competition_index, matched_index, lang, sensor_name)
                         if rc == False:
                             _LOGGER.debug("%s: event() Error occurred setting event values: %s", sensor_name, values)
@@ -107,7 +119,11 @@ async def async_process_event(values, sensor_name, data, sport_path, league_id, 
                 _LOGGER.debug("%s: async_process_event() No competitors in this competition: %s", sensor_name, str(await async_get_value(competition, "id", default="{id}")))
             if stop_flag:
                 break;
-        if values["state"] == "POST" and str(await async_get_value(event, "status", "type", "state", default="NOT_FOUND")).upper() == "IN":
+        #
+        #  if the competition state is POST but the event state is IN, stop looking
+        #    this happens in tennis where an event has many competitions
+        #
+        if values["state"] == "POST" and event_state == "IN":
             stop_flag = True;
         if stop_flag:
             break;
@@ -117,7 +133,12 @@ async def async_process_event(values, sensor_name, data, sport_path, league_id, 
     if found_competitor == False:
         first_date = (date.today() - timedelta(days = 1)).strftime("%Y-%m-%dT%H:%MZ")
         last_date =  (date.today() + timedelta(days = 5)).strftime("%Y-%m-%dT%H:%MZ")
-        values["api_message"] = "No competition scheduled for '" + team_id + "' between " + first_date + " and " + last_date
-        _LOGGER.debug("%s: No competitor information '%s' returned by API: %s", sensor_name, search_key, url)
+
+        if limit_hit:
+            values["api_message"] = "API_LIMIT hit.  No competition found for '" + team_id + "' between " + first_date + " and " + last_date
+            _LOGGER.debug("%s: API_LIMIT hit (%s).  No competitor information '%s' returned by API", sensor_name, API_LIMIT, search_key)
+        else:
+            values["api_message"] = "No competition scheduled for '" + team_id + "' between " + first_date + " and " + last_date
+            _LOGGER.debug("%s: No competitor information '%s' returned by API", sensor_name, search_key)
 
     return values

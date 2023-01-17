@@ -43,12 +43,19 @@ class Schedule:
             TimeRange(time_range[CONF_FROM], time_range[CONF_TO])
             for time_range in schedule
         ]
+        if not self._schedule:
+            return
         self._schedule.sort(key=lambda time_range: time_range.start)
         self._validate()
+        self._to_on = [time_range.start for time_range in self._schedule]
+        # Remove "on to on" transitions of adjusted time ranges (as state doesn't cahnge to off).
+        self._to_off = sorted(
+            set(time_range.end for time_range in self._schedule) - set(self._to_on)
+        )
 
     def _validate(self) -> None:
         """Validate the schedule."""
-        # Any schedule with zero or a single entry is valid.
+        # An empty schedule or a schedule with a single entry is always valid.
         if len(self._schedule) <= 1:
             return
 
@@ -79,8 +86,8 @@ class Schedule:
             # If it crosses the day boundary, check overlap with 1st range.
             if self._schedule[-1].end > self._schedule[0].start:
                 raise ValueError(
-                    f"'{self._schedule[i].to_str()}' overlaps "
-                    f"'{self._schedule[i + 1].to_str()}'."
+                    f"'{self._schedule[-1].to_str()}' overlaps "
+                    f"'{self._schedule[0].to_str()}'."
                 )
 
     def containing(self, time: datetime.time) -> bool:
@@ -103,23 +110,14 @@ class Schedule:
         if not self._schedule:
             return None
 
-        time = date.time()
-        today = date.date()
-        prev = datetime.time()  # Midnight.
-
-        # Get ON and OFF timestamp sets.
-        to_on = set(time_range.start for time_range in self._schedule)
-        to_off = set(time_range.end for time_range in self._schedule)
-
-        # Get the relevant set.
-        # Remove "on to on" transitions of adjusted time ranges (as state doesn't cahnge).
-        timestamps = (
-            sorted(to_off - to_on) if self.containing(date.time()) else sorted(to_on)
-        )
-
-        # If time ranges cover the entire day (the subtraction result is empty).
+        timestamps = self._to_off if self.containing(date.time()) else self._to_on
         if not timestamps:
+            # If time ranges cover the entire day (the subtraction result is empty).
             return None
+
+        time = date.time()
+        prev = datetime.time()  # Midnight.
+        today = date.date()
 
         # Find the smallest timestamp which is bigger than time.
         for current in timestamps:
