@@ -138,9 +138,6 @@ YT_SVIDEO = "/shorts/"
 
 MAX_CONTROLLED_ENTITY = 4
 
-MIN_TIME_BETWEEN_APP_SCANS = timedelta(seconds=60)
-MIN_TIME_BETWEEN_ST_UPDATE = timedelta(seconds=5)
-
 SUPPORT_SAMSUNGTV_SMART = (
     MediaPlayerEntityFeature.PAUSE
     | MediaPlayerEntityFeature.VOLUME_SET
@@ -156,6 +153,7 @@ SUPPORT_SAMSUNGTV_SMART = (
     | MediaPlayerEntityFeature.STOP
 )
 
+MIN_TIME_BETWEEN_ST_UPDATE = timedelta(seconds=5)
 SCAN_INTERVAL = timedelta(seconds=15)
 
 _LOGGER = logging.getLogger(__name__)
@@ -615,8 +613,7 @@ class SamsungTVDevice(MediaPlayerEntity):
             self._source_list = st_source_list
             self._default_source_used = False
 
-    @Throttle(MIN_TIME_BETWEEN_APP_SCANS)
-    def _gen_installed_app_list(self, **kwargs):
+    def _gen_installed_app_list(self):
         """Get apps installed on TV."""
 
         if self._dump_apps:
@@ -1004,7 +1001,8 @@ class SamsungTVDevice(MediaPlayerEntity):
                     # regardless of the self._cloud_source value
                     # if the app ID is in the configured apps but is not running_app,
                     # means that this is not the real running app / media title
-                    if run_app not in list(self._app_list_st.values()):
+                    st_apps = self._app_list_st or {}
+                    if run_app not in list(st_apps.values()):
                         return self._st.channel_name
 
         media_title = self._get_source()

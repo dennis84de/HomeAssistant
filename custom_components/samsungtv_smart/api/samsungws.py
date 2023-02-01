@@ -44,7 +44,8 @@ import websocket
 from .shortcuts import SamsungTVShortcuts
 
 DEFAULT_POWER_ON_DELAY = 120
-MIN_APP_SCAN_INTERVAL = 10
+MIN_APP_SCAN_INTERVAL = 8
+MAX_APP_VALIDITY_SEC = 60
 MAX_WS_PING_INTERVAL = 10
 PING_TIMEOUT = 3
 TYPE_DEEP_LINK = "DEEP_LINK"
@@ -55,6 +56,7 @@ _WS_ENDPOINT_APP_CONTROL = "/api/v2"
 _WS_ENDPOINT_ART = "/api/v2/channels/com.samsung.art-app"
 _WS_LOG_NAME = "websocket"
 
+_LOG_PING_PONG = False
 _LOGGING = logging.getLogger(__name__)
 
 
@@ -97,6 +99,13 @@ def _process_api_response(response, *, raise_error=True):
                 "Failed to parse response from TV. Maybe feature not supported on this model"
             ) from exc
     return response
+
+
+def _log_ping_pong(msg, *args):
+    """Log ping pong message if enabled."""
+    if not _LOG_PING_PONG:
+        return
+    _LOGGING.debug(msg=msg, args=args)
 
 
 class Ping:
@@ -495,7 +504,7 @@ class SamsungTVWS:
 
     def _on_ping_remote(self, _, payload):
         """Manage ping message received by remote WS connection."""
-        _LOGGING.debug("Received WS remote ping %s, sending pong", payload)
+        _log_ping_pong("Received WS remote ping %s, sending pong", payload)
         self._last_ping = datetime.utcnow()
         if self._ws_remote.sock:
             try:
@@ -532,7 +541,7 @@ class SamsungTVWS:
             self._handle_installed_app(response)
         elif event == "ed.edenTV.update":
             _LOGGING.debug("Message remote: received edenTV")
-            self.get_running_app(force_scan=True)
+            self._get_running_app(force_scan=True)
 
     def _request_apps_list(self):
         """Request to the TV the list of installed apps."""
@@ -584,7 +593,7 @@ class SamsungTVWS:
 
     def _on_ping_control(self, _, payload):
         """Manage ping message received by control WS channel."""
-        _LOGGING.debug("Received WS control ping %s, sending pong", payload)
+        _log_ping_pong("Received WS control ping %s, sending pong", payload)
         self._last_control_ping = datetime.utcnow()
         if self._ws_control.sock:
             try:
@@ -612,7 +621,7 @@ class SamsungTVWS:
             if not self._check_conn_id(conn_data):
                 return
             _LOGGING.debug("Message control: received connect")
-            self.get_running_app()
+            self._get_running_app()
         elif event == "ed.installedApp.get":
             _LOGGING.debug("Message control: received installedApp")
             self._handle_installed_app(response)
@@ -628,8 +637,11 @@ class SamsungTVWS:
         elif (is_running := result.get("visible")) is None:
             return
 
-        self._last_running_scan = datetime.utcnow()
-        self._running_apps[app_id] = self._last_running_scan
+        call_time = datetime.utcnow()
+        with self._sync_lock:
+            self._last_app_scan = call_time
+        self._last_running_scan = call_time
+        self._running_apps[app_id] = call_time
         if self._running_app:
             if is_running and app_id != self._running_app:
                 _LOGGING.debug("app running: %s", app_id)
@@ -716,7 +728,7 @@ class SamsungTVWS:
 
     def _on_ping_art(self, _, payload):
         """Manage ping message received by art WS channel."""
-        _LOGGING.debug("Received WS art ping %s, sending pong", payload)
+        _log_ping_pong("Received WS art ping %s, sending pong", payload)
         self._last_art_ping = datetime.utcnow()
         if self._ws_art.sock:
             try:
@@ -832,7 +844,8 @@ class SamsungTVWS:
             return True
         if (last_seen := self._running_apps.get(app_id)) is None:
             return None
-        if (self._last_running_scan - last_seen).total_seconds() >= 60:
+        app_age = (self._last_running_scan - last_seen).total_seconds()
+        if app_age >= MAX_APP_VALIDITY_SEC:
             self._running_apps.pop(app_id)
             return None
         return False
@@ -862,6 +875,7 @@ class SamsungTVWS:
                     self._artmode_status = ArtModeStatus.Unavailable
             else:
                 self._check_art_mode()
+                self._get_running_app()
                 self._notify_app_change()
 
         if self._power_on_requested:
@@ -893,28 +907,16 @@ class SamsungTVWS:
             self._running_app_changed = False
             self._status_callback()
 
-    def set_power_on_request(self, set_art_mode=False, power_on_delay=0):
-        """Set a power on request status and save the time of the rquest."""
-        self._power_on_requested = True
-        self._power_on_requested_time = datetime.utcnow()
-        self._power_on_artmode = set_art_mode
-        self._power_on_delay = max(power_on_delay, 0) or DEFAULT_POWER_ON_DELAY
-
-    def set_power_off_request(self):
-        """Remove a previous power on request."""
-        self._power_on_requested = False
-
-    def get_running_app(self, *, force_scan=False):
+    def _get_running_app(self, *, force_scan=False):
         """Query current running app using control channel."""
         if not self._ws_control:
             return
 
+        scan_interval = 1 if force_scan else MIN_APP_SCAN_INTERVAL
         with self._sync_lock:
             call_time = datetime.utcnow()
             difference = (call_time - self._last_app_scan).total_seconds()
-            if (
-                difference < MIN_APP_SCAN_INTERVAL and not force_scan
-            ) or difference < 1:
+            if difference <= scan_interval:
                 return
             self._last_app_scan = call_time
 
@@ -935,6 +937,17 @@ class SamsungTVWS:
 
         for app in app_to_check.values():
             self._get_app_status(app.app_id, app.app_type)
+
+    def set_power_on_request(self, set_art_mode=False, power_on_delay=0):
+        """Set a power on request status and save the time of the rquest."""
+        self._power_on_requested = True
+        self._power_on_requested_time = datetime.utcnow()
+        self._power_on_artmode = set_art_mode
+        self._power_on_delay = max(power_on_delay, 0) or DEFAULT_POWER_ON_DELAY
+
+    def set_power_off_request(self):
+        """Remove a previous power on request."""
+        self._power_on_requested = False
 
     def start_poll(self):
         """Start polling the TV for status."""
