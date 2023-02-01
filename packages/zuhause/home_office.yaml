@@ -357,9 +357,18 @@ automation:
         entity_id: binary_sensor.bewegungsmelder_arbeitszimmer
         to: 'on' 
     condition:
-      - "{{ not is_state('sensor.computer_arbeit_bluetooth', 'unavailable') and (states('sensor.computer_arbeit_bluetooth') | int(0)) == 0 }}" 
+      - "{{ is_state('binary_sensor.computer_arbeit_ping', 'on') }}"
       - "{{ is_state('binary_sensor.home_office_aktiv', 'on') }}"
-      - "{{ is_state('sensor.letzte_bewegung', 'Arbeitszimmer') or trigger.id == 'bewegungsmelder'}}"         
+      - "{{ is_state('sensor.letzte_bewegung', 'Arbeitszimmer') or trigger.id == 'bewegungsmelder'}}"
+      - condition: template
+        value_template: >-
+          {% if is_state('sensor.computer_arbeit_bluetooth', 'unavailable') or states('sensor.computer_arbeit_bluetooth') | int(0) == 0 %}
+            False
+          {% elif states.sensor.computer_arbeit_bluetooth.attributes.BluetoothDevices | length == 0 %}
+            False
+          {% else %}
+            {{ not states.sensor.computer_arbeit_bluetooth.attributes.BluetoothDevices[0]['Connected'] }}
+          {% endif %}   
     action:
       - service: notify.laptop
         data:   

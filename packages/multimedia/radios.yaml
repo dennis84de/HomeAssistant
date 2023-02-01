@@ -287,10 +287,9 @@ automation:
         to: 'on'          
     condition:
       - "{{ is_state('sensor.radios_eingeschaltet', '1') }}"
-      - "{{ is_state('media_player.radio_badezimmer', 'playing') }}"
-      - condition: or
-        conditions:          
-          - "{{ is_state('binary_sensor.besuch', 'off') }}"          
+      - "{{ is_state('media_player.radio_badezimmer', 'playing') }}"      
+      - "{{ is_state('binary_sensor.besuch', 'off') }}"
+      - "{{ is_state('sensor.personen_zu_hause', '1') }}"
     action:
       - service: media_player.media_pause
         entity_id: media_player.radio_badezimmer       
