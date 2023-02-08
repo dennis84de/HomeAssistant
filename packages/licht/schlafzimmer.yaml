@@ -123,12 +123,14 @@ automation:
       - condition: or
         conditions:          
           - "{{ trigger.id == 'schalter_schlafzimmer' }}"
-          - "{{ is_state('binary_sensor.allein_zu_hause', 'on') and is_state('binary_sensor.nachts', 'on') }}"                
-      - condition: state        
-        entity_id: binary_sensor.im_bett
-        state: 'on'   
-        for:
-          seconds: 2          
+          - condition: and
+            conditions:
+              - "{{ is_state('binary_sensor.allein_zu_hause', 'on') and is_state('binary_sensor.nachts', 'on') }}"                
+              - condition: state        
+                entity_id: binary_sensor.im_bett
+                state: 'on'   
+                for:
+                  seconds: 2          
     action:
       - service: script.licht_wohnung_ausschalten     
       
