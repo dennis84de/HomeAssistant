@@ -98,13 +98,6 @@ template:
         {% endif %}      
   
 sensor:
-  - platform: imap
-    server: !secret email_server
-    port: 993
-    name: Ungelesene Mails
-    username: !secret email_username
-    password: !secret email_password
-
   - platform: time_date
     display_options:
       - 'time'
