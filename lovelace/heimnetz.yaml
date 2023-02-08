@@ -55,10 +55,10 @@ cards:
         name: Arbeitszimmer Ladegerät
       - entity: device_tracker.tasmotaarbeitszimmermonitore
         name: Arbeitszimmer Monitore        
-      - entity: device_tracker.tasmotasportzimmerregal
-        name: Sportzimmer Regal        
       - entity: device_tracker.tasmotabalkonradio
         name: Balkon Radio
+      - entity: device_tracker.tasmotamikrowelle
+        name: Mikrowelle              
       - entity: device_tracker.tasmotakuechenschrank
         name: Küchenschrank  
       - entity: device_tracker.tasmotaspuelmaschine

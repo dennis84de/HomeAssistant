@@ -263,8 +263,8 @@ homeassistant:
       friendly_name: Tasmota Arbeitszimmer Ladegerät
     device_tracker.tasmotaarbeitszimmermonitore:
       friendly_name: Tasmota Arbeitszimmer Monitore
-    device_tracker.tasmotasportzimmerregal:
-      friendly_name: Tasmota Sportzimmer Regal
+    device_tracker.tasmotamikrowelle:
+      friendly_name: Tasmota Mikrowelle
     device_tracker.tasmotabalkonradio:
       friendly_name: Tasmota Balkon Radio
     device_tracker.tasmotakuechenschrank:
