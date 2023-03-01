@@ -26,10 +26,10 @@ binary_sensor:
 switch:
   - platform: template
     switches:
-      pc:
-        friendly_name: PC
+      computer:
+        friendly_name: Computer
         value_template: "{{ is_state('binary_sensor.computer_ping', 'on') }}"
-        icon_template: mdi:desktop-tower
+        icon_template: mdi:desktop-classic
         turn_on:
           - service: wake_on_lan.send_magic_packet
             data:
@@ -48,17 +48,6 @@ switch:
                 sequence:
                   - service: button.press
                     entity_id: button.computer_herunterfahren
-                    
-      computer:
-        friendly_name: Computer
-        value_template: "{{ is_state('switch.pc', 'on') and is_state('switch.monitor', 'on') }}"
-        icon_template: mdi:desktop-classic
-        turn_on:
-          service: switch.turn_on
-          entity_id: switch.monitor, switch.pc
-        turn_off:
-          service: switch.turn_off
-          entity_id: switch.monitor, switch.pc   
     
 automation:
   - alias: "Unterwegs - Computer ausschalten"
@@ -70,11 +59,11 @@ automation:
         for:
           minutes: 30
     condition:
-      - "{{ is_state('switch.pc', 'on') }}"
+      - "{{ is_state('switch.computer', 'on') }}"
       - "{{ not is_state('input_select.computer_ausschalten', 'Nichts unternehmen') }}"
     action:
       - service: switch.turn_off
-        entity_id: switch.pc
+        entity_id: switch.computer
       - service: notify.telegram
         data:          
           message: "Der Computer war noch eingeschaltet und wird jetzt heruntergefahren."
@@ -88,7 +77,7 @@ automation:
           command: '/computer_ausschalten'
     action:
       - service: switch.turn_off
-        entity_id: switch.pc
+        entity_id: switch.computer
       - service: telegram_bot.send_message
         data:
           target: '{{ trigger.event.data.chat_id }}'

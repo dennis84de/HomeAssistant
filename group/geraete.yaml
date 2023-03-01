@@ -3,7 +3,9 @@ alles_ausschalten:
   entities:
     - group.alle_radios
     - switch.computer
+    - switch.monitor
     - switch.computer_arbeit
+    - switch.arbeitszimmer_monitore
     - switch.watchtv_wohnzimmer
     - switch.watchtv_schlafzimmer    
     - light.wohnzimmer_couch

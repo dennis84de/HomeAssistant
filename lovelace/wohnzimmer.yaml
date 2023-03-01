@@ -94,21 +94,8 @@ cards:
     show_header_toggle: false
     view_layout:
     entities:
-      - entity: switch.computer        
-        tap_action:
-          action: fire-dom-event
-          browser_mod:
-            service: browser_mod.popup
-            data:              
-              content:    
-                type: entities
-                entities:          
-                  - entity: switch.pc
-                    name: PC
-                    secondary_info: last-changed
-                  - entity: switch.monitor
-                    name: Monitor
-                    secondary_info: last-changed                 
+      - entity: switch.computer   
+      - entity: switch.monitor              
       - entity: input_select.computer_ausschalten                     
                  
   - type: glance

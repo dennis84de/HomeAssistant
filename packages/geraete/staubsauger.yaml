@@ -75,14 +75,14 @@ automation:
     id: "staubsaugen_gestartet"
     trigger:
       - platform: state
-        entity_id: person.dennis
-        to: 'not_home'
+        entity_id: sensor.personen_zu_hause
+        to: '0'
         for:
           minutes: 5
       - platform: time
         at: '7:00:00'        
     condition:
-      - "{{ not is_state('person.dennis', 'home') }}"
+      - "{{ is_state('sensor.personen_zu_hause', '0') }}"
       - "{{ is_state('binary_sensor.nachts', 'off') }}"
       - "{{ is_state('vacuum.staubsauger', 'docked') }}"      
       - "{{ is_state('input_boolean.staubsauger_automatische_reinigung', 'on') }}"

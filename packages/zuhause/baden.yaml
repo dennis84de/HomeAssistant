@@ -37,7 +37,7 @@ automation:
           - service: input_boolean.turn_on
             entity_id: input_boolean.baden_aktiv
           - service: switch.turn_off
-            entity_id: switch.watchtv_wohnzimmer, switch.computer
+            entity_id: switch.watchtv_wohnzimmer, switch.computer, switch.monitor
           - service: script.radios_ausschalten
           - service: homeassistant.turn_off
             entity_id: group.licht_baden
@@ -68,7 +68,7 @@ automation:
           - service: light.turn_off
             entity_id: light.badezimmerschrank
           - service: switch.turn_on
-            entity_id: switch.computer     
+            entity_id: switch.computer, switch.monitor  
           - choose:
               conditions:
                 - condition: state
