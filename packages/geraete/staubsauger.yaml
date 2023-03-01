@@ -4,6 +4,8 @@ input_boolean:
     icon: mdi:flash-auto
   staubsauger_automatische_reinigung_gestartet:
     name: Automatische Reinigung gestartet    
+  staubsauger_alarm_ausgeschaltet:
+    name: Alarm ausgeschaltet      
     
 input_select:
   staubsauger_reinigen:
@@ -91,14 +93,18 @@ automation:
     action:
       - service: vacuum.start
         entity_id: vacuum.staubsauger
-      - service: input_boolean.turn_on
-        entity_id: input_boolean.staubsauger_automatische_reinigung_gestartet
-      - service: alarmo.disarm
-        data:
-          entity_id: alarm_control_panel.alarmo        
-      - service: notify.telegram
-        data:          
-          message: 'Das Saugen der Wohnung wurde gestartet.'
+      - if: "{{ is_state('alarm_control_panel.alarmo', 'armed_away') }}"
+        then:
+          - service: input_boolean.turn_on
+            entity_id: input_boolean.staubsauger_alarm_ausgeschaltet
+          - service: alarmo.disarm
+            data:
+              entity_id: alarm_control_panel.alarmo        
+      - if: "{{ not is_state('person.dennis', 'home') }}"
+        then:
+          - service: notify.telegram
+            data:                  
+              message: 'Das Saugen der Wohnung wurde gestartet.'
 
   - alias: "Staubsaugen - Beendet"
     id: "staubsaugen_beendet"
@@ -123,14 +129,18 @@ automation:
         entity_id: counter.staubsauger_behaelter_leeren        
       - service: input_boolean.turn_off
         entity_id: input_boolean.staubsauger_automatische_reinigung_gestartet    
+      - if: "{{ is_state('input_boolean.staubsauger_alarm_ausgeschaltet', 'on') }}"
+        then:
+          - service: input_boolean.turn_off
+            entity_id: input_boolean.staubsauger_alarm_ausgeschaltet
+          - service: alarmo.arm
+            data:
+              entity_id: alarm_control_panel.alarmo             
       - if: "{{ not is_state('person.dennis', 'home') }}"
         then:
           - service: notify.telegram
             data:                  
-              message: 'Die Wohnung wurde vollständig gesaugt.'
-          - service: alarmo.arm
-            data:
-              entity_id: alarm_control_panel.alarmo                   
+              message: 'Die Wohnung wurde vollständig gesaugt.'            
       - if: "{{ states('counter.staubsauger_behaelter_leeren') | int(0) < 1 }}"   
         then:
           - service: persistent_notification.create
