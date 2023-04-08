@@ -91,6 +91,8 @@ automation:
       - "{{ is_state('binary_sensor.staubsauger_reinigung_heute', 'on') }}"
       - "{{ is_state('calendar.urlaub', 'off') }}"
     action:
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.staubsauger_automatische_reinigung_gestartet          
       - service: vacuum.start
         entity_id: vacuum.staubsauger
       - if: "{{ is_state('alarm_control_panel.alarmo', 'armed_away') }}"

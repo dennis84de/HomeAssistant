@@ -63,7 +63,40 @@ cards:
         condition: "{{ not is_state('sensor.aufenthaltsort', 'Home') }}"
       - type: custom:template-entity-row
         entity : proximity.home
-        condition: "{{ states('proximity.home') | int(0) > 0 }}"      
+        condition: "{{ states('proximity.home') | int(0) > 0 }}"     
+      - entity: person.natalie        
+        tap_action:
+          action: fire-dom-event
+          browser_mod:
+            service: browser_mod.popup
+            data:              
+              content:
+                type: custom:stack-in-card
+                cards:
+                  - type: history-graph
+                    entities:          
+                      - entity: person.natalie               
+                  - type: entities
+                    entities:
+                      - entity: input_boolean.besuch_natalie
+                        name: Natalie
+        name: Natalie
+      - entity: person.franzi
+        tap_action:
+          action: fire-dom-event
+          browser_mod:
+            service: browser_mod.popup
+            data:              
+              content:
+                type: custom:stack-in-card
+                cards:
+                  - type: history-graph
+                    entities:          
+                      - entity: person.franzi               
+                  - type: entities
+                    entities:
+                      - entity: input_boolean.besuch_franzi
+                        name: Franzi
       - entity: sensor.letzte_bewegung                 
 
   - type: entities

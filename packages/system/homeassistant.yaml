@@ -77,6 +77,12 @@ zone:
     radius: 100
     icon: mdi:wan 
     
+  - name: Natalie
+    latitude: !secret natalie_latitude
+    longitude: !secret natalie_longitude
+    radius: 70
+    icon: mdi:human-female     
+    
 sensor:
   - platform: command_line
     name: Installierte Version

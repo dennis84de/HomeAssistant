@@ -347,14 +347,12 @@ automation:
       - service: input_boolean.turn_off
         entity_id: input_boolean.schlafen_aktiv, input_boolean.wecker_aktiv, input_boolean.wecker_erinnerung_morgen, input_boolean.wecker_zeit_geaendert
       - service: input_boolean.turn_on
-        entity_id: input_boolean.schlafen_fernseher_einschalten
+        entity_id: input_boolean.schlafen_fernseher_einschalten, input_boolean.wecker_geraete_einschalten    
       - service: light.turn_off
         entity_id: light.bett
       - service: alarmo.disarm
         data:
           entity_id: alarm_control_panel.alarmo               
-      - service: switch.turn_on
-        entity_id: switch.computer, switch.monitor
       - choose:
           - conditions:
               - "{{ trigger.id != 'schalter_badezimmer' }}"                    
@@ -383,6 +381,6 @@ automation:
             entity_id: switch.schlafzimmer_radio             
           - service: script.radios_einschalten       
             data:
-              radioBalkon: "{{ radioBalkonEinschalten }}"                        
-      - service: input_boolean.turn_on
-        entity_id: input_boolean.wecker_geraete_einschalten
+              radioBalkon: "{{ radioBalkonEinschalten }}"        
+      - service: switch.turn_on
+        entity_id: switch.computer, switch.monitor              

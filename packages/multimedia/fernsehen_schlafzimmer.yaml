@@ -116,6 +116,7 @@ automation:
     condition:
       - "{{ trigger.id != 'pause' or is_state('input_boolean.multimedia_schlafzimer_pausiert', 'off') }}"
       - "{{ is_state('binary_sensor.schlafen_aktiv', 'on') }}"
+      - "{{ is_state('binary_sensor.allein_zu_hause', 'on') }}"
       - condition: or
         conditions:
           - "{{ states('media_player.kodi_schlafzimmer') in ['playing', 'paused'] }}"

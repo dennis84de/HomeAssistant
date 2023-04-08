@@ -46,12 +46,7 @@ binary_sensor:
             }}                                          
           {% else %}
             mdi:cog
-          {% endif %}                  
-        
-nextcloud:
-    url: !secret nextcloud_url_https
-    username: !secret nextcloud_username
-    password: !secret nextcloud_app_password           
+          {% endif %}                         
     
 automation:
   - alias: "Nextcloud - Update verfügbar"

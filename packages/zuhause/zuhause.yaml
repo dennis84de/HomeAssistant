@@ -202,8 +202,8 @@ automation:
         platform: tag
         tag_id: tag_flur          
     condition:    
-      - "{{ not is_state('person.dennis', 'home') if trigger.id in ('schalter_flur', 'handy') else True }}"
       - "{{ is_state('binary_sensor.schlafen_aktiv', 'off') }}"
+      - "{{ not is_state('alarm_control_panel.alarmo', 'disarmed') }}"
       - condition: template
         value_template: >-
           {% set now = as_timestamp(now()) %}
@@ -211,19 +211,7 @@ automation:
           {% set diff = ((now - last) / 60) | int(0) %}
 
           {{ diff >= 10 }}        
-    action:     
-      - choose:              
-        - conditions:
-            - condition: state
-              entity_id: input_select.zu_hause_begruessung
-              state: 'Deaktiviert'       
-              for: '00:01:00'
-            - "{{ is_state('binary_sensor.schlafen_aktiv', 'off') }}"
-          sequence:
-            - service: input_select.select_option
-              entity_id: input_select.zu_hause_begruessung
-              data:                  
-                option: 'Handy'        
+    action:         
       - service: script.zu_hause_standort
       - service: alarmo.disarm
         data:
@@ -281,6 +269,22 @@ automation:
         entity_id: input_select.zu_hause_begruessung
         data:
           option: 'Tür'
+          
+  - alias: "Zu Hause - Handy verbunden"
+    id: "zu_hause_handy_verbunden"
+    trigger:
+      - id: zu_hause
+        platform: state
+        entity_id: person.dennis
+        to: 'home'
+    condition:    
+      - "{{ is_state('input_select.zu_hause_begruessung', 'Deaktiviert') }}"
+      - "{{ is_state('binary_sensor.schlafen_aktiv', 'off') }}"
+    action:              
+      - service: input_select.select_option            
+        entity_id: input_select.zu_hause_begruessung
+        data:
+          option: 'Handy'
                 
   - alias: "Zu Hause - Begrüßung"
     id: "zu_hause_begruessung"
@@ -293,7 +297,7 @@ automation:
         platform: state
         entity_id: person.dennis
         to: 'home'               
-    condition:  
+    condition:        
       - "{{ not is_state('input_select.zu_hause_begruessung', 'Deaktiviert') }}"   
       - condition: or
         conditions:

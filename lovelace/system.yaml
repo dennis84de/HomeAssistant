@@ -25,11 +25,9 @@ cards:
     show_header_toggle: false
     entities:          
       - entity: input_boolean.uhr_einschalten
-      - entity: input_boolean.besuch
-      - entity: input_boolean.besuch_franzi
-        name: Franzi
-      - entity: input_boolean.nicht_stoeren  
       - entity: input_boolean.wetter_warnungen_einschalten
+      - entity: input_boolean.besuch
+      - entity: input_boolean.nicht_stoeren        
 
   - type: entities
     title: Radios

@@ -8,6 +8,11 @@ input_boolean:
   tuer_musik_pausiert:
     name: Musik pausiert
 
+timer:
+  radio_balkon:
+    name: Radio Balkon    
+    duration: 600
+        
 template:
   - sensor:
       - name: Radios eingeschaltet
@@ -216,24 +221,47 @@ automation:
       - service: media_player.turn_on
         data:
           entity_id: media_player.radio_balkon
+      - if: "{{ is_state('binary_sensor.besuch', 'on') or is_state('binary_sensor.nicht_allein_zu_hause', 'on') }}"
+        then:
+          - service: timer.start
+            entity_id: timer.radio_balkon          
 
   - alias: 'Radio Balkon - Keine Bewegung'
     id: "radio_balkon_keine_bewegung"
     trigger:
-      - platform: state
+      - id: bewegungsmelder
+        platform: state
         entity_id: binary_sensor.bewegungsmelder_wohnzimmer
         to: 'on'
+      - id: balkontuer
+        platform: state
+        entity_id: binary_sensor.balkontuer
+        to: 'off'    
+      - id: timer
+        platform: event
+        event_type: timer.finished
+        event_data:
+          entity_id: timer.radio_balkon              
     condition:
       - condition: state
         entity_id: input_boolean.radio_balkon_aktiv
         state: 'on'
-        for: "00:00:10"
+        for: "00:00:10"  
+      - condition: or
+        conditions:     
+          - "{{ trigger.id == 'timer' }}"
+          - "{{ trigger.id == 'balkontuer' and (is_state('binary_sensor.besuch', 'on') or is_state('binary_sensor.nicht_allein_zu_hause', 'on')) }}"
+          - "{{ trigger.id == 'bewegungsmelder' and is_state('binary_sensor.besuch', 'off') and is_state('binary_sensor.allein_zu_hause', 'on') }}"        
     action:
       - service: input_boolean.turn_off
         entity_id: input_boolean.radio_balkon_aktiv
       - service: media_player.turn_off
         data:
           entity_id: media_player.radio_balkon
+      - if: "{{ not is_state('timer.radio_balkon', 'idle') }}"
+        then:
+          - service: timer.cancel
+            entity_id: timer.radio_balkon                
 
   - alias: 'Radio Balkon - Starten'
     id: "radio_balkon_starten"

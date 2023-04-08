@@ -164,12 +164,12 @@ automation:
       urlaubMorgen: "{{ is_state_attr('sensor.naechster_urlaub', 'tage', 1) }}"         
       krankHeute: "{{ is_state('calendar.arbeit_krank', 'on') }}"
       krankMorgen: "{{ is_state('binary_sensor.krank_morgen', 'on') }}"
-      natalieZuhause: "{{ is_state('person.natalie', 'home') }}"
     condition:
-      condition: or
-      conditions:
-        - "{{ vorMitternacht and arbeitstagMorgen and not urlaubMorgen and not krankMorgen }}"
-        - "{{ not vorMitternacht and arbeitstagHeute and not urlaubHeute and not krankHeute }}"    
+      - "{{ is_state('binary_sensor.allein_zu_hause', 'on') }}"
+      - condition: or
+        conditions:
+          - "{{ vorMitternacht and arbeitstagMorgen and not urlaubMorgen and not krankMorgen }}"
+          - "{{ not vorMitternacht and arbeitstagHeute and not urlaubHeute and not krankHeute }}"    
     action:
       - choose:
           - conditions:
@@ -184,12 +184,7 @@ automation:
                         data:
                           echo: "schlafzimmer"
                           override: true
-                          message: >-
-                            {% if natalieZuhause %}
-                              Hallo Natalie. Sagst du Dennis bitte, dass der Wecker noch nicht richtig gestellt ist.
-                            {% else %}
-                              Der Wecker ist noch nicht gestellt.
-                            {% endif %}                          
+                          message: "Der Wecker ist noch nicht gestellt."                     
               - choose:
                   - conditions:
                       - "{{ weckerZeit is defined }}"
@@ -199,12 +194,7 @@ automation:
                         data:
                           echo: "schlafzimmer"
                           override: true
-                          message: >-
-                            {% if natalieZuhause %}
-                              Hallo Natalie. Sagst du Dennis bitte, dass der Wecker noch nicht richtig für morgen gestellt ist.
-                            {% else %}
-                              Der Wecker ist noch nicht für morgen gestellt.
-                            {% endif %}
+                          message: "Der Wecker ist noch nicht für morgen gestellt."
               - choose:
                   - conditions:
                       - "{{ weckerZeit is defined }}"
@@ -216,12 +206,7 @@ automation:
                         data:
                           echo: "schlafzimmer"
                           override: true
-                          message: >-
-                            {% if natalieZuhause %}
-                              Hallo Natalie. Sagst du Dennis bitte, dass morgen Büro ist, aber der Wecker noch für das Home Office gestellt ist.
-                            {% else %}
-                              Morgen ist Büro, aber der Wecker ist noch für das Home Office gestellt.
-                            {% endif %}                      
+                          message: "Morgen ist Büro, aber der Wecker ist noch für das Home Office gestellt."                    
               - choose:
                   - conditions:
                       - "{{ weckerZeit is defined }}"
@@ -233,12 +218,7 @@ automation:
                         data:
                           echo: "schlafzimmer"
                           override: true
-                          message: >-
-                            {% if natalieZuhause %}
-                              Hallo Natalie. Sagst du Dennis bitte, dass der Wecker noch nicht richtig für das Home Office gestellt ist.
-                            {% else %}
-                              Der Wecker ist noch nicht richtig für das Home Office gestellt.
-                            {% endif %}
+                          message: "Der Wecker ist noch nicht richtig für das Home Office gestellt."
                               
           - conditions:
               - "{{ vorMitternacht }}"
@@ -249,12 +229,7 @@ automation:
                 data:
                   echo: "schlafzimmer"
                   override: true
-                  message: >-
-                    {% if natalieZuhause %}
-                      Hallo Natalie. Sagst du Dennis bitte, dass morgen kein Arbeitstag, aber der Wecker noch für das Home Office gestellt ist.
-                    {% else %}
-                      Morgen ist kein Arbeitstag, aber der Wecker ist noch für das Home Office gestellt.
-                    {% endif %}                                                     
+                  message: "Morgen ist kein Arbeitstag, aber der Wecker ist noch für das Home Office gestellt."                                                   
       - choose:
           - conditions:
               - "{{ not vorMitternacht }}"
@@ -268,12 +243,7 @@ automation:
                         data:
                           echo: "schlafzimmer"
                           override: true
-                          message: >-
-                            {% if natalieZuhause %}
-                              Hallo Natalie. Sagst du Dennis bitte, dass der Wecker noch nicht gestellt ist.
-                            {% else %}
-                              Der Wecker ist noch nicht gestellt.
-                            {% endif %}
+                          message: "Der Wecker ist noch nicht gestellt."
               - choose:
                   - conditions:
                       - "{{ weckerZeit is defined }}"
@@ -283,12 +253,7 @@ automation:
                         data:
                           echo: "schlafzimmer"
                           override: true
-                          message: >-
-                            {% if natalieZuhause %}
-                              Hallo Natalie. Sagst du Dennis bitte, dass der Wecker noch nicht für heute gestellt ist.
-                            {% else %}
-                              Der Wecker ist noch nicht für heute gestellt.
-                            {% endif %}           
+                          message: "Der Wecker ist noch nicht für heute gestellt."  
               - choose:
                   - conditions:
                       - "{{ weckerZeit is defined }}"
@@ -300,12 +265,7 @@ automation:
                         data:
                           echo: "schlafzimmer"
                           override: true
-                          message: >-
-                            {% if natalieZuhause %}
-                              Hallo Natalie. Sagst du Dennis bitte, dass heute Büro ist, aber der Wecker noch für das Home Office gestellt ist.
-                            {% else %}
-                              Heute ist Büro, aber der Wecker ist noch für das Home Office gestellt.
-                            {% endif %}                  
+                          message: "Heute ist Büro, aber der Wecker ist noch für das Home Office gestellt."              
               - choose:
                   - conditions:
                       - "{{ weckerZeit is defined }}"
@@ -317,12 +277,7 @@ automation:
                         data:
                           echo: "schlafzimmer"
                           override: true
-                          message: >-
-                            {% if natalieZuhause %}
-                              Hallo Natalie. Sagst du Dennis bitte, dass der Wecker noch nicht richtig für das Home Office gestellt ist.
-                            {% else %}
-                              Der Wecker ist noch nicht richtig für das Home Office gestellt.
-                            {% endif %}
+                          message: "Der Wecker ist noch nicht richtig für das Home Office gestellt."
                             
           - conditions:
               - "{{ not vorMitternacht }}"

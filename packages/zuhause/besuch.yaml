@@ -7,6 +7,10 @@ input_boolean:
     name: "Besuch Franzi"
     icon: mdi:human-child   
 
+  besuch_natalie:
+    name: "Besuch Natalie"
+    icon: mdi:human-female   
+    
 template:
   - binary_sensor:       
       - name: "Besuch"
@@ -15,8 +19,8 @@ template:
         state: "{{ is_state('input_boolean.besuch', 'on') }}"     
         
 automation:
-  - alias: "Zu Hause - Besuch Schalter"
-    id: "zu_hause_besuch_schalter"
+  - alias: "Besuch Schalter"
+    id: "besuch_schalter"
     trigger:
       - id: schalter_flur
         platform: event
@@ -34,17 +38,25 @@ automation:
       - service: input_boolean.toggle
         entity_id: input_boolean.besuch  
         
-  - alias: "Natalie - Kalender"
-    id: "natalie_kalender"
+  - alias: "Natalie - Besuch"
+    id: "natalie_besuch"
     trigger:
       - id: home
         platform: calendar
         event: start
         entity_id: calendar.besuch_natalie
+      - id: home
+        platform: state
+        entity_id: input_boolean.besuch_natalie   
+        to: 'on'
       - id: not_home
         platform: calendar
         event: end
         entity_id: calendar.besuch_natalie    
+      - id: not_home
+        platform: state
+        entity_id: input_boolean.besuch_natalie
+        to: 'off'
     action:      
       - service: mqtt.publish
         data:
