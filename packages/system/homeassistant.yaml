@@ -27,9 +27,7 @@ lovelace:
     - url: /hacsfiles/secondaryinfo-entity-row/secondaryinfo-entity-row.js
       type: module
     - url: /hacsfiles/lovelace-card-tools/card-tools.js
-      type: module            
-    - url: /hacsfiles/home-assistant-sun-card/home-assistant-sun-card.js
-      type: module         
+      type: module              
     - url: /hacsfiles/zha-network-card/zha-network-card.js
       type: module      
     - url: /hacsfiles/flipdown-timer-card/flipdown-timer-card.js
@@ -46,6 +44,8 @@ lovelace:
       type: module      
     - url: /hacsfiles/scheduler-card/scheduler-card.js
       type: module    
+    - url: /hacsfiles/lovelace-horizon-card/lovelace-horizon-card.js
+      type: module      
     
   dashboards:      
     lovelace-rooms:

@@ -66,7 +66,6 @@ sensor:
         friendly_name: Schlafen Letzte Uhrzeit       
         value_template: "{{ '%02d' % (state_attr('input_datetime.schlafen_uhrzeit', 'hour') | int(0)) ~ ':' ~ '%02d' % (state_attr('input_datetime.schlafen_uhrzeit', 'minute') | int(0)) }}"
         icon_template: mdi:av-timer
-        unit_of_measurement: 'Uhr'
 
 script:
   schlafen_gehen:

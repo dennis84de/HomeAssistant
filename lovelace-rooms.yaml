@@ -7,4 +7,3 @@ views:
   - !include lovelace/flur.yaml
   - !include lovelace/arbeitszimmer.yaml 
   - !include lovelace/sportzimmer.yaml
-  - !include lovelace/keller.yaml

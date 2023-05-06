@@ -1,4 +1,6 @@
 input_boolean:
+  heizung_einschalten:
+    name: Heizung einschalten  
   heizung_ausgeschaltet_wohnzimmer:
     name: Heizung ausgeschaltet - Wohnzimmer
   heizung_ausgeschaltet_kueche:
@@ -60,6 +62,10 @@ schedule:
         
 template:
   - binary_sensor:
+      - name: "Heizung einschalten"
+        unique_id: "heizung_einschalten"        
+        state: "{{ is_state('input_boolean.heizung_einschalten', 'on') }}"
+        
       - name: "Heizung Arbeitszimmer Batterie"
         unique_id: "heizung_arbeitszimmer_batterie"
         device_class: battery
@@ -100,11 +106,12 @@ automation:
         id: 'stop'
         entity_id: binary_sensor.schlafen_aktiv
         to: 'on'            
-    condition:
+    condition:      
       - condition: or
         conditions:                  
           - condition: and
             conditions:      
+              - "{{ is_state('binary_sensor.heizung_einschalten', 'on') }}"
               - "{{ trigger.id == 'start' }}"
               - "{{ is_state('climate.heizung_wohnzimmer', 'off') }}"
               - "{{ is_state('schedule.heizung', 'on') }}"
@@ -218,6 +225,7 @@ automation:
         conditions:                  
           - condition: and
             conditions:      
+              - "{{ is_state('binary_sensor.heizung_einschalten', 'on') }}"
               - "{{ trigger.id == 'start' }}"
               - "{{ is_state('climate.heizung_kueche', 'off') }}"
               - "{{ is_state('schedule.heizung', 'on') }}"
@@ -318,7 +326,8 @@ automation:
       - condition: or
         conditions:                  
           - condition: and
-            conditions:      
+            conditions:   
+              - "{{ is_state('binary_sensor.heizung_einschalten', 'on') }}"
               - "{{ trigger.id == 'start' }}"
               - "{{ is_state('climate.heizung_arbeitszimmer', 'off') }}"
               - "{{ is_state('schedule.heizung', 'on') }}"
@@ -421,6 +430,7 @@ automation:
         conditions:                  
           - condition: and
             conditions:      
+              - "{{ is_state('binary_sensor.heizung_einschalten', 'on') }}"
               - "{{ trigger.id == 'start' }}"
               - "{{ is_state('climate.heizung_badezimmer', 'off') }}"
               - "{{ is_state('schedule.heizung', 'on') }}"

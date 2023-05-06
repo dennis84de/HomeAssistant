@@ -27,7 +27,6 @@ sensor:
       abfahrzeit:
         friendly_name: Abfahrzeit
         icon_template: mdi:clock-start
-        unit_of_measurement: 'Uhr'
         value_template: >-
           {% set fahrzeitMinuten = states('sensor.fahrzeit_zur_arbeit_duration_in_traffic') | int(0) %}
           {% set beginnMinuten = (state_attr('input_datetime.arbeit_beginn', 'timestamp') / 60) | int(0) %}
@@ -54,17 +53,6 @@ sensor:
         icon_template: mdi:briefcase          
         
 binary_sensor:
-  - platform: workday
-    name: Arbeitstag
-    country: DE
-    province: NW
-    
-  - platform: workday
-    name: Arbeitstag morgen
-    country: DE
-    province: NW
-    days_offset: 1    
-    
   - platform: template
     sensors:
       buero_heute:

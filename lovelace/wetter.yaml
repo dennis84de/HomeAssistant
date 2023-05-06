@@ -56,8 +56,9 @@ cards:
         {% if not loop.last %}***{% endif %}
         {% endfor %}
       {% endif %}  
-              
-  - type: custom:sun-card
+
+  - type: custom:horizon-card
+    component: sun.sun
     title: Sonnenstand
     language: 'de' 
     

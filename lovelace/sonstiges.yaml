@@ -50,14 +50,44 @@ cards:
         - entity: sensor.dfb_datum
         - entity: sensor.dfb_uhrzeit
         - entity: sensor.dfb_ort        
-
-  - type: custom:atomic-calendar-revive
+        
+  - type: glance
     view_layout:
       column: 3
-    name: Serien
-    maxDaysToShow: 30
-    maxEventCount: 10
-    showLocation: false
-    disableEventLink: true
+    title: Waschmaschine
+    show_header_toggle: false
     entities:
-      - entity: calendar.serien            
+      - entity: switch.waschmaschine
+        tap_action:
+          action: toggle
+          confirmation: true      
+      - entity: sensor.waschmaschine_status
+        name: Status
+      - entity: sensor.waschmaschine_verbrauch
+        name: Verbrauch
+
+  - type: glance
+    view_layout:
+      column: 3  
+    title: Trockner
+    show_header_toggle: false
+    entities:
+      - entity: switch.trockner
+        tap_action:
+          action: toggle
+          confirmation: true
+      - entity: sensor.trockner_status
+        name: Status
+      - entity: sensor.trockner_verbrauch
+        name: Verbrauch
+        
+#  - type: custom:atomic-calendar-revive
+#    view_layout:
+#      column: 3
+#    name: Serien
+#    maxDaysToShow: 30
+#    maxEventCount: 10
+#    showLocation: false
+#    disableEventLink: true
+#    entities:
+#      - entity: calendar.serien            
