@@ -14,7 +14,14 @@ import homeassistant.helpers.config_validation as cv
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 import homeassistant.util.dt as dt_util
 
-from .const import ATTR_NEXT_UPDATE, CONF_FROM, CONF_SCHEDULE, CONF_TO, SERVICE_SET
+from .const import (
+    ATTR_NEXT_TOGGLE,
+    CONF_DISABLED,
+    CONF_FROM,
+    CONF_SCHEDULE,
+    CONF_TO,
+    SERVICE_SET,
+)
 from .schedule import Schedule
 
 
@@ -27,6 +34,7 @@ ENTRY_SCHEMA = vol.Schema(
     {
         vol.Required(CONF_FROM): vol.All(cv.time, remove_micros_and_tz),
         vol.Required(CONF_TO): vol.All(cv.time, remove_micros_and_tz),
+        vol.Optional(CONF_DISABLED): cv.boolean,
     },
     extra=vol.ALLOW_EXTRA,
 )
@@ -39,7 +47,7 @@ SERVICE_SET_SCHEMA = vol.Schema(
 
 
 async def async_setup_entry(
-    hass: HomeAssistant,
+    _: HomeAssistant,
     config_entry: ConfigEntry,
     async_add_entities: AddEntitiesCallback,
 ) -> None:
@@ -97,7 +105,7 @@ class DailyScheduleSenosr(BinarySensorEntity):
         """Update the state and schedule next update."""
         self._clean_up_listener()
         next_update = self._schedule.next_update(dt_util.now())
-        self._attr_extra_state_attributes[ATTR_NEXT_UPDATE] = next_update
+        self._attr_extra_state_attributes[ATTR_NEXT_TOGGLE] = next_update
         self.async_write_ha_state()
         if next_update:
             self._unsub_update = event_helper.async_track_point_in_time(
