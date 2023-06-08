@@ -5,12 +5,7 @@ input_boolean:
 
   bewegungsmelder_balkon_aktiv:
     name: Bewegungsmelder aktiv
-    
-timer:
-  licht_balkon:
-    name: Licht Balkon    
-    duration: 600
-    
+
 binary_sensor:
   - platform: template
     sensors:
@@ -54,10 +49,6 @@ automation:
         entity_id: light.balkon_licht
       - service: input_boolean.turn_on
         entity_id: input_boolean.bewegungsmelder_balkon_aktiv
-      - if: "{{ trigger.id == 'schalter_balkon' and (is_state('binary_sensor.besuch', 'on') or is_state('binary_sensor.allein_zu_hause', 'off')) }}"
-        then:
-          - service: timer.start
-            entity_id: timer.licht_balkon
                   
   - alias: "Licht Balkon - Ausschalten"
     id: "licht_balkon_ausschalten"
@@ -66,15 +57,16 @@ automation:
         platform: state
         entity_id: binary_sensor.bewegungsmelder_wohnzimmer
         to: 'on'
-      - id: timer
-        platform: event
-        event_type: timer.finished
-        event_data:
-          entity_id: timer.licht_balkon      
       - id: balkontuer
         platform: state
         entity_id: binary_sensor.balkontuer
-        to: 'off'          
+        to: 'off'    
+      - id: inaktiv
+        platform: state
+        entity_id: binary_sensor.bewegungsmelder_balkon
+        to: 'off'      
+        for:
+          minutes: 10    
     condition:      
       - condition: state
         entity_id: input_boolean.bewegungsmelder_balkon_aktiv
@@ -83,19 +75,14 @@ automation:
           seconds: 10      
       - condition: or
         conditions:     
-          - "{{ trigger.id == 'timer' }}"
-          - "{{ trigger.id == 'balkontuer' and (is_state('binary_sensor.besuch', 'on') or is_state('binary_sensor.allein_zu_hause', 'off')) }}"
+          - "{{ trigger.id in ('balkontuer','inaktiv') and (is_state('binary_sensor.besuch', 'on') or is_state('binary_sensor.allein_zu_hause', 'off')) }}"
           - "{{ trigger.id == 'bewegungsmelder' and is_state('binary_sensor.besuch', 'off') and is_state('binary_sensor.allein_zu_hause', 'on') }}"
     action:
       - service: light.turn_off
         entity_id: light.balkon_licht
       - service: input_boolean.turn_off
         entity_id: input_boolean.bewegungsmelder_balkon_aktiv
-      - if: "{{ not is_state('timer.licht_balkon', 'idle') }}"
-        then:
-          - service: timer.cancel
-            entity_id: timer.licht_balkon        
-        
+
 homeassistant:
   customize:
     light.balkon_licht:

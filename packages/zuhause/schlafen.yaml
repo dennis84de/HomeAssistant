@@ -117,6 +117,14 @@ script:
                   duration: "{{ states('input_number.timer_schlafzimmer') | int(0) * 60 }}"
               - service: input_boolean.turn_on
                 entity_id: input_boolean.timer_schlafzimmer_aktiv    
+      - wait_for_trigger:
+        - platform: state
+          entity_id: binary_sensor.bewegungsmelder_wohnzimmer
+          to: 'off'                       
+          for:
+            minutes: 10
+      - service: light.turn_off
+        entity_id: light.wohnzimmer_couch, light.wohnzimmer_strahler, light.wohnzimmer_schrank
 
 automation:
   - alias: "Schlafen einschalten"

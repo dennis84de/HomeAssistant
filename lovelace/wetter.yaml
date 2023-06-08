@@ -9,14 +9,6 @@ cards:
     entity: weather.dwd_weather_dortmund
     icons: "/local/icons/weather_icons/static/"    
     name: Wetter
-    
-  - type: entities
-    title: Wetter
-    show_header_toggle: false
-    entities:
-      - entity: sensor.weatherbit_air_temperature
-      - entity: sensor.weatherbit_apparent_temperature
-      - entity: sensor.weatherbit_weather_description
 
   - type: markdown
     title: Wetterwarnungen
@@ -118,16 +110,14 @@ cards:
               points: false
             entities:
               - entity: sensor.parkplatz_luftdruck
-              
+                      
   - type: entities
-    title: Regen und Wind
+    title: Luft
     show_header_toggle: false
     entities:
-      - entity: sensor.regenradar
-      - entity: sensor.weatherbit_precipitation      
-      - entity: sensor.weatherbit_cloud_coverage
-      - entity: sensor.weatherbit_wind_speed      
-      - entity: sensor.windrichtung
+      - entity: sensor.dwd_humidity        
+      - entity: sensor.dwd_pressure
+
     
   - type: entities
     title: Sonne und Mond
@@ -136,8 +126,19 @@ cards:
       - entity: sensor.tageszeit
       - entity: sensor.mondphase
       - entity: binary_sensor.sommerzeit       
-
+            
   - type: entities
+    title: Regen und Wind
+    show_header_toggle: false
+    entities:
+      - entity: sensor.regenradar  
+      - entity: sensor.dwd_cloud_coverage
+      - entity: sensor.dwd_wind_speed
+      - entity: sensor.dwd_wind_direction
+      
+  - type: entities
+    view_layout:
+      column: 2
     title: Pollen
     show_header_toggle: false
     entities:
@@ -147,14 +148,3 @@ cards:
         name: Birke
       - entity: sensor.pollenflug_roggen
         name: Roggen 
-              
-  - type: entities
-    view_layout:
-      column: 3  
-    title: Luft
-    show_header_toggle: false
-    entities:
-      - entity: sensor.weatherbit_relative_humidity             
-      - type: custom:template-entity-row
-        entity: sensor.weatherbit_station_pressure
-        state: "{{ states('sensor.weatherbit_station_pressure')| int(0) ~ ' hPa' }}"      

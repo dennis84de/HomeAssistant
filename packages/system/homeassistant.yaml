@@ -83,12 +83,13 @@ zone:
     radius: 70
     icon: mdi:human-female     
     
+command_line:
+  - sensor:
+      command: "head -5 /config/.HA_VERSION"
+      name: Installierte Version
+      scan_interval: 3600
+      
 sensor:
-  - platform: command_line
-    name: Installierte Version
-    command: "head -5 /config/.HA_VERSION"
-    scan_interval: 3600
-
   - platform: systemmonitor
     resources:
       - type: disk_use_percent
