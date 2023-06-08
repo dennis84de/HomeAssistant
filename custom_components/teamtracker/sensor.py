@@ -39,7 +39,9 @@ _LOGGER = logging.getLogger(__name__)
 
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
     {
-        vol.Required(CONF_LEAGUE_ID, default=DEFAULT_LEAGUE): vol.Upper,
+        vol.Required(CONF_LEAGUE_ID, default=DEFAULT_LEAGUE): vol.All(
+            vol.Upper, vol.In([*LEAGUE_MAP.keys(), "XXX"])
+        ),
         vol.Required(CONF_TEAM_ID): cv.string,
         vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
         vol.Optional(CONF_TIMEOUT, default=DEFAULT_TIMEOUT): int,
@@ -178,6 +180,7 @@ class TeamTrackerScoresSensor(CoordinatorEntity):
         self._team_colors = None
         self._team_score = None
         self._team_win_probability = None
+        self._team_winner = None
         self._team_timeouts = None
 
         self._opponent_name = None
@@ -189,6 +192,7 @@ class TeamTrackerScoresSensor(CoordinatorEntity):
         self._opponent_colors = None
         self._opponent_score = None
         self._opponent_win_probability = None
+        self._opponent_winner = None
         self._opponent_timeouts = None
 
         self._quarter = None
@@ -278,6 +282,7 @@ class TeamTrackerScoresSensor(CoordinatorEntity):
         #        attrs["team_colors_rbg"] = self.colors2rgb(self.coordinator.data["team_colors"])
         attrs["team_score"] = self.coordinator.data["team_score"]
         attrs["team_win_probability"] = self.coordinator.data["team_win_probability"]
+        attrs["team_winner"] = self.coordinator.data["team_winner"]
         attrs["team_timeouts"] = self.coordinator.data["team_timeouts"]
 
         attrs["opponent_name"] = self.coordinator.data["opponent_name"]
@@ -291,6 +296,9 @@ class TeamTrackerScoresSensor(CoordinatorEntity):
         attrs["opponent_score"] = self.coordinator.data["opponent_score"]
         attrs["opponent_win_probability"] = self.coordinator.data[
             "opponent_win_probability"
+        ]
+        attrs["opponent_winner"] = self.coordinator.data[
+            "opponent_winner"
         ]
         attrs["opponent_timeouts"] = self.coordinator.data["opponent_timeouts"]
 
