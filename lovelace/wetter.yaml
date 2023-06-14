@@ -134,7 +134,7 @@ cards:
       - entity: sensor.regenradar  
       - entity: sensor.dwd_cloud_coverage
       - entity: sensor.dwd_wind_speed
-      - entity: sensor.dwd_wind_direction
+      - entity: sensor.windrichtung
       
   - type: entities
     view_layout:

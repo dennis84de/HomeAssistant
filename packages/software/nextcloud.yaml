@@ -9,9 +9,10 @@ binary_sensor:
         friendly_name: "Nextcloud Update verfügbar"
         device_class: update
         value_template: >-
-          {% if 'beta' not in states('sensor.nextcloud_server_latest_release') and 'rc' not in states('sensor.nextcloud_server_latest_release') %}
+          {% if 'beta' not in state_attr('sensor.nextcloud_server_latest_release', 'tag') 
+            and 'rc' not in state_attr('sensor.nextcloud_server_latest_release', 'tag')  %}
             {% set currentVersion = states('sensor.nextcloud_system_version').split('.') %}
-            {% set latestVersion = states('sensor.nextcloud_server_latest_release').replace('v', '').split('.') %}
+            {% set latestVersion = state_attr('sensor.nextcloud_server_latest_release', 'tag').replace('v', '').split('.') %}
 
             {{ currentVersion[0] != latestVersion[0] 
               or currentVersion[1] != latestVersion[1] 
@@ -21,9 +22,10 @@ binary_sensor:
             false
           {% endif %}
         icon_template: >-
-          {% if 'beta' not in states('sensor.nextcloud_server_latest_release') and 'rc' not in states('sensor.nextcloud_server_latest_release') %}
+          {% if 'beta' not in state_attr('sensor.nextcloud_server_latest_release', 'tag') 
+            and 'rc' not in state_attr('sensor.nextcloud_server_latest_release', 'tag')  %}
             {% set currentVersion = states('sensor.nextcloud_system_version').split('.') %}
-            {% set latestVersion = states('sensor.nextcloud_server_latest_release').replace('v', '').split('.') %}
+            {% set latestVersion = state_attr('sensor.nextcloud_server_latest_release', 'tag').replace('v', '').split('.') %}
 
             {{ 'mdi:cog-sync' if currentVersion[0] != latestVersion[0] 
               or currentVersion[1] != latestVersion[1] 
@@ -40,7 +42,7 @@ automation:
     variables:       
       aktuelle_version: >-
         {% set latestVersion = states('sensor.nextcloud_server_latest_tag').replace('v', '').split('.') %}
-        {% if latestVersion[0] == 'unaailable' %}
+        {% if latestVersion[0] == 'unavailable' %}
           false
         {% else %}
           {{ latestVersion[0] ~ '.' ~ latestVersion[1] ~ '.' ~ latestVersion[2] }}
