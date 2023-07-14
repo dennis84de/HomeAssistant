@@ -173,14 +173,14 @@ automation:
       - choose:
           - conditions:
               - condition: state
-                entity_id: media_player.kodi_sportzimmer
+                entity_id: media_player.kodi_arbeitszimmer
                 state: 'playing'            
             sequence:       
               - service: input_boolean.turn_on
-                entity_id: input_boolean.kodi_sportzimmer_pausiert
+                entity_id: input_boolean.kodi_arbeitszimmer_pausiert
               - service: media_player.media_pause
-                entity_id: media_player.kodi_sportzimmer      
-              - service: notify.kodi_sportzimmer
+                entity_id: media_player.kodi_arbeitszimmer      
+              - service: notify.kodi_arbeitszimmer
                 data:
                   title: 'Telefon'
                   message: >-
@@ -233,6 +233,7 @@ automation:
                   is_volume_muted: True
       - choose:
           - conditions:
+              - "{{ is_state('switch.wiedergabe_aktiv', 'on') }}"   
               - condition: state
                 entity_id: switch.wiedergabe_aktiv
                 state: 'on'         
@@ -308,17 +309,17 @@ automation:
       - choose:
           - conditions:
               - condition: state
-                entity_id: media_player.kodi_sportzimmer
+                entity_id: media_player.kodi_arbeitszimmer
                 state: 'paused'
               - condition: state
-                entity_id: input_boolean.kodi_sportzimmer_pausiert
+                entity_id: input_boolean.kodi_arbeitszimmer_pausiert
                 state: 'on'
             sequence:       
               - service: input_boolean.turn_off
-                entity_id: input_boolean.kodi_sportzimmer_pausiert
+                entity_id: input_boolean.kodi_arbeitszimmer_pausiert
               - service: media_player.media_play
-                entity_id: media_player.kodi_sportzimmer
-              - service: notify.kodi_sportzimmer
+                entity_id: media_player.kodi_arbeitszimmer
+              - service: notify.kodi_arbeitszimmer
                 data:
                   title: 'Telefon'
                   message: 'Anruf beendet'

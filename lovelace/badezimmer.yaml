@@ -49,7 +49,6 @@ cards:
       - entity: light.badezimmerschrank
 
   - type: custom:layout-break  
-
      
   - type: glance
     title: Sensoren

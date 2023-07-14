@@ -49,7 +49,11 @@ script:
               battery: "{{ states('sensor.handy_battery_level') | int(0) }}"
               gps: 
                 - !secret home_latitude
-                - !secret home_longitude                   
+                - !secret home_longitude        
+          - if: "{{ is_state('media_player.uberall', 'playing') }}"
+            then:
+              - service: media_player.media_pause
+                entity_id: media_player.uberall               
           - service: alarmo.arm
             data:
               entity_id: alarm_control_panel.alarmo

@@ -11,9 +11,9 @@ alles_ausschalten:
     - light.wohnzimmer_couch
     - light.wohnzimmer_strahler
     - light.wohnzimmer_schrank
-    - light.arbeitszimmer_lampe
-    - light.sportzimmer_regal
-    - light.schreibtisch
+    - light.kinderzimmer_lampe
+    - light.arbeitszimmer_regal
+    - light.kinderzimmer_licht
     - light.flur_vorne
     - light.flur_hinten
     - light.badezimmerschrank
@@ -32,8 +32,7 @@ steckdosen:
     - switch.flur_radio
     - switch.badezimmer_radio
     - switch.kueche_radio
-    - switch.keller_radio
-    - switch.sportzimmer_fernseher
+    - switch.arbeitszimmer_fernseher
     - switch.schlafzimmer_fernseher
     - switch.waschmaschine
     - switch.trockner
@@ -41,10 +40,10 @@ steckdosen:
     - switch.wohnzimmer_couch
     - switch.wohnzimmer_radio
     - switch.wohnzimmer_schrank
-    - switch.arbeitszimmer_lampe
+    - switch.kinderzimmer_lampe
     - switch.arbeitszimmer_radio
     - switch.arbeitszimmer_ladegerat
     - switch.arbeitszimmer_monitore
-    - switch.sportzimmer_regal
+    - switch.arbeitszimmer_regal
     - switch.balkon_radio
     - switch.spuelmaschine

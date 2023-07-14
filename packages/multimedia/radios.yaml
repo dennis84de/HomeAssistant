@@ -7,7 +7,11 @@ input_boolean:
     
   tuer_musik_pausiert:
     name: Musik pausiert
-
+    
+  radio_alexa:
+    name: Radio Alexa
+    icon: mdi:radio-tower
+    
 timer:
   radio_balkon:
     name: Radio Balkon    
@@ -80,7 +84,7 @@ switch:
               | list
               | length %}    
                 
-          {{ radiosAktiv | int(0) > 0 }}
+          {{ radiosAktiv | int(0) > 0 or is_state('media_player.uberall', 'playing') }}
         icon_template: >-
           {% set radiosAktiv = expand('group.radio_mediaplayer')
               | selectattr('state','eq','playing') 
@@ -88,7 +92,7 @@ switch:
               | list
               | length %}    
                 
-          {{ 'mdi:play-circle-outline' if radiosAktiv | int(0) > 0 else 'mdi:pause-circle-outline' }}        
+          {{ 'mdi:play-circle-outline' if (radiosAktiv | int(0) > 0 or is_state('media_player.uberall', 'playing')) else 'mdi:pause-circle-outline' }}        
         turn_on:
           service: script.radios_starten
         turn_off:
@@ -97,7 +101,13 @@ switch:
       radios_lautlos:
         friendly_name: Radios lautlos
         value_template: >-
-          {% if (is_state('media_player.radio_wohnzimmer', 'playing') and (state_attr('media_player.radio_wohnzimmer', 'volume_level') | float(0)) == 0)
+          {% if state_attr('media_player.echo_badezimmer', 'is_volume_muted') == true
+            or state_attr('media_player.echo_flur', 'is_volume_muted') == true
+            or state_attr('media_player.echo_kuche', 'is_volume_muted') == true
+            or state_attr('media_player.echo_wohnzimmer', 'is_volume_muted') == true
+            or state_attr('media_player.echo_arbeitszimmer', 'is_volume_muted') == true
+            or state_attr('media_player.echo_kinderzimmer', 'is_volume_muted') == true
+            or (is_state('media_player.radio_wohnzimmer', 'playing') and (state_attr('media_player.radio_wohnzimmer', 'volume_level') | float(0)) == 0)
             or (is_state('media_player.radio_arbeitszimmer', 'playing') and (state_attr('media_player.radio_arbeitszimmer', 'volume_level') | float(0)) == 0)
             or (is_state('media_player.radio_badezimmer', 'playing') and (state_attr('media_player.radio_badezimmer', 'volume_level') | float(0)) == 0)
             or (is_state('media_player.radio_kueche', 'playing') and (state_attr('media_player.radio_kueche', 'volume_level') | float(0)) == 0)
@@ -109,7 +119,13 @@ switch:
             False
           {% endif %}       
         icon_template: >-
-          {% if (is_state('media_player.radio_wohnzimmer', 'playing') and (state_attr('media_player.radio_wohnzimmer', 'volume_level') | float(0)) == 0)
+          {% if state_attr('media_player.echo_badezimmer', 'is_volume_muted') == true
+            or state_attr('media_player.echo_flur', 'is_volume_muted') == true
+            or state_attr('media_player.echo_kuche', 'is_volume_muted') == true
+            or state_attr('media_player.echo_wohnzimmer', 'is_volume_muted') == true
+            or state_attr('media_player.echo_arbeitszimmer', 'is_volume_muted') == true
+            or state_attr('media_player.echo_kinderzimmer', 'is_volume_muted') == true
+            or (is_state('media_player.radio_wohnzimmer', 'playing') and (state_attr('media_player.radio_wohnzimmer', 'volume_level') | float(0)) == 0)
             or (is_state('media_player.radio_arbeitszimmer', 'playing') and (state_attr('media_player.radio_arbeitszimmer', 'volume_level') | float(0)) == 0)
             or (is_state('media_player.radio_badezimmer', 'playing') and (state_attr('media_player.radio_badezimmer', 'volume_level') | float(0)) == 0)
             or (is_state('media_player.radio_kueche', 'playing') and (state_attr('media_player.radio_kueche', 'volume_level') | float(0)) == 0)
@@ -141,63 +157,92 @@ script:
   radios_einschalten:
     alias: Radios einschalten
     sequence:
-      - service: switch.turn_on
-        entity_id: switch.badezimmer_radio, switch.wohnzimmer_radio, switch.flur_radio, switch.kueche_radio          
-      - choose:
-          - conditions:
-              - "{{ radioBalkon is not defined or radioBalkon == True }}"              
-              - "{{ now().isoweekday() == 6 or is_state('binary_sensor.arbeitstag', 'on') }}"
-              - "{{ (states('sensor.balkon_temperatur') | int(0)) > -5 }}"                
-              - "{{ is_state('binary_sensor.nachts', 'off') }}"
-            sequence:            
-              - service: switch.turn_on
-                entity_id: switch.balkon_radio
+      - if: "{{ is_state('input_boolean.radio_alexa', 'on') }}"
+        then:             
+          - service: script.alexa_radio_suedtirol_eins               
+        else:      
+          - service: switch.turn_on
+            entity_id: switch.badezimmer_radio, switch.wohnzimmer_radio, switch.flur_radio, switch.kueche_radio          
+          - choose:
+              - conditions:
+                  - "{{ radioBalkon is not defined or radioBalkon == True }}"              
+                  - "{{ now().isoweekday() == 6 or is_state('binary_sensor.arbeitstag', 'on') }}"
+                  - "{{ (states('sensor.balkon_temperatur') | int(0)) > -5 }}"                
+                  - "{{ is_state('binary_sensor.nachts', 'off') }}"
+                sequence:            
+                  - service: switch.turn_on
+                    entity_id: switch.balkon_radio
                 
   radios_ausschalten:
     alias: Radios ausschalten
     sequence:         
       - service: script.radios_pausieren 
-      - choose:
-          - conditions:
-              - "{{ badezimmerEingeschaltetLassen is not defined or badezimmerEingeschaltetLassen == False }}"
-            sequence:            
-              - service: switch.turn_off
-                entity_id: group.alle_radios            
-        default:
+      - if: "{{ badezimmerEingeschaltetLassen is not defined or badezimmerEingeschaltetLassen == False }}"
+        then:        
           - service: switch.turn_off
-            entity_id: group.radios_ohne_badezimmer        
+            entity_id: group.alle_radios            
+        else:
+          - service: switch.turn_off
+            entity_id: group.radios_ohne_badezimmer    
+      - if: "{{ is_state('media_player.uberall', 'playing') }}"
+        then:
+          - service: media_player.media_pause
+            entity_id: media_player.uberall                  
                 
   radios_starten:
     alias: Radios abspielen
     sequence:
-      - service: media_player.media_play
-        entity_id: group.radio_mediaplayer
+      - if: "{{ is_state('input_boolean.radio_alexa', 'on') }}"
+        then:             
+          - service: script.alexa_radio_suedtirol_eins               
+        else:          
+          - service: media_player.media_play
+            entity_id: group.radio_mediaplayer
 
   radios_pausieren:
       alias: Radios pausieren
       sequence:
-        - service: media_player.media_pause
-          entity_id: group.radio_mediaplayer
+      - if: "{{ is_state('input_boolean.radio_alexa', 'on') }}"
+        then:             
+          - service: media_player.media_pause
+            entity_id: media_player.uberall            
+        else:          
+          - service: media_player.media_pause
+            entity_id: group.radio_mediaplayer
 
   radios_lautlos:
       alias: Radios lautlos
       sequence:
-        - service: media_player.volume_set          
-          data:
-            entity_id: group.radio_mediaplayer, media_player.radio_balkon
-            volume_level: 0
+        - if: "{{ is_state('media_player.uberall', 'playing') }}"
+          then:
+            - service: media_player.volume_mute
+              entity_id: media_player.uberall       
+              data:
+                is_volume_muted: 1
+          else:
+            - service: media_player.volume_set          
+              data:
+                entity_id: group.radio_mediaplayer, media_player.radio_balkon
+                volume_level: 0
             
   radios_laut:
       alias: Radios laut
       sequence:   
-        - service: media_player.volume_set          
-          data:
-            entity_id: group.radio_mediaplayer
-            volume_level: 0.4 
-        - service: media_player.volume_set          
-          data:
-            entity_id: media_player.radio_balkon
-            volume_level: 0.2             
+        - if: "{{ is_state('media_player.uberall', 'playing') }}"
+          then:
+            - service: media_player.volume_mute
+              entity_id: media_player.uberall       
+              data:
+                is_volume_muted: 0
+          else:
+            - service: media_player.volume_set          
+              data:
+                entity_id: group.radio_mediaplayer
+                volume_level: 0.4 
+            - service: media_player.volume_set          
+              data:
+                entity_id: media_player.radio_balkon
+                volume_level: 0.2             
             
 automation:       
   - alias: 'Radio Balkon - Bewegung erkannt'

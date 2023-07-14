@@ -10,4 +10,4 @@ entity_controller:
     - entity_controller.bewegung_kuechenschrank
     - entity_controller.bewegung_schlafzimmer_bett
     - entity_controller.bewegung_schlafzimmer_kleiderschrank
-    - entity_controller.bewegung_sportzimmer
+    - entity_controller.bewegung_kinderzimmer

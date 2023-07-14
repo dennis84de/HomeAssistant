@@ -6,7 +6,7 @@ bewegungsmelder:
     - binary_sensor.bewegungsmelder_flur_vorne
     - binary_sensor.bewegungsmelder_flur_hinten
     - binary_sensor.bewegungsmelder_arbeitszimmer
-    - binary_sensor.bewegungsmelder_sportzimmer
+    - binary_sensor.bewegungsmelder_kinderzimmer
     - binary_sensor.bewegungsmelder_kueche
     - binary_sensor.bewegungsmelder_balkon
     - binary_sensor.bewegungsmelder_wohnzimmer
@@ -21,5 +21,5 @@ bewegungsmelder_deaktiviert:
     - input_boolean.bewegungsmelder_badezimmer_deaktiviert
     - input_boolean.bewegungsmelder_flur_deaktiviert
     - input_boolean.bewegungsmelder_arbeitszimmer_deaktiviert
-    - input_boolean.bewegungsmelder_sportzimmer_deaktiviert     
+    - input_boolean.bewegungsmelder_kinderzimmer_deaktiviert     
     - input_boolean.bewegungsmelder_balkon_deaktiviert

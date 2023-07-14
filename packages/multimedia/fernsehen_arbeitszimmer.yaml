@@ -1,42 +1,42 @@
 #media_player:
 #  - platform: androidtv
-#    host: !secret firetv_sportzimmer_host
-#    name: Fire TV Sportzimmer
+#    host: !secret firetv_arbeitszimmer_host
+#    name: Fire TV Arbeitszimmer
    
 notify:
   - platform: kodi
-    name: Kodi Sportzimmer
-    host: !secret firetv_sportzimmer_host  
+    name: Kodi Arbeitszimmer
+    host: !secret firetv_arbeitszimmer_host  
     
 input_boolean:
-  kodi_sportzimmer_pausiert:
-    name: Kodi Sportzimmer pausiert
+  kodi_arbeitszimmer_pausiert:
+    name: Kodi Arbeitszimmer pausiert
     
 switch:
   - platform: template
     switches:
-      kodi_sportzimmer:
+      kodi_arbeitszimmer:
         friendly_name: Kodi
         icon_template: >-
           mdi:kodi
         value_template: >-
-          {{ state_attr('media_player.fire_tv_sportzimmer', 'source') == "Kodi" }}
+          {{ state_attr('media_player.fire_tv_arbeitszimmer', 'source') == "Kodi" }}
         turn_on:
           - service: media_player.select_source
             data:
-              entity_id: media_player.fire_tv_sportzimmer
+              entity_id: media_player.fire_tv_arbeitszimmer
               source: "org.xbmc.kodi"
         turn_off:
           - service: kodi.call_method
             data:
-              entity_id: media_player.kodi_sportzimmer
+              entity_id: media_player.kodi_arbeitszimmer
               method: Input.Home
           - service: media_player.select_source
             data:
-              entity_id: media_player.fire_tv_sportzimmer
+              entity_id: media_player.fire_tv_arbeitszimmer
               source: "com.amazon.tv.launcher"  
 
 homeassistant:
   customize:
-    switch.sportzimmer_fernseher:
+    switch.arbeitszimmer_fernseher:
       icon: mdi:television

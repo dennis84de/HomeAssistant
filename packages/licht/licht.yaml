@@ -50,15 +50,15 @@ script:
           - service: light.turn_off
             entity_id: light.flur_vorne, light.flur_hinten
             
+      - if: "{{ is_state('input_boolean.bewegungsmelder_kinderzimmer_deaktiviert', 'off') }}"
+        then:
+          - service: light.turn_off
+            entity_id: light.kinderzimmer_licht, light.kinderzimmer_lampe
+            
       - if: "{{ is_state('input_boolean.bewegungsmelder_arbeitszimmer_deaktiviert', 'off') }}"
         then:
           - service: light.turn_off
-            entity_id: light.schreibtisch, light.arbeitszimmer_lampe
-            
-      - if: "{{ is_state('input_boolean.bewegungsmelder_sportzimmer_deaktiviert', 'off') }}"
-        then:
-          - service: light.turn_off
-            entity_id: light.sportzimmer_regal
+            entity_id: light.arbeitszimmer_regal
             
       - if: "{{ is_state('input_boolean.bewegungsmelder_balkon_deaktiviert', 'off') }}"
         then:

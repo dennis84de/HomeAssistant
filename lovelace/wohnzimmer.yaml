@@ -50,6 +50,13 @@ cards:
           progress: true
           volume: true          
       - type: custom:mini-media-player
+        entity: media_player.fire_tv_wohnzimmer
+        name: Fire TV
+        hide:
+          source: true
+          volume: true
+          progress: true          
+      - type: custom:mini-media-player
         entity: media_player.radio_wohnzimmer
         name: Radio
         hide:

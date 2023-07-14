@@ -97,8 +97,8 @@ cards:
         name: Parkplatz
       - entity: sensor.thermometer_schlafzimmer_battery_level        
         name: Schlafzimmer
-      - entity: sensor.thermometer_arbeitszimmer_battery_level        
-        name: Arbeitszimmer
+      - entity: sensor.thermometer_kinderzimmer_battery_level        
+        name: Kinderzimmer
       - entity: sensor.thermometer_kueche_battery_level        
         name: Küche
       - entity: sensor.thermometer_balkon_battery_level        
@@ -126,8 +126,8 @@ cards:
         name: Flur hinten
       - entity: sensor.bewegungsmelder_arbeitszimmer_battery_level        
         name: Arbeitszimmer
-      - entity: sensor.bewegungsmelder_sportzimmer_battery_level        
-        name: Sportzimmer
+      - entity: sensor.bewegungsmelder_kinderzimmer_battery_level        
+        name: Kinderzimmer
       - entity: sensor.bewegungsmelder_kueche_battery_level        
         name: Küche
       - entity: sensor.bewegungsmelder_schlafzimmer_battery_level        
@@ -149,8 +149,8 @@ cards:
         name: Thermometer Wohnzimmer
       - entity: sensor.pflanze_wohnzimmer_battery_level       
         name: Pflanze Wohnzimmer
-      - entity: sensor.pflanze_arbeitszimmer_battery_level       
-        name: Pflanze Arbeitszimmer  
+      - entity: sensor.pflanze_kinderzimmer_battery_level       
+        name: Pflanze Kinderzimmer  
         
   - type: custom:battery-state-card
     title: Fenster
@@ -172,8 +172,8 @@ cards:
         name: Küche
       - entity: sensor.fenster_arbeitszimmer_battery_level        
         name: Arbeitszimmer
-      - entity: sensor.fenster_sportzimmer_battery_level        
-        name: Sportzimmer
+      - entity: sensor.fenster_kinderzimmer_battery_level        
+        name: Kinderzimmer
 
   - type: custom:battery-state-card
     title: Heizung

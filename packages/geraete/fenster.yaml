@@ -11,7 +11,7 @@ automation:
       - platform: state
         entity_id: binary_sensor.fenster_arbeitszimmer
       - platform: state
-        entity_id: binary_sensor.fenster_sportzimmer
+        entity_id: binary_sensor.fenster_kinderzimmer
       - platform: state
         entity_id: binary_sensor.balkontuer        
     condition:
@@ -48,8 +48,8 @@ automation:
                   {% set zimmer = "in der Küche" %}
                 {% elif trigger.entity_id == "binary_sensor.fenster_arbeitszimmer" %}
                   {% set zimmer = "im Arbeitszimmer" %}
-                {% elif trigger.entity_id == "binary_sensor.fenster_sportzimmer" %}
-                  {% set zimmer = "im Sportzimmer" %}
+                {% elif trigger.entity_id == "binary_sensor.fenster_kinderzimmer" %}
+                  {% set zimmer = "im Kinderzimmer" %}
                 {% endif %}
 
                 Das Fenster {{ zimmer }} wurde {{ status }}.

@@ -123,71 +123,88 @@ cards:
                       info: true                        
       - entity: switch.radios_lautlos
       - entity: script.sync_radios
-#      - type: custom:mini-media-player
-#        entity: media_player.uberall
-#        name: Amazon
-#        hide:
-#          source: true
-#          progress: true
-#          controls: true  
-#          info: true        
-#        shortcuts:
-#          columns: 2
-#          buttons:
-#            - type: script
-#              name: Südtirol 1
-#              id: script.alexa_radio_suedtirol_eins
-#              icon: mdi:radio       
-#            - type: script
-#              name: Eins Live
-#              id: script.alexa_radio_eins_live
-#              icon: mdi:radio           
-#        tap_action:
-#          action: fire-dom-event
-#          browser_mod:
-#            service: browser_mod.popup
-#            data:              
-#              content:          
-#                type: entities
-#                entities:
-#                  - type: custom:mini-media-player
-#                    entity: media_player.echo_wohnzimmer
-#                    name: Wohnzimmer
-#                    hide:
-#                      source: true
-#                      progress: true
-#                      controls: true  
-#                      info: true  
-#                  - type: custom:mini-media-player
-#                    entity: media_player.echo_flur
-#                    name: Flur    
-#                    hide:
-#                      source: true
-#                      progress: true
-#                      controls: true  
-#                      info: true
-#                  - type: custom:mini-media-player
-#                    entity: media_player.echo_badezimmer
-#                    name: Badezimmer    
-#                    hide:
-#                      source: true
-#                      progress: true
-#                      controls: true  
-#                      info: true                             
-#                  - type: custom:mini-media-player
-#                    entity: media_player.echo_kuche
-#                    name: Küche    
-#                    hide:
-#                      source: true
-#                      progress: true
-#                      controls: true  
-#                      info: true        
+      - entity: input_boolean.radio_alexa       
+                  
+  - type: conditional
+    view_layout:
+      column: 3  
+    conditions:
+      - entity: input_boolean.radio_alexa
+        state: "on"
+    card:                    
+      type: custom:mini-media-player
+      entity: media_player.uberall        
+      name: Amazon
+      hide:
+        source: true
+        progress: true
+        controls: true  
+        info: true        
+      shortcuts:
+        columns: 2
+        buttons:
+          - type: script
+            name: Südtirol 1
+            id: script.alexa_radio_suedtirol_eins
+            icon: mdi:radio       
+          - type: script
+            name: Eins Live
+            id: script.alexa_radio_eins_live
+            icon: mdi:radio           
+      tap_action:
+        action: fire-dom-event
+        browser_mod:
+          service: browser_mod.popup
+          data:              
+            content:          
+              type: entities
+              entities:
+                - type: custom:mini-media-player
+                  entity: media_player.echo_wohnzimmer
+                  name: Wohnzimmer
+                  hide:
+                    source: true
+                    progress: true
+                    controls: true  
+                    info: true  
+                - type: custom:mini-media-player
+                  entity: media_player.echo_flur
+                  name: Flur    
+                  hide:
+                    source: true
+                    progress: true
+                    controls: true  
+                    info: true
+                - type: custom:mini-media-player
+                  entity: media_player.echo_badezimmer
+                  name: Badezimmer    
+                  hide:
+                    source: true
+                    progress: true
+                    controls: true  
+                    info: true                             
+                - type: custom:mini-media-player
+                  entity: media_player.echo_kuche
+                  name: Küche    
+                  hide:
+                    source: true
+                    progress: true
+                    controls: true  
+                    info: true  
+                - type: custom:mini-media-player
+                  entity: media_player.echo_arbeitszimmer
+                  name: Arbeitszimmer    
+                  hide:
+                    source: true
+                    progress: true
+                    controls: true  
+                    info: true                       
                     
   - type: glance
     title: Gäste Wlan
     show_header_toggle: false
-    entities:
-      - entity: switch.fritz_box_7272_wi_fi_pretty_fly_for_a_wifi
+    entities:      
+      - entity: switch.fritz_box_6660_cable_wi_fi_pretty_fly_for_a_wifi
         name: Gastzugang
         tap_action:
            action: toggle
@@ -215,13 +232,13 @@ cards:
     title: Fritzbox
     show_header_toggle: false
     entities:
-      - entity: sensor.fritz_box_7272_connection_uptime
+      - entity: sensor.fritz_box_6660_cable_letzter_neustart
         name: "Letzter Neustart"
-      - entity: sensor.fritz_box_7272_external_ip
+      - entity: sensor.fritz_box_6660_cable_externe_ip
         name: Öffentliche IP
-      - entity: sensor.fritz_box_7272_gb_received
+      - entity: sensor.fritz_box_6660_cable_gb_empfangen
         name: Daten empfangen
-      - entity: sensor.fritz_box_7272_gb_sent
+      - entity: sensor.fritz_box_6660_cable_gb_gesendet
         name: Daten gesendet                          
 
   - type: custom:auto-entities
@@ -297,8 +314,8 @@ cards:
                     name: Flur
                   - entity: input_boolean.bewegungsmelder_arbeitszimmer_deaktiviert
                     name: Arbeitszimmer
-                  - entity: input_boolean.bewegungsmelder_sportzimmer_deaktiviert
-                    name: Sportzimmer  
+                  - entity: input_boolean.bewegungsmelder_kinderzimmer_deaktiviert
+                    name: Kinderzimmer  
                   - entity: input_boolean.bewegungsmelder_balkon_deaktiviert
                     name: Balkon                      
       - entity: script.alexa_witz_gestartet

@@ -13,7 +13,7 @@ heimnetz:
     - device_tracker.tasmotawohnzimmerradio
     - device_tracker.tasmotawohnzimmerstrahler         
     - device_tracker.tasmotawohnzimmercouch
-    - device_tracker.tasmotaarbeitszimmerlampe      
+    - device_tracker.tasmotakinderzimmerlampe      
     - device_tracker.tasmotaarbeitszimmerradio      
     - device_tracker.tasmotaarbeitszimmerladegeraet      
     - device_tracker.tasmotaarbeitszimmermonitore          
@@ -31,7 +31,7 @@ heimnetz:
     - device_tracker.magichomekueche
     - device_tracker.magichomebadezimmer
     - device_tracker.magichomeschlafzimmer
-    - device_tracker.magichomearbeitszimmer
+    - device_tracker.magichomekinderzimmer
     - device_tracker.magichomebalkon          
-    - device_tracker.shellysportzimmerfernseher
+    - device_tracker.shellyarbeitszimmerfernseher
     - device_tracker.broadlinkschlafzimmer 

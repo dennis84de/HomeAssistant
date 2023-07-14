@@ -1,0 +1,93 @@
+title: Kinderzimmer
+path: kinderzimmer
+type: custom:horizontal-layout
+layout:
+  width: 400
+  max_cols: 3
+cards:
+  - type: entities
+    title: Licht
+    show_header_toggle: false
+    entities:
+      - entity: light.kinderzimmer_licht
+      - entity: light.kinderzimmer_lampe
+      
+  - type: custom:stack-in-card
+    cards:
+      - type: horizontal-stack
+        cards:
+          - type: custom:mini-graph-card
+            name: Temperatur
+            line_width: 3
+            animate: true
+            hour24: true
+            show:
+              fill: false
+              icon: false
+              points: false
+            entities:
+              - entity: sensor.kinderzimmer_temperatur
+          - type: custom:mini-graph-card
+            name: Luftfeuchtigkeit
+            line_width: 3
+            animate: true
+            hour24: true
+            show:
+              fill: false
+              icon: false
+              points: false
+            entities:
+              - entity: sensor.kinderzimmer_luftfeuchtigkeit        
+          - type: custom:mini-graph-card
+            name: Luftdruck
+            line_width: 3
+            animate: true
+            hour24: true
+            show:
+              fill: false
+              icon: false
+              points: false
+            entities:
+              - entity: sensor.kinderzimmer_luftdruck                     
+      - type: entities        
+        show_header_toggle: false
+        entities:
+          - entity: sensor.kinderzimmer_perception
+            name: Klima   
+            
+  - type: glance
+    title: Sensoren
+    show_header_toggle: false
+    entities:
+      - entity: binary_sensor.fenster_kinderzimmer
+        name: Fenster      
+      - entity: binary_sensor.bewegungsmelder_kinderzimmer
+        name: Bewegungsmelder
+               
+  - type: custom:stack-in-card
+    cards:
+      - type: horizontal-stack
+        title: Pflanze
+        cards:
+          - type: custom:mini-graph-card
+            name: Feuchtigkeit
+            line_width: 3
+            animate: true
+            hour24: true
+            show:
+              fill: false
+              icon: false
+              points: false
+            entities:
+              - entity: sensor.pflanze_kinderzimmer_feuchtigkeit
+          - type: custom:mini-graph-card
+            name: Leitfähigkeit
+            line_width: 3
+            animate: true
+            hour24: true
+            show:
+              fill: false
+              icon: false
+              points: false
+            entities:
+              - entity: sensor.pflanze_kinderzimmer_leitfaehigkeit               

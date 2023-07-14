@@ -9,10 +9,10 @@ cards:
     title: Netzwerk
     show_header_toggle: false
     entities:
-      - entity: device_tracker.netzwerkdj
-        name: Fritzbox
-      - entity: device_tracker.fritzrepeater
-        name: Repeater
+      - entity: device_tracker.fritzrepeaterkeller
+        name: Repeater Keller
+      - entity: device_tracker.fritzrepeaterschlafzimmer
+        name: Repeater Schlafzimmer        
       - entity: device_tracker.diskstation
         name: Diskstation
 
@@ -47,8 +47,8 @@ cards:
         name: Wohnzimmer Radio      
       - entity: device_tracker.tasmotawohnzimmerschrank
         name: Wohnzimmer Schrank        
-      - entity: device_tracker.tasmotaarbeitszimmerlampe
-        name: Arbeitszimmer Lampe
+      - entity: device_tracker.tasmotakinderzimmerlampe
+        name: Kinderzimmer Lampe
       - entity: device_tracker.tasmotaarbeitszimmerradio
         name: Arbeitszimmer Radio
       - entity: device_tracker.tasmotaarbeitszimmerladegeraet
@@ -91,17 +91,17 @@ cards:
         name: Arbeitszimmer
       - entity: device_tracker.radiobalkon
         name: Balkon
-      - entity: device_tracker.radiokeller
-        name: Keller
         
   - type: entities
     title: Fire TV
     show_header_toggle: false
     entities:
+      - entity: device_tracker.firetvwohnzimmer
+        name: Wohnzimmer      
       - entity: device_tracker.firetvschlafzimmer
         name: Schlafzimmer
-      - entity: device_tracker.firetvsportzimmer
-        name: Sportzimmer        
+      - entity: device_tracker.firetvarbeitszimmer
+        name: Arbeitszimmer        
       - entity: device_tracker.firetvbadezimmer
         name: Badezimmer
                 
@@ -113,8 +113,7 @@ cards:
       - entity: device_tracker.tplinkschlafzimmerradio        
       - entity: device_tracker.tplinkflurradio        
       - entity: device_tracker.tplinkbadezimmerradio        
-      - entity: device_tracker.tplinkkuecheradio           
-      - entity: device_tracker.tplinkkellerradio                    
+      - entity: device_tracker.tplinkkuecheradio                    
       - entity: device_tracker.tplinkschlafzimmerfernseher        
       - entity: device_tracker.tplinkwaschmaschine
       - entity: device_tracker.tplinktrockner        
@@ -133,13 +132,17 @@ cards:
         name: Wohnzimmer
       - entity: device_tracker.echoschlafzimmer
         name: Schlafzimmer
-
+      - entity: device_tracker.echoarbeitszimmer
+        name: Arbeitszimmer
+      - entity: device_tracker.echokinderzimmer
+        name: Kinderzimmer        
+        
   - type: entities
     title: Shelly
     show_header_toggle: false
     entities:
-      - entity: device_tracker.shellysportzimmerfernseher
-        name: Sportzimmer Fernseher
+      - entity: device_tracker.shellyarbeitszimmerfernseher
+        name: Arbeitszimmer Fernseher
 
   - type: entities
     title: Tablets
@@ -168,8 +171,8 @@ cards:
         name: Badezimmer
       - entity: device_tracker.magichomeschlafzimmer
         name: Schlafzimmer
-      - entity: device_tracker.magichomearbeitszimmer
-        name: Arbeitszimmer
+      - entity: device_tracker.magichomekinderzimmer
+        name: Kinderzimmer
       - entity: device_tracker.magichomebalkon
         name: Balkon      
 

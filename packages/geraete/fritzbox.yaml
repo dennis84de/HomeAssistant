@@ -24,12 +24,12 @@ sensor:
       gaeste_wlan_ssid:
         friendly_name: "Gäste-Wlan SSID"
         value_template: "{{ states('input_text.guest_wifi_ssid') }}"
-        icon_template: "{{ 'mdi:wifi' if is_state('switch.fritz_box_7272_wi_fi_pretty_fly_for_a_wifi', 'on') else 'mdi:wifi-off' }}"
+        icon_template: "{{ 'mdi:wifi' if is_state('switch.fritz_box_6660_cable_wi_fi_pretty_fly_for_a_wifi', 'on') else 'mdi:wifi-off' }}"
             
       gaeste_wlan_password:
         friendly_name: "Gäste-Wlan Passwort"
         value_template: "{{ states('input_text.guest_wifi_password') }}"
-        icon_template: "{{ 'mdi:wifi-strength-4-lock' if is_state('switch.fritz_box_7272_wi_fi_pretty_fly_for_a_wifi', 'on') else 'mdi:wifi-strength-lock-outline' }}"
+        icon_template: "{{ 'mdi:wifi-strength-4-lock' if is_state('switch.fritz_box_6660_cable_wi_fi_pretty_fly_for_a_wifi', 'on') else 'mdi:wifi-strength-lock-outline' }}"
             
       heimnetz_offline:
         friendly_name: Netzwerkgeräte offline
@@ -62,7 +62,7 @@ automation:
     id: "gaeste_wlan_eingeschaltet"
     trigger:
       - platform: state
-        entity_id: switch.fritz_box_7272_wi_fi_pretty_fly_for_a_wifi
+        entity_id: switch.fritz_box_6660_cable_wi_fi_pretty_fly_for_a_wifi
         from: 'off'
         to: 'on'        
     action:
@@ -77,7 +77,7 @@ automation:
     id: "gaeste_wlan_ausgeschaltet"
     trigger:
       - platform: state
-        entity_id: switch.fritz_box_7272_wi_fi_pretty_fly_for_a_wifi
+        entity_id: switch.fritz_box_6660_cable_wi_fi_pretty_fly_for_a_wifi
         from: 'on'
         to: 'off'
     action:        
@@ -91,7 +91,7 @@ automation:
     id: "wlan_offline"
     trigger:
       - platform: state
-        entity_id: switch.fritz_box_7272_wi_fi_netzwerkdj
+        entity_id: switch.fritz_box_6660_cable_wi_fi_netzwerkdj_2_4ghz
         from: 'on'
         for: '00:30:00'
     action:
@@ -123,7 +123,7 @@ homeassistant:
     device_tracker.firetv*:
       icon: mdi:fire
     device_tracker.tablet*:
-      icon: mdi:tablet-android
+      icon: mdi:tablet
     device_tracker.echo*:
       icon: mdi:microphone
     device_tracker.shelly*:
@@ -132,17 +132,7 @@ homeassistant:
       icon: mdi:cellphone
     device_tracker.tplink*:
       icon: mdi:power-socket-eu
-      
-  customize:
-    sensor.fritz_box_7272_external_ip:
-      friendly_name: Externe IP
-    sensor.fritz_box_7272_gb_received:
-      friendly_name: GB empfangen
-    sensor.fritz_box_7272_gb_sent:
-      friendly_name: GB gesendet
-  
-    device_tracker.fritzrepeater:
-      icon: mdi:wifi
+
     device_tracker.computer:
       icon: mdi:desktop-classic
     device_tracker.computerarbeit:
@@ -152,9 +142,6 @@ homeassistant:
       icon: mdi:remote
     device_tracker.diskstation:
       icon: mdi:server-network
-    device_tracker.netzwerkdj:
-      icon: mdi:router-wireless
-      friendly_name: Netzwerk
     device_tracker.epsondrucker:
       icon: mdi:printer
     device_tracker.xiaomivacuum:
@@ -183,8 +170,6 @@ homeassistant:
       friendly_name: Radio Arbeitszimmer
     device_tracker.radiobalkon:
       friendly_name: Radio Balkon
-    device_tracker.radiokeller:
-      friendly_name: Radio Keller
               
     device_tracker.tplinkwohnzimmermonitor:
       friendly_name: Wohnzimmer Monitor
@@ -196,8 +181,6 @@ homeassistant:
       friendly_name: Badezimmer Radio
     device_tracker.tplinkkuecheradio:
       friendly_name: Küche Radio
-    device_tracker.tplinkkellerradio:
-      friendly_name: Keller Radio
     device_tracker.tplinkschlafzimmerfernseher:
       friendly_name: Schlafzimmer Fernseher   
     device_tracker.tplinkwaschmaschine:
@@ -215,11 +198,15 @@ homeassistant:
       friendly_name: Wohnzimmer
     device_tracker.echoschlafzimmer:
       friendly_name: Schlafzimmer      
+    device_tracker.echoarbeitszimmer:
+      friendly_name: Arbeitszimmer          
+    device_tracker.echokinderzimmer:
+      friendly_name: Kinderzimmer      
       
     device_tracker.firetvschlafzimmer:
       friendly_name: FireTV Schlafzimmer
-    device_tracker.firetvsportzimmer:
-      friendly_name: FireTV Sportzimmer
+    device_tracker.firetvarbeitszimmer:
+      friendly_name: FireTV Arbeitszimmer
     device_tracker.firetvbadezimmer:
       friendly_name: FireTV Badezimmer
       
@@ -242,8 +229,8 @@ homeassistant:
       friendly_name: MagicHome Badezimmer
     device_tracker.magichomeschlafzimmer:
       friendly_name: MagicHome Schlafzimmer
-    device_tracker.magichomearbeitszimmer:
-      friendly_name: MagicHome Arbeitszimmer
+    device_tracker.magichomekinderzimmer:
+      friendly_name: MagicHome Kinderzimmer
     device_tracker.magichomebalkon:
       friendly_name: MagicHome Balkon
       
@@ -255,8 +242,8 @@ homeassistant:
       friendly_name: Tasmota Wohnzimmer Radio
     device_tracker.tasmotawohnzimmerschrank:
       friendly_name: Tasmota Wohnzimmer Strahler
-    device_tracker.tasmotaarbeitszimmerlampe:
-      friendly_name: Tasmota Arbeitszimmer Lampe
+    device_tracker.tasmotakinderzimmerlampe:
+      friendly_name: Tasmota Kinderzimmer Lampe
     device_tracker.tasmotaarbeitszimmerradio:
       friendly_name: Tasmota Arbeitszimmer Radio
     device_tracker.tasmotaarbeitszimmerladegeraet:

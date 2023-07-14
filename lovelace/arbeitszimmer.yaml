@@ -12,58 +12,16 @@ cards:
       - entity: switch.arbeitszimmer_ladegerat
         name: Ladegerät
       - entity: switch.arbeitszimmer_radio
-        name: Radio
-
+        name: Radio         
+      - entity: switch.arbeitszimmer_fernseher
+        name: Fernseher        
+      
   - type: entities
     title: Licht
     show_header_toggle: false
-    entities:
-      - entity: light.schreibtisch
-      - entity: light.arbeitszimmer_lampe
-
-  - type: custom:stack-in-card
-    cards:
-      - type: horizontal-stack
-        cards:
-          - type: custom:mini-graph-card
-            name: Temperatur
-            line_width: 3
-            animate: true
-            hour24: true
-            show:
-              fill: false
-              icon: false
-              points: false
-            entities:
-              - entity: sensor.arbeitszimmer_temperatur
-          - type: custom:mini-graph-card
-            name: Luftfeuchtigkeit
-            line_width: 3
-            animate: true
-            hour24: true
-            show:
-              fill: false
-              icon: false
-              points: false
-            entities:
-              - entity: sensor.arbeitszimmer_luftfeuchtigkeit        
-          - type: custom:mini-graph-card
-            name: Luftdruck
-            line_width: 3
-            animate: true
-            hour24: true
-            show:
-              fill: false
-              icon: false
-              points: false
-            entities:
-              - entity: sensor.arbeitszimmer_luftdruck                     
-      - type: entities        
-        show_header_toggle: false
-        entities:
-          - entity: sensor.arbeitszimmer_perception
-            name: Klima   
-            
+    entities:      
+      - entity: light.arbeitszimmer_regal        
+        
   - type: entities
     title: Arbeit
     show_header_toggle: false
@@ -75,18 +33,7 @@ cards:
       - entity: input_select.computer_arbeit_ausschalten
         name: Computer ausschalten        
       - entity: input_boolean.home_office_pause
-        name: Pause     
-      
-  - type: glance
-    title: Sensoren
-    show_header_toggle: false
-    entities:
-      - entity: binary_sensor.bewegungsmelder_arbeitszimmer
-        name: Bewegungsmelder
-      - entity: binary_sensor.fenster_arbeitszimmer   
-        name: Fenster        
-      - entity: sensor.arbeitszimmer_helligkeit
-        name: Helligkeit
+        name: Pause           
         
   - type: entities
     title: Staubsauger
@@ -116,10 +63,49 @@ cards:
       - type: custom:template-entity-row
         entity : sensor.staubsauger_reinigung_sensor
         state: "{{ ((states('sensor.staubsauger_reinigung_sensor') | int(0)) / 60 / 60) | round(2) }} Stunden"                       
-                                      
+                                                      
+  - type: glance
+    title: Sensoren
+    show_header_toggle: false
+    entities:
+      - entity: binary_sensor.bewegungsmelder_arbeitszimmer
+        name: Bewegungsmelder
+      - entity: binary_sensor.fenster_arbeitszimmer   
+        name: Fenster        
+      - entity: sensor.arbeitszimmer_helligkeit
+        name: Helligkeit             
+
+  - type: entities
+    title: Multimedia
+    show_header_toggle: false
+    entities:
+      - type: custom:mini-media-player
+        entity: media_player.radio_arbeitszimmer
+        name: Radio
+        hide:
+          source: true
+          progress: true      
+      - entity: switch.kodi_arbeitszimmer
+      - type: custom:mini-media-player
+        entity: media_player.fire_tv_arbeitszimmer
+        name: Fire TV
+        hide:
+          source: true
+          controls: true
+          progress: true      
+      - type: custom:mini-media-player
+        name: Kodi
+        entity: media_player.kodi_arbeitszimmer
+        hide:
+          source: true
+          volume: true
+          progress: true
+  
+  - type: custom:layout-break      
+                    
   - type: thermostat
     entity: climate.heizung_arbeitszimmer
-    name: Heizung              
+    name: Heizung            
               
   - type: entities
     title: Drucker
@@ -133,43 +119,3 @@ cards:
       - entity: sensor.patrone_cyan      
       
   - type: custom:layout-break        
-  
-  - type: custom:stack-in-card
-    cards:
-      - type: horizontal-stack
-        title: Pflanze
-        cards:
-          - type: custom:mini-graph-card
-            name: Feuchtigkeit
-            line_width: 3
-            animate: true
-            hour24: true
-            show:
-              fill: false
-              icon: false
-              points: false
-            entities:
-              - entity: sensor.pflanze_arbeitszimmer_feuchtigkeit
-          - type: custom:mini-graph-card
-            name: Leitfähigkeit
-            line_width: 3
-            animate: true
-            hour24: true
-            show:
-              fill: false
-              icon: false
-              points: false
-            entities:
-              - entity: sensor.pflanze_arbeitszimmer_leitfaehigkeit
-  
-  - type: entities
-    title: Multimedia
-    show_header_toggle: false
-    entities:
-      - type: custom:mini-media-player
-        entity: media_player.radio_arbeitszimmer
-        name: Radio
-        hide:
-          source: true
-          progress: true
-      

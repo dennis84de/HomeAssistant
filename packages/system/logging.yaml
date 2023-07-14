@@ -79,7 +79,7 @@ logbook:
       - device_tracker.handy*  
   exclude:
     entities:     
-      - switch.sportzimmer_regal
+      - switch.arbeitszimmer_regal
       - switch.wohnzimmer_couch
       - switch.wohnzimmer_strahler
       - switch.wohnzimmer_schrank
@@ -88,7 +88,7 @@ logbook:
       - switch.computer
       - switch.arbeitszimmer_monitore
       - switch.computer_arbeit   
-      - switch.arbeitszimmer_lampe
+      - switch.kinderzimmer_lampe
       - switch.kuechenschrank
     entity_globs:
       - switch.*_led
@@ -107,15 +107,13 @@ history:
       - schedule
   exclude:
     entities:
-      - switch.sportzimmer_regal
+      - switch.arbeitszimmer_regal
       - switch.wohnzimmer_couch
       - switch.wohnzimmer_strahler
       - switch.kleiderschrank
       - switch.wohnzimmer_schrank
-      - switch.arbeitszimmer_lampe
+      - switch.kinderzimmer_lampe
       - switch.kuechenschrank
-      - switch.fritz_box_7272_call_deflection_0
-      - switch.fritz_box_7272_call_deflection_1
     entity_globs:
       - switch.*_led      
       - switch.echo_*_do_not_disturb_switch

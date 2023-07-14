@@ -9,7 +9,7 @@ template:
           - binary_sensor.bewegungsmelder_flur_vorne
           - binary_sensor.bewegungsmelder_kueche
           - binary_sensor.bewegungsmelder_schlafzimmer
-          - binary_sensor.bewegungsmelder_sportzimmer
+          - binary_sensor.bewegungsmelder_kinderzimmer
           - binary_sensor.bewegungsmelder_wohnzimmer
           - binary_sensor.bewegungsmelder_bett
         from: 'off'
@@ -34,7 +34,7 @@ automation:
       - platform: state
         entity_id: binary_sensor.bewegungsmelder_kueche
       - platform: state
-        entity_id: binary_sensor.bewegungsmelder_sportzimmer    
+        entity_id: binary_sensor.bewegungsmelder_kinderzimmer    
       - platform: state
         entity_id: binary_sensor.bewegungsmelder_schlafzimmer    
       - platform: state

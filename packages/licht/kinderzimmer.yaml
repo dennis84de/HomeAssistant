@@ -1,0 +1,36 @@
+light:
+  - platform: switch
+    name: Kinderzimmer Lampe
+    entity_id: switch.kinderzimmer_lampe
+          
+input_boolean:
+  bewegungsmelder_kinderzimmer_deaktiviert:
+    name: Bewegungsmelder deaktiviert    
+    icon: mdi:sync-off
+              
+entity_controller:
+  bewegung_kinderzimmer:
+    friendly_name: "Bewegung Kinerzimmer"
+    sensor: binary_sensor.bewegungsmelder_kinderzimmer
+    entities:
+      - light.kinderzimmer_licht
+      - light.kinderzimmer_lampe
+    delay: 180
+    grace_period: 60
+    behaviours:
+      on_enter_overridden: 'off'
+    overrides:     
+      - binary_sensor.home_office_aktiv
+      - binary_sensor.sonne_tagsueber      
+      - binary_sensor.bewegungsmelder_inaktiv_unterwegs  
+      - binary_sensor.bewegungsmelder_inaktiv_staubsauger
+      - input_boolean.bewegungsmelder_kinderzimmer_deaktiviert    
+      
+homeassistant:
+  customize:
+    light.kinderzimmer_licht:
+      friendly_name: Licht
+      icon: mdi:desk
+    light.kinderzimmer_lampe:
+      friendly_name: Lampe
+      icon: mdi:lamp      

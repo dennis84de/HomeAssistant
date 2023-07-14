@@ -41,7 +41,7 @@ automation:
     id: "nextcloud_update_verfuegbar"
     variables:       
       aktuelle_version: >-
-        {% set latestVersion = states('sensor.nextcloud_server_latest_tag').replace('v', '').split('.') %}
+        {% set latestVersion = state_attr('sensor.nextcloud_server_latest_release', 'tag').replace('v', '').split('.') %}
         {% if latestVersion[0] == 'unavailable' %}
           false
         {% else %}

@@ -194,17 +194,25 @@ automation:
           - service: light.turn_on
             data:
               entity_id: light.bett      
-              effect: colorloop       
+              effect: colorloop    
       - condition: "{{ is_state('input_boolean.wecker_geraete_einschalten', 'on') }}"              
-      - service: switch.turn_on
-        entity_id: switch.schlafzimmer_radio             
-      - wait_template: "{{ not is_state('media_player.radio_schlafzimmer', 'unavailable') }}"  
-      - service: media_player.media_play
-        entity_id: media_player.radio_schlafzimmer                        
-      - delay: "00:{{ states('input_number.wecker_verzoegerung') | int }}:00" 
-      - service: script.radios_einschalten
-        data:
-          radioBalkon: "{{ radioBalkonEinschalten }}"
+      - if: "{{ is_state('input_boolean.radio_alexa', 'on') }}"
+        then:            
+          - service: media_player.play_media
+            data:
+              entity_id: "media_player.echo_schlafzimmer"
+              media_content_id: "Südtirol Eins im Schlafzimmer"
+              media_content_type: "TUNEIN"      
+        else:
+          - service: switch.turn_on           
+            entity_id: switch.schlafzimmer_radio             
+          - wait_template: "{{ not is_state('media_player.radio_schlafzimmer', 'unavailable') }}"  
+          - service: media_player.media_play
+            entity_id: media_player.radio_schlafzimmer                        
+          - delay: "00:{{ states('input_number.wecker_verzoegerung') | int }}:00" 
+          - service: script.radios_einschalten
+            data:
+              radioBalkon: "{{ radioBalkonEinschalten }}"
 
   - alias: "Wecker - Zeit geändert"
     id: "wecker_zeit_geaendert"
@@ -323,35 +331,40 @@ automation:
         entity_id: light.bett
       - service: alarmo.disarm
         data:
-          entity_id: alarm_control_panel.alarmo               
-      - choose:
-          - conditions:
-              - "{{ trigger.id != 'schalter_badezimmer' }}"                    
-            sequence:
-              - wait_for_trigger:
-                - platform: state
-                  entity_id: binary_sensor.bewegungsmelder_badezimmer
-                  to: 'on'                       
-              - service: script.aufstehen_begruessung     
-        default:
-          - service: script.aufstehen_begruessung   
-      - if: "{{ states('sensor.radios_eingeschaltet') | int(0) == 1 and is_state('switch.schlafzimmer_radio', 'on') }}"
+          entity_id: alarm_control_panel.alarmo                
+      - if: "{{ trigger.id != 'schalter_badezimmer' }}"
+        then:             
+          - wait_for_trigger:
+            - platform: state
+              entity_id: binary_sensor.bewegungsmelder_badezimmer
+              to: 'on'                       
+          - service: script.aufstehen_begruessung               
+        else:          
+          - service: script.aufstehen_begruessung         
+      - if: "{{ is_state('input_boolean.radio_alexa', 'on') }}"
         then:             
           - service: media_player.media_pause
-            entity_id: media_player.radio_schlafzimmer             
-          - wait_template: "{{ is_state('media_player.radio_schlafzimmer', 'paused') }}"            
-          - service: switch.turn_off
-            entity_id: switch.schlafzimmer_radio    
+            entity_id: media_player.echo_schlafzimmer              
           - condition: "{{ is_state('input_boolean.wecker_geraete_einschalten', 'on') }}"
-          - service: script.radios_einschalten       
-            data:
-              radioBalkon: "{{ radioBalkonEinschalten }}"            
+          - service: script.alexa_radio_suedtirol_eins               
         else:
-          - condition: "{{ is_state('input_boolean.wecker_geraete_einschalten', 'on') }}"
-          - service: switch.turn_off
-            entity_id: switch.schlafzimmer_radio             
-          - service: script.radios_einschalten       
-            data:
-              radioBalkon: "{{ radioBalkonEinschalten }}"        
+          - if: "{{ states('sensor.radios_eingeschaltet') | int(0) == 1 and is_state('switch.schlafzimmer_radio', 'on') }}"
+            then:             
+              - service: media_player.media_pause
+                entity_id: media_player.radio_schlafzimmer             
+              - wait_template: "{{ is_state('media_player.radio_schlafzimmer', 'paused') }}"            
+              - service: switch.turn_off
+                entity_id: switch.schlafzimmer_radio    
+              - condition: "{{ is_state('input_boolean.wecker_geraete_einschalten', 'on') }}"
+              - service: script.radios_einschalten       
+                data:
+                  radioBalkon: "{{ radioBalkonEinschalten }}"            
+            else:
+              - condition: "{{ is_state('input_boolean.wecker_geraete_einschalten', 'on') }}"
+              - service: switch.turn_off
+                entity_id: switch.schlafzimmer_radio             
+              - service: script.radios_einschalten       
+                data:
+                  radioBalkon: "{{ radioBalkonEinschalten }}"        
       - service: switch.turn_on
         entity_id: switch.computer, switch.monitor              

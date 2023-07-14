@@ -298,66 +298,66 @@ automation:
               - service: input_boolean.turn_off
                 entity_id: input_boolean.heizung_ausgeschaltet_kueche
         
-  - alias: "Heizung Arbeitszimmer"
-    id: "heizung_arbeitszimmer"
-    trigger:
-      - platform: state
-        id: 'start'
-        entity_id: schedule.heizung
-        to: 'on'  
-      - platform: numeric_state
-        id: 'start'
-        entity_id: sensor.arbeitszimmer_temperatur
-        below: input_number.heizung_start
-        for: '00:05:00'      
-      - platform: state
-        id: 'stop'
-        entity_id: schedule.heizung
-        to: 'off'  
-      - platform: numeric_state
-        id: 'stop'
-        entity_id: sensor.arbeitszimmer_temperatur
-        above: input_number.heizung_stop          
-      - platform: state
-        id: 'stop'
-        entity_id: binary_sensor.home_office_aktiv
-        to: 'off'            
-    condition:      
-      - condition: or
-        conditions:                  
-          - condition: and
-            conditions:   
-              - "{{ is_state('binary_sensor.heizung_einschalten', 'on') }}"
-              - "{{ trigger.id == 'start' }}"
-              - "{{ is_state('climate.heizung_arbeitszimmer', 'off') }}"
-              - "{{ is_state('schedule.heizung', 'on') }}"
-              - "{{ states('sensor.arbeitszimmer_temperatur') | float(18) < states('input_number.heizung_start') | float(0) }}"
-              - "{{ is_state('binary_sensor.home_office_heute', 'on') }}"
-          - condition: and
-            conditions:    
-              - "{{ trigger.id == 'stop' }}"
-              - "{{ is_state('climate.heizung_arbeitszimmer', 'heat') }}"
-              - condition: or
-                conditions:                   
-                  - "{{ is_state('schedule.heizung', 'off') }}"
-                  - "{{ states('sensor.arbeitszimmer_temperatur') | float(21) > states('input_number.heizung_stop') | float(0) }}"
-                  - "{{ is_state('binary_sensor.home_office_aktiv', 'off') }}"
-    action:
-      - choose:
-          - conditions:
-              - "{{ trigger.id == 'start' }}"
-            sequence:
-              - service: climate.set_hvac_mode
-                data:
-                  entity_id: climate.heizung_arbeitszimmer
-                  hvac_mode: 'heat'  
-          - conditions:
-              - "{{ trigger.id == 'stop' }}"
-            sequence:
-              - service: climate.set_hvac_mode
-                data:
-                  entity_id: climate.heizung_arbeitszimmer
-                  hvac_mode: 'off'      
+#  - alias: "Heizung Arbeitszimmer"
+#    id: "heizung_arbeitszimmer"
+#    trigger:
+#      - platform: state
+#        id: 'start'
+#        entity_id: schedule.heizung
+#        to: 'on'  
+#      - platform: numeric_state
+#        id: 'start'
+#        entity_id: sensor.arbeitszimmer_temperatur
+#        below: input_number.heizung_start
+#        for: '00:05:00'      
+#      - platform: state
+#        id: 'stop'
+#        entity_id: schedule.heizung
+#        to: 'off'  
+#      - platform: numeric_state
+#        id: 'stop'
+#        entity_id: sensor.arbeitszimmer_temperatur
+#        above: input_number.heizung_stop          
+#      - platform: state
+#        id: 'stop'
+#        entity_id: binary_sensor.home_office_aktiv
+#        to: 'off'            
+#    condition:      
+#      - condition: or
+#        conditions:                  
+#          - condition: and
+#            conditions:   
+#              - "{{ is_state('binary_sensor.heizung_einschalten', 'on') }}"
+#              - "{{ trigger.id == 'start' }}"
+#              - "{{ is_state('climate.heizung_arbeitszimmer', 'off') }}"
+#              - "{{ is_state('schedule.heizung', 'on') }}"
+#              - "{{ states('sensor.arbeitszimmer_temperatur') | float(18) < states('input_number.heizung_start') | float(0) }}"
+#              - "{{ is_state('binary_sensor.home_office_heute', 'on') }}"
+#          - condition: and
+#            conditions:    
+#              - "{{ trigger.id == 'stop' }}"
+#              - "{{ is_state('climate.heizung_arbeitszimmer', 'heat') }}"
+#              - condition: or
+#                conditions:                   
+#                  - "{{ is_state('schedule.heizung', 'off') }}"
+#                  - "{{ states('sensor.arbeitszimmer_temperatur') | float(21) > states('input_number.heizung_stop') | float(0) }}"
+#                  - "{{ is_state('binary_sensor.home_office_aktiv', 'off') }}"
+#    action:
+#      - choose:
+#          - conditions:
+#              - "{{ trigger.id == 'start' }}"
+#            sequence:
+#              - service: climate.set_hvac_mode
+#                data:
+#                  entity_id: climate.heizung_arbeitszimmer
+#                  hvac_mode: 'heat'  
+#          - conditions:
+#              - "{{ trigger.id == 'stop' }}"
+#            sequence:
+#              - service: climate.set_hvac_mode
+#                data:
+#                  entity_id: climate.heizung_arbeitszimmer
+#                  hvac_mode: 'off'      
                   
   - alias: "Heizung Arbeitszimmer - Fenster"
     id: "heizung_arbeitszimmer_fenster"

@@ -18,23 +18,23 @@ batteriestand:
     - sensor.thermometer_flur_battery_level
     - sensor.thermometer_parkplatz_battery_level
     - sensor.thermometer_schlafzimmer_battery_level
-    - sensor.thermometer_arbeitszimmer_battery_level
+    - sensor.thermometer_kinderzimmer_battery_level
     - sensor.thermometer_kueche_battery_level
     - sensor.balkontuer_battery_level
     - sensor.fenster_wohnzimmer_battery_level
     - sensor.fenster_schlafzimmer_battery_level
     - sensor.fenster_kueche_battery_level
     - sensor.fenster_arbeitszimmer_battery_level
-    - sensor.fenster_sportzimmer_battery_level    
+    - sensor.fenster_kinderzimmer_battery_level    
     - sensor.bewegungsmelder_badezimmer_battery_level
     - sensor.bewegungsmelder_flur_vorne_battery_level
     - sensor.bewegungsmelder_flur_hinten_battery_level
     - sensor.bewegungsmelder_arbeitszimmer_battery_level
-    - sensor.bewegungsmelder_sportzimmer_battery_level
+    - sensor.bewegungsmelder_kinderzimmer_battery_level
     - sensor.bewegungsmelder_schlafzimmer_battery_level
     - sensor.bewegungsmelder_kueche_battery_level
     - sensor.bewegungsmelder_balkon_battery_level
     - sensor.bewegungsmelder_wohnzimmer_battery_level
     - sensor.thermometer_wohnzimmer_battery_level
     - sensor.pflanze_wohnzimmer_battery_level
-    - sensor.pflanze_arbeitszimmer_battery_level
+    - sensor.pflanze_kinderzimmer_battery_level

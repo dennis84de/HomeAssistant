@@ -76,8 +76,8 @@ automation:
            payload: "{{ 'home' if trigger.to_state.state == 'on' else 'not_home' }}"
            retain: true
            
-  - alias: "Franzi - Licht Arbeitszimmer"
-    id: "franzi_licht_arbeitszimmer"
+  - alias: "Franzi - Licht Kindezimmer"
+    id: "franzi_licht_kinderzimmer"
     trigger:
       - platform: state
         entity_id: person.franzi
@@ -86,18 +86,18 @@ automation:
     condition:     
       - condition: or
         conditions:
-          - "{{ is_state('person.franzi', 'home') and is_state('binary_sensor.nachts', 'on') and is_state('input_boolean.bewegungsmelder_arbeitszimmer_deaktiviert', 'off') }}"
-          - "{{ is_state('person.franzi', 'not_home') and is_state('binary_sensor.nachts', 'off') and is_state('input_boolean.bewegungsmelder_arbeitszimmer_deaktiviert', 'on') }}"
+          - "{{ is_state('person.franzi', 'home') and is_state('binary_sensor.nachts', 'on') and is_state('input_boolean.bewegungsmelder_kinderzimmer_deaktiviert', 'off') }}"
+          - "{{ is_state('person.franzi', 'not_home') and is_state('binary_sensor.nachts', 'off') and is_state('input_boolean.bewegungsmelder_kinderzimmer_deaktiviert', 'on') }}"
     action:    
       - if: "{{ is_state('person.franzi', 'home') and is_state('binary_sensor.nachts', 'on') }}"
         then:          
           - service: input_boolean.turn_on
-            entity_id: input_boolean.bewegungsmelder_arbeitszimmer_deaktiviert  
+            entity_id: input_boolean.bewegungsmelder_kinderzimmer_deaktiviert  
           - service: light.turn_on
-            entity_id: light.schreibtisch          
+            entity_id: light.kinderzimmer_licht          
       - if: "{{ is_state('person.franzi', 'not_home') and is_state('binary_sensor.nachts', 'off')}}"
         then:          
           - service: input_boolean.turn_off
-            entity_id: input_boolean.bewegungsmelder_arbeitszimmer_deaktiviert  
+            entity_id: input_boolean.bewegungsmelder_kinderzimmer_deaktiviert  
           - service: light.turn_off
-            entity_id: light.schreibtisch                    
+            entity_id: light.kinderzimmer_licht                    
