@@ -18,7 +18,7 @@ along with Entity Controller.  If not, see <https://www.gnu.org/licenses/>.
 """
 Entity controller component for Home Assistant.
 Maintainer:       Daniel Mason
-Version:          v9.6.0
+Version:          v9.6.1
 Project Page:     https://danielbkr.net/projects/entity-controller/
 Documentation:    https://github.com/danobot/entity-controller
 """
@@ -106,7 +106,7 @@ from .entity_services import (
 
 
 
-VERSION = '9.6.0'
+VERSION = '9.6.1'
 
 
 _LOGGER = logging.getLogger(__name__)
@@ -612,7 +612,7 @@ class Model:
     def override_state_change(self, entity, old, new):
         """ State change callback for override entities """
         self.log.debug("override_state_change :: Override state change entity=%s, old=%s, new=%s" % ( entity, old, new))
-        if new and self.matches(new.state, self.OVERRIDE_ON_STATE) and (
+        if self.matches(new.state, self.OVERRIDE_ON_STATE) and (
             self.is_active()
             or self.is_active_timer()
             or self.is_idle()
@@ -622,8 +622,9 @@ class Model:
             self.update(overridden_by=entity)
             self.override()
             self.update(overridden_at=str(datetime.now()))
-        if new and self.matches(new.state, self.OVERRIDE_OFF_STATE) and (
-            self.is_override_state_off()
+        if (
+            self.matches(new.state, self.OVERRIDE_OFF_STATE)
+            and self.is_override_state_off()
             and self.is_overridden()
         ):
             self.set_context(new.context)

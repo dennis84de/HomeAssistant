@@ -1,7 +1,16 @@
 """Constants for the DWD Weather integration."""
 from datetime import timedelta
 
+from homeassistant.const import Platform
+
 DOMAIN = "dwd_weather"
+# Platforms
+PLATFORMS = [
+    Platform.SENSOR,
+    Platform.WEATHER,
+]
+INTEGRATION_VERSION = "1.2.28"
+MIN_REQUIRED_HA_VERSION = "2022.07.1"
 
 DEFAULT_NAME = "DWD Weather"
 ATTRIBUTION = "Data provided by Deutscher Wetterdienst (DWD)"
