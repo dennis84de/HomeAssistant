@@ -34,16 +34,14 @@ script:
             type: tts
           target: >-
             {% set letzteBewegung = states('sensor.letzte_bewegung') %}
-            {% set istNacht = is_state('binary_sensor.nachts', 'on') %}
-            {% set franziZuHause = is_state('person.franzi', 'home') %}
-            
+
             {% if echo is defined and echo|length %}
               media_player.echo_{{ echo }}
             {% elif letzteBewegung == None %}
               media_player.echo_wohnzimmer
-            {% elif letzteBewegung == 'Arbeitszimmer' and (not franziZuHause or (franziZuHause and not istNacht)) %}
+            {% elif letzteBewegung == 'Arbeitszimmer' %}
               media_player.echo_arbeitszimmer              
-            {% elif letzteBewegung == 'Flur vorne' or letzteBewegung == 'Flur hinten' %}
+            {% elif letzteBewegung == 'Flur vorne' or letzteBewegung == 'Flur hinten' or letzteBewegung == 'Kinderzimmer' %}
               media_player.echo_flur         
             {% elif letzteBewegung == 'Badezimmer' %}
               media_player.echo_badezimmer

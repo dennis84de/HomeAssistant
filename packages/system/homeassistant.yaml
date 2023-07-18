@@ -9,6 +9,7 @@ discovery:
 wake_on_lan:
 system_health:
 map:
+ssdp:
 lovelace:
   mode: yaml
   resources:

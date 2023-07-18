@@ -74,30 +74,4 @@ automation:
         data:
            topic: "presence/franzi"
            payload: "{{ 'home' if trigger.to_state.state == 'on' else 'not_home' }}"
-           retain: true
-           
-  - alias: "Franzi - Licht Kindezimmer"
-    id: "franzi_licht_kinderzimmer"
-    trigger:
-      - platform: state
-        entity_id: person.franzi
-      - platform: state
-        entity_id: binary_sensor.nachts 
-    condition:     
-      - condition: or
-        conditions:
-          - "{{ is_state('person.franzi', 'home') and is_state('binary_sensor.nachts', 'on') and is_state('input_boolean.bewegungsmelder_kinderzimmer_deaktiviert', 'off') }}"
-          - "{{ is_state('person.franzi', 'not_home') and is_state('binary_sensor.nachts', 'off') and is_state('input_boolean.bewegungsmelder_kinderzimmer_deaktiviert', 'on') }}"
-    action:    
-      - if: "{{ is_state('person.franzi', 'home') and is_state('binary_sensor.nachts', 'on') }}"
-        then:          
-          - service: input_boolean.turn_on
-            entity_id: input_boolean.bewegungsmelder_kinderzimmer_deaktiviert  
-          - service: light.turn_on
-            entity_id: light.kinderzimmer_licht          
-      - if: "{{ is_state('person.franzi', 'not_home') and is_state('binary_sensor.nachts', 'off')}}"
-        then:          
-          - service: input_boolean.turn_off
-            entity_id: input_boolean.bewegungsmelder_kinderzimmer_deaktiviert  
-          - service: light.turn_off
-            entity_id: light.kinderzimmer_licht                    
+           retain: true            

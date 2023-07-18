@@ -288,7 +288,9 @@ cards:
         name: Küche
       - entity: sensor.kinderzimmer_temperatur
         name: Kinderzimmer
-        
+      - entity: sensor.arbeitszimmer_temperatur
+        name: Arbeitszimmer
+                
   - type: conditional
     view_layout:
       column: 2  

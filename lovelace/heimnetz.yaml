@@ -4,18 +4,16 @@ type: custom:horizontal-layout
 layout:
   width: 400
   max_cols: 3
-cards:          
+cards:                 
   - type: entities
-    title: Netzwerk
+    title: Computer
     show_header_toggle: false
     entities:
-      - entity: device_tracker.fritzrepeaterkeller
-        name: Repeater Keller
-      - entity: device_tracker.fritzrepeaterschlafzimmer
-        name: Repeater Schlafzimmer        
-      - entity: device_tracker.diskstation
-        name: Diskstation
-
+      - entity: device_tracker.computer
+        name: Wohnzimmer
+      - entity: device_tracker.computerarbeit
+        name: Arbeitszimmer
+        
   - type: entities
     title: Multimedia
     show_header_toggle: false
@@ -23,7 +21,9 @@ cards:
       - entity: device_tracker.fernseherwohnzimmer
         name: Fernseher
       - entity: device_tracker.soundbar  
-
+      - entity: device_tracker.diskstation
+        name: Diskstation      
+      
   - type: entities
     title: Haushalt
     show_header_toggle: false
@@ -63,16 +63,7 @@ cards:
         name: Küchenschrank  
       - entity: device_tracker.tasmotaspuelmaschine
         name: Spülmaschine
-        
-  - type: entities
-    title: Computer
-    show_header_toggle: false
-    entities:
-      - entity: device_tracker.computer
-        name: Wohnzimmer
-      - entity: device_tracker.computerarbeit
-        name: Arbeitszimmer
-      
+
   - type: entities
     title: Radios
     show_header_toggle: false
@@ -104,7 +95,7 @@ cards:
         name: Arbeitszimmer        
       - entity: device_tracker.firetvbadezimmer
         name: Badezimmer
-                
+        
   - type: entities
     title: TP-Link
     show_header_toggle: false
@@ -119,7 +110,7 @@ cards:
       - entity: device_tracker.tplinktrockner        
       
   - type: entities
-    title: Amazon Echo
+    title: Echo
     show_header_toggle: false
     entities:
       - entity: device_tracker.echoflur
@@ -136,29 +127,9 @@ cards:
         name: Arbeitszimmer
       - entity: device_tracker.echokinderzimmer
         name: Kinderzimmer        
-        
-  - type: entities
-    title: Shelly
-    show_header_toggle: false
-    entities:
-      - entity: device_tracker.shellyarbeitszimmerfernseher
-        name: Arbeitszimmer Fernseher
 
   - type: entities
-    title: Tablets
-    show_header_toggle: false
-    entities:
-      - entity: device_tracker.tabletbadezimmer
-        name: Badezimmer
-      - entity: device_tracker.tabletwohnzimmer
-        name: Wohnzimmer
-      - entity: device_tracker.tabletschlafzimmer
-        name: Schlafzimmer
-      - entity: device_tracker.tabletbalkon
-        name: Balkon
-
-  - type: entities
-    title: Licht
+    title: Magic Home
     show_header_toggle: false
     entities:
       - entity: device_tracker.magichomeflurvorne
@@ -175,8 +146,34 @@ cards:
         name: Kinderzimmer
       - entity: device_tracker.magichomebalkon
         name: Balkon      
-
+                          
   - type: entities
+    view_layout:
+      column: 2
+    title: Shelly
+    show_header_toggle: false
+    entities:
+      - entity: device_tracker.shellyarbeitszimmerfernseher
+        name: Arbeitszimmer Fernseher
+        
+  - type: entities
+    view_layout:
+      column: 3    
+    title: Tablets
+    show_header_toggle: false
+    entities:
+      - entity: device_tracker.tabletbadezimmer
+        name: Badezimmer
+      - entity: device_tracker.tabletwohnzimmer
+        name: Wohnzimmer
+      - entity: device_tracker.tabletschlafzimmer
+        name: Schlafzimmer
+      - entity: device_tracker.tabletbalkon
+        name: Balkon
+        
+  - type: entities
+    view_layout:
+      column: 3    
     title: Broadlink
     show_header_toggle: false
     entities:
