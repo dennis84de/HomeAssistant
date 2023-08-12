@@ -1,5 +1,3 @@
-zodiac:
-  
 template:
   - trigger:
     - platform: time

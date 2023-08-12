@@ -145,11 +145,11 @@ script:
                   "Der Staubsaugerbehälter muss geleert werden."
                 {% endif %}
 
-                {% set count_heimnetz_entities = states('sensor.heimnetz_offline') | int(0) -%}            
+                {% set count_heimnetz_entities = states('sensor.netzwerkgerate_offline') | int(0) -%}            
                 {% if count_heimnetz_entities > 0 %}
                   {{ "Die folgenden Geräte sind offline." if count_heimnetz_entities > 1 else "Das folgende Gerät ist offline."}}
 
-                  {{ state_attr('sensor.heimnetz_offline', 'geraete') | join(', ') }}                         
+                  {{ state_attr('sensor.netzwerkgerate_offline', 'geraete') | join(', ') }}                         
                 {% endif %}
                 
                 {% set count_flowers = states('sensor.pflanzen_giessen') | int(0) -%}            

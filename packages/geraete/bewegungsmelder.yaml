@@ -17,7 +17,10 @@ template:
     sensor:      
       - name: Letzte Bewegung
         icon: mdi:run
-        state: "{{ trigger.to_state.attributes.friendly_name }}"          
+        state: >-
+          {% set friendlyName = trigger.to_state.attributes.friendly_name.split('Bewegungsmelder ') %}
+        
+          {{ friendlyName[1] if friendlyName else 'Unbekannt' }}
 
 automation:
   - alias: "Bewegungsmelder zurücksetzen"

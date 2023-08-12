@@ -56,18 +56,7 @@ cards:
               icon: false
               points: false
             entities:
-              - entity: sensor.kueche_luftfeuchtigkeit        
-          - type: custom:mini-graph-card
-            name: Luftdruck
-            line_width: 3
-            animate: true
-            hour24: true
-            show:
-              fill: false
-              icon: false
-              points: false
-            entities:
-              - entity: sensor.kueche_luftdruck                     
+              - entity: sensor.kueche_luftfeuchtigkeit                         
       - type: entities        
         show_header_toggle: false
         entities:

@@ -22,22 +22,22 @@ cards:
         color: "yellow"      
     entities:            
       - entity: sensor.tablet_wohnzimmer_battery_level     
-        name: Tablet Wohnzimmer
+        name: Wohnzimmer
         charging_state:
           entity_id: sensor.tablet_wohnzimmer_akku_status
           state: "charging"                       
       - entity: sensor.tablet_badezimmer_battery_level
-        name: Tablet Badezimmer
+        name: Badezimmer
         charging_state:
           entity_id: sensor.tablet_badezimmer_akku_status
           state: "charging"                   
       - entity: sensor.tablet_schlafzimmer_battery_level
-        name: Tablet Schlafzimmer
+        name: Schlafzimmer
         charging_state:
           entity_id: sensor.tablet_schlafzimmer_akku_status
           state: "charging"                     
       - entity: sensor.tablet_balkon_battery_level
-        name: Tablet Balkon
+        name: Balkon
         charging_state:
           entity_id: sensor.tablet_balkon_akku_status
           state: "charging"               
@@ -53,8 +53,11 @@ cards:
         color: "yellow"      
     entities:
       - entity: sensor.wohnungstuer_battery_level
+        name: Wohnungstür
       - entity: sensor.bett_battery_level      
+        name: Bett
       - entity: sensor.cube_battery_level
+        name: Cube
       - entity: sensor.helligkeit_balkon_battery_level
         name: Helligkeit
 
@@ -105,7 +108,9 @@ cards:
         name: Balkon        
       - entity: sensor.thermometer_arbeitszimmer_battery_level
         name: Arbeitszimmer
-                  
+      - entity: sensor.thermometer_hardware_battery_level
+        name: Hardware
+        
   - type: custom:battery-state-card
     title: Bewegungsmelder
     tap_action: more-info
@@ -147,8 +152,6 @@ cards:
       - value: 30
         color: "yellow"    
     entities:
-      - entity: sensor.thermometer_wohnzimmer_battery_level   
-        name: Thermometer Wohnzimmer
       - entity: sensor.pflanze_wohnzimmer_battery_level       
         name: Pflanze Wohnzimmer
       - entity: sensor.pflanze_kinderzimmer_battery_level       

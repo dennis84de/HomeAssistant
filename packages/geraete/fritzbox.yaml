@@ -4,58 +4,55 @@ input_text:
     
   guest_wifi_password:
     name: 'Gäste Wlan - Password'
-          
-binary_sensor:
-  - platform: template
-    sensors:
-      wlan_tagsueber:
-        friendly_name: 'Wlan tagsüber'        
-        value_template: >-
+      
+template:
+  - binary_sensor:
+      - name: "Wlan tagsüber"
+        unique_id: wlan_tagsueber
+        state: >-
           {% set istHomeOffice = is_state('binary_sensor.home_office_heute', 'on') %}
           {% set keinArbeitstag = is_state('binary_sensor.arbeitstag', 'off') %}
           {% set istUrlaub = is_state('calendar.urlaub', 'on') %}
           {% set istKrank = is_state('calendar.arbeit_krank', 'on') %}
 
           {{ True if (istHomeOffice or keinArbeitstag or istUrlaub or istKrank) else False }}  
-          
-sensor:    
-  - platform: template
-    sensors:     
-      gaeste_wlan_ssid:
-        friendly_name: "Gäste-Wlan SSID"
-        value_template: "{{ states('input_text.guest_wifi_ssid') }}"
-        icon_template: "{{ 'mdi:wifi' if is_state('switch.fritz_box_6660_cable_wi_fi_pretty_fly_for_a_wifi', 'on') else 'mdi:wifi-off' }}"
-            
-      gaeste_wlan_password:
-        friendly_name: "Gäste-Wlan Passwort"
-        value_template: "{{ states('input_text.guest_wifi_password') }}"
-        icon_template: "{{ 'mdi:wifi-strength-4-lock' if is_state('switch.fritz_box_6660_cable_wi_fi_pretty_fly_for_a_wifi', 'on') else 'mdi:wifi-strength-lock-outline' }}"
-            
-      heimnetz_offline:
-        friendly_name: Netzwerkgeräte offline
-        unit_of_measurement: Gerät(e)
-        icon_template: >
+                   
+  - sensor:          
+      - name: "Gäste-Wlan SSID"
+        unique_id: gaeste_wlan_ssid
+        state: "{{ states('input_text.guest_wifi_ssid') }}"
+        icon: "{{ 'mdi:wifi' if is_state('switch.fritz_box_6660_cable_wi_fi_pretty_fly_for_a_wifi', 'on') else 'mdi:wifi-off' }}"
+        
+      - name: "Gäste-Wlan Passwort"
+        unique_id: gaeste_wlan_password
+        state: "{{ states('input_text.guest_wifi_password') }}"
+        icon: "{{ 'mdi:wifi-strength-4-lock' if is_state('switch.fritz_box_6660_cable_wi_fi_pretty_fly_for_a_wifi', 'on') else 'mdi:wifi-strength-lock-outline' }}"
+      
+      - name: "Netzwerkgeräte offline"
+        unique_id: heimnetz_offline
+        unit_of_measurement: Geräe(e)
+        icon: >
           {% set wifiOffline = expand('group.heimnetz')
             | selectattr('state','eq','not_home') 
             | map(attribute='name')
             | list %}
 
           {{ 'mdi:access-point-network' if wifiOffline | length == 0 else 'mdi:access-point-network-off' }}
-        value_template: >
+        state: >
           {% set wifiOffline = expand('group.heimnetz')
             | selectattr('state','eq','not_home') 
             | map(attribute='name')
             | list %}
 
           {{ wifiOffline | length }}       
-        attribute_templates:
+        attributes:
           geraete: >
             {% set wifiOffline = expand('group.heimnetz')
               | selectattr('state','eq','not_home') 
               | map(attribute='name')
               | list %}
 
-              {{ wifiOffline }}         
+              {{ wifiOffline }}          
 
 automation:
   - alias: "Gäste-Wlan eingeschaltet"

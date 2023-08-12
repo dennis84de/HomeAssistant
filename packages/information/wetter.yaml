@@ -46,10 +46,6 @@ sensor:
       minutes: 30
     entities:
       - sensor.balkon_helligkeit
-              
-  - platform: dwd_weather_warnings
-    region_name: Stadt Dortmund
-    name: Wetterwarnungen
 
   - platform: sun2
     monitored_conditions:

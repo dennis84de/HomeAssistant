@@ -37,6 +37,8 @@ script:
 
             {% if echo is defined and echo|length %}
               media_player.echo_{{ echo }}
+            {% elif is_state('person.franzi', 'home') and is_state('binary_sensor.nachts', 'on') %}
+              media_player.echo_wohnzimmer           
             {% elif letzteBewegung == None %}
               media_player.echo_wohnzimmer
             {% elif letzteBewegung == 'Arbeitszimmer' %}

@@ -31,7 +31,7 @@ cards:
             severity:
               green: 0
               yellow: 40
-              red: 80        
+              red: 80                  
       - type: entities
         show_header_toggle: false
         entities:
@@ -116,29 +116,36 @@ cards:
         name: Online
       - attr: lqi
         name: LQI                  
-                          
+                    
   - type: custom:stack-in-card
-    cards:
-      - type: horizontal-stack        
-        title: Handy
-        cards:                  
-          - type: gauge
-            entity: sensor.handy_battery_level
-            name: Batterie
-            segments:
-              - from: 0
-                color: '#db4437'
-              - from: 10
-                color: '#ffa600'
-              - from: 30
-                color: '#43a047'
-          - type: gauge
-            entity: sensor.handy_battery_temperature
+    cards:                        
+      - type: horizontal-stack
+        title: Hardware
+        cards:
+          - type: custom:mini-graph-card
             name: Temperatur
-            severity:
-              green: 0
-              yellow: 40
-              red: 80
+            line_width: 3
+            animate: true
+            hour24: true
+            show:
+              fill: false
+              icon: false
+              points: false
+            entities:
+              - entity: sensor.hardware_temperatur
+          - type: custom:mini-graph-card
+            name: Luftfeuchtigkeit
+            line_width: 3
+            animate: true
+            hour24: true
+            show:
+              fill: false
+              icon: false
+              points: false
+            entities:
+              - entity: sensor.hardware_luftfeuchtigkeit     
+
+#  - type: custom:layout-break      
               
   - type: custom:stack-in-card
     view_layout:
@@ -159,7 +166,7 @@ cards:
             name: Entitäten
           - entity: sensor.watchman_missing_services
             name: Dienste
-          - entity: sensor.heimnetz_offline
+          - entity: sensor.netzwerkgerate_offline
             name: Netzwerk
           - entity: sensor.steckdosen_offline
             name: Steckdosen     
@@ -216,7 +223,7 @@ cards:
                         {%- endfor %}       
                       {% endif %}   
 
-          - entity: sensor.heimnetz_offline
+          - entity: sensor.netzwerkgerate_offline
             secondary_info: last-changed  
             tap_action:
               action: fire-dom-event
@@ -226,10 +233,10 @@ cards:
                   content:          
                     type: markdown
                     content: >-        
-                      {% if (is_state('sensor.heimnetz_offline', '0')) %}
+                      {% if (is_state('sensor.netzwerkgerate_offline', '0')) %}
                         **<font color=#c5e566>Alle Netzwerkgeräte sind online.</font>**
                       {% else %}                        
-                        {%- for item in state_attr("sensor.heimnetz_offline", "geraete") %}
+                        {%- for item in state_attr("sensor.netzwerkgerate_offline", "geraete") %}
                           {% if loop.index > 1 %}<hr>{% endif %}
                           <table><tr><td>  
                             <ha-icon icon='mdi:network-off'></ha-icon> {{ item }}                            
@@ -267,8 +274,31 @@ cards:
       - entity: binary_sensor.healthchecks_home_assistant  
       - entity: binary_sensor.healthchecks_diskstation        
       - entity: binary_sensor.uptime_robot_nextcloud        
-      - entity: binary_sensor.healthchecks_djaeschke           
-      
+      - entity: binary_sensor.healthchecks_djaeschke                 
+
+  - type: custom:stack-in-card
+    cards:
+      - type: horizontal-stack        
+        title: Handy
+        cards:                  
+          - type: gauge
+            entity: sensor.handy_battery_level
+            name: Batterie
+            segments:
+              - from: 0
+                color: '#db4437'
+              - from: 10
+                color: '#ffa600'
+              - from: 30
+                color: '#43a047'
+          - type: gauge
+            entity: sensor.handy_battery_temperature
+            name: Temperatur
+            severity:
+              green: 0
+              yellow: 40
+              red: 80
+              
   - type: entities
     title: Nextcloud
     show_header_toggle: false

@@ -237,7 +237,6 @@ automation:
     action:
       - service: !secret tts_service
         data:
-          echo: "flur"
           message: "Der Computer wird Arbeitszimmer wird gleich ausgeschaltet."
       - delay: '00:00:04'
       - service: timer.start
@@ -267,7 +266,6 @@ automation:
         entity_id: media_player.home_assistant
       - service: !secret tts_service
         data:
-          echo: "flur"
           message: "Der Vorgang wurde abgebrochen."
       - service: timer.cancel
         entity_id: timer.home_office_ende
@@ -288,12 +286,10 @@ automation:
             sequence:
               - service: !secret tts_service
                 data:
-                  echo: "flur"
                   message: "Der Computer im Arbeitszimmer wird jetzt heruntergefahren."
         default:      
           - service: !secret tts_service
             data:
-              echo: "flur"
               message: "Der Computer im Arbeitszimmer wird jetzt ausgeschaltet."
       - delay: '00:00:02'
       - service: script.home_office_ende
@@ -412,23 +408,11 @@ automation:
       - condition: state
         entity_id: binary_sensor.home_office_aktiv
         state: 'on'        
-    action:
-    
+    action:    
       - service: input_boolean.turn_on
         entity_id: input_boolean.home_office_musik_pausiert
       - service: switch.turn_on
         entity_id: switch.radios_lautlos
-      - choose:
-          - conditions:
-              - condition: or
-                conditions:
-                  - "{{ is_state('binary_sensor.balkontuer', 'on') }}"
-                  - "{{ is_state('binary_sensor.home_office_pause', 'on') }}"   
-            sequence:
-              - service: !secret tts_service
-                data:
-                  echo: "wohnzimmer"
-                  message: "Ein eingehender Anruf im Arbeitszimmer"
                   
   - alias: "Home Office - Telefon inaktiv"
     id: "home_office_telefon_inaktiv"

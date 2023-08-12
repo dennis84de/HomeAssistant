@@ -5,30 +5,26 @@ input_number:
     max: 30
     step: 5
 
-sensor:
-  - platform: template
-    sensors:
-      bewegungsmelder_wohnzimmer_battery_level:
-        friendly_name: Bewegungsmelder Wohnzimmer
-        value_template: "{{ states('sensor.bewegungsmelder_wohnzimmer_battery_level_original') | int(0) }}"
+template:
+  - sensor:
+      - name: "Bewegungsmelder Wohnzimmer Batterie"
+        unique_id: bewegungsmelder_wohnzimmer_battery_level
         device_class: battery
-        unit_of_measurement: "%"
-        
-      bewegungsmelder_badezimmer_battery_level:
-        friendly_name: Bewegungsmelder Badezimmer
-        value_template: "{{ states('sensor.bewegungsmelder_badezimmer_battery_level_original') | int(0) }}"
+        state: "{{ states('sensor.bewegungsmelder_wohnzimmer_battery_level_original') | int(0) }}"
+    
+      - name: "Bewegungsmelder Badezimmer Batterie"
+        unique_id: bewegungsmelder_badezimmer_battery_level
         device_class: battery
-        unit_of_measurement: "%"
+        state: "{{ states('sensor.bewegungsmelder_badezimmer_battery_level_original') | int(0) }}"
         
-      bewegungsmelder_balkon_battery_level:
-        friendly_name: Bewegungsmelder Balkon
-        value_template: "{{ states('sensor.bewegungsmelder_balkon_battery_level_original') | int(0) }}"
+      - name: "Bewegungsmelder Balkon Batterie"
+        unique_id: bewegungsmelder_balkon_battery_level
         device_class: battery
-        unit_of_measurement: "%"
+        state: "{{ states('sensor.bewegungsmelder_balkon_battery_level_original') | int(0) }}"      
         
-      batteriestand_niedrig:
-        friendly_name: Batteriestand niedrig
-        icon_template: >
+      - name: "Batteriestand niedrig"
+        unique_id: batteriestand_niedrig
+        icon: >-
           {% set entities = expand('group.batteriestand') %}
           {% set min_battery_level = states('input_number.batteriestand_warnlevel') | int(0) -%}
           {% set ns = namespace(found=false) -%}
@@ -37,9 +33,8 @@ sensor:
             {% set ns.found = true -%}
           {% endfor %}  
         
-          {{ "mdi:battery-charging-10" if ns.found == True else "mdi:battery" }}
-
-        value_template: >
+          {{ "mdi:battery-charging-10" if ns.found == True else "mdi:battery" }}        
+        state: >-
           {% set entities = expand('group.batteriestand') %}
           {% set min_battery_level = states('input_number.batteriestand_warnlevel') | int(0) -%}
           {% set ns = namespace(found=false) -%}
@@ -48,4 +43,4 @@ sensor:
             {% set ns.found = ns.found + 1 -%}
           {% endfor %}  
           
-          {{ ns.found | int(0) }}
+          {{ ns.found | int(0) }}        
