@@ -11,6 +11,7 @@ light:
     lights:
       schlafzimmer_fernseher:
         friendly_name: Schlafzimmer Fernseher
+        unique_id: schlafzimmer_fernseher_licht
         value_template: "{{ is_state('input_boolean.schlafzimmer_fernseher_licht', 'on') }}"
         icon_template: mdi:television-classic
         turn_on:

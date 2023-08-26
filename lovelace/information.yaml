@@ -75,7 +75,12 @@ cards:
                 cards:
                   - type: history-graph
                     entities:          
-                      - entity: person.natalie               
+                      - entity: device_tracker.handy_natalie
+                        name: Wlan
+                      - entity: device_tracker.handy_natalie_mqtt
+                        name: MQTT         
+                      - entity: device_tracker.handy_natalie_ping
+                        name: Ping                    
                   - type: entities
                     entities:
                       - entity: input_boolean.besuch_natalie
@@ -92,7 +97,7 @@ cards:
                 cards:
                   - type: history-graph
                     entities:          
-                      - entity: person.franzi               
+                      - entity: device_tracker.franzi_mqtt             
                   - type: entities
                     entities:
                       - entity: input_boolean.besuch_franzi

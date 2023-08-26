@@ -44,7 +44,7 @@ mqtt:
     - name: "Handy MQTT"
       state_topic: "handy/location"     
       
-    - name: "Natalie MQTT"
+    - name: "Handy Natalie MQTT"
       state_topic: "presence/natalie"
     
     - name: "Franzi MQTT"

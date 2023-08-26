@@ -66,7 +66,18 @@ cards:
       - entity: input_select.computer_arbeit_ausschalten
         name: Computer ausschalten        
       - entity: input_boolean.home_office_pause
-        name: Pause           
+        name: Pause                  
+                                                                    
+  - type: glance
+    title: Sensoren
+    show_header_toggle: false
+    entities:
+      - entity: binary_sensor.bewegungsmelder_arbeitszimmer
+        name: Bewegungsmelder
+      - entity: binary_sensor.fenster_arbeitszimmer   
+        name: Fenster        
+      - entity: sensor.arbeitszimmer_helligkeit
+        name: Helligkeit             
         
   - type: entities
     title: Staubsauger
@@ -96,17 +107,11 @@ cards:
       - type: custom:template-entity-row
         entity : sensor.staubsauger_reinigung_sensor
         state: "{{ ((states('sensor.staubsauger_reinigung_sensor') | int(0)) / 60 / 60) | round(2) }} Stunden"                       
-                                                      
-  - type: glance
-    title: Sensoren
-    show_header_toggle: false
-    entities:
-      - entity: binary_sensor.bewegungsmelder_arbeitszimmer
-        name: Bewegungsmelder
-      - entity: binary_sensor.fenster_arbeitszimmer   
-        name: Fenster        
-      - entity: sensor.arbeitszimmer_helligkeit
-        name: Helligkeit             
+               
+                    
+  - type: thermostat
+    entity: climate.heizung_arbeitszimmer
+    name: Heizung            
 
   - type: entities
     title: Multimedia
@@ -133,14 +138,10 @@ cards:
           source: true
           volume: true
           progress: true
-  
-  - type: custom:layout-break      
-                    
-  - type: thermostat
-    entity: climate.heizung_arbeitszimmer
-    name: Heizung            
-              
+
   - type: entities
+    view_layout:
+      column: 2  
     title: Drucker
     show_header_toggle: false
     entities:      

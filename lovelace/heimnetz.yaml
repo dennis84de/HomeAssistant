@@ -4,16 +4,7 @@ type: custom:horizontal-layout
 layout:
   width: 400
   max_cols: 3
-cards:                 
-  - type: entities
-    title: Computer
-    show_header_toggle: false
-    entities:
-      - entity: device_tracker.computer
-        name: Wohnzimmer
-      - entity: device_tracker.computerarbeit
-        name: Arbeitszimmer
-        
+cards:                        
   - type: entities
     title: Multimedia
     show_header_toggle: false
@@ -34,7 +25,26 @@ cards:
         name: Ventilator
       - entity: device_tracker.epsondrucker
         name: Drucker
-       
+
+  - type: entities
+    title: Radios
+    show_header_toggle: false
+    entities:
+      - entity: device_tracker.radiowohnzimmer
+        name: Wohnzimmer
+      - entity: device_tracker.radioflur
+        name: Flur
+      - entity: device_tracker.radiobadezimmer
+        name: Badezimmer
+      - entity: device_tracker.radiokueche
+        name: Küche
+      - entity: device_tracker.radioschlafzimmer
+        name: Schlafzimmer
+      - entity: device_tracker.radioarbeitszimmer
+        name: Arbeitszimmer
+      - entity: device_tracker.radiobalkon
+        name: Balkon
+               
   - type: entities
     title: Tasmota
     show_header_toggle: false
@@ -63,38 +73,6 @@ cards:
         name: Küchenschrank  
       - entity: device_tracker.tasmotaspuelmaschine
         name: Spülmaschine
-
-  - type: entities
-    title: Radios
-    show_header_toggle: false
-    entities:
-      - entity: device_tracker.radiowohnzimmer
-        name: Wohnzimmer
-      - entity: device_tracker.radioflur
-        name: Flur
-      - entity: device_tracker.radiobadezimmer
-        name: Badezimmer
-      - entity: device_tracker.radiokueche
-        name: Küche
-      - entity: device_tracker.radioschlafzimmer
-        name: Schlafzimmer
-      - entity: device_tracker.radioarbeitszimmer
-        name: Arbeitszimmer
-      - entity: device_tracker.radiobalkon
-        name: Balkon
-        
-  - type: entities
-    title: Fire TV
-    show_header_toggle: false
-    entities:
-      - entity: device_tracker.firetvwohnzimmer
-        name: Wohnzimmer      
-      - entity: device_tracker.firetvschlafzimmer
-        name: Schlafzimmer
-      - entity: device_tracker.firetvarbeitszimmer
-        name: Arbeitszimmer        
-      - entity: device_tracker.firetvbadezimmer
-        name: Badezimmer
         
   - type: entities
     title: TP-Link
@@ -110,24 +88,18 @@ cards:
       - entity: device_tracker.tplinktrockner        
       
   - type: entities
-    title: Echo
+    title: Fire TV
     show_header_toggle: false
     entities:
-      - entity: device_tracker.echoflur
-        name: Flur
-      - entity: device_tracker.echokueche
-        name: Küche
-      - entity: device_tracker.echobadezimmer
-        name: Badezimmer
-      - entity: device_tracker.echowohnzimmer
-        name: Wohnzimmer
-      - entity: device_tracker.echoschlafzimmer
+      - entity: device_tracker.firetvwohnzimmer
+        name: Wohnzimmer      
+      - entity: device_tracker.firetvschlafzimmer
         name: Schlafzimmer
-      - entity: device_tracker.echoarbeitszimmer
-        name: Arbeitszimmer
-      - entity: device_tracker.echokinderzimmer
-        name: Kinderzimmer        
-
+      - entity: device_tracker.firetvarbeitszimmer
+        name: Arbeitszimmer        
+      - entity: device_tracker.firetvbadezimmer
+        name: Badezimmer
+                
   - type: entities
     title: Magic Home
     show_header_toggle: false
@@ -145,20 +117,9 @@ cards:
       - entity: device_tracker.magichomekinderzimmer
         name: Kinderzimmer
       - entity: device_tracker.magichomebalkon
-        name: Balkon      
-                          
+        name: Balkon   
+                
   - type: entities
-    view_layout:
-      column: 2
-    title: Shelly
-    show_header_toggle: false
-    entities:
-      - entity: device_tracker.shellyarbeitszimmerfernseher
-        name: Arbeitszimmer Fernseher
-        
-  - type: entities
-    view_layout:
-      column: 3    
     title: Tablets
     show_header_toggle: false
     entities:
@@ -172,10 +133,39 @@ cards:
         name: Balkon
         
   - type: entities
+    title: Echo
+    show_header_toggle: false
+    entities:
+      - entity: device_tracker.echoflur
+        name: Flur
+      - entity: device_tracker.echokueche
+        name: Küche
+      - entity: device_tracker.echobadezimmer
+        name: Badezimmer
+      - entity: device_tracker.echowohnzimmer
+        name: Wohnzimmer
+      - entity: device_tracker.echoschlafzimmer
+        name: Schlafzimmer
+      - entity: device_tracker.echoarbeitszimmer
+        name: Arbeitszimmer
+      - entity: device_tracker.echokinderzimmer
+        name: Kinderzimmer                         
+
+        
+  - type: entities
     view_layout:
-      column: 3    
+      column: 2 
     title: Broadlink
     show_header_toggle: false
     entities:
       - entity: device_tracker.broadlinkschlafzimmer
-        name: Schlafzimmer        
+        name: Schlafzimmer     
+            
+  - type: entities
+    view_layout:
+      column: 2
+    title: Shelly
+    show_header_toggle: false
+    entities:
+      - entity: device_tracker.shellyarbeitszimmerfernseher
+        name: Arbeitszimmer Fernseher    

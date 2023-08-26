@@ -190,6 +190,7 @@ automation:
         for:
           minutes: 10
     condition:       
+      - "{{ is_state('binary_sensor.allein_zu_hause', 'on') }}"
       - "{{ states('sensor.wohnzimmer_temperatur') | float(0) > 0 }}"
       - "{{ states('sensor.balkon_temperatur') | float(0) > 23 }}"      
       - "{{ states('sensor.balkon_temperatur') | float(0) > states('sensor.wohnzimmer_temperatur') | float(0) + 2 }}"

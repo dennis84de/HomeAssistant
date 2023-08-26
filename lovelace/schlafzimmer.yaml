@@ -69,7 +69,9 @@ cards:
     show_header_toggle: false
     entities:
       - entity: light.bett
+        name: Bett
       - entity: light.kleiderschrank
+        name: Kleiderschrank
       - entity: light.schlafzimmer_fernseher
 
   - type: entities
