@@ -2,17 +2,17 @@ sensor:
   - platform: cert_expiry
     host: !secret nextcloud_url
 
-binary_sensor:
-  - platform: template
-    sensors:            
-      nextcloud_update_available:
-        friendly_name: "Nextcloud Update verfügbar"
+
+template:
+  - binary_sensor:
+      - name: "Nextcloud Update verfügbar"
+        unique_id: nextcloud_update_available
         device_class: update
-        value_template: >-
-          {% if 'beta' not in states('sensor.nextcloud_server_latest_tag') 
-            and 'rc' not in states('sensor.nextcloud_server_latest_tag')  %}
+        state: >-
+          {% if 'beta' not in states('sensor.nextcloud_server_latest_release') 
+            and 'rc' not in states('sensor.nextcloud_server_latest_release')  %}
             {% set currentVersion = states('sensor.nextcloud_system_version').split('.') %}
-            {% set latestVersion = states('sensor.nextcloud_server_latest_tag').replace('v', '').split('.') %}
+            {% set latestVersion = states('sensor.nextcloud_server_latest_release').replace('v', '').split('.') %}
 
             {{ currentVersion[0] != latestVersion[0] 
               or currentVersion[1] != latestVersion[1] 
@@ -21,11 +21,11 @@ binary_sensor:
           {% else %}
             false
           {% endif %}
-        icon_template: >-
-          {% if 'beta' not in states('sensor.nextcloud_server_latest_tag') 
-            and 'rc' not in states('sensor.nextcloud_server_latest_tag')  %}
+        icon: >-
+          {% if 'beta' not in states('sensor.nextcloud_server_latest_release') 
+            and 'rc' not in states('sensor.nextcloud_server_latest_release')  %}
             {% set currentVersion = states('sensor.nextcloud_system_version').split('.') %}
-            {% set latestVersion = states('sensor.nextcloud_server_latest_tag').replace('v', '').split('.') %}
+            {% set latestVersion = states('sensor.nextcloud_server_latest_release').replace('v', '').split('.') %}
 
             {{ 'mdi:cog-sync' if currentVersion[0] != latestVersion[0] 
               or currentVersion[1] != latestVersion[1] 
@@ -34,14 +34,14 @@ binary_sensor:
             }}                                          
           {% else %}
             mdi:cog
-          {% endif %}                         
+          {% endif %}                                  
     
 automation:
   - alias: "Nextcloud - Update verfügbar"
     id: "nextcloud_update_verfuegbar"
     variables:       
       aktuelle_version: >-
-        {% set latestVersion = states('sensor.nextcloud_server_latest_tag').replace('v', '').split('.') %}
+        {% set latestVersion = states('sensor.nextcloud_server_latest_release').replace('v', '').split('.') %}
         {% if latestVersion[0] == 'unavailable' %}
           false
         {% else %}
@@ -49,7 +49,7 @@ automation:
         {% endif %}
     trigger:
       - platform: state
-        entity_id: binary_sensor.nextcloud_update_available
+        entity_id: binary_sensor.nextcloud_update_verfuegbar
         from: 'off'
         to: 'on'        
     condition:  
