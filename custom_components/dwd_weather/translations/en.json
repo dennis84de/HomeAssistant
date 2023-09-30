@@ -1,28 +1,140 @@
 {
   "title": "Deutscher Wetterdienst",
+  "entity": {
+    "sensor": {
+      "weather_condition": {
+        "name": "Weather condition",
+        "state": {
+          "clear-night": "[%key:component::weather::entity_component::_::state::clear-night%]",
+          "cloudy": "[%key:component::weather::entity_component::_::state::cloudy%]",
+          "fog": "[%key:component::weather::entity_component::_::state::fog%]",
+          "hail": "[%key:component::weather::entity_component::_::state::hail%]",
+          "lightning": "[%key:component::weather::entity_component::_::state::lightning%]",
+          "lightning-rainy": "[%key:component::weather::entity_component::_::state::lightning-rainy%]",
+          "partlycloudy": "[%key:component::weather::entity_component::_::state::partlycloudy%]",
+          "pouring": "[%key:component::weather::entity_component::_::state::pouring%]",
+          "rainy": "[%key:component::weather::entity_component::_::state::rainy%]",
+          "snowy": "[%key:component::weather::entity_component::_::state::snowy%]",
+          "snowy-rainy": "[%key:component::weather::entity_component::_::state::snowy-rainy%]",
+          "sunny": "[%key:component::weather::entity_component::_::state::sunny%]",
+          "windy": "[%key:component::weather::entity_component::_::state::windy%]",
+          "windy-variant": "[%key:component::weather::entity_component::_::state::windy-variant%]"
+        }
+      },
+      "weather_report": {
+        "name": "Weather report"
+      },
+      "dewpoint": {
+        "name": "Dewpoint"
+      },
+      "wind_speed": {
+        "name": "Wind speed"
+      },
+      "wind_direction": {
+        "name": "Wind direction"
+      },
+      "wind_gusts": {
+        "name": "Wind gusts"
+      },
+      "precipitation": {
+        "name": "Precipitation"
+      },
+      "precipitation_probability": {
+        "name": "Precipitation probability"
+      },
+      "precipitation_duration": {
+        "name": "Precipitation duration"
+      },
+      "cloud_coverage": {
+        "name": "Cloud coverage"
+      },
+      "visibility": {
+        "name": "Visibility"
+      },
+      "sun_duration": {
+        "name": "Sun duration"
+      },
+      "sun_irradiance": {
+        "name": "Sun irradiance"
+      },
+      "fog_probability": {
+        "name": "Fog probability"
+      },
+      "measured_values_time": {
+        "name": "Time: measured values"
+      },
+      "forecast_values_time": {
+        "name": "Time: forecast values"
+      }
+    }
+  },
   "config": {
     "step": {
       "user": {
-        "description": "The latitude and longitude will be used to find the closest weather station. If you specify a station id, this will be used and latitude and longitude will be ignored. You can search available station-ids here: https://github.com/FL550/simple_dwd_weatherforecast/blob/master/simple_dwd_weatherforecast/stations.py",
+        "description": "You can repeat the configuration and add as many entities as you like.",
         "title": "Deutscher Wetterdienst",
         "data": {
-          "latitude": "Latitude",
-          "longitude": "Longitude",
-          "station_id": "Station-ID",
-          "weather_interval": "Forecast Interval in hours",
-          "wind_direction_type": "Wind direction type"
-       }
+          "entity_type": "Which Entity Type would you like to configure?"
+        }
+      },
+      "station_select": {
+        "description": "Some stations offer actual measured values (with a slight delay of about one hour), which could provide more accurate data. The are marked with '[X]' in the list. However, the forecasts are still very accurate and are sufficent for most cases.",
+        "title": "Station selection",
+        "data": {
+          "station_id": "Station"
+        },
+        "data_description": {
+          "station_id": "You can either select a station from the list which is ordered by distance from your home, or you can search directly within the box and select a matching one."
+        }
+      },
+      "station_configure_report": {
+        "description": "You have selected a station where actual measurements are available. The measured values provide values with higher accuracy, but they are only available with a slight delay of about one hour. You can check the currentness of the weather data as a sensor value.\n\nThe forecast contains more data points than the measured values. You can can choose which data to use.",
+        "title": "Data source configuration",
+        "data": {
+          "data_type": "Data source for current weather"
+        },
+        "data_description": {
+          "data_type": "This only affects the sensor value for the current weather. The forecast is unaffected."
+        }
+      },
+      "station_configure": {
+        "title": "Station configuration",
+        "data": {
+          "station_name": "Station name",
+          "wind_direction_type": "Wind direction value type",
+          "hourly_update": "Force hourly data update (see warning below)"
+        },
+        "data_description": {
+          "station_name": "This is the displayed name of the station.",
+          "wind_direction_type": "This affects the sensor value for the wind direction.",
+          "hourly_update": "Normally the weather is updated every 6 hours. DWD provides an hourly data update as well, this will however increase data usage significantly as the sensor values are bundled in the hourly update (~37MB vs. ~0.17MB per update). Keep in mind, that this obviously also slows down the update of new values."
+        }
       }
     },
     "error": {
-      "cannot_connect": "Cannot connect",
-      "invalid_station_id": "Invalid Station-ID",
-      "weather_interval_too_big": "Maximum interval is 24 hours",
-      "weather_interval_remainder_not_zero": "The remainder of 24 hours divided by the value have to be zero",
+      "invalid_station_id": "Invalid Station! Please select one from the list.",
+      "already_configured": "A station with the same id and name is already configured, please choose another name.",
       "unknown": "Unknown Error"
+    }
+  },
+  "selector": {
+    "entity_type": {
+      "options": {
+        "weather_station": "Weather station"
+      }
     },
-    "abort": {
-      "already_configured": "This station is already configured"
+    "data_type": {
+      "options": {
+        "mixed_data": "Use report data if available and forecasted data if not (recommended)",
+        "report_data": "Use only report data for current weather (fewer sensor types available)",
+        "forecast_data": "Use only forecast data for current weather"
+      }
+    },
+    "wind_direction_type": {
+      "options": {
+        "degrees": "Degrees",
+        "direction": "Direction (N, NE, E, ...)"
+      }
     }
   }
 }

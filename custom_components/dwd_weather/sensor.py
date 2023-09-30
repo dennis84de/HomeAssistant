@@ -2,6 +2,8 @@
 
 import logging
 import re
+from custom_components.dwd_weather.connector import DWDWeatherData
+from custom_components.dwd_weather.entity import DWDWeatherEntity
 
 from homeassistant.const import (
     ATTR_ATTRIBUTION,
@@ -23,15 +25,18 @@ from homeassistant.components.sensor import (
 from homeassistant.helpers.typing import ConfigType, HomeAssistantType
 
 from .const import (
+    ATTR_REPORT_ISSUE_TIME,
     ATTR_ISSUE_TIME,
     ATTR_LATEST_UPDATE,
     ATTR_STATION_ID,
     ATTR_STATION_NAME,
     ATTRIBUTION,
+    CONF_DATA_TYPE,
+    CONF_DATA_TYPE_FORECAST,
+    CONF_STATION_ID,
+    CONF_STATION_NAME,
     DOMAIN,
-    DWDWEATHER_COORDINATOR,
     DWDWEATHER_DATA,
-    DWDWEATHER_NAME,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -44,7 +49,7 @@ ATTR_SITE_NAME = "site_name"
 # Sensor types are defined as:
 #   variable -> [0]title, [1]device_class, [2]units, [3]icon, [4]enabled_by_default [5]state_class
 SENSOR_TYPES = {
-    "weather": [
+    "weather_condition": [
         "Weather",
         None,
         None,
@@ -111,7 +116,7 @@ SENSOR_TYPES = {
     "precipitation": [
         "Precipitation",
         None,
-        "kg/m^2",
+        "mm/m^2",
         "mdi:weather-rainy",
         False,
         STATE_CLASS_MEASUREMENT,
@@ -180,6 +185,22 @@ SENSOR_TYPES = {
         False,
         STATE_CLASS_MEASUREMENT,
     ],
+    "measured_values_time": [
+        "Report Time (UTC)",
+        "",
+        "",
+        "mdi:clock-time-four-outline",
+        True,
+        None,
+    ],
+    "forecast_values_time": [
+        "Forecast Time (UTC)",
+        "",
+        "",
+        "mdi:clock-time-four-outline",
+        True,
+        None,
+    ],
 }
 
 
@@ -188,43 +209,61 @@ async def async_setup_entry(
 ) -> None:
     """Set up the DWD weather sensor platform."""
     hass_data = hass.data[DOMAIN][entry.entry_id]
-    _LOGGER.debug("Sensor async_setup_entry")
-    async_add_entities(
-        [
-            DWDWeatherForecastSensor(entry.data, hass_data, sensor_type)
-            for sensor_type in SENSOR_TYPES
-        ],
-        False,
-    )
+    _LOGGER.debug("Sensor async_setup_entry {}".format(entry.data))
+    if CONF_STATION_ID in entry.data:
+        _LOGGER.debug("Sensor async_setup_entry")
+        # Only add the report sensor if a report is available
+        sensor_list = {
+            k: v for k, v in SENSOR_TYPES.items() if k != "measured_values_time"
+        }
+        async_add_entities(
+            [
+                DWDWeatherForecastSensor(entry.data, hass_data, sensor_type)
+                for sensor_type in sensor_list
+            ],
+            False,
+        )
+        if (
+            hass_data[DWDWEATHER_DATA]._config[CONF_DATA_TYPE]
+            != CONF_DATA_TYPE_FORECAST
+        ):
+            async_add_entities(
+                [
+                    DWDWeatherForecastSensor(
+                        entry.data, hass_data, "measured_values_time"
+                    )
+                ],
+                False,
+            )
 
 
-class DWDWeatherForecastSensor(SensorEntity):
+class DWDWeatherForecastSensor(DWDWeatherEntity, SensorEntity):
     """Implementation of a DWD current weather condition sensor."""
 
     def __init__(self, entry_data, hass_data, sensor_type):
         """Initialize the sensor."""
-        self._connector = hass_data[DWDWEATHER_DATA]
-        self._coordinator = hass_data[DWDWEATHER_COORDINATOR]
-
+        dwd_data: DWDWeatherData = hass_data[DWDWEATHER_DATA]
         self._type = sensor_type
-        self._name = f"{SENSOR_TYPES[self._type][0]} {hass_data[DWDWEATHER_NAME]}"
-        self._unique_id = f"{SENSOR_TYPES[self._type][0]}_{hass_data[DWDWEATHER_NAME]}"
+
+        # name = f"{dwd_data._config[CONF_STATION_NAME]}: {SENSOR_TYPES[self._type][0]}"
+        unique_id = f"{dwd_data._config[CONF_STATION_ID]}_{SENSOR_TYPES[self._type][0]}"
+        _LOGGER.debug(
+            "Setting up sensor with id {} and name {}".format(
+                unique_id, SENSOR_TYPES[self._type][0]
+            )
+        )
+        super().__init__(hass_data, unique_id)
 
     @property
-    def name(self):
-        """Return the name of the sensor."""
-        return self._name
-
-    @property
-    def unique_id(self):
-        """Return the unique of the sensor."""
-        return self._unique_id
+    def translation_key(self):
+        """Return the current condition."""
+        return self._type
 
     @property
     def state(self):
         """Return the state of the sensor."""
         result = ""
-        if self._type == "weather":
+        if self._type == "weather_condition":
             result = self._connector.get_condition()
         elif self._type == "weather_report":
             result = re.search(
@@ -261,6 +300,10 @@ class DWDWeatherForecastSensor(SensorEntity):
             result = self._connector.get_fog_probability()
         elif self._type == "humidity":
             result = self._connector.get_humidity()
+        elif self._type == "measured_values_time":
+            result = self._connector.infos[ATTR_REPORT_ISSUE_TIME]
+        elif self._type == "forecast_values_time":
+            result = self._connector.infos[ATTR_ISSUE_TIME]
         return result
 
     @property
@@ -339,21 +382,6 @@ class DWDWeatherForecastSensor(SensorEntity):
         attributes[ATTR_ATTRIBUTION] = ATTRIBUTION
         return attributes
 
-    async def async_added_to_hass(self) -> None:
-        """Set up a listener and load data."""
-        self.async_on_remove(
-            self._coordinator.async_add_listener(self.async_write_ha_state)
-        )
-
-    async def async_update(self):
-        """Schedule a custom update via the common entity update service."""
-        await self._coordinator.async_request_refresh()
-
-    @property
-    def should_poll(self) -> bool:
-        """Entities do not individually poll."""
-        return False
-
     @property
     def entity_registry_enabled_default(self) -> bool:
         """Return if the entity should be enabled when first added to the entity registry."""
@@ -362,7 +390,4 @@ class DWDWeatherForecastSensor(SensorEntity):
     @property
     def available(self):
         """Return if state is available."""
-        return (
-            self._connector.station_id is not None
-            and self._connector.latest_update is not None
-        )
+        return self._connector.latest_update is not None

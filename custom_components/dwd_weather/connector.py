@@ -3,25 +3,33 @@ import logging
 from datetime import datetime, timedelta, timezone
 import time
 from markdownify import markdownify
+from homeassistant.config_entries import ConfigEntry
 
 from homeassistant.components.weather import (
     ATTR_FORECAST_CONDITION,
     ATTR_FORECAST_NATIVE_PRECIPITATION,
-    ATTR_FORECAST_NATIVE_PRESSURE,
     ATTR_FORECAST_NATIVE_TEMP,
     ATTR_FORECAST_NATIVE_TEMP_LOW,
     ATTR_FORECAST_TIME,
     ATTR_FORECAST_WIND_BEARING,
     ATTR_FORECAST_NATIVE_WIND_SPEED,
+    WeatherEntityFeature,
+    Forecast,
 )
 from simple_dwd_weatherforecast import dwdforecast
 from simple_dwd_weatherforecast.dwdforecast import WeatherDataType
 
 from .const import (
     ATTR_ISSUE_TIME,
+    ATTR_REPORT_ISSUE_TIME,
     ATTR_LATEST_UPDATE,
     ATTR_STATION_ID,
     ATTR_STATION_NAME,
+    CONF_DATA_TYPE,
+    CONF_STATION_ID,
+    CONF_STATION_NAME,
+    CONF_WIND_DIRECTION_TYPE,
+    CONF_HOURLY_UPDATE,
     DEFAULT_WIND_DIRECTION_TYPE,
 )
 
@@ -29,149 +37,166 @@ _LOGGER = logging.getLogger(__name__)
 
 
 class DWDWeatherData:
-    def __init__(
-        self,
-        hass,
-        latitude,
-        longitude,
-        station_id,
-        weather_interval,
-        wind_direction_type,
-    ):
+    def __init__(self, hass, config_entry: ConfigEntry):
         """Initialize the data object."""
+        self._config = config_entry.data
         self._hass = hass
         self.forecast = None
-        self.station_id = None
         self.latest_update = None
-
-        # Public attributes
-        self.latitude = latitude
-        self.longitude = longitude
-        self.weather_interval = weather_interval
-        self.wind_direction_type = wind_direction_type
         self.infos = {}
 
-        # Checks if station_id was set by the user
-        if station_id != "":
-            if dwdforecast.is_valid_station_id(station_id):
-                self.station_id = station_id
-            else:
-                raise ValueError("Not a valid station_id")
-        else:
-            self.station_id = dwdforecast.get_nearest_station_id(latitude, longitude)
         # Holds the current data from DWD
-        self.dwd_weather = dwdforecast.Weather(self.station_id)
+        self.dwd_weather = dwdforecast.Weather(self._config[CONF_STATION_ID])
 
     async def async_update(self):
         """Async wrapper for update method."""
         return await self._hass.async_add_executor_job(self._update)
 
     def _update(self):
-        """Get the latest data from DWD and generate forecast array."""
+        """Get the latest data from DWD."""
         timestamp = datetime.now(timezone.utc)
-        # Only update on the hour and when not updated yet
-        if timestamp.minute == 0 or self.latest_update is None:
-            self.dwd_weather.update()
-            if self.dwd_weather.get_station_name(False) == "":
-                _LOGGER.exception("No update possible")
+        if timestamp.minute % 10 == 0 or self.latest_update is None:
+            self.dwd_weather.update(
+                force_hourly=self._config[CONF_HOURLY_UPDATE],
+                with_forecast=True,
+                with_measurements=True
+                if self._config[CONF_DATA_TYPE] == "report_data"
+                or self._config[CONF_DATA_TYPE] == "mixed_data"
+                else False,
+                with_report=True,
+            )
+            if self._config[CONF_HOURLY_UPDATE]:
+                # Hacky workaround: as the hourly data does not provide a forecast for the actual hour, we have to clone the next hour and pretend we have a forecast
+                first_date = datetime(
+                    *(
+                        time.strptime(
+                            next(iter(self.dwd_weather.forecast_data)),
+                            "%Y-%m-%dT%H:%M:%S.%fZ",
+                        )[0:6]
+                    ),
+                    0,
+                    timezone.utc,
+                )
+                self.dwd_weather.forecast_data[
+                    (first_date - timedelta(hours=1)).strftime("%Y-%m-%dT%H:00:00.000Z")
+                ] = self.dwd_weather.forecast_data[
+                    first_date.strftime("%Y-%m-%dT%H:00:00.000Z")
+                ]
+                self.dwd_weather.forecast_data.move_to_end(
+                    (first_date - timedelta(hours=1)).strftime(
+                        "%Y-%m-%dT%H:00:00.000Z"
+                    ),
+                    last=False,
+                )
+                # Hacky workaround end
+            _LOGGER.info("Updating {}".format(self._config[CONF_STATION_NAME]))
+            self.infos[ATTR_LATEST_UPDATE] = timestamp
+            self.latest_update = timestamp
+            if (
+                self._config[CONF_DATA_TYPE] == "report_data"
+                or self._config[CONF_DATA_TYPE] == "mixed_data"
+            ) and self.dwd_weather.report_data is not None:
+                report_date_array = self.dwd_weather.report_data["date"].split(".")
+                date = f"20{report_date_array[2]}-{report_date_array[1]}-{report_date_array[0]} {self.dwd_weather.report_data['time']}"
+                self.infos[ATTR_REPORT_ISSUE_TIME] = date
             else:
-                _LOGGER.info(
-                    "Updating {}".format(self.dwd_weather.get_station_name(False))
+                self.infos[ATTR_REPORT_ISSUE_TIME] = ""
+            self.infos[ATTR_ISSUE_TIME] = self.dwd_weather.issue_time
+            self.infos[ATTR_STATION_ID] = self._config[CONF_STATION_ID]
+            self.infos[ATTR_STATION_NAME] = self._config[CONF_STATION_NAME]
+
+    def get_forecast(self, WeatherEntityFeature_FORECAST) -> list[Forecast] | None:
+        if WeatherEntityFeature_FORECAST == WeatherEntityFeature.FORECAST_HOURLY:
+            weather_interval = 1
+        elif WeatherEntityFeature_FORECAST == WeatherEntityFeature.FORECAST_DAILY:
+            weather_interval = 24
+        timestep = datetime(
+            self.latest_update.year,
+            self.latest_update.month,
+            self.latest_update.day,
+            tzinfo=timezone.utc,
+        )
+        forecast_data = []
+        # Find the next timewindow from actual time
+        while timestep < self.latest_update:
+            timestep += timedelta(hours=weather_interval)
+            # Reduce by one to include the current timewindow
+        timestep -= timedelta(hours=weather_interval)
+        for _ in range(0, 9):
+            for _ in range(int(24 / weather_interval)):
+                temp_max = self.dwd_weather.get_timeframe_max(
+                    WeatherDataType.TEMPERATURE,
+                    timestep,
+                    weather_interval,
+                    False,
                 )
-                self.infos[ATTR_LATEST_UPDATE] = timestamp
-                self.latest_update = timestamp
-                self.infos[ATTR_ISSUE_TIME] = self.dwd_weather.issue_time
-                self.infos[ATTR_STATION_ID] = self.dwd_weather.station_id
-                self.infos[ATTR_STATION_NAME] = self.dwd_weather.get_station_name(False)
+                if temp_max is not None:
+                    temp_max = int(round(temp_max - 273.1, 0))
 
-                _LOGGER.debug(
-                    "forecast_data for station_id '{}': {}".format(
-                        self.station_id, self.dwd_weather.forecast_data
-                    )
+                temp_min = self.dwd_weather.get_timeframe_min(
+                    WeatherDataType.TEMPERATURE,
+                    timestep,
+                    weather_interval,
+                    False,
                 )
-                forecast_data = []
-                timestep = datetime(
-                    timestamp.year, timestamp.month, timestamp.day, tzinfo=timezone.utc
+                if temp_min is not None:
+                    temp_min = int(round(temp_min - 273.1, 0))
+
+                wind_dir = self.dwd_weather.get_timeframe_avg(
+                    WeatherDataType.WIND_DIRECTION,
+                    timestep,
+                    weather_interval,
+                    False,
                 )
-                # Find the next timewindow from actual time
-                while timestep < timestamp:
-                    timestep += timedelta(hours=self.weather_interval)
-                # Reduce by one to include the current timewindow
-                timestep -= timedelta(hours=self.weather_interval)
-                for _ in range(0, 9):
-                    for _ in range(int(24 / self.weather_interval)):
-                        temp_max = self.dwd_weather.get_timeframe_max(
-                            WeatherDataType.TEMPERATURE,
-                            timestep,
-                            self.weather_interval,
-                            False,
-                        )
-                        if temp_max is not None:
-                            temp_max = int(round(temp_max - 273.1, 0))
 
-                        temp_min = self.dwd_weather.get_timeframe_min(
-                            WeatherDataType.TEMPERATURE,
-                            timestep,
-                            self.weather_interval,
-                            False,
-                        )
-                        if temp_min is not None:
-                            temp_min = int(round(temp_min - 273.1, 0))
+                if (
+                    self._config[CONF_WIND_DIRECTION_TYPE]
+                    != DEFAULT_WIND_DIRECTION_TYPE
+                ):
+                    wind_dir = self.get_wind_direction_symbol(wind_dir)
 
-                        wind_dir = self.dwd_weather.get_timeframe_avg(
-                            WeatherDataType.WIND_DIRECTION,
+                precipitation_prop = self.dwd_weather.get_timeframe_max(
+                    WeatherDataType.PRECIPITATION_PROBABILITY,
+                    timestep,
+                    weather_interval,
+                    False,
+                )
+                if precipitation_prop is not None:
+                    precipitation_prop = int(precipitation_prop)
+                forecast_data.append(
+                    {
+                        ATTR_FORECAST_TIME: timestep.strftime("%Y-%m-%dT%H:00:00Z"),
+                        ATTR_FORECAST_CONDITION: self.dwd_weather.get_timeframe_condition(
                             timestep,
-                            self.weather_interval,
+                            weather_interval,
                             False,
-                        )
-
-                        if self.wind_direction_type != DEFAULT_WIND_DIRECTION_TYPE:
-                            wind_dir = self.get_wind_direction_symbol(wind_dir)
-
-                        precipitation_prop = self.dwd_weather.get_timeframe_max(
-                            WeatherDataType.PRECIPITATION_PROBABILITY,
+                        ),
+                        ATTR_FORECAST_NATIVE_TEMP: temp_max,
+                        ATTR_FORECAST_NATIVE_TEMP_LOW: temp_min,
+                        ATTR_FORECAST_NATIVE_PRECIPITATION: self.dwd_weather.get_timeframe_sum(
+                            WeatherDataType.PRECIPITATION,
                             timestep,
-                            self.weather_interval,
+                            weather_interval,
                             False,
-                        )
-                        if precipitation_prop is not None:
-                            precipitation_prop = int(precipitation_prop)
-                        forecast_data.append(
-                            {
-                                ATTR_FORECAST_TIME: timestep.strftime(
-                                    "%Y-%m-%dT%H:00:00Z"
-                                ),
-                                ATTR_FORECAST_CONDITION: self.dwd_weather.get_timeframe_condition(
-                                    timestep,
-                                    self.weather_interval,
-                                    False,
-                                ),
-                                ATTR_FORECAST_NATIVE_TEMP: temp_max,
-                                ATTR_FORECAST_NATIVE_TEMP_LOW: temp_min,
-                                ATTR_FORECAST_NATIVE_PRECIPITATION: self.dwd_weather.get_timeframe_sum(
-                                    WeatherDataType.PRECIPITATION,
-                                    timestep,
-                                    self.weather_interval,
-                                    False,
-                                ),
-                                ATTR_FORECAST_WIND_BEARING: wind_dir,
-                                ATTR_FORECAST_NATIVE_WIND_SPEED: self.dwd_weather.get_timeframe_max(
-                                    WeatherDataType.WIND_SPEED,
-                                    timestep,
-                                    self.weather_interval,
-                                    False,
-                                ),
-                                "wind_gusts": self.dwd_weather.get_timeframe_max(
-                                    WeatherDataType.WIND_GUSTS,
-                                    timestep,
-                                    self.weather_interval,
-                                    False,
-                                ),
-                                "precipitation_probability": precipitation_prop,
-                            }
-                        )
-                        timestep += timedelta(hours=self.weather_interval)
-                self.forecast = forecast_data
+                        ),
+                        ATTR_FORECAST_WIND_BEARING: wind_dir,
+                        ATTR_FORECAST_NATIVE_WIND_SPEED: self.dwd_weather.get_timeframe_max(
+                            WeatherDataType.WIND_SPEED,
+                            timestep,
+                            weather_interval,
+                            False,
+                        ),
+                        "wind_gusts": self.dwd_weather.get_timeframe_max(
+                            WeatherDataType.WIND_GUSTS,
+                            timestep,
+                            weather_interval,
+                            False,
+                        ),
+                        "precipitation_probability": precipitation_prop,
+                    }
+                )
+                timestep += timedelta(hours=weather_interval)
+        return forecast_data
 
     def get_condition(self):
         return self.dwd_weather.get_forecast_condition(
@@ -182,11 +207,23 @@ class DWDWeatherData:
         return markdownify(self.dwd_weather.get_weather_report(), strip=["br"])
 
     def get_weather_value(self, data_type: WeatherDataType):
-        value = self.dwd_weather.get_forecast_data(
-            data_type,
-            datetime.now(timezone.utc),
-            False,
-        )
+        value = None
+        if (
+            self._config[CONF_DATA_TYPE] == "report_data"
+            or self._config[CONF_DATA_TYPE] == "mixed_data"
+        ):
+            value = self.dwd_weather.get_reported_weather(
+                data_type,
+                shouldUpdate=False,
+            )
+        if self._config[CONF_DATA_TYPE] == "forecast_data" or (
+            self._config[CONF_DATA_TYPE] == "mixed_data" and value is None
+        ):
+            value = self.dwd_weather.get_forecast_data(
+                data_type,
+                datetime.now(timezone.utc),
+                shouldUpdate=False,
+            )
         if value is not None:
             if data_type == WeatherDataType.TEMPERATURE:
                 value = round(value - 273.1, 1)
@@ -197,7 +234,10 @@ class DWDWeatherData:
             elif data_type == WeatherDataType.WIND_SPEED:
                 value = round(value * 3.6, 1)
             elif data_type == WeatherDataType.WIND_DIRECTION:
-                if self.wind_direction_type == DEFAULT_WIND_DIRECTION_TYPE:
+                if (
+                    self._config[CONF_WIND_DIRECTION_TYPE]
+                    == DEFAULT_WIND_DIRECTION_TYPE
+                ):
                     value = round(value, 0)
                 else:
                     value = self.get_wind_direction_symbol(round(value, 0))
@@ -271,8 +311,9 @@ class DWDWeatherData:
 
     def get_condition_hourly(self):
         data = []
-        for key in self.dwd_weather.forecast_data:
-            item = self.dwd_weather.forecast_data[key][WeatherDataType.CONDITION.value]
+        forecast_data = self.dwd_weather.forecast_data
+        for key in forecast_data:
+            item = forecast_data[key][WeatherDataType.CONDITION.value[0]]
             if item != "-":
                 value = self.dwd_weather.weather_codes[item][0]
             else:
@@ -290,7 +331,8 @@ class DWDWeatherData:
             timestamp.hour,
             tzinfo=timezone.utc,
         )
-        for key in self.dwd_weather.forecast_data:
+        forecast_data = self.dwd_weather.forecast_data
+        for key in forecast_data:
             if (
                 datetime(
                     *(time.strptime(key, "%Y-%m-%dT%H:%M:%S.%fZ")[0:6]),
@@ -301,8 +343,8 @@ class DWDWeatherData:
             ):
                 continue
 
-            item = self.dwd_weather.forecast_data[key]
-            value = item[data_type.value]
+            item = forecast_data[key]
+            value = item[data_type.value[0]]
             if value is not None:
                 if data_type == WeatherDataType.TEMPERATURE:
                     value = round(value - 273.1, 1)
@@ -313,7 +355,10 @@ class DWDWeatherData:
                 elif data_type == WeatherDataType.WIND_SPEED:
                     value = round(value * 3.6, 1)
                 elif data_type == WeatherDataType.WIND_DIRECTION:
-                    if self.wind_direction_type == DEFAULT_WIND_DIRECTION_TYPE:
+                    if (
+                        self._config[CONF_WIND_DIRECTION_TYPE]
+                        == DEFAULT_WIND_DIRECTION_TYPE
+                    ):
                         value = round(value, 0)
                     else:
                         value = self.get_wind_direction_symbol(round(value, 0))

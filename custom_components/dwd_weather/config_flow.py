@@ -1,109 +1,71 @@
 """Config flow for Deutscher Wetterdienst integration."""
 
 import logging
-
 import voluptuous as vol
-from homeassistant import config_entries, core, exceptions
-from homeassistant.const import CONF_LATITUDE, CONF_LONGITUDE, CONF_NAME
-from homeassistant.helpers import config_validation as cv
+from homeassistant import config_entries
+from homeassistant.helpers.selector import (
+    BooleanSelector,
+    SelectSelector,
+    TextSelector,
+)
+from simple_dwd_weatherforecast import dwdforecast
 
-from .connector import DWDWeatherData
 from .const import (
+    CONF_DATA_TYPE,
+    CONF_DATA_TYPE_FORECAST,
+    CONF_DATA_TYPE_MIXED,
+    CONF_DATA_TYPE_REPORT,
+    CONF_ENTITY_TYPE,
+    CONF_ENTITY_TYPE_STATION,
+    CONF_HOURLY_UPDATE,
     CONF_STATION_ID,
+    CONF_STATION_NAME,
     DOMAIN,
-    CONF_WEATHER_INTERVAL,
     CONF_WIND_DIRECTION_TYPE,
-    DEFAULT_WIND_DIRECTION_TYPE
 )
 
 _LOGGER = logging.getLogger(__name__)
 
 
-async def validate_input(hass: core.HomeAssistant, data):
-    """Validate the user input
-
-    Data has the keys from DATA_SCHEMA with values provided by the user.
-    """
-    latitude = data[CONF_LATITUDE]
-    longitude = data[CONF_LONGITUDE]
-    weather_interval = data[CONF_WEATHER_INTERVAL]
-    wind_direction_type = data[CONF_WIND_DIRECTION_TYPE]
-    station_id = data[CONF_STATION_ID]
-    _LOGGER.debug(
-        """validate_input:: CONF_LATITUDE: {}, CONF_LONGITUDE: {}, CONF_WEATHER_INTERVAL: {}, CONF_WIND_DIRECTION_TYPE: {}
-        , CONF_STATION_ID: {}""".format(
-            latitude, longitude, weather_interval, wind_direction_type, station_id
-        )
-    )
-    if weather_interval > 24:
-        raise WeatherIntervalTooBig()
-    if 24 % weather_interval != 0:
-        raise WeatherIntervalRemainderNotZero()
-
-    dwd_weather_data = DWDWeatherData(
-        hass, latitude, longitude, station_id, weather_interval, wind_direction_type
-    )
-    _LOGGER.debug(
-        "Initialized new DWDWeatherData with id: {}".format(dwd_weather_data.station_id)
-    )
-    await dwd_weather_data.async_update()
-    if dwd_weather_data.dwd_weather.get_station_name(False) == "":
-        raise CannotConnect()
-
-    return {
-        "site_name": dwd_weather_data.dwd_weather.get_station_name(False).title(),
-        "weather_interval": str(weather_interval),
-    }
-
-
 class DWDWeatherConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     """Handle a config flow for DWD weather integration."""
 
-    VERSION = 3
+    VERSION = 4
     CONNECTION_CLASS = config_entries.CONN_CLASS_CLOUD_POLL
 
     async def async_step_user(self, user_input=None):
         """Handle the initial step."""
         errors = {}
+        self.config_data = {}
+        _LOGGER.debug("User:user_input: {}".format(user_input))
         if user_input is not None:
-
-            try:
-                info = await validate_input(self.hass, user_input)
-            except CannotConnect:
-                errors["base"] = "cannot_connect"
-            except ValueError:
-                errors["base"] = "invalid_station_id"
-            except WeatherIntervalTooBig:
-                errors["base"] = "weather_interval_too_big"
-            except WeatherIntervalRemainderNotZero:
-                errors["base"] = "weather_interval_remainder_not_zero"
-
-            except Exception:  # pylint: disable=broad-except
-                _LOGGER.exception("Unexpected exception")
-                errors["base"] = "unknown"
-            else:
-                unique_id = info["site_name"].lower()
-                if info["weather_interval"] != "24":
-                    unique_id += " " + info["weather_interval"] + "h"
-                user_input[CONF_NAME] = unique_id
-                await self.async_set_unique_id(unique_id)
-                self._abort_if_unique_id_configured()
-                return self.async_create_entry(
-                    title=user_input[CONF_NAME].title(), data=user_input
+            # Error in user input
+            if len(errors) > 0:
+                _LOGGER.debug("error: {}".format(errors))
+                return self.async_show_form(
+                    step_id="user", data_schema=data_schema, errors={errors}
                 )
+            # Check selected option
+            if user_input[CONF_ENTITY_TYPE] == CONF_ENTITY_TYPE_STATION:
+                # Show station config form
+                _LOGGER.debug("Selected weather_station")
+                return await self.async_step_station_select()
+            else:
+                pass
 
         data_schema = vol.Schema(
             {
                 vol.Required(
-                    CONF_LATITUDE, default=self.hass.config.latitude
-                ): cv.latitude,
-                vol.Required(
-                    CONF_LONGITUDE, default=self.hass.config.longitude
-                ): cv.longitude,
-                vol.Required(CONF_WEATHER_INTERVAL, default=24): cv.positive_int,
-                vol.Required(CONF_WIND_DIRECTION_TYPE, default=DEFAULT_WIND_DIRECTION_TYPE):
-                    vol.In(["DEGREES", "DIRECTION"]),
-                vol.Optional(CONF_STATION_ID, default=""): str,
+                    CONF_ENTITY_TYPE,
+                    default=CONF_ENTITY_TYPE_STATION,
+                ): SelectSelector(
+                    {
+                        "options": list([CONF_ENTITY_TYPE_STATION]),
+                        "custom_value": False,
+                        "mode": "list",
+                        "translation_key": CONF_ENTITY_TYPE,
+                    }
+                )
             },
         )
 
@@ -111,14 +73,138 @@ class DWDWeatherConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             step_id="user", data_schema=data_schema, errors=errors
         )
 
+    async def async_step_station_select(self, user_input=None):
+        errors = {}
+        _LOGGER.debug("Station:user_input: {}".format(user_input))
+        if user_input is not None:
+            station = dwdforecast.load_station_id(user_input[CONF_STATION_ID])
+            _LOGGER.debug("Station:validation: {}".format(station))
+            if station is not None:
+                if station["report_available"] == 1:
+                    self.config_data.update(user_input)
+                    return await self.async_step_station_configure_report()
+                else:
+                    self.config_data[CONF_DATA_TYPE] = "forecast_data"
+                    self.config_data.update(user_input)
+                    return await self.async_step_station_configure()
+            else:
+                errors = {"base": "invalid_station_id"}
+        stations_list = dwdforecast.get_stations_sorted_by_distance(
+            self.hass.config.latitude, self.hass.config.longitude
+        )
+        stations = []
 
-class CannotConnect(exceptions.HomeAssistantError):
-    """Error to indicate we cannot connect."""
+        for station in stations_list:
+            station_data = dwdforecast.load_station_id(station[0])
+            stations.append(
+                {
+                    "label": f"[{'X' if station_data['report_available'] == 1 else '_'}] {station[1]} km: {dwdforecast.load_station_id(station[0])['name']} ({station_data['elev']}m)",
+                    "value": station[0],
+                }
+            )
 
+        data_schema = vol.Schema(
+            {
+                vol.Required(
+                    CONF_STATION_ID,
+                    default=stations[0]["value"],
+                ): SelectSelector(
+                    {
+                        "options": list(stations),
+                        "custom_value": True,
+                        "mode": "dropdown",
+                    }
+                ),
+            }
+        )
 
-class WeatherIntervalTooBig(exceptions.HomeAssistantError):
-    """Error to indicate only values to 24 are allowed."""
+        return self.async_show_form(
+            step_id="station_select", data_schema=data_schema, errors=errors
+        )
 
+    async def async_step_station_configure_report(self, user_input=None):
+        errors = {}
+        _LOGGER.debug("Station:user_input: {}".format(user_input))
+        _LOGGER.debug("Station:configdata: {}".format(self.config_data))
+        if user_input is not None:
+            self.config_data.update(user_input)
+            return await self.async_step_station_configure()
 
-class WeatherIntervalRemainderNotZero(exceptions.HomeAssistantError):
-    """Error to indicate that the remainder of 24 divided by the value has to be zero."""
+        data_schema = vol.Schema(
+            {
+                vol.Required(
+                    CONF_DATA_TYPE,
+                    default=CONF_DATA_TYPE_MIXED,
+                ): SelectSelector(
+                    {
+                        "options": list(
+                            [
+                                CONF_DATA_TYPE_MIXED,
+                                CONF_DATA_TYPE_REPORT,
+                                CONF_DATA_TYPE_FORECAST,
+                            ]
+                        ),
+                        "custom_value": False,
+                        "mode": "list",
+                        "translation_key": CONF_DATA_TYPE,
+                    }
+                )
+            }
+        )
+
+        return self.async_show_form(
+            step_id="station_configure_report", data_schema=data_schema, errors=errors
+        )
+
+    async def async_step_station_configure(self, user_input=None):
+        errors = {}
+        _LOGGER.debug(
+            "Station_configure:id: {},user_input: {}".format(
+                self.config_data[CONF_STATION_ID], user_input
+            )
+        )
+        if user_input is not None:
+            station_id = (
+                f"{self.config_data[CONF_STATION_ID]}: {user_input[CONF_STATION_NAME]}"
+            )
+            if await self.async_set_unique_id(station_id) is not None:
+                errors = {"base": "already_configured"}
+            else:
+                self.config_data.update(user_input)
+                # The data is the data which is picked up by the async_setup_entry in sensor or weather
+                return self.async_create_entry(title=station_id, data=self.config_data)
+
+        _LOGGER.debug(
+            "Station_configure:station_data: {}".format(
+                dwdforecast.load_station_id(self.config_data[CONF_STATION_ID])
+            )
+        )
+        data_schema = vol.Schema(
+            {
+                vol.Required(
+                    CONF_STATION_NAME,
+                    default=dwdforecast.load_station_id(
+                        self.config_data[CONF_STATION_ID]
+                    )["name"],
+                ): TextSelector({}),
+                vol.Required(
+                    CONF_WIND_DIRECTION_TYPE,
+                    default="degrees",
+                ): SelectSelector(
+                    {
+                        "options": list(["degrees", "direction"]),
+                        "custom_value": False,
+                        "mode": "list",
+                        "translation_key": CONF_WIND_DIRECTION_TYPE,
+                    }
+                ),
+                vol.Required(
+                    CONF_HOURLY_UPDATE,
+                    default=False,
+                ): BooleanSelector({}),
+            }
+        )
+
+        return self.async_show_form(
+            step_id="station_configure", data_schema=data_schema, errors=errors
+        )

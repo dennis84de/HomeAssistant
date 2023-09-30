@@ -1,28 +1,140 @@
 {
   "title": "Deutscher Wetterdienst",
+  "entity": {
+    "sensor": {
+      "weather_condition": {
+        "name": "Wetterzustand",
+        "state": {
+          "clear-night": "[%key:component::weather::entity_component::_::state::clear-night%]",
+          "cloudy": "[%key:component::weather::entity_component::_::state::cloudy%]",
+          "fog": "[%key:component::weather::entity_component::_::state::fog%]",
+          "hail": "[%key:component::weather::entity_component::_::state::hail%]",
+          "lightning": "[%key:component::weather::entity_component::_::state::lightning%]",
+          "lightning-rainy": "[%key:component::weather::entity_component::_::state::lightning-rainy%]",
+          "partlycloudy": "[%key:component::weather::entity_component::_::state::partlycloudy%]",
+          "pouring": "[%key:component::weather::entity_component::_::state::pouring%]",
+          "rainy": "[%key:component::weather::entity_component::_::state::rainy%]",
+          "snowy": "[%key:component::weather::entity_component::_::state::snowy%]",
+          "snowy-rainy": "[%key:component::weather::entity_component::_::state::snowy-rainy%]",
+          "sunny": "[%key:component::weather::entity_component::_::state::sunny%]",
+          "windy": "[%key:component::weather::entity_component::_::state::windy%]",
+          "windy-variant": "[%key:component::weather::entity_component::_::state::windy-variant%]"
+        }
+      },
+      "weather_report": {
+        "name": "Wetterbericht"
+      },
+      "dewpoint": {
+        "name": "Taupunkt"
+      },
+      "wind_speed": {
+        "name": "Windgeschwindigkeit"
+      },
+      "wind_direction": {
+        "name": "Windrichtung"
+      },
+      "wind_gusts": {
+        "name": "Windböen"
+      },
+      "precipitation": {
+        "name": "Niederschlag"
+      },
+      "precipitation_probability": {
+        "name": "Niederschlagswahrscheinlichkeit"
+      },
+      "precipitation_duration": {
+        "name": "Niederschlagsdauer"
+      },
+      "cloud_coverage": {
+        "name": "Bewölkungsgrad"
+      },
+      "visibility": {
+        "name": "Sichtweite"
+      },
+      "sun_duration": {
+        "name": "Sonnenscheindauer"
+      },
+      "sun_irradiance": {
+        "name": "Sonneneinstrahlung"
+      },
+      "fog_probability": {
+        "name": "Nebelwahrscheinlichkeit"
+      },
+      "measured_values_time": {
+        "name": "Zeit: Messwerte"
+      },
+      "forecast_values_time": {
+        "name": "Zeit: Vorhersagewerte"
+      }
+    }
+  },
   "config": {
     "step": {
       "user": {
-        "description": "Der Längen- und Breitengrad wird genutzt um die nächste Wetterstation zu ermitteln. Wenn eine Stations-ID angegeben wird, werden die Längen- und Breitengrad Angaben ignoriert. Verfügbare Stations-Ids können unter folgendem Link eingesehen werden: https://github.com/FL550/simple_dwd_weatherforecast/blob/master/simple_dwd_weatherforecast/stations.py",
+        "description": "Die Konfiguration kann beliebig oft wiederholt werden und beliebig viele Einträge hinzugefügt werden.",
         "title": "Deutscher Wetterdienst",
         "data": {
-          "latitude": "Längengrad",
-          "longitude": "Breitengrad",
-          "station_id": "Stations-ID",
-          "weather_interval": "Vorhersage Interval in Stunden",
-          "wind_direction_type": "Windrichtungsangabentyp"
+          "entity_type": "Welcher Typ soll konfiguriert werden?"
+        }
+      },
+      "station_select": {
+        "description": "Manche Stationen bieten aktuelle Messwerte an (mit einer leichten Verzögerung von ungefähr einer Stunde), die möglicherweise eine höhere Genauigkeit bieten. Sie sind in der Liste durch '[X]' markiert. Die Vorhersagen sind aber auch sehr genau und sind für die meisten Fälle ausreichend.",
+        "title": "Stationsauswahl",
+        "data": {
+          "station_id": "Station"
+        },
+        "data_description": {
+          "station_id": "Es kann entweder eine Station aus der Liste ausgewählt werden, oder man kann direkt in der Box nach einer passenden Station suchen und sie dann auswählen."
+        }
+      },
+      "station_configure_report": {
+        "description": "Es wurde eine Station ausgewählt, bei der tatsächliche Messwerte vorhanden sind. Die gemessenen Werte bieten eine höhere Genauigkeit, die aber nur mit einer leichten Verzögerung von ungefähr einer Stunde verfügbar sind. Die Aktualität der Wetterdaten kann als Sensorwert angezeigt werden.\n\nDie Vorhersage enthält mehr Datenpunkte als die gemessenen Werte. Es kann ausgewählt werden, welche Daten verwendet werden sollen.",
+        "title": "Datenquellen configuration",
+        "data": {
+          "data_type": "Datenquelle für das aktuelle Wetter"
+        },
+        "data_description": {
+          "data_type": "Diese Einstellung betrifft nur die Sensorwerte für das aktuelle Wetter. Die Vorhersagedaten werden nicht beeinflusst."
+        }
+      },
+      "station_configure": {
+        "title": "Stationskonfiguration",
+        "data": {
+          "station_name": "Stationsname",
+          "wind_direction_type": "Art der Windrichtungsangabe",
+          "hourly_update": "Erzwinge die stündliche Aktualisierung der Daten (siehe Hinweis unten)"
+        },
+        "data_description": {
+          "station_name": "Der angezeigte Stationsname",
+          "wind_direction_type": "Betrifft den Sensorwert für die Windrichtung",
+          "hourly_update": "Normalerweise werden die Wetterdaten alle 6 Stunden aktualisiert. Der DWD bietet aber auch eine stündliche Aktualisierung der Daten an, allerdings erhöht das die Datennutzung erheblich, da die Sensorwerte für alle verfügbaren Stationen in der stündlichen Aktualisierung enthalten sind."
         }
       }
     },
     "error": {
-      "cannot_connect": "Keine Verbindung möglich",
-      "invalid_station_id": "Stations-ID nicht korrekt",
-      "weather_interval_too_big": "Das maximale Intervall sind 24 Stunden",
-      "weather_interval_remainder_not_zero": "Der Rest von dem Wert geteilt durch 24 muss 0 ergeben",
+      "invalid_station_id": "Ungültige Station! Bitte eine von der Liste auswählen.",
+      "already_configured": "Eine Station mit der selben ID und Namen ist bereits konfiguriert, bitte einen anderen Namen wählen.",
       "unknown": "Unbekannter Fehler"
+    }
+  },
+  "selector": {
+    "entity_type": {
+      "options": {
+        "weather_station": "Wetterstation"
+      }
     },
-    "abort": {
-      "already_configured": "Diese Station wurde bereits konfiguriert"
+    "data_type": {
+      "options": {
+        "mixed_data": "Nutze Messwerte wenn vorhanden und andernfalls Vorhersagedaten (empfohlen)",
+        "report_data": "Nutze nur Messwerte für das aktuelle Wetter (weniger Sensorarten verfügbar)",
+        "forecast_data": "Nutze nur Vorhersagedaten für das aktuelle Wetter"
+      }
+    },
+    "wind_direction_type": {
+      "options": {
+        "degrees": "Grad",
+        "direction": "Richtung (N, NE, E, ...)"
+      }
     }
   }
 }

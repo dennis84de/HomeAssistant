@@ -1,7 +1,13 @@
 """Support for DWD weather service."""
 import logging
+from custom_components.dwd_weather.connector import DWDWeatherData
+from custom_components.dwd_weather.entity import DWDWeatherEntity
 
-from homeassistant.components.weather import WeatherEntity
+from homeassistant.components.weather import (
+    WeatherEntity,
+    WeatherEntityFeature,
+    Forecast,
+)
 from homeassistant.const import (
     TEMP_CELSIUS,
     PRESSURE_HPA,
@@ -9,15 +15,15 @@ from homeassistant.const import (
     LENGTH_KILOMETERS,
     LENGTH_MILLIMETERS,
 )
+
 from homeassistant.helpers.typing import ConfigType, HomeAssistantType
 
 from .const import (
     ATTRIBUTION,
-    DEFAULT_NAME,
+    CONF_STATION_ID,
+    CONF_STATION_NAME,
     DOMAIN,
-    DWDWEATHER_COORDINATOR,
     DWDWEATHER_DATA,
-    DWDWEATHER_NAME,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -28,45 +34,49 @@ async def async_setup_entry(
 ) -> None:
     """Add a weather entity from a config_entry."""
     hass_data = hass.data[DOMAIN][entry.entry_id]
-    async_add_entities([DWDWeather(entry.data, hass_data)], False)
+    if CONF_STATION_ID in entry.data:
+        async_add_entities([DWDWeather(entry.data, hass_data)], False)
 
 
-class DWDWeather(WeatherEntity):
+class DWDWeather(DWDWeatherEntity, WeatherEntity):
     """Implementation of DWD weather."""
 
     def __init__(self, entry_data, hass_data):
         """Initialise the platform with a data instance and site."""
-        self._connector = hass_data[DWDWEATHER_DATA]
-        self._coordinator = hass_data[DWDWEATHER_COORDINATOR]
 
-        self._name = f"{DEFAULT_NAME} {hass_data[DWDWEATHER_NAME]}"
-        self._unique_id = f"{hass_data[DWDWEATHER_NAME]}"
+        dwd_data: DWDWeatherData = hass_data[DWDWEATHER_DATA]
 
-    async def async_added_to_hass(self):
-        """When entity is added to hass."""
-        self.async_on_remove(
-            self._coordinator.async_add_listener(self.async_write_ha_state)
+        self._name = f"{dwd_data._config[CONF_STATION_NAME]}"
+        unique_id = f"{dwd_data._config[CONF_STATION_ID]}_Weather"
+        _LOGGER.debug(
+            "Setting up weather with id {} and name {}".format(unique_id, self._name)
         )
+        super().__init__(hass_data, unique_id)
 
-    @property
-    def should_poll(self):
-        """No polling needed."""
-        return False
+    async def async_forecast_daily(self) -> list[Forecast] | None:
+        """Return the daily forecast in native units."""
+        return self._connector.get_forecast(WeatherEntityFeature.FORECAST_DAILY)
 
-    @property
-    def unique_id(self):
-        """Return unique ID."""
-        return self._unique_id
+    async def async_forecast_hourly(self) -> list[Forecast] | None:
+        """Return the hourly forecast in native units."""
+        return self._connector.get_forecast(WeatherEntityFeature.FORECAST_HOURLY)
 
     @property
     def name(self):
         """Return the name of the sensor."""
-        self._name
+        return self._name
 
     @property
     def condition(self):
         """Return the current condition."""
         return self._connector.get_condition()
+
+    @property
+    def supported_features(self):
+        """Return the current condition."""
+        return (
+            WeatherEntityFeature.FORECAST_HOURLY | WeatherEntityFeature.FORECAST_DAILY
+        )
 
     @property
     def native_temperature(self):
@@ -127,11 +137,6 @@ class DWDWeather(WeatherEntity):
     def attribution(self):
         """Return the attribution."""
         return ATTRIBUTION
-
-    @property
-    def forecast(self):
-        """Return the forecast array."""
-        return self._connector.forecast
 
     @property
     def extra_state_attributes(self):
