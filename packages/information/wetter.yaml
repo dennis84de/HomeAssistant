@@ -1,6 +1,3 @@
-gdacs:
-  radius: 100
-
 input_boolean:
   wetter_warnungen_einschalten:
     name: Wetterwarnungen
@@ -17,11 +14,11 @@ binary_sensor:
   - platform: car_wash
     name: Auto waschen
     days: 5
-    weather: weather.dwd_weather_dortmund
+    weather: weather.buienradar
 
   - platform: snowtire
     name: Autoreifen    
-    weather: weather.dwd_weather_dortmund
+    weather: weather.buienradar
 
   - platform: template
     sensors:

@@ -30,7 +30,7 @@ template:
       
       - name: "Netzwerkgeräte offline"
         unique_id: heimnetz_offline
-        unit_of_measurement: Geräe(e)
+        unit_of_measurement: Geräte(e)
         icon: >
           {% set wifiOffline = expand('group.heimnetz')
             | selectattr('state','eq','not_home') 

@@ -43,19 +43,12 @@ mqtt:
   device_tracker:
     - name: "Handy MQTT"
       state_topic: "handy/location"     
-      
-    - name: "Handy Natalie MQTT"
-      state_topic: "presence/natalie"
-    
-    - name: "Franzi MQTT"
-      state_topic: "presence/franzi"
-      
-sensor:
-  - platform: template
-    sensors:
-      handy_status:
-        friendly_name: Handy
-        value_template: >-
+   
+template:    
+  - sensor:          
+      - name: "Handy Status"
+        unique_id: handy_status
+        state: >-
           {% if is_state('sensor.handy', 'ringing') %}
             Eingehender Anruf
           {% elif is_state('sensor.handy', 'dialing') %}
@@ -64,8 +57,8 @@ sensor:
             Aktiver Anruf            
           {% else %}
             Ruhezustand
-          {% endif %}
-        icon_template: >
+          {% endif %}        
+        icon: >-
           {% if is_state('sensor.handy', 'ringing') %}
             mdi:phone-incoming
           {% elif is_state('sensor.handy', 'dialing') %}
@@ -74,13 +67,13 @@ sensor:
             mdi:message-alert
           {% else %}   
             mdi:phone
-          {% endif %}      
-          
-      handy_zuletzt_geladen:
-        friendly_name: Handy - Zuletzt geladen
-        icon_template: mdi:clock-start
-        value_template: "{{ as_timestamp(states('input_datetime.handy_zuletzt_geladen')) | timestamp_custom('%d.%m.%Y', True) }}"          
-
+          {% endif %}            
+        
+      - name: "Handy Zuletzt geladen"
+        unique_id: handy_zuletzt_geladen
+        state: "{{ as_timestamp(states('input_datetime.handy_zuletzt_geladen')) | timestamp_custom('%d.%m.%Y', True) }}"      
+        icon: mdi:clock-start        
+              
 automation: 
   - alias: "Handy aktiv - Wiedergabe pausieren"
     id: "handy_aktiv_wiedergabe_pausieren"

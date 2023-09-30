@@ -178,7 +178,7 @@ script:
 
                   {% for x in expand('group.batteriestand') if x.state|int(100) <= min_battery_level %}
                     {%- if not loop.first %}, {% endif -%}
-                    {{- x.name -}}
+                    {{- x.name.split(" ")[:-1] | join(' ') -}}
                   {% endfor %}       
                 {% endif %}
             

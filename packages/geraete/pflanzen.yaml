@@ -4,24 +4,22 @@ input_number:
     min: 5
     max: 60
     step: 5
-
-
-sensor:    
-  - platform: template
-    sensors:
-      pflanzen_giessen:
-        friendly_name: Pflanzen gießen
-        value_template: >
+   
+template:    
+  - sensor:          
+      - name: "Pflanzen gießen"
+        unique_id: pflanzen_giessen
+        state: >-
           {% set flower_warn_level = states('input_number.pflanzen_warnlevel') | int(0) -%}    
           {% set pflanzenGiessen = expand('group.pflanzen')
             | map(attribute='state') | map('float', 0)
             | select('lt', flower_warn_level) | list | count %}
 
-          {{ pflanzenGiessen | int(0) }}          
-        icon_template: >
+          {{ pflanzenGiessen | int(0) }}       
+        icon: >-
           {% set flower_warn_level = states('input_number.pflanzen_warnlevel') | int(0) -%}    
           {% set pflanzenGiessen = expand('group.pflanzen')
             | map(attribute='state') | map('float', 0)
             | select('lt', flower_warn_level) | list | count %}
 
-          {{ 'mdi:flower' if pflanzenGiessen == 0 else 'mdi:flower-outline' }} 
+          {{ 'mdi:flower' if pflanzenGiessen == 0 else 'mdi:flower-outline' }}           

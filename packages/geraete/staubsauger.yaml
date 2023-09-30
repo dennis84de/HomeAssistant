@@ -24,13 +24,11 @@ counter:
     initial: 3
     step: 1
       
-binary_sensor:
-  - platform: template
-    sensors:
-      staubsauger_reinigung_heute:
-        friendly_name: Reinigung heute        
-        icon_template: mdi:calendar
-        value_template: >-
+template:    
+  - binary_sensor:          
+      - name: "Staubsauger Reinigung heute"
+        unique_id: staubsauger_reinigung_heute
+        state: >-
           {% if not state_attr("automation.staubsaugen_beendet", "last_triggered") %}
             False
           {% else %}
@@ -51,27 +49,26 @@ binary_sensor:
             {% set abstandTage = now().strftime('%j')|int - letzteReinigung.strftime('%j')|int(0) if letzteReinigung else 3 %}
 
             {{ True if keinUrlaub and (istArbeitstag or istSamstag) and abstandTage > 2 else False }}          
-          {% endif %}
-                  
-      bewegungsmelder_inaktiv_staubsauger:
-        friendly_name: "Bewegungmelder inaktiv - Staubsauger"
-        device_class: occupancy
-        value_template: "{{ True if is_state('vacuum.staubsauger', 'cleaning') or is_state('vacuum.staubsauger', 'returning') else False }}"          
-
-sensor:
-  - platform: template
-    sensors:
-      staubsauger_dauer_letzte_reinigung:
-        friendly_name: "Staubsauger Dauer Letzte Reinigung"
-        icon_template: mdi:clock-outline
-        value_template: "{{ (states('sensor.staubsauger_last_clean_duration') | int(0) / 60) | int(0) }}"
+          {% endif %}        
+        icon: mdi:calendar
+                
+      - name: "Bewegungsmelder inaktiv - Staubsauger"
+        unique_id: bewegungsmelder_inaktiv_staubsauger
+        device_class: occupancy        
+        state: "{{ True if is_state('vacuum.staubsauger', 'cleaning') or is_state('vacuum.staubsauger', 'returning') else False }}"      
+        icon: mdi:calendar    
         
-      staubsauger_battery_level:
-        friendly_name: "Staubsauger Batteriestand"
-        device_class: battery
-        unit_of_measurement: "%"
-        value_template: "{{ state_attr('vacuum.staubsauger', 'battery_level') | int(0) }}"        
-
+  - sensor:
+      - name: "Staubsauger Dauer Letzte Reinigung"
+        unique_id: staubsauger_dauer_letzte_reinigung       
+        state: "{{ (states('sensor.staubsauger_last_clean_duration') | int(0) / 60) | int(0) }}"      
+        icon: mdi:clock-outline    
+        
+      - name: "Staubsauger Battery Level"
+        unique_id: bewegungsmelder_inaktiv_staubsauger
+        device_class: battery        
+        state: "{{ state_attr('vacuum.staubsauger', 'battery_level') | int(0) }}"
+        
 automation:
   - alias: "Staubsaugen - Gestartet"
     id: "staubsaugen_gestartet"

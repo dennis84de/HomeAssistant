@@ -35,11 +35,10 @@ cards:
 
   - type: custom:layout-break
 
-  - type: entities
-    title: Infos
+  - type: entities  
+    title: Personen
     show_header_toggle: false
-    entities:
-      - entity: sensor.countdown_neuhaus
+    entities:      
       - entity: person.dennis
         secondary_info: last-changed  
         tap_action:
@@ -57,13 +56,7 @@ cards:
                   - entity: device_tracker.handy_mqtt
                     name: MQTT          
                   - entity: device_tracker.handy_gps
-                    name: Gps             
-      - type: custom:template-entity-row
-        entity : sensor.aufenthaltsort
-        condition: "{{ not is_state('sensor.aufenthaltsort', 'Home') }}"
-      - type: custom:template-entity-row
-        entity : proximity.home
-        condition: "{{ states('proximity.home') | int(0) > 0 }}"     
+                    name: Gps              
       - entity: person.natalie        
         tap_action:
           action: fire-dom-event
@@ -76,11 +69,11 @@ cards:
                   - type: history-graph
                     entities:          
                       - entity: device_tracker.handy_natalie
-                        name: Wlan
-                      - entity: device_tracker.handy_natalie_mqtt
-                        name: MQTT         
+                        name: Wlan   
                       - entity: device_tracker.handy_natalie_ping
-                        name: Ping                    
+                        name: Ping       
+                      - entity: device_tracker.handy_natalie_mqtt
+                        name: MQTT                              
                   - type: entities
                     entities:
                       - entity: input_boolean.besuch_natalie
@@ -102,15 +95,35 @@ cards:
                     entities:
                       - entity: input_boolean.besuch_franzi
                         name: Franzi
-      - entity: sensor.letzte_bewegung                 
+      - entity: person.flori
+        tap_action:
+          action: fire-dom-event
+          browser_mod:
+            service: browser_mod.popup
+            data:              
+              content:
+                type: custom:stack-in-card
+                cards:
+                  - type: history-graph
+                    entities:          
+                      - entity: device_tracker.flori_mqtt             
+                  - type: entities
+                    entities:
+                      - entity: input_boolean.besuch_flori
+                        name: Flori                                          
 
   - type: entities
-    title: Benachrichtigungen
+    title: Infos
     show_header_toggle: false
     entities:
       - entity: sensor.telefon_status
       - entity: sensor.handy_status
-      - entity: sensor.ungelesene_mails      
+      - type: custom:template-entity-row
+        entity: sensor.ungelesene_mails  
+        condition: "{{ states('sensor.ungelesene_mails') | int(0) > 0 }}"      
+      - entity: sensor.countdown_neuhaus
+      - entity: sensor.geburtstermin
+      - entity: sensor.letzte_bewegung     
       
   - type: entities
     title: Wecker
@@ -260,18 +273,35 @@ cards:
         name: Büro
             
   - type: entities
-    title: Waage
-    show_header_toggle: false
+    view_layout:
+      column: 3  
+    title: Geburtstage
     entities:
-      - entity: sensor.gewicht   
-      - entity: sensor.bmi
-      - type: custom:template-entity-row
-        entity : sensor.wasser
-        condition: "{{ states('sensor.wasser') | int(0) > 0 }}"
-      - type: custom:template-entity-row
-        entity : sensor.fett
-        condition: "{{ states('sensor.fett') | int(0) > 0 }}"
-                    
+      - entity: sensor.geburtstag_franzi
+        name: Franzi
+      - entity: sensor.geburtstag_natalie
+        name: Natalie
+      - entity: sensor.geburtstag_dennis
+        name: Dennis          
+      
+  - type: custom:mini-graph-card     
+    name: Tanken
+    line_width: 2
+    animate: true
+    hour24: true
+    hours_to_show: 120
+#    lower_bound: 1.5
+    show:                            
+      icon: false
+      points: false
+    entities:
+      - entity: sensor.tankstelle_real
+        name: Real
+      - entity: sensor.tankstelle_jet_dortmund
+        name: Jet Dortmund
+      - entity: sensor.tankstelle_jet_mulheim
+        name: Jet Mülheim
+          
   - type: custom:mini-graph-card
     name: Temperatur
     line_width: 2
@@ -317,21 +347,17 @@ cards:
       entities:
         - entity: sensor.fahrzeit_zur_arbeit_duration_in_traffic
         - entity: sensor.fahrzeit_nach_hause_duration_in_traffic      
-      
-  - type: custom:mini-graph-card     
-    name: Tanken
-    line_width: 2
-    animate: true
-    hour24: true
-    hours_to_show: 120
-#    lower_bound: 1.5
-    show:                            
-      icon: false
-      points: false
+        
+  - type: entities
+    title: Waage
+    show_header_toggle: false
     entities:
-      - entity: sensor.tankstelle_real
-        name: Real
-      - entity: sensor.tankstelle_jet_dortmund
-        name: Jet Dortmund
-      - entity: sensor.tankstelle_jet_mulheim
-        name: Jet Mülheim
+      - entity: sensor.gewicht   
+      - entity: sensor.bmi
+      - type: custom:template-entity-row
+        entity : sensor.wasser
+        condition: "{{ states('sensor.wasser') | int(0) > 0 }}"
+      - type: custom:template-entity-row
+        entity : sensor.fett
+        condition: "{{ states('sensor.fett') | int(0) > 0 }}"
+                            

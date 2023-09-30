@@ -1,28 +1,27 @@
-sensor:    
-  - platform: template
-    sensors:
-      steckdosen_offline:
-        friendly_name: Steckdosen offline
-        unit_of_measurement: Gerät(e)
-        icon_template: >
+template:    
+  - sensor:          
+      - name: "Steckdosen offline"
+        unique_id: steckdosen_offline
+        unit_of_measurement: Gerät(e)        
+        state: >-
           {% set steckdosenOffline = expand('group.steckdosen')
             | selectattr('state','eq','unavailable') 
             | map(attribute='name')
-            | list %}
-
-          {{ 'mdi:power-plug-outline' if steckdosenOffline | length == 0 else 'mdi:power-plug-off-outline' }}
-        value_template: >
+            | list %}        
+            
+            {{ steckdosenOffline | length }}               
+        icon: >-
           {% set steckdosenOffline = expand('group.steckdosen')
             | selectattr('state','eq','unavailable') 
             | map(attribute='name')
-            | list %}
-
-          {{ steckdosenOffline | length }}      
-        attribute_templates:
-          geraete: >
+            | list %}        
+            
+            {{ 'mdi:power-plug-outline' if steckdosenOffline | length == 0 else 'mdi:power-plug-off-outline' }}
+        attributes:
+          geraete: >-
             {% set steckdosenOffline = expand('group.steckdosen')
               | selectattr('state','eq','unavailable') 
               | map(attribute='name')
               | list %}
 
-              {{ steckdosenOffline }}                  
+              {{ steckdosenOffline }}         

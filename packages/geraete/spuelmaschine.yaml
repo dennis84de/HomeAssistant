@@ -7,13 +7,12 @@ input_select:
       - Aktiv
     icon: mdi:dishwasher
     
-sensor:   
-  - platform: template
-    sensors:
-      spuelmaschine_status:
-        friendly_name: Status Spülmaschine
-        value_template: "{{ states('input_select.status_spuelmaschine') }}"
-        icon_template: 'mdi:dishwasher'    
+template:    
+  - sensor:          
+      - name: "Spülmaschine Status"
+        unique_id: spuelmaschine_status
+        state: "{{ states('input_select.status_spuelmaschine') }}"      
+        icon: mdi:dishwasher
     
 automation:
   - alias: "Spülmaschine - Ausgeschaltet"

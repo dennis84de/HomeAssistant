@@ -106,7 +106,9 @@ sensor:
     sources: 
       - country: "DE"
         state: "NW"
-    
+        kwargs:
+          language: 'de'
+         
 automation:
   - alias: "Neue E-Mail"
     id: "neue_email"

@@ -11,13 +11,28 @@ input_boolean:
     name: "Besuch Natalie"
     icon: mdi:human-female   
     
+  besuch_flori:
+    name: "Besuch Flori"
+    icon: mdi:dog-side   
+    
 template:
   - binary_sensor:       
       - name: "Besuch"
         unique_id: besuch
         device_class: presence 
         state: "{{ is_state('input_boolean.besuch', 'on') }}"     
-        
+       
+mqtt:
+  device_tracker:
+    - name: "Handy Natalie MQTT"
+      state_topic: "presence/natalie"
+    
+    - name: "Franzi MQTT"
+      state_topic: "presence/franzi"
+      
+    - name: "Flori MQTT"
+      state_topic: "presence/flori"
+      
 automation:
   - alias: "Besuch Schalter"
     id: "besuch_schalter"
@@ -41,27 +56,13 @@ automation:
   - alias: "Natalie - Besuch"
     id: "natalie_besuch"
     trigger:
-      - id: home
-        platform: calendar
-        event: start
-        entity_id: calendar.besuch_natalie
-      - id: home
-        platform: state
-        entity_id: input_boolean.besuch_natalie   
-        to: 'on'
-      - id: not_home
-        platform: calendar
-        event: end
-        entity_id: calendar.besuch_natalie    
-      - id: not_home
-        platform: state
-        entity_id: input_boolean.besuch_natalie
-        to: 'off'
+      - platform: state
+        entity_id: input_boolean.besuch_natalie           
     action:      
       - service: mqtt.publish
         data:
            topic: 'presence/natalie'
-           payload: '{{ trigger.id }}'
+           payload: "{{ 'home' if trigger.to_state.state == 'on' else 'not_home' }}"
            retain: true             
            
   - alias: "Franzi - Besuch"
@@ -75,3 +76,24 @@ automation:
            topic: "presence/franzi"
            payload: "{{ 'home' if trigger.to_state.state == 'on' else 'not_home' }}"
            retain: true            
+           
+  - alias: "Flori - Besuch"
+    id: "flori_besuch"
+    trigger:
+      - platform: state
+        entity_id: input_boolean.besuch_flori
+    action:      
+      - service: mqtt.publish
+        data:
+           topic: "presence/flori"
+           payload: "{{ 'home' if trigger.to_state.state == 'on' else 'not_home' }}"
+           retain: true                    
+           
+homeassistant:
+  customize:
+    person.natalie:
+      icon: mdi:human-female
+    person.franzi:
+      icon: mdi:human-child
+    person.flori:
+      icon: mdi:dog-side      
