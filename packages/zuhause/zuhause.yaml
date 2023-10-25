@@ -44,7 +44,7 @@ script:
     alias: "Zu Hause"
     sequence:
       - service: switch.turn_on
-        entity_id: switch.computer, switch.monitor, switch.watchtv_wohnzimmer              
+        entity_id: switch.computer, switch.arbeitszimmer_monitore           
       - choose:
           - conditions:
               - condition: state
@@ -92,7 +92,7 @@ script:
       - service: light.turn_on
         entity_id: light.wohnzimmer_schrank
       - service: switch.turn_on
-        entity_id: switch.computer, switch.monitor, switch.watchtv_wohnzimmer     
+        entity_id: switch.computer, switch.arbeitszimmer_monitore   
       - service: switch.turn_on
         entity_id: switch.badezimmer_radio    
       - wait_template: "{{ is_state('media_player.radio_badezimmer', 'playing') }}"

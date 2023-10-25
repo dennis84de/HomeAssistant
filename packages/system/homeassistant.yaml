@@ -143,25 +143,15 @@ template:
       - name: Neustart Dauer
         device_class: duration
         unit_of_measurement: s
-        state: "{{ (as_timestamp(now()) | int(0)) - (as_timestamp(states('sensor.home_assistant_letzter_shutdown')) | int(0)) }}"
-          
-input_boolean:
-  neustart_kodi_eingeschaltet:
-    name: Kodi eingeschaltet
+        state: "{{ (as_timestamp(now()) | int(0)) - (as_timestamp(states('sensor.home_assistant_letzter_shutdown')) | int(0)) }}"          
     
 script:  
   homeassistant_neustart:
     alias: Home Assistant - Neustart
-    sequence:  
-      - if: "{{ is_state('media_player.kodi_wohnzimmer', 'off') }}"
-        then:
-          - service: input_boolean.turn_on
-            entity_id: input_boolean.neustart_kodi_eingeschaltet             
-          - service: media_player.turn_on
-            entity_id: media_player.kodi_wohnzimmer      
+    sequence:   
       - service: !secret tts_service
         data:
-          echo: "wohnzimmer"
+          echo: "arbeitszimmer"
           message: "Home Assistant wird neugestartet."
       - delay: '00:00:04'      
       - service: media_player.play_media
@@ -196,7 +186,7 @@ script:
           - delay: '00:00:03'
           - service: !secret tts_service
             data:
-              echo: "wohnzimmer"
+              echo: "arbeitszimmer"
               message: "Home Assistant wurde neugestartet."    
       - if: "{{ not is_state('button.computer_sensoren_aktualisieren', 'unavailable') }}"
         then:
@@ -205,13 +195,7 @@ script:
       - if: "{{ not is_state('button.computer_arbeit_sensoren_aktualisieren', 'unavailable') }}"
         then:
           - service: button.press
-            entity_id: button.computer_arbeit_sensoren_aktualisieren           
-      - if: "{{ is_state('input_boolean.neustart_kodi_eingeschaltet', 'on') }}"
-        then:
-          - service: input_boolean.turn_off
-            entity_id: input_boolean.neustart_kodi_eingeschaltet
-          - service: media_player.turn_off
-            entity_id: media_player.kodi_wohnzimmer                  
+            entity_id: button.computer_arbeit_sensoren_aktualisieren                 
             
 automation:
   - alias: "Home Assisant - Update verfügbar"

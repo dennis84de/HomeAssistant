@@ -167,9 +167,7 @@ homeassistant:
       friendly_name: Radio Arbeitszimmer
     device_tracker.radiobalkon:
       friendly_name: Radio Balkon
-              
-    device_tracker.tplinkwohnzimmermonitor:
-      friendly_name: Wohnzimmer Monitor
+
     device_tracker.tplinkschlafzimmerradio:
       friendly_name: Schlafzimmer Radio
     device_tracker.tplinkflurradio:

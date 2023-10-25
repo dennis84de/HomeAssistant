@@ -85,10 +85,7 @@ automation:
           message: "Der Computer wird ausgeschaltet."
           
 homeassistant:
-  customize:
-    switch.monitor:
-      icon: mdi:monitor
-      
+  customize:      
     sensor.computer_generic_hard_disk_load_used_space:
       friendly_name: SSD Speicherplatz
       icon: mdi:nas

@@ -13,13 +13,6 @@ input_number:
     step: 5
     icon: mdi:timer-sand
 
-input_datetime:
-  alarm_standard_homeoffice:
-    name: Wecker Home Office
-    has_date: false
-    has_time: true
-    icon: mdi:timer
-    
 input_boolean:
   wecker_aktiv:
     name: Wecker aktiv    
@@ -228,51 +221,7 @@ automation:
         state: 'on'    
     action:
       - service: input_boolean.turn_on
-        entity_id: input_boolean.wecker_zeit_geaendert      
-        
-  - alias: "Wecker - Erinnerung"
-    id: "wecker_erinnerung"
-    trigger:
-      - platform: state
-        entity_id: input_boolean.wecker_zeit_geaendert
-        to: 'on'
-        for:
-          minutes: 5
-    condition:
-      - condition: state
-        entity_id: binary_sensor.wecker_aktiv
-        state: 'on'
-      - condition: template
-        value_template: >-
-          {% set wecker = as_timestamp(states('sensor.tablet_schlafzimmer_next_alarm'), None) | int(0) / 86400 %}
-          {% set now = as_timestamp(as_timestamp(now()) | timestamp_custom("%Y-%m-%d 00:00:00", true, 0), None) / 86400 %}
-
-          {{ wecker - now > 1 }}
-    action:
-      - service: !secret tts_service
-        data:
-          echo: "schlafzimmer"
-          override: true
-          message: >-
-            {% set stunde = now().strftime("%H") | int(0) %}
-            
-            {% if stunde >= 5 and stunde < 12 %}
-              {% set message = 'Guten Morgen!' %}
-            {% elif stunde >= 12 and stunde < 19 %}
-              {% set message = 'Guten Tag!' %}        
-            {% elif stunde >= 19 and stunde <= 23 %}
-              {% set message = 'Guten Abend!' %}
-            {% else %}
-              {% set message = 'Guten Nacht!' %}
-            {% endif %}
-            
-            {{ message }} Der Wecker ist ausgeschaltet. Du solltest jetzt aufstehen!
-      - delay: "00:00:10"
-      - service: media_player.play_media
-        data:
-          entity_id: media_player.echo_schlafzimmer
-          media_content_type: sound
-          media_content_id: amzn_sfx_scifi_alarm_04
+        entity_id: input_boolean.wecker_zeit_geaendert              
           
   - alias: "Aufstehen"
     id: "aufstehen"
@@ -367,4 +316,4 @@ automation:
                 data:
                   radioBalkon: "{{ radioBalkonEinschalten }}"        
       - service: switch.turn_on
-        entity_id: switch.computer, switch.monitor              
+        entity_id: switch.computer, switch.arbeitszimmer_monitore              

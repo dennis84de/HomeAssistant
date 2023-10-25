@@ -69,13 +69,13 @@ sensor:
         friendly_name: 'Wetterlage'
         icon_template: mdi:weather-windy-variant
         value_template: >
-          {% if is_state('sensor.dwd_weather', 'snow') %}
+          {% if is_state('sensor.wetter_dortmund_wetterzustand', 'snow') %}
             Schnee
-          {% elif ((states('sensor.dwd_temperature') | int(0) < 4) and (states('sensor.dwd_dewpoint') | int(0) < 6)
-            and (states('sensor.dwd_wind_speed') | int(0) < 12) and (states('sensor.dwd_cloud_coverage') | int(0) < 20)
-            and (states('sensor.dwd_humidity') | int(0) > 50)) %}
+          {% elif ((states('sensor.wetter_dortmund_temperatur') | int(0) < 4) and (states('sensor.wetter_dortmund_taupunkt') | int(0) < 6)
+            and (states('sensor.wetter_dortmund_windgeschwindigkeit') | int(0) < 12) and (states('sensor.wetter_dortmund_bewolkungsgrad') | int(0) < 20)
+            and (states('sensor.wetter_dortmund_luftfeuchtigkeit') | int(0) > 50)) %}
             Frost
-          {% elif (states('sensor.dwd_precipitation') | int(0) > 7) %}
+          {% elif (states('sensor.wetter_dortmund_niederschlagswahrscheinlichkeit') | int(0) > 7) %}
             Regen
           {% else %} Klar {% endif %}
 
@@ -135,12 +135,12 @@ sensor:
         friendly_name: 'Windrichtung'
         icon_template: mdi:compass
         value_template: >-
-          {% set winbearing = (states('sensor.dwd_wind_direction') | float(0) / 45) | int(0) | round + 1 %}
+          {% set winbearing = (states('sensor.wetter_dortmund_windrichtung') | float(0) / 45) | int(0) | round + 1 %}
           {% set winddir = ['Nord', 'Nordost','Ost','Südost','Süd','Südwest','West','Nordwest']%}
           
           {{ winddir[winbearing]}}
         entity_picture_template: >-
-          {% set winbearing = (states('sensor.dwd_wind_direction') | float(0) / 45) | int(0) | round + 1 %}
+          {% set winbearing = (states('sensor.wetter_dortmund_windrichtung') | float(0) / 45) | int(0) | round + 1 %}
           {% set winddir = ['0', '45','90','135','180','225','270','315'] %}
           
           {{ "/local/wind/" ~ winddir[winbearing] ~ ".png" }}

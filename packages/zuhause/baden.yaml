@@ -38,7 +38,7 @@ automation:
           - service: input_boolean.turn_on
             entity_id: input_boolean.baden_aktiv
           - service: switch.turn_off
-            entity_id: switch.watchtv_wohnzimmer, switch.computer, switch.monitor
+            entity_id: switch.watchtv_wohnzimmer, switch.computer, switch.arbeitszimmer_monitore
           - service: script.radios_ausschalten
           - service: homeassistant.turn_off
             entity_id: group.licht_baden
@@ -69,7 +69,7 @@ automation:
           - service: light.turn_off
             entity_id: light.badezimmerschrank
           - service: switch.turn_on
-            entity_id: switch.computer, switch.monitor  
+            entity_id: switch.computer, switch.arbeitszimmer_monitore  
           - choose:
               conditions:
                 - condition: state
@@ -85,7 +85,7 @@ automation:
                 - service: script.radios_einschalten
             default:
               - service: switch.turn_on
-                entity_id: switch.watchtv_wohnzimmer, switch.badezimmer_radio       
+                entity_id: switch.badezimmer_radio       
               - wait_template: "{{ is_state('media_player.radio_badezimmer', 'playing') }}"
               - service: media_player.media_pause
                 entity_id: media_player.radio_badezimmer

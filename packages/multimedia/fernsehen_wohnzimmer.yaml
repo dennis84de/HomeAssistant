@@ -36,29 +36,6 @@ template:
 cover:
   - platform: template
     covers:
-      kodi_untertitel:
-        friendly_name: "Untertitel"
-        position_template: 50
-        open_cover:
-          service: kodi.call_method
-          data:
-            entity_id: media_player.kodi_wohnzimmer
-            method: Input.ExecuteAction
-            action: subtitledelayplus
-        close_cover:
-          service: kodi.call_method
-          data:
-            entity_id: media_player.kodi_wohnzimmer
-            method: Input.ExecuteAction
-            action: subtitledelayminus
-        stop_cover:
-          service: kodi.call_method
-          data:
-            entity_id: media_player.kodi_wohnzimmer
-            method: Input.ExecuteAction
-            action: showsubtitles
-        icon_template: mdi:message-bulleted      
-
       fernseher_sender:
         friendly_name: "Fernseher Sender"
         position_template: 50
@@ -215,8 +192,7 @@ automation:
         to: 'idle'
     condition:
       - "{{ (states('sensor.laufzeit_minuten') | int(0)) > 1 }}"   
-      - "{{ is_state('input_boolean.musik_ausschalten', 'on') }}"
-      - "{{ is_state('input_boolean.neustart_kodi_eingeschaltet', 'off') }}"
+      - "{{ is_state('input_boolean.musik_ausschalten', 'on') }}"      
       - "{{ is_state('binary_sensor.besuch', 'off') }}"
       - "{{ (states('sensor.radios_eingeschaltet') | int(0)) > 1 }}"   
     action:  

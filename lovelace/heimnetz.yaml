@@ -77,8 +77,7 @@ cards:
   - type: entities
     title: TP-Link
     show_header_toggle: false
-    entities:
-      - entity: device_tracker.tplinkwohnzimmermonitor        
+    entities:      
       - entity: device_tracker.tplinkschlafzimmerradio        
       - entity: device_tracker.tplinkflurradio        
       - entity: device_tracker.tplinkbadezimmerradio        

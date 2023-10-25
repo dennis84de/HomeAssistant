@@ -84,7 +84,6 @@ logbook:
       - switch.wohnzimmer_strahler
       - switch.wohnzimmer_schrank
       - switch.kleiderschrank
-      - switch.monitor
       - switch.computer
       - switch.arbeitszimmer_monitore
       - switch.computer_arbeit   

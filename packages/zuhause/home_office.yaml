@@ -123,7 +123,7 @@ script:
       - service: input_boolean.turn_on
         entity_id: input_boolean.home_office_aktiv
       - service: switch.turn_off
-        entity_id: switch.computer, switch.monitor, switch.watchtv_wohnzimmer
+        entity_id: switch.computer, switch.watchtv_wohnzimmer
       - service: switch.turn_on
         entity_id: switch.arbeitszimmer_radio, switch.computer_arbeit, switch.arbeitszimmer_monitore
       - choose:
@@ -153,7 +153,7 @@ script:
       - service: input_boolean.turn_off
         entity_id: input_boolean.home_office_aktiv, input_boolean.home_office_musik_pausiert, input_boolean.home_office_pause
       - service: switch.turn_off
-        entity_id: switch.arbeitszimmer_radio, switch.computer_arbeit, switch.arbeitszimmer_monitore
+        entity_id: switch.arbeitszimmer_radio, switch.computer_arbeit
       - service: input_number.set_value        
         data:
           entity_id: input_number.home_office_heute_gearbeitet
@@ -169,7 +169,7 @@ script:
           entity_id: input_select.computer_arbeit_ausschalten  
           option: 'Ruhezustand'          
       - service: switch.turn_on
-        entity_id: switch.computer, switch.monitor, switch.watchtv_wohnzimmer              
+        entity_id: switch.computer          
       - choose:
           - conditions:
               - condition: state

@@ -3,7 +3,6 @@ alles_ausschalten:
   entities:
     - group.alle_radios
     - switch.computer
-    - switch.monitor
     - switch.computer_arbeit
     - switch.arbeitszimmer_monitore
     - switch.watchtv_wohnzimmer
@@ -27,7 +26,6 @@ alles_ausschalten:
 steckdosen:
   name: Steckdosen
   entities:
-    - switch.monitor
     - switch.schlafzimmer_radio
     - switch.flur_radio
     - switch.badezimmer_radio

@@ -85,7 +85,7 @@ script:
         data:
           badezimmerEingeschaltetLassen: True
       - service: switch.turn_off
-        entity_id: switch.watchtv_wohnzimmer, switch.computer, switch.monitor
+        entity_id: switch.watchtv_wohnzimmer, switch.computer
       - service: light.turn_off
         entity_id: light.balkon_licht
       - service: input_select.select_option
@@ -159,8 +159,7 @@ automation:
         to: 'on'      
     variables:       
       vorMitternacht: "{{ now().strftime('%H') | int(0) <= 23 and now().strftime('%H') | int(0) > 6 }}"
-      weckerZeit: "{{ as_timestamp(states('sensor.tablet_schlafzimmer_next_alarm'), None) | timestamp_custom('%H:%M:%S', True, 0) }}"
-      weckerHomeOfficeZeit: "{{ states('input_datetime.alarm_standard_homeoffice') }}"
+      weckerZeit: "{{ as_timestamp(states('sensor.tablet_schlafzimmer_next_alarm'), None) | timestamp_custom('%H:%M:%S', True, 0) }}"      
       tagWecker: "{{ as_timestamp(states('sensor.tablet_schlafzimmer_next_alarm'), None) | timestamp_custom('%d', True, 0) | int(0) }}"
       tagHeute: "{{ as_timestamp(now()) | timestamp_custom('%d', True) | int(0) }}"
       bueroHeute: "{{ is_state('binary_sensor.buero_heute', 'on') }}"
@@ -201,42 +200,7 @@ automation:
                         data:
                           echo: "schlafzimmer"
                           override: true
-                          message: "Der Wecker ist noch nicht für morgen gestellt."
-              - choose:
-                  - conditions:
-                      - "{{ weckerZeit is defined }}"
-                      - "{{ tagWecker == tagHeute + 1 }}"
-                      - "{{ bueroMorgen }}"
-                      - "{{ weckerZeit == weckerHomeOfficeZeit }}"
-                    sequence:
-                      - service: !secret tts_service
-                        data:
-                          echo: "schlafzimmer"
-                          override: true
-                          message: "Morgen ist Büro, aber der Wecker ist noch für das Home Office gestellt."                    
-              - choose:
-                  - conditions:
-                      - "{{ weckerZeit is defined }}"
-                      - "{{ tagWecker == tagHeute + 1 }}"                    
-                      - "{{ not bueroMorgen }}"
-                      - "{{ weckerZeit != weckerHomeOfficeZeit }}"
-                    sequence:
-                      - service: !secret tts_service
-                        data:
-                          echo: "schlafzimmer"
-                          override: true
-                          message: "Der Wecker ist noch nicht richtig für das Home Office gestellt."
-                              
-          - conditions:
-              - "{{ vorMitternacht }}"
-              - "{{ not arbeitstagMorgen or urlaubMorgen }}"
-              - "{{ weckerZeit == weckerHomeOfficeZeit }}"
-            sequence:
-              - service: !secret tts_service
-                data:
-                  echo: "schlafzimmer"
-                  override: true
-                  message: "Morgen ist kein Arbeitstag, aber der Wecker ist noch für das Home Office gestellt."                                                   
+                          message: "Der Wecker ist noch nicht für morgen gestellt."                                                           
       - choose:
           - conditions:
               - "{{ not vorMitternacht }}"
@@ -261,47 +225,7 @@ automation:
                           echo: "schlafzimmer"
                           override: true
                           message: "Der Wecker ist noch nicht für heute gestellt."  
-              - choose:
-                  - conditions:
-                      - "{{ weckerZeit is defined }}"
-                      - "{{ tagWecker == tagHeute }}"                    
-                      - "{{ bueroHeute }}"
-                      - "{{ weckerZeit == weckerHomeOfficeZeit }}"
-                    sequence:
-                      - service: !secret tts_service
-                        data:
-                          echo: "schlafzimmer"
-                          override: true
-                          message: "Heute ist Büro, aber der Wecker ist noch für das Home Office gestellt."              
-              - choose:
-                  - conditions:
-                      - "{{ weckerZeit is defined }}"
-                      - "{{ tagWecker == tagHeute }}"                        
-                      - "{{ not bueroHeute }}"
-                      - "{{ weckerZeit != weckerHomeOfficeZeit }}"
-                    sequence:
-                      - service: !secret tts_service
-                        data:
-                          echo: "schlafzimmer"
-                          override: true
-                          message: "Der Wecker ist noch nicht richtig für das Home Office gestellt."
-                            
-          - conditions:
-              - "{{ not vorMitternacht }}"
-              - "{{ not arbeitstagHeute or urlaubHeute }}"
-              - "{{ weckerZeit == weckerHomeOfficeZeit }}"
-            sequence:
-              - service: !secret tts_service
-                data:
-                  echo: "schlafzimmer"
-                  override: true
-                  message: >-
-                    {% if natalieZuhause %}
-                      Hallo Natalie. Sagst du Dennis bitte, dass heute kein Arbeitstag ist, aber der Wecker noch für das Home Office gestellt ist.
-                    {% else %}
-                      Heute ist kein Arbeitstag, aber der Wecker ist noch für das Home Office gestellt.
-                    {% endif %}               
-            
+
   - alias: "Schlafen gehen - Countdown starten"
     id: "schlafen_gehen_countdown_starten"
     trigger:

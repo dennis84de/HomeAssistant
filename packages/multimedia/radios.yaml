@@ -162,7 +162,7 @@ script:
           - service: script.alexa_radio_suedtirol_eins               
         else:      
           - service: switch.turn_on
-            entity_id: switch.badezimmer_radio, switch.wohnzimmer_radio, switch.flur_radio, switch.kueche_radio          
+            entity_id: switch.badezimmer_radio, switch.wohnzimmer_radio, switch.flur_radio, switch.kueche_radio, switch.arbeitszimmer_radio
           - choose:
               - conditions:
                   - "{{ radioBalkon is not defined or radioBalkon == True }}"              

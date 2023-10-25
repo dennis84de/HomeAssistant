@@ -6,7 +6,7 @@ layout:
   max_cols: 3          
 cards:
   - type: weather-forecast
-    entity: weather.dwd_weather_dortmund
+    entity: weather.wetter_dortmund
     forecast_type: daily
     
 #  - type: custom:weather-card
@@ -119,8 +119,8 @@ cards:
     title: Luft
     show_header_toggle: false
     entities:
-      - entity: sensor.dwd_humidity        
-      - entity: sensor.dwd_pressure
+      - entity: sensor.wetter_dortmund_luftfeuchtigkeit        
+      - entity: sensor.wetter_dortmund_druck
 
     
   - type: entities
@@ -136,8 +136,8 @@ cards:
     show_header_toggle: false
     entities:
       - entity: sensor.regenradar  
-      - entity: sensor.dwd_cloud_coverage
-      - entity: sensor.dwd_wind_speed
+      - entity: sensor.wetter_dortmund_bewolkungsgrad
+      - entity: sensor.wetter_dortmund_windgeschwindigkeit
       - entity: sensor.windrichtung
       
   - type: entities

@@ -15,14 +15,15 @@ cards:
         name: Radio         
       - entity: switch.arbeitszimmer_fernseher
         name: Fernseher        
+      - entity: switch.arbeitszimmer_monitore
+        name: Monitore        
       
   - type: entities
     title: Licht
     show_header_toggle: false
     entities:      
-      - entity: light.arbeitszimmer_regal        
-        
-      
+      - entity: light.arbeitszimmer_regal                
+          
   - type: custom:stack-in-card
     cards:
       - type: horizontal-stack
@@ -54,15 +55,21 @@ cards:
         entities:
           - entity: sensor.arbeitszimmer_perception
             name: Klima   
-                    
+                                        
+  - type: entities
+    title: Computer
+    show_header_toggle: false
+    view_layout:
+    entities:
+      - entity: switch.computer               
+      - entity: input_select.computer_ausschalten            
+      
   - type: entities
     title: Arbeit
     show_header_toggle: false
     entities:
       - entity: switch.computer_arbeit
         name: Computer
-      - entity: switch.arbeitszimmer_monitore
-        name: Monitore
       - entity: input_select.computer_arbeit_ausschalten
         name: Computer ausschalten        
       - entity: input_boolean.home_office_pause
@@ -138,6 +145,20 @@ cards:
           source: true
           volume: true
           progress: true
+      - type: custom:mini-media-player
+        entity: media_player.computer
+        name: Computer
+        hide:
+          source: true
+          progress: true
+          volume: true                 
+      - type: custom:mini-media-player
+        entity: media_player.kodi_wohnzimmer
+        name: Kodi
+        hide:
+          source: true
+          progress: true
+          volume: true               
 
   - type: entities
     view_layout:

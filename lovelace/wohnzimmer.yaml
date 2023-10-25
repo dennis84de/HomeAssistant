@@ -36,20 +36,6 @@ cards:
           progress: true
           controls: true
       - type: custom:mini-media-player
-        entity: media_player.kodi_wohnzimmer
-        name: Kodi
-        hide:
-          source: true
-          progress: true
-          volume: true
-      - type: custom:mini-media-player
-        entity: media_player.computer
-        name: Computer
-        hide:
-          source: true
-          progress: true
-          volume: true          
-      - type: custom:mini-media-player
         entity: media_player.fire_tv_wohnzimmer
         name: Fire TV
         hide:
@@ -87,23 +73,13 @@ cards:
         name: Radio           
       - entity: switch.watchtv_wohnzimmer
       - entity: input_boolean.musik_ausschalten
-      - entity: input_boolean.wiedergabe_pausieren
-      - entity: cover.kodi_untertitel
+      - entity: input_boolean.wiedergabe_pausieren      
       - entity: cover.fernseher_sender
         name: Sender                                                                      
                 
   - type: thermostat
     entity: climate.heizung_wohnzimmer
-    name: Heizung         
-                       
-  - type: entities
-    title: Computer
-    show_header_toggle: false
-    view_layout:
-    entities:
-      - entity: switch.computer   
-      - entity: switch.monitor              
-      - entity: input_select.computer_ausschalten                     
+    name: Heizung                  
                  
   - type: glance
     title: Sensoren

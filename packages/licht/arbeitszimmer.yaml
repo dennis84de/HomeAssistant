@@ -13,11 +13,54 @@ entity_controller:
       on_enter_overridden: 'off'
     overrides:
       - binary_sensor.home_office_aktiv
-      - binary_sensor.sonne_tagsueber
+      - binary_sensor.sonne_tagsueber      
       - binary_sensor.bewegungsmelder_inaktiv_unterwegs  
       - binary_sensor.bewegungsmelder_inaktiv_staubsauger
       - input_boolean.bewegungsmelder_arbeitszimmer_deaktiviert
 
+automation:   
+  - alias: "Licht Arbeitszimmer - Einschalten"
+    id: "licht_arbeitszimmer_einschalten"
+    trigger:
+      - platform: event        
+        event_type: zha_event
+        event_data:
+          device_ieee: 00:15:8d:00:01:83:77:4a
+          command: click
+          args:
+            click_type: single   
+      - platform: state
+        id: computer
+        entity_id: switch.computer  
+        to: 'on'
+    condition:
+      - "{{ is_state('binary_sensor.home_office_aktiv', 'off') }}" 
+      - "{{ is_state('binary_sensor.sonne_tagsueber', 'off') }}" 
+      - "{{ is_state('light.arbeitszimmer_regal', 'off') }}"       
+    action:
+      - service: light.turn_on
+        entity_id: light.arbeitszimmer_regal       
+        
+  - alias: "Licht Arbeitszimmer - Ausschalten"
+    id: "licht_arbeitszimmer_ausschalten"
+    trigger:      
+      - platform: event
+        event_type: zha_event
+        event_data:
+          device_ieee: 00:15:8d:00:01:83:77:4a
+          command: click
+          args:
+            click_type: single   
+      - platform: state
+        entity_id: switch.computer  
+        to: 'off'            
+    condition:
+      - "{{ is_state('binary_sensor.home_office_aktiv', 'off') }}"       
+      - "{{ is_state('light.arbeitszimmer_regal', 'on') }}"       
+    action:
+      - service: light.turn_off
+        entity_id: light.arbeitszimmer_regal     
+        
 homeassistant:
   customize:
     light.arbeitszimmer_regal:
