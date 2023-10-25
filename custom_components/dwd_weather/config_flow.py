@@ -7,6 +7,7 @@ from homeassistant.helpers.selector import (
     BooleanSelector,
     SelectSelector,
     TextSelector,
+    LocationSelector,
 )
 from simple_dwd_weatherforecast import dwdforecast
 
@@ -18,6 +19,9 @@ from .const import (
     CONF_ENTITY_TYPE,
     CONF_ENTITY_TYPE_STATION,
     CONF_HOURLY_UPDATE,
+    CONF_INTERPOLATE,
+    CONF_LOCATION_COORDINATES,
+    CONF_CUSTOM_LOCATION,
     CONF_STATION_ID,
     CONF_STATION_NAME,
     DOMAIN,
@@ -30,7 +34,7 @@ _LOGGER = logging.getLogger(__name__)
 class DWDWeatherConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     """Handle a config flow for DWD weather integration."""
 
-    VERSION = 4
+    VERSION = 5
     CONNECTION_CLASS = config_entries.CONN_CLASS_CLOUD_POLL
 
     async def async_step_user(self, user_input=None):
@@ -77,7 +81,17 @@ class DWDWeatherConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         errors = {}
         _LOGGER.debug("Station:user_input: {}".format(user_input))
         if user_input is not None:
-            station = dwdforecast.load_station_id(user_input[CONF_STATION_ID])
+            if user_input[CONF_CUSTOM_LOCATION]:
+                _LOGGER.debug("Station:custom:")
+                user_input[CONF_STATION_ID] = dwdforecast.get_nearest_station_id(
+                    lat=user_input[CONF_LOCATION_COORDINATES]["latitude"],
+                    lon=user_input[CONF_LOCATION_COORDINATES]["longitude"],
+                )
+
+            station = user_input[CONF_STATION_ID]
+
+            _LOGGER.debug("Station:station id {}".format(station))
+            station = dwdforecast.load_station_id(station)
             _LOGGER.debug("Station:validation: {}".format(station))
             if station is not None:
                 if station["report_available"] == 1:
@@ -98,7 +112,7 @@ class DWDWeatherConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             station_data = dwdforecast.load_station_id(station[0])
             stations.append(
                 {
-                    "label": f"[{'X' if station_data['report_available'] == 1 else '_'}] {station[1]} km: {dwdforecast.load_station_id(station[0])['name']} ({station_data['elev']}m)",
+                    "label": f"[{'X' if station_data['report_available'] == 1 else '_'}] {station[1]} km: {dwdforecast.load_station_id(station[0])['name']} (H:{station_data['elev']}m)",
                     "value": station[0],
                 }
             )
@@ -115,6 +129,11 @@ class DWDWeatherConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                         "mode": "dropdown",
                     }
                 ),
+                vol.Required(
+                    CONF_CUSTOM_LOCATION,
+                    default=False,
+                ): BooleanSelector({}),
+                vol.Optional(CONF_LOCATION_COORDINATES): LocationSelector({}),
             }
         )
 
@@ -198,6 +217,10 @@ class DWDWeatherConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                         "translation_key": CONF_WIND_DIRECTION_TYPE,
                     }
                 ),
+                vol.Required(
+                    CONF_INTERPOLATE,
+                    default=True,
+                ): BooleanSelector({}),
                 vol.Required(
                     CONF_HOURLY_UPDATE,
                     default=False,
