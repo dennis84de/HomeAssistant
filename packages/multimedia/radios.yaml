@@ -350,12 +350,6 @@ automation:
     id: "radio_badezimmer_pausieren"
     trigger:
       - platform: state
-        entity_id: media_player.kodi_wohnzimmer
-        to: 'playing'
-      - platform: state
-        entity_id: media_player.computer
-        to: 'playing'  
-      - platform: state
         entity_id: binary_sensor.bewegungsmelder_wohnzimmer
         to: 'on'          
     condition:

@@ -7,6 +7,8 @@ input_boolean:
     name: Heizung ausgeschaltet - Küche
   heizung_ausgeschaltet_arbeitszimmer:
     name: Heizung ausgeschaltet - Arbeitszimmer
+  heizung_ausgeschaltet_kinderzimmer:
+    name: Heizung ausgeschaltet - Kinderzimmer    
 
 input_number:
   heizung_start:
@@ -298,6 +300,103 @@ automation:
               - service: input_boolean.turn_off
                 entity_id: input_boolean.heizung_ausgeschaltet_kueche
         
+  - alias: "Heizung Kinderzimmer"
+    id: "heizung_kinderzimmer"
+    trigger:
+      - platform: state
+        id: 'start'
+        entity_id: schedule.heizung
+        to: 'on'  
+      - platform: numeric_state
+        id: 'start'
+        entity_id: sensor.kinderzimmer_temperatur
+        below: input_number.heizung_start
+        for: '00:05:00'      
+      - platform: state
+        id: 'stop'
+        entity_id: schedule.heizung
+        to: 'off'  
+      - platform: numeric_state
+        id: 'stop'
+        entity_id: sensor.kinderzimmer_temperatur
+        above: input_number.heizung_stop          
+    condition:
+      - condition: or
+        conditions:                  
+          - condition: and
+            conditions:      
+              - "{{ is_state('binary_sensor.heizung_einschalten', 'on') }}"
+              - "{{ trigger.id == 'start' }}"
+              - "{{ is_state('climate.heizung_kinderzimmer', 'off') }}"
+              - "{{ is_state('schedule.heizung', 'on') }}"
+              - "{{ states('sensor.kinderzimmer_temperatur') | float(18) < states('input_number.heizung_start') | float(0) }}"    
+          - condition: and
+            conditions:   
+              - "{{ trigger.id == 'stop' }}"
+              - "{{ is_state('climate.heizung_kueche', 'heat') }}"       
+              - condition: or
+                conditions:                   
+                  - "{{ is_state('schedule.heizung', 'off') }}"
+                  - "{{ states('sensor.kinderzimmer_temperatur') | float(21) > states('input_number.heizung_stop') | float(0) }}"                  
+    action:
+      - choose:
+          - conditions:
+              - "{{ trigger.id == 'start' }}"
+            sequence:
+              - service: climate.set_hvac_mode
+                data:
+                  entity_id: climate.heizung_kinderzimmer
+                  hvac_mode: 'heat'                    
+          - conditions:
+              - "{{ trigger.id == 'stop' }}"
+            sequence:
+              - service: climate.set_hvac_mode
+                data:
+                  entity_id: climate.heizung_kinderzimmer
+                  hvac_mode: 'off'                         
+              
+  - alias: "Heizung Kinderzimmer - Fenster"
+    id: "heizung_kinderzimmer_fenster"
+    trigger:
+      - platform: state
+        id: 'open'
+        entity_id: binary_sensor.fenster_kinderzimmer
+        to: 'on'
+        for:
+          seconds: 30
+      - platform: state
+        id: 'close'
+        entity_id: binary_sensor.fenster_kinderzimmer
+        to: 'off'      
+    condition:
+      - condition: or
+        conditions:
+          - "{{ trigger.id == 'open' and is_state('climate.heizung_kinderzimmer', 'heat') }}"
+          - "{{ trigger.id == 'close' and is_state('input_boolean.heizung_ausgeschaltet_kinderzimmer', 'on') }}"        
+    action:
+      - choose:
+          - conditions:
+              - "{{ trigger.id == 'open' }}"
+              - "{{ is_state('input_boolean.heizung_ausgeschaltet_kinderzimmer', 'off') }}"
+              - "{{ is_state('climate.heizung_kinderzimmer', 'heat') }}"
+            sequence:
+              - service: climate.set_hvac_mode
+                data:
+                  entity_id: climate.heizung_kinderzimmer
+                  hvac_mode: 'off'   
+              - service: input_boolean.turn_on
+                entity_id: input_boolean.heizung_ausgeschaltet_kinderzimmer           
+          - conditions:
+              - "{{ trigger.id == 'close' }}"
+              - "{{ is_state('input_boolean.heizung_ausgeschaltet_kinderzimmer', 'on') }}"
+            sequence:
+              - service: climate.set_hvac_mode
+                data:
+                  entity_id: climate.heizung_kinderzimmer
+                  hvac_mode: 'heat'   
+              - service: input_boolean.turn_off
+                entity_id: input_boolean.heizung_ausgeschaltet_kinderzimmer
+                
   - alias: "Heizung Arbeitszimmer"
     id: "heizung_arbeitszimmer"
     trigger:

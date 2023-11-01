@@ -16,8 +16,6 @@ automation:
       - "{{ is_state('person.dennis', 'home') }}"
       - "{{ is_state('binary_sensor.home_office_aktiv', 'off') }}"
       - "{{ is_state('binary_sensor.schlafen_aktiv', 'off') }}"
-      - "{{ is_state('binary_sensor.multimedia_aktiv', 'off') }}"
-      - "{{ not is_state('media_player.kodi_wohnzimmer', 'playing') }}"
       - "{{ is_state('calendar.borussia_dortmund', 'off') }}"
       - "{{ is_state('calendar.formel1_rennen', 'off') }}"
       - "{{ is_state('calendar.formel1_qualifikation', 'off') }}"           
@@ -71,8 +69,6 @@ automation:
         conditions:          
           - "{{ is_state('calendar.borussia_dortmund', 'off') }}"
           - "{{ True if '(T.B.A.)' in state_attr('calendar.borussia_dortmund', 'message') else False }}"      
-      - "{{ states('media_player.kodi_wohnzimmer') not in ['playing', 'paused'] }}"
-      - "{{ states('media_player.computer') not in ['playing', 'paused'] }}"
       - "{{ is_state('person.natalie', 'home') }}"
     action:
       - service: media_player.play_media

@@ -79,7 +79,7 @@ automation:
   - alias: "Schlafzimmer - Licht einschalten"
     id: "schlafzimmer_licht_einschalten"  
     trigger:
-      - id: schalter_schlafzimmer
+      - id: schalter_bett
         platform: event
         event_type: zha_event
         event_data:
@@ -89,6 +89,12 @@ automation:
             attribute_id: 0
             attribute_name: on_off     
             value: 1
+      - id: schalter_schlafzimmer
+        platform: event
+        event_type: zha_event
+        event_data:
+          device_ieee: 00:12:4b:00:29:2b:72:4b
+          command: toggle          
     condition:
       - "{{ is_state('sensor.lichter_eingeschaltet', '0') }}"
       - "{{ is_state('binary_sensor.wecker_aktiv', 'off') }}" 
@@ -102,7 +108,7 @@ automation:
   - alias: "Schlafzimmer - Licht ausschalten"
     id: "schlafzimmer_licht_ausschalten"  
     trigger:
-      - id: schalter_schlafzimmer
+      - id: schalter_bett
         platform: event
         event_type: zha_event
         event_data:
@@ -112,6 +118,12 @@ automation:
             attribute_id: 0
             attribute_name: on_off     
             value: 1
+      - id: schalter_schlafzimmer
+        platform: event
+        event_type: zha_event
+        event_data:
+          device_ieee: 00:12:4b:00:29:2b:72:4b
+          command: toggle              
       - id: sensor_bett
         platform: state        
         entity_id: binary_sensor.im_bett
@@ -123,7 +135,7 @@ automation:
       - "{{ is_state('binary_sensor.wecker_aktiv', 'off') }}"
       - condition: or
         conditions:          
-          - "{{ trigger.id == 'schalter_schlafzimmer' }}"
+          - "{{ trigger.id == 'schalter_bett' or trigger.id == 'schalter_schlafzimmer' }}"
           - condition: and
             conditions:
               - "{{ is_state('binary_sensor.allein_zu_hause', 'on') and is_state('binary_sensor.nachts', 'on') }}"                

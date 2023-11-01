@@ -130,27 +130,7 @@ automation:
             {% else %}
               Es sind {{ mailCount }} neue E-Mails eingegangen.
             {% endif %}      
-      - choose:
-          - conditions:
-              - condition: state
-                entity_id: media_player.kodi_wohnzimmer
-                state: 'playing'
-            sequence:
-              - service: notify.kodi_wohnzimmer
-                data:
-                  title: 'E-Mail'
-                  message: >-
-                    {% set mailCount = states('sensor.ungelesene_mails') | default(0) | int(0) %}
 
-                    {% if mailCount == 1 %}
-                      Eine neue E-Mail ist eingegangen.
-                    {% else %}
-                      Es sind {{ mailCount }} neue E-Mails eingegangen.
-                    {% endif %}
-                  data:
-                    displaytime: 5000
-                    icon: "info"
-            
 panel_iframe:
   infoscreen:
     title: Infoscreen

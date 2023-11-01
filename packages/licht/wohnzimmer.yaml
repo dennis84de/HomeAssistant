@@ -80,7 +80,6 @@ automation:
       - "{{ (now().hour | int) >= 15 }}"
       - "{{ is_state('person.dennis', 'home') }}"
       - "{{ is_state('binary_sensor.home_office_aktiv', 'off') }}"
-      - "{{ is_state('binary_sensor.multimedia_aktiv', 'off') }}"
       - "{{ is_state('binary_sensor.baden_aktiv', 'off') }}"      
       - "{{ is_state('light.wohnzimmer_couch', 'off') }}"
       - "{{ is_state('light.wohnzimmer_strahler', 'off') }}"

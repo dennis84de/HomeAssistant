@@ -12,7 +12,7 @@ batteriestand:
     - sensor.schalter_wohnzimmer_battery_level
     - sensor.schalter_flur_battery_level
     - sensor.schalter_balkon_battery_level
-    - sensor.schalter_schlafzimmer_battery_level
+    - sensor.schalter_bett_battery_level
     - sensor.schalter_arbeitszimmer_battery_level
     - sensor.schalter_badezimmer_battery_level
     - sensor.thermometer_flur_battery_level
@@ -38,3 +38,5 @@ batteriestand:
     - sensor.bewegungsmelder_wohnzimmer_battery_level
     - sensor.pflanze_wohnzimmer_battery_level
     - sensor.pflanze_kinderzimmer_battery_level
+    - sensor.heizung_wohnzimmer_batterie
+    - sensor.heizung_kinderzimmer_batterie    

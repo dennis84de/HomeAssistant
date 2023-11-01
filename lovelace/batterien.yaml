@@ -77,8 +77,10 @@ cards:
         name: Flur
       - entity: sensor.schalter_balkon_battery_level        
         name: Balkon
+      - entity: sensor.schalter_bett_battery_level        
+        name: Bett
       - entity: sensor.schalter_schlafzimmer_battery_level        
-        name: Schlafzimmer
+        name: Schlafzimmer        
       - entity: sensor.schalter_arbeitszimmer_battery_level        
         name: Arbeitszimmer
       - entity: sensor.schalter_badezimmer_battery_level        
@@ -141,9 +143,9 @@ cards:
         name: Schlafzimmer
       - entity: sensor.bewegungsmelder_bett_battery_level        
         name: Bett
-                   
+        
   - type: custom:battery-state-card
-    title: Bluetooth
+    title: Heizung
     tap_action: more-info
     sort_by_level: asc
     color_thresholds:
@@ -152,11 +154,32 @@ cards:
       - value: 30
         color: "yellow"    
     entities:
-      - entity: sensor.pflanze_wohnzimmer_battery_level       
-        name: Pflanze Wohnzimmer
-      - entity: sensor.pflanze_kinderzimmer_battery_level       
-        name: Pflanze Kinderzimmer  
-        
+      - entity: sensor.heizung_wohnzimmer_batterie
+        name: Wohnzimmer     
+      - entity: sensor.heizung_kinderzimmer_batterie
+        name: Kinderzimmer             
+      - entity: binary_sensor.heizung_arbeitszimmer_batterie
+        name: Arbeitszimmer
+        state_map:
+          - from: "off"
+            to: 100
+          - from: "on"
+            to: 25              
+      - entity: binary_sensor.heizung_badezimmer_batterie
+        name: Badezimmer
+        state_map:
+          - from: "off"
+            to: 100
+          - from: "on"
+            to: 25          
+      - entity: binary_sensor.heizung_kueche_batterie
+        name: Küche
+        state_map:
+          - from: "off"
+            to: 100
+          - from: "on"
+            to: 25
+            
   - type: custom:battery-state-card
     title: Fenster
     tap_action: more-info
@@ -179,9 +202,9 @@ cards:
         name: Arbeitszimmer
       - entity: sensor.fenster_kinderzimmer_battery_level        
         name: Kinderzimmer
-
+                   
   - type: custom:battery-state-card
-    title: Heizung
+    title: Bluetooth
     tap_action: more-info
     sort_by_level: asc
     color_thresholds:
@@ -190,39 +213,9 @@ cards:
       - value: 30
         color: "yellow"    
     entities:
-      - entity: sensor.heizung_wohnzimmer_batterie
-        name: Wohnzimmer     
-      - entity: binary_sensor.heizung_arbeitszimmer_batterie
-        name: Arbeitszimmer
-        state_map:
-          - from: "off"
-            to: 100
-          - from: "on"
-            to: 25              
-      - entity: binary_sensor.heizung_badezimmer_batterie
-        name: Badezimmer
-        state_map:
-          - from: "off"
-            to: 100
-          - from: "on"
-            to: 25          
-      - entity: binary_sensor.heizung_kueche_batterie
-        name: Küche
-        state_map:
-          - from: "off"
-            to: 100
-          - from: "on"
-            to: 25
-
-  - type: custom:battery-state-card
-    title: Switchbot
-    tap_action: more-info
-    sort_by_level: asc
-    color_thresholds:
-      - value: 10
-        color: "red"
-      - value: 30
-        color: "yellow"    
-    entities:
+      - entity: sensor.pflanze_wohnzimmer_battery_level       
+        name: Pflanze Wohnzimmer
+      - entity: sensor.pflanze_kinderzimmer_battery_level       
+        name: Pflanze Kinderzimmer  
       - entity: sensor.drucker_battery_level
-        name: Drucker
+        name: Switchbot Drucker                

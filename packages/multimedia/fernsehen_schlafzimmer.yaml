@@ -153,7 +153,7 @@ automation:
   - alias: "Schlafzimmer - Fernseher ausschalten"
     id: "schlafzimmer_fernseher_ausschalten"
     trigger:
-      - id: schalter_schlafzimmer
+      - id: schalter_bett
         platform: event
         event_type: zha_event
         event_data:

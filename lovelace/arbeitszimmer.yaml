@@ -129,8 +129,7 @@ cards:
         name: Radio
         hide:
           source: true
-          progress: true      
-      - entity: switch.kodi_arbeitszimmer
+          progress: true            
       - type: custom:mini-media-player
         entity: media_player.fire_tv_arbeitszimmer
         name: Fire TV
@@ -139,26 +138,12 @@ cards:
           controls: true
           progress: true      
       - type: custom:mini-media-player
-        name: Kodi
-        entity: media_player.kodi_arbeitszimmer
-        hide:
-          source: true
-          volume: true
-          progress: true
-      - type: custom:mini-media-player
         entity: media_player.computer
         name: Computer
         hide:
           source: true
           progress: true
-          volume: true                 
-      - type: custom:mini-media-player
-        entity: media_player.kodi_wohnzimmer
-        name: Kodi
-        hide:
-          source: true
-          progress: true
-          volume: true               
+          volume: true                           
 
   - type: entities
     view_layout:

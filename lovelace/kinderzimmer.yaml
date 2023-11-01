@@ -12,6 +12,10 @@ cards:
       - entity: light.kinderzimmer_licht
       - entity: light.kinderzimmer_lampe
       
+  - type: thermostat
+    entity: climate.heizung_kinderzimmer
+    name: Heizung    
+    
   - type: custom:stack-in-card
     cards:
       - type: horizontal-stack
