@@ -4,6 +4,7 @@ from datetime import datetime, timedelta, timezone
 import time
 from markdownify import markdownify
 from homeassistant.config_entries import ConfigEntry
+from suntimes import SunTimes
 
 from homeassistant.components.weather import (
     ATTR_FORECAST_CONDITION,
@@ -51,6 +52,11 @@ class DWDWeatherData:
 
         # Holds the current data from DWD
         self.dwd_weather = dwdforecast.Weather(self._config[CONF_STATION_ID])
+        self.sun = SunTimes(
+            self.dwd_weather.station["lat"],
+            self.dwd_weather.station["lon"],
+            int(self.dwd_weather.station["elev"]),
+        )
 
     async def async_update(self):
         """Async wrapper for update method."""
@@ -138,7 +144,10 @@ class DWDWeatherData:
                 if (
                     condition == "sunny"
                     and weather_interval < 4
-                    and (timestep.hour < 6 or timestep.hour > 21)
+                    and (
+                        timestep.hour < self.sun.riseutc(timestep).hour
+                        or timestep.hour > self.sun.setutc(timestep).hour
+                    )
                 ):
                     condition = "clear-night"
                 temp_max = self.dwd_weather.get_timeframe_max(
@@ -214,7 +223,10 @@ class DWDWeatherData:
     def get_condition(self):
         now = datetime.now(timezone.utc)
         condition = self.dwd_weather.get_forecast_condition(now, False)
-        if condition == "sunny" and (now.hour < 6 or now.hour > 21):
+        if condition == "sunny" and (
+            now.hour < self.sun.riseutc(now).hour
+            or now.hour > self.sun.setutc(now).hour
+        ):
             condition = "clear-night"
         return condition
 
@@ -242,24 +254,25 @@ class DWDWeatherData:
                 shouldUpdate=False,
             )
 
-        if self._config[CONF_INTERPOLATE]:
+        if self._config[CONF_INTERPOLATE] and value is not None:
             now_time_actual = datetime.now(timezone.utc)
             next_value = self.dwd_weather.get_forecast_data(
                 data_type,
                 now_time_actual + timedelta(hours=1),
                 shouldUpdate=False,
             )
-            now_time_hour = self.dwd_weather.strip_to_hour(now_time_actual).replace(
-                tzinfo=timezone.utc
-            )
-            value = round(
-                value
-                + (
-                    (next_value - value)
-                    * ((now_time_actual - now_time_hour).seconds / 3600)
-                ),
-                2,
-            )
+            if next_value is not None:
+                now_time_hour = self.dwd_weather.strip_to_hour(now_time_actual).replace(
+                    tzinfo=timezone.utc
+                )
+                value = round(
+                    value
+                    + (
+                        (next_value - value)
+                        * ((now_time_actual - now_time_hour).seconds / 3600)
+                    ),
+                    2,
+                )
 
         data_type_mapping = {
             WeatherDataType.TEMPERATURE: lambda x: round(x - 273.1, 1),
