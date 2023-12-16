@@ -14,6 +14,7 @@ from homeassistant.components.weather import (
     ATTR_FORECAST_TIME,
     ATTR_FORECAST_WIND_BEARING,
     ATTR_FORECAST_NATIVE_WIND_SPEED,
+    ATTR_WEATHER_WIND_GUST_SPEED,
     WeatherEntityFeature,
     Forecast,
 )
@@ -53,8 +54,8 @@ class DWDWeatherData:
         # Holds the current data from DWD
         self.dwd_weather = dwdforecast.Weather(self._config[CONF_STATION_ID])
         self.sun = SunTimes(
-            self.dwd_weather.station["lat"],
             self.dwd_weather.station["lon"],
+            self.dwd_weather.station["lat"],
             int(self.dwd_weather.station["elev"]),
         )
 
@@ -206,7 +207,7 @@ class DWDWeatherData:
                         weather_interval,
                         False,
                     ),
-                    "wind_gusts": self.dwd_weather.get_timeframe_max(
+                    ATTR_WEATHER_WIND_GUST_SPEED: self.dwd_weather.get_timeframe_max(
                         WeatherDataType.WIND_GUSTS,
                         timestep,
                         weather_interval,
