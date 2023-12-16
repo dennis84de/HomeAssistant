@@ -8,42 +8,53 @@ input_boolean:
     name: Bewegungsmelder deaktiviert    
     icon: mdi:sync-off
     
-binary_sensor:
-  - platform: template
-    sensors:
-      kuechelregal_inaktiv:
-        friendly_name: "Küchenregal inaktiv"    
-        value_template: "{{ is_state('binary_sensor.kuechenschrank_inaktiv', 'off') }}"
-          
-entity_controller:      
-  bewegung_kuechenregal:
-    friendly_name: "Bewegung Kuechenregal"
-    sensor: binary_sensor.bewegungsmelder_kueche
-    entity: light.kueche_regal
-    delay: 180     
-    behaviours:
-      on_enter_overridden: 'off'
-    overrides:
-      - binary_sensor.sonne_tagsueber
-      - binary_sensor.kuechelregal_inaktiv
-      - binary_sensor.bewegungsmelder_inaktiv_unterwegs
-      - binary_sensor.bewegungsmelder_inaktiv_staubsauger
-      - input_boolean.bewegungsmelder_kueche_deaktiviert
+timer:
+  licht_kueche:
+    name: Licht Küche
+    icon: mdi:timer-off
+    duration: 120
 
-  bewegung_kuechenschrank:
-    friendly_name: "Bewegung Kuechenschrank"
-    sensor: binary_sensor.bewegungsmelder_kueche
-    entity: light.kueche_schrank
-    delay: 180
-    behaviours:
-      on_enter_overridden: 'off'
-    overrides:            
-      - binary_sensor.sonne_tagsueber
-      - binary_sensor.kuechenschrank_inaktiv
-      - binary_sensor.bewegungsmelder_inaktiv_unterwegs
-      - binary_sensor.bewegungsmelder_inaktiv_staubsauger
-      - input_boolean.bewegungsmelder_kueche_deaktiviert          
-      
+automation:
+  - alias: 'Licht Küche'
+    id: "licht_kueche"
+    trigger: 
+      - id: licht_on
+        platform: state
+        entity_id: binary_sensor.bewegungsmelder_kueche
+        to: 'on'
+      - id: licht_off
+        platform: event
+        event_type: timer.finished
+        event_data:
+          entity_id: timer.licht_kueche 
+    condition:      
+      - condition: or
+        conditions:          
+            - "{{ trigger.id == 'licht_off' }}"        
+            - condition: and
+              conditions:
+                - "{{ is_state('binary_sensor.sonne_tagsueber', 'off') }}"
+                - "{{ is_state('binary_sensor.bewegungsmelder_inaktiv_unterwegs', 'off') }}"
+                - "{{ is_state('binary_sensor.bewegungsmelder_inaktiv_staubsauger', 'off') }}"
+                - "{{ is_state('input_boolean.bewegungsmelder_kueche_deaktiviert', 'off') }}"
+    action:              
+      - if: "{{ trigger.id == 'licht_on' and is_state('binary_sensor.nachts', 'on') }}"
+        then:
+          - service: light.turn_on
+            entity_id: light.kueche_regal
+          - service: timer.start
+            entity_id: timer.licht_kueche
+      - if: "{{ trigger.id == 'licht_on' and is_state('binary_sensor.nachts', 'off') }}"
+        then:
+          - service: light.turn_on
+            entity_id: light.kueche_schrank
+          - service: timer.start
+            entity_id: timer.licht_kueche            
+      - if: "{{ trigger.id == 'licht_off' }}"
+        then:
+          - service: light.turn_off
+            entity_id: light.kueche_regal, light.kueche_schrank
+             
 homeassistant:
   customize:
     light.kueche_regal:      

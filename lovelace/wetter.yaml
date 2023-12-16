@@ -8,11 +8,6 @@ cards:
   - type: weather-forecast
     entity: weather.wetter_dortmund
     forecast_type: daily
-    
-#  - type: custom:weather-card
-#    entity: weather.dwd_weather_dortmund
-#    icons: "/local/icons/weather_icons/static/"    
-#    name: Wetter
 
   - type: markdown
     title: Wetterwarnungen
@@ -119,8 +114,10 @@ cards:
     title: Luft
     show_header_toggle: false
     entities:
-      - entity: sensor.wetter_dortmund_luftfeuchtigkeit        
+      - entity: sensor.wetter_dortmund_luftfeuchtigkeit      
+        name: Luftfeuchtigkeit
       - entity: sensor.wetter_dortmund_druck
+        name: Luftdruck
 
     
   - type: entities
@@ -137,7 +134,9 @@ cards:
     entities:
       - entity: sensor.regenradar  
       - entity: sensor.wetter_dortmund_bewolkungsgrad
+        name: Bewölkungsgrad        
       - entity: sensor.wetter_dortmund_windgeschwindigkeit
+        name: Windgeschwindigkeit
       - entity: sensor.windrichtung
       
   - type: entities

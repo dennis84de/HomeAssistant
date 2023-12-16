@@ -2,21 +2,6 @@ input_boolean:
   bewegungsmelder_arbeitszimmer_deaktiviert:
     name: Bewegungsmelder deaktiviert
     icon: mdi:sync-off
-           
-entity_controller:
-  bewegung_arbeitszimmer:
-    friendly_name: "Bewegung Arbeitszimmer"
-    sensor: binary_sensor.bewegungsmelder_arbeitszimmer
-    entities: light.arbeitszimmer_regal
-    delay: 120
-    behaviours:
-      on_enter_overridden: 'off'
-    overrides:
-      - binary_sensor.home_office_aktiv
-      - binary_sensor.sonne_tagsueber      
-      - binary_sensor.bewegungsmelder_inaktiv_unterwegs  
-      - binary_sensor.bewegungsmelder_inaktiv_staubsauger
-      - input_boolean.bewegungsmelder_arbeitszimmer_deaktiviert
 
 automation:   
   - alias: "Licht Arbeitszimmer - Einschalten"

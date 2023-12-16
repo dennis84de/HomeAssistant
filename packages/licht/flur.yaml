@@ -3,53 +3,92 @@ input_boolean:
     name: Bewegungsmelder deaktiviert    
     icon: mdi:sync-off
 
+timer:
+  licht_flur_vorne:
+    name: Licht Flur vorne
+    icon: mdi:timer-off
+    duration: 120
+  licht_flur_hinten:
+    name: Licht Flur hinten
+    icon: mdi:timer-off
+    duration: 120
+    
 template:
   - binary_sensor:
       - name: "Bewegungsmelder Flur inaktiv"
         unique_id: bewegungsmelder_flur_inaktiv
         state: "{{ is_state('binary_sensor.allein_zu_hause', 'off') and is_state('binary_sensor.schlafen_aktiv', 'on') }}"
-        
-entity_controller:
-  bewegung_flur_vorne:
-    friendly_name: "Bewegung Flur vorne"
-    sensor: binary_sensor.bewegungsmelder_flur_vorne
-    entity: light.flur_vorne
-    delay: 180    
-    behaviours:
-      on_enter_overridden: 'off'
-    overrides:
-      - binary_sensor.sonne_tagsueber      
-      - binary_sensor.bewegungsmelder_inaktiv_unterwegs
-      - binary_sensor.bewegungsmelder_inaktiv_staubsauger
-      - input_boolean.bewegungsmelder_flur_deaktiviert
-    night_mode:
-      delay: 120
-      service_data:
-        brightness: 30
-      start_time: '23:00:00'
-      end_time: '07:00:00'              
 
-  bewegung_flur_hinten:
-    friendly_name: "Bewegung Flur hinten"
-    sensor: binary_sensor.bewegungsmelder_flur_hinten
-    entity: light.flur_hinten
-    delay: 180
-    grace_period: 60
-    behaviours:
-      on_enter_overridden: 'off'
-    overrides:
-      - binary_sensor.sonne_tagsueber
-      - binary_sensor.bewegungsmelder_flur_inaktiv
-      - binary_sensor.bewegungsmelder_inaktiv_unterwegs
-      - binary_sensor.bewegungsmelder_inaktiv_staubsauger
-      - input_boolean.bewegungsmelder_flur_deaktiviert  
-    night_mode:
-      delay: 120
-      service_data:
-        brightness: 30
-      start_time: '23:00:00'
-      end_time: '07:00:00'
-
+automation:
+  - alias: 'Licht Flur vorne'
+    id: "licht_flur_vorne"
+    trigger: 
+      - id: licht_on
+        platform: state
+        entity_id: binary_sensor.bewegungsmelder_flur_vorne
+        to: 'on'
+      - id: licht_off
+        platform: event
+        event_type: timer.finished
+        event_data:
+          entity_id: timer.licht_flur_vorne
+    condition:      
+      - condition: or
+        conditions:          
+            - "{{ trigger.id == 'licht_off' }}"        
+            - condition: and
+              conditions:
+                - "{{ is_state('binary_sensor.sonne_tagsueber', 'off') }}"
+                - "{{ is_state('binary_sensor.bewegungsmelder_inaktiv_unterwegs', 'off') }}"
+                - "{{ is_state('binary_sensor.bewegungsmelder_inaktiv_staubsauger', 'off') }}"
+                - "{{ is_state('input_boolean.bewegungsmelder_flur_deaktiviert', 'off') }}"
+    action:
+      - if: "{{ trigger.id == 'licht_on' }}"
+        then:
+          - service: light.turn_on
+            entity_id: light.flur_vorne
+          - service: timer.start
+            entity_id: timer.licht_flur_vorne
+      - if: "{{ trigger.id == 'licht_off' }}"
+        then:
+          - service: light.turn_off
+            entity_id: light.flur_vorne    
+            
+  - alias: 'Licht Flur hinten'
+    id: "licht_flur_hinten"
+    trigger: 
+      - id: licht_on
+        platform: state
+        entity_id: binary_sensor.bewegungsmelder_flur_hinten
+        to: 'on'
+      - id: licht_off
+        platform: event
+        event_type: timer.finished
+        event_data:
+          entity_id: timer.licht_flur_hinten
+    condition:      
+      - condition: or
+        conditions:          
+            - "{{ trigger.id == 'licht_off' }}"        
+            - condition: and
+              conditions:
+                - "{{ is_state('binary_sensor.sonne_tagsueber', 'off') }}"
+                - "{{ is_state('binary_sensor.bewegungsmelder_flur_inaktiv', 'off') }}"
+                - "{{ is_state('binary_sensor.bewegungsmelder_inaktiv_unterwegs', 'off') }}"
+                - "{{ is_state('binary_sensor.bewegungsmelder_inaktiv_staubsauger', 'off') }}"
+                - "{{ is_state('input_boolean.bewegungsmelder_flur_deaktiviert', 'off') }}"
+    action:
+      - if: "{{ trigger.id == 'licht_on' }}"
+        then:
+          - service: light.turn_on
+            entity_id: light.flur_hinten
+          - service: timer.start
+            entity_id: timer.licht_flur_hinten
+      - if: "{{ trigger.id == 'licht_off' }}"
+        then:
+          - service: light.turn_off
+            entity_id: light.flur_hinten    
+            
 homeassistant:
   customize:
     light.flur_vorne:

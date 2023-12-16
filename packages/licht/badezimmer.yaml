@@ -3,20 +3,48 @@ input_boolean:
     name: Bewegungsmelder deaktiviert   
     icon: mdi:sync-off
 
-entity_controller:      
-  bewegung_badezimmer:
-    friendly_name: "Bewegung Badezimmer"
-    sensor: binary_sensor.bewegungsmelder_badezimmer
-    entity: light.badezimmerschrank
-    sensor_type_duration: True
-    delay: 180
-    overrides:
-      - binary_sensor.sonne_tagsueber
-      - binary_sensor.baden_aktiv
-      - binary_sensor.bewegungsmelder_inaktiv_unterwegs      
-      - binary_sensor.bewegungsmelder_inaktiv_staubsauger
-      - input_boolean.bewegungsmelder_badezimmer_deaktiviert      
+timer:
+  licht_badezimmer:
+    name: Licht Badezimmer
+    icon: mdi:timer-off
+    duration: 180
       
+automation:
+  - alias: 'Licht Badezimmer'
+    id: "licht_badezimmer"
+    trigger: 
+      - id: licht_on
+        platform: state
+        entity_id: binary_sensor.bewegungsmelder_badezimmer
+        to: 'on'
+      - id: licht_off
+        platform: event
+        event_type: timer.finished
+        event_data:
+          entity_id: timer.licht_badezimmer 
+    condition:      
+      - condition: or
+        conditions:          
+            - "{{ trigger.id == 'licht_off' }}"        
+            - condition: and
+              conditions:
+                - "{{ is_state('binary_sensor.sonne_tagsueber', 'off') }}"
+                - "{{ is_state('binary_sensor.baden_aktiv', 'off') }}"
+                - "{{ is_state('binary_sensor.bewegungsmelder_inaktiv_unterwegs', 'off') }}"
+                - "{{ is_state('binary_sensor.bewegungsmelder_inaktiv_staubsauger', 'off') }}"
+                - "{{ is_state('input_boolean.bewegungsmelder_badezimmer_deaktiviert', 'off') }}"
+    action:
+      - if: "{{ trigger.id == 'licht_on' }}"
+        then:
+          - service: light.turn_on
+            entity_id: light.badezimmerschrank
+          - service: timer.start
+            entity_id: timer.licht_badezimmer
+      - if: "{{ trigger.id == 'licht_off' }}"
+        then:
+          - service: light.turn_off
+            entity_id: light.badezimmerschrank            
+                  
 homeassistant:
   customize:
     light.badezimmerschrank:

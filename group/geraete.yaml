@@ -30,7 +30,7 @@ steckdosen:
     - switch.flur_radio
     - switch.badezimmer_radio
     - switch.kueche_radio
-    - switch.arbeitszimmer_fernseher
+    - switch.balkon_lichterkette
     - switch.schlafzimmer_fernseher
     - switch.waschmaschine
     - switch.trockner

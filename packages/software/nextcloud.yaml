@@ -9,7 +9,10 @@ template:
         unique_id: nextcloud_update_available
         device_class: update
         state: >-
-          {% if 'beta' not in states('sensor.nextcloud_server_latest_release') 
+          {% if is_state('sensor.nextcloud_server_latest_release', 'unavailable')
+            or is_state('sensor.nextcloud_system_version', 'unavailable') %}
+            false
+          {% elif 'beta' not in states('sensor.nextcloud_server_latest_release') 
             and 'rc' not in states('sensor.nextcloud_server_latest_release')  %}
             {% set currentVersion = states('sensor.nextcloud_system_version').split('.') %}
             {% set latestVersion = states('sensor.nextcloud_server_latest_release').replace('v', '').split('.') %}
@@ -22,7 +25,10 @@ template:
             false
           {% endif %}
         icon: >-
-          {% if 'beta' not in states('sensor.nextcloud_server_latest_release') 
+          {% if is_state('sensor.nextcloud_server_latest_release', 'unavailable')
+            or is_state('sensor.nextcloud_system_version', 'unavailable') %}
+            mdi:cog      
+          {% elif 'beta' not in states('sensor.nextcloud_server_latest_release') 
             and 'rc' not in states('sensor.nextcloud_server_latest_release')  %}
             {% set currentVersion = states('sensor.nextcloud_system_version').split('.') %}
             {% set latestVersion = states('sensor.nextcloud_server_latest_release').replace('v', '').split('.') %}

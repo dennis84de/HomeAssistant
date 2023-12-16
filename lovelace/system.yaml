@@ -318,5 +318,3 @@ cards:
                     name: Kinderzimmer  
                   - entity: input_boolean.bewegungsmelder_balkon_deaktiviert
                     name: Balkon                      
-      - entity: script.alexa_witz_gestartet
-        name: Witz erzählen      

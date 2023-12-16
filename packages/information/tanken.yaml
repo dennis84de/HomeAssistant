@@ -45,25 +45,22 @@ automation:
     mode: parallel
     trigger:
       - platform: state
-        entity_id: 
-          - sensor.tankerkoenig_supermarkt_tankstelle_am_real_markt_dortmund_wulfshofstr_e10
-          - sensor.tankerkoenig_jet_dortmund_provinzialstr_229_e10
-          - sensor.tankerkoenig_jet_muelheim_strassburger_allee_75_e10 
+        id: "tanken/real"
+        entity_id: sensor.tankerkoenig_supermarkt_tankstelle_am_real_markt_dortmund_wulfshofstr_e10
+      - platform: state
+        id: "tanken/jet_do"
+        entity_id: sensor.tankerkoenig_jet_dortmund_provinzialstr_229_e10
+      - platform: state
+        id: "tanken/jet_mh"
+        entity_id: sensor.tankerkoenig_jet_muelheim_strassburger_allee_75_e10          
     condition:
       - "{{ trigger.to_state.state != 'unknown' }}"
     action:
       - service: mqtt.publish
         data:
-          topic: >-
-            {% if trigger.entity_id == 'sensor.tankerkoenig_supermarkt_tankstelle_am_real_markt_dortmund_wulfshofstr_e10' %}
-              tanken/real
-            {% elif trigger.entity_id == 'sensor.tankerkoenig_jet_dortmund_provinzialstr_229_e10' %}
-              tanken/jet_do
-            {% elif trigger.entity_id == 'sensor.tankerkoenig_jet_muelheim_strassburger_allee_75_e10' %}
-              tanken/jet_mh
-            {% endif %}
+          topic: "{{ trigger.id }}"          
+          payload: "{{ states(trigger.entity_id) }}"
           retain: true
-          payload: "{{ states(trigger.entity_id) }}"   
 
 homeassistant:
   customize:           

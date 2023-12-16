@@ -11,11 +11,6 @@ device_tracker:
     devices:
       - Handy_GPS
       
-  - platform: ping
-    hosts:
-      handy_ping: !secret handy_host
-      handy_natalie_ping: !secret handy_natalie_host
-      
 proximity:
   home:
     devices:      

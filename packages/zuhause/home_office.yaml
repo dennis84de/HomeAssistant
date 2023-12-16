@@ -58,11 +58,6 @@ sensor:
         unique_id: sensor.teams_activity
             
 binary_sensor:
-  - platform: ping
-    host: !secret computer_arbeit_host    
-    name: "Computer Arbeit Ping"    
-    scan_interval: 30
-    
   - platform: template
     sensors:
       home_office_heute:
@@ -153,7 +148,7 @@ script:
       - service: input_boolean.turn_off
         entity_id: input_boolean.home_office_aktiv, input_boolean.home_office_musik_pausiert, input_boolean.home_office_pause
       - service: switch.turn_off
-        entity_id: switch.arbeitszimmer_radio, switch.computer_arbeit
+        entity_id: switch.computer_arbeit
       - service: input_number.set_value        
         data:
           entity_id: input_number.home_office_heute_gearbeitet

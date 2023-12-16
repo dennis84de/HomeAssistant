@@ -105,8 +105,7 @@ switch:
             or state_attr('media_player.echo_flur', 'is_volume_muted') == true
             or state_attr('media_player.echo_kuche', 'is_volume_muted') == true
             or state_attr('media_player.echo_wohnzimmer', 'is_volume_muted') == true
-            or state_attr('media_player.echo_arbeitszimmer', 'is_volume_muted') == true
-            or state_attr('media_player.echo_kinderzimmer', 'is_volume_muted') == true
+            or state_attr('media_player.echo_arbeitszimmer', 'is_volume_muted') == true            
             or (is_state('media_player.radio_wohnzimmer', 'playing') and (state_attr('media_player.radio_wohnzimmer', 'volume_level') | float(0)) == 0)
             or (is_state('media_player.radio_arbeitszimmer', 'playing') and (state_attr('media_player.radio_arbeitszimmer', 'volume_level') | float(0)) == 0)
             or (is_state('media_player.radio_badezimmer', 'playing') and (state_attr('media_player.radio_badezimmer', 'volume_level') | float(0)) == 0)
@@ -123,8 +122,7 @@ switch:
             or state_attr('media_player.echo_flur', 'is_volume_muted') == true
             or state_attr('media_player.echo_kuche', 'is_volume_muted') == true
             or state_attr('media_player.echo_wohnzimmer', 'is_volume_muted') == true
-            or state_attr('media_player.echo_arbeitszimmer', 'is_volume_muted') == true
-            or state_attr('media_player.echo_kinderzimmer', 'is_volume_muted') == true
+            or state_attr('media_player.echo_arbeitszimmer', 'is_volume_muted') == true            
             or (is_state('media_player.radio_wohnzimmer', 'playing') and (state_attr('media_player.radio_wohnzimmer', 'volume_level') | float(0)) == 0)
             or (is_state('media_player.radio_arbeitszimmer', 'playing') and (state_attr('media_player.radio_arbeitszimmer', 'volume_level') | float(0)) == 0)
             or (is_state('media_player.radio_badezimmer', 'playing') and (state_attr('media_player.radio_badezimmer', 'volume_level') | float(0)) == 0)

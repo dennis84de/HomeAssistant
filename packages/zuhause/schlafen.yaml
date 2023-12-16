@@ -87,7 +87,7 @@ script:
       - service: switch.turn_off
         entity_id: switch.watchtv_wohnzimmer, switch.computer
       - service: light.turn_off
-        entity_id: light.balkon_licht
+        entity_id: light.balkon_licht, light.balkon_lichterkette, light.leuchtstern
       - service: input_select.select_option
         data:
           entity_id: input_select.computer_ausschalten  
@@ -133,6 +133,15 @@ automation:
       - platform: state
         entity_id: binary_sensor.im_bett
         to: 'on'      
+      - platform: event
+        event_type: zha_event
+        event_data:
+          device_ieee: 00:15:8d:00:02:13:45:68
+          command: attribute_updated
+          args:
+            attribute_id: 0
+            attribute_name: on_off     
+            value: 1        
     condition:      
       - "{{ is_state('input_boolean.schlafen_einschalten_aktiv', 'on') }}"
     action:
@@ -162,8 +171,6 @@ automation:
       weckerZeit: "{{ as_timestamp(states('sensor.tablet_schlafzimmer_next_alarm'), None) | timestamp_custom('%H:%M:%S', True, 0) }}"      
       tagWecker: "{{ as_timestamp(states('sensor.tablet_schlafzimmer_next_alarm'), None) | timestamp_custom('%d', True, 0) | int(0) }}"
       tagHeute: "{{ as_timestamp(now()) | timestamp_custom('%d', True) | int(0) }}"
-      bueroHeute: "{{ is_state('binary_sensor.buero_heute', 'on') }}"
-      bueroMorgen: "{{ is_state('binary_sensor.buero_morgen', 'on') }}"
       arbeitstagHeute: "{{ is_state('binary_sensor.arbeitstag', 'on') }}"
       arbeitstagMorgen: "{{ is_state('binary_sensor.arbeitstag_morgen', 'on') }}"
       urlaubHeute: "{{ state_attr('sensor.naechster_urlaub', 'tage') | int(0) <= 0 }}"
@@ -171,7 +178,6 @@ automation:
       krankHeute: "{{ is_state('calendar.arbeit_krank', 'on') }}"
       krankMorgen: "{{ is_state('binary_sensor.krank_morgen', 'on') }}"
     condition:
-      - "{{ is_state('binary_sensor.allein_zu_hause', 'on') }}"
       - condition: or
         conditions:
           - "{{ vorMitternacht and arbeitstagMorgen and not urlaubMorgen and not krankMorgen }}"
@@ -226,8 +232,8 @@ automation:
                           override: true
                           message: "Der Wecker ist noch nicht für heute gestellt."  
 
-  - alias: "Schlafen gehen - Countdown starten"
-    id: "schlafen_gehen_countdown_starten"
+  - alias: "Schlafen gehen"
+    id: "schlafen_gehen"
     trigger:
       - id: schalter_wohnzimmer
         platform: event
@@ -240,65 +246,10 @@ automation:
     condition:
       - "{{ is_state('binary_sensor.besuch', 'off') }}"
       - "{{ is_state('binary_sensor.schlafen_aktiv', 'off') }}"
-      - "{{ is_state('timer.schlafen_einschalten', 'idle') }}"      
       - "{{ is_state('binary_sensor.nachts', 'on') }}"
     action:
-      - if: "{{ states('sensor.personen_zu_hause') | int(0) > 1 }}"
-        then:
-          - service: script.schlafen_gehen   
-        else:
-          - service: !secret tts_service
-            data:
-              echo: "wohnzimmer"
-              message: "Alle Geräte werden gleich ausgeschaltet."
-          - delay: '00:00:03'
-          - service: media_player.play_media
-            data:
-              entity_id: media_player.home_assistant
-              media_content_id: http://192.168.2.75:8123/local/sounds/countdown_5.mp3
-              media_content_type: music
-          - service: timer.start
-            entity_id: timer.schlafen_einschalten
-        
-  - alias: "Schlafen gehen - Countdown abbrechen"
-    id: "schlafen_gehen_countdown_abbrechen"
-    trigger:
-      - id: schalter_wohnzimmer
-        platform: event
-        event_type: zha_event
-        event_data:
-          device_ieee: 00:15:8d:00:02:c8:c4:8b
-          command: click
-          args:
-            click_type: single
-    condition:
-      - condition: state
-        entity_id: timer.schlafen_einschalten
-        state: 'active'
-    action:
-      - service: media_player.media_pause
-        entity_id: media_player.home_assistant
-      - service: !secret tts_service
-        data:
-          echo: "wohnzimmer"
-          message: "Der Vorgang wurde abgebrochen."
-      - service: timer.cancel
-        entity_id: timer.schlafen_einschalten
-
-  - alias: "Schlafen gehen - Starten"
-    id: "schlafen_gehen_starten"
-    trigger:
-      - platform: event
-        event_type: timer.finished
-        event_data:
-          entity_id: timer.schlafen_einschalten
-      - platform: tag
-        tag_id: tag_wohnzimmer
-    condition:
-      - "{{ is_state('binary_sensor.schlafen_aktiv', 'off') }}"
-    action:      
       - service: script.schlafen_gehen   
-            
+       
   - alias: 'Sleeptimer - Starten'
     id: 'sleeptimer_starten'
     trigger:

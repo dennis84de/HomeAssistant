@@ -5,7 +5,13 @@ input_boolean:
     
   schlafzimmer_fernseher_licht:
     name: Schlafzimmer Fernseher Licht  
-            
+    
+timer:
+  licht_schlafzimmer:
+    name: Licht Schlafzimmer
+    icon: mdi:timer-off
+    duration: 120
+    
 light:
   - platform: template
     lights:
@@ -39,43 +45,48 @@ light:
     name: Kleiderschrank
     entity_id: switch.kleiderschrank
 
-entity_controller:           
-  bewegung_schlafzimmer_bett:
-    friendly_name: "Bewegung Schlafzimmer Bett"
-    sensors: 
-      - binary_sensor.bewegungsmelder_bett
-      - binary_sensor.bewegungsmelder_schlafzimmer
-    entity: light.bett
-    delay: 120    
-    service_data:
-      brightness: 100
-    behaviours:
-      on_enter_overridden: 'off'
-    overrides:
-      - binary_sensor.schlafen_inaktiv
-      - binary_sensor.sonne_tagsueber    
-      - binary_sensor.nicht_allein_zu_hause
-      - binary_sensor.bewegungsmelder_inaktiv_unterwegs
-      - binary_sensor.bewegungsmelder_inaktiv_staubsauger
-      - input_boolean.bewegungsmelder_schlafzimmer_deaktiviert
-      
-  bewegung_schlafzimmer_kleiderschrank:
-    friendly_name: "Bewegung Schlafzimmer Kleiderschrank"
-    sensor: binary_sensor.bewegungsmelder_schlafzimmer
-    entity: light.kleiderschrank
-    delay: 120 
-    behaviours:
-      on_enter_overridden: 'off'
-    overrides:
-      - binary_sensor.schlafen_aktiv
-      - binary_sensor.sonne_tagsueber
-      - binary_sensor.fenster_schlafzimmer
-      - binary_sensor.bewegungsmelder_inaktiv_unterwegs
-      - binary_sensor.bewegungsmelder_inaktiv_staubsauger
-      - input_boolean.schlafen_einschalten_aktiv
-      - input_boolean.bewegungsmelder_schlafzimmer_deaktiviert           
-           
 automation:
+  - alias: 'Licht Schlafzimmer'
+    id: "licht_schlafzimmer"
+    trigger: 
+      - id: licht_on
+        platform: state
+        entity_id: binary_sensor.bewegungsmelder_schlafzimmer
+        to: 'on'
+      - id: licht_on
+        platform: state
+        entity_id: binary_sensor.bewegungsmelder_bett
+        to: 'on'        
+      - id: licht_off
+        platform: event
+        event_type: timer.finished
+        event_data:
+          entity_id: timer.licht_schlafzimmer 
+    condition:      
+      - condition: or
+        conditions:          
+            - "{{ trigger.id == 'licht_off' }}"        
+            - condition: and
+              conditions:
+                - "{{ is_state('binary_sensor.sonne_tagsueber', 'off') }}"
+                - "{{ is_state('binary_sensor.schlafen_aktiv', 'off') }}"
+                - "{{ is_state('binary_sensor.fenster_schlafzimmer', 'off') }}"
+                - "{{ is_state('binary_sensor.bewegungsmelder_inaktiv_unterwegs', 'off') }}"
+                - "{{ is_state('binary_sensor.bewegungsmelder_inaktiv_staubsauger', 'off') }}"
+                - "{{ is_state('input_boolean.bewegungsmelder_schlafzimmer_deaktiviert', 'off') }}"
+                - "{{ is_state('input_boolean.schlafen_einschalten_aktiv', 'off') }}"
+    action:
+      - if: "{{ trigger.id == 'licht_on' }}"
+        then:
+          - service: light.turn_on
+            entity_id: light.kleiderschrank
+          - service: timer.start
+            entity_id: timer.licht_schlafzimmer
+      - if: "{{ trigger.id == 'licht_off' }}"
+        then:
+          - service: light.turn_off
+            entity_id: light.kleiderschrank   
+            
   - alias: "Schlafzimmer - Licht einschalten"
     id: "schlafzimmer_licht_einschalten"  
     trigger:

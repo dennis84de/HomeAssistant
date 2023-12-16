@@ -1,24 +1,14 @@
 notify:
   - platform: alexa_media
     name: Alexa
-    
-input_boolean:
-  alexa_witz_gestartet:
-    name: Alexa Witz - Gestartet
-    initial: off
-  
-counter:
-  alexa_witz_status:
-    name: Alexa Witz - Statusänderungen    
-    initial: 0
-    step: 1           
-                                   
+                   
 script:
   alexa_tts:
     alias: "Alexa TTS"
     sequence:   
       - condition: and   
         conditions:
+          - "{{ is_state('binary_sensor.fritz_box_6660_cable_verbindung', 'on') }}"
           - "{{ is_state('person.dennis', 'home') }}"
           - condition: or
             conditions:            
@@ -52,39 +42,7 @@ script:
             {% else %}
               media_player.echo_wohnzimmer
             {% endif %}
-          message: "{{ message }}"
-          
-  alexa_witz_gestartet:
-    alias: "Alexa Witz - Gestartet"
-    sequence:
-      - service: input_boolean.turn_on
-        entity_id: input_boolean.alexa_witz_gestartet
-      - service: media_player.play_media
-        data:
-          entity_id: media_player.echo_wohnzimmer
-          media_content_id: Alexa.Joke.Play
-          media_content_type: sequence
-      - service: switch.turn_on
-        entity_id: switch.radios_lautlos     
-       
-  alexa_witz_beendet:
-    alias: "Alexa Witz - Beendet"
-    sequence:
-      - service: counter.reset
-        entity_id: counter.alexa_witz_status
-      - service: input_boolean.turn_off
-        entity_id: input_boolean.alexa_witz_gestartet        
-      - service: switch.turn_off
-        entity_id: switch.radios_lautlos
-          
-  alexa_witz:
-    alias: "Alexa Witz"
-    sequence:
-      - service: media_player.play_media
-        data:          
-          entity_id: media_player.echo_{{ echo }}
-          media_content_id: Alexa.Joke.Play
-          media_content_type: sequence      
+          message: "{{ message }}"        
           
   alexa_radio_suedtirol_eins:
     alias: "Alexa Radio Südtirol 1"
@@ -106,72 +64,4 @@ script:
           media_content_id: "Eins Live in der Wohnung"
           media_content_type: "TUNEIN"
     mode: single
-    icon: mdi:play        
-          
-automation:
-  - alias: "Echo Wohnzimmer - Timer ausschalten"
-    id: "echo_wohnzimmer_timers_ausschalten"
-    trigger:
-      - platform: state
-        entity_id: binary_sensor.bewegungsmelder_flur_vorne
-        to: 'on'
-      - platform: state
-        entity_id: binary_sensor.bewegungsmelder_flur_hinten
-        to: 'on'        
-    condition:
-      - "{{ not states('sensor.echo_wohnzimmer_next_timer') in ['unknown', 'unavailable'] }}"
-      - "{{ (as_timestamp(states('sensor.echo_wohnzimmer_next_timer'), None) | int(0)) < (as_timestamp(now()) | int(0)) }}"        
-    action:
-      - service: media_player.play_media
-        data:
-          entity_id: media_player.echo_wohnzimmer
-          media_content_id: 'Alarm ausschalten'
-          media_content_type: custom        
-          
-  - alias: "Alexa Witz - Aktiv"
-    id: "alexa_witz_aktiv"
-    trigger:
-      - platform: state
-        entity_id: media_player.echo_wohnzimmer
-    condition:
-      - condition: state
-        entity_id: input_boolean.alexa_witz_gestartet
-        state: 'on'
-      - condition: template
-        value_template: '{{ trigger.from_state.attributes.media_position_updated_at != trigger.to_state.attributes.media_position_updated_at }}'
-    action:
-      - service: counter.increment
-        entity_id: counter.alexa_witz_status
-       
-  - alias: "Alexa Witz - Beendet"
-    id: "alexa_witz_beendet"
-    trigger:
-      - platform: numeric_state
-        entity_id: counter.alexa_witz_status
-        above: 3
-    condition:
-      - condition: state
-        entity_id: input_boolean.alexa_witz_gestartet
-        state: 'on'
-    action:
-      - service: script.alexa_witz_beendet
-        
-  - alias: "Alexa Witz"
-    id: "alexa_witz"  
-    trigger:    
-      - id: schalter_badezimmer
-        platform: event
-        event_type: zha_event
-        event_data:
-          device_ieee: 00:15:8d:00:02:e9:58:3a
-          command: click
-          args:
-            click_type: single           
-    condition:
-      - "{{ is_state('binary_sensor.besuch', 'on') }}"
-      - "{{ is_state('binary_sensor.schlafen_inaktiv', 'on') }}"
-    action:
-      - service: script.alexa_witz
-        data:
-          echo: badezimmer
-        
+    icon: mdi:play                 

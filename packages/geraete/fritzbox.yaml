@@ -144,9 +144,9 @@ homeassistant:
     device_tracker.xiaomivacuum:
       icon: mdi:robot-vacuum-variant
       friendly_name: Xiaomi Staubsauger
-    device_tracker.xiaomifan:
-      icon: mdi:fan      
-      friendly_name: Xiaomi Ventilator
+#    device_tracker.xiaomifan:
+#      icon: mdi:fan      
+#      friendly_name: Xiaomi Ventilator
     device_tracker.soundbar:
       icon: mdi:music-note
     device_tracker.fernseherwohnzimmer:
@@ -184,19 +184,19 @@ homeassistant:
       friendly_name: Trocker      
       
     device_tracker.echoflur:
-      friendly_name: Flur
+      friendly_name: Echo Flur
     device_tracker.echokueche:
-      friendly_name: Küche
+      friendly_name: Echo Küche
     device_tracker.echobadezimmer:
-      friendly_name: Badezimmer
+      friendly_name: Echo Badezimmer
     device_tracker.echowohnzimmer:
-      friendly_name: Wohnzimmer
+      friendly_name: Echo Wohnzimmer
     device_tracker.echoschlafzimmer:
-      friendly_name: Schlafzimmer      
+      friendly_name: Echo Schlafzimmer      
     device_tracker.echoarbeitszimmer:
-      friendly_name: Arbeitszimmer          
-    device_tracker.echokinderzimmer:
-      friendly_name: Kinderzimmer      
+      friendly_name: Echo Arbeitszimmer          
+    device_tracker.echofranzi:
+      friendly_name: Echo Kinderzimmer      
       
     device_tracker.firetvschlafzimmer:
       friendly_name: FireTV Schlafzimmer
@@ -237,10 +237,10 @@ homeassistant:
       friendly_name: Tasmota Wohnzimmer Radio
     device_tracker.tasmotawohnzimmerschrank:
       friendly_name: Tasmota Wohnzimmer Strahler
+    device_tracker.tasmotaleuchtstern:
+      friendly_name: Tasmota Wohnzimmer Leuchtstern      
     device_tracker.tasmotakinderzimmerlampe:
       friendly_name: Tasmota Kinderzimmer Lampe
-    device_tracker.tasmotaarbeitszimmerradio:
-      friendly_name: Tasmota Arbeitszimmer Radio
     device_tracker.tasmotaarbeitszimmerladegeraet:
       friendly_name: Tasmota Arbeitszimmer Ladegerät
     device_tracker.tasmotaarbeitszimmermonitore:

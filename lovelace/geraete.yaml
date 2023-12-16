@@ -31,20 +31,26 @@ cards:
             severity:
               green: 0
               yellow: 40
-              red: 80                  
-      - type: entities
-        show_header_toggle: false
-        entities:
-          - entity: binary_sensor.rpi_power_status
-          - type: custom:template-entity-row
-            entity : sensor.raspberry_letzter_neustart
-            state: >-
-              {% if is_state('sensor.raspberry_letzter_neustart', 'unknown') %}
-                -
-              {% else %}
-                {{ as_timestamp(states('sensor.computer_letzter_neustart'), None) | timestamp_custom('%d.%m.%Y') | string }}
-              {% endif %}          
-        
+              red: 80         
+      - type: conditional
+        conditions:
+          - entity: sensor.raspberry_letzter_neustart
+            state_not: "unavailable"
+          - entity: sensor.raspberry_letzter_neustart
+            state_not: "unknown"            
+        card:
+          type: entities          
+          show_header_toggle: false
+          entities:
+            - type: custom:template-entity-row
+              entity : sensor.raspberry_letzter_neustart
+              state: >-
+                {% if is_state('sensor.raspberry_letzter_neustart', 'unknown') or not as_timestamp(states('sensor.raspberry_letzter_neustart'), None) %}
+                  -
+                {% else %}
+                  {{ as_timestamp(states('sensor.raspberry_letzter_neustart'), None) | timestamp_custom('%d.%m.%Y') | string }}
+                {% endif %}                
+
   - type: custom:stack-in-card
     cards:
       - type: horizontal-stack
@@ -108,12 +114,12 @@ cards:
             - type: custom:template-entity-row
               entity : sensor.computer_letzter_neustart
               state: >-
-                {% if is_state('sensor.computer_letzter_neustart', 'unknown') %}
+                {% if is_state('sensor.computer_letzter_neustart', 'unknown') or not as_timestamp(states('sensor.computer_letzter_neustart'), None) %}
                   -
                 {% else %}
                   {{ as_timestamp(states('sensor.computer_letzter_neustart'), None) | timestamp_custom('%d.%m.%Y') | string }}
-                {% endif %}
-
+                {% endif %}                
+                
   - type: 'custom:zha-network-card'    
     clickable: true
     sort_by: last_seen

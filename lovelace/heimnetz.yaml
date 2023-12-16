@@ -21,8 +21,8 @@ cards:
     entities:
       - entity: device_tracker.xiaomivacuum
         name: Staubsauger
-      - entity: device_tracker.xiaomifan
-        name: Ventilator
+#      - entity: device_tracker.xiaomifan
+#        name: Ventilator
       - entity: device_tracker.epsondrucker
         name: Drucker
 
@@ -56,11 +56,11 @@ cards:
       - entity: device_tracker.tasmotawohnzimmerradio
         name: Wohnzimmer Radio      
       - entity: device_tracker.tasmotawohnzimmerschrank
-        name: Wohnzimmer Schrank        
+        name: Wohnzimmer Schrank     
+      - entity: device_tracker.tasmotaleuchtstern
+        name: Wohnzimmer Leuchtstern        
       - entity: device_tracker.tasmotakinderzimmerlampe
         name: Kinderzimmer Lampe
-      - entity: device_tracker.tasmotaarbeitszimmerradio
-        name: Arbeitszimmer Radio
       - entity: device_tracker.tasmotaarbeitszimmerladegeraet
         name: Arbeitszimmer Ladegerät
       - entity: device_tracker.tasmotaarbeitszimmermonitore
@@ -93,9 +93,7 @@ cards:
       - entity: device_tracker.firetvwohnzimmer
         name: Wohnzimmer      
       - entity: device_tracker.firetvschlafzimmer
-        name: Schlafzimmer
-      - entity: device_tracker.firetvarbeitszimmer
-        name: Arbeitszimmer        
+        name: Schlafzimmer      
       - entity: device_tracker.firetvbadezimmer
         name: Badezimmer
                 
@@ -147,9 +145,8 @@ cards:
         name: Schlafzimmer
       - entity: device_tracker.echoarbeitszimmer
         name: Arbeitszimmer
-      - entity: device_tracker.echokinderzimmer
-        name: Kinderzimmer                         
-
+      - entity: device_tracker.echofranzi
+        name: Franzi                         
         
   - type: entities
     view_layout:
@@ -166,5 +163,5 @@ cards:
     title: Shelly
     show_header_toggle: false
     entities:
-      - entity: device_tracker.shellyarbeitszimmerfernseher
-        name: Arbeitszimmer Fernseher    
+      - entity: device_tracker.shellybalkonlichterkette
+        name: Balkon Lichterkette

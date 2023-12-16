@@ -12,17 +12,6 @@ sensor:
     host: !secret computer_host
     port: 8580  
 
-device_tracker:
-  - platform: ping
-    hosts:
-      computer_ping: !secret computer_host
-
-binary_sensor: 
-  - platform: ping
-    host: !secret computer_host    
-    name: "Computer Ping"    
-    scan_interval: 30
-    
 switch:
   - platform: template
     switches:

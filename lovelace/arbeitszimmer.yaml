@@ -12,9 +12,7 @@ cards:
       - entity: switch.arbeitszimmer_ladegerat
         name: Ladegerät
       - entity: switch.arbeitszimmer_radio
-        name: Radio         
-      - entity: switch.arbeitszimmer_fernseher
-        name: Fernseher        
+        name: Radio            
       - entity: switch.arbeitszimmer_monitore
         name: Monitore        
       
