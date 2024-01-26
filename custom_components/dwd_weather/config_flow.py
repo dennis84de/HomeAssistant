@@ -1,8 +1,11 @@
 """Config flow for Deutscher Wetterdienst integration."""
 
 import logging
+import uuid
 import voluptuous as vol
 from homeassistant import config_entries
+from homeassistant.core import callback
+from homeassistant.data_entry_flow import FlowResult
 from homeassistant.helpers.selector import (
     BooleanSelector,
     SelectSelector,
@@ -17,15 +20,39 @@ from .const import (
     CONF_DATA_TYPE_MIXED,
     CONF_DATA_TYPE_REPORT,
     CONF_ENTITY_TYPE,
+    CONF_ENTITY_TYPE_MAP,
     CONF_ENTITY_TYPE_STATION,
     CONF_HOURLY_UPDATE,
     CONF_INTERPOLATE,
     CONF_LOCATION_COORDINATES,
     CONF_CUSTOM_LOCATION,
+    CONF_MAP_BACKGROUND_TYPE,
+    CONF_MAP_FOREGROUND_MAXTEMP,
+    CONF_MAP_FOREGROUND_POLLENFLUG,
+    CONF_MAP_FOREGROUND_PRECIPITATION,
+    CONF_MAP_FOREGROUND_SATELLITE_IR,
+    CONF_MAP_FOREGROUND_SATELLITE_RGB,
+    CONF_MAP_FOREGROUND_TYPE,
+    CONF_MAP_FOREGROUND_UVINDEX,
+    CONF_MAP_FOREGROUND_WARNUNGEN_GEMEINDEN,
+    CONF_MAP_FOREGROUND_WARNUNGEN_KREISE,
+    CONF_MAP_BACKGROUND_LAENDER,
+    CONF_MAP_BACKGROUND_BUNDESLAENDER,
+    CONF_MAP_BACKGROUND_KREISE,
+    CONF_MAP_BACKGROUND_GEMEINDEN,
+    CONF_MAP_BACKGROUND_SATELLIT,
+    CONF_MAP_ID,
+    CONF_MAP_TYPE,
+    CONF_MAP_TYPE_CUSTOM,
+    CONF_MAP_TYPE_GERMANY,
+    CONF_MAP_WINDOW,
+    CONF_OPTION_MAP_MESSAGE,
     CONF_STATION_ID,
     CONF_STATION_NAME,
     DOMAIN,
+    CONF_VERSION,
     CONF_WIND_DIRECTION_TYPE,
+    conversion_table_map_foreground,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -34,7 +61,7 @@ _LOGGER = logging.getLogger(__name__)
 class DWDWeatherConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     """Handle a config flow for DWD weather integration."""
 
-    VERSION = 5
+    VERSION = CONF_VERSION
     CONNECTION_CLASS = config_entries.CONN_CLASS_CLOUD_POLL
 
     async def async_step_user(self, user_input=None):
@@ -49,13 +76,15 @@ class DWDWeatherConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 return self.async_show_form(
                     step_id="user", data_schema=data_schema, errors={errors}
                 )
+            self.config_data.update(user_input)
             # Check selected option
             if user_input[CONF_ENTITY_TYPE] == CONF_ENTITY_TYPE_STATION:
                 # Show station config form
                 _LOGGER.debug("Selected weather_station")
                 return await self.async_step_station_select()
-            else:
-                pass
+            elif user_input[CONF_ENTITY_TYPE] == CONF_ENTITY_TYPE_MAP:
+                self.config_data[CONF_MAP_ID] = str(uuid.uuid4()).upper()[:4]
+                return await self.async_step_select_map_type()
 
         data_schema = vol.Schema(
             {
@@ -64,7 +93,9 @@ class DWDWeatherConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                     default=CONF_ENTITY_TYPE_STATION,
                 ): SelectSelector(
                     {
-                        "options": list([CONF_ENTITY_TYPE_STATION]),
+                        "options": list(
+                            [CONF_ENTITY_TYPE_STATION, CONF_ENTITY_TYPE_MAP]
+                        ),
                         "custom_value": False,
                         "mode": "list",
                         "translation_key": CONF_ENTITY_TYPE,
@@ -231,3 +262,219 @@ class DWDWeatherConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         return self.async_show_form(
             step_id="station_configure", data_schema=data_schema, errors=errors
         )
+
+    async def async_step_select_map_type(self, user_input=None):
+        errors = {}
+        _LOGGER.debug("Map:user_input: {}".format(user_input))
+        if user_input is not None:
+            self.config_data.update(user_input)
+            if user_input[CONF_MAP_TYPE] == CONF_MAP_TYPE_CUSTOM:
+                return await self.async_step_select_map_window()
+            elif user_input[CONF_MAP_TYPE] == CONF_MAP_TYPE_GERMANY:
+                return await self.async_step_select_map_content()
+
+        data_schema = vol.Schema(
+            {
+                vol.Required(
+                    CONF_MAP_TYPE,
+                    default=CONF_MAP_TYPE_GERMANY,
+                ): SelectSelector(
+                    {
+                        "options": list(
+                            [
+                                CONF_MAP_TYPE_GERMANY,
+                                CONF_MAP_TYPE_CUSTOM,
+                            ]
+                        ),
+                        "custom_value": False,
+                        "mode": "list",
+                        "translation_key": CONF_MAP_TYPE,
+                    }
+                )
+            }
+        )
+
+        return self.async_show_form(
+            step_id="select_map_type", data_schema=data_schema, errors=errors
+        )
+
+    async def async_step_select_map_window(self, user_input=None):
+        errors = {}
+        _LOGGER.debug("Map_window:user_input: {}".format(user_input))
+        if user_input is not None:
+            user_input["map_window"]["latitude"] = round(
+                user_input["map_window"]["latitude"], 2
+            )
+            user_input["map_window"]["longitude"] = round(
+                user_input["map_window"]["longitude"], 2
+            )
+            if "radius" in user_input["map_window"]:
+                user_input["map_window"]["radius"] = round(
+                    user_input["map_window"]["radius"] / 1000, 0
+                )
+            else:
+                user_input["map_window"]["radius"] = 100
+            self.config_data.update(user_input)
+            return await self.async_step_select_map_content()
+
+        data_schema = vol.Schema(
+            {vol.Optional(CONF_MAP_WINDOW): LocationSelector({"radius": True})}
+        )
+        _LOGGER.debug("Map_window:user_input:error {}".format(errors))
+        return self.async_show_form(
+            step_id="select_map_window", data_schema=data_schema, errors=errors
+        )
+
+    async def async_step_select_map_content(self, user_input=None):
+        errors = {}
+        _LOGGER.debug("Map_content:user_input: {}".format(user_input))
+        if user_input is not None:
+            self.config_data.update(user_input)
+
+            return self.async_create_entry(
+                title=f"Weathermap {conversion_table_map_foreground[self.config_data[CONF_MAP_FOREGROUND_TYPE]]}",
+                data=self.config_data,
+            )
+
+        data_schema = vol.Schema(
+            {
+                vol.Required(
+                    CONF_MAP_FOREGROUND_TYPE,
+                    default=CONF_MAP_FOREGROUND_PRECIPITATION,
+                ): SelectSelector(
+                    {
+                        "options": list(
+                            [
+                                CONF_MAP_FOREGROUND_PRECIPITATION,
+                                CONF_MAP_FOREGROUND_MAXTEMP,
+                                CONF_MAP_FOREGROUND_UVINDEX,
+                                CONF_MAP_FOREGROUND_POLLENFLUG,
+                                CONF_MAP_FOREGROUND_SATELLITE_RGB,
+                                CONF_MAP_FOREGROUND_SATELLITE_IR,
+                                CONF_MAP_FOREGROUND_WARNUNGEN_GEMEINDEN,
+                                CONF_MAP_FOREGROUND_WARNUNGEN_KREISE,
+                            ]
+                        ),
+                        "custom_value": False,
+                        "mode": "dropdown",
+                        "translation_key": CONF_MAP_FOREGROUND_TYPE,
+                    }
+                ),
+                vol.Required(
+                    CONF_MAP_BACKGROUND_TYPE,
+                    default=CONF_MAP_BACKGROUND_BUNDESLAENDER,
+                ): SelectSelector(
+                    {
+                        "options": list(
+                            [
+                                CONF_MAP_BACKGROUND_LAENDER,
+                                CONF_MAP_BACKGROUND_BUNDESLAENDER,
+                                CONF_MAP_BACKGROUND_KREISE,
+                                CONF_MAP_BACKGROUND_GEMEINDEN,
+                                CONF_MAP_BACKGROUND_SATELLIT,
+                            ]
+                        ),
+                        "custom_value": False,
+                        "mode": "dropdown",
+                        "translation_key": CONF_MAP_BACKGROUND_TYPE,
+                    }
+                ),
+            }
+        )
+
+        return self.async_show_form(
+            step_id="select_map_content", data_schema=data_schema, errors=errors
+        )
+
+    @staticmethod
+    @callback
+    def async_get_options_flow(
+        config_entry: config_entries.ConfigEntry,
+    ) -> config_entries.OptionsFlow:
+        """Create the options flow."""
+        return OptionsFlowHandler(config_entry)
+
+
+class OptionsFlowHandler(config_entries.OptionsFlow):
+    def __init__(self, config_entry: config_entries.ConfigEntry) -> None:
+        """Initialize options flow."""
+        self.config_entry = config_entry
+        _LOGGER.debug(
+            "OptionsFlowHandler: init for {} with data {}".format(
+                self.config_entry.title, self.config_entry.data
+            )
+        )
+
+    async def async_step_init(self, user_input: dict[str] | None = None) -> FlowResult:
+        """Manage the options."""
+        if self.config_entry.data[CONF_ENTITY_TYPE] == CONF_ENTITY_TYPE_STATION:
+            if user_input is not None:
+                _LOGGER.debug(
+                    "OptionsFlowHandler station: user_input {}".format(user_input)
+                )
+
+                user_input[CONF_ENTITY_TYPE] = self.config_entry.data[CONF_ENTITY_TYPE]
+                user_input[CONF_STATION_ID] = self.config_entry.data[CONF_STATION_ID]
+                user_input[CONF_STATION_NAME] = self.config_entry.data[
+                    CONF_STATION_NAME
+                ]
+                user_input[CONF_CUSTOM_LOCATION] = self.config_entry.data[
+                    CONF_CUSTOM_LOCATION
+                ]
+                self.hass.config_entries.async_update_entry(
+                    self.config_entry,
+                    data=user_input,
+                    options=self.config_entry.options,
+                )
+                return self.async_create_entry(title="", data={})
+
+            return self.async_show_form(
+                step_id="init",
+                data_schema=vol.Schema(
+                    {
+                        vol.Required(
+                            CONF_DATA_TYPE,
+                            default=self.config_entry.data["data_type"],
+                        ): SelectSelector(
+                            {
+                                "options": list(
+                                    [
+                                        CONF_DATA_TYPE_MIXED,
+                                        CONF_DATA_TYPE_REPORT,
+                                        CONF_DATA_TYPE_FORECAST,
+                                    ]
+                                ),
+                                "custom_value": False,
+                                "mode": "list",
+                                "translation_key": CONF_DATA_TYPE,
+                            }
+                        ),
+                        vol.Required(
+                            CONF_WIND_DIRECTION_TYPE,
+                            default=self.config_entry.data["wind_direction_type"],
+                        ): SelectSelector(
+                            {
+                                "options": list(["degrees", "direction"]),
+                                "custom_value": False,
+                                "mode": "list",
+                                "translation_key": CONF_WIND_DIRECTION_TYPE,
+                            }
+                        ),
+                        vol.Required(
+                            CONF_INTERPOLATE,
+                            default=self.config_entry.data["interpolate"],
+                        ): BooleanSelector({}),
+                        vol.Required(
+                            CONF_HOURLY_UPDATE,
+                            default=self.config_entry.data["hourly_update"],
+                        ): BooleanSelector({}),
+                    }
+                ),
+            )
+        elif self.config_entry.data[CONF_ENTITY_TYPE] == CONF_ENTITY_TYPE_MAP:
+            return self.async_show_form(
+                step_id="init",
+                data_schema=vol.Schema(
+                    {vol.Optional(CONF_OPTION_MAP_MESSAGE): TextSelector({})}
+                ),
+            )

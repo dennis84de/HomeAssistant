@@ -9,11 +9,10 @@ from homeassistant.components.weather import (
     Forecast,
 )
 from homeassistant.const import (
-    TEMP_CELSIUS,
-    PRESSURE_HPA,
-    SPEED_KILOMETERS_PER_HOUR,
-    LENGTH_KILOMETERS,
-    LENGTH_MILLIMETERS,
+    UnitOfLength,
+    UnitOfPressure,
+    UnitOfSpeed,
+    UnitOfTemperature,
 )
 
 from homeassistant.helpers.typing import ConfigType, HomeAssistantType
@@ -23,6 +22,7 @@ from .const import (
     CONF_STATION_ID,
     CONF_STATION_NAME,
     DOMAIN,
+    DWDWEATHER_COORDINATOR,
     DWDWEATHER_DATA,
 )
 
@@ -45,6 +45,7 @@ class DWDWeather(DWDWeatherEntity, WeatherEntity):
         """Initialise the platform with a data instance and site."""
 
         dwd_data: DWDWeatherData = hass_data[DWDWEATHER_DATA]
+        self._coordinator = hass_data[DWDWEATHER_COORDINATOR]
 
         unique_id = f"{dwd_data._config[CONF_STATION_ID]}_{dwd_data._config[CONF_STATION_NAME]}_Weather"
         _LOGGER.debug("Setting up weather with id {}".format(unique_id))
@@ -83,7 +84,7 @@ class DWDWeather(DWDWeatherEntity, WeatherEntity):
     @property
     def native_temperature_unit(self):
         """Return the temperature unit."""
-        return TEMP_CELSIUS
+        return UnitOfTemperature.CELSIUS
 
     @property
     def native_pressure(self):
@@ -93,7 +94,7 @@ class DWDWeather(DWDWeatherEntity, WeatherEntity):
     @property
     def native_pressure_unit(self):
         """Return the pressure unit."""
-        return PRESSURE_HPA
+        return UnitOfPressure.HPA
 
     @property
     def native_wind_speed(self):
@@ -103,7 +104,7 @@ class DWDWeather(DWDWeatherEntity, WeatherEntity):
     @property
     def native_wind_speed_unit(self):
         """Return the wind speed unit."""
-        return SPEED_KILOMETERS_PER_HOUR
+        return UnitOfSpeed.KILOMETERS_PER_HOUR
 
     @property
     def wind_bearing(self):
@@ -118,7 +119,7 @@ class DWDWeather(DWDWeatherEntity, WeatherEntity):
     @property
     def native_visibility_unit(self):
         """Return the visibility unit."""
-        return LENGTH_KILOMETERS
+        return UnitOfLength.KILOMETERS
 
     @property
     def humidity(self):
@@ -128,7 +129,12 @@ class DWDWeather(DWDWeatherEntity, WeatherEntity):
     @property
     def native_precipitation_unit(self):
         """Return the precipitation unit."""
-        return LENGTH_MILLIMETERS
+        return UnitOfLength.MILLIMETERS
+
+    @property
+    def uv_index(self):
+        """Return the uv index."""
+        return self._connector.get_uv_index()
 
     @property
     def attribution(self):
@@ -139,3 +145,13 @@ class DWDWeather(DWDWeatherEntity, WeatherEntity):
     def extra_state_attributes(self):
         """Return data validity infos."""
         return self._connector.infos
+
+    async def async_added_to_hass(self) -> None:
+        """Connect to dispatcher listening for entity data notifications."""
+        self.async_on_remove(
+            self._coordinator.async_add_listener(self.async_write_ha_state)
+        )
+
+    async def async_update(self) -> None:
+        """Get the latest data and updates the states."""
+        await self._coordinator.async_request_refresh()
