@@ -11,7 +11,6 @@ automation:
         value_template: "{{ now().strftime('%M')|int in [0,30] }}"
     condition:  
       - "{{ is_state('input_boolean.uhr_einschalten', 'on') }}"
-      - "{{ is_state('binary_sensor.nicht_stoeren', 'off') }}"
       - "{{ is_state('binary_sensor.baden_aktiv', 'off') }}"   
       - "{{ is_state('person.dennis', 'home') }}"
       - "{{ is_state('binary_sensor.home_office_aktiv', 'off') }}"

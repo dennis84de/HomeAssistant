@@ -3,49 +3,75 @@ input_boolean:
     name: Bewegungsmelder deaktiviert
     icon: mdi:sync-off
 
-automation:   
-  - alias: "Licht Arbeitszimmer - Einschalten"
-    id: "licht_arbeitszimmer_einschalten"
-    trigger:
-      - platform: event        
-        event_type: zha_event
-        event_data:
-          device_ieee: 00:15:8d:00:01:83:77:4a
-          command: click
-          args:
-            click_type: single   
-      - platform: state
-        id: computer
-        entity_id: switch.computer  
+timer:
+  licht_arbeitszimmer:
+    name: Licht Arbeitszimmer
+    icon: mdi:timer-off
+    duration: 120
+    
+automation:  
+  - alias: 'Licht Arbeitszimmer'
+    id: "licht_arbeitszimmer"
+    trigger: 
+      - id: licht_on
+        platform: state
+        entity_id: binary_sensor.bewegungsmelder_arbeitszimmer
         to: 'on'
-    condition:
-      - "{{ is_state('binary_sensor.home_office_aktiv', 'off') }}" 
-      - "{{ is_state('binary_sensor.sonne_tagsueber', 'off') }}" 
-      - "{{ is_state('light.arbeitszimmer_regal', 'off') }}"       
-    action:
-      - service: light.turn_on
-        entity_id: light.arbeitszimmer_regal       
-        
-  - alias: "Licht Arbeitszimmer - Ausschalten"
-    id: "licht_arbeitszimmer_ausschalten"
-    trigger:      
-      - platform: event
+      - id: licht_off
+        platform: event
+        event_type: timer.finished
+        event_data:
+          entity_id: timer.licht_arbeitszimmer 
+      - id: licht_button
+        platform: event        
         event_type: zha_event
         event_data:
           device_ieee: 00:15:8d:00:01:83:77:4a
           command: click
           args:
-            click_type: single   
-      - platform: state
-        entity_id: switch.computer  
-        to: 'off'            
-    condition:
-      - "{{ is_state('binary_sensor.home_office_aktiv', 'off') }}"       
-      - "{{ is_state('light.arbeitszimmer_regal', 'on') }}"       
+            click_type: single             
+    condition:      
+      - condition: or
+        conditions:          
+            - "{{ trigger.id == 'licht_off' }}"            
+            - condition: and
+              conditions:
+                - "{{ is_state('binary_sensor.sonne_tagsueber', 'off') }}"
+                - "{{ is_state('binary_sensor.home_office_aktiv', 'off') }}"
+                - "{{ is_state('binary_sensor.bewegungsmelder_inaktiv_unterwegs', 'off') }}"
+                - "{{ is_state('binary_sensor.bewegungsmelder_inaktiv_staubsauger', 'off') }}"
+                - "{{ is_state('input_boolean.bewegungsmelder_arbeitszimmer_deaktiviert', 'off') }}"
     action:
-      - service: light.turn_off
-        entity_id: light.arbeitszimmer_regal     
-        
+      - choose:
+          - conditions:
+              - "{{ trigger.id == 'licht_button' and is_state('light.arbeitszimmer_regal', 'off') }}"
+            sequence:                
+              - service: light.turn_on
+                entity_id: light.arbeitszimmer_regal
+              - service: timer.start
+                entity_id: timer.licht_arbeitszimmer
+          - conditions:
+              - "{{ trigger.id == 'licht_button' and is_state('light.arbeitszimmer_regal', 'on') }}"
+            sequence:                
+              - service: light.turn_off
+                entity_id: light.arbeitszimmer_regal          
+              - service: timer.cancel
+                entity_id: timer.licht_arbeitszimmer                
+          - conditions:
+              - "{{ trigger.id == 'licht_on' }}"
+            sequence:                
+              - service: light.turn_on
+                entity_id: light.arbeitszimmer_regal
+              - service: timer.start
+                entity_id: timer.licht_arbeitszimmer            
+          - conditions:
+              - "{{ trigger.id == 'licht_off' }}"
+            sequence:                
+              - service: light.turn_off
+                entity_id: light.arbeitszimmer_regal          
+              - service: timer.cancel
+                entity_id: timer.licht_arbeitszimmer                               
+            
 homeassistant:
   customize:
     light.arbeitszimmer_regal:

@@ -110,10 +110,6 @@ automation:
           title: "Fahrzeit nach Hause"
           message: >-
             Die Fahrzeit von der Arbeit nach Hause beträgt aktuell {{ states('sensor.fahrzeit_nach_hause_duration_in_traffic') }} Minuten.
-            
-            
-            Die folgende Route wird empfohlen:
-            {{ states('sensor.fahrzeit_nach_hause_route') }}
           
 homeassistant:
   customize:

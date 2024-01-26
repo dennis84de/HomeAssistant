@@ -90,15 +90,6 @@ command_line:
       scan_interval: 3600
       
 sensor:
-  - platform: systemmonitor
-    resources:
-      - type: disk_use_percent
-        arg: /
-      - type: memory_use_percent
-      - type: processor_use
-      - type: last_boot
-      - type: processor_temperature
-
   - platform: template
     sensors:
       hass_installierte_version:

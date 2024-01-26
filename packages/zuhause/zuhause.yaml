@@ -5,15 +5,34 @@ input_select:
       - Deaktiviert
       - Tür
       - Handy      
-    
+
 input_boolean:
-  nicht_stoeren:
-    name: Nicht stören
-    icon: mdi:minus-circle
+  anwesenheit_franzi:
+    name: "Anwesenheit Franzi"
+    icon: mdi:human-child   
+
+  anwesenheit_natalie:
+    name: "Anwesenheit Natalie"
+    icon: mdi:human-female   
+    
+  anwesenheit_flori:
+    name: "Anwesenheit Flori"
+    icon: mdi:dog-side       
     
 shell_command:
   send_position: "curl -X POST '{{ url }}?lat={{ state_attr('zone.home', 'latitude') }}&lon={{ state_attr('zone.home', 'longitude') }}&timestamp={{ as_timestamp(now()) | int(0) }}'"
 
+mqtt:
+  device_tracker:
+    - name: "Handy Natalie MQTT"
+      state_topic: "presence/natalie"
+    
+    - name: "Franzi MQTT"
+      state_topic: "presence/franzi"
+      
+    - name: "Flori MQTT"
+      state_topic: "presence/flori"
+      
 template:
   - sensor:
       - name: "Personen zu Hause"
@@ -29,16 +48,8 @@ template:
   - binary_sensor:
       - name: "Allein zu Hause"
         unique_id: allein_zu_hause
-        state: "{{ is_state('sensor.personen_zu_hause', '1') }}"
-        
-      - name: "Nicht allein zu Hause"
-        unique_id: nicht_allein_zu_hause
-        state: "{{ states('sensor.personen_zu_hause') | int(0) > 1 }}"    
-   
-      - name: "Nicht stören"
-        unique_id: nicht_stoeren        
-        state: "{{ is_state('input_boolean.nicht_stoeren', 'on') }}"           
-    
+        state: "{{ is_state('sensor.personen_zu_hause', '1') and is_state('person.dennis', 'home') }}"
+          
 script:
   zu_hause:
     alias: "Zu Hause"
@@ -53,7 +64,11 @@ script:
             sequence:
               - service: light.turn_on
                 entity_id: light.wohnzimmer_schrank           
-      - service: script.radios_einschalten               
+      - service: script.radios_einschalten     
+      - if: "{{ is_state('person.franzi', 'home') and is_state('binary_sensor.licht_kinderzimmer', 'on') }}"
+        then:          
+          - service: light.turn_on
+            entity_id: light.kinderzimmer_licht          
 
   zu_hause_home_office:
     alias: "Zu Hause - Home Office"
@@ -97,7 +112,11 @@ script:
         entity_id: switch.badezimmer_radio    
       - wait_template: "{{ is_state('media_player.radio_badezimmer', 'playing') }}"
       - service: media_player.media_pause
-        entity_id: media_player.radio_badezimmer          
+        entity_id: media_player.radio_badezimmer    
+      - if: "{{ is_state('person.franzi', 'home') }}"
+        then:          
+          - service: light.turn_on
+            entity_id: light.kinderzimmer_licht            
 
   zu_hause_standort:
     alias: "Zu Hause - Standort"
@@ -183,6 +202,30 @@ script:
                 {% endif %}
             
 automation:     
+  - alias: "Zu Hause - Alarm auschalten"
+    id: "zu_hause_alarm_auschalten"
+    trigger:
+      - platform: state
+        entity_id: person.dennis
+        to: 'home'       
+      - platform: state
+        entity_id: person.natalie
+        to: 'home'            
+    condition:    
+      - "{{ is_state('binary_sensor.schlafen_aktiv', 'off') }}"
+      - "{{ not is_state('alarm_control_panel.alarmo', 'disarmed') }}"
+      - condition: template
+        value_template: >-
+          {% set now = as_timestamp(now()) %}
+          {% set last = as_timestamp(state_attr("script.alles_ausschalten", "last_triggered"), None) | int(0) %}
+          {% set diff = ((now - last) / 60) | int(0) %}
+
+          {{ diff >= 10 }}    
+    action:         
+      - service: alarmo.disarm
+        data:
+          entity_id: alarm_control_panel.alarmo
+          
   - alias: "Zu Hause"
     id: "zu_hause"
     trigger:
@@ -198,12 +241,8 @@ automation:
           command: click
           args:
             click_type: double   
-      - id: handy
-        platform: tag
-        tag_id: tag_flur          
     condition:    
       - "{{ is_state('binary_sensor.schlafen_aktiv', 'off') }}"
-      - "{{ not is_state('alarm_control_panel.alarmo', 'disarmed') }}"
       - condition: template
         value_template: >-
           {% set now = as_timestamp(now()) %}
@@ -213,9 +252,6 @@ automation:
           {{ diff >= 10 }}        
     action:         
       - service: script.zu_hause_standort
-      - service: alarmo.disarm
-        data:
-          entity_id: alarm_control_panel.alarmo
       - service: presence_simulation.stop          
       - service: input_select.select_option
         data:
@@ -310,9 +346,70 @@ automation:
           option: 'Deaktiviert'     
       - service: script.zu_hause_begruessung    
 
+  - alias: "Natalie - Anwesenheit"
+    id: "natalie_anwesenheit"
+    trigger:
+      - platform: state
+        entity_id: input_boolean.anwesenheit_natalie           
+    action:      
+      - service: mqtt.publish
+        data:
+           topic: 'presence/natalie'
+           payload: "{{ 'home' if trigger.to_state.state == 'on' else 'not_home' }}"
+           retain: true             
+           
+  - alias: "Franzi - Anwesenheit"
+    id: "franzi_anwesenheit"
+    trigger:
+      - id: boolean
+        platform: state
+        entity_id: input_boolean.anwesenheit_franzi
+      - id: calendar
+        platform: state
+        entity_id: calendar.franzi_papa_wochenende
+    variables:       
+      aktion: >-
+        {% if trigger.id == 'boolean' %}
+          {{ 'home' if trigger.to_state.state == 'on' else 'not_home' }}
+        {% else %}
+          {{ 'not_home' if trigger.to_state.state == 'on' else 'home' }}
+        {% endif %}
+    action:      
+      - service: mqtt.publish
+        data:
+           topic: "presence/franzi"
+           payload: "{{ aktion }}"
+           retain: true        
+      - if: "{{ aktion == 'home' }}"
+        then:                 
+          - service: input_boolean.turn_on
+            entity_id: input_boolean.anwesenheit_franzi           
+        else:             
+          - service: input_boolean.turn_off
+            entity_id: input_boolean.anwesenheit_franzi   
+            
+  - alias: "Flori - Anwesenheit"
+    id: "flori_anwesenheit"
+    trigger:
+      - platform: state
+        entity_id: input_boolean.anwesenheit_flori
+    action:      
+      - service: mqtt.publish
+        data:
+           topic: "presence/flori"
+           payload: "{{ 'home' if trigger.to_state.state == 'on' else 'not_home' }}"
+           retain: true                    
+           
 homeassistant:
   customize:
     sensor.aufenthaltsort:
       icon: mdi:google-maps
     proximity.home:
       friendly_name: Entfernung
+      
+    person.natalie:
+      icon: mdi:human-female
+    person.franzi:
+      icon: mdi:human-child
+    person.flori:
+      icon: mdi:dog-side         

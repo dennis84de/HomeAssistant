@@ -20,7 +20,6 @@ batteriestand:
     - sensor.thermometer_schlafzimmer_battery_level
     - sensor.thermometer_kinderzimmer_battery_level
     - sensor.thermometer_kueche_battery_level
-    - sensor.thermometer_hardware_battery_level
     - sensor.balkontuer_battery_level
     - sensor.fenster_wohnzimmer_battery_level
     - sensor.fenster_schlafzimmer_battery_level
@@ -37,6 +36,8 @@ batteriestand:
     - sensor.bewegungsmelder_balkon_battery_level
     - sensor.bewegungsmelder_wohnzimmer_battery_level
     - sensor.pflanze_wohnzimmer_battery_level
-    - sensor.pflanze_kinderzimmer_battery_level
+    - sensor.orchidee_wohnzimmer_battery_level
     - sensor.heizung_wohnzimmer_batterie
     - sensor.heizung_kinderzimmer_batterie    
+    - sensor.kleiderschrank_links_battery_level
+    - sensor.kleiderschrank_rechts_battery_level

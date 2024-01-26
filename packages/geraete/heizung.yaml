@@ -333,7 +333,7 @@ automation:
           - condition: and
             conditions:   
               - "{{ trigger.id == 'stop' }}"
-              - "{{ is_state('climate.heizung_kueche', 'heat') }}"       
+              - "{{ is_state('climate.heizung_kinderzimmer', 'heat') }}"       
               - condition: or
                 conditions:                   
                   - "{{ is_state('schedule.heizung', 'off') }}"

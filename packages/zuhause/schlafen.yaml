@@ -87,7 +87,7 @@ script:
       - service: switch.turn_off
         entity_id: switch.watchtv_wohnzimmer, switch.computer
       - service: light.turn_off
-        entity_id: light.balkon_licht, light.balkon_lichterkette, light.leuchtstern
+        entity_id: light.balkon_licht
       - service: input_select.select_option
         data:
           entity_id: input_select.computer_ausschalten  
@@ -244,7 +244,6 @@ automation:
           args:
             click_type: double      
     condition:
-      - "{{ is_state('binary_sensor.besuch', 'off') }}"
       - "{{ is_state('binary_sensor.schlafen_aktiv', 'off') }}"
       - "{{ is_state('binary_sensor.nachts', 'on') }}"
     action:

@@ -34,12 +34,7 @@ automation:
       - "{{ is_state('person.dennis', 'home') }}"
       - "{{ is_state('binary_sensor.sonne_balkon', 'off') }}"
       - "{{ is_state('binary_sensor.balkontuer', 'on') }}"      
-      - "{{ is_state('input_boolean.bewegungsmelder_balkon_deaktiviert', 'off') }}"   
-      - condition: or
-        conditions:          
-          - "{{ trigger.id == 'schalter_balkon' }}"
-          - "{{ is_state('binary_sensor.besuch', 'off') }}"
-          - "{{ is_state('binary_sensor.allein_zu_hause', 'on') }}"          
+      - "{{ is_state('input_boolean.bewegungsmelder_balkon_deaktiviert', 'off') }}"     
       - condition: or
         conditions:     
           - "{{ trigger.id == 'bewegungsmelder_balkon' }}"
@@ -75,8 +70,8 @@ automation:
           seconds: 10      
       - condition: or
         conditions:     
-          - "{{ trigger.id in ('balkontuer','inaktiv') and (is_state('binary_sensor.besuch', 'on') or is_state('binary_sensor.allein_zu_hause', 'off')) }}"
-          - "{{ trigger.id == 'bewegungsmelder' and is_state('binary_sensor.besuch', 'off') and is_state('binary_sensor.allein_zu_hause', 'on') }}"
+          - "{{ trigger.id in ('balkontuer', 'inaktiv') and is_state('binary_sensor.allein_zu_hause', 'off') }}"
+          - "{{ trigger.id == 'bewegungsmelder' and is_state('binary_sensor.allein_zu_hause', 'on') }}"
     action:
       - service: light.turn_off
         entity_id: light.balkon_licht

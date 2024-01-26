@@ -15,14 +15,7 @@ cards:
   - type: entities
     title: Multimedia
     show_header_toggle: false
-    entities:
-      - type: custom:mini-media-player
-        entity: media_player.fire_tv_badezimmer
-        name: Fire TV
-        hide:
-          source: true
-          controls: true
-          progress: true                
+    entities:        
       - type: custom:mini-media-player
         entity: media_player.radio_badezimmer
         name: Radio

@@ -11,12 +11,11 @@ heimnetz:
     - device_tracker.tplinkschlafzimmerfernseher     
     - device_tracker.tasmotawohnzimmerradio
     - device_tracker.tasmotawohnzimmerstrahler         
-    - device_tracker.tasmotawohnzimmercouch
-    - device_tracker.tasmotakinderzimmerlampe      
-    - device_tracker.tasmotaleuchtstern      
+    - device_tracker.tasmotawohnzimmercouch   
     - device_tracker.tasmotaarbeitszimmerladegeraet      
-    - device_tracker.tasmotaarbeitszimmermonitore          
-    - device_tracker.tasmotamikrowelle   
+    - device_tracker.tasmotaarbeitszimmermonitore  
+    - device_tracker.tasmotaarbeitszimmerradio
+    - device_tracker.tasmotaarbeitszimmerregal
     - device_tracker.tasmotabalkonradio      
     - device_tracker.tasmotakuechenschrank  
     - device_tracker.tasmotaspuelmaschine      
@@ -32,5 +31,4 @@ heimnetz:
     - device_tracker.magichomeschlafzimmer
     - device_tracker.magichomekinderzimmer
     - device_tracker.magichomebalkon          
-    - device_tracker.shellybalkonlichterkette
     - device_tracker.broadlinkschlafzimmer 

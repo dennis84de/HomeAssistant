@@ -188,7 +188,7 @@ automation:
             data:
               entity_id: light.bett      
               effect: colorloop    
-      - condition: "{{ is_state('input_boolean.wecker_geraete_einschalten', 'on') }}"              
+      - condition: "{{ is_state('input_boolean.wecker_geraete_einschalten', 'on') }}"
       - if: "{{ is_state('input_boolean.radio_alexa', 'on') }}"
         then:            
           - service: media_player.play_media
@@ -275,12 +275,14 @@ automation:
       - service: input_boolean.turn_off
         entity_id: input_boolean.schlafen_aktiv, input_boolean.wecker_aktiv, input_boolean.wecker_erinnerung_morgen, input_boolean.wecker_zeit_geaendert
       - service: input_boolean.turn_on
-        entity_id: input_boolean.schlafen_fernseher_einschalten, input_boolean.wecker_geraete_einschalten    
+        entity_id: input_boolean.schlafen_fernseher_einschalten    
       - service: light.turn_off
         entity_id: light.bett
       - service: alarmo.disarm
         data:
-          entity_id: alarm_control_panel.alarmo                
+          entity_id: alarm_control_panel.alarmo       
+      - service: switch.turn_on
+        entity_id: switch.computer, switch.arbeitszimmer_monitore                
       - if: "{{ trigger.id != 'schalter_badezimmer' }}"
         then:             
           - wait_for_trigger:
@@ -289,14 +291,9 @@ automation:
               to: 'on'                       
           - service: script.aufstehen_begruessung               
         else:          
-          - service: script.aufstehen_begruessung         
-      - if: "{{ is_state('input_boolean.radio_alexa', 'on') }}"
+          - service: script.aufstehen_begruessung                   
+      - if: "{{ is_state('input_boolean.wecker_geraete_einschalten', 'on') }}"
         then:             
-          - service: media_player.media_pause
-            entity_id: media_player.echo_schlafzimmer              
-          - condition: "{{ is_state('input_boolean.wecker_geraete_einschalten', 'on') }}"
-          - service: script.alexa_radio_suedtirol_eins               
-        else:
           - if: "{{ states('sensor.radios_eingeschaltet') | int(0) == 1 and is_state('switch.schlafzimmer_radio', 'on') }}"
             then:             
               - service: media_player.media_pause
@@ -304,16 +301,15 @@ automation:
               - wait_template: "{{ is_state('media_player.radio_schlafzimmer', 'paused') }}"            
               - service: switch.turn_off
                 entity_id: switch.schlafzimmer_radio    
-              - condition: "{{ is_state('input_boolean.wecker_geraete_einschalten', 'on') }}"
               - service: script.radios_einschalten       
                 data:
                   radioBalkon: "{{ radioBalkonEinschalten }}"            
             else:
-              - condition: "{{ is_state('input_boolean.wecker_geraete_einschalten', 'on') }}"
               - service: switch.turn_off
                 entity_id: switch.schlafzimmer_radio             
               - service: script.radios_einschalten       
                 data:
-                  radioBalkon: "{{ radioBalkonEinschalten }}"        
-      - service: switch.turn_on
-        entity_id: switch.computer, switch.arbeitszimmer_monitore              
+                  radioBalkon: "{{ radioBalkonEinschalten }}"                    
+        else:          
+          - service: input_boolean.turn_on
+            entity_id: input_boolean.wecker_geraete_einschalten          

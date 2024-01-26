@@ -2,4 +2,4 @@ pflanzen:
   name: Pflanzen
   entities:
     - sensor.pflanze_wohnzimmer_feuchtigkeit    
-    - sensor.pflanze_kinderzimmer_feuchtigkeit
+    - sensor.orchidee_wohnzimmer_feuchtigkeit

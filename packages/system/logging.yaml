@@ -87,7 +87,6 @@ logbook:
       - switch.computer
       - switch.arbeitszimmer_monitore
       - switch.computer_arbeit   
-      - switch.kinderzimmer_lampe
       - switch.kuechenschrank
     entity_globs:
       - switch.*_led
@@ -111,7 +110,6 @@ history:
       - switch.wohnzimmer_strahler
       - switch.kleiderschrank
       - switch.wohnzimmer_schrank
-      - switch.kinderzimmer_lampe
       - switch.kuechenschrank
     entity_globs:
       - switch.*_led      

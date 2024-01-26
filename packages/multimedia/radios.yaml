@@ -17,6 +17,10 @@ timer:
     name: Radio Balkon    
     duration: 600
         
+  radio_badezimmer:
+    name: Radio Badezimmer    
+    duration: 180
+    
 template:
   - sensor:
       - name: Radios eingeschaltet
@@ -28,38 +32,8 @@ template:
               | list
               | length %}    
                 
-          {{ radiosEingeschaltet }}
-          
-  - binary_sensor:
-      - name: Radio Badezimmer inaktiv
-        device_class: motion
-        state: >-
-          {% if is_state('entity_controller.radio_badezimmer_bewegung', 'active_timer') %}
-            false
-          {% elif is_state('media_player.radio_badezimmer', 'playing') %}
-            true
-          {% elif is_state('switch.wohnzimmer_radio', 'on')
-            or is_state('switch.balkon_radio', 'on')
-            or is_state('switch.schlafzimmer_radio', 'on')
-            or is_state('switch.flur_radio', 'on')
-            or is_state('switch.arbeitszimmer_radio', 'on')
-            or is_state('switch.kueche_radio', 'on')
-          %}
-            true
-          {% else %}
-            false
-          {% endif %}                   
-      
-entity_controller:
-  radio_badezimmer:
-    friendly_name: "Radio Badezimmer - Bewegung"
-    sensor: binary_sensor.bewegungsmelder_badezimmer
-    sensor_type_duration: True
-    entity: switch.wiedergabe_badezimmer
-    delay: 180
-    overrides:
-      - binary_sensor.radio_badezimmer_inaktiv      
-     
+          {{ radiosEingeschaltet }}              
+
 switch:   
   - platform: template
     switches:
@@ -250,21 +224,19 @@ automation:
         entity_id: binary_sensor.bewegungsmelder_balkon
         to: 'on'
     condition:     
-      - "{{ now().isoweekday() != 7 }}"
-      - "{{ is_state('binary_sensor.radio_balkon_starten', 'on') }}"
+      - "{{ now().isoweekday() != 7 }}"      
       - "{{ is_state('switch.wiedergabe_aktiv', 'on') }}"
       - "{{ is_state('media_player.radio_balkon', 'off') }}"
       - "{{ is_state('binary_sensor.balkontuer', 'on') }}"
       - "{{ is_state('sensor.handy', 'idle') }}"
       - "{{ is_state('sensor.telefon', 'idle') }}"
-      - "{{ is_state('binary_sensor.besuch', 'off') }}"
     action:
       - service: input_boolean.turn_on
         entity_id: input_boolean.radio_balkon_aktiv
       - service: media_player.turn_on
         data:
           entity_id: media_player.radio_balkon
-      - if: "{{ is_state('binary_sensor.besuch', 'on') or is_state('binary_sensor.nicht_allein_zu_hause', 'on') }}"
+      - if: "{{ is_state('binary_sensor.allein_zu_hause', 'off') }}"
         then:
           - service: timer.start
             entity_id: timer.radio_balkon          
@@ -293,8 +265,8 @@ automation:
       - condition: or
         conditions:     
           - "{{ trigger.id == 'timer' }}"
-          - "{{ trigger.id == 'balkontuer' and (is_state('binary_sensor.besuch', 'on') or is_state('binary_sensor.nicht_allein_zu_hause', 'on')) }}"
-          - "{{ trigger.id == 'bewegungsmelder' and is_state('binary_sensor.besuch', 'off') and is_state('binary_sensor.allein_zu_hause', 'on') }}"        
+          - "{{ trigger.id == 'balkontuer' and is_state('binary_sensor.allein_zu_hause', 'off') }}"
+          - "{{ trigger.id == 'bewegungsmelder' and is_state('binary_sensor.allein_zu_hause', 'on') }}"        
     action:
       - service: input_boolean.turn_off
         entity_id: input_boolean.radio_balkon_aktiv
@@ -344,20 +316,41 @@ automation:
     action:
       - service: script.sync_radios
             
-  - alias: 'Radio Badezimmer - Pausieren'
-    id: "radio_badezimmer_pausieren"
+  - alias: 'Radio Badezimmer - Starten'
+    id: "radio_badezimmer_starten"
     trigger:
       - platform: state
-        entity_id: binary_sensor.bewegungsmelder_wohnzimmer
-        to: 'on'          
-    condition:
+        entity_id: binary_sensor.bewegungsmelder_badezimmer
+        to: 'on'
+    condition:                             
+      - "{{ is_state('binary_sensor.baden_aktiv', 'off') }}"
       - "{{ is_state('sensor.radios_eingeschaltet', '1') }}"
-      - "{{ is_state('media_player.radio_badezimmer', 'playing') }}"      
-      - "{{ is_state('binary_sensor.besuch', 'off') }}"
-      - "{{ is_state('sensor.personen_zu_hause', '1') }}"
+      - "{{ states('media_player.radio_badezimmer') in ('playing', 'paused', 'idle') }}"  
+    action:
+      - service: timer.start
+        entity_id: timer.radio_badezimmer
+      - if: "{{ not is_state('media_player.radio_badezimmer', 'playing') }}"
+        then:
+          - service: media_player.media_play
+            data:
+              entity_id: media_player.radio_badezimmer          
+          
+  - alias: 'Radio Badezimmer - Pausieren'
+    id: "radio_badezimmer_pausieren"
+    trigger: 
+      - id: timer
+        platform: event
+        event_type: timer.finished
+        event_data:
+          entity_id: timer.radio_badezimmer          
+    condition:  
+      - "{{ is_state('switch.wiedergabe_aktiv', 'on') }}"
+      - "{{ is_state('sensor.radios_eingeschaltet', '1') }}"
+      - "{{ is_state('media_player.radio_badezimmer', 'playing') }}"     
     action:
       - service: media_player.media_pause
-        entity_id: media_player.radio_badezimmer       
+        data:
+          entity_id: media_player.radio_badezimmer 
       
   - alias: 'Tür - Radios pausieren'
     id: "tuer_radios_pausieren"

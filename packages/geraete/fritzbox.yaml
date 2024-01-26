@@ -123,8 +123,6 @@ homeassistant:
       icon: mdi:tablet
     device_tracker.echo*:
       icon: mdi:microphone
-    device_tracker.shelly*:
-      icon: mdi:connection
     device_tracker.handy*:
       icon: mdi:cellphone
     device_tracker.tplink*:
@@ -196,14 +194,12 @@ homeassistant:
     device_tracker.echoarbeitszimmer:
       friendly_name: Echo Arbeitszimmer          
     device_tracker.echofranzi:
-      friendly_name: Echo Kinderzimmer      
+      friendly_name: Echo Franzi      
       
     device_tracker.firetvschlafzimmer:
       friendly_name: FireTV Schlafzimmer
     device_tracker.firetvarbeitszimmer:
       friendly_name: FireTV Arbeitszimmer
-    device_tracker.firetvbadezimmer:
-      friendly_name: FireTV Badezimmer
       
     device_tracker.tabletbadezimmer:
       friendly_name: Tablet Badezimmer
@@ -236,17 +232,11 @@ homeassistant:
     device_tracker.tasmotawohnzimmerradio:
       friendly_name: Tasmota Wohnzimmer Radio
     device_tracker.tasmotawohnzimmerschrank:
-      friendly_name: Tasmota Wohnzimmer Strahler
-    device_tracker.tasmotaleuchtstern:
-      friendly_name: Tasmota Wohnzimmer Leuchtstern      
-    device_tracker.tasmotakinderzimmerlampe:
-      friendly_name: Tasmota Kinderzimmer Lampe
+      friendly_name: Tasmota Wohnzimmer Strahler   
     device_tracker.tasmotaarbeitszimmerladegeraet:
       friendly_name: Tasmota Arbeitszimmer Ladegerät
     device_tracker.tasmotaarbeitszimmermonitore:
       friendly_name: Tasmota Arbeitszimmer Monitore
-    device_tracker.tasmotamikrowelle:
-      friendly_name: Tasmota Mikrowelle
     device_tracker.tasmotabalkonradio:
       friendly_name: Tasmota Balkon Radio
     device_tracker.tasmotakuechenschrank:

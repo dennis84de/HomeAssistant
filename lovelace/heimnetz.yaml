@@ -56,19 +56,17 @@ cards:
       - entity: device_tracker.tasmotawohnzimmerradio
         name: Wohnzimmer Radio      
       - entity: device_tracker.tasmotawohnzimmerschrank
-        name: Wohnzimmer Schrank     
-      - entity: device_tracker.tasmotaleuchtstern
-        name: Wohnzimmer Leuchtstern        
-      - entity: device_tracker.tasmotakinderzimmerlampe
-        name: Kinderzimmer Lampe
+        name: Wohnzimmer Schrank       
       - entity: device_tracker.tasmotaarbeitszimmerladegeraet
         name: Arbeitszimmer Ladegerät
       - entity: device_tracker.tasmotaarbeitszimmermonitore
-        name: Arbeitszimmer Monitore        
+        name: Arbeitszimmer Monitore    
+      - entity: device_tracker.tasmotaarbeitszimmerradio
+        name: Arbeitszimmer Radio      
+      - entity: device_tracker.tasmotaarbeitszimmerregal
+        name: Arbeitszimmer Regal            
       - entity: device_tracker.tasmotabalkonradio
-        name: Balkon Radio
-      - entity: device_tracker.tasmotamikrowelle
-        name: Mikrowelle              
+        name: Balkon Radio       
       - entity: device_tracker.tasmotakuechenschrank
         name: Küchenschrank  
       - entity: device_tracker.tasmotaspuelmaschine
@@ -94,8 +92,6 @@ cards:
         name: Wohnzimmer      
       - entity: device_tracker.firetvschlafzimmer
         name: Schlafzimmer      
-      - entity: device_tracker.firetvbadezimmer
-        name: Badezimmer
                 
   - type: entities
     title: Magic Home
@@ -146,7 +142,7 @@ cards:
       - entity: device_tracker.echoarbeitszimmer
         name: Arbeitszimmer
       - entity: device_tracker.echofranzi
-        name: Franzi                         
+        name: Franzi         
         
   - type: entities
     view_layout:
@@ -156,12 +152,12 @@ cards:
     entities:
       - entity: device_tracker.broadlinkschlafzimmer
         name: Schlafzimmer     
-            
+        
   - type: entities
     view_layout:
-      column: 2
+      column: 2 
     title: Shelly
     show_header_toggle: false
     entities:
-      - entity: device_tracker.shellybalkonlichterkette
-        name: Balkon Lichterkette
+      - entity: device_tracker.shellybabyphone
+        name: Babyphone             

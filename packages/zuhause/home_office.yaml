@@ -118,7 +118,11 @@ script:
       - service: input_boolean.turn_on
         entity_id: input_boolean.home_office_aktiv
       - service: switch.turn_off
-        entity_id: switch.computer, switch.watchtv_wohnzimmer
+        entity_id: switch.computer
+      - if: "{{ is_state('binary_sensor.allein_zu_hause', 'on') }}"
+        then:
+          - service: switch.turn_off
+            entity_id: switch.watchtv_wohnzimmer          
       - service: switch.turn_on
         entity_id: switch.arbeitszimmer_radio, switch.computer_arbeit, switch.arbeitszimmer_monitore
       - choose:

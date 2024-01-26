@@ -13,10 +13,7 @@ script:
           - condition: or
             conditions:            
               - "{{ override is defined and override == true }}"
-              - condition: and
-                conditions:    
-                  - "{{ is_state('binary_sensor.schlafen_aktiv', 'off') }}"
-                  - "{{ is_state('binary_sensor.nicht_stoeren', 'off') }}"
+              - "{{ is_state('binary_sensor.schlafen_aktiv', 'off') }}"
 
       - service: notify.alexa_media
         data:

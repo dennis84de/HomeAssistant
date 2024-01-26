@@ -76,7 +76,7 @@ cards:
                         name: MQTT                              
                   - type: entities
                     entities:
-                      - entity: input_boolean.besuch_natalie
+                      - entity: input_boolean.anwesenheit_natalie
                         name: Natalie
         name: Natalie
       - entity: person.franzi
@@ -93,7 +93,7 @@ cards:
                       - entity: device_tracker.franzi_mqtt             
                   - type: entities
                     entities:
-                      - entity: input_boolean.besuch_franzi
+                      - entity: input_boolean.anwesenheit_franzi
                         name: Franzi
       - entity: person.flori
         tap_action:
@@ -109,7 +109,7 @@ cards:
                       - entity: device_tracker.flori_mqtt             
                   - type: entities
                     entities:
-                      - entity: input_boolean.besuch_flori
+                      - entity: input_boolean.anwesenheit_flori
                         name: Flori                                          
 
   - type: entities
@@ -183,7 +183,25 @@ cards:
           secondary_info: "[[ if(binary_sensor.schlechtes_wetter.state == 'on', '<b style='color:red'>Schlechtes Wetter</b>', '') ]]"        
         - entity: input_datetime.arbeit_beginn
           name: Arbeitsbeginn    
-               
+                         
+  - type: conditional
+    view_layout:
+      column: 3  
+    conditions:
+      - entity: binary_sensor.info_schule_anzeigen 
+        state: "on"        
+    card:
+      type: entities
+      title: Schule
+      show_header_toggle: false
+      entities:
+        - entity: sensor.fahrzeit_schule_duration_in_traffic
+        - type: divider
+        - entity: sensor.abfahrtzeit_schule_wegbringen       
+          name: Abfahrtzeit
+        - entity: input_datetime.schule_beginn
+          name: Schulbeginn   
+          
   - type: conditional
     conditions:
       - entity: calendar.borussia_dortmund

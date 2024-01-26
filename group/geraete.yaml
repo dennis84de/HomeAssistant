@@ -10,7 +10,6 @@ alles_ausschalten:
     - light.wohnzimmer_couch
     - light.wohnzimmer_strahler
     - light.wohnzimmer_schrank
-    - light.kinderzimmer_lampe
     - light.arbeitszimmer_regal
     - light.kinderzimmer_licht
     - light.flur_vorne
@@ -30,7 +29,6 @@ steckdosen:
     - switch.flur_radio
     - switch.badezimmer_radio
     - switch.kueche_radio
-    - switch.balkon_lichterkette
     - switch.schlafzimmer_fernseher
     - switch.waschmaschine
     - switch.trockner
@@ -38,7 +36,6 @@ steckdosen:
     - switch.wohnzimmer_couch
     - switch.wohnzimmer_radio
     - switch.wohnzimmer_schrank
-    - switch.kinderzimmer_lampe
     - switch.arbeitszimmer_radio
     - switch.arbeitszimmer_ladegerat
     - switch.arbeitszimmer_monitore

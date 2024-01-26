@@ -14,9 +14,7 @@ cards:
       - entity: light.wohnzimmer_strahler
         name: Strahler
       - entity: light.wohnzimmer_schrank
-        name: Schrank        
-      - entity: light.leuchtstern
-        name: Leuchtstern       
+        name: Schrank          
         
   - type: entities
     title: Mediaplayer
@@ -58,9 +56,7 @@ cards:
       - entity: binary_sensor.bewegungsmelder_balkon
         name: Bewegungsmelder
       - entity: light.balkon_licht
-        name: Licht     
-      - entity: light.balkon_lichterkette
-        name: Lichterkette              
+        name: Licht                
       - entity: switch.balkon_radio
         name: Radio
       - type: custom:mini-media-player
@@ -130,15 +126,16 @@ cards:
           - entity: sensor.wohnzimmer_perception
             name: Klima   
            
+   
   - type: custom:stack-in-card
     view_layout:
-      column: 3    
-    cards:
+      column: 3      
+    cards:                        
       - type: horizontal-stack
-        title: Pflanze
+        title: Pflanzen
         cards:
           - type: custom:mini-graph-card
-            name: Feuchtigkeit
+            name: Pflanze
             line_width: 3
             animate: true
             hour24: true
@@ -149,7 +146,7 @@ cards:
             entities:
               - entity: sensor.pflanze_wohnzimmer_feuchtigkeit
           - type: custom:mini-graph-card
-            name: Leitfähigkeit
+            name: Orchidee
             line_width: 3
             animate: true
             hour24: true
@@ -158,7 +155,7 @@ cards:
               icon: false
               points: false
             entities:
-              - entity: sensor.pflanze_wohnzimmer_leitfaehigkeit
+              - entity: sensor.orchidee_wohnzimmer_feuchtigkeit                                                  
               
 #  - type: conditional
 #    conditions:

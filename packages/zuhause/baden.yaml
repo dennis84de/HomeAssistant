@@ -21,7 +21,6 @@ automation:
           args:
             click_type: single           
     condition:
-      - "{{ is_state('binary_sensor.besuch', 'off') }}"
       - "{{ is_state('binary_sensor.baden_aktiv', 'off') }}"
       - "{{ is_state('binary_sensor.schlafen_aktiv', 'off') }}"
       - "{{ is_state('binary_sensor.allein_zu_hause', 'on') }}"
@@ -31,8 +30,6 @@ automation:
           echo: "badezimmer"
           message: "Alle Geräte werden ausgeschaltet. Viel Spaß beim Baden."
       - parallel:           
-          - service: entity_controller.enable_stay_mode
-            entity_id: entity_controller.bewegung_badezimmer
           - service: light.turn_on
             entity_id: light.badezimmerschrank        
           - service: input_boolean.turn_on
@@ -63,9 +60,7 @@ automation:
           message: "Alle Geräte werden wieder eingeschaltet."     
       - parallel:           
           - service: input_boolean.turn_off
-            entity_id: input_boolean.baden_aktiv
-          - service: entity_controller.disable_stay_mode
-            entity_id: entity_controller.bewegung_badezimmer       
+            entity_id: input_boolean.baden_aktiv   
           - service: light.turn_off
             entity_id: light.badezimmerschrank
           - service: switch.turn_on

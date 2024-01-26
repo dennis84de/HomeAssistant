@@ -131,12 +131,25 @@ cards:
   - type: glance
     title: Bewegungsmelder
     show_header_toggle: false
+    view_layout:
+      column: 2    
     entities:
       - entity: binary_sensor.bewegungsmelder_schlafzimmer       
         name: Schlafzimmer
       - entity: binary_sensor.bewegungsmelder_bett
         name: Bett        
       
+  - type: glance
+    title: Kleiderschrank
+    show_header_toggle: false
+    view_layout:
+      column: 2    
+    entities:
+      - entity: binary_sensor.kleiderschrank_links       
+        name: Tür links
+      - entity: binary_sensor.kleiderschrank_rechts
+        name: Tür rechts   
+        
   - type: glance
     title: Sensoren
     show_header_toggle: false

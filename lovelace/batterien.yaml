@@ -60,6 +60,10 @@ cards:
         name: Cube
       - entity: sensor.helligkeit_balkon_battery_level
         name: Helligkeit
+      - entity: sensor.kleiderschrank_links_battery_level
+        name: Kleiderschrank links
+      - entity: sensor.kleiderschrank_rechts_battery_level
+        name: Kleiderschrank rechts        
 
   - type: custom:battery-state-card
     title: Schalter
@@ -110,8 +114,6 @@ cards:
         name: Balkon        
       - entity: sensor.thermometer_arbeitszimmer_battery_level
         name: Arbeitszimmer
-      - entity: sensor.thermometer_hardware_battery_level
-        name: Hardware
         
   - type: custom:battery-state-card
     title: Bewegungsmelder
@@ -215,7 +217,7 @@ cards:
     entities:
       - entity: sensor.pflanze_wohnzimmer_battery_level       
         name: Pflanze Wohnzimmer
-      - entity: sensor.pflanze_kinderzimmer_battery_level       
-        name: Pflanze Kinderzimmer  
+      - entity: sensor.orchidee_wohnzimmer_battery_level       
+        name: Orchidee Wohnzimmer  
       - entity: sensor.drucker_battery_level
         name: Switchbot Drucker                

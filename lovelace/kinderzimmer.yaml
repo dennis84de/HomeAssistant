@@ -10,7 +10,6 @@ cards:
     show_header_toggle: false
     entities:
       - entity: light.kinderzimmer_licht
-      - entity: light.kinderzimmer_lampe
       
   - type: thermostat
     entity: climate.heizung_kinderzimmer
@@ -67,31 +66,3 @@ cards:
         name: Fenster      
       - entity: binary_sensor.bewegungsmelder_kinderzimmer
         name: Bewegungsmelder
-               
-  - type: custom:stack-in-card
-    cards:
-      - type: horizontal-stack
-        title: Pflanze
-        cards:
-          - type: custom:mini-graph-card
-            name: Feuchtigkeit
-            line_width: 3
-            animate: true
-            hour24: true
-            show:
-              fill: false
-              icon: false
-              points: false
-            entities:
-              - entity: sensor.pflanze_kinderzimmer_feuchtigkeit
-          - type: custom:mini-graph-card
-            name: Leitfähigkeit
-            line_width: 3
-            animate: true
-            hour24: true
-            show:
-              fill: false
-              icon: false
-              points: false
-            entities:
-              - entity: sensor.pflanze_kinderzimmer_leitfaehigkeit               

@@ -68,6 +68,19 @@ switch:
                   - service: media_player.turn_off
                     entity_id: media_player.soundbar    
      
+automation:
+  - alias: "Fernseher eingeschaltet - Radio ausschalten"
+    id: "fernseher_eingeschaltet_radio_ausschalten"
+    trigger:
+      - platform: state
+        entity_id: switch.watchtv_wohnzimmer
+        to: 'on' 
+    condition:    
+      - "{{ is_state('switch.wohnzimmer_radio', 'on') }}"      
+    action:    
+      - service: switch.turn_off
+        entity_id: switch.wohnzimmer_radio
+            
 homeassistant:
   customize:
     media_player.soundbar:

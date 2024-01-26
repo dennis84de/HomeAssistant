@@ -82,8 +82,7 @@ automation:
           - 'talking'      
     condition:
       - "{{ is_state('person.dennis', 'home') }}"
-      - "{{ is_state('binary_sensor.allein_zu_hause', 'on') }}"
-      - "{{ is_state('binary_sensor.besuch', 'off') }}"
+      - "{{ is_state('binary_sensor.allein_zu_hause', 'on') }}"      
     action:
       - service: input_boolean.turn_on
         entity_id: input_boolean.multimedia_pausiert
@@ -168,15 +167,12 @@ automation:
       - platform: state
         entity_id: sensor.handy
         to: 'ringing'                 
-    condition:
-      - "{{ is_state('binary_sensor.nicht_stoeren', 'off') }}" 
-    action:
+    action:      
       - service: !secret tts_service
         data:
           message: >-                   
             {% if state_attr('sensor.handy', 'caller') != '0' 
-              and state_attr('sensor.handy', 'caller') != '-'    
-              and is_state('binary_sensor.besuch', 'off')
+              and state_attr('sensor.handy', 'caller') != '-'                  
               and not is_state_attr('sensor.handy', 'caller', None) 
               and not state_attr('sensor.handy', 'caller').startswith('+')
             %}
@@ -211,12 +207,10 @@ automation:
       - platform: state
         entity_id: binary_sensor.handy_sms
         to: 'on'
-    condition:
-      - "{{ is_state('binary_sensor.nicht_stoeren', 'off') }}"
     action:
       - choose:
-          - conditions:
-              - "{{ is_state('binary_sensor.besuch', 'on') }}"
+          - conditions:              
+              - "{{ is_state('binary_sensor.allein_zu_hause', 'off') }}"                               
             sequence:
               - service: !secret tts_service
                 data:

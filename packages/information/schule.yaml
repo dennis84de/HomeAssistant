@@ -1,0 +1,104 @@
+input_select:
+  schule_puffer:
+    name: Puffer
+    options:
+      - "10"
+      - "20"
+      - "30"
+    icon: mdi:timelapse      
+    
+input_datetime:
+  schule_beginn:
+    name: Schule Beginn
+    has_date: false
+    has_time: true
+    icon: mdi:timer
+    
+  schule_ende:
+    name: Schule Ende
+    has_date: false
+    has_time: true
+    icon: mdi:timer
+    
+template:
+  - binary_sensor:
+      - name: "Schultag"
+        unique_id: schultag
+        state: >
+          {% set wochentag = now().weekday() in (0,1,2,3,4) %}
+          {% set keineFerien = is_state('calendar.ferien', 'off') %}
+          {% set schule = is_state('calendar.franzi_keine_schule', 'off') %}         
+
+          {{ wochentag and keineFerien and schule }}          
+           
+      - name: "Info Schule anzeigen"
+        unique_id: info_schule_anzeigen
+        state: >
+          {% set istSchultag = is_state('binary_sensor.schultag', 'on') %}
+          {% set vorSchulbeginn = now() < now().replace(hour=state_attr('input_datetime.schule_beginn', 'hour'), minute=state_attr('input_datetime.schule_beginn', 'minute')) %}         
+
+          {{ istSchultag and vorSchulbeginn }}          
+          
+  - sensor:
+      - name: "Abfahrtzeit Schule wegbringen"
+        unique_id: abfahrtzeit_schule_wegbringen
+        state: >
+          {% set fahrzeitMinuten = states('sensor.fahrzeit_schule_duration_in_traffic') | int(0) %}
+          {% set beginnMinuten = (state_attr('input_datetime.schule_beginn', 'timestamp') / 60) | int(0) %}
+          {% set pufferMinuten = states('input_select.schule_puffer') | int(0) %}
+
+          {% set abfahrzeitMinuten = beginnMinuten - fahrzeitMinuten - pufferMinuten %}
+          {% set stundeAbfahrt = (abfahrzeitMinuten / 60) | int(0) %}
+          {% set minuteAbfahrt = (abfahrzeitMinuten - stundeAbfahrt * 60) | int(0) %}
+          {% set uhrzeitAbfahrt = "%0.02d:%0.02d" | format(stundeAbfahrt, minuteAbfahrt ) %}
+
+          {{ uhrzeitAbfahrt }}
+          
+      - name: "Abfahrtzeit Schule abholen"
+        unique_id: abfahrtzeit_schule_abholen
+        state: >
+          {% set fahrzeitMinuten = states('sensor.fahrzeit_schule_duration_in_traffic') | int(0) %}
+          {% set endeMinuten = (state_attr('input_datetime.schule_ende', 'timestamp') / 60) | int(0) %}
+          {% set pufferMinuten = states('input_select.schule_puffer') | int(0) %}
+
+          {% set abfahrzeitMinuten = endeMinuten - fahrzeitMinuten - pufferMinuten %}
+          {% set stundeAbfahrt = (abfahrzeitMinuten / 60) | int(0) %}
+          {% set minuteAbfahrt = (abfahrzeitMinuten - stundeAbfahrt * 60) | int(0) %}
+          {% set uhrzeitAbfahrt = "%0.02d:%0.02d" | format(stundeAbfahrt, minuteAbfahrt ) %}
+
+          {{ uhrzeitAbfahrt }}
+          
+automation:             
+  - alias: 'Benachrichtigung Schule'
+    id: "benachrichtigung_schule"
+    trigger:
+      - id: wegbringen
+        platform: template
+        value_template: '{{ states("sensor.time") == states("sensor.abfahrtzeit_schule_wegbringen") }}'
+      - id: abholen
+        platform: template
+        value_template: '{{ states("sensor.time") == states("sensor.abfahrtzeit_schule_abholen") }}'        
+    condition:
+      - "{{ is_state('binary_sensor.schultag', 'on') }}"
+      - condition: or
+        conditions:
+          - "{{ trigger.id == 'wegbringen' }}"
+          - condition: template
+            value_template: >-
+              {% set naechstesPapaWochenende = (as_timestamp(state_attr('calendar.franzi_papa_wochenende', 'start_time'))) | timestamp_custom('%Y-%m-%d', True) %}
+              {% set Heute = as_timestamp(now()) | timestamp_custom('%Y-%m-%d', True) %}
+
+              {{ naechstesPapaWochenende != Heute }}  
+    action:
+      - if: "{{ trigger.id == 'wegbringen' }}"
+        then:
+          - service: !secret tts_service            
+            data:
+              echo: "wohnzimmer"
+              message: >-
+                "Es ist Zeit zur Schule zu fahren. Die aktuelle Fahrzeit beträgt {{ states('sensor.fahrzeit_schule_duration_in_traffic') }} Minuten."
+        else:
+          - service: !secret tts_service
+            data:
+              message: >-
+                "Es ist Zeit Franzi abzuholen. Die aktuelle Fahrzeit beträgt {{ states('sensor.fahrzeit_schule_duration_in_traffic') }} Minuten."          

@@ -14,7 +14,9 @@ cards:
       - entity: switch.arbeitszimmer_radio
         name: Radio            
       - entity: switch.arbeitszimmer_monitore
-        name: Monitore        
+        name: Monitore     
+      - entity: switch.babyphone
+        name: Babyphone             
       
   - type: entities
     title: Licht

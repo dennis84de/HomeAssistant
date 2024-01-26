@@ -54,26 +54,6 @@ automation:
     action:
       - service: light.toggle
         entity_id: light.wohnzimmer_schrank
-
-  - alias: "Weihnachtsbeleuchtung"
-    id: "weihnachtsbeleuchtung"
-    trigger:
-      - platform: state
-        entity_id: binary_sensor.weihnachtsbeleuchtung        
-    condition:     
-      - condition: or
-        conditions:       
-          - "{{ states('sensor.personen_zu_hause')|int(0) > 0 }}"
-          - "{{ trigger.to_state.state == 'off' }}"
-    action:
-      - if: "{{ trigger.to_state.state == 'on' }}"
-        then:
-          - service: light.turn_on
-            entity_id: light.leuchtstern, light.balkon_lichterkette
-      - if: "{{ trigger.to_state.state == 'off' }}"
-        then:
-          - service: light.turn_off
-            entity_id: light.leuchtstern, light.balkon_lichterkette
             
 homeassistant:
   customize:

@@ -4,7 +4,7 @@ binary_sensor:
       bewegungsmelder_inaktiv_unterwegs:
         friendly_name: "Bewegungmelder inaktiv - Unterwegs"
         device_class: occupancy
-        value_template: "{{ not is_state('person.dennis', 'home') }}"
+        value_template: "{{ not is_state('person.dennis', 'home') and not is_state('person.natalie', 'home') }}"
           
 script:      
   alles_ausschalten:
@@ -53,11 +53,7 @@ script:
           - if: "{{ is_state('media_player.uberall', 'playing') }}"
             then:
               - service: media_player.media_pause
-                entity_id: media_player.uberall        
-          - if: "{{ is_state('person.flori', 'home') and is_state('binary_sensor.sonne_tagsueber', 'off') }}"
-            then:
-              - service: light.turn_on
-                entity_id: light.wohnzimmer_strahler                              
+                entity_id: media_player.uberall                                   
           - service: alarmo.arm
             data:
               entity_id: alarm_control_panel.alarmo
@@ -109,6 +105,32 @@ automation:
     action:           
       - service: script.alles_ausschalten   
   
+  - alias: "Unterwegs - Alarm nicht eingeschaltet"
+    id: "unterwegs_alarm_nicht_eingeschaltet"
+    trigger:
+      - platform: state
+        entity_id: person.dennis
+        to: 'not_home'
+        for:
+          minutes: 15
+      - platform: state
+        entity_id: person.natalie
+        to: 'not_home'
+        for:
+          minutes: 15          
+    condition:
+      - "{{ not is_state('alarm_control_panel.alarmo', 'armed_away') }}"          
+      - "{{ is_state('person.dennis', 'not_home') }}"
+      - "{{ is_state('person.natalie', 'not_home') }}"
+    action:
+      - service: notify.telegram
+        data:
+          title: "Alarm nicht eingeschaltet"
+          message: "Es ist keiner zu Hause und der Alarm ist nicht eingeschaltet."
+          data:
+            inline_keyboard:
+              - 'Alarm einschalten:/alarm_einschalten'
+              
   - alias: "Unterwegs - Geräte eingeschaltet"
     id: "unterwegs_geraete_eingeschaltet"
     trigger:
@@ -116,8 +138,9 @@ automation:
         entity_id: person.dennis
         to: 'not_home'
         for:
-          minutes: 60
+          minutes: 30
     condition:
+      - "{{ is_state('person.natalie', 'not_home') }}"     
       - condition: template
         value_template: >-
           {% set ns = namespace(found=0) -%}
@@ -137,8 +160,7 @@ automation:
             False
           {% else %}
             True
-          {% endif %}  
-          
+          {% endif %}            
     action:
       - service: notify.telegram
         data:
@@ -189,7 +211,8 @@ automation:
       - choose:
           - conditions:
               - "{{ is_state('group.alles_ausschalten', 'on') }}"
-              - "{{ not is_state('person.dennis', 'home') }}"
+              - "{{ is_state('person.dennis', 'not_home') }}"
+              - "{{ is_state('person.natalie', 'not_home') }}"
             sequence:                       
               - service: notify.telegram
                 data:
@@ -200,7 +223,8 @@ automation:
       - choose:
           - conditions:
               - "{{ not is_state('alarm_control_panel.alarmo', 'armed_away') }}"
-              - "{{ not is_state('person.dennis', 'home') }}"
+              - "{{ is_state('person.dennis', 'not_home') }}"
+              - "{{ is_state('person.natalie', 'not_home') }}"
               - "{{ is_state('vacuum.staubsauger', 'docked') }}"
             sequence:                       
               - service: notify.telegram
