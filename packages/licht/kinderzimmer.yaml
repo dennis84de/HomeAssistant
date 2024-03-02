@@ -32,11 +32,11 @@ automation:
         platform: state
         entity_id: binary_sensor.licht_kinderzimmer 
         to: 'off'
-    condition:     
-      - "{{ states('light.kinderzimmer_licht') != trigger.to_state.state }}"      
+    condition:           
+      - "{{ states('light.kinderzimmer_licht') != trigger.to_state.state }}"
       - condition: or
         conditions:
-          - "{{ is_state('person.franzi', 'home') }}"
+          - "{{ is_state('person.franzi', 'home') and (is_state('person.dennis', 'home') or is_state('person.natalie', 'home')) }}"
           - "{{ trigger.id == 'licht_aus'  }}"
     action:                
       - if: "{{ trigger.id == 'licht_an' }}"

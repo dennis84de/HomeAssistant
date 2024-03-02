@@ -12,8 +12,7 @@ heimnetz:
     - device_tracker.tasmotawohnzimmerradio
     - device_tracker.tasmotawohnzimmerstrahler         
     - device_tracker.tasmotawohnzimmercouch   
-    - device_tracker.tasmotaarbeitszimmerladegeraet      
-    - device_tracker.tasmotaarbeitszimmermonitore  
+    - device_tracker.tasmotaarbeitszimmerladegeraet  
     - device_tracker.tasmotaarbeitszimmerradio
     - device_tracker.tasmotaarbeitszimmerregal
     - device_tracker.tasmotabalkonradio      

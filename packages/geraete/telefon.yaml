@@ -106,7 +106,6 @@ automation:
         entity_id: sensor.telefon
         to: 'dialing'
     condition:
-      - "{{ is_state('person.dennis', 'home') }}"
       - "{{ is_state('binary_sensor.allein_zu_hause', 'on') }}"   
     action:
       - service: input_boolean.turn_on

@@ -31,10 +31,20 @@ script:
             {% set p2 = 'ist' if qty == 1 else 'sind' %}
             {% set windowMessage = '' if qty == 0 else '{} Fenster {} geöffnet: {}.'.format(p1, p2, openWindows | join(', ')) %}
             
-            {{ vacuumMessage }} {{ windowMessage }} Alle Geräte werden ausgeschaltet. Auf Wiedersehen.
+            {% set goodbyeMessage = [
+                "Auf Wiedersehen", 
+                "Bis später", 
+                "Tschau Kakao", 
+                "Ich wünsche euch einen schönen Tag"
+                ] | random 
+            %}
+                       
+            {{ vacuumMessage }} {{ windowMessage }} Alle Geräte werden ausgeschaltet. {{ goodbyeMessage }}.
       - parallel:          
           - service: homeassistant.turn_off
-            entity_id: group.alles_ausschalten            
+            entity_id: group.alles_ausschalten      
+          - service: input_boolean.turn_on
+            entity_id: input_boolean.geraete_einschalten
           - service: mqtt.publish
             data:
                topic: 'handy/location'
@@ -212,7 +222,6 @@ automation:
           - conditions:
               - "{{ is_state('group.alles_ausschalten', 'on') }}"
               - "{{ is_state('person.dennis', 'not_home') }}"
-              - "{{ is_state('person.natalie', 'not_home') }}"
             sequence:                       
               - service: notify.telegram
                 data:

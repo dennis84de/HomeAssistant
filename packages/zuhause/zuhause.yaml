@@ -7,6 +7,9 @@ input_select:
       - Handy      
 
 input_boolean:
+  geraete_einschalten:
+    name: "Geräte einschalten"
+  
   anwesenheit_franzi:
     name: "Anwesenheit Franzi"
     icon: mdi:human-child   
@@ -178,7 +181,7 @@ script:
 
                   {% for x in expand('group.pflanzen') if x.state|int(100) < flower_warn_level %}
                     {%- if not loop.first %}, {% endif -%}
-                    {{- x.name.split(' ')[1] -}}
+                    {{- x.name.split(' ')[0] -}}
                   {% endfor %}                       
                 {% endif %}
 
@@ -202,8 +205,8 @@ script:
                 {% endif %}
             
 automation:     
-  - alias: "Zu Hause - Alarm auschalten"
-    id: "zu_hause_alarm_auschalten"
+  - alias: "Zu Hause - Alarm ausschalten"
+    id: "zu_hause_alarm_ausschalten"
     trigger:
       - platform: state
         entity_id: person.dennis
@@ -243,6 +246,7 @@ automation:
             click_type: double   
     condition:    
       - "{{ is_state('binary_sensor.schlafen_aktiv', 'off') }}"
+      - "{{ is_state('input_boolean.geraete_einschalten', 'on') }}"
       - condition: template
         value_template: >-
           {% set now = as_timestamp(now()) %}
@@ -288,7 +292,9 @@ automation:
               - service: input_number.set_value        
                 data:
                   entity_id: input_number.home_office_heute_gearbeitet
-                  value: 0                 
+                  value: 0             
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.geraete_einschalten                  
                
   - alias: "Zu Hause - Tür geöffnet"
     id: "zu_hause_tuer_geoeffnet"
@@ -374,6 +380,8 @@ automation:
         {% else %}
           {{ 'not_home' if trigger.to_state.state == 'on' else 'home' }}
         {% endif %}
+    condition:        
+      - "{{ aktion != states('device_tracker.franzi_mqtt') }}"          
     action:      
       - service: mqtt.publish
         data:
@@ -387,7 +395,11 @@ automation:
         else:             
           - service: input_boolean.turn_off
             entity_id: input_boolean.anwesenheit_franzi   
-            
+      - if: "{{ trigger.id == 'calendar' and aktion == 'home' and is_state('binary_sensor.licht_kinderzimmer', 'on') }}"
+        then:                 
+          - service: light.turn_on
+            entity_id: light.kinderzimmer_licht         
+                 
   - alias: "Flori - Anwesenheit"
     id: "flori_anwesenheit"
     trigger:

@@ -39,6 +39,29 @@ switch:
                     entity_id: button.computer_herunterfahren
     
 automation:
+#  - alias: "Computer inaktiv"
+#    id: "computer_inaktiv"
+#    trigger:
+#      - platform: template
+#        value_template: >-
+#          {% set letzteAktivitaet = as_timestamp(states('sensor.computer_computer_letzte_aktivitaet'))|int(0) %}
+#          {% set jetzt = now().timestamp()|int(0) %}
+#
+#          {{ letzteAktivitaet }}
+#          {{ jetzt }}
+#
+#          {{ (jetzt - letzteAktivitaet) > 1800 }}
+#    condition:
+#      - "{{ is_state('binary_sensor.home_office_aktiv', 'off') }}"       
+#      - "{{ is_state('switch.computer', 'on') or is_state('switch.arbeitszimmer_monitore', 'on') }}"
+#    action:
+#      - service: switch.turn_off
+#        entity_id: switch.arbeitszimmer_monitore      
+#      - if: "{{ not is_state('input_select.computer_ausschalten', 'Nichts unternehmen') }}"
+#        then:         
+#          - service: switch.turn_off
+#            entity_id: switch.computer
+
   - alias: "Unterwegs - Computer ausschalten"
     id: "unterwegs_computer_ausschalten"
     trigger:

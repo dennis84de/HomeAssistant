@@ -75,20 +75,20 @@ cards:
       - value: 30 
         color: "yellow"    
     entities:
-      - entity: sensor.schalter_wohnzimmer_battery_level       
-        name: Wohnzimmer
+      - entity: sensor.schalter_wohnzimmer_battery_level        
+        name: Wohnzimmer              
       - entity: sensor.schalter_flur_battery_level        
         name: Flur
       - entity: sensor.schalter_balkon_battery_level        
         name: Balkon
-      - entity: sensor.schalter_bett_battery_level        
-        name: Bett
-      - entity: sensor.schalter_schlafzimmer_battery_level        
-        name: Schlafzimmer        
       - entity: sensor.schalter_arbeitszimmer_battery_level        
-        name: Arbeitszimmer
+        name: Arbeitszimmer  
       - entity: sensor.schalter_badezimmer_battery_level        
         name: Badezimmer
+      - entity: sensor.schalter_bett_links_battery_level       
+        name: Bett links
+      - entity: sensor.schalter_bett_rechts_battery_level        
+        name: Bett rechts              
 
   - type: custom:battery-state-card
     title: Thermometer

@@ -5,10 +5,15 @@ layout:
   width: 400
   max_cols: 3          
 cards:
-  - type: weather-forecast
+#  - type: weather-forecast
+#    entity: weather.wetter_dortmund
+#    forecast_type: daily
+    
+  - type: custom:weather-chart-card
     entity: weather.wetter_dortmund
-    forecast_type: daily
-
+    forecast:
+      style: style2
+  
   - type: markdown
     title: Wetterwarnungen
     content: >-      

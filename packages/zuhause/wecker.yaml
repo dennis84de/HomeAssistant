@@ -121,7 +121,7 @@ script:
 
               {% for x in expand('group.pflanzen') if x.state|int(100) < flower_warn_level %}
                 {%- if not loop.first %}, {% endif -%}
-                {{- x.name.split(' ')[1] -}}
+                {{- x.name.split(' ')[0] -}}
               {% endfor %}                       
             {% endif %}
                 

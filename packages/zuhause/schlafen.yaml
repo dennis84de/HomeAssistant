@@ -77,7 +77,16 @@ script:
       - service: !secret tts_service
         data:
           echo: "wohnzimmer"
-          message: "Alle Geräte werden jetzt ausgeschaltet. Gute Nacht."
+          message: >-
+            {% set text = [
+                "Gute Nacht", 
+                "Schlaft gut", 
+                "Schöne Träume", 
+                "Bis morgen früh"
+                ] | random 
+            %}
+            
+            {{ "Alle Geräte werden jetzt ausgeschaltet. " ~ text ~ "." }}
       - delay: '00:00:02'
       - service: input_boolean.turn_on
         entity_id: input_boolean.schlafen_einschalten_aktiv
@@ -133,15 +142,13 @@ automation:
       - platform: state
         entity_id: binary_sensor.im_bett
         to: 'on'      
-      - platform: event
+      - platform: event    
         event_type: zha_event
         event_data:
-          device_ieee: 00:15:8d:00:02:13:45:68
-          command: attribute_updated
+          device_ieee: 00:15:8d:00:01:83:77:4a
+          command: click
           args:
-            attribute_id: 0
-            attribute_name: on_off     
-            value: 1        
+            click_type: single                
     condition:      
       - "{{ is_state('input_boolean.schlafen_einschalten_aktiv', 'on') }}"
     action:
@@ -239,10 +246,8 @@ automation:
         platform: event
         event_type: zha_event
         event_data:
-          device_ieee: 00:15:8d:00:02:c8:c4:8b
-          command: click
-          args:
-            click_type: double      
+          device_ieee: 00:12:4b:00:29:2b:72:4b
+          command: toggle   
     condition:
       - "{{ is_state('binary_sensor.schlafen_aktiv', 'off') }}"
       - "{{ is_state('binary_sensor.nachts', 'on') }}"

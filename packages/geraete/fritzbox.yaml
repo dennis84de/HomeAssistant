@@ -235,8 +235,6 @@ homeassistant:
       friendly_name: Tasmota Wohnzimmer Strahler   
     device_tracker.tasmotaarbeitszimmerladegeraet:
       friendly_name: Tasmota Arbeitszimmer Ladegerät
-    device_tracker.tasmotaarbeitszimmermonitore:
-      friendly_name: Tasmota Arbeitszimmer Monitore
     device_tracker.tasmotabalkonradio:
       friendly_name: Tasmota Balkon Radio
     device_tracker.tasmotakuechenschrank:

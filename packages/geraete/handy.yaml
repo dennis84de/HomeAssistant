@@ -10,13 +10,6 @@ device_tracker:
     token: !secret phonetrack_token
     devices:
       - Handy_GPS
-      
-proximity:
-  home:
-    devices:      
-      - device_tracker.handy_gps
-      - device_tracker.handy
-    tolerance: 50
         
 mqtt:
   binary_sensor:
@@ -81,7 +74,6 @@ automation:
           - 'ringing'          
           - 'talking'      
     condition:
-      - "{{ is_state('person.dennis', 'home') }}"
       - "{{ is_state('binary_sensor.allein_zu_hause', 'on') }}"      
     action:
       - service: input_boolean.turn_on

@@ -104,15 +104,13 @@ automation:
         for:
           seconds: 1       
       - id: play_pause
-        platform: event
+        platform: event    
         event_type: zha_event
         event_data:
-          device_ieee: 00:15:8d:00:02:13:45:68
-          command: attribute_updated
+          device_ieee: 00:15:8d:00:01:83:77:4a
+          command: click
           args:
-            attribute_id: 0
-            attribute_name: on_off     
-            value: 1
+            click_type: single          
     condition:
       - "{{ trigger.id != 'pause' or is_state('input_boolean.multimedia_schlafzimer_pausiert', 'off') }}"
       - "{{ is_state('binary_sensor.schlafen_aktiv', 'on') }}"
@@ -154,15 +152,13 @@ automation:
     id: "schlafzimmer_fernseher_ausschalten"
     trigger:
       - id: schalter_bett
-        platform: event
+        platform: event    
         event_type: zha_event
         event_data:
-          device_ieee: 00:15:8d:00:02:13:45:68
-          command: attribute_updated
+          device_ieee: 00:15:8d:00:01:83:77:4a
+          command: click
           args:
-            attribute_id: 32768
-            attribute_name: Unknown     
-            value: 3
+            click_type: triple          
     condition:
       - condition: state
         entity_id: input_boolean.timer_schlafzimmer_aktiv

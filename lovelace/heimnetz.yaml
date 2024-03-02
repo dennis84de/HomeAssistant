@@ -59,8 +59,6 @@ cards:
         name: Wohnzimmer Schrank       
       - entity: device_tracker.tasmotaarbeitszimmerladegeraet
         name: Arbeitszimmer Ladegerät
-      - entity: device_tracker.tasmotaarbeitszimmermonitore
-        name: Arbeitszimmer Monitore    
       - entity: device_tracker.tasmotaarbeitszimmerradio
         name: Arbeitszimmer Radio      
       - entity: device_tracker.tasmotaarbeitszimmerregal
