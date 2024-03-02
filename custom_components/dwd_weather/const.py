@@ -1,4 +1,5 @@
 """Constants for the DWD Weather integration."""
+
 from datetime import timedelta
 
 from homeassistant.const import Platform
@@ -13,7 +14,7 @@ PLATFORMS = [
     Platform.SENSOR,
     Platform.WEATHER,
 ]
-INTEGRATION_VERSION = "v2.1.1"
+INTEGRATION_VERSION = "v2.1.2"
 MIN_REQUIRED_HA_VERSION = "2023.09.1"
 
 ATTR_LATEST_UPDATE = "latest_update_utc"
