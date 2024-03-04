@@ -85,7 +85,7 @@ const locale = {
       'in': 'in'
     },
     'cardinalDirections': [
-      'N', 'N-NO', 'NO', 'E-NO', 'O', 'O-SO', 'SO', 'S-SO',
+      'N', 'N-NO', 'NO', 'O-NO', 'O', 'O-SO', 'SO', 'S-SO',
       'S', 'S-SW', 'SW', 'W-SW', 'W', 'W-NW', 'NW', 'N-NW', 'N'
     ],
     'clear-night': 'Sternenklar',
@@ -1325,6 +1325,20 @@ class WeatherCardEditor extends s {
               </label>
             </div>
           </div>
+            <div class="flex-container" style="${this._config.show_time ? 'display: flex;' : 'display: none;'}">
+              <ha-textfield
+                label="Time text size"
+                type="number"
+                .value="${this._config.time_size || '26'}"
+                @change="${(e) => this._valueChanged(e, 'time_size')}"
+              ></ha-textfield>
+              <ha-textfield
+                label="Day and date text size"
+                type="number"
+                .value="${this._config.day_date_size || '15'}"
+                @change="${(e) => this._valueChanged(e, 'day_date_size')}"
+              ></ha-textfield>
+              </div>
             <div class="icon-container">
               <div class="switch-right">
                 <ha-switch
@@ -1441,19 +1455,15 @@ class WeatherCardEditor extends s {
               Rounding Temperatures
             </label>
           </div>
-	  <div class="textfield-container">
-          <ha-select
-            naturalMenuWidth
-            fixedMenuPosition
-            label="Precipitation Type (Probability if supported by the weather entity)"
-            .configValue=${'forecast.precipitation_type'}
-            .value=${forecastConfig.precipitation_type}
-            @change=${(e) => this._valueChanged(e, 'forecast.precipitation_type')}
-            @closed=${(ev) => ev.stopPropagation()}
-          >
-            <ha-list-item .value=${'rainfall'}>Rainfall</ha-list-item>
-            <ha-list-item .value=${'probability'}>Probability</ha-list-item>
-          </ha-select>
+         <div class="switch-container">
+             <ha-switch
+               @change="${(e) => this._valueChanged(e, 'forecast.show_probability')}"
+               .checked="${forecastConfig.show_probability !== false}"
+             ></ha-switch>
+             <label class="switch-label">
+               Show precipitation probability
+             </label>
+         </div>
           <div class="textfield-container">
             <div class="flex-container">
               <ha-textfield
@@ -17689,7 +17699,7 @@ static getStubConfig(hass, unusedEntities, allEntities) {
     animated_icons: false,
     icon_style: 'style1',
     forecast: {
-      precipitation_type: 'rainfall',
+      show_probability: false,
       labels_font_size: '11',
       precip_bar_size: '100',
       style: 'style1',
@@ -17726,11 +17736,13 @@ setConfig(config) {
     animated_icons: false,
     icon_style: 'style1',
     current_temp_size: 28,
+    time_size: 26,
+    day_date_size: 15,
     show_feels_like: false,
     show_description: false,
     ...config,
     forecast: {
-      precipitation_type: 'rainfall',
+      show_probability: false,
       labels_font_size: 11,
       chart_height: 180,
       precip_bar_size: 100,
@@ -18052,11 +18064,7 @@ drawChart({ config, language, weather, forecastItems } = this) {
   }
   var tempUnit = this._hass.config.unit_system.temperature;
   var lengthUnit = this._hass.config.unit_system.length;
-  if (config.forecast.precipitation_type === 'probability') {
-    var precipUnit = '%';
-  } else {
-    var precipUnit = lengthUnit === 'km' ? this.ll('units')['mm'] : this.ll('units')['in'];
-  }
+  var precipUnit = lengthUnit === 'km' ? this.ll('units')['mm'] : this.ll('units')['in'];
   var forecast = this.forecasts ? this.forecasts.slice(0, forecastItems) : [];
   if (forecast.length >= 3 && new Date(forecast[2].datetime) - new Date(forecast[1].datetime) < 864e5) {
     var mode = 'hourly';
@@ -18082,11 +18090,7 @@ drawChart({ config, language, weather, forecastItems } = this) {
         tempLow[i] = Math.round(tempLow[i]);
       }
     }
-    if (config.forecast.precipitation_type === 'probability') {
-      precip.push(d.precipitation_probability);
-    } else {
-      precip.push(d.precipitation);
-    }
+    precip.push(d.precipitation);
   }
   var style = getComputedStyle(document.body);
   var backgroundColor = style.getPropertyValue('--card-background-color');
@@ -18100,13 +18104,13 @@ drawChart({ config, language, weather, forecastItems } = this) {
 
   const ctx = canvas.getContext('2d');
 
-let precipMax;
+  let precipMax;
 
-if (mode === 'hourly') {
+  if (mode === 'hourly') {
     precipMax = lengthUnit === 'km' ? 4 : 1;
-} else {
+  } else {
     precipMax = lengthUnit === 'km' ? 20 : 1;
-}
+  }
 
   Chart.defaults.color = textColor;
   Chart.defaults.scale.grid.color = dividerColor;
@@ -18147,11 +18151,22 @@ if (mode === 'hourly') {
           return context.dataset.data[context.dataIndex] > 0 ? 'auto' : false;
         },
         formatter: function (value, context) {
-          if (context.dataset.data[context.dataIndex] > 9) {
-            return Math.round(context.dataset.data[context.dataIndex]) + ' ' + precipUnit;
+          const rainfall = context.dataset.data[context.dataIndex];
+          const probability = forecast[context.dataIndex].precipitation_probability;
+
+          let formattedValue;
+          if (probability !== undefined && probability !== null && config.forecast.show_probability) {
+            formattedValue = `${rainfall > 9 ? Math.round(rainfall) : rainfall.toFixed(1)} ${precipUnit}\n${Math.round(probability)}%`;
+          } else {
+            formattedValue = `${rainfall > 9 ? Math.round(rainfall) : rainfall.toFixed(1)} ${precipUnit}`;
           }
-          return context.dataset.data[context.dataIndex].toFixed(1) + ' ' + precipUnit;
+
+          formattedValue = formattedValue.replace('\n', '\n\n');
+
+          return formattedValue;
         },
+        textAlign: 'center',
+        textBaseline: 'middle',
         align: 'top',
         anchor: 'start',
         offset: -8,
@@ -18162,7 +18177,7 @@ if (mode === 'hourly') {
   if (config.forecast.style === 'style2') {
     datasets[0].datalabels = {
       display: function (context) {
-	return 'auto';
+        return 'auto';
       },
       formatter: function (value, context) {
         return context.dataset.data[context.dataIndex] + '°';
@@ -18180,7 +18195,7 @@ if (mode === 'hourly') {
 
     datasets[1].datalabels = {
       display: function (context) {
-	return 'auto';
+        return 'auto';
       },
       formatter: function (value, context) {
         return context.dataset.data[context.dataIndex] + '°';
@@ -18301,16 +18316,19 @@ if (mode === 'hourly') {
                 weekday: 'short',
                 hour: 'numeric',
                 minute: 'numeric',
-		hour12: config.use_12hour_format,
+                hour12: config.use_12hour_format,
               });
             },
             label: function (context) {
               var label = context.dataset.label;
               var value = context.formattedValue;
-              if (context.datasetIndex === 2) {
-                return label + ': ' + value + ' ' + precipUnit;
+              var probability = forecast[context.dataIndex].precipitation_probability;
+              var unit = context.datasetIndex === 2 ? precipUnit : tempUnit;
+              if (context.datasetIndex === 2 && config.forecast.show_probability && probability !== undefined && probability !== null) {
+                return label + ': ' + value + ' ' + precipUnit + ' / ' + Math.round(probability) + '%';
+              } else {
+                return label + ': ' + value + ' ' + unit;
               }
-              return label + ': ' + value + ' ' + tempUnit;
             },
           },
         },
@@ -18345,11 +18363,7 @@ updateChart({ config, language, weather, forecastItems } = this) {
         tempLow[i] = Math.round(tempLow[i]);
       }
     }
-    if (config.forecast.precipitation_type === 'probability') {
-      precip.push(d.precipitation_probability);
-    } else {
-      precip.push(d.precipitation);
-    }
+     precip.push(d.precipitation);
   }
 
   if (this.forecastChart) {
@@ -18434,7 +18448,7 @@ updateChart({ config, language, weather, forecastItems } = this) {
         .conditions {
           display: flex;
           justify-content: space-around;
-          align-items: centery
+          align-items: center;
           margin: 0px 5px 0px 5px;
 	  cursor: pointer;
         }
@@ -18447,7 +18461,7 @@ updateChart({ config, language, weather, forecastItems } = this) {
         .wind-details {
           display: flex;
           justify-content: space-around;
-          align-items: centery
+          align-items: center;
           font-weight: 300;
         }
         .wind-detail {
@@ -18476,10 +18490,10 @@ updateChart({ config, language, weather, forecastItems } = this) {
           position: absolute;
           top: 20px;
           right: 16px;
-          font-size: clamp(19px, 2.5vw, 26px);
+          font-size: ${config.time_size}px;
         }
         .date-text {
-          font-size: 15px;
+          font-size: ${config.day_date_size}px;
           color: var(--secondary-text-color);
         }
         .main .feels-like {
