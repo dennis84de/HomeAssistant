@@ -95,6 +95,24 @@ cards:
                     entities:
                       - entity: input_boolean.anwesenheit_franzi
                         name: Franzi
+                        
+      - entity: person.aaron
+        tap_action:
+          action: fire-dom-event
+          browser_mod:
+            service: browser_mod.popup
+            data:              
+              content:
+                type: custom:stack-in-card
+                cards:
+                  - type: history-graph
+                    entities:          
+                      - entity: device_tracker.aaron_mqtt             
+                  - type: entities
+                    entities:
+                      - entity: input_boolean.anwesenheit_aaron
+                        name: Aaron     
+                        
       - entity: person.flori
         tap_action:
           action: fire-dom-event

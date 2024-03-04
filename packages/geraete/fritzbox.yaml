@@ -222,6 +222,8 @@ homeassistant:
       friendly_name: MagicHome Schlafzimmer
     device_tracker.magichomekinderzimmer:
       friendly_name: MagicHome Kinderzimmer
+    device_tracker.magichomearbeitszimmer:
+      friendly_name: MagicHome Arbeitszimmer      
     device_tracker.magichomebalkon:
       friendly_name: MagicHome Balkon
       

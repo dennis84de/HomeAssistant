@@ -92,7 +92,8 @@ script:
 
                       {{ urlaubStart != urlaubEnde }}      
                 sequence:
-                  - service: presence_simulation.start       
+                  - service: switch.turn_on
+                    entity_id: switch.abwesenheit_urlaub
                   
 automation:
   - alias: "Alles ausschalten"
@@ -351,7 +352,8 @@ automation:
         event_data:
           command: '/licht_ein'
     action:
-      - service: presence_simulation.start
+      - service: switch.turn_on
+        entity_id: switch.abwesenheit_urlaub
       - service: telegram_bot.send_message
         data:
           target: '{{ trigger.event.data.chat_id }}'
@@ -365,7 +367,8 @@ automation:
         event_data:
           command: '/licht_aus'
     action:
-      - service: presence_simulation.stop    
+      - service: switch.turn_off
+        entity_id: switch.abwesenheit_urlaub
       - service: telegram_bot.send_message
         data:
           target: '{{ trigger.event.data.chat_id }}'

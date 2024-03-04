@@ -14,6 +14,10 @@ input_boolean:
     name: "Anwesenheit Franzi"
     icon: mdi:human-child   
 
+  anwesenheit_aaron:
+    name: "Anwesenheit Aaron"
+    icon: mdi:baby
+    
   anwesenheit_natalie:
     name: "Anwesenheit Natalie"
     icon: mdi:human-female   
@@ -32,6 +36,9 @@ mqtt:
     
     - name: "Franzi MQTT"
       state_topic: "presence/franzi"
+      
+    - name: "Aaron MQTT"
+      state_topic: "presence/aaron"
       
     - name: "Flori MQTT"
       state_topic: "presence/flori"
@@ -256,7 +263,8 @@ automation:
           {{ diff >= 10 }}        
     action:         
       - service: script.zu_hause_standort
-      - service: presence_simulation.stop          
+      - service: switch.turn_off
+        entity_id: switch.abwesenheit_urlaub      
       - service: input_select.select_option
         data:
           entity_id: input_select.computer_ausschalten  
@@ -398,8 +406,20 @@ automation:
       - if: "{{ trigger.id == 'calendar' and aktion == 'home' and is_state('binary_sensor.licht_kinderzimmer', 'on') }}"
         then:                 
           - service: light.turn_on
-            entity_id: light.kinderzimmer_licht         
-                 
+            entity_id: light.kinderzimmer_licht                         
+           
+  - alias: "Aaron - Anwesenheit"
+    id: "aaron_anwesenheit"
+    trigger:
+      - platform: state
+        entity_id: input_boolean.anwesenheit_aaron
+    action:      
+      - service: mqtt.publish
+        data:
+           topic: "presence/aaron"
+           payload: "{{ 'home' if trigger.to_state.state == 'on' else 'not_home' }}"
+           retain: true      
+           
   - alias: "Flori - Anwesenheit"
     id: "flori_anwesenheit"
     trigger:
@@ -423,5 +443,7 @@ homeassistant:
       icon: mdi:human-female
     person.franzi:
       icon: mdi:human-child
+    person.franzi:
+      icon: mdi:baby
     person.flori:
       icon: mdi:dog-side         

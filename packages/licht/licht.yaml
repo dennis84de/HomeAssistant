@@ -55,10 +55,10 @@ script:
           - service: light.turn_off
             entity_id: light.kinderzimmer_licht
             
-      - if: "{{ is_state('input_boolean.bewegungsmelder_arbeitszimmer_deaktiviert', 'off') }}"
+      - if: "{{ is_state('input_boolean.bewegungsmelder_arbeitszimmer_deaktiviert', 'off') and is_state('person.aaron', 'not_home') }}"
         then:
           - service: light.turn_off
-            entity_id: light.arbeitszimmer_regal
+            entity_id: light.arbeitszimmer_licht
             
       - if: "{{ is_state('input_boolean.bewegungsmelder_balkon_deaktiviert', 'off') }}"
         then:

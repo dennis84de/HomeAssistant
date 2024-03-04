@@ -30,4 +30,5 @@ heimnetz:
     - device_tracker.magichomeschlafzimmer
     - device_tracker.magichomekinderzimmer
     - device_tracker.magichomebalkon          
+    - device_tracker.magichomearbeitszimmer
     - device_tracker.broadlinkschlafzimmer 

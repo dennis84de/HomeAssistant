@@ -107,6 +107,8 @@ cards:
         name: Schlafzimmer
       - entity: device_tracker.magichomekinderzimmer
         name: Kinderzimmer
+      - entity: device_tracker.magichomearbeitszimmer
+        name: Arbeitszimmer        
       - entity: device_tracker.magichomebalkon
         name: Balkon   
                 

@@ -22,7 +22,10 @@ cards:
     title: Licht
     show_header_toggle: false
     entities:      
-      - entity: light.arbeitszimmer_regal                
+      - entity: light.arbeitszimmer_licht
+        name: Licht
+      - entity: light.arbeitszimmer_regal  
+        name: Regal
           
   - type: custom:stack-in-card
     cards:

@@ -13,63 +13,36 @@ automation:
   - alias: 'Licht Arbeitszimmer'
     id: "licht_arbeitszimmer"
     trigger: 
-      - id: bewegungsmelder
+      - id: licht_on
         platform: state
         entity_id: binary_sensor.bewegungsmelder_arbeitszimmer
         to: 'on'
-      - id: timer
+      - id: licht_off
         platform: event
         event_type: timer.finished
         event_data:
-          entity_id: timer.licht_arbeitszimmer 
-      - id: schalter
-        platform: event
-        event_type: zha_event
-        event_data:
-          device_ieee: 00:15:8d:00:02:13:45:68
-          command: attribute_updated
-          args:
-            attribute_id: 0
-            attribute_name: on_off     
-            value: 1              
+          entity_id: timer.licht_arbeitszimmer
     condition:      
       - condition: or
         conditions:          
-            - "{{ trigger.id == 'timer' }}"            
-            - "{{ trigger.id == 'schalter' }}"
+            - "{{ trigger.id == 'licht_off' }}"        
             - condition: and
               conditions:
                 - "{{ is_state('binary_sensor.sonne_tagsueber', 'off') }}"
-                - "{{ is_state('binary_sensor.home_office_aktiv', 'off') }}"
                 - "{{ is_state('binary_sensor.bewegungsmelder_inaktiv_unterwegs', 'off') }}"
                 - "{{ is_state('binary_sensor.bewegungsmelder_inaktiv_staubsauger', 'off') }}"
-                - "{{ is_state('input_boolean.bewegungsmelder_arbeitszimmer_deaktiviert', 'off') }}"
+                - "{{ is_state('input_boolean.bewegungsmelder_flur_deaktiviert', 'off') }}"
     action:
-      - choose:
-          - conditions:
-              - "{{ trigger.id == 'schalter' and is_state('light.arbeitszimmer_regal', 'off') }}"
-            sequence:                
-              - service: light.turn_on
-                entity_id: light.arbeitszimmer_regal
-          - conditions:
-              - "{{ trigger.id == 'schalter' and is_state('light.arbeitszimmer_regal', 'on') }}"
-            sequence:                
-              - service: light.turn_off
-                entity_id: light.arbeitszimmer_regal          
-              - service: timer.cancel
-                entity_id: timer.licht_arbeitszimmer                
-          - conditions:
-              - "{{ trigger.id == 'bewegungsmelder' and is_state('light.arbeitszimmer_regal', 'off') }}"
-            sequence:                
-              - service: light.turn_on
-                entity_id: light.arbeitszimmer_regal
-              - service: timer.start
-                entity_id: timer.licht_arbeitszimmer                     
-          - conditions:
-              - "{{ trigger.id == 'timer' }}"
-            sequence:                
-              - service: light.turn_off
-                entity_id: light.arbeitszimmer_regal          
+      - if: "{{ trigger.id == 'licht_on' }}"
+        then:
+          - service: light.turn_on
+            entity_id: light.arbeitszimmer_licht
+          - service: timer.start
+            entity_id: timer.licht_arbeitszimmer
+      - if: "{{ trigger.id == 'licht_off' }}"
+        then:
+          - service: light.turn_off
+            entity_id: light.arbeitszimmer_licht        
 
 homeassistant:
   customize:
