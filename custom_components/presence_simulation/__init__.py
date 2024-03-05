@@ -21,6 +21,7 @@ from .const import (
         MY_EVENT
 )
 _LOGGER = logging.getLogger(__name__)
+MIN_DELAY = 1 #time in second for the minimal switch delay
 
 async def async_setup(hass, config):
     """Set up this component using YAML."""
@@ -176,7 +177,6 @@ async def async_setup_entry(hass, entry):
 
     def filter_out_undefined(dic):
         for hist in dic: #iterate on the entitied
-            #for idx, state in enumerate(dic[hist].copy()): #iterate on the historic
             for state in dic[hist].copy(): #iterate on the historic
                 if state.state in ["undefined", "unavailable", "unknown"] :
                     _LOGGER.debug('Deleting state')
@@ -214,11 +214,6 @@ async def async_setup_entry(hass, entry):
 
     async def restart_presence_simulation(call, switch_id=None):
         """Make sure that once _delta_ days is passed, relaunch the presence simulation for another _delta_ days"""
-        #if call is not None: #if we are here, it is a call of the service, or a restart at the end of a cycle
-        #    switch_id = call.data.get("switch_id")
-        #    entity = hass.data[DOMAIN][SWITCH_PLATFORM][switch_id]
-        #    await entity.set_delta(call.data.get("delta", delta))
-        #else:
         entity = hass.data[DOMAIN][SWITCH_PLATFORM][switch_id]
         await entity.reset_default_values_async()
         _LOGGER.debug("Presence simulation will be relaunched in %i days", entity.delta)
@@ -237,7 +232,7 @@ async def async_setup_entry(hass, entry):
             await handle_stop_presence_simulation(call, restart=True, switch_id=switch_id)
             await handle_presence_simulation(call, restart=True, switch_id=switch_id)
 
-    async def simulate_single_entity(switch_id, entity_id, hist, overridden_delta, overridden_random):
+    async def simulate_single_entity(switch_id, entity_id, hist, delta, random_val):
         """This method will replay the historic of one entity received in parameter"""
         _LOGGER.debug("Simulate one entity: %s", entity_id)
 
@@ -247,25 +242,34 @@ async def async_setup_entry(hass, entry):
                 _last_updated = state.last_updated_ts
             except:
                 _last_updated = state.last_updated
-            _LOGGER.debug("Switch of %s foreseen at %s", entity_id, _last_updated+timedelta(overridden_delta))
+            _LOGGER.debug("Switch of %s foreseen at %s", entity_id, _last_updated+timedelta(delta))
             #get the switch entity
             entity = hass.data[DOMAIN][SWITCH_PLATFORM][switch_id]
 
-            target_time = _last_updated + timedelta(overridden_delta)
+            target_time = _last_updated + timedelta(delta)
             # Because we called get_significant_states with include_start_time_state=True
             # the first element in hist should be the state at the start of the
             # simulation (unless HA has restarted recently - see recorder/history.py and RecorderRuns)
             # Do not add jitter to that first state time (which should be now anyways)
             if idx > 0:
-                _LOGGER.debug("Randomize the event within a range of +/-  %s sec", overridden_random)
-                random_delta = random.uniform(-overridden_random, overridden_random) # random number in seconds
+                _LOGGER.debug("Randomize the event within a range of +/- %s sec", random_val)
+                random_delta = random.uniform(-random_val, random_val) # random number in seconds
                 _LOGGER.debug("Randomize the event of %s seconds", random_delta)
                 random_delta = random_delta / 60 / 60 / 24 # random number in days
                 target_time += timedelta(random_delta)
+                initial_secs_left = (target_time - datetime.now(timezone.utc)).total_seconds()
+                if initial_secs_left < MIN_DELAY and random_val > 0:
+                    _LOGGER.debug("Random feature is used and wait is below min --> wait min time instead. target_time before %s", target_time)
+                    # added to avoid too narrowed toggles that could happen because of the random delta
+                    target_time = datetime.now(timezone.utc) + timedelta(MIN_DELAY / 60 / 60 / 24)
+                    _LOGGER.debug("target_time after %s", target_time)
+                else:
+                    _LOGGER.debug("initial_secs_left %s, target_time", initial_secs_left, target_time)
+
             await entity.async_add_next_event(target_time, entity_id, state.state)
 
             # Rather than a single sleep until target_time, periodically check to see if
-            # the simulation has been stoppe.
+            # the simulation has been stopped
             while is_running(switch_id):
                 #sleep as long as the event is not in the past
                 secs_left = (target_time - datetime.now(timezone.utc)).total_seconds()
@@ -316,9 +320,7 @@ async def async_setup_entry(hass, entry):
                 if color_mode != "color_temp":
                     # Attribute color_mode will be xy, hs, rgb...
                     color_mode = color_mode+"_color"
-                elif color_mode == "color_temp" and "color_temp" in state.attributes and state.attributes["color_temp"] is not None:
-                    service_data["color_temp"] = state.attributes["color_temp"]
-                if color_mode in state.attributes:
+                if color_mode in state.attributes and state.attributes[color_mode] is not None:
                     service_data[color_mode] = state.attributes[color_mode]
             if state.state == "on" or state.state == "off":
                 await hass.services.async_call("light", "turn_"+state.state, service_data, blocking=False)
