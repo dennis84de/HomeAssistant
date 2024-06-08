@@ -11,29 +11,32 @@ https://github.com/Limych/ha-snowtire/
 from collections.abc import Callable
 from datetime import datetime
 import logging
-from typing import Optional
 
 import voluptuous as vol
 
 from homeassistant.components.binary_sensor import BinarySensorEntity
 from homeassistant.components.weather import (
-    ATTR_FORECAST,
     ATTR_FORECAST_TEMP,
     ATTR_FORECAST_TEMP_LOW,
     ATTR_FORECAST_TIME,
     ATTR_WEATHER_TEMPERATURE,
-    DOMAIN as WEATHER,
+    DOMAIN as WEATHER_DOMAIN,
+    SERVICE_GET_FORECASTS,
+    WeatherEntityFeature,
 )
 from homeassistant.const import (
+    ATTR_SUPPORTED_FEATURES,
+    CONF_ENTITY_ID,
     CONF_NAME,
+    CONF_TYPE,
     CONF_UNIQUE_ID,
     EVENT_HOMEASSISTANT_START,
-    TEMP_CELSIUS,
+    UnitOfTemperature,
 )
-from homeassistant.core import HomeAssistant, callback
+from homeassistant.core import Event, EventStateChangedData, HomeAssistant, callback
 from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers import config_validation as cv
-from homeassistant.helpers.event import async_track_state_change
+from homeassistant.helpers.event import async_track_state_change_event
 from homeassistant.helpers.typing import ConfigType
 from homeassistant.util import dt as dt_util
 from homeassistant.util.unit_conversion import TemperatureConverter
@@ -53,7 +56,7 @@ _LOGGER = logging.getLogger(__name__)
 
 PLATFORM_SCHEMA = cv.PLATFORM_SCHEMA.extend(
     {
-        vol.Required(CONF_WEATHER): cv.entity_domain(WEATHER),
+        vol.Required(CONF_WEATHER): cv.entity_domain(WEATHER_DOMAIN),
         vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
         vol.Optional(CONF_DAYS, default=DEFAULT_DAYS): cv.positive_int,
         vol.Optional(CONF_UNIQUE_ID): cv.string,
@@ -89,7 +92,7 @@ class SnowtireBinarySensor(BinarySensorEntity):
 
     def __init__(
         self,
-        unique_id: Optional[str],
+        unique_id: str | None,
         friendly_name: str,
         weather_entity: str,
         days: int,
@@ -108,19 +111,20 @@ class SnowtireBinarySensor(BinarySensorEntity):
         self._attr_should_poll = False
         self._attr_device_class = f"{DOMAIN}__type"
 
-    async def async_added_to_hass(self):
+    async def async_added_to_hass(self) -> None:
         """Register callbacks."""
 
         @callback
         # pylint: disable=unused-argument
-        def sensor_state_listener(entity, old_state, new_state):
+        def sensor_state_listener(event: Event[EventStateChangedData]) -> None:
             """Handle device state changes."""
             self.async_schedule_update_ha_state(True)
 
         @callback
-        def sensor_startup(event):  # pylint: disable=unused-argument
+        # pylint: disable=unused-argument
+        def sensor_startup(event) -> None:
             """Update template on startup."""
-            async_track_state_change(
+            async_track_state_change_event(
                 self.hass, [self._weather_entity], sensor_state_listener
             )
 
@@ -140,12 +144,12 @@ class SnowtireBinarySensor(BinarySensorEntity):
 
     @staticmethod
     def _temp2c(
-        temperature: Optional[float], temperature_unit: Optional[str]
-    ) -> Optional[float]:
+        temperature: float | None, temperature_unit: str | None
+    ) -> float | None:
         """Convert weather temperature to Celsius degree."""
-        if temperature is not None and temperature_unit != TEMP_CELSIUS:
+        if temperature is not None and temperature_unit != UnitOfTemperature.CELSIUS:
             temperature = TemperatureConverter.convert(
-                temperature, temperature_unit, TEMP_CELSIUS
+                temperature, temperature_unit, UnitOfTemperature.CELSIUS
             )
 
         return temperature
@@ -154,21 +158,40 @@ class SnowtireBinarySensor(BinarySensorEntity):
         self,
     ):  # pylint: disable=too-many-branches,too-many-statements
         """Update the sensor state."""
-        wdata = self.hass.states.get(self._weather_entity)
-
-        if wdata is None:
+        wstate = self.hass.states.get(self._weather_entity)
+        if wstate is None:
             raise HomeAssistantError(
                 f"Unable to find an entity called {self._weather_entity}"
             )
 
         tmpu = self.hass.config.units.temperature_unit
-        temp = wdata.attributes.get(ATTR_WEATHER_TEMPERATURE)
-        forecast = wdata.attributes.get(ATTR_FORECAST)
+        temp = wstate.attributes.get(ATTR_WEATHER_TEMPERATURE)
 
-        if forecast is None:
+        wfeatures = wstate.attributes.get(ATTR_SUPPORTED_FEATURES) or 0
+        if (wfeatures & WeatherEntityFeature.FORECAST_DAILY) != 0:
+            forecast_type = "daily"
+        elif (wfeatures & WeatherEntityFeature.FORECAST_TWICE_DAILY) != 0:
+            forecast_type = "twice_daily"
+        elif (wfeatures & WeatherEntityFeature.FORECAST_HOURLY) != 0:
+            forecast_type = "hourly"
+        else:
+            raise HomeAssistantError("Weather entity doesn't support any forecast")
+
+        try:
+            forecast = await self.hass.services.async_call(
+                WEATHER_DOMAIN,
+                SERVICE_GET_FORECASTS,
+                {
+                    CONF_TYPE: forecast_type,
+                    CONF_ENTITY_ID: self._weather_entity,
+                },
+                blocking=True,
+                return_response=True,
+            )
+        except HomeAssistantError as ex:
             raise HomeAssistantError(
                 "Can't get forecast data! Are you sure it's the weather provider?"
-            )
+            ) from ex
 
         _LOGGER.debug("Current temperature %.1f°C", temp)
 
@@ -180,15 +203,14 @@ class SnowtireBinarySensor(BinarySensorEntity):
 
         _LOGGER.debug("Inspect weather forecast from %s till %s", cur_date, stop_date)
         temp = [self._temp2c(temp, tmpu)]
-        for fcast in forecast:
+        for fcast in forecast[self._weather_entity]["forecast"]:
             fc_date = fcast.get(ATTR_FORECAST_TIME)
             if isinstance(fc_date, int):
                 fc_date = dt_util.as_local(
-                    datetime.utcfromtimestamp(fc_date / 1000)
-                ).isoformat()
+                    datetime.fromtimestamp(fc_date / 1000, dt_util.UTC)
+                ).strftime("%F")
             elif isinstance(fc_date, datetime):
-                fc_date = dt_util.as_local(fc_date).isoformat()
-            fc_date = fc_date[:10]
+                fc_date = dt_util.as_local(fc_date).strftime("%F")
             if fc_date < cur_date:
                 continue
             if fc_date == stop_date:

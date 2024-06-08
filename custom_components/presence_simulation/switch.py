@@ -58,6 +58,7 @@ class PresenceSimulationSwitch(SwitchEntity,RestoreEntity):
         self._interval = int(config.data["interval"])
         self._delta = config.data["delta"]
         self._restore = config.data["restore"]
+        self._unavailable_as_off = config.data.get("unavailable_as_off", False)
         self.reset_default_values()
         _LOGGER.debug("entities %s", config.data["entities"])
 
@@ -78,10 +79,10 @@ class PresenceSimulationSwitch(SwitchEntity,RestoreEntity):
         self._next_events = []
         self.async_write_ha_state()
 
-    async def turn_on_async(self, **kwargs):
+    async def turn_on_async(self, after_ha_restart=False, **kwargs):
         """Turn on the presence simulation"""
         _LOGGER.debug("Turn on of the presence simulation through the switch")
-        await self.hass.services.async_call(DOMAIN, "start", {"switch_id": self.id, "internal": True})
+        await self.hass.services.async_call(DOMAIN, "start", {"switch_id": self.id, "internal": True, "after_ha_restart": after_ha_restart})
 
     def turn_on(self, **kwargs):
         """Turn on the presence simulation"""
@@ -138,6 +139,9 @@ class PresenceSimulationSwitch(SwitchEntity,RestoreEntity):
     def restore(self):
         return self._restore_overriden
     @property
+    def unavailable_as_off(self):
+        return self._unavailable_as_off
+    @property
     def interval(self):
         return self._interval
 
@@ -146,12 +150,14 @@ class PresenceSimulationSwitch(SwitchEntity,RestoreEntity):
         self._random_overriden = self._random
         self._restore_overriden = self._restore
         self._delta_overriden = self._delta
+        self._unavailable_as_off_overriden = self._unavailable_as_off
 
     def reset_default_values(self):
         self._entities_overriden = self._entities
         self._random_overriden = self._random
         self._restore_overriden = self._restore
         self._delta_overriden = self._delta
+        self._unavailable_as_off_overriden = self._unavailable_as_off
 
 
     #def device_state_attributes(self):
@@ -181,8 +187,10 @@ class PresenceSimulationSwitch(SwitchEntity,RestoreEntity):
                     self._random_overriden = state.attributes["random"]
                 if "delta" in state.attributes:
                     self._delta_overriden = state.attributes["delta"]
-                if "restore_sated" in state.attributes:
+                if "restore_sates" in state.attributes:
                     self._restore_overriden = state.attributes["restore_states"]
+                if "unavailable_as_off" in state.attributes:
+                    self._unavailable_as_off = state.attributes["unavailable_as_off"]
                 #just set internally to on, the simulation service will be called later once the HA Start event is fired
                 self.internal_turn_on()
             else:
@@ -222,6 +230,10 @@ class PresenceSimulationSwitch(SwitchEntity,RestoreEntity):
         self.attr["random"] = random
         self._random_overriden = random
 
+    async def set_unavailable_as_off(self, random):
+        self.attr["unavailable_as_off"] = random
+        self._unavailable_as_off = unavailable_as_off
+
     async def set_interval(self, interval):
         self._interval = interval
 
@@ -245,3 +257,7 @@ class PresenceSimulationSwitch(SwitchEntity,RestoreEntity):
     async def reset_random(self):
         if "random" in self.attr:
             del self.attr["random"]
+
+    async def reset_unavailable_as_off(self):
+        if "unavailable_as_off" in self.attr:
+            del self.attr["unavailable_as_off"]
