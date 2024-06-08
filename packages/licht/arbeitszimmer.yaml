@@ -32,6 +32,7 @@ automation:
                 - "{{ is_state('binary_sensor.bewegungsmelder_inaktiv_unterwegs', 'off') }}"
                 - "{{ is_state('binary_sensor.bewegungsmelder_inaktiv_staubsauger', 'off') }}"
                 - "{{ is_state('input_boolean.bewegungsmelder_flur_deaktiviert', 'off') }}"
+                - "{{ is_state('binary_sensor.home_office_aktiv', 'off') }}"
     action:
       - if: "{{ trigger.id == 'licht_on' }}"
         then:
@@ -43,9 +44,3 @@ automation:
         then:
           - service: light.turn_off
             entity_id: light.arbeitszimmer_licht        
-
-homeassistant:
-  customize:
-    light.arbeitszimmer_regal:
-      friendly_name: Regal
-      icon: mdi:led-strip      

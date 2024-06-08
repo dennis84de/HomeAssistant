@@ -107,11 +107,8 @@ automation:
           args:
             click_type: single            
     condition:
-      - "{{ is_state('sensor.lichter_eingeschaltet', '0') }}"
+      - "{{ is_state('light.bett', 'off') }}"
       - "{{ is_state('binary_sensor.wecker_aktiv', 'off') }}" 
-      - "{{ not states('media_player.kodi_schlafzimmer') in ['playing', 'paused'] }}"
-      - "{{ not states('media_player.fire_tv_schlafzimmer') in ['playing', 'paused'] }}"
-      - "{{ not states('media_player.tablet_schlafzimmer') in ['playing', 'paused'] }}"
     action:
       - service: light.turn_on
         entity_id: light.bett

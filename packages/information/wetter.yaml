@@ -11,15 +11,6 @@ input_number:
     step: 50 
 
 binary_sensor:
-  - platform: car_wash
-    name: Auto waschen
-    days: 5
-    weather: weather.buienradar
-
-  - platform: snowtire
-    name: Autoreifen    
-    weather: weather.buienradar
-
   - platform: template
     sensors:
       schlechtes_wetter:
@@ -43,13 +34,6 @@ sensor:
       minutes: 30
     entities:
       - sensor.balkon_helligkeit
-
-  - platform: sun2
-    monitored_conditions:
-      - sunrise
-      - sunset
-      - dawn
-      - dusk
       
   - platform: rest
     name: regenradar
@@ -75,9 +59,9 @@ sensor:
             and (states('sensor.wetter_dortmund_windgeschwindigkeit') | int(0) < 12) and (states('sensor.wetter_dortmund_bewolkungsgrad') | int(0) < 20)
             and (states('sensor.wetter_dortmund_luftfeuchtigkeit') | int(0) > 50)) %}
             Frost
-          {% elif (states('sensor.wetter_dortmund_niederschlagswahrscheinlichkeit') | int(0) > 7) %}
-            Regen
-          {% else %} Klar {% endif %}
+          {% else %} 
+            Klar
+          {% endif %}
 
       tageszeit:
         friendly_name: Tageszeit
@@ -295,6 +279,3 @@ homeassistant:
     sensor.regenradar:
       friendly_name: Regenradar
       icon: mdi:weather-pouring
-    sensor.iss:
-      icon: mdi:earth
-      friendly_name: Personen auf der ISS

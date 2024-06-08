@@ -16,7 +16,9 @@ cards:
       - entity: switch.arbeitszimmer_monitore
         name: Monitore     
       - entity: switch.babyphone
-        name: Babyphone             
+        name: Babyphone          
+      - entity: switch.arbeitszimmer_heizstrahler  
+        name: Heizstrahler        
       
   - type: entities
     title: Licht
@@ -24,8 +26,6 @@ cards:
     entities:      
       - entity: light.arbeitszimmer_licht
         name: Licht
-      - entity: light.arbeitszimmer_regal  
-        name: Regal
           
   - type: custom:stack-in-card
     cards:
@@ -155,8 +155,3 @@ cards:
     show_header_toggle: false
     entities:      
       - entity: switch.drucker
-      - entity: sensor.patrone_schwarz
-      - entity: sensor.patrone_photoschwarz
-      - entity: sensor.patrone_magenta
-      - entity: sensor.patrone_gelb
-      - entity: sensor.patrone_cyan            

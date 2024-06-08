@@ -163,7 +163,7 @@ script:
             sequence:
               - service: !secret tts_service
                 data:
-                  message: "Hallo Dennis. Willkommen zu Hause."
+                  message: "Willkommen zu Hause."
         default:  
           - service: !secret tts_service
             data:
@@ -443,7 +443,7 @@ homeassistant:
       icon: mdi:human-female
     person.franzi:
       icon: mdi:human-child
-    person.franzi:
+    person.aaron:
       icon: mdi:baby
     person.flori:
       icon: mdi:dog-side         

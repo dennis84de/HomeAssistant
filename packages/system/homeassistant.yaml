@@ -7,7 +7,6 @@ mobile_app:
 scene:
 wake_on_lan:
 system_health:
-map:
 ssdp:
 lovelace:
   mode: yaml
@@ -78,12 +77,6 @@ zone:
     longitude: !secret work_longitude
     radius: 100
     icon: mdi:wan 
-    
-  - name: Natalie
-    latitude: !secret natalie_latitude
-    longitude: !secret natalie_longitude
-    radius: 70
-    icon: mdi:human-female     
     
 command_line:
   - sensor:

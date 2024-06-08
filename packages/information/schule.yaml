@@ -3,7 +3,9 @@ input_select:
     name: Puffer
     options:
       - "10"
+      - "15"
       - "20"
+      - "25"
       - "30"
     icon: mdi:timelapse      
     
@@ -25,11 +27,11 @@ template:
       - name: "Schultag"
         unique_id: schultag
         state: >
-          {% set wochentag = now().weekday() in (0,1,2,3,4) %}
+          {% set arbeitstag = is_state('binary_sensor.arbeitstag', 'on') %}
           {% set keineFerien = is_state('calendar.ferien', 'off') %}
           {% set schule = is_state('calendar.franzi_keine_schule', 'off') %}         
 
-          {{ wochentag and keineFerien and schule }}          
+          {{ arbeitstag and keineFerien and schule }}          
            
       - name: "Info Schule anzeigen"
         unique_id: info_schule_anzeigen
@@ -43,7 +45,7 @@ template:
       - name: "Abfahrtzeit Schule wegbringen"
         unique_id: abfahrtzeit_schule_wegbringen
         state: >
-          {% set fahrzeitMinuten = states('sensor.fahrzeit_schule_duration_in_traffic') | int(0) %}
+          {% set fahrzeitMinuten = states('sensor.fahrzeit_schule') | int(0) %}
           {% set beginnMinuten = (state_attr('input_datetime.schule_beginn', 'timestamp') / 60) | int(0) %}
           {% set pufferMinuten = states('input_select.schule_puffer') | int(0) %}
 
@@ -57,7 +59,7 @@ template:
       - name: "Abfahrtzeit Schule abholen"
         unique_id: abfahrtzeit_schule_abholen
         state: >
-          {% set fahrzeitMinuten = states('sensor.fahrzeit_schule_duration_in_traffic') | int(0) %}
+          {% set fahrzeitMinuten = states('sensor.fahrzeit_schule') | int(0) %}
           {% set endeMinuten = (state_attr('input_datetime.schule_ende', 'timestamp') / 60) | int(0) %}
           {% set pufferMinuten = states('input_select.schule_puffer') | int(0) %}
 
@@ -96,9 +98,9 @@ automation:
             data:
               echo: "wohnzimmer"
               message: >-
-                "Es ist Zeit zur Schule zu fahren. Die aktuelle Fahrzeit beträgt {{ states('sensor.fahrzeit_schule_duration_in_traffic') }} Minuten."
+                "Es ist Zeit zur Schule zu fahren. Die aktuelle Fahrzeit beträgt {{ states('sensor.fahrzeit_schule') }} Minuten."
         else:
           - service: !secret tts_service
             data:
               message: >-
-                "Es ist Zeit Franzi abzuholen. Die aktuelle Fahrzeit beträgt {{ states('sensor.fahrzeit_schule_duration_in_traffic') }} Minuten."          
+                "Es ist Zeit Franzi abzuholen. Die aktuelle Fahrzeit beträgt {{ states('sensor.fahrzeit_schule') }} Minuten."          

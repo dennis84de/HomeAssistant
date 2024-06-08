@@ -61,8 +61,8 @@ cards:
         name: Arbeitszimmer Ladegerät
       - entity: device_tracker.tasmotaarbeitszimmerradio
         name: Arbeitszimmer Radio      
-      - entity: device_tracker.tasmotaarbeitszimmerregal
-        name: Arbeitszimmer Regal            
+      - entity: device_tracker.tasmotaarbeitszimmerheizstrahler
+        name: Arbeitszimmer Heizstrahler            
       - entity: device_tracker.tasmotabalkonradio
         name: Balkon Radio       
       - entity: device_tracker.tasmotakuechenschrank

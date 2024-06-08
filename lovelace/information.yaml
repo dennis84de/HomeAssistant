@@ -139,8 +139,7 @@ cards:
       - type: custom:template-entity-row
         entity: sensor.ungelesene_mails  
         condition: "{{ states('sensor.ungelesene_mails') | int(0) > 0 }}"      
-      - entity: sensor.countdown_neuhaus
-      - entity: sensor.geburtstermin
+      - entity: sensor.countdown_neuhaus      
       - entity: sensor.letzte_bewegung     
       
   - type: entities
@@ -179,7 +178,7 @@ cards:
                     name: Musik vorher einschalten
                   - entity: input_number.wecker_verzoegerung
                     name: Geräte nachher einschalten   
-                  - entity: input_boolean.wecker_geraete_einschalten
+                  - entity: input_boolean.aufstehen_radios_einschalten
                     name: Geräte einschalten         
   
   - type: conditional
@@ -192,9 +191,13 @@ cards:
       type: entities
       title: Arbeit
       show_header_toggle: false
-      entities:
-        - entity: sensor.fahrzeit_zur_arbeit_duration_in_traffic
-        - entity: sensor.fahrzeit_nach_hause_duration_in_traffic
+      entities:        
+        - type: custom:template-entity-row
+          entity : sensor.fahrzeit_zur_arbeit
+          state: "{{ (states('sensor.fahrzeit_zur_arbeit') | int(0)) }} Minuten"                     
+        - type: custom:template-entity-row
+          entity : sensor.fahrzeit_nach_hause
+          state: "{{ (states('sensor.fahrzeit_nach_hause') | int(0)) }} Minuten"            
         - type: divider
         - entity: sensor.abfahrzeit      
           type: "custom:secondaryinfo-entity-row"              
@@ -213,7 +216,9 @@ cards:
       title: Schule
       show_header_toggle: false
       entities:
-        - entity: sensor.fahrzeit_schule_duration_in_traffic
+        - type: custom:template-entity-row
+          entity : sensor.fahrzeit_schule
+          state: "{{ (states('sensor.fahrzeit_schule') | int(0)) }} Minuten"                    
         - type: divider
         - entity: sensor.abfahrtzeit_schule_wegbringen       
           name: Abfahrtzeit
@@ -315,10 +320,14 @@ cards:
     entities:
       - entity: sensor.geburtstag_franzi
         name: Franzi
+      - entity: sensor.geburtstag_aaron
+        name: Aaron        
       - entity: sensor.geburtstag_natalie
         name: Natalie
       - entity: sensor.geburtstag_dennis
-        name: Dennis          
+        name: Dennis       
+      - entity: sensor.geburtstag_flori
+        name: Flori
       
   - type: custom:mini-graph-card     
     name: Tanken
@@ -381,19 +390,16 @@ cards:
         points: false
         state: false
       entities:
-        - entity: sensor.fahrzeit_zur_arbeit_duration_in_traffic
-        - entity: sensor.fahrzeit_nach_hause_duration_in_traffic      
+        - entity: sensor.fahrzeit_zur_arbeit
+        - entity: sensor.fahrzeit_nach_hause 
         
   - type: entities
     title: Waage
     show_header_toggle: false
     entities:
-      - entity: sensor.gewicht   
-      - entity: sensor.bmi
-      - type: custom:template-entity-row
-        entity : sensor.wasser
-        condition: "{{ states('sensor.wasser') | int(0) > 0 }}"
-      - type: custom:template-entity-row
-        entity : sensor.fett
-        condition: "{{ states('sensor.fett') | int(0) > 0 }}"
-                            
+      - entity: sensor.dennis_gewicht  
+        name: Dennis
+      - entity: sensor.natalie_gewicht   
+        name: Natalie
+      - entity: sensor.franzi_gewicht   
+        name: Franzi

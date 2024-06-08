@@ -24,8 +24,8 @@ input_boolean:
   wecker_zeit_geaendert:
     name: Zeit geändert     
     
-  wecker_geraete_einschalten:
-    name: Geräte einschalten
+  aufstehen_radios_einschalten:
+    name: Radios einschalten
     
   aufstehen_begruessung:
     name: Aufstehen Begrüßung     
@@ -66,7 +66,7 @@ script:
             {% set schlafenSatz = values[:-1] | join(', ') ~ ' ' ~ word_for_and ~ ' ' ~ values[-1] if values | length > 1 else values | first %}
             {% set uhrzeitSatz = as_timestamp(now()) | timestamp_custom('%H:%M') %}         
              
-            {{ 'Guten Morgen. Es ist ' ~ uhrzeitSatz ~ ' Uhr. Du hast ' ~ schlafenSatz ~ ' geschlafen.' }}      
+            {{ 'Guten Morgen. Es ist ' ~ uhrzeitSatz ~ ' Uhr. Ihr habt ' ~ schlafenSatz ~ ' geschlafen.' }}      
                                                                      
             {% set tageBisGeburtstag = states('sensor.geburtstag_natalie') | int(0) %}
             {% set tagGeburtstag = (as_timestamp(state_attr('sensor.geburtstag_natalie', 'date')) | timestamp_custom("%d", True)) | int(0) %}
@@ -181,14 +181,14 @@ automation:
         state: 'on'
     action:
       - service: input_boolean.turn_on
-        entity_id: input_boolean.wecker_aktiv         
+        entity_id: input_boolean.wecker_aktiv
       - if: "{{ states('sensor.balkon_helligkeit_mittelwert') | int(0) < 50 }}"
         then:
           - service: light.turn_on
             data:
               entity_id: light.bett      
               effect: colorloop    
-      - condition: "{{ is_state('input_boolean.wecker_geraete_einschalten', 'on') }}"
+      - condition: "{{ is_state('input_boolean.aufstehen_radios_einschalten', 'on') }}"
       - if: "{{ is_state('input_boolean.radio_alexa', 'on') }}"
         then:            
           - service: media_player.play_media
@@ -254,6 +254,11 @@ automation:
         {% set istKrankheit = is_state('calendar.arbeit_krank', 'on') %}
         
         {{ istSamstag or (istArbeitstag and (istUrlaub or istKrankheit)) }}        
+      radiosEinschalten: >-
+        {% set radiosEinschalten = is_state('input_boolean.aufstehen_radios_einschalten', 'on') %}
+        {% set weckerAktiv = is_state('binary_sensor.wecker_aktiv', 'on') %}
+
+        {{ radiosEinschalten and weckerAktiv }}            
     condition:
       - "{{ trigger.id == 'schalter_badezimmer' or is_state('binary_sensor.allein_zu_hause', 'on') }}"
       - "{{ is_state('binary_sensor.schlafen_aktiv', 'on') }}"
@@ -292,7 +297,7 @@ automation:
           - service: script.aufstehen_begruessung               
         else:          
           - service: script.aufstehen_begruessung                   
-      - if: "{{ is_state('input_boolean.wecker_geraete_einschalten', 'on') }}"
+      - if: "{{ radiosEinschalten }}"
         then:             
           - if: "{{ states('sensor.radios_eingeschaltet') | int(0) == 1 and is_state('switch.schlafzimmer_radio', 'on') }}"
             then:             
@@ -309,7 +314,8 @@ automation:
                 entity_id: switch.schlafzimmer_radio             
               - service: script.radios_einschalten       
                 data:
-                  radioBalkon: "{{ radioBalkonEinschalten }}"                    
-        else:          
+                  radioBalkon: "{{ radioBalkonEinschalten }}"                      
+      - if: "{{ is_state('input_boolean.aufstehen_radios_einschalten', 'off') }}"
+        then:    
           - service: input_boolean.turn_on
-            entity_id: input_boolean.wecker_geraete_einschalten          
+            entity_id: input_boolean.aufstehen_radios_einschalten   

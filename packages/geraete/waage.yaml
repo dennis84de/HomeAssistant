@@ -1,25 +1,37 @@
 mqtt:
   sensor:
-    - name: "Gewicht"
+    - name: "Dennis Gewicht"
       state_topic: "scale/Dennis/weight"
       value_template: "{{ value_json['weight'] }}"    
       json_attributes_topic: "scale/Dennis/weight"
       unit_of_measurement: "kg"
       icon: mdi:scale-bathroom   
 
-    - name: "BMI"
+    - name: "Dennis BMI"
       state_topic: "scale/Dennis/weight"
       value_template: "{{ value_json['bmi'] }}"
       icon: mdi:human-pregnant
-
-    - name: "Wasser"
-      state_topic: "scale/Dennis/weight"
-      value_template: "{{ value_json['water'] }}"   
+      
+    - name: "Natalie Gewicht"
+      state_topic: "scale/Natalie/weight"
+      value_template: "{{ value_json['weight'] }}"    
+      json_attributes_topic: "scale/Natalie/weight"
       unit_of_measurement: "kg"
-      icon: mdi:water
+      icon: mdi:scale-bathroom   
 
-    - name: "Fett"
-      state_topic: "scale/Dennis/weight"
-      value_template: "{{ value_json['body_fat'] }}"    
+    - name: "Natalie BMI"
+      state_topic: "scale/Natalie/weight"
+      value_template: "{{ value_json['bmi'] }}"
+      icon: mdi:human-pregnant      
+      
+    - name: "Franzi Gewicht"
+      state_topic: "scale/Franzi/weight"
+      value_template: "{{ value_json['weight'] }}"    
+      json_attributes_topic: "scale/Franzi/weight"
       unit_of_measurement: "kg"
-      icon: mdi:scale-balance
+      icon: mdi:scale-bathroom   
+
+    - name: "Franzi BMI"
+      state_topic: "scale/Franzi/weight"
+      value_template: "{{ value_json['bmi'] }}"
+      icon: mdi:human-pregnant            

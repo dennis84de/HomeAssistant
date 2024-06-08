@@ -33,7 +33,7 @@ script:
             
             {% set goodbyeMessage = [
                 "Auf Wiedersehen", 
-                "Bis später", 
+                "Bis später Peter",
                 "Tschau Kakao", 
                 "Ich wünsche euch einen schönen Tag"
                 ] | random 

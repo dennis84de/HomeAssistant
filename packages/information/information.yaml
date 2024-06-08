@@ -131,12 +131,6 @@ automation:
               Es sind {{ mailCount }} neue E-Mails eingegangen.
             {% endif %}      
 
-panel_iframe:
-  infoscreen:
-    title: Infoscreen
-    icon: mdi:information
-    url: http://192.168.2.100/infoscreen/
-
 homeassistant:
   customize_glob:
     sensor.*_perception:

@@ -11,10 +11,7 @@ cards:
     title: Sonstiges
     show_header_toggle: false
     entities:
-      - entity: sensor.iss
       - entity: sensor.satelliten
-      - entity: binary_sensor.auto_waschen
-      - entity: binary_sensor.autoreifen
       - entity: sensor.katastrophenalarm
       - entity: sensor.sternzeichen
       - entity: sensor.zeitumstellung   

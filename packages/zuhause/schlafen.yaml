@@ -54,10 +54,6 @@ binary_sensor:
         value_template: "{{ is_state('input_boolean.schlafen_aktiv', 'on') }}"
         icon_template: mdi:sleep
         availability_template: "{{ states('input_boolean.schlafen_aktiv') not in ['unknown', 'unavailable'] }}"
-          
-      schlafen_inaktiv:
-        friendly_name: Schlafen inaktiv
-        value_template: "{{ is_state('binary_sensor.schlafen_aktiv', 'off') }}"
         
 sensor:
   - platform: template
@@ -166,6 +162,10 @@ automation:
         data:
           entity_id: alarm_control_panel.alarmo
           mode: night
+      - if: "{{ is_state('input_boolean.bewegungsmelder_schlafzimmer_deaktiviert', 'on') }}"
+        then:
+          - service: input_boolean.turn_off
+            entity_id: input_boolean.bewegungsmelder_schlafzimmer_deaktiviert              
           
   - alias: "Schlafen - Wecker richtig gestellt"
     id: "schlafen_wecker_richtig_gestellt"
@@ -181,7 +181,7 @@ automation:
       arbeitstagHeute: "{{ is_state('binary_sensor.arbeitstag', 'on') }}"
       arbeitstagMorgen: "{{ is_state('binary_sensor.arbeitstag_morgen', 'on') }}"
       urlaubHeute: "{{ state_attr('sensor.naechster_urlaub', 'tage') | int(0) <= 0 }}"
-      urlaubMorgen: "{{ is_state_attr('sensor.naechster_urlaub', 'tage', 1) }}"         
+      urlaubMorgen: "{{ state_attr('sensor.naechster_urlaub', 'tage') | int(0) < 0 or is_state_attr('sensor.naechster_urlaub', 'tage', 1) }}"         
       krankHeute: "{{ is_state('calendar.arbeit_krank', 'on') }}"
       krankMorgen: "{{ is_state('binary_sensor.krank_morgen', 'on') }}"
     condition:

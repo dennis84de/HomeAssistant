@@ -264,7 +264,7 @@ cards:
       - entity: binary_sensor.healthchecks_home_assistant  
       - entity: binary_sensor.healthchecks_diskstation        
       - entity: binary_sensor.uptime_robot_nextcloud        
-      - entity: binary_sensor.healthchecks_djaeschke                 
+      - entity: binary_sensor.healthchecks_djaeschke_de
 
   - type: custom:stack-in-card
     cards:

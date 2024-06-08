@@ -28,7 +28,7 @@ sensor:
         friendly_name: Abfahrzeit
         icon_template: mdi:clock-start
         value_template: >-
-          {% set fahrzeitMinuten = states('sensor.fahrzeit_zur_arbeit_duration_in_traffic') | int(0) %}
+          {% set fahrzeitMinuten = states('sensor.fahrzeit_zur_arbeit') | int(0) %}
           {% set beginnMinuten = (state_attr('input_datetime.arbeit_beginn', 'timestamp') / 60) | int(0) %}
           {% set pufferMinuten = states('input_select.arbeit_puffer') | int(0) %}
           {% set verzoegerungWetter = (10 if is_state('binary_sensor.schlechtes_wetter', 'on') else 0) %}
@@ -94,7 +94,7 @@ automation:
       - service: !secret tts_service
         data:
           message: >-
-            "Es ist Zeit zur Arbeit zu fahren. Die aktuelle Fahrzeit beträgt {{ states('sensor.fahrzeit_zur_arbeit_duration_in_traffic') }} Minuten.{% if is_state('binary_sensor.schlechtes_wetter', 'on') %} Aktuell ist mit {{ states('sensor.wetterlage') }} zu rechnen.{% endif %}"
+            "Es ist Zeit zur Arbeit zu fahren. Die aktuelle Fahrzeit beträgt {{ states('sensor.fahrzeit_zur_arbeit') }} Minuten.{% if is_state('binary_sensor.schlechtes_wetter', 'on') %} Aktuell ist mit {{ states('sensor.wetterlage') }} zu rechnen.{% endif %}"
      
 
   - alias: "Fahrzeit nach Hause"
@@ -109,11 +109,11 @@ automation:
         data:
           title: "Fahrzeit nach Hause"
           message: >-
-            Die Fahrzeit von der Arbeit nach Hause beträgt aktuell {{ states('sensor.fahrzeit_nach_hause_duration_in_traffic') }} Minuten.
+            Die Fahrzeit von der Arbeit nach Hause beträgt aktuell {{ states('sensor.fahrzeit_nach_hause') }} Minuten.
           
 homeassistant:
   customize:
-    sensor.fahrzeit_zur_arbeit_duration_in_traffic:
+    sensor.fahrzeit_zur_arbeit:
       icon: mdi:car-estate
-    sensor.fahrzeit_nach_hause_duration_in_traffic:
+    sensor.fahrzeit_nach_hause:
       icon: mdi:car-sports

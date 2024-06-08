@@ -69,17 +69,21 @@ switch:
                     entity_id: media_player.soundbar    
      
 automation:
-  - alias: "Fernseher eingeschaltet - Radio ausschalten"
-    id: "fernseher_eingeschaltet_radio_ausschalten"
+  - alias: "Fernseher eingeschaltet - Radios ausschalten"
+    id: "fernseher_eingeschaltet_radios_ausschalten"
     trigger:
       - platform: state
         entity_id: switch.watchtv_wohnzimmer
         to: 'on' 
     condition:    
-      - "{{ is_state('switch.wohnzimmer_radio', 'on') }}"      
+      - "{{ is_state('switch.wiedergabe_aktiv', 'on') and states('sensor.radios_eingeschaltet') | int() > 1 }}"      
     action:    
       - service: switch.turn_off
-        entity_id: switch.wohnzimmer_radio
+        entity_id: switch.wohnzimmer_radio, switch.balkon_radio, switch.flur_radio, switch.kueche_radio, switch.badezimmer_radio, switch.schlafzimmer_radio          
+      - if: "{{ is_state('binary_sensor.home_office_aktiv', 'off') }}"
+        then:
+          - service: switch.turn_off
+            entity_id: switch.arbeitszimmer_radio
             
 homeassistant:
   customize:

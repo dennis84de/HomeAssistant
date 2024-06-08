@@ -246,8 +246,10 @@ cards:
       show_header_toggle: false
       content: |
         {% for x in config.entities %}
-          {%- set time = (as_timestamp(state_attr(x.entity, 'last_triggered')) | timestamp_custom('%H:%M')) -%}          
-          {{ time }} &nbsp;&nbsp; {{ state_attr(x.entity, 'friendly_name') }}
+          {%- if state_attr(x.entity, 'last_triggered') %}
+            {%- set time = (as_timestamp(state_attr(x.entity, 'last_triggered')) | timestamp_custom('%H:%M')) -%}          
+            {{ time }} &nbsp;&nbsp; {{ state_attr(x.entity, 'friendly_name') }}          
+          {%- endif %}
         {% endfor %}
     filter:
       include:
@@ -272,9 +274,11 @@ cards:
       title: Letzte Automationen
       show_header_toggle: false
       content: |
-        {% for x in config.entities %}          
-          {%- set time = (as_timestamp(state_attr(x.entity, 'last_triggered')) | timestamp_custom('%H:%M')) -%}          
-          {{ time }} &nbsp;&nbsp; {{ state_attr(x.entity, 'friendly_name') }}
+        {% for x in config.entities %}     
+          {%- if state_attr(x.entity, 'last_triggered') %}
+            {%- set time = (as_timestamp(state_attr(x.entity, 'last_triggered')) | timestamp_custom('%H:%M')) -%}          
+            {{ time }} &nbsp;&nbsp; {{ state_attr(x.entity, 'friendly_name') }}          
+          {%- endif %}
         {% endfor %}    
     filter:
       include:

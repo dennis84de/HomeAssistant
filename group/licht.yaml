@@ -4,9 +4,23 @@ licht_wohnung:
     - light.wohnzimmer_couch
     - light.wohnzimmer_strahler
     - light.wohnzimmer_schrank
-    - light.arbeitszimmer_regal
     - light.arbeitszimmer_licht
     - light.kinderzimmer_licht
+    - light.flur_vorne
+    - light.flur_hinten
+    - light.badezimmerschrank
+    - light.bett
+    - light.kleiderschrank
+    - light.kueche_regal
+    - light.kueche_schrank
+    - light.balkon_licht
+    
+licht_schlafen:
+  name: Licht Schlafen
+  entities:
+    - light.wohnzimmer_couch
+    - light.wohnzimmer_strahler
+    - light.wohnzimmer_schrank
     - light.flur_vorne
     - light.flur_hinten
     - light.badezimmerschrank
@@ -19,7 +33,6 @@ licht_wohnung:
 licht_fernsehen:
   name: Licht Fernsehen
   entities:
-    - light.arbeitszimmer_regal
     - light.arbeitszimmer_licht
     - light.kinderzimmer_licht
     - light.flur_vorne
@@ -37,7 +50,6 @@ licht_baden:
     - light.wohnzimmer_couch
     - light.wohnzimmer_strahler
     - light.wohnzimmer_schrank
-    - light.arbeitszimmer_regal
     - light.arbeitszimmer_licht
     - light.kinderzimmer_licht
     - light.flur_vorne
@@ -54,7 +66,6 @@ licht_unterwegs:
     - light.wohnzimmer_couch
     - light.wohnzimmer_strahler
     - light.wohnzimmer_schrank
-    - light.arbeitszimmer_regal
     - light.arbeitszimmer_licht
     - light.kueche_regal
     - light.balkon_licht

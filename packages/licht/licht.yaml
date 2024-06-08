@@ -12,14 +12,22 @@ template:
           {{ motionSensorDeactivated }}
           
       - name: "Lichter eingeschaltet"
-        unique_id: licher_einggeschaltet        
+        unique_id: lichter_einggeschaltet        
         state: >
-          {% set lichterEingeschaltet = expand('group.licht_wohnung')
+          {% set lichterEingeschaltet = expand('group.licht_schlafen')
             | selectattr('state','eq','on') 
             | list
             | length %}
             
-          {{ lichterEingeschaltet }}          
+          {{ lichterEingeschaltet }}    
+        attributes:
+          lichter: >
+            {% set lichterEingeschaltet = expand('group.licht_schlafen')
+              | selectattr('state','eq','on') 
+              | map(attribute='name')
+              | list %}
+
+              {{ lichterEingeschaltet }}               
           
 script:
   licht_wohnung_ausschalten:

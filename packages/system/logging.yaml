@@ -79,7 +79,6 @@ logbook:
       - device_tracker.handy*  
   exclude:
     entities:     
-      - switch.arbeitszimmer_regal
       - switch.wohnzimmer_couch
       - switch.wohnzimmer_strahler
       - switch.wohnzimmer_schrank
@@ -105,7 +104,6 @@ history:
       - schedule
   exclude:
     entities:
-      - switch.arbeitszimmer_regal
       - switch.wohnzimmer_couch
       - switch.wohnzimmer_strahler
       - switch.kleiderschrank
