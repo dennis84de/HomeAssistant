@@ -66,10 +66,7 @@ sensor:
 script:
   schlafen_gehen:
     alias: Schlafen gehen
-    sequence:
-      - wait_template: "{{is_state('media_player.home_assistant', 'idle')}}"
-        timeout: '00:00:01'
-        continue_on_timeout: 'true'            
+    sequence:         
       - service: !secret tts_service
         data:
           echo: "wohnzimmer"

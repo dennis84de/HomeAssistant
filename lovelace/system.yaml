@@ -232,8 +232,6 @@ cards:
     entities:
       - entity: sensor.fritz_box_6660_cable_letzter_neustart
         name: "Letzter Neustart"
-      - entity: sensor.fritz_box_6660_cable_externe_ip
-        name: Öffentliche IP
       - entity: sensor.fritz_box_6660_cable_gb_empfangen
         name: Daten empfangen
       - entity: sensor.fritz_box_6660_cable_gb_gesendet

@@ -157,6 +157,8 @@ automation:
           {% set ns = namespace(found=0) -%}
           {% set computerEingeschaltet = is_state('switch.computer', 'on') %}
           {% set computerEingeschaltetLassen = is_state('input_select.computer_ausschalten', 'Nichts unternehmen') %}
+          {% set computerArbeitEingeschaltet = is_state('switch.computer_arbeit', 'on') %}
+          {% set computerArbeitEingeschaltetLassen = is_state('input_select.computer_arbeit_ausschalten', 'Nichts unternehmen') %}
 
           {% for entity_id in state_attr('group.alles_ausschalten', 'entity_id') -%}
             {% set parts = entity_id.split('.') -%}
@@ -165,10 +167,27 @@ automation:
             {% endif -%}
           {% endfor -%}
           
-          {% if ns.found > 1 %}
+          {% if ns.found > 2 %}
             True
-          {% elif ns.found == 0 or (ns.found == 1 and computerEingeschaltet == True and computerEingeschaltetLassen == True) %}
+          {% elif ns.found == 0 %}            
             False
+          {% elif ns.found == 1 
+            and computerEingeschaltet == True 
+            and computerEingeschaltetLassen == True
+          %}
+            False
+          {% elif ns.found == 1 
+            and computerArbeitEingeschaltet == True 
+            and computerArbeitEingeschaltetLassen == True
+          %}
+            False   
+          {% elif ns.found == 2 
+            and computerEingeschaltet == True 
+            and computerEingeschaltetLassen == True 
+            and computerArbeitEingeschaltet == True 
+            and computerArbeitEingeschaltetLassen == True
+          %}
+            False                
           {% else %}
             True
           {% endif %}            

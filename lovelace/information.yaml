@@ -51,8 +51,6 @@ cards:
                 entities:          
                   - entity: device_tracker.handy  
                     name: Wlan
-                  - entity: device_tracker.handy_ping
-                    name: Ping
                   - entity: device_tracker.handy_mqtt
                     name: MQTT          
                   - entity: device_tracker.handy_gps
@@ -69,9 +67,7 @@ cards:
                   - type: history-graph
                     entities:          
                       - entity: device_tracker.handy_natalie
-                        name: Wlan   
-                      - entity: device_tracker.handy_natalie_ping
-                        name: Ping       
+                        name: Wlan        
                       - entity: device_tracker.handy_natalie_mqtt
                         name: MQTT                              
                   - type: entities
@@ -142,44 +138,50 @@ cards:
       - entity: sensor.countdown_neuhaus      
       - entity: sensor.letzte_bewegung     
       
-  - type: entities
-    title: Wecker
-    show_header_toggle: false
-    entities:
-      - type: custom:template-entity-row
-        name: 'Nächster Alarm'
-        entity : sensor.tablet_schlafzimmer_next_alarm
-        state: >-
-          {% set alarmSensor = states('sensor.tablet_schlafzimmer_next_alarm') %}
+  - type: conditional
+    view_layout:
+      column: 2
+    conditions:
+      - entity: binary_sensor.wecker_gestellt 
+        state: "on"
+    card:
+      type: entities
+      title: Wecker
+      show_header_toggle: false
+      entities:
+        - type: custom:template-entity-row
+          name: 'Nächster Alarm'
+          entity : sensor.tablet_schlafzimmer_next_alarm
+          state: >-
+            {% set alarmSensor = states('sensor.tablet_schlafzimmer_next_alarm') %}
 
-          {% if alarmSensor in ['unavailable', 'unknown'] %}
-            -
-          {% else %}
-            {{ as_timestamp(alarmSensor, None) | timestamp_custom("%H:%M", True) ~ " Uhr"}}
-          {% endif %}     
-        secondary: >-
-          {% set alarmSensor = states('sensor.tablet_schlafzimmer_next_alarm') %}
+            {% if alarmSensor in ['unavailable', 'unknown'] %}
+              -
+            {% else %}
+              {{ as_timestamp(alarmSensor, None) | timestamp_custom("%H:%M", True) ~ " Uhr"}}
+            {% endif %}     
+          secondary: >-
+            {% set alarmSensor = states('sensor.tablet_schlafzimmer_next_alarm') %}
 
-          {% if alarmSensor in ['unavailable', 'unknown'] %}
-            -
-          {% else %}
-            {% set weekday = as_timestamp(alarmSensor, None) | timestamp_custom("%w", True) | int(0) %}
-            {{ ['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'][weekday-1] }}, {{ as_timestamp(alarmSensor, None) | timestamp_custom("%d.%m.%Y", True) | string }}          
-          {% endif %}        
-        tap_action:
-          action: fire-dom-event
-          browser_mod:
-            service: browser_mod.popup
-            data:              
-              content:
-                type: entities
-                entities:          
-                  - entity: input_number.wecker_vorlauf
-                    name: Musik vorher einschalten
-                  - entity: input_number.wecker_verzoegerung
-                    name: Geräte nachher einschalten   
-                  - entity: input_boolean.aufstehen_radios_einschalten
-                    name: Geräte einschalten         
+            {% if alarmSensor in ['unavailable', 'unknown'] %}
+              -
+            {% else %}
+              {% set weekday = as_timestamp(alarmSensor, None) | timestamp_custom("%w", True) | int(0) %}
+              {{ ['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'][weekday-1] }}, {{ as_timestamp(alarmSensor, None) | timestamp_custom("%d.%m.%Y", True) | string }}          
+            {% endif %}        
+          tap_action:
+            action: fire-dom-event
+            browser_mod:
+              service: browser_mod.popup
+              data:              
+                content:
+                  type: entities
+                  entities:          
+                    - entity: input_number.wecker_vorlauf
+                      name: Musik vorher einschalten
+                    - entity: input_number.wecker_verzoegerung
+                      name: Geräte nachher einschalten   
+                    - entity: input_boolean.aufstehen_radios_einschalten   
   
   - type: conditional
     view_layout:
@@ -256,7 +258,7 @@ cards:
       show_rank: false
       
   - type: entities
-    title: Abfallkalender
+    title: Abfall
     show_header_toggle: false
     entities:
       - entity: sensor.edg_restmuell
@@ -392,14 +394,3 @@ cards:
       entities:
         - entity: sensor.fahrzeit_zur_arbeit
         - entity: sensor.fahrzeit_nach_hause 
-        
-  - type: entities
-    title: Waage
-    show_header_toggle: false
-    entities:
-      - entity: sensor.dennis_gewicht  
-        name: Dennis
-      - entity: sensor.natalie_gewicht   
-        name: Natalie
-      - entity: sensor.franzi_gewicht   
-        name: Franzi

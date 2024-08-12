@@ -26,16 +26,38 @@ automation:
         for: '00:01:00'
     condition:      
       - "{{ (now().hour | int) >= 15 }}"
-      - "{{ is_state('person.dennis', 'home') }}"
+      - "{{ not is_state('sensor.personen_zu_hause', '0') }}"
       - "{{ is_state('binary_sensor.home_office_aktiv', 'off') }}"
       - "{{ is_state('binary_sensor.baden_aktiv', 'off') }}"      
       - "{{ is_state('light.wohnzimmer_couch', 'off') }}"
       - "{{ is_state('light.wohnzimmer_strahler', 'off') }}"
       - "{{ is_state('light.wohnzimmer_schrank', 'off') }}"     
     action:
-      - service: light.turn_on
-        entity_id: light.wohnzimmer_schrank
+      - if: "{{ is_state('switch.watchtv_wohnzimmer', 'on') }}"
+        then:
+          - service: light.turn_on
+            entity_id: light.wohnzimmer_strahler
+        else:
+          - service: light.turn_on
+            entity_id: light.wohnzimmer_schrank
 
+  - alias: "Wohnzimmer - Licht Nachts"
+    id: "wohnzimmer_licht_nachts"
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.nachts
+        to: 'on'
+    condition:      
+      - "{{ not is_state('sensor.personen_zu_hause', '0') }}"
+      - "{{ is_state('binary_sensor.home_office_aktiv', 'off') }}"
+      - "{{ is_state('binary_sensor.baden_aktiv', 'off') }}"      
+      - "{{ is_state('light.wohnzimmer_strahler', 'off') }}"      
+    action:
+      - service: light.turn_on
+        entity_id: light.wohnzimmer_strahler      
+      - service: light.turn_off
+        entity_id: light.wohnzimmer_schrank
+            
   - alias: "Wohnzimmer - Licht Couch"
     id: "wohnzimmer_licht_couch"
     trigger:

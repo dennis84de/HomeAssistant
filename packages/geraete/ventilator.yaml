@@ -12,7 +12,7 @@ input_boolean:
 
 input_select:
   ventilator_drehungswinkel:
-    name: Drehungswinkel
+    name: Drehungswinkels
     options:
       - '120'
       - '90'

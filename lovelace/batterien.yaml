@@ -160,28 +160,13 @@ cards:
         name: Wohnzimmer     
       - entity: sensor.heizung_kinderzimmer_batterie
         name: Kinderzimmer             
-      - entity: binary_sensor.heizung_arbeitszimmer_batterie
-        name: Arbeitszimmer
-        state_map:
-          - from: "off"
-            to: 100
-          - from: "on"
-            to: 25              
-      - entity: binary_sensor.heizung_badezimmer_batterie
+      - entity: sensor.heizung_arbeitszimmer_batterie
+        name: Arbeitszimmer        
+      - entity: sensor.heizung_badezimmer_batterie 
         name: Badezimmer
-        state_map:
-          - from: "off"
-            to: 100
-          - from: "on"
-            to: 25          
-      - entity: binary_sensor.heizung_kueche_batterie
+      - entity: sensor.heizung_kueche_batterie
         name: Küche
-        state_map:
-          - from: "off"
-            to: 100
-          - from: "on"
-            to: 25
-            
+
   - type: custom:battery-state-card
     title: Fenster
     tap_action: more-info

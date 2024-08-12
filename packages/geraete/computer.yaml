@@ -39,29 +39,61 @@ switch:
                     entity_id: button.computer_herunterfahren
     
 automation:
-#  - alias: "Computer inaktiv"
-#    id: "computer_inaktiv"
-#    trigger:
-#      - platform: template
-#        value_template: >-
-#          {% set letzteAktivitaet = as_timestamp(states('sensor.computer_computer_letzte_aktivitaet'))|int(0) %}
-#          {% set jetzt = now().timestamp()|int(0) %}
-#
-#          {{ letzteAktivitaet }}
-#          {{ jetzt }}
-#
-#          {{ (jetzt - letzteAktivitaet) > 1800 }}
-#    condition:
-#      - "{{ is_state('binary_sensor.home_office_aktiv', 'off') }}"       
-#      - "{{ is_state('switch.computer', 'on') or is_state('switch.arbeitszimmer_monitore', 'on') }}"
-#    action:
-#      - service: switch.turn_off
-#        entity_id: switch.arbeitszimmer_monitore      
-#      - if: "{{ not is_state('input_select.computer_ausschalten', 'Nichts unternehmen') }}"
-#        then:         
-#          - service: switch.turn_off
-#            entity_id: switch.computer
+  - alias: "Monitore ausschalten"
+    id: "monitore_ausschalten"
+    trigger:
+      - platform: state
+        entity_id: switch.computer
+        to: 'off'
+        for:
+          minutes: 10
+      - platform: state
+        entity_id: switch.computer_arbeit
+        to: 'off'
+        for:
+          minutes: 10          
+    condition:
+      - "{{ is_state('switch.arbeitszimmer_monitore', 'on') }}"
+      - "{{ is_state('switch.computer', 'off') }}"
+      - "{{ is_state('switch.computer_arbeit', 'off') }}"
+    action:
+      - service: switch.turn_off
+        entity_id: switch.arbeitszimmer_monitore      
 
+  - alias: "Computer inaktiv"
+    id: "computer_inaktiv"
+    trigger:
+      - platform: template
+        value_template: >-
+          {% set letzteAktivitaet = as_timestamp(states('sensor.computer_zuletzt_aktiv'), 0) | int(0) %}
+          {% set jetzt = now().timestamp() | int(0) %}
+          
+          {{ letzteAktivitaet > 0 and (jetzt - letzteAktivitaet) > 1800 }}
+    condition:
+      - "{{ is_state('switch.computer', 'on') and not is_state('input_select.computer_ausschalten', 'Nichts unternehmen') }}"
+    action:      
+      - service: switch.turn_off
+        entity_id: switch.computer
+     
+  - alias: "Computer einschalten"
+    id: "computer_einschalten"
+    trigger:
+      - platform: event
+        event_type: zha_event
+        event_data:
+          device_ieee: 00:15:8d:00:02:13:45:68
+          command: attribute_updated
+          args:
+            attribute_id: 0
+            attribute_name: on_off     
+            value: 1            
+    condition:       
+      - "{{ is_state('binary_sensor.home_office_aktiv', 'off') }}"
+      - "{{ is_state('switch.computer', 'off') }}"
+    action:
+      - service: switch.turn_on
+        entity_id: switch.computer, switch.arbeitszimmer_monitore 
+            
   - alias: "Unterwegs - Computer ausschalten"
     id: "unterwegs_computer_ausschalten"
     trigger:

@@ -30,14 +30,16 @@ input_boolean:
   aufstehen_begruessung:
     name: Aufstehen Begrüßung     
     
-binary_sensor:
-  - platform: template
-    sensors:
-      wecker_aktiv:
-        friendly_name: Wecker aktiv
-        icon_template: mdi:alarm-multiple
-        device_class: sound
-        value_template: "{{ True if is_state('input_boolean.wecker_aktiv', 'on') else False }}"
+template:
+  - binary_sensor:
+      - name: "Wecker gestellt"
+        unique_id: wecker_gestellt        
+        state: "{{ not is_state('sensor.tablet_schlafzimmer_next_alarm', 'unavailable') }}"   
+        
+      - name: "Wecker aktiv"
+        unique_id: wecker_aktiv
+        icon: mdi:alarm-multiple
+        state: "{{ True if is_state('input_boolean.wecker_aktiv', 'on') else False }}"
 
 script:
   aufstehen_begruessung:

@@ -46,8 +46,8 @@ light:
     entity_id: switch.kleiderschrank
 
 automation:
-  - alias: 'Licht Schlafzimmer'
-    id: "licht_schlafzimmer"
+  - alias: 'Licht Schlafzimmer - Kleiderschrank'
+    id: "licht_schlafzimmer_kleiderschrank"
     trigger: 
       - id: licht_on
         platform: state
@@ -62,10 +62,15 @@ automation:
         event_type: timer.finished
         event_data:
           entity_id: timer.licht_schlafzimmer 
+      - id: licht_off
+        platform: state
+        entity_id:
+          - binary_sensor.fenster_schlafzimmer
+        to: 'on'          
     condition:      
       - condition: or
         conditions:          
-            - "{{ trigger.id == 'licht_off' }}"        
+            - "{{ trigger.id == 'licht_off' and is_state('light.kleiderschrank', 'on') }}"        
             - condition: and
               conditions:
                 - "{{ is_state('binary_sensor.sonne_tagsueber', 'off') }}"
@@ -76,18 +81,18 @@ automation:
                 - "{{ is_state('input_boolean.bewegungsmelder_schlafzimmer_deaktiviert', 'off') }}"
                 - "{{ is_state('input_boolean.schlafen_einschalten_aktiv', 'off') }}"
     action:
+      - if: "{{ trigger.id == 'licht_off' }}"
+        then:
+          - service: light.turn_off
+            entity_id: light.kleiderschrank         
       - if: "{{ trigger.id == 'licht_on' }}"
         then:
           - service: light.turn_on
             entity_id: light.kleiderschrank
           - service: timer.start
             entity_id: timer.licht_schlafzimmer
-      - if: "{{ trigger.id == 'licht_off' }}"
-        then:
-          - service: light.turn_off
-            entity_id: light.kleiderschrank   
             
-  - alias: "Schlafzimmer - Licht einschalten"
+  - alias: "Licht Schlafzimmer - Schalter"
     id: "schlafzimmer_licht_einschalten"  
     trigger:
       - id: schalter_bett
@@ -107,62 +112,14 @@ automation:
           args:
             click_type: single            
     condition:
-      - "{{ is_state('light.bett', 'off') }}"
-      - "{{ is_state('binary_sensor.wecker_aktiv', 'off') }}" 
+      - "{{ is_state('binary_sensor.sonne_tagsueber', 'off') }}"
     action:
-      - service: light.turn_on
-        entity_id: light.bett
-        
-  - alias: "Schlafzimmer - Licht ausschalten"
-    id: "schlafzimmer_licht_ausschalten"  
-    trigger:
-      - id: schalter_bett
-        platform: event    
-        event_type: zha_event
-        event_data:
-          device_ieee: 00:15:8d:00:01:83:77:4a
-          command: click
-          args:
-            click_type: single          
-      - id: schalter_bett
-        platform: event    
-        event_type: zha_event
-        event_data:
-          device_ieee: 00:15:8d:00:02:c8:c4:8b
-          command: click
-          args:
-            click_type: single               
-      - id: sensor_bett
-        platform: state        
-        entity_id: binary_sensor.im_bett
-        to: 'on'
-        for:
-          seconds: 2
-    condition:
-      - "{{ not is_state('sensor.lichter_eingeschaltet', '0') }}"
-      - "{{ is_state('binary_sensor.wecker_aktiv', 'off') }}"
-      - condition: or
-        conditions:          
-          - "{{ trigger.id == 'schalter_bett' }}"
-          - "{{ is_state('binary_sensor.allein_zu_hause', 'on') and is_state('binary_sensor.nachts', 'on') }}"              
-    action:
-      - service: script.licht_wohnung_ausschalten     
-      
-  - alias: "Kleiderschrank - Licht ausschalten"
-    id: "kleiderschrank_licht_ausschalten"
-    trigger:
-      - platform: state
-        entity_id:
-          - binary_sensor.fenster_schlafzimmer
-        to: 'on'
-    condition:
-      - condition: state
-        entity_id: light.kleiderschrank
-        state: 'on'      
-    action:
-      - service: light.turn_off
-        entity_id:
-          - light.kleiderschrank       
+      - if: "{{ is_state('light.bett', 'off') }}"
+        then:        
+          - service: light.turn_on
+            entity_id: light.bett
+        else:
+          - service: script.licht_wohnung_ausschalten       
 
 homeassistant:
   customize:

@@ -5,10 +5,6 @@ layout:
   width: 400
   max_cols: 3          
 cards:
-#  - type: weather-forecast
-#    entity: weather.wetter_dortmund
-#    forecast_type: daily
-    
   - type: custom:weather-chart-card
     entity: weather.wetter_dortmund
     forecast:
@@ -17,20 +13,21 @@ cards:
   - type: markdown
     title: Wetterwarnungen
     content: >-      
-      {% set current_count = state_attr("sensor.wetterwarnungen_current_warning_level", "warning_count") %}
-      {% set advance_count = state_attr("sensor.wetterwarnungen_advance_warning_level", "warning_count") %}
+      {% set current_count = state_attr("sensor.stadt_dortmund_aktuelle_warnstufe", "warning_count") %}
+      {% set advance_count = state_attr("sensor.stadt_dortmund_vorwarnstufe", "warning_count") %}
+      
       {% if ((current_count == 0 or current_count == None) and (advance_count == 0 or advance_count == None)) %}
       **<font color=#c5e566>Keine Warnungen</font>**
       {% else %}
         {% for i in range(current_count) %}
-          {% set headline = state_attr("sensor.wetterwarnungen_current_warning_level", "warning_" ~ loop.index ~ "_headline") %}
-          {% set description = state_attr("sensor.wetterwarnungen_current_warning_level", "warning_" ~ loop.index ~ "_description") %}
-          {% set level = state_attr("sensor.wetterwarnungen_current_warning_level", "warning_" ~ loop.index ~ "_level") %}
-          {% set time_start = state_attr("sensor.wetterwarnungen_current_warning_level", "warning_" ~ loop.index ~ "_start") %}
+          {% set headline = state_attr("sensor.stadt_dortmund_aktuelle_warnstufe", "warning_" ~ loop.index ~ "_headline") %}
+          {% set description = state_attr("sensor.stadt_dortmund_aktuelle_warnstufe", "warning_" ~ loop.index ~ "_description") %}
+          {% set level = state_attr("sensor.stadt_dortmund_aktuelle_warnstufe", "warning_" ~ loop.index ~ "_level") %}
+          {% set time_start = state_attr("sensor.stadt_dortmund_aktuelle_warnstufe", "warning_" ~ loop.index ~ "_start") %}
           {% set weekday_start = as_timestamp(time_start) | timestamp_custom("%w", True) | int %}
-          {% set time_end = state_attr("sensor.wetterwarnungen_current_warning_level", "warning_" ~ loop.index ~ "_end") %}
+          {% set time_end = state_attr("sensor.stadt_dortmund_aktuelle_warnstufe", "warning_" ~ loop.index ~ "_end") %}
           {% set weekday_end = as_timestamp(time_end) | timestamp_custom("%w", True) | int %}
-          {% set color = state_attr("sensor.wetterwarnungen_current_warning_level", "warning_" ~ loop.index ~ "_color") %}
+          {% set color = state_attr("sensor.stadt_dortmund_aktuelle_warnstufe", "warning_" ~ loop.index ~ "_color") %}
         **<font color={{ color }}>{{ headline }}</font>**     
         {{ ['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'][weekday_start-1] ~ ", " ~ time_start.astimezone().strftime("%H:%M") ~ " - " ~ ['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'][weekday_end-1] ~ ", " ~ time_end.astimezone().strftime("%H:%M") }}
         *{{ description|trim }}*
@@ -38,14 +35,14 @@ cards:
         {% endfor %}
         {% if ((current_count != 0) and (advance_count != 0)) %}***{% endif %}
         {% for i in range(advance_count) %}
-          {% set headline = state_attr("sensor.wetterwarnungen_advance_warning_level", "warning_" ~ loop.index ~ "_headline") %}
-          {% set description = state_attr("sensor.wetterwarnungen_advance_warning_level", "warning_" ~ loop.index ~ "_description") %}
-          {% set level = state_attr("sensor.wetterwarnungen_advance_warning_level", "warning_" ~ loop.index ~ "_level") %}
-          {% set time_start = state_attr("sensor.wetterwarnungen_advance_warning_level", "warning_" ~ loop.index ~ "_start") %}
+          {% set headline = state_attr("sensor.stadt_dortmund_vorwarnstufe", "warning_" ~ loop.index ~ "_headline") %}
+          {% set description = state_attr("sensor.stadt_dortmund_vorwarnstufe", "warning_" ~ loop.index ~ "_description") %}
+          {% set level = state_attr("sensor.stadt_dortmund_vorwarnstufe", "warning_" ~ loop.index ~ "_level") %}
+          {% set time_start = state_attr("sensor.stadt_dortmund_vorwarnstufe", "warning_" ~ loop.index ~ "_start") %}
           {% set weekday_start = as_timestamp(time_start) | timestamp_custom("%w", True) | int %}
-          {% set time_end = state_attr("sensor.wetterwarnungen_advance_warning_level", "warning_" ~ loop.index ~ "_end") %}
+          {% set time_end = state_attr("sensor.stadt_dortmund_vorwarnstufe", "warning_" ~ loop.index ~ "_end") %}
           {% set weekday_end = as_timestamp(time_end) | timestamp_custom("%w", True) | int %}
-          {% set color = state_attr("sensor.wetterwarnungen_advance_warning_level", "warning_" ~ loop.index ~ "_color") %}
+          {% set color = state_attr("sensor.stadt_dortmund_vorwarnstufe", "warning_" ~ loop.index ~ "_color") %}
         **<font color={{ color }}>{{ headline }}</font>**
         {{ ['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'][weekday_start-1] ~ ", " ~ time_start.astimezone().strftime("%H:%M") ~ " - " ~ ['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'][weekday_end-1] ~ ", " ~ time_end.astimezone().strftime("%H:%M") }}
         *{{ description|trim }}*
