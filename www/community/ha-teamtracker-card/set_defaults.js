@@ -1,10 +1,14 @@
+import { ERROR_HEADSHOT_URL } from "./const.js";
+
 //
 //  Initialize card data
 //
 export function initCardData(c) {
     c.logoBG = [];
     c.logo = [];
+    c.logoError = [];
     c.name = [];
+    c.url = [];
     c.initials = [];
     c.rank = [];
     c.record = [];
@@ -34,7 +38,12 @@ export function setDefaults(t, lang, stateObj, c, o, sport, team, oppo) {
     c.timeoutsDisplay = 'inline';
     c.rankDisplay = 'inline';
     c.seriesSummaryDisplay = 'none';
-
+    if (o.bottomURL == 'more-info') {
+        c.bottomURL = null;
+    }
+    else {
+        c.bottomURL = o.bottomURL || stateObj.attributes.event_url;
+    }
     if (o.show_timeouts == false) {
         c.timeoutsDisplay = 'none';
     }
@@ -64,14 +73,28 @@ export function setDefaults(t, lang, stateObj, c, o, sport, team, oppo) {
     // Set Scoreboard data
 
     c.logo[team] = stateObj.attributes.team_logo;
+    c.logoError[team] = ERROR_HEADSHOT_URL;
     c.logoBG[team] = stateObj.attributes.team_logo;
     c.name[team] = stateObj.attributes.team_name;
+    if (o.teamURL == 'more-info') {
+        c.url[team] = null;
+    }
+    else {
+        c.url[team] = o.teamURL || stateObj.attributes.team_url ;
+    }
     c.rank[team] = stateObj.attributes.team_rank;
     c.record[team] = stateObj.attributes.team_record;
     c.winner[team] = stateObj.attributes.team_winner || false;
     c.logo[oppo] = stateObj.attributes.opponent_logo;
+    c.logoError[oppo] = ERROR_HEADSHOT_URL;
     c.logoBG[oppo] = stateObj.attributes.opponent_logo;
     c.name[oppo] = stateObj.attributes.opponent_name;
+    if (o.opponentURL == 'more-info') {
+        c.url[oppo] = null;
+    }
+    else {
+        c.url[oppo] = o.opponentURL || stateObj.attributes.opponent_url ;
+    }
     c.rank[oppo] = stateObj.attributes.opponent_rank;
     c.record[oppo] = stateObj.attributes.opponent_record;
     c.winner[oppo] = stateObj.attributes.opponent_winner || false;
