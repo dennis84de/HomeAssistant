@@ -21,8 +21,8 @@ cards:
     entities:
       - entity: device_tracker.xiaomivacuum
         name: Staubsauger
-      - entity: device_tracker.xiaomifan
-        name: Ventilator
+#      - entity: device_tracker.xiaomifan
+#        name: Ventilator
       - entity: device_tracker.epsondrucker
         name: Drucker
 
