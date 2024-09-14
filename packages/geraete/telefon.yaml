@@ -1,29 +1,3 @@
-sensor:
-  - platform: template
-    sensors:
-      telefon_status:
-        friendly_name: Telefon
-        value_template: >
-          {% if is_state('sensor.telefon', 'ringing') %}
-            Eingehender Anruf
-          {% elif is_state('sensor.telefon', 'dialing') %}
-            Ausgehender Anruf
-          {% elif is_state('sensor.telefon', 'talking') %}
-            Aktiver Anruf
-          {% else %}
-            Ruhezustand
-          {% endif %}
-        icon_template: >
-          {% if is_state('sensor.telefon', 'ringing') %}
-            mdi:phone-incoming
-          {% elif is_state('sensor.telefon', 'dialing') %}
-            mdi:phone-outgoing
-          {% elif is_state('sensor.telefon', 'talking') %}
-            mdi:phone-in-talk
-          {% else %}
-            mdi:phone
-          {% endif %}
-   
 input_boolean:
   multimedia_pausiert:
     name: Multimedia pausiert

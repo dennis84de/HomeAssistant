@@ -381,15 +381,54 @@ automation:
       - id: calendar
         platform: state
         entity_id: calendar.franzi_papa_wochenende
+      - id: schule_morgens
+        platform: template
+        value_template: >-
+          {% set fahrzeitAuto = states('sensor.fahrzeit_schule') | int(0) %}
+          {% set fahrzeitBus = states('input_number.schule_fahrzeit_bus') | int(0) %}
+          
+          {% set fahrzeitMinuten = fahrzeitAuto if is_state('input_boolean.schule_auto', 'on') else fahrzeitBus %}
+          {% set beginnMinuten = (state_attr('input_datetime.schule_beginn', 'timestamp') / 60) | int(0) %}
+
+          {% set abfahrzeitMinuten = beginnMinuten - fahrzeitMinuten %}
+          {% set stundeAbfahrt = (abfahrzeitMinuten / 60) | int(0) %}
+          {% set minuteAbfahrt = (abfahrzeitMinuten - stundeAbfahrt * 60) | int(0) %}
+          {% set uhrzeitAbfahrt = "%0.02d:%0.02d" | format(stundeAbfahrt, minuteAbfahrt ) %}
+
+          {{ states("sensor.time") == uhrzeitAbfahrt }}
+      - id: schule_nachmittags
+        platform: template
+        value_template: >-
+          {% set fahrzeitAuto = states('sensor.fahrzeit_schule') | int(0) %}
+          {% set fahrzeitBus = states('input_number.schule_fahrzeit_bus') | int(0) %}
+          
+          {% set fahrzeitMinuten = fahrzeitAuto if is_state('input_boolean.schule_auto', 'on') else fahrzeitBus %}
+          {% set endeMinuten = (state_attr('input_datetime.schule_ende', 'timestamp') / 60) | int(0) %}
+
+          {% set ankunftszeitMinuten = endeMinuten + fahrzeitMinuten %}
+          {% set stundeAnkunft = (ankunftszeitMinuten / 60) | int(0) %}
+          {% set minuteAnkunft = (ankunftszeitMinuten - stundeAnkunft * 60) | int(0) %}
+          {% set uhrzeitAnkunft = "%0.02d:%0.02d" | format(stundeAnkunft, minuteAnkunft ) %}
+
+          {{ states("sensor.time") == uhrzeitAnkunft }}          
     variables:       
       aktion: >-
         {% if trigger.id == 'boolean' %}
           {{ 'home' if trigger.to_state.state == 'on' else 'not_home' }}
+        {% elif trigger.id == 'schule_morgens' %}
+          {{ 'not_home' }}
+        {% elif trigger.id == 'schule_nachmittags' %}
+          {{ 'home' }}          
         {% else %}
           {{ 'not_home' if trigger.to_state.state == 'on' else 'home' }}
         {% endif %}
     condition:        
-      - "{{ aktion != states('device_tracker.franzi_mqtt') }}"          
+      - "{{ aktion != states('device_tracker.franzi_mqtt') }}"
+      - condition: or
+        conditions:
+          - "{{ trigger.id == 'boolean' or trigger.id == 'calendar' }}"          
+          - "{{ trigger.id == 'schule_morgens' and is_state('binary_sensor.schultag', 'on') }}"
+          - "{{ trigger.id == 'schule_nachmittags' and is_state('binary_sensor.schultag', 'on') and is_state('calendar.franzi_papa_wochenende', 'off') }}"
     action:      
       - service: mqtt.publish
         data:
@@ -436,9 +475,7 @@ homeassistant:
   customize:
     sensor.aufenthaltsort:
       icon: mdi:google-maps
-    proximity.home:
-      friendly_name: Entfernung
-      
+
     person.natalie:
       icon: mdi:human-female
     person.franzi:

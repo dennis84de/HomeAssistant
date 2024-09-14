@@ -130,7 +130,7 @@ cards:
     title: Infos
     show_header_toggle: false
     entities:
-      - entity: sensor.telefon_status
+      - entity: sensor.telefon
       - entity: sensor.handy_status
       - type: custom:template-entity-row
         entity: sensor.ungelesene_mails  
@@ -213,6 +213,8 @@ cards:
     conditions:
       - entity: binary_sensor.info_schule_anzeigen 
         state: "on"        
+      - entity: input_boolean.schule_auto 
+        state: "on"               
     card:
       type: entities
       title: Schule
@@ -222,6 +224,24 @@ cards:
           entity : sensor.fahrzeit_schule
           state: "{{ (states('sensor.fahrzeit_schule') | int(0)) }} Minuten"                    
         - type: divider
+        - entity: sensor.abfahrtzeit_schule_wegbringen       
+          name: Abfahrtzeit
+        - entity: input_datetime.schule_beginn
+          name: Schulbeginn   
+          
+  - type: conditional
+    view_layout:
+      column: 3  
+    conditions:
+      - entity: binary_sensor.info_schule_anzeigen 
+        state: "on"        
+      - entity: input_boolean.schule_auto 
+        state: "off"               
+    card:
+      type: entities
+      title: Schule
+      show_header_toggle: false
+      entities:
         - entity: sensor.abfahrtzeit_schule_wegbringen       
           name: Abfahrtzeit
         - entity: input_datetime.schule_beginn

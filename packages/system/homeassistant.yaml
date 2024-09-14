@@ -248,10 +248,6 @@ homeassistant:
     script.homeassistant_neustart:
       icon: mdi:home-assistant
       name: Neustart
-
-    sensor.hacs:
-      friendly_name: HACS
-      unit_of_measurement: Update(s)
       
     sensor.disk_use_percent:
       friendly_name: Belegter Speicherplatz

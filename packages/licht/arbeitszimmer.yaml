@@ -13,34 +13,39 @@ automation:
   - alias: 'Licht Arbeitszimmer'
     id: "licht_arbeitszimmer"
     trigger: 
-      - id: licht_on
+      - id: licht_an
         platform: state
         entity_id: binary_sensor.bewegungsmelder_arbeitszimmer
         to: 'on'
-      - id: licht_off
+      - id: licht_aus
         platform: event
         event_type: timer.finished
         event_data:
           entity_id: timer.licht_arbeitszimmer
+      - id: licht_aus
+        platform: state
+        entity_id: binary_sensor.sonne_tagsueber 
+        to: 'on'          
     condition:      
       - condition: or
         conditions:          
-            - "{{ trigger.id == 'licht_off' }}"        
+            - "{{ trigger.id == 'licht_aus' }}"        
             - condition: and
               conditions:
                 - "{{ is_state('binary_sensor.sonne_tagsueber', 'off') }}"
                 - "{{ is_state('binary_sensor.bewegungsmelder_inaktiv_unterwegs', 'off') }}"
                 - "{{ is_state('binary_sensor.bewegungsmelder_inaktiv_staubsauger', 'off') }}"
-                - "{{ is_state('input_boolean.bewegungsmelder_flur_deaktiviert', 'off') }}"
+                - "{{ is_state('input_boolean.bewegungsmelder_arbeitszimmer_deaktiviert', 'off') }}"
                 - "{{ is_state('binary_sensor.home_office_aktiv', 'off') }}"
+                - "{{ is_state('light.arbeitszimmer_licht', 'off') or not is_state('timer.licht_arbeitszimmer', 'idle') }}"
     action:
-      - if: "{{ trigger.id == 'licht_on' }}"
+      - if: "{{ trigger.id == 'licht_an' }}"
         then:
           - service: light.turn_on
             entity_id: light.arbeitszimmer_licht
           - service: timer.start
             entity_id: timer.licht_arbeitszimmer
-      - if: "{{ trigger.id == 'licht_off' }}"
+      - if: "{{ trigger.id == 'licht_aus' }}"
         then:
           - service: light.turn_off
             entity_id: light.arbeitszimmer_licht        

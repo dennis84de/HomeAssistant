@@ -175,12 +175,8 @@ automation:
         
         {{ istSamstag or (istArbeitstag and (istUrlaub or istKrankheit)) }}              
     condition:
-      - condition: state
-        entity_id: input_boolean.wecker_aktiv
-        state: 'off'        
-      - condition: state
-        entity_id: binary_sensor.schlafen_aktiv
-        state: 'on'
+      - "{{ is_state('input_boolean.wecker_aktiv', 'off') }}"
+      - "{{ is_state('binary_sensor.schlafen_aktiv', 'on') }}"
     action:
       - service: input_boolean.turn_on
         entity_id: input_boolean.wecker_aktiv
@@ -317,7 +313,3 @@ automation:
               - service: script.radios_einschalten       
                 data:
                   radioBalkon: "{{ radioBalkonEinschalten }}"                      
-      - if: "{{ is_state('input_boolean.aufstehen_radios_einschalten', 'off') }}"
-        then:    
-          - service: input_boolean.turn_on
-            entity_id: input_boolean.aufstehen_radios_einschalten   

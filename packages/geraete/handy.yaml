@@ -23,7 +23,7 @@ mqtt:
        
   sensor:
     - name: "Handy"
-      state_topic: "handy/status"
+      state_topic: "handy/status"  
       value_template: "{{ value_json.status }}"   
       json_attributes_topic: "handy/status"
       json_attributes_template: "{{ value_json | tojson }}"       
@@ -38,13 +38,13 @@ template:
         unique_id: handy_status
         state: >-
           {% if is_state('sensor.handy', 'ringing') %}
-            Eingehender Anruf
+            Klingeln
           {% elif is_state('sensor.handy', 'dialing') %}
-            Ausgehender Anruf
+            Wählen
           {% elif is_state('sensor.handy', 'talking') %}
-            Aktiver Anruf            
+            Sprechen        
           {% else %}
-            Ruhezustand
+            Untätig
           {% endif %}        
         icon: >-
           {% if is_state('sensor.handy', 'ringing') %}

@@ -74,6 +74,10 @@ automation:
     action:      
       - service: switch.turn_off
         entity_id: switch.computer
+      - if: "{{ is_state('binary_sensor.home_office_aktiv', 'off') }}"
+        then:
+          - service: switch.turn_off
+            entity_id: switch.arbeitszimmer_monitore                
      
   - alias: "Computer einschalten"
     id: "computer_einschalten"

@@ -124,7 +124,7 @@ script:
           - service: switch.turn_off
             entity_id: switch.watchtv_wohnzimmer          
       - service: switch.turn_on
-        entity_id: switch.arbeitszimmer_radio, switch.computer_arbeit, switch.arbeitszimmer_monitore
+        entity_id: switch.computer_arbeit, switch.arbeitszimmer_monitore
       - choose:
           - conditions:
               - condition: or

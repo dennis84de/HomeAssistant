@@ -142,9 +142,9 @@ homeassistant:
     device_tracker.xiaomivacuum:
       icon: mdi:robot-vacuum-variant
       friendly_name: Xiaomi Staubsauger
-#    device_tracker.xiaomifan:
-#      icon: mdi:fan      
-#      friendly_name: Xiaomi Ventilator
+    device_tracker.xiaomifan:
+      icon: mdi:fan      
+      friendly_name: Xiaomi Ventilator
     device_tracker.soundbar:
       icon: mdi:music-note
     device_tracker.fernseherwohnzimmer:

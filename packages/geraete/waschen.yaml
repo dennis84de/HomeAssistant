@@ -116,52 +116,7 @@ automation:
               - "{{ is_state('switch.trockner', 'off') }}"
             sequence:
               - service: switch.turn_on
-                entity_id: switch.trockner        
-              
-  - alias: "Waschmaschine - Noch eingeschaltet"
-    id: "waschmaschine_noch_eingeschaltet"
-    trigger:
-      - platform: state
-        entity_id: input_select.status_waschmaschine
-        to: 'Stillstand'
-        for: '01:00:00'
-    condition:
-      - "{{ is_state('switch.waschmaschine', 'on') }}"
-    action:
-      - choose:
-          - conditions:
-              - "{{ not is_state('person.dennis', 'home') }}"
-            sequence:
-              - service: notify.telegram
-                data:                  
-                  message: "Die Waschmaschine ist noch eingeschaltet."
-                  data:
-                    inline_keyboard:
-                      - 'Waschmaschine ausschalten:/waschmaschine_ausschalten'                  
-        default:
-          - service: !secret tts_service
-            data:
-              message: "Die Waschmaschine ist noch eingeschaltet."
-
-  - alias: "Waschmaschine - Ausschalten"
-    id: "waschmaschine_ausschalten"
-    trigger:
-      - platform: event
-        event_type: telegram_callback
-        event_data:
-          data: '/waschmaschine_ausschalten'
-    action:
-      - service: switch.turn_off
-        entity_id: switch.waschmaschine
-      - service: telegram_bot.edit_replymarkup
-        data:
-          message_id: 'last'
-          chat_id: '{{ trigger.event.data.user_id }}'
-          inline_keyboard: []
-      - service: telegram_bot.send_message
-        data:
-          target: '{{ trigger.event.data.chat_id }}'
-          message: "Die Waschmaschine wird ausgeschaltet."          
+                entity_id: switch.trockner           
           
   - alias: "Trockner - Ausgeschaltet"
     id: "trockner_ausgeschaltet"
@@ -244,55 +199,7 @@ automation:
         default:
           - service: !secret tts_service
             data:
-              message: "Der Trockner ist fertig."                              
-
-  - alias: "Trockner - Noch eingeschaltet"
-    id: "trockner_noch_eingeschaltet"
-    trigger:
-      - platform: state
-        entity_id: input_select.status_trockner
-        to: 'Stillstand'
-        for: '01:00:00'
-    condition:
-      - "{{ is_state('switch.trockner', 'on') }}"
-      - "{{ not is_state('sensor.waschmaschine_status', 'Waschen') }}"  
-    action:
-      - choose:
-          - conditions:
-              - condition: state
-                entity_id: person.dennis
-                state: 'not_home'
-            sequence:
-              - service: notify.telegram
-                data:                  
-                  message: "Der Trockner ist noch eingeschaltet."
-                  data:
-                    inline_keyboard:
-                      - 'Trockner ausschalten:/trockner_ausschalten'                  
-        default:
-          - service: !secret tts_service
-            data:
-              message: "Der Trockner ist noch eingeschaltet."
-              
-  - alias: "Trockner - Ausschalten"
-    id: "trockner_ausschalten"
-    trigger:
-      - platform: event
-        event_type: telegram_callback
-        event_data:
-          data: '/trockner_ausschalten'
-    action:
-      - service: switch.turn_off
-        entity_id: switch.trockner
-      - service: telegram_bot.edit_replymarkup
-        data:
-          message_id: 'last'
-          chat_id: '{{ trigger.event.data.user_id }}'
-          inline_keyboard: []
-      - service: telegram_bot.send_message
-        data:
-          target: '{{ trigger.event.data.chat_id }}'
-          message: "Der Trockner wird ausgeschaltet."              
+              message: "Der Trockner ist fertig."                                     
           
 homeassistant:
   customize:

@@ -9,7 +9,14 @@ input_select:
       - "30"
     icon: mdi:timelapse      
     
-input_datetime:
+input_number:
+  schule_fahrzeit_bus:
+    name: FahrzeitBus
+    min: 80
+    max: 100
+    step: 10
+    
+input_datetime:   
   schule_beginn:
     name: Schule Beginn
     has_date: false
@@ -21,6 +28,11 @@ input_datetime:
     has_date: false
     has_time: true
     icon: mdi:timer
+    
+input_boolean:
+  schule_auto:
+    name: Schule Auto
+    icon: mdi:car-outline
     
 template:
   - binary_sensor:
@@ -45,7 +57,10 @@ template:
       - name: "Abfahrtzeit Schule wegbringen"
         unique_id: abfahrtzeit_schule_wegbringen
         state: >
-          {% set fahrzeitMinuten = states('sensor.fahrzeit_schule') | int(0) %}
+          {% set fahrzeitAuto = states('sensor.fahrzeit_schule') | int(0) %}
+          {% set fahrzeitBus = states('input_number.schule_fahrzeit_bus') | int(0) %}
+          
+          {% set fahrzeitMinuten = fahrzeitAuto if is_state('input_boolean.schule_auto', 'on') else fahrzeitBus %}
           {% set beginnMinuten = (state_attr('input_datetime.schule_beginn', 'timestamp') / 60) | int(0) %}
           {% set pufferMinuten = states('input_select.schule_puffer') | int(0) %}
 
@@ -56,10 +71,20 @@ template:
 
           {{ uhrzeitAbfahrt }}
           
+        icon: >
+          {% if is_state('input_boolean.schule_auto', 'on') %}
+            mdi:car-outline
+          {% else %}
+            mdi:train-car-passenger
+          {% endif %}
+          
       - name: "Abfahrtzeit Schule abholen"
         unique_id: abfahrtzeit_schule_abholen
         state: >
-          {% set fahrzeitMinuten = states('sensor.fahrzeit_schule') | int(0) %}
+          {% set fahrzeitAuto = states('sensor.fahrzeit_schule') | int(0) %}
+          {% set fahrzeitBus = states('input_number.schule_fahrzeit_bus') | int(0) %}
+          
+          {% set fahrzeitMinuten = fahrzeitAuto if is_state('input_boolean.schule_auto', 'on') else fahrzeitBus %}
           {% set endeMinuten = (state_attr('input_datetime.schule_ende', 'timestamp') / 60) | int(0) %}
           {% set pufferMinuten = states('input_select.schule_puffer') | int(0) %}
 
@@ -68,7 +93,7 @@ template:
           {% set minuteAbfahrt = (abfahrzeitMinuten - stundeAbfahrt * 60) | int(0) %}
           {% set uhrzeitAbfahrt = "%0.02d:%0.02d" | format(stundeAbfahrt, minuteAbfahrt ) %}
 
-          {{ uhrzeitAbfahrt }}
+          {{ uhrzeitAbfahrt }}      
           
 automation:             
   - alias: 'Benachrichtigung Schule'
@@ -98,9 +123,17 @@ automation:
             data:
               echo: "wohnzimmer"
               message: >-
-                "Es ist Zeit zur Schule zu fahren. Die aktuelle Fahrzeit beträgt {{ states('sensor.fahrzeit_schule') }} Minuten."
+                {% if is_state('input_boolean.schule_auto', 'on') %}
+                  "Es ist Zeit zur Schule zu fahren. Die aktuelle Fahrzeit beträgt {{ states('sensor.fahrzeit_schule') }} Minuten."
+                {% else %}
+                  "Es ist Zeit sich auf den Weg zur Schule zu machen. Der Bus fährt in 10 Minuten."
+                {% endif %}                
         else:
           - service: !secret tts_service
             data:
               message: >-
-                "Es ist Zeit Franzi abzuholen. Die aktuelle Fahrzeit beträgt {{ states('sensor.fahrzeit_schule') }} Minuten."          
+                {% if is_state('input_boolean.schule_auto', 'on') %}
+                  "Es ist Zeit Franzi abzuholen. Die aktuelle Fahrzeit beträgt {{ states('sensor.fahrzeit_schule') }} Minuten."          
+                {% else %}
+                  "Es ist Zeit sich auf den Weg zur Schule zu machen. Der Bus fährt in 10 Minuten."
+                {% endif %}                              

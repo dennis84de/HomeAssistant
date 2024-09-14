@@ -358,8 +358,8 @@ automation:
             {% else %}
               {{ state_attr('sensor.aufenthaltsort', 'street') ~ ' ' ~ state_attr('sensor.aufenthaltsort', 'street_number') -}}
               {{ ', ' ~ state_attr('sensor.aufenthaltsort', 'city') }}
-              {%- if states('proximity.home') | int(0) > 0 -%} 
-                {{ ' (' ~ states('proximity.home') ~ 'km von zu Hause)' }}
+              {%- if states('sensor.zu_hause_nachste_entfernung') | int(0) > 0 -%} 
+                {{ ' (' ~ (states('sensor.zu_hause_nachste_entfernung') | int(0) / 1000) | round ~ 'km von zu Hause)' }}
               {% endif %}              
             {% endif %}          
                

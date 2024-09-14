@@ -212,7 +212,7 @@ automation:
                   title: "Wetterwarnung"
                   message: >-
                     {% set current_count = state_attr("sensor.stadt_dortmund_aktuelle_warnstufe", "warning_count") %}
-                    {% set advance_count = state_attr("sensor.stadt_dortmund_aktuelle_warnstufe", "warning_count") %}
+                    {% set advance_count = state_attr("sensor.stadt_dortmund_vorwarnstufe", "warning_count") %}
 
                     {% if (current_count == None or advance_count == None) or (current_count == 0 and advance_count == 0) %}
                       Aktuell liegt keine Wetterwarnung vor.
@@ -245,7 +245,7 @@ automation:
             data:
               message: >-
                 {% set current_count = state_attr("sensor.stadt_dortmund_aktuelle_warnstufe", "warning_count") %}
-                {% set advance_count = state_attr("sensor.stadt_dortmund_aktuelle_warnstufe", "warning_count") %}
+                {% set advance_count = state_attr("sensor.stadt_dortmund_vorwarnstufe", "warning_count") %}
 
                 {% if current_count == None or advance_count == None or (current_count == 0 and advance_count == 0) %}
                   Aktuell liegt keine Wetterwarnung vor.
