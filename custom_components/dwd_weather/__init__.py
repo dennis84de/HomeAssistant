@@ -20,6 +20,10 @@ from .const import (
     CONF_ENTITY_TYPE_STATION,
     CONF_HOURLY_UPDATE,
     CONF_INTERPOLATE,
+    CONF_MAP_LOOP_COUNT,
+    CONF_MAP_LOOP_SPEED,
+    CONF_MAP_MARKER,
+    CONF_MAP_TIMESTAMP,
     CONF_STATION_ID,
     CONF_STATION_NAME,
     CONF_WIND_DIRECTION_TYPE,
@@ -90,7 +94,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
         dwdweather_coordinator = DataUpdateCoordinator(
             hass,
             _LOGGER,
-            name=f"DWD Map Coordinator for ",
+            name="DWD Map Coordinator",
             update_method=dwd_weather_data.async_update,
             update_interval=DEFAULT_MAP_INTERVAL,
         )
@@ -106,20 +110,18 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
     return True
 
 
-async def async_migrate_entry(hass, config_entry: ConfigEntry):
+async def async_migrate_entry(hass: HomeAssistant, config_entry: ConfigEntry):
     """Migrate old entry."""
     _LOGGER.debug("Migrating from version %s", config_entry.version)
 
     if config_entry.version == 1:
         new = {**config_entry.data}
         new["weather_interval"] = 24
-        config_entry.data = {**new}
-        config_entry.version = 2
+        hass.config_entries.async_update_entry(config_entry, data=new, version=2)
     elif config_entry.version == 2:
         new = {**config_entry.data}
         new[CONF_WIND_DIRECTION_TYPE] = DEFAULT_WIND_DIRECTION_TYPE
-        config_entry.data = {**new}
-        config_entry.version = 3
+        hass.config_entries.async_update_entry(config_entry, data=new, version=3)
     elif config_entry.version == 3:
         new = {}
         new[CONF_DATA_TYPE] = CONF_DATA_TYPE_FORECAST
@@ -144,19 +146,23 @@ async def async_migrate_entry(hass, config_entry: ConfigEntry):
 
         await async_migrate_entries(hass, config_entry.entry_id, update_unique_id)
 
-        config_entry.version = 4
-        hass.config_entries.async_update_entry(config_entry, data=new)
+        hass.config_entries.async_update_entry(config_entry, data=new, version=4)
         _LOGGER.debug("New Config entry {}".format(config_entry.data))
     elif config_entry.version == 4:
         new = {**config_entry.data}
         new[CONF_INTERPOLATE] = DEFAULT_INTERPOLATION
-        config_entry.data = {**new}
-        config_entry.version = 5
+        hass.config_entries.async_update_entry(config_entry, data=new, version=5)
     elif config_entry.version == 5:
         new = {**config_entry.data}
         new[CONF_ENTITY_TYPE] = CONF_ENTITY_TYPE_STATION
-        config_entry.data = {**new}
-        config_entry.version = 6
+        hass.config_entries.async_update_entry(config_entry, data=new, version=6)
+    elif config_entry.version == 6:
+        new = {**config_entry.data}
+        new[CONF_MAP_MARKER] = True
+        new[CONF_MAP_TIMESTAMP] = True
+        new[CONF_MAP_LOOP_COUNT] = 6
+        new[CONF_MAP_LOOP_SPEED] = 0.5
+        hass.config_entries.async_update_entry(config_entry, data=new, version=7)
 
     _LOGGER.info("Migration to version %s successful", config_entry.version)
     return True

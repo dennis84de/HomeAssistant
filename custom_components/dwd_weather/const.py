@@ -7,15 +7,15 @@ from homeassistant.const import Platform
 # Base component constants
 NAME = "DWD Weather"
 DOMAIN = "dwd_weather"
-CONF_VERSION = 6
+CONF_VERSION = 7
 ATTRIBUTION = "Data provided by Deutscher Wetterdienst (DWD)"
 # Platforms
 PLATFORMS = [
     Platform.SENSOR,
     Platform.WEATHER,
 ]
-INTEGRATION_VERSION = "v2.1.4"
-MIN_REQUIRED_HA_VERSION = "2023.09.1"
+INTEGRATION_VERSION = "v2.1.8"
+MIN_REQUIRED_HA_VERSION = "2024.06.1"
 
 ATTR_LATEST_UPDATE = "latest_update_utc"
 ATTR_REPORT_ISSUE_TIME = "report_time_utc"
@@ -67,6 +67,10 @@ CONF_MAP_BACKGROUND_BUNDESLAENDER = "map_background_bundeslaender"
 CONF_MAP_BACKGROUND_KREISE = "map_background_kreise"
 CONF_MAP_BACKGROUND_GEMEINDEN = "map_background_gemeinden"
 CONF_MAP_BACKGROUND_SATELLIT = "map_background_satellit"
+CONF_MAP_MARKER = "map_marker"
+CONF_MAP_TIMESTAMP = "map_timestamp"
+CONF_MAP_LOOP_COUNT = "map_loop_count"
+CONF_MAP_LOOP_SPEED = "map_loop_speed"
 
 conversion_table_map_foreground = {
     CONF_MAP_FOREGROUND_PRECIPITATION: "Precipitation",

@@ -3,12 +3,13 @@ from custom_components.dwd_weather.connector import DWDMapData
 from homeassistant.components.camera import Camera
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.typing import ConfigType
-from homeassistant.helpers.entity import DeviceInfo
+from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.device_registry import DeviceEntryType
 
 from .const import (
     CONF_MAP_BACKGROUND_TYPE,
     CONF_MAP_ID,
+    CONF_MAP_LOOP_SPEED,
     CONF_MAP_TYPE,
     CONF_MAP_TYPE_CUSTOM,
     CONF_MAP_WINDOW,
@@ -27,7 +28,7 @@ async def async_setup_entry(
     hass: HomeAssistant, entry: ConfigType, async_add_entities
 ) -> None:
     """Set up the DWD weather camera platform."""
-    hass_data = hass.data[DOMAIN][entry.entry_id]
+    hass_data = hass.data[DOMAIN][entry.entry_id]  # type: ignore
     # if CONF_STATION_ID in entry.data:
     _LOGGER.debug("Camera async_setup_entry")
 
@@ -52,6 +53,12 @@ class MyCamera(Camera):
 
         self._dwd_data.set_type(self._dwd_data._config[CONF_MAP_TYPE])
 
+        self._frame_interval = (
+            self._dwd_data._config[CONF_MAP_LOOP_SPEED]
+            if CONF_MAP_LOOP_SPEED in self._dwd_data._config
+            else 5
+        )
+
         if self._dwd_data._config[CONF_MAP_TYPE] == CONF_MAP_TYPE_CUSTOM:
             self._dwd_data.set_location(
                 self._dwd_data._config[CONF_MAP_WINDOW]["latitude"],
@@ -69,7 +76,6 @@ class MyCamera(Camera):
         self, width: int | None = None, height: int | None = None
     ) -> bytes | None:
         """Return bytes of camera image."""
-        _LOGGER.debug("getting image")
         self._dwd_data.set_size(width if width else 520, height if height else 580)
         await self._coordinator.async_request_refresh()
         image = self._dwd_data.get_image()
@@ -95,6 +101,11 @@ class MyCamera(Camera):
             name="DWD weather maps",
             entry_type=DeviceEntryType.SERVICE,
         )
+
+    @property
+    def frame_interval(self):
+        """Return the unique of the sensor."""
+        return self._frame_interval
 
     @property
     def translation_key(self):

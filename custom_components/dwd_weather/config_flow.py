@@ -11,6 +11,7 @@ from homeassistant.helpers.selector import (
     SelectSelector,
     TextSelector,
     LocationSelector,
+    NumberSelector,
 )
 from simple_dwd_weatherforecast import dwdforecast
 
@@ -42,11 +43,14 @@ from .const import (
     CONF_MAP_BACKGROUND_GEMEINDEN,
     CONF_MAP_BACKGROUND_SATELLIT,
     CONF_MAP_ID,
+    CONF_MAP_LOOP_COUNT,
+    CONF_MAP_LOOP_SPEED,
+    CONF_MAP_MARKER,
+    CONF_MAP_TIMESTAMP,
     CONF_MAP_TYPE,
     CONF_MAP_TYPE_CUSTOM,
     CONF_MAP_TYPE_GERMANY,
     CONF_MAP_WINDOW,
-    CONF_OPTION_MAP_MESSAGE,
     CONF_STATION_ID,
     CONF_STATION_NAME,
     DOMAIN,
@@ -68,13 +72,16 @@ class DWDWeatherConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         """Handle the initial step."""
         errors = {}
         self.config_data = {}
+        data_schema = vol.Schema({})
         _LOGGER.debug("User:user_input: {}".format(user_input))
         if user_input is not None:
             # Error in user input
             if len(errors) > 0:
                 _LOGGER.debug("error: {}".format(errors))
                 return self.async_show_form(
-                    step_id="user", data_schema=data_schema, errors={errors}
+                    step_id="user",
+                    data_schema=data_schema,
+                    errors={errors},  # type: ignore
                 )
             self.config_data.update(user_input)
             # Check selected option
@@ -90,7 +97,7 @@ class DWDWeatherConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             {
                 vol.Required(
                     CONF_ENTITY_TYPE,
-                    default=CONF_ENTITY_TYPE_STATION,
+                    default=CONF_ENTITY_TYPE_STATION,  # type: ignore
                 ): SelectSelector(
                     {
                         "options": list(
@@ -141,12 +148,13 @@ class DWDWeatherConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
         for station in stations_list:
             station_data = dwdforecast.load_station_id(station[0])
-            stations.append(
-                {
-                    "label": f"[{'X' if station_data['report_available'] == 1 else '_'}] {station[1]} km: {dwdforecast.load_station_id(station[0])['name']} (H:{station_data['elev']}m)",
-                    "value": station[0],
-                }
-            )
+            if station_data:
+                stations.append(
+                    {
+                        "label": f"[{'X' if station_data['report_available'] == 1 else '_'}] {station[1]} km: {station_data['name']} (H:{station_data['elev']}m)",
+                        "value": station[0],
+                    }
+                )
 
         data_schema = vol.Schema(
             {
@@ -162,7 +170,7 @@ class DWDWeatherConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 ),
                 vol.Required(
                     CONF_CUSTOM_LOCATION,
-                    default=False,
+                    default=False,  # type: ignore
                 ): BooleanSelector({}),
                 vol.Optional(CONF_LOCATION_COORDINATES): LocationSelector({}),
             }
@@ -184,7 +192,7 @@ class DWDWeatherConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             {
                 vol.Required(
                     CONF_DATA_TYPE,
-                    default=CONF_DATA_TYPE_MIXED,
+                    default=CONF_DATA_TYPE_MIXED,  # type: ignore
                 ): SelectSelector(
                     {
                         "options": list(
@@ -229,35 +237,35 @@ class DWDWeatherConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 dwdforecast.load_station_id(self.config_data[CONF_STATION_ID])
             )
         )
-        data_schema = vol.Schema(
-            {
-                vol.Required(
-                    CONF_STATION_NAME,
-                    default=dwdforecast.load_station_id(
-                        self.config_data[CONF_STATION_ID]
-                    )["name"],
-                ): TextSelector({}),
-                vol.Required(
-                    CONF_WIND_DIRECTION_TYPE,
-                    default="degrees",
-                ): SelectSelector(
-                    {
-                        "options": list(["degrees", "direction"]),
-                        "custom_value": False,
-                        "mode": "list",
-                        "translation_key": CONF_WIND_DIRECTION_TYPE,
-                    }
-                ),
-                vol.Required(
-                    CONF_INTERPOLATE,
-                    default=True,
-                ): BooleanSelector({}),
-                vol.Required(
-                    CONF_HOURLY_UPDATE,
-                    default=False,
-                ): BooleanSelector({}),
-            }
-        )
+        station = dwdforecast.load_station_id(self.config_data[CONF_STATION_ID])
+        if station:
+            data_schema = vol.Schema(
+                {
+                    vol.Required(
+                        CONF_STATION_NAME,
+                        default=station["name"],
+                    ): TextSelector({}),
+                    vol.Required(
+                        CONF_WIND_DIRECTION_TYPE,
+                        default="degrees",  # type: ignore
+                    ): SelectSelector(
+                        {
+                            "options": list(["degrees", "direction"]),
+                            "custom_value": False,
+                            "mode": "list",
+                            "translation_key": CONF_WIND_DIRECTION_TYPE,
+                        }
+                    ),
+                    vol.Required(
+                        CONF_INTERPOLATE,
+                        default=True,  # type: ignore
+                    ): BooleanSelector({}),
+                    vol.Required(
+                        CONF_HOURLY_UPDATE,
+                        default=False,  # type: ignore
+                    ): BooleanSelector({}),
+                }
+            )
 
         return self.async_show_form(
             step_id="station_configure", data_schema=data_schema, errors=errors
@@ -277,7 +285,7 @@ class DWDWeatherConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             {
                 vol.Required(
                     CONF_MAP_TYPE,
-                    default=CONF_MAP_TYPE_GERMANY,
+                    default=CONF_MAP_TYPE_GERMANY,  # type: ignore
                 ): SelectSelector(
                     {
                         "options": list(
@@ -331,16 +339,22 @@ class DWDWeatherConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         if user_input is not None:
             self.config_data.update(user_input)
 
-            return self.async_create_entry(
-                title=f"Weathermap {conversion_table_map_foreground[self.config_data[CONF_MAP_FOREGROUND_TYPE]]}",
-                data=self.config_data,
-            )
+            if (
+                user_input[CONF_MAP_FOREGROUND_TYPE]
+                == CONF_MAP_FOREGROUND_PRECIPITATION
+            ):
+                return await self.async_step_select_map_loop()
+            else:
+                return self.async_create_entry(
+                    title=f"Weathermap {conversion_table_map_foreground[self.config_data[CONF_MAP_FOREGROUND_TYPE]]}",
+                    data=self.config_data,
+                )
 
         data_schema = vol.Schema(
             {
                 vol.Required(
                     CONF_MAP_FOREGROUND_TYPE,
-                    default=CONF_MAP_FOREGROUND_PRECIPITATION,
+                    default=CONF_MAP_FOREGROUND_PRECIPITATION,  # type: ignore
                 ): SelectSelector(
                     {
                         "options": list(
@@ -362,7 +376,7 @@ class DWDWeatherConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 ),
                 vol.Required(
                     CONF_MAP_BACKGROUND_TYPE,
-                    default=CONF_MAP_BACKGROUND_BUNDESLAENDER,
+                    default=CONF_MAP_BACKGROUND_BUNDESLAENDER,  # type: ignore
                 ): SelectSelector(
                     {
                         "options": list(
@@ -379,11 +393,64 @@ class DWDWeatherConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                         "translation_key": CONF_MAP_BACKGROUND_TYPE,
                     }
                 ),
+                vol.Required(
+                    CONF_MAP_MARKER,
+                    default=False,  # type: ignore
+                ): BooleanSelector({}),
             }
         )
 
         return self.async_show_form(
             step_id="select_map_content", data_schema=data_schema, errors=errors
+        )
+
+    async def async_step_select_map_loop(self, user_input=None):
+        errors = {}
+        _LOGGER.debug("Map_loop:user_input: {}".format(user_input))
+        if user_input is not None:
+            user_input[CONF_MAP_LOOP_COUNT] = int(user_input[CONF_MAP_LOOP_COUNT] / 5)
+            self.config_data.update(user_input)
+
+            return self.async_create_entry(
+                title=f"Weathermap {conversion_table_map_foreground[self.config_data[CONF_MAP_FOREGROUND_TYPE]]}",
+                data=self.config_data,
+            )
+
+        data_schema = vol.Schema(
+            {
+                vol.Required(
+                    CONF_MAP_TIMESTAMP,
+                    default=False,  # type: ignore
+                ): BooleanSelector({}),
+                vol.Required(
+                    CONF_MAP_LOOP_COUNT,
+                    default=30,  # type: ignore
+                ): NumberSelector(
+                    {
+                        "min": 5,
+                        "max": 60,
+                        "step": "5",
+                        "mode": "slider",
+                        "unit_of_measurement": "min",
+                    }
+                ),
+                vol.Required(
+                    CONF_MAP_LOOP_SPEED,
+                    default=0.5,  # type: ignore
+                ): NumberSelector(
+                    {
+                        "min": 0.1,
+                        "max": 2,
+                        "step": "0.1",
+                        "mode": "slider",
+                        "unit_of_measurement": "s",
+                    }
+                ),
+            }
+        )
+
+        return self.async_show_form(
+            step_id="select_map_loop", data_schema=data_schema, errors=errors
         )
 
     @staticmethod
@@ -405,7 +472,7 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
             )
         )
 
-    async def async_step_init(self, user_input: dict[str] | None = None) -> FlowResult:
+    async def async_step_init(self, user_input: dict[str] | None = None) -> FlowResult:  # type: ignore
         """Manage the options."""
         if self.config_entry.data[CONF_ENTITY_TYPE] == CONF_ENTITY_TYPE_STATION:
             if user_input is not None:
@@ -472,9 +539,96 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
                 ),
             )
         elif self.config_entry.data[CONF_ENTITY_TYPE] == CONF_ENTITY_TYPE_MAP:
+            if user_input is not None:
+                _LOGGER.debug(
+                    "OptionsFlowHandler map: user_input {}".format(user_input)
+                )
+
+                user_input[CONF_ENTITY_TYPE] = self.config_entry.data[CONF_ENTITY_TYPE]
+                user_input[CONF_MAP_ID] = self.config_entry.data[CONF_MAP_ID]
+                user_input[CONF_MAP_FOREGROUND_TYPE] = self.config_entry.data[
+                    CONF_MAP_FOREGROUND_TYPE
+                ]
+                if CONF_MAP_TYPE in self.config_entry.data:
+                    user_input[CONF_MAP_TYPE] = self.config_entry.data[CONF_MAP_TYPE]
+                if CONF_MAP_WINDOW in self.config_entry.data:
+                    user_input[CONF_MAP_WINDOW] = self.config_entry.data[
+                        CONF_MAP_WINDOW
+                    ]
+                if CONF_MAP_LOOP_COUNT in user_input:
+                    user_input[CONF_MAP_LOOP_COUNT] = int(
+                        user_input[CONF_MAP_LOOP_COUNT] / 5
+                    )
+                self.hass.config_entries.async_update_entry(
+                    self.config_entry,
+                    data=user_input,
+                    options=self.config_entry.options,
+                )
+                return self.async_create_entry(title="", data={})
+            data_schema = vol.Schema(
+                {
+                    vol.Required(
+                        CONF_MAP_BACKGROUND_TYPE,
+                        default=self.config_entry.data[CONF_MAP_BACKGROUND_TYPE],  # type: ignore
+                    ): SelectSelector(
+                        {
+                            "options": list(
+                                [
+                                    CONF_MAP_BACKGROUND_LAENDER,
+                                    CONF_MAP_BACKGROUND_BUNDESLAENDER,
+                                    CONF_MAP_BACKGROUND_KREISE,
+                                    CONF_MAP_BACKGROUND_GEMEINDEN,
+                                    CONF_MAP_BACKGROUND_SATELLIT,
+                                ]
+                            ),
+                            "custom_value": False,
+                            "mode": "dropdown",
+                            "translation_key": CONF_MAP_BACKGROUND_TYPE,
+                        }
+                    ),
+                    vol.Required(
+                        CONF_MAP_MARKER,
+                        default=self.config_entry.data[CONF_MAP_MARKER],  # type: ignore
+                    ): BooleanSelector({}),
+                }
+            )
+            if (
+                self.config_entry.data[CONF_MAP_FOREGROUND_TYPE]
+                == CONF_MAP_FOREGROUND_PRECIPITATION
+            ):
+                data_schema = data_schema.extend(
+                    {
+                        vol.Required(
+                            CONF_MAP_TIMESTAMP,
+                            default=self.config_entry.data[CONF_MAP_TIMESTAMP],  # type: ignore
+                        ): BooleanSelector({}),
+                        vol.Required(
+                            CONF_MAP_LOOP_COUNT,
+                            default=self.config_entry.data[CONF_MAP_LOOP_COUNT] * 5,  # type: ignore
+                        ): NumberSelector(
+                            {
+                                "min": 5,
+                                "max": 60,
+                                "step": "5",
+                                "mode": "slider",
+                                "unit_of_measurement": "min",
+                            }
+                        ),
+                        vol.Required(
+                            CONF_MAP_LOOP_SPEED,
+                            default=self.config_entry.data[CONF_MAP_LOOP_SPEED],  # type: ignore
+                        ): NumberSelector(
+                            {
+                                "min": 0.1,
+                                "max": 2,
+                                "step": "0.1",
+                                "mode": "slider",
+                                "unit_of_measurement": "s",
+                            }
+                        ),
+                    }
+                )
             return self.async_show_form(
                 step_id="init",
-                data_schema=vol.Schema(
-                    {vol.Optional(CONF_OPTION_MAP_MESSAGE): TextSelector({})}
-                ),
+                data_schema=data_schema,
             )

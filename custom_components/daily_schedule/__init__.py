@@ -1,9 +1,14 @@
 """Daily schedule integration."""
+
 from __future__ import annotations
 
-from homeassistant.config_entries import ConfigEntry
+from typing import TYPE_CHECKING
+
 from homeassistant.const import Platform
-from homeassistant.core import HomeAssistant
+
+if TYPE_CHECKING:
+    from homeassistant.config_entries import ConfigEntry
+    from homeassistant.core import HomeAssistant
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
@@ -17,7 +22,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
 async def config_entry_update_listener(hass: HomeAssistant, entry: ConfigEntry) -> None:
     """Update listener, called when the config entry options are changed."""
-    await hass.config_entries.async_reload(entry.entry_id)
+    hass.config_entries.async_schedule_reload(entry.entry_id)
 
 
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
