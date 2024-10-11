@@ -228,6 +228,7 @@ cards:
           name: Abfahrtzeit
         - entity: input_datetime.schule_beginn
           name: Schulbeginn   
+        - entity: input_boolean.schule_auto         
           
   - type: conditional
     view_layout:
@@ -246,6 +247,7 @@ cards:
           name: Abfahrtzeit
         - entity: input_datetime.schule_beginn
           name: Schulbeginn   
+        - entity: input_boolean.schule_auto                
           
   - type: conditional
     conditions:

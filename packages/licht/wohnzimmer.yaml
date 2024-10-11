@@ -26,7 +26,7 @@ automation:
         for: '00:01:00'
     condition:      
       - "{{ (now().hour | int) >= 15 }}"
-      - "{{ not is_state('sensor.personen_zu_hause', '0') }}"
+      - "{{ is_state('person.dennis', 'home') or is_state('person.natalie', 'home') }}"
       - "{{ is_state('binary_sensor.home_office_aktiv', 'off') }}"
       - "{{ is_state('binary_sensor.baden_aktiv', 'off') }}"      
       - "{{ is_state('light.wohnzimmer_couch', 'off') }}"
@@ -48,7 +48,7 @@ automation:
         entity_id: binary_sensor.nachts
         to: 'on'
     condition:      
-      - "{{ not is_state('sensor.personen_zu_hause', '0') }}"
+      - "{{ is_state('person.dennis', 'home') or is_state('person.natalie', 'home') }}"
       - "{{ is_state('binary_sensor.home_office_aktiv', 'off') }}"
       - "{{ is_state('binary_sensor.baden_aktiv', 'off') }}"      
       - "{{ is_state('light.wohnzimmer_strahler', 'off') }}"      
@@ -57,26 +57,25 @@ automation:
         entity_id: light.wohnzimmer_strahler      
       - service: light.turn_off
         entity_id: light.wohnzimmer_schrank
-            
-  - alias: "Wohnzimmer - Licht Couch"
-    id: "wohnzimmer_licht_couch"
+           
+  - alias: "Wohnzimmer - Licht Tagsüber"
+    id: "wohnzimmer_licht_tagsueber"
     trigger:
-      - id: cube_wohnzimmer
-        platform: event
-        event_type: zha_event
-        event_data:
-          device_ieee: 00:15:8d:00:01:10:0d:7a
-          command: knock   
-    condition:
+      - platform: state
+        entity_id: binary_sensor.sonne_tagsueber
+        to: 'on'
+        for: '00:01:00'
+    condition:   
       - condition: or
-        conditions:          
-          - "{{ is_state('calendar.borussia_dortmund', 'off') }}"
-          - "{{ True if '(T.B.A.)' in state_attr('calendar.borussia_dortmund', 'message') else False }}"
-      - "{{ is_state('media_player.home_assistant', 'playing') == False }}"
+        conditions:               
+          - "{{ is_state('light.wohnzimmer_schrank', 'on') }}"
+          - "{{ is_state('light.wohnzimmer_strahler', 'on') }}"
     action:
-      - service: light.toggle
+      - service: light.turn_off
+        entity_id: light.wohnzimmer_strahler, light.wohnzimmer_schrank     
+      - service: light.turn_off
         entity_id: light.wohnzimmer_schrank
-            
+        
 homeassistant:
   customize:
     light.wohnzimmer_couch:

@@ -129,7 +129,10 @@ template:
       - name: Neustart Dauer
         device_class: duration
         unit_of_measurement: s
-        state: "{{ (as_timestamp(now()) | int(0)) - (as_timestamp(states('sensor.home_assistant_letzter_shutdown')) | int(0)) }}"          
+        state: >-
+          {% set letzterNeustart = as_timestamp(states('sensor.home_assistant_letzter_shutdown'), 0) | int(0) %}
+          
+          {{ 0 if letzterNeustart == 0 else (as_timestamp(now()) | int(0) - letzterNeustart)  }}
     
 script:  
   homeassistant_neustart:

@@ -31,13 +31,17 @@ automation:
       - id: licht_aus
         platform: state
         entity_id: binary_sensor.licht_kinderzimmer 
-        to: 'off'
+        to: 'off'  
+      - id: licht_aus_automatisch
+        platform: state
+        entity_id: person.franzi
+        to: 'not_home'          
     condition:           
-      - "{{ states('light.kinderzimmer_licht') != trigger.to_state.state }}"
+      - "{{ states('light.kinderzimmer_licht') != trigger.to_state.state or trigger.id == 'licht_aus_automatisch' }}"
       - condition: or
         conditions:
           - "{{ is_state('person.franzi', 'home') and (is_state('person.dennis', 'home') or is_state('person.natalie', 'home')) }}"
-          - "{{ trigger.id == 'licht_aus'  }}"
+          - "{{ states('light.kinderzimmer_licht') == 'on' and (trigger.id == 'licht_aus' or trigger.id == 'licht_aus_automatisch') }}"
     action:                
       - if: "{{ trigger.id == 'licht_an' }}"
         then:          
@@ -45,10 +49,4 @@ automation:
             entity_id: light.kinderzimmer_licht          
         else:        
           - service: light.turn_off
-            entity_id: light.kinderzimmer_licht        
-            
-homeassistant:
-  customize:
-    light.kinderzimmer_licht:
-      friendly_name: Licht
-      icon: mdi:desk
+            entity_id: light.kinderzimmer_licht

@@ -8,7 +8,24 @@ timer:
     name: Licht Arbeitszimmer
     icon: mdi:timer-off
     duration: 120
+  
+input_number:
+  helligkeit_arbeitszimmer:
+    name: Helligkeit Arbeitszimmer
+    min: 100
+    max: 1000
+    step: 50 
     
+template:
+  - binary_sensor:
+      - name: "Licht Arbeitszimmer"
+        unique_id: licht_arbeitszimmer
+        state: >
+          {% set istNachts = is_state('binary_sensor.nachts', 'on') %}
+          {% set istDunkel = states('sensor.balkon_helligkeit_mittelwert') | float(0) < states('input_number.helligkeit_arbeitszimmer') | float(500)%}
+    
+          {{ istNachts or istDunkel }}
+            
 automation:  
   - alias: 'Licht Arbeitszimmer'
     id: "licht_arbeitszimmer"
@@ -17,6 +34,10 @@ automation:
         platform: state
         entity_id: binary_sensor.bewegungsmelder_arbeitszimmer
         to: 'on'
+      - id: licht_an_dunkel
+        platform: state
+        entity_id: binary_sensor.licht_arbeitszimmer
+        to: 'on'        
       - id: licht_aus
         platform: event
         event_type: timer.finished
@@ -25,11 +46,19 @@ automation:
       - id: licht_aus
         platform: state
         entity_id: binary_sensor.sonne_tagsueber 
-        to: 'on'          
+        to: 'on'        
+      - id: licht_aus
+        platform: state
+        entity_id: binary_sensor.licht_arbeitszimmer
+        to: 'off'            
     condition:      
       - condition: or
         conditions:          
-            - "{{ trigger.id == 'licht_aus' }}"        
+            - "{{ trigger.id == 'licht_aus' }}"                    
+            - condition: and
+              conditions:
+                - "{{ trigger.id == 'licht_an_dunkel' }}"
+                - "{{ is_state('person.dennis', 'home') or is_state('person.natalie', 'home') }}"
             - condition: and
               conditions:
                 - "{{ is_state('binary_sensor.sonne_tagsueber', 'off') }}"
@@ -39,6 +68,10 @@ automation:
                 - "{{ is_state('binary_sensor.home_office_aktiv', 'off') }}"
                 - "{{ is_state('light.arbeitszimmer_licht', 'off') or not is_state('timer.licht_arbeitszimmer', 'idle') }}"
     action:
+      - if: "{{ trigger.id == 'licht_an_dunkel' }}"
+        then:
+          - service: light.turn_on
+            entity_id: light.arbeitszimmer_licht
       - if: "{{ trigger.id == 'licht_an' }}"
         then:
           - service: light.turn_on
