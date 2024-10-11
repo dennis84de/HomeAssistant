@@ -7,12 +7,8 @@ from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.device_registry import DeviceEntryType
 
 from .const import (
-    CONF_MAP_BACKGROUND_TYPE,
     CONF_MAP_ID,
     CONF_MAP_LOOP_SPEED,
-    CONF_MAP_TYPE,
-    CONF_MAP_TYPE_CUSTOM,
-    CONF_MAP_WINDOW,
     DOMAIN,
     DWDWEATHER_COORDINATOR,
     DWDWEATHER_DATA,
@@ -51,25 +47,12 @@ class MyCamera(Camera):
         self._unique_id = f"map_{self._map_type}_{self._dwd_data._config[CONF_MAP_ID]}"
         self._name = f"{self._map_type}"
 
-        self._dwd_data.set_type(self._dwd_data._config[CONF_MAP_TYPE])
-
         self._frame_interval = (
             self._dwd_data._config[CONF_MAP_LOOP_SPEED]
             if CONF_MAP_LOOP_SPEED in self._dwd_data._config
             else 5
         )
 
-        if self._dwd_data._config[CONF_MAP_TYPE] == CONF_MAP_TYPE_CUSTOM:
-            self._dwd_data.set_location(
-                self._dwd_data._config[CONF_MAP_WINDOW]["latitude"],
-                self._dwd_data._config[CONF_MAP_WINDOW]["longitude"],
-                self._dwd_data._config[CONF_MAP_WINDOW]["radius"],
-            )
-
-        self._dwd_data.set_map_style(
-            self._dwd_data._config[CONF_MAP_FOREGROUND_TYPE],
-            self._dwd_data._config[CONF_MAP_BACKGROUND_TYPE],
-        )
         self._coordinator = hass_data[DWDWEATHER_COORDINATOR]
 
     async def async_camera_image(

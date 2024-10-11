@@ -1,11 +1,13 @@
 #  Copyright (c) 2019-2021, Andrey "Limych" Khrolenok <andrey@khrolenok.ru>
 #  Creative Commons BY-NC-SA 4.0 International Public License
 #  (see LICENSE.md or https://creativecommons.org/licenses/by-nc-sa/4.0/)
-"""The Car Wash binary sensor.
+"""
+The Car Wash binary sensor.
 
 For more details about this platform, please refer to the documentation at
 https://github.com/Limych/ha-car_wash/
 """
+
 from typing import Final
 
 from homeassistant.components.weather import (
@@ -21,7 +23,7 @@ from homeassistant.components.weather import (
 # Base component constants
 NAME: Final = "Car Wash"
 DOMAIN: Final = "car_wash"
-VERSION: Final = "1.5.7"
+VERSION: Final = "1.5.8"
 ISSUE_URL: Final = "https://github.com/Limych/ha-car_wash/issues"
 
 STARTUP_MESSAGE: Final = f"""

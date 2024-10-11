@@ -12,6 +12,7 @@ from homeassistant.helpers.selector import (
     TextSelector,
     LocationSelector,
     NumberSelector,
+    ColorRGBSelector,
 )
 from simple_dwd_weatherforecast import dwdforecast
 
@@ -42,10 +43,16 @@ from .const import (
     CONF_MAP_BACKGROUND_KREISE,
     CONF_MAP_BACKGROUND_GEMEINDEN,
     CONF_MAP_BACKGROUND_SATELLIT,
+    CONF_MAP_HOMEMARKER,
+    CONF_MAP_HOMEMARKER_COLOR,
+    CONF_MAP_HOMEMARKER_SHAPE,
+    CONF_MAP_HOMEMARKER_SHAPE_CROSS,
+    CONF_MAP_HOMEMARKER_SHAPE_SQUARE,
+    CONF_MAP_HOMEMARKER_SIZE,
     CONF_MAP_ID,
     CONF_MAP_LOOP_COUNT,
     CONF_MAP_LOOP_SPEED,
-    CONF_MAP_MARKER,
+    CONF_MAP_CENTERMARKER,
     CONF_MAP_TIMESTAMP,
     CONF_MAP_TYPE,
     CONF_MAP_TYPE_CUSTOM,
@@ -57,6 +64,7 @@ from .const import (
     CONF_VERSION,
     CONF_WIND_DIRECTION_TYPE,
     conversion_table_map_foreground,
+    CONF_MAP_HOMEMARKER_SHAPE_CIRCLE,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -394,9 +402,45 @@ class DWDWeatherConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                     }
                 ),
                 vol.Required(
-                    CONF_MAP_MARKER,
+                    CONF_MAP_CENTERMARKER,
                     default=False,  # type: ignore
                 ): BooleanSelector({}),
+                vol.Required(
+                    CONF_MAP_HOMEMARKER,
+                    default=False,
+                ): BooleanSelector({}),
+                vol.Required(
+                    CONF_MAP_HOMEMARKER_SHAPE,
+                    default=CONF_MAP_HOMEMARKER_SHAPE_CIRCLE,
+                ): SelectSelector(
+                    {
+                        "options": list(
+                            [
+                                CONF_MAP_HOMEMARKER_SHAPE_CIRCLE,
+                                CONF_MAP_HOMEMARKER_SHAPE_CROSS,
+                                CONF_MAP_HOMEMARKER_SHAPE_SQUARE,
+                            ]
+                        ),
+                        "custom_value": False,
+                        "mode": "dropdown",
+                        "translation_key": CONF_MAP_HOMEMARKER_SHAPE,
+                    }
+                ),
+                vol.Required(
+                    CONF_MAP_HOMEMARKER_SIZE,
+                    default=10,
+                ): NumberSelector(
+                    {
+                        "min": 1,
+                        "max": 25,
+                        "step": "1",
+                        "unit_of_measurement": "px",
+                    }
+                ),
+                vol.Required(
+                    CONF_MAP_HOMEMARKER_COLOR,
+                    default=[255, 0, 0],
+                ): ColorRGBSelector({}),
             }
         )
 
@@ -586,10 +630,6 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
                             "translation_key": CONF_MAP_BACKGROUND_TYPE,
                         }
                     ),
-                    vol.Required(
-                        CONF_MAP_MARKER,
-                        default=self.config_entry.data[CONF_MAP_MARKER],  # type: ignore
-                    ): BooleanSelector({}),
                 }
             )
             if (
@@ -628,6 +668,50 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
                         ),
                     }
                 )
+            data_schema = data_schema.extend(
+                {
+                    vol.Required(
+                        CONF_MAP_CENTERMARKER,
+                        default=self.config_entry.data[CONF_MAP_CENTERMARKER],  # type: ignore
+                    ): BooleanSelector({}),
+                    vol.Required(
+                        CONF_MAP_HOMEMARKER,
+                        default=self.config_entry.data[CONF_MAP_HOMEMARKER],
+                    ): BooleanSelector({}),
+                    vol.Required(
+                        CONF_MAP_HOMEMARKER_SHAPE,
+                        default=self.config_entry.data[CONF_MAP_HOMEMARKER_SHAPE],
+                    ): SelectSelector(
+                        {
+                            "options": list(
+                                [
+                                    CONF_MAP_HOMEMARKER_SHAPE_CIRCLE,
+                                    CONF_MAP_HOMEMARKER_SHAPE_CROSS,
+                                    CONF_MAP_HOMEMARKER_SHAPE_SQUARE,
+                                ]
+                            ),
+                            "custom_value": False,
+                            "mode": "dropdown",
+                            "translation_key": CONF_MAP_HOMEMARKER_SHAPE,
+                        }
+                    ),
+                    vol.Required(
+                        CONF_MAP_HOMEMARKER_SIZE,
+                        default=self.config_entry.data[CONF_MAP_HOMEMARKER_SIZE],
+                    ): NumberSelector(
+                        {
+                            "min": 1,
+                            "max": 25,
+                            "step": "1",
+                            "unit_of_measurement": "px",
+                        }
+                    ),
+                    vol.Required(
+                        CONF_MAP_HOMEMARKER_COLOR,
+                        default=self.config_entry.data[CONF_MAP_HOMEMARKER_COLOR],
+                    ): ColorRGBSelector({}),
+                }
+            )
             return self.async_show_form(
                 step_id="init",
                 data_schema=data_schema,

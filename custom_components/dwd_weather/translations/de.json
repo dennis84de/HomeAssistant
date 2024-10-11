@@ -65,6 +65,12 @@
       },
       "forecast_values_time": {
         "name": "Zeit: Vorhersagewerte"
+      },
+      "uv_index": {
+        "name": "UV-Index"
+      },
+      "evaporation": {
+        "name": "Verdunstung in den nächsten 24 Stunden"
       }
     }
   },
@@ -112,7 +118,7 @@
           "station_name": "Der angezeigte Stationsname",
           "wind_direction_type": "Betrifft den Sensorwert für die Windrichtung",
           "interpolate": "Da die Daten nur stündlich verfügbar sind, kann es sein, dass 'Sprünge' in den angezeigten Werten auftreten. Mit dieser Option werden die Daten linear interpoliert.",
-          "hourly_update": "Normalerweise werden die Wetterdaten alle 6 Stunden aktualisiert. Der DWD bietet aber auch eine stündliche Aktualisierung der Daten an, allerdings erhöht das die Datennutzung erheblich (~37MB vs. ~0.17MB an Download-Daten), da die Sensorwerte für alle verfügbaren Stationen in der stündlichen Aktualisierung enthalten sind.",
+          "hourly_update": "Normalerweise werden die Wetterdaten alle 6 Stunden aktualisiert. Der DWD bietet aber auch eine stündliche Aktualisierung der Daten an bei denen ein paar Informationen fehlen (Niederschlagswahrscheinlichkeit, Niederschlagsdauer, Verdunstung), allerdings erhöht das die Datennutzung erheblich (~37MB vs. ~0.17MB an Download-Daten), da die Sensorwerte für alle verfügbaren Stationen in der stündlichen Aktualisierung enthalten sind.",
           "map_options_message": "Aktuell ist es nicht möglich, eine Karte zu konfigurieren. Bitte lösche stattdessen die Karte und füge sie mit den gewünschten Einstellungen erneut hinzu."
         }
       },
@@ -131,7 +137,11 @@
         "data": {
           "map_foreground_type": "Welche Daten sollen angezeigt werden?",
           "map_background_type": "Was soll im Hintergrund angezeigt werden?",
-          "map_marker": "Soll die Mitte der Karte markiert werden?"
+          "map_marker": "Soll die Mitte der Karte markiert werden?",
+          "map_homemarker": "Soll die eingestellte Position von HA auf der Karte markiert werden?",
+          "map_homemarker_shape": "Welche Form soll der Home-Marker haben?",
+          "map_homemarker_size": "Wie groß soll der Home-Marker sein?",
+          "map_homemarker_color": "Welche Farbe soll der Home-Marker haben?"
         }
       },
       "select_map_loop": {
@@ -165,6 +175,10 @@
           "hourly_update": "Erzwinge die stündliche Aktualisierung der Daten (siehe Hinweis unten)",
           "map_background_type": "Was soll im Hintergrund angezeigt werden?",
           "map_marker": "Soll die Mitte der Karte markiert werden?",
+          "map_homemarker": "Soll die eingestellte Position von HA auf der Karte markiert werden?",
+          "map_homemarker_shape": "Welche Form soll der Home-Marker haben?",
+          "map_homemarker_size": "Wie groß soll der Home-Marker sein?",
+          "map_homemarker_color": "Welche Farbe soll der Home-Marker haben?",
           "map_timestamp": "Soll die Zeit auf dem Bild angezeigt werden?",
           "map_loop_count": "Wie viele alte Radarbilder sollen angezeigt werden?",
           "map_loop_speed": "Wie schnell soll die Animation ablaufen?"
@@ -227,6 +241,13 @@
         "map_background_kreise": "Kreise",
         "map_background_gemeinden": "Gemeinden",
         "map_background_satellit": "Satellitenbild"
+      }
+    },
+    "map_homemarker_shape": {
+      "options": {
+        "map_homemarker_shape_circle": "Kreis",
+        "map_homemarker_shape_square": "Quadrat",
+        "map_homemarker_shape_cross": "Kreuz"
       }
     }
   }

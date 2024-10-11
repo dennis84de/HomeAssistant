@@ -42,11 +42,18 @@ from .const import (
     CONF_DATA_TYPE_MIXED,
     CONF_DATA_TYPE_REPORT,
     CONF_INTERPOLATE,
+    CONF_MAP_BACKGROUND_TYPE,
     CONF_MAP_FOREGROUND_TYPE,
+    CONF_MAP_HOMEMARKER_COLOR,
+    CONF_MAP_HOMEMARKER_SHAPE,
+    CONF_MAP_HOMEMARKER_SIZE,
     CONF_MAP_LOOP_COUNT,
-    CONF_MAP_MARKER,
+    CONF_MAP_CENTERMARKER,
+    CONF_MAP_HOMEMARKER,
     CONF_MAP_TIMESTAMP,
+    CONF_MAP_TYPE,
     CONF_MAP_TYPE_GERMANY,
+    CONF_MAP_WINDOW,
     CONF_STATION_ID,
     CONF_STATION_NAME,
     CONF_WIND_DIRECTION_TYPE,
@@ -65,6 +72,7 @@ from .const import (
     CONF_MAP_BACKGROUND_KREISE,
     CONF_MAP_BACKGROUND_GEMEINDEN,
     CONF_MAP_BACKGROUND_SATELLIT,
+    conversion_table_map_homemarker_shape,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -509,6 +517,13 @@ class DWDWeatherData:
     def get_uv_index(self):
         return self.dwd_weather.get_uv_index(days_from_today=0, shouldUpdate=False)
 
+    def get_evaporation(self):
+        return self.dwd_weather.get_daily_max(
+            WeatherDataType.EVAPORATION,
+            datetime.now() + timedelta(days=1),
+            False,
+        )
+
     def get_condition_hourly(self):
         data = []
         forecast_data = self.dwd_weather.forecast_data
@@ -623,6 +638,38 @@ class DWDWeatherData:
     def get_humidity_hourly(self):
         return self.get_hourly(WeatherDataType.HUMIDITY)
 
+    def get_uv_index_daily(self):
+        return {
+            "today": self.dwd_weather.get_uv_index(
+                days_from_today=0, shouldUpdate=False
+            ),
+            "tomorrow": self.dwd_weather.get_uv_index(
+                days_from_today=1, shouldUpdate=False
+            ),
+            "dayaftertomorrow": self.dwd_weather.get_uv_index(
+                days_from_today=2, shouldUpdate=False
+            ),
+        }
+
+    def get_evaporation_daily(self):
+        data = []
+        for i in range(9):
+            timestamp = self.dwd_weather.issue_time + timedelta(days=1 + i)  # type: ignore
+            timestamp = timestamp.replace(hour=6)
+            evaporation = self.dwd_weather.get_daily_max(
+                WeatherDataType.EVAPORATION,
+                timestamp,
+                False,
+            )
+            data.append(
+                {
+                    ATTR_FORECAST_TIME: timestamp - timedelta(days=1),
+                    "value": evaporation,
+                }
+            )
+
+        return data
+
     def get_wind_direction_symbol(self, value):
         if value is None:
             return ""
@@ -653,12 +700,6 @@ class DWDMapData:
         self._hass = hass
         self._image = None
 
-        self._map_type = None
-        self._longitude = None
-        self._latitude = None
-        self._radius_km = None
-        self._foreground_type = None
-        self._background_type = None
         self._width = None
         self._height = None
         self._maploop = None
@@ -697,112 +738,155 @@ class DWDMapData:
         else:
             _LOGGER.debug(" Map _update: No direct map update possible. Reconfiguring")
             # prevent distortion of map
-            if (
-                self._height
-                and self._width
-                and self._foreground_type
-                and self._background_type
-            ):
+            if self._height and self._width:
                 width = round(self._height / 1.115)
-                if self._map_type == CONF_MAP_TYPE_GERMANY:
-                    _LOGGER.debug(
-                        "map async_update get_germany map_type:{} background_type:{} width:{} height:{} steps:{}".format(
-                            self._map_type,
-                            self._background_type,
-                            width,
-                            self._height,
-                            self._config[CONF_MAP_LOOP_COUNT],
+                markers = []
+                if self._config[CONF_MAP_HOMEMARKER]:
+                    markers.append(
+                        dwdmap.Marker(
+                            latitude=self._hass.config.latitude,
+                            longitude=self._hass.config.longitude,
+                            shape=conversion_table_map_homemarker_shape[
+                                self._config[CONF_MAP_HOMEMARKER_SHAPE]
+                            ],
+                            size=self._config[CONF_MAP_HOMEMARKER_SIZE],
+                            colorRGB=tuple(self._config[CONF_MAP_HOMEMARKER_COLOR]),
                         )
                     )
-                    maploop = dwdmap.ImageLoop(
-                        dwdmap.germany_boundaries.minx,
-                        dwdmap.germany_boundaries.miny,
-                        dwdmap.germany_boundaries.maxx,
-                        dwdmap.germany_boundaries.maxy,
-                        map_type=self._foreground_type,
-                        background_type=self._background_type,
-                        steps=self._config[CONF_MAP_LOOP_COUNT],
-                        image_width=width,
-                        image_height=self._height,
-                    )
-                else:
-                    _LOGGER.debug(
-                        "map async_update get_from_location lon: {}, lat:{}, radius:{}, map_type:{} background_type:{} width:{} height:{}".format(
-                            self._longitude,
-                            self._latitude,
-                            self._radius_km,
-                            self._map_type,
-                            self._background_type,
-                            width,
-                            self._height,
+                    if self._config[CONF_MAP_TYPE] == CONF_MAP_TYPE_GERMANY:
+                        _LOGGER.debug(
+                            "map async_update get_germany map_type:{} background_type:{} width:{} height:{} steps:{} markers:{}".format(
+                                self._config[CONF_MAP_FOREGROUND_TYPE],
+                                self._config[CONF_MAP_BACKGROUND_TYPE],
+                                width,
+                                self._height,
+                                self._config[CONF_MAP_LOOP_COUNT],
+                                len(markers),
+                            )
                         )
-                    )
+                        maploop = dwdmap.ImageLoop(
+                            dwdmap.germany_boundaries.minx,
+                            dwdmap.germany_boundaries.miny,
+                            dwdmap.germany_boundaries.maxx,
+                            dwdmap.germany_boundaries.maxy,
+                            map_type=self.map_maptype(
+                                self._config[CONF_MAP_FOREGROUND_TYPE]
+                            ),  # type: ignore
+                            background_type=self.map_maptype(
+                                self._config[CONF_MAP_BACKGROUND_TYPE]
+                            ),  # type: ignore
+                            steps=self._config[CONF_MAP_LOOP_COUNT],
+                            image_width=width,
+                            image_height=self._height,
+                            markers=markers,
+                        )
+                    else:
+                        _LOGGER.debug(
+                            "map async_update get_from_location lat: {}, lon:{}, radius:{}, map_type:{} background_type:{} width:{} height:{} markers:{}".format(
+                                self._config[CONF_MAP_WINDOW]["latitude"],
+                                self._config[CONF_MAP_WINDOW]["longitude"],
+                                self._config[CONF_MAP_WINDOW]["radius"],
+                                self._config[CONF_MAP_FOREGROUND_TYPE],
+                                self._config[CONF_MAP_BACKGROUND_TYPE],
+                                width,
+                                self._height,
+                                len(markers),
+                            )
+                        )
 
-                    radius = math.fabs(
-                        self._radius_km / (111.3 * math.cos(self._latitude))  # type: ignore
-                    )
+                        radius = math.fabs(
+                            self._config[CONF_MAP_WINDOW]["radius"]
+                            / (
+                                111.3
+                                * math.cos(self._config[CONF_MAP_WINDOW]["latitude"])
+                            )  # type: ignore
+                        )
 
-                    maploop = dwdmap.ImageLoop(
-                        self._latitude - radius,  # type: ignore
-                        self._longitude - radius,  # type: ignore
-                        self._latitude + radius,  # type: ignore
-                        self._longitude + radius,  # type: ignore
-                        map_type=self._foreground_type,
-                        background_type=self._background_type,
-                        steps=self._config[CONF_MAP_LOOP_COUNT],
-                        image_width=width,
-                        image_height=self._height,
-                    )
-                    _LOGGER.debug(
-                        "map async_update maploop: {}".format(maploop.get_images())
-                    )
-                self._maploop = maploop
-                self._cachedheight = self._height
-                self._cachedwidth = self._width
+                        maploop = dwdmap.ImageLoop(
+                            self._config[CONF_MAP_WINDOW]["longitude"] - radius,  # type: ignore
+                            self._config[CONF_MAP_WINDOW]["latitude"] - radius,  # type: ignore
+                            self._config[CONF_MAP_WINDOW]["longitude"] + radius,  # type: ignore
+                            self._config[CONF_MAP_WINDOW]["latitude"] + radius,  # type: ignore
+                            map_type=self.map_maptype(
+                                self._config[CONF_MAP_FOREGROUND_TYPE]
+                            ),  # type: ignore
+                            background_type=self.map_maptype(
+                                self._config[CONF_MAP_BACKGROUND_TYPE]
+                            ),  # type: ignore
+                            steps=self._config[CONF_MAP_LOOP_COUNT],
+                            image_width=width,
+                            image_height=self._height,
+                            markers=markers,
+                        )
+                        _LOGGER.debug(
+                            "map async_update maploop: {}".format(maploop.get_images())
+                        )
+                    self._maploop = maploop
+                    self._cachedheight = self._height
+                    self._cachedwidth = self._width
 
             self._images = maploop.get_images()
 
     def _update_single(self):
         # prevent distortion of map
-        if (
-            self._height
-            and self._width
-            and self._foreground_type
-            and self._background_type
-        ):
+        if self._height and self._width:
             width = round(self._height / 1.115)
-            if self._map_type == CONF_MAP_TYPE_GERMANY:
+            markers = []
+            if self._config[CONF_MAP_HOMEMARKER]:
+                markers.append(
+                    dwdmap.Marker(
+                        latitude=self._hass.config.latitude,
+                        longitude=self._hass.config.longitude,
+                        shape=conversion_table_map_homemarker_shape[
+                            self._config[CONF_MAP_HOMEMARKER_SHAPE]
+                        ],
+                        size=self._config[CONF_MAP_HOMEMARKER_SIZE],
+                        colorRGB=tuple(self._config[CONF_MAP_HOMEMARKER_COLOR]),
+                    )
+                )
+            if self._config[CONF_MAP_TYPE] == CONF_MAP_TYPE_GERMANY:
                 _LOGGER.debug(
-                    "map async_update get_germany map_type:{} background_type:{} width:{} height:{}".format(
-                        self._map_type, self._background_type, width, self._height
+                    "map async_update get_germany map_type:{} background_type:{} width:{} height:{} markers:{}".format(
+                        self._config[CONF_MAP_FOREGROUND_TYPE],
+                        self._config[CONF_MAP_BACKGROUND_TYPE],
+                        width,
+                        self._height,
+                        len(markers),
                     )
                 )
                 self._image = dwdmap.get_germany(
-                    map_type=self._foreground_type,
-                    background_type=self._background_type,
+                    map_type=self.map_maptype(self._config[CONF_MAP_FOREGROUND_TYPE]),  # type: ignore
+                    background_type=self.map_maptype(
+                        self._config[CONF_MAP_BACKGROUND_TYPE]
+                    ),  # type: ignore
                     image_width=width,
                     image_height=self._height,
+                    markers=markers,
                 )
             else:
                 _LOGGER.debug(
-                    "map async_update get_from_location lon: {}, lat:{}, radius:{}, map_type:{} background_type:{} width:{} height:{}".format(
-                        self._longitude,
-                        self._latitude,
-                        self._radius_km,
-                        self._map_type,
-                        self._background_type,
+                    "map async_update get_from_location lat: {}, lon:{}, radius:{}, map_type:{} background_type:{} width:{} height:{} markers:{}".format(
+                        self._config[CONF_MAP_WINDOW]["latitude"],
+                        self._config[CONF_MAP_WINDOW]["longitude"],
+                        self._config[CONF_MAP_WINDOW]["radius"],
+                        self._config[CONF_MAP_FOREGROUND_TYPE],
+                        self._config[CONF_MAP_BACKGROUND_TYPE],
                         width,
                         self._height,
+                        len(markers),
                     )
                 )
                 self._image = dwdmap.get_from_location(
-                    longitude=self._longitude,
-                    latitude=self._latitude,
-                    radius_km=self._radius_km,
-                    map_type=self._foreground_type,
-                    background_type=self._background_type,
+                    latitude=self._config[CONF_MAP_WINDOW]["latitude"],
+                    longitude=self._config[CONF_MAP_WINDOW]["longitude"],
+                    radius_km=self._config[CONF_MAP_WINDOW]["radius"],
+                    map_type=self.map_maptype(self._config[CONF_MAP_FOREGROUND_TYPE]),  # type: ignore
+                    background_type=self.map_maptype(
+                        self._config[CONF_MAP_BACKGROUND_TYPE]
+                    ),  # type: ignore
                     image_width=self._width,
                     image_height=self._height,
+                    markers=markers,
                 )
 
     def get_image(self):
@@ -825,7 +909,7 @@ class DWDMapData:
 
         if image:
             draw = PIL.ImageDraw.ImageDraw(image)
-            if self._config[CONF_MAP_MARKER]:
+            if self._config[CONF_MAP_CENTERMARKER]:
                 center = (image.size[0] / 2, image.size[1] / 2)
                 length = 7.0
                 draw.line(
@@ -855,45 +939,35 @@ class DWDMapData:
             image.save(buf, format="PNG")  # type: ignore()
         return buf.getvalue()
 
-    def set_type(self, map_type):
-        self._map_type = map_type
-
-    def set_location(self, longitude, latitude, radius_km):
-        self._longitude = longitude
-        self._latitude = latitude
-        self._radius_km = radius_km
-
-    def set_map_style(
-        self,
-        foreground_type,
-        background_type,
-    ):
-        if foreground_type == CONF_MAP_FOREGROUND_PRECIPITATION:
-            self._foreground_type = dwdmap.WeatherMapType.NIEDERSCHLAGSRADAR
-        elif foreground_type == CONF_MAP_FOREGROUND_MAXTEMP:
-            self._foreground_type = dwdmap.WeatherMapType.MAXTEMP
-        elif foreground_type == CONF_MAP_FOREGROUND_UVINDEX:
-            self._foreground_type = dwdmap.WeatherMapType.UVINDEX
-        elif foreground_type == CONF_MAP_FOREGROUND_POLLENFLUG:
-            self._foreground_type = dwdmap.WeatherMapType.POLLENFLUG
-        elif foreground_type == CONF_MAP_FOREGROUND_SATELLITE_RGB:
-            self._foreground_type = dwdmap.WeatherMapType.SATELLITE_RGB
-        elif foreground_type == CONF_MAP_FOREGROUND_SATELLITE_IR:
-            self._foreground_type = dwdmap.WeatherMapType.SATELLITE_IR
-        elif foreground_type == CONF_MAP_FOREGROUND_WARNUNGEN_GEMEINDEN:
-            self._foreground_type = dwdmap.WeatherMapType.WARNUNGEN_GEMEINDEN
-        elif foreground_type == CONF_MAP_FOREGROUND_WARNUNGEN_KREISE:
-            self._foreground_type = dwdmap.WeatherMapType.WARNUNGEN_KREISE
-        if background_type == CONF_MAP_BACKGROUND_LAENDER:
-            self._background_type = dwdmap.WeatherBackgroundMapType.LAENDER
-        elif background_type == CONF_MAP_BACKGROUND_BUNDESLAENDER:
-            self._background_type = dwdmap.WeatherBackgroundMapType.BUNDESLAENDER
-        elif background_type == CONF_MAP_BACKGROUND_KREISE:
-            self._background_type = dwdmap.WeatherBackgroundMapType.KREISE
-        elif background_type == CONF_MAP_BACKGROUND_GEMEINDEN:
-            self._background_type = dwdmap.WeatherBackgroundMapType.GEMEINDEN
-        elif background_type == CONF_MAP_BACKGROUND_SATELLIT:
-            self._background_type = dwdmap.WeatherBackgroundMapType.SATELLIT
+    def map_maptype(
+        self, map_type
+    ) -> dwdmap.WeatherMapType | dwdmap.WeatherBackgroundMapType | None:
+        if map_type == CONF_MAP_FOREGROUND_PRECIPITATION:
+            return dwdmap.WeatherMapType.NIEDERSCHLAGSRADAR
+        elif map_type == CONF_MAP_FOREGROUND_MAXTEMP:
+            return dwdmap.WeatherMapType.MAXTEMP
+        elif map_type == CONF_MAP_FOREGROUND_UVINDEX:
+            return dwdmap.WeatherMapType.UVINDEX
+        elif map_type == CONF_MAP_FOREGROUND_POLLENFLUG:
+            return dwdmap.WeatherMapType.POLLENFLUG
+        elif map_type == CONF_MAP_FOREGROUND_SATELLITE_RGB:
+            return dwdmap.WeatherMapType.SATELLITE_RGB
+        elif map_type == CONF_MAP_FOREGROUND_SATELLITE_IR:
+            return dwdmap.WeatherMapType.SATELLITE_IR
+        elif map_type == CONF_MAP_FOREGROUND_WARNUNGEN_GEMEINDEN:
+            return dwdmap.WeatherMapType.WARNUNGEN_GEMEINDEN
+        elif map_type == CONF_MAP_FOREGROUND_WARNUNGEN_KREISE:
+            return dwdmap.WeatherMapType.WARNUNGEN_KREISE
+        elif map_type == CONF_MAP_BACKGROUND_LAENDER:
+            return dwdmap.WeatherBackgroundMapType.LAENDER
+        elif map_type == CONF_MAP_BACKGROUND_BUNDESLAENDER:
+            return dwdmap.WeatherBackgroundMapType.BUNDESLAENDER
+        elif map_type == CONF_MAP_BACKGROUND_KREISE:
+            return dwdmap.WeatherBackgroundMapType.KREISE
+        elif map_type == CONF_MAP_BACKGROUND_GEMEINDEN:
+            return dwdmap.WeatherBackgroundMapType.GEMEINDEN
+        elif map_type == CONF_MAP_BACKGROUND_SATELLIT:
+            return dwdmap.WeatherBackgroundMapType.SATELLIT
 
     def set_size(
         self,

@@ -3,18 +3,19 @@
 from datetime import timedelta
 
 from homeassistant.const import Platform
+from simple_dwd_weatherforecast.dwdmap import MarkerShape
 
 # Base component constants
 NAME = "DWD Weather"
 DOMAIN = "dwd_weather"
-CONF_VERSION = 7
+CONF_VERSION = 9
 ATTRIBUTION = "Data provided by Deutscher Wetterdienst (DWD)"
 # Platforms
 PLATFORMS = [
     Platform.SENSOR,
     Platform.WEATHER,
 ]
-INTEGRATION_VERSION = "v2.1.8"
+INTEGRATION_VERSION = "v2.1.15"
 MIN_REQUIRED_HA_VERSION = "2024.06.1"
 
 ATTR_LATEST_UPDATE = "latest_update_utc"
@@ -67,7 +68,11 @@ CONF_MAP_BACKGROUND_BUNDESLAENDER = "map_background_bundeslaender"
 CONF_MAP_BACKGROUND_KREISE = "map_background_kreise"
 CONF_MAP_BACKGROUND_GEMEINDEN = "map_background_gemeinden"
 CONF_MAP_BACKGROUND_SATELLIT = "map_background_satellit"
-CONF_MAP_MARKER = "map_marker"
+CONF_MAP_CENTERMARKER = "map_marker"
+CONF_MAP_HOMEMARKER = "map_homemarker"
+CONF_MAP_HOMEMARKER_SHAPE = "map_homemarker_shape"
+CONF_MAP_HOMEMARKER_SIZE = "map_homemarker_size"
+CONF_MAP_HOMEMARKER_COLOR = "map_homemarker_color"
 CONF_MAP_TIMESTAMP = "map_timestamp"
 CONF_MAP_LOOP_COUNT = "map_loop_count"
 CONF_MAP_LOOP_SPEED = "map_loop_speed"
@@ -81,6 +86,15 @@ conversion_table_map_foreground = {
     CONF_MAP_FOREGROUND_SATELLITE_IR: "Satellite IR",
     CONF_MAP_FOREGROUND_WARNUNGEN_GEMEINDEN: "Warnungen Gemeinden",
     CONF_MAP_FOREGROUND_WARNUNGEN_KREISE: "Warnungen Kreise",
+}
+
+CONF_MAP_HOMEMARKER_SHAPE_CIRCLE = "map_homemarker_shape_circle"
+CONF_MAP_HOMEMARKER_SHAPE_CROSS = "map_homemarker_shape_cross"
+CONF_MAP_HOMEMARKER_SHAPE_SQUARE = "map_homemarker_shape_square"
+conversion_table_map_homemarker_shape = {
+    CONF_MAP_HOMEMARKER_SHAPE_CIRCLE: MarkerShape.CIRCLE,
+    CONF_MAP_HOMEMARKER_SHAPE_CROSS: MarkerShape.CROSS,
+    CONF_MAP_HOMEMARKER_SHAPE_SQUARE: MarkerShape.SQUARE,
 }
 
 CONF_OPTION_MAP_MESSAGE = "map_options_message"

@@ -1,4 +1,5 @@
-"""The Snowtire binary sensor.
+"""
+The Snowtire binary sensor.
 
 For more details about this platform, please refer to the documentation at
 https://github.com/Limych/ha-snowtire/
@@ -9,7 +10,7 @@ from typing import Final
 # Base component constants
 NAME: Final = "Snowtire Sensor"
 DOMAIN: Final = "snowtire"
-VERSION: Final = "1.4.9"
+VERSION: Final = "1.5.0"
 ISSUE_URL: Final = "https://github.com/Limych/ha-snowtire/issues"
 
 STARTUP_MESSAGE: Final = f"""
