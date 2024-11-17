@@ -21,8 +21,8 @@ template:
           {{ istNachts or istDunkel }}
                     
 automation:           
-  - alias: "Franzi - Licht Kinderzimmer"
-    id: "franzi_licht_kinderzimmer"
+  - alias: "Licht Kinderzimmer"
+    id: "licht_kinderzimmer"
     trigger:
       - id: licht_an
         platform: state

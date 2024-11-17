@@ -44,7 +44,7 @@ template:
           {% elif is_state('sensor.handy', 'talking') %}
             Sprechen        
           {% else %}
-            Untätig
+            Leerlauf
           {% endif %}        
         icon: >-
           {% if is_state('sensor.handy', 'ringing') %}

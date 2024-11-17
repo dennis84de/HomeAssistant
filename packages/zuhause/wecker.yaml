@@ -283,9 +283,7 @@ automation:
         entity_id: light.bett
       - service: alarmo.disarm
         data:
-          entity_id: alarm_control_panel.alarmo       
-      - service: switch.turn_on
-        entity_id: switch.computer, switch.arbeitszimmer_monitore                
+          entity_id: alarm_control_panel.alarmo                  
       - if: "{{ trigger.id != 'schalter_badezimmer' }}"
         then:             
           - wait_for_trigger:

@@ -77,12 +77,6 @@ zone:
     longitude: !secret work_longitude
     radius: 100
     icon: mdi:wan 
-    
-command_line:
-  - sensor:
-      command: "head -5 /config/.HA_VERSION"
-      name: Installierte Version
-      scan_interval: 3600
       
 sensor:
   - platform: template

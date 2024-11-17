@@ -111,16 +111,6 @@ cards:
               points: false
             entities:
               - entity: sensor.parkplatz_luftdruck
-                      
-  - type: entities
-    title: Luft
-    show_header_toggle: false
-    entities:
-      - entity: sensor.wetter_dortmund_luftfeuchtigkeit      
-        name: Luftfeuchtigkeit
-      - entity: sensor.wetter_dortmund_druck
-        name: Luftdruck
-
     
   - type: entities
     title: Sonne und Mond
@@ -135,15 +125,9 @@ cards:
     show_header_toggle: false
     entities:
       - entity: sensor.regenradar  
-      - entity: sensor.wetter_dortmund_bewolkungsgrad
-        name: Bewölkungsgrad        
-      - entity: sensor.wetter_dortmund_windgeschwindigkeit
-        name: Windgeschwindigkeit
       - entity: sensor.windrichtung
       
   - type: entities
-    view_layout:
-      column: 2
     title: Pollen
     show_header_toggle: false
     entities:

@@ -77,14 +77,3 @@ cards:
         name: Status
       - entity: sensor.trockner_verbrauch
         name: Verbrauch
-                
-  - type: entities
-    title: Waage
-    show_header_toggle: false
-    entities:
-      - entity: sensor.dennis_gewicht  
-        name: Dennis
-      - entity: sensor.natalie_gewicht   
-        name: Natalie
-      - entity: sensor.franzi_gewicht   
-        name: Franzi     

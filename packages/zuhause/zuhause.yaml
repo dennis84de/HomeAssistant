@@ -60,12 +60,15 @@ template:
         unique_id: allein_zu_hause
         state: "{{ is_state('sensor.personen_zu_hause', '1') and is_state('person.dennis', 'home') }}"
           
+  - binary_sensor:
+      - name: "Erwachsene zu Hause"
+        unique_id: erwachsene_zu_hause
+        state: "{{ is_state('person.dennis', 'home') or is_state('person.natalie', 'home') }}"
+        
 script:
   zu_hause:
     alias: "Zu Hause"
-    sequence:
-      - service: switch.turn_on
-        entity_id: switch.computer, switch.arbeitszimmer_monitore           
+    sequence:      
       - choose:
           - conditions:
               - condition: state
@@ -79,6 +82,10 @@ script:
         then:          
           - service: light.turn_on
             entity_id: light.kinderzimmer_licht          
+      - if: "{{ is_state('person.aaron', 'home') and is_state('binary_sensor.licht_arbeitszimmer', 'on') }}"
+        then:          
+          - service: light.turn_on
+            entity_id: light.arbeitszimmer_licht                     
 
   zu_hause_home_office:
     alias: "Zu Hause - Home Office"
@@ -116,8 +123,6 @@ script:
     sequence:
       - service: light.turn_on
         entity_id: light.wohnzimmer_schrank
-      - service: switch.turn_on
-        entity_id: switch.computer, switch.arbeitszimmer_monitore   
       - service: switch.turn_on
         entity_id: switch.badezimmer_radio    
       - wait_template: "{{ is_state('media_player.radio_badezimmer', 'playing') }}"
@@ -179,17 +184,6 @@ script:
                   {{ "Die folgenden Geräte sind offline." if count_heimnetz_entities > 1 else "Das folgende Gerät ist offline."}}
 
                   {{ state_attr('sensor.netzwerkgerate_offline', 'geraete') | join(', ') }}                         
-                {% endif %}
-                
-                {% set count_flowers = states('sensor.pflanzen_giessen') | int(0) -%}            
-                {% if count_flowers > 0 %}
-                  {% set flower_warn_level = states('input_number.pflanzen_warnlevel') | int(0) -%}  
-                  {{ "Die folgenden Pflanzen müssen gegossen werden." if count_flowers > 1 else "Die folgende Pflanze muss gegossen werden."}}
-
-                  {% for x in expand('group.pflanzen') if x.state|int(100) < flower_warn_level %}
-                    {%- if not loop.first %}, {% endif -%}
-                    {{- x.name.split(' ')[0] -}}
-                  {% endfor %}                       
                 {% endif %}
 
                 {% set count_steckdosen_offline = states('sensor.steckdosen_offline') | int(0) -%}            
@@ -264,11 +258,7 @@ automation:
     action:         
       - service: script.zu_hause_standort
       - service: switch.turn_off
-        entity_id: switch.abwesenheit_urlaub      
-      - service: input_select.select_option
-        data:
-          entity_id: input_select.computer_ausschalten  
-          option: 'Ruhezustand'              
+        entity_id: switch.abwesenheit_urlaub              
       - choose:    
           - conditions:
               - condition: or

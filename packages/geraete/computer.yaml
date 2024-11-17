@@ -70,7 +70,12 @@ automation:
           
           {{ letzteAktivitaet > 0 and (jetzt - letzteAktivitaet) > 1800 }}
     condition:
-      - "{{ is_state('switch.computer', 'on') and not is_state('input_select.computer_ausschalten', 'Nichts unternehmen') }}"
+      - condition: state
+        entity_id: switch.computer
+        state: 'on'
+        for:
+          minutes: 10
+      - "{{ not is_state('input_select.computer_ausschalten', 'Nichts unternehmen') }}"
     action:      
       - service: switch.turn_off
         entity_id: switch.computer
