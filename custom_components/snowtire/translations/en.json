@@ -1,0 +1,59 @@
+{
+  "title": "Snow Tires",
+  "config": {
+    "abort": {
+      "no_mixed_config": "Already configured. Configuration via configuration.yaml are not compatible with configurations via UI."
+    },
+    "step": {
+      "user": {
+        "data": {
+          "name": "Area Name",
+          "weather": "Weather Forecast Entity for the Area",
+          "days": "Weather Forecast Days to Analyze",
+          "create_notifications": "Create Notifications"
+        }
+      }
+    }
+  },
+  "options": {
+    "abort": {
+      "no_options_available": "Configuration created via configuration.yaml cannot be changed via UI."
+    },
+    "step": {
+      "user": {
+        "data": {
+          "weather": "Weather Forecast Entity for the Area",
+          "days": "Weather Forecast Days to Analyze",
+          "create_notifications": "Create Notifications"
+        },
+        "title": "Options for {name}"
+      }
+    }
+  },
+  "issues": {
+    "deprecated_platform_config": {
+      "title": "The `snowtire` platform for binary sensor configuration is deprecated",
+      "description": "The whole `platform: snowtire` entry under the `binary_sensor:` section in `configuration.yaml` is deprecated and should be replaced to `snowtire:` section or removed. Now you also can use the UI to change settings for the snowtire platform. Please adjust your `configuration.yaml` and restart Home Assistant to fix this issue."
+    }
+  },
+  "entity": {
+    "binary_sensor": {
+      "snowtire": {
+        "name": "Tires for {name}",
+        "state": {
+          "off": "Summer",
+          "on": "Winter"
+        }
+      }
+    },
+    "notification": {
+      "snowtire": {
+        "name": "Change tires for {name}",
+        "state": {
+          "to_summer": "For area {name} it's time to change car tires to summer ones.",
+          "to_winter": "For area {name} it's time to change car tires to winter ones."
+        }
+      }
+    }
+  }
+}

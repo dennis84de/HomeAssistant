@@ -61,15 +61,15 @@ async def async_setup_entry(hass, config_entry):
     )
 
     _LOGGER.info("Configuring sensor using config data & options") 
-
+ 
     if config_entry.options: 
         _LOGGER.debug("Options found, overwriting config data....") 
         hass.config_entries.async_update_entry(config_entry, data=config_entry.data) 
-
+ 
     config = {**config_entry.data} 
     _LOGGER.debug("Config data: %s", config_entry.data) 
     _LOGGER.debug("Config options: %s", config_entry.options)
-
+   
     # Add sensor
     hass.async_add_job(
         hass.config_entries.async_forward_entry_setup(config_entry, PLATFORM)

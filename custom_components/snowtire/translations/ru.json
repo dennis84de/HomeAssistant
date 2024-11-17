@@ -1,0 +1,59 @@
+{
+  "title": "Зимние Шины",
+  "config": {
+    "abort": {
+      "no_mixed_config": "Настройка уже выполнена. Настройка через configuration.yaml несовместима с настройкой через интерфейс."
+    },
+    "step": {
+      "user": {
+        "data": {
+          "name": "Название области",
+          "weather": "Источник прогноза погоды для области",
+          "days": "Анализировать дней прогноза погоды",
+          "create_notifications": "Создавать уведомления"
+        }
+      }
+    }
+  },
+  "options": {
+    "abort": {
+      "no_options_available": "Конфигурация, созданная через configuration.yaml, не может быть изменена через пользовательский интерфейс."
+    },
+    "step": {
+      "user": {
+        "data": {
+          "weather": "Источник прогноза погоды для области",
+          "days": "Анализировать дней прогноза погоды",
+          "create_notifications": "Создавать уведомления"
+        },
+        "title": "Опции для {name}"
+      }
+    }
+  },
+  "issues": {
+    "deprecated_platform_config": {
+      "title": "Платформа `snowtire` устарела",
+      "description": "Вся запись `platform: snowtire` в разделе `binary_sensor:` в `configuration.yaml` устарела и должна быть заменена на раздел `snowtire:` или удалена. Теперь Вы также можете использовать пользовательский интерфейс для изменения настроек платформы snowtire. Измените `configuration.yaml` и перезапустите Home Assistant, чтобы исправить эту проблему."
+    },
+    "entity": {
+      "binary_sensor": {
+        "snowtire": {
+          "name": "Шины для {name}",
+          "state": {
+            "off": "Летние",
+            "on": "Зимние"
+          }
+        }
+      },
+      "notification": {
+        "snowtire": {
+          "name": "Смените шины для {name}",
+          "state": {
+            "to_summer": "Для области {name} пришло время менять резину на летнюю.",
+            "to_winter": "Для области {name} пришло время менять резину на зимнюю."
+          }
+        }
+      }
+    }
+  }
+}
