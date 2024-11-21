@@ -29,12 +29,6 @@ input_select:
       - Ruhezustand
       - Herunterfahren
       - Nichts unternehmen
-    
-input_number:
-  home_office_heute_gearbeitet:
-    name: Home Office Heute gearbeitet
-    min: 0
-    max: 540
 
 input_text:
   teams_status:
@@ -155,11 +149,7 @@ script:
       - service: input_boolean.turn_off
         entity_id: input_boolean.home_office_aktiv, input_boolean.home_office_musik_pausiert, input_boolean.home_office_pause
       - service: switch.turn_off
-        entity_id: switch.computer_arbeit
-      - service: input_number.set_value        
-        data:
-          entity_id: input_number.home_office_heute_gearbeitet
-          value: 0             
+        entity_id: switch.computer_arbeit       
       - if: "{{ is_state('input_select.computer_arbeit_ausschalten', 'Herunterfahren') }}"
         then:          
           - service: switch.turn_on

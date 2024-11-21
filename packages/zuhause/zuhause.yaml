@@ -261,18 +261,7 @@ automation:
         entity_id: switch.abwesenheit_urlaub              
       - choose:    
           - conditions:
-              - condition: or
-                conditions:
-                  - "{{ is_state('binary_sensor.home_office_aktiv', 'on') }}"
-                  - condition: template
-                    value_template: >-
-                      {% set now = as_timestamp(now()) %}
-                      {% set last = as_timestamp(state_attr("script.alles_ausschalten", "last_triggered"), None) | int(0) %}
-                      {% set minutenUnterwegs = ((now - last) / 60) | int(0) %}
-                      {% set minuenHomeOffice = states('input_number.home_office_heute_gearbeitet') | int(0) %}
-                      {% set heuteBuero = is_state('binary_sensor.buero_heute', 'on') %}
-
-                      {{ (minutenUnterwegs + minuenHomeOffice < 600) if (minuenHomeOffice > 0 or heuteBuero) else false }}                              
+              - "{{ is_state('binary_sensor.home_office_aktiv', 'on') }}"                          
             sequence:              
               - service: script.zu_hause_home_office       
           - conditions:
@@ -282,15 +271,7 @@ automation:
           - conditions:
               - "{{ is_state('binary_sensor.nachts', 'off') }}"
             sequence:           
-              - service: script.zu_hause                 
-      - choose:    
-          - conditions:      
-              - "{{ (states('input_number.home_office_heute_gearbeitet') | int(0)) > 0 }}"
-            sequence:                 
-              - service: input_number.set_value        
-                data:
-                  entity_id: input_number.home_office_heute_gearbeitet
-                  value: 0             
+              - service: script.zu_hause                           
       - service: input_boolean.turn_off
         entity_id: input_boolean.geraete_einschalten                  
                

@@ -68,21 +68,6 @@ script:
             data:
               entity_id: alarm_control_panel.alarmo
           - choose:
-              - conditions:
-                  - "{{ is_state('binary_sensor.home_office_aktiv', 'on') }}"
-                  - "{{ is_state('binary_sensor.buero_heute', 'on') }}"
-                sequence:                
-                  - service: input_number.set_value        
-                    data:
-                      entity_id: input_number.home_office_heute_gearbeitet
-                      value: >-
-                        {% set now = as_timestamp(now()) | int %}
-                        {% set last = as_timestamp(states.input_boolean.home_office_aktiv.last_changed, None) | int(0) %}
-
-                        {{ ((now - last) / 60) | int }}                  
-                  - service: input_boolean.turn_off
-                    entity_id: input_boolean.home_office_aktiv
-          - choose:
               - conditions:          
                   - "{{ is_state('calendar.urlaub', 'on') }}"                    
                   - condition: template
