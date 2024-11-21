@@ -122,7 +122,7 @@ script:
           for:
             minutes: 10
       - service: light.turn_off
-        entity_id: light.wohnzimmer_couch, light.wohnzimmer_strahler, light.wohnzimmer_schrank
+        entity_id: light.wohnzimmer_couch, light.wohnzimmer_schrank
 
 automation:
   - alias: "Schlafen einschalten"

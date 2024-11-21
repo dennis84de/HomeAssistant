@@ -80,7 +80,6 @@ logbook:
   exclude:
     entities:     
       - switch.wohnzimmer_couch
-      - switch.wohnzimmer_strahler
       - switch.wohnzimmer_schrank
       - switch.kleiderschrank
       - switch.computer
@@ -105,7 +104,6 @@ history:
   exclude:
     entities:
       - switch.wohnzimmer_couch
-      - switch.wohnzimmer_strahler
       - switch.kleiderschrank
       - switch.wohnzimmer_schrank
       - switch.kuechenschrank

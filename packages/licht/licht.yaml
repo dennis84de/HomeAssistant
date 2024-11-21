@@ -36,7 +36,7 @@ script:
       - if: "{{ is_state('input_boolean.bewegungsmelder_wohnzimmer_deaktiviert', 'off') }}"
         then:
           - service: light.turn_off
-            entity_id: light.wohnzimmer_couch, light.wohnzimmer_strahler, light.wohnzimmer_schrank   
+            entity_id: light.wohnzimmer_couch, light.wohnzimmer_schrank   
             
       - if: "{{ is_state('input_boolean.bewegungsmelder_schlafzimmer_deaktiviert', 'off') }}"
         then:

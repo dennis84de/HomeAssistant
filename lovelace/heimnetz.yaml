@@ -49,8 +49,8 @@ cards:
     title: Tasmota
     show_header_toggle: false
     entities:
-      - entity: device_tracker.tasmotawohnzimmerstrahler
-        name: Wohnzimmer Strahler      
+      - entity: device_tracker.tasmotawohnzimmerschrank
+        name: Wohnzimmer Schrank      
       - entity: device_tracker.tasmotawohnzimmercouch
         name: Wohnzimmer Couch        
       - entity: device_tracker.tasmotawohnzimmerradio

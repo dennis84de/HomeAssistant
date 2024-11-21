@@ -8,7 +8,6 @@ alles_ausschalten:
     - switch.watchtv_wohnzimmer
     - switch.watchtv_schlafzimmer    
     - light.wohnzimmer_couch
-    - light.wohnzimmer_strahler
     - light.wohnzimmer_schrank
     - light.arbeitszimmer_licht
     - light.kinderzimmer_licht
@@ -32,7 +31,6 @@ steckdosen:
     - switch.schlafzimmer_fernseher
     - switch.waschmaschine
     - switch.trockner
-    - switch.wohnzimmer_strahler
     - switch.wohnzimmer_couch
     - switch.wohnzimmer_radio
     - switch.wohnzimmer_schrank

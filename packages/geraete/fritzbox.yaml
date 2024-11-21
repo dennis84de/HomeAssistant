@@ -227,14 +227,14 @@ homeassistant:
     device_tracker.magichomebalkon:
       friendly_name: MagicHome Balkon
       
-    device_tracker.tasmotawohnzimmerstrahler:
-      friendly_name: Tasmota Wohnzimmer Strahler
-    device_tracker.tasmotawohnzimmercouch:
-      friendly_name: Tasmota Wohnzimmer Couch
+    device_tracker.tasmotaweihnachtsbeleuchtung:
+      friendly_name: Tasmota Weihnachtsbeleuchtung      
+    device_tracker.tasmotawohnzimmerschrank:
+      friendly_name: Tasmota Wohnzimmer Schrank
     device_tracker.tasmotawohnzimmerradio:
       friendly_name: Tasmota Wohnzimmer Radio
-    device_tracker.tasmotawohnzimmerschrank:
-      friendly_name: Tasmota Wohnzimmer Strahler   
+    device_tracker.tasmotawohnzimmercouch:
+      friendly_name: Tasmota Wohnzimmer Couch   
     device_tracker.tasmotaarbeitszimmerladegeraet:
       friendly_name: Tasmota Arbeitszimmer Ladegerät
     device_tracker.tasmotabalkonradio:

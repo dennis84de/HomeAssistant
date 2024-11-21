@@ -11,8 +11,6 @@ cards:
     entities:
       - entity: light.wohnzimmer_couch
         name: Couch
-      - entity: light.wohnzimmer_strahler
-        name: Strahler
       - entity: light.wohnzimmer_schrank
         name: Schrank          
         

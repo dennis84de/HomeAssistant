@@ -9,10 +9,6 @@ light:
     entity_id: switch.wohnzimmer_couch
 
   - platform: switch
-    name: Wohnzimmer Strahler
-    entity_id: switch.wohnzimmer_strahler
-
-  - platform: switch
     name: Wohnzimmer Schrank
     entity_id: switch.wohnzimmer_schrank
       
@@ -28,15 +24,14 @@ automation:
       - "{{ (now().hour | int) >= 15 }}"
       - "{{ is_state('person.dennis', 'home') or is_state('person.natalie', 'home') }}"
       - "{{ is_state('binary_sensor.home_office_aktiv', 'off') }}"
-      - "{{ is_state('binary_sensor.baden_aktiv', 'off') }}"      
+      - "{{ is_state('binary_sensor.baden_aktiv', 'off') }}"     
       - "{{ is_state('light.wohnzimmer_couch', 'off') }}"
-      - "{{ is_state('light.wohnzimmer_strahler', 'off') }}"
       - "{{ is_state('light.wohnzimmer_schrank', 'off') }}"     
     action:
       - if: "{{ is_state('switch.watchtv_wohnzimmer', 'on') }}"
         then:
           - service: light.turn_on
-            entity_id: light.wohnzimmer_strahler
+            entity_id: light.wohnzimmer_couch
         else:
           - service: light.turn_on
             entity_id: light.wohnzimmer_schrank
@@ -51,10 +46,10 @@ automation:
       - "{{ is_state('person.dennis', 'home') or is_state('person.natalie', 'home') }}"
       - "{{ is_state('binary_sensor.home_office_aktiv', 'off') }}"
       - "{{ is_state('binary_sensor.baden_aktiv', 'off') }}"      
-      - "{{ is_state('light.wohnzimmer_strahler', 'off') }}"      
+      - "{{ is_state('light.wohnzimmer_couch', 'off') }}"      
     action:
       - service: light.turn_on
-        entity_id: light.wohnzimmer_strahler      
+        entity_id: light.wohnzimmer_couch      
       - service: light.turn_off
         entity_id: light.wohnzimmer_schrank
            
@@ -69,10 +64,10 @@ automation:
       - condition: or
         conditions:               
           - "{{ is_state('light.wohnzimmer_schrank', 'on') }}"
-          - "{{ is_state('light.wohnzimmer_strahler', 'on') }}"
+          - "{{ is_state('light.wohnzimmer_couch', 'on') }}"
     action:
       - service: light.turn_off
-        entity_id: light.wohnzimmer_strahler, light.wohnzimmer_schrank     
+        entity_id: light.wohnzimmer_couch, light.wohnzimmer_schrank     
       - service: light.turn_off
         entity_id: light.wohnzimmer_schrank
         
@@ -80,7 +75,5 @@ homeassistant:
   customize:
     light.wohnzimmer_couch:
       icon: mdi:sofa
-    light.wohnzimmer_strahler:
-      icon: mdi:spotlight
     light.wohnzimmer_schrank:
       icon: mdi:cupboard

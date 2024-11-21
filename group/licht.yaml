@@ -2,7 +2,6 @@ licht_wohnung:
   name: Licht Wohnung
   entities:
     - light.wohnzimmer_couch
-    - light.wohnzimmer_strahler
     - light.wohnzimmer_schrank
     - light.arbeitszimmer_licht
     - light.kinderzimmer_licht
@@ -19,7 +18,6 @@ licht_schlafen:
   name: Licht Schlafen
   entities:
     - light.wohnzimmer_couch
-    - light.wohnzimmer_strahler
     - light.wohnzimmer_schrank
     - light.flur_vorne
     - light.flur_hinten
@@ -48,7 +46,6 @@ licht_baden:
   name: Licht Baden
   entities:
     - light.wohnzimmer_couch
-    - light.wohnzimmer_strahler
     - light.wohnzimmer_schrank
     - light.arbeitszimmer_licht
     - light.kinderzimmer_licht
@@ -64,7 +61,6 @@ licht_unterwegs:
   name: Licht unterwegs
   entities:
     - light.wohnzimmer_couch
-    - light.wohnzimmer_strahler
     - light.wohnzimmer_schrank
     - light.arbeitszimmer_licht
     - light.kueche_regal
