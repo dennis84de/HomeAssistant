@@ -283,7 +283,7 @@ automation:
         entity_id: light.bett
       - service: alarmo.disarm
         data:
-          entity_id: alarm_control_panel.alarmo                  
+          entity_id: alarm_control_panel.alarmo   
       - if: "{{ trigger.id != 'schalter_badezimmer' }}"
         then:             
           - wait_for_trigger:
@@ -292,7 +292,11 @@ automation:
               to: 'on'                       
           - service: script.aufstehen_begruessung               
         else:          
-          - service: script.aufstehen_begruessung                   
+          - service: script.aufstehen_begruessung              
+      - if: "{{ is_state('binary_sensor.sonne_tagsueber', 'off') }}"
+        then:             
+          - service: light.turn_on
+            entity_id: light.wohnzimmer_schrank             
       - if: "{{ radiosEinschalten }}"
         then:             
           - if: "{{ states('sensor.radios_eingeschaltet') | int(0) == 1 and is_state('switch.schlafzimmer_radio', 'on') }}"
