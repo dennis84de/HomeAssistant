@@ -14,9 +14,7 @@ cards:
       - entity: switch.arbeitszimmer_radio
         name: Radio            
       - entity: switch.arbeitszimmer_monitore
-        name: Monitore     
-      - entity: switch.babyphone
-        name: Babyphone          
+        name: Monitore         
       - entity: switch.arbeitszimmer_heizstrahler  
         name: Heizstrahler        
       

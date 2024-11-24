@@ -227,8 +227,8 @@ homeassistant:
     device_tracker.magichomebalkon:
       friendly_name: MagicHome Balkon
       
-    device_tracker.tasmotaweihnachtsbeleuchtung:
-      friendly_name: Tasmota Weihnachtsbeleuchtung      
+    device_tracker.tasmotaweihnachtsstern:
+      friendly_name: Tasmota Weihnachtsstern    
     device_tracker.tasmotawohnzimmerschrank:
       friendly_name: Tasmota Wohnzimmer Schrank
     device_tracker.tasmotawohnzimmerradio:

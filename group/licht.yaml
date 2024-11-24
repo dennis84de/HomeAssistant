@@ -12,7 +12,7 @@ licht_wohnung:
     - light.kleiderschrank
     - light.kueche_regal
     - light.kueche_schrank
-    - light.balkon_licht
+    - light.balkon_licht    
     
 licht_schlafen:
   name: Licht Schlafen
@@ -27,6 +27,8 @@ licht_schlafen:
     - light.kueche_regal
     - light.kueche_schrank
     - light.balkon_licht
+    - light.weihnachtsstern
+    - light.lichterkette
     
 licht_fernsehen:
   name: Licht Fernsehen

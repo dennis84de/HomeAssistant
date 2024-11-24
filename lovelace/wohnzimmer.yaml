@@ -12,7 +12,18 @@ cards:
       - entity: light.wohnzimmer_couch
         name: Couch
       - entity: light.wohnzimmer_schrank
-        name: Schrank          
+        name: Schrank     
+        
+  - type: entities
+    title: Weihnachten
+    show_header_toggle: false
+    view_layout:
+      column: 1    
+    entities:
+      - entity: light.weihnachtsstern
+        name: Weihnachtsstern              
+      - entity: light.lichterkette
+        name: Lichterkette     
         
   - type: entities
     title: Mediaplayer

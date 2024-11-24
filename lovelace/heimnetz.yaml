@@ -159,5 +159,5 @@ cards:
     title: Shelly
     show_header_toggle: false
     entities:
-      - entity: device_tracker.shellybabyphone
-        name: Babyphone             
+      - entity: device_tracker.shellylichterkette
+        name: Lichterkette             
