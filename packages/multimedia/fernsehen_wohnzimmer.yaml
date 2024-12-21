@@ -99,7 +99,21 @@ automation:
         entity_id: light.wohnzimmer_schrank
       - service: light.turn_on
         entity_id: light.wohnzimmer_couch            
-                        
+           
+  - alias: "Soundbar aussschalten"
+    id: "soundbar_aussschalten"
+    trigger:
+      - platform: state
+        entity_id: switch.watchtv_wohnzimmer
+        to: 'off'
+        for:
+          minutes: 10
+    condition:    
+      - "{{ is_state('media_player.soundbar', 'on') }}"
+    action:    
+      - service: media_player.turn_off
+        entity_id: media_player.soundbar      
+        
 homeassistant:
   customize:
     media_player.soundbar:

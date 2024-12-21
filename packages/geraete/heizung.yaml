@@ -27,40 +27,40 @@ schedule:
   heizung:
     name: "Zeitplan Heizung"
     monday:
-      - from: "05:30:00"
-        to: "08:00:00"
+      - from: "07:30:00"
+        to: "09:00:00"
       - from: "15:30:00"
-        to: "20:00:00"        
+        to: "18:00:00"        
     tuesday:
-      - from: "05:30:00"
-        to: "08:00:00"
+      - from: "07:30:00"
+        to: "09:00:00"
       - from: "15:30:00"
-        to: "20:00:00"    
+        to: "18:00:00"    
     wednesday:
-      - from: "05:30:00"
-        to: "08:00:00"
+      - from: "07:30:00"
+        to: "09:00:00"
       - from: "15:30:00"
-        to: "20:00:00"    
+        to: "18:00:00"    
     thursday:
-      - from: "05:30:00"
-        to: "08:00:00"
+      - from: "07:30:00"
+        to: "09:00:00"
       - from: "15:30:00"
-        to: "20:00:00"    
+        to: "18:00:00"    
     friday:
-      - from: "05:30:00"
-        to: "08:00:00"
+      - from: "07:30:00"
+        to: "09:00:00"
       - from: "15:30:00"
-        to: "20:00:00"    
+        to: "18:00:00"    
     saturday:
-      - from: "08:00:00"
+      - from: "09:00:00"
         to: "11:00:00"
       - from: "17:00:00"
-        to: "21:00:00"    
+        to: "18:00:00"    
     sunday:
-      - from: "08:00:00"
+      - from: "09:00:00"
         to: "11:00:00"
       - from: "17:00:00"
-        to: "21:00:00"
+        to: "18:00:00"
         
 template:
   - binary_sensor:
@@ -118,6 +118,8 @@ automation:
               - "{{ is_state('climate.heizung_wohnzimmer', 'off') }}"
               - "{{ is_state('schedule.heizung', 'on') }}"
               - "{{ states('sensor.wohnzimmer_temperatur') | float(18) < states('input_number.heizung_start') | float(0) }}"    
+              - "{{ is_state('binary_sensor.balkontuer', 'off') }}"
+              - "{{ is_state('binary_sensor.fenster_wohnzimmer', 'off') }}"
           - condition: and
             conditions:      
               - "{{ trigger.id == 'stop' }}"
@@ -231,7 +233,8 @@ automation:
               - "{{ trigger.id == 'start' }}"
               - "{{ is_state('climate.heizung_kueche', 'off') }}"
               - "{{ is_state('schedule.heizung', 'on') }}"
-              - "{{ states('sensor.kueche_temperatur') | float(18) < states('input_number.heizung_start') | float(0) }}"    
+              - "{{ states('sensor.kueche_temperatur') | float(18) < states('input_number.heizung_start') | float(0) }}"   
+              - "{{ is_state('binary_sensor.fenster_kueche', 'off') }}"
           - condition: and
             conditions:   
               - "{{ trigger.id == 'stop' }}"
@@ -330,6 +333,7 @@ automation:
               - "{{ is_state('climate.heizung_kinderzimmer', 'off') }}"
               - "{{ is_state('schedule.heizung', 'on') }}"
               - "{{ states('sensor.kinderzimmer_temperatur') | float(18) < states('input_number.heizung_start') | float(0) }}"    
+              - "{{ is_state('binary_sensor.fenster_kinderzimmer', 'off') }}"
           - condition: and
             conditions:   
               - "{{ trigger.id == 'stop' }}"
@@ -432,6 +436,7 @@ automation:
               - "{{ is_state('schedule.heizung', 'on') }}"
               - "{{ states('sensor.arbeitszimmer_temperatur') | float(18) < states('input_number.heizung_start') | float(0) }}"
               - "{{ is_state('binary_sensor.home_office_heute', 'on') }}"
+              - "{{ is_state('binary_sensor.fenster_arbeitszimmer', 'off') }}"
           - condition: and
             conditions:    
               - "{{ trigger.id == 'stop' }}"

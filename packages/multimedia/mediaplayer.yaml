@@ -52,26 +52,4 @@ automation:
         entity_id:
           - media_player.home_assistant
       - service: input_boolean.turn_on
-        entity_id: input_boolean.uhr_einschalten
-                
-  - alias: "Temptation"
-    id: "temptation"    
-    trigger:
-      - id: cube_wohnzimmer
-        platform: event
-        event_type: zha_event
-        event_data:
-          device_ieee: 00:15:8d:00:01:10:0d:7a
-          command: flip             
-    condition:
-      - condition: or
-        conditions:          
-          - "{{ is_state('calendar.borussia_dortmund', 'off') }}"
-          - "{{ True if '(T.B.A.)' in state_attr('calendar.borussia_dortmund', 'message') else False }}"      
-      - "{{ is_state('person.natalie', 'home') }}"
-    action:
-      - service: media_player.play_media
-        data:
-          entity_id: media_player.home_assistant
-          media_content_id: http://192.168.2.75:8123/local/sounds/temptation.mp3
-          media_content_type: music                        
+        entity_id: input_boolean.uhr_einschalten               

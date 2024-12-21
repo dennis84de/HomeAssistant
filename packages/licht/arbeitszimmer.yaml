@@ -58,7 +58,7 @@ automation:
             - condition: and
               conditions:
                 - "{{ trigger.id == 'licht_an_dunkel' }}"
-                - "{{ is_state('person.dennis', 'home') or is_state('person.natalie', 'home') }}"
+                - "{{ is_state('binary_sensor.erwachsene_zu_hause', 'on') }}"
             - condition: and
               conditions:
                 - "{{ is_state('binary_sensor.sonne_tagsueber', 'off') }}"

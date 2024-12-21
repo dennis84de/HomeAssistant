@@ -30,7 +30,7 @@ automation:
         for: '00:01:00'
     condition:      
       - "{{ (now().hour | int) >= 15 }}"
-      - "{{ is_state('person.dennis', 'home') or is_state('person.natalie', 'home') }}"
+      - "{{ is_state('binary_sensor.erwachsene_zu_hause', 'on') }}"
       - "{{ is_state('binary_sensor.home_office_aktiv', 'off') }}"
       - "{{ is_state('binary_sensor.baden_aktiv', 'off') }}"     
       - "{{ is_state('light.wohnzimmer_couch', 'off') }}"
@@ -51,7 +51,7 @@ automation:
         entity_id: binary_sensor.nachts
         to: 'on'
     condition:      
-      - "{{ is_state('person.dennis', 'home') or is_state('person.natalie', 'home') }}"
+      - "{{ is_state('binary_sensor.erwachsene_zu_hause', 'on') }}"
       - "{{ is_state('binary_sensor.home_office_aktiv', 'off') }}"
       - "{{ is_state('binary_sensor.baden_aktiv', 'off') }}"      
       - "{{ is_state('light.wohnzimmer_couch', 'off') }}"      
@@ -84,6 +84,7 @@ automation:
     trigger:
       - platform: state
         entity_id: binary_sensor.weihnachtsbeleuchtung
+        to: 'on'
     condition:               
       - "{{ is_state('binary_sensor.adventszeit', 'on') }}"        
     action:

@@ -40,7 +40,7 @@ automation:
       - "{{ states('light.kinderzimmer_licht') != trigger.to_state.state or trigger.id == 'licht_aus_automatisch' }}"
       - condition: or
         conditions:
-          - "{{ is_state('person.franzi', 'home') and (is_state('person.dennis', 'home') or is_state('person.natalie', 'home')) }}"
+          - "{{ is_state('person.franzi', 'home') and is_state('binary_sensor.erwachsene_zu_hause', 'on') }}"
           - "{{ states('light.kinderzimmer_licht') == 'on' and (trigger.id == 'licht_aus' or trigger.id == 'licht_aus_automatisch') }}"
     action:                
       - if: "{{ trigger.id == 'licht_an' }}"

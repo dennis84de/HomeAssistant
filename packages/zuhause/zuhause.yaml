@@ -352,6 +352,13 @@ automation:
       - id: calendar
         platform: state
         entity_id: calendar.franzi_papa_wochenende
+        from: 'off'
+        to: 'on'
+      - id: calendar
+        platform: state
+        entity_id: calendar.franzi_papa_wochenende
+        from: 'on'
+        to: 'off'        
       - id: schule_morgens
         platform: template
         value_template: >-

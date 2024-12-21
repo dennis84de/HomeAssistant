@@ -4,7 +4,7 @@ binary_sensor:
       bewegungsmelder_inaktiv_unterwegs:
         friendly_name: "Bewegungmelder inaktiv - Unterwegs"
         device_class: occupancy
-        value_template: "{{ not is_state('person.dennis', 'home') and not is_state('person.natalie', 'home') }}"
+        value_template: "{{ is_state('binary_sensor.erwachsene_zu_hause', 'off') }}"
           
 script:      
   alles_ausschalten:
@@ -115,9 +115,8 @@ automation:
         for:
           minutes: 15          
     condition:
-      - "{{ not is_state('alarm_control_panel.alarmo', 'armed_away') }}"          
-      - "{{ is_state('person.dennis', 'not_home') }}"
-      - "{{ is_state('person.natalie', 'not_home') }}"
+      - "{{ not is_state('alarm_control_panel.alarmo', 'armed_away') }}"   
+      - "{{ is_state('binary_sensor.erwachsene_zu_hause', 'off') }}"
     action:
       - service: notify.telegram
         data:
@@ -136,7 +135,7 @@ automation:
         for:
           minutes: 30
     condition:
-      - "{{ is_state('person.natalie', 'not_home') }}"     
+      - "{{ is_state('binary_sensor.erwachsene_zu_hause', 'off') }}"     
       - condition: template
         value_template: >-
           {% set ns = namespace(found=0) -%}
@@ -237,8 +236,7 @@ automation:
       - choose:
           - conditions:
               - "{{ not is_state('alarm_control_panel.alarmo', 'armed_away') }}"
-              - "{{ is_state('person.dennis', 'not_home') }}"
-              - "{{ is_state('person.natalie', 'not_home') }}"
+              - "{{ is_state('binary_sensor.erwachsene_zu_hause', 'off') }}"
               - "{{ is_state('vacuum.staubsauger', 'docked') }}"
             sequence:                       
               - service: notify.telegram
