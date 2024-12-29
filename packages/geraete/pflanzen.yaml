@@ -3,23 +3,4 @@ input_number:
     name: Warnlevel
     min: 5
     max: 60
-    step: 5
-   
-template:    
-  - sensor:          
-      - name: "Pflanzen gießen"
-        unique_id: pflanzen_giessen
-        state: >-
-          {% set flower_warn_level = states('input_number.pflanzen_warnlevel') | int(0) -%}    
-          {% set pflanzenGiessen = expand('group.pflanzen')
-            | map(attribute='state') | map('float', 0)
-            | select('lt', flower_warn_level) | list | count %}
-
-          {{ pflanzenGiessen | int(0) }}       
-        icon: >-
-          {% set flower_warn_level = states('input_number.pflanzen_warnlevel') | int(0) -%}    
-          {% set pflanzenGiessen = expand('group.pflanzen')
-            | map(attribute='state') | map('float', 0)
-            | select('lt', flower_warn_level) | list | count %}
-
-          {{ 'mdi:flower' if pflanzenGiessen == 0 else 'mdi:flower-outline' }}           
+    step: 5 

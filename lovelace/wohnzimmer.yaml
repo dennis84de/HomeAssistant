@@ -140,31 +140,17 @@ cards:
     view_layout:
       column: 3      
     cards:                        
-      - type: horizontal-stack
-        title: Pflanzen
-        cards:
-          - type: custom:mini-graph-card
-            name: Pflanze
-            line_width: 3
-            animate: true
-            hour24: true
-            show:
-              fill: false
-              icon: false
-              points: false
-            entities:
-              - entity: sensor.pflanze_wohnzimmer_feuchtigkeit
-          - type: custom:mini-graph-card
-            name: Orchidee
-            line_width: 3
-            animate: true
-            hour24: true
-            show:
-              fill: false
-              icon: false
-              points: false
-            entities:
-              - entity: sensor.orchidee_wohnzimmer_feuchtigkeit                                                  
+      - type: custom:mini-graph-card
+        name: Pflanze
+        line_width: 3
+        animate: true
+        hour24: true
+        show:
+          fill: false
+          icon: false
+          points: false
+        entities:
+          - entity: sensor.pflanze_wohnzimmer_feuchtigkeit                                               
               
   - type: conditional
     conditions:

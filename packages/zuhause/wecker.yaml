@@ -115,16 +115,11 @@ script:
               Die {{ edgHeute }}-Tonne wird heute geleert.
             {% endfor %}   
             
-            {% set count_flowers = states('sensor.pflanzen_giessen') | int(0) -%}            
-            {% if count_flowers > 0 %}
-              {% set flower_warn_level = states('input_number.pflanzen_warnlevel') | int(0) -%}    
-              
-              {{ "Die folgenden Pflanzen müssen gegossen werden." if count_flowers > 1 else "Die folgende Pflanze muss gegossen werden."}}
-
-              {% for x in expand('group.pflanzen') if x.state|int(100) < flower_warn_level %}
-                {%- if not loop.first %}, {% endif -%}
-                {{- x.name.split(' ')[0] -}}
-              {% endfor %}                       
+            {% set feuchtigkeitPflanzeWohnzimmer = states('sensor.pflanze_wohnzimmer_feuchtigkeit') | int(0) %}
+            {% set pflanzenWarnlevel = states('input_number.pflanzen_warnlevel') | int(0) %}
+                  
+            {% if feuchtigkeitPflanzeWohnzimmer < pflanzenWarnlevel %}
+              {{ "Die Pflanze  im Wohnzimmer muss gegossen werden." }}                  
             {% endif %}
                 
             {% set count_heimnetz_entities = states('sensor.netzwerkgerate_offline') | int(0) -%}            

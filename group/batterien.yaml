@@ -37,7 +37,6 @@ batteriestand:
     - sensor.bewegungsmelder_balkon_battery_level
     - sensor.bewegungsmelder_wohnzimmer_battery_level
     - sensor.pflanze_wohnzimmer_battery_level
-    - sensor.orchidee_wohnzimmer_battery_level
     - sensor.heizung_wohnzimmer_batterie
     - sensor.heizung_kinderzimmer_batterie    
     - sensor.kleiderschrank_links_battery_level
