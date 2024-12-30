@@ -69,6 +69,8 @@ cards:
         name: Küchenschrank  
       - entity: device_tracker.tasmotaspuelmaschine
         name: Spülmaschine
+      - entity: device_tracker.tasmotadiscokugel
+        name: Discokugel        
         
   - type: entities
     title: TP-Link
