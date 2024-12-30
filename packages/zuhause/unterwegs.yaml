@@ -136,6 +136,7 @@ automation:
           minutes: 30
     condition:
       - "{{ is_state('binary_sensor.erwachsene_zu_hause', 'off') }}"     
+      - "{{ is_state('switch.abwesenheit_urlaub', 'off') }}"           
       - condition: template
         value_template: >-
           {% set ns = namespace(found=0) -%}
