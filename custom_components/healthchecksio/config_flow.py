@@ -1,13 +1,20 @@
 """Adds config flow for Blueprint."""
-import async_timeout
-import asyncio
-from collections import OrderedDict
-import voluptuous as vol
-from homeassistant.helpers.aiohttp_client import async_get_clientsession
-from integrationhelper import Logger
-from homeassistant import config_entries
 
-from .const import DOMAIN, DOMAIN_DATA, OFFICIAL_SITE_ROOT
+from __future__ import annotations
+
+import asyncio
+import json
+from collections import OrderedDict
+from logging import getLogger
+
+import aiohttp
+import voluptuous as vol
+from homeassistant import config_entries
+from homeassistant.helpers.aiohttp_client import async_get_clientsession
+
+from .const import DOMAIN, OFFICIAL_SITE_ROOT
+
+LOGGER = getLogger(__name__)
 
 
 @config_entries.HANDLERS.register(DOMAIN)
@@ -22,9 +29,7 @@ class BlueprintFlowHandler(config_entries.ConfigFlow):
         self._errors = {}
         self.initial_data = None
 
-    async def async_step_user(
-        self, user_input={}
-    ):  # pylint: disable=dangerous-default-value
+    async def async_step_user(self, user_input=None):
         """Handle a flow initialized by the user."""
         self._errors = {}
         if self._async_current_entries():
@@ -78,9 +83,7 @@ class BlueprintFlowHandler(config_entries.ConfigFlow):
             step_id="user", data_schema=vol.Schema(data_schema), errors=self._errors
         )
 
-    async def async_step_self_hosted(
-        self, user_input={}
-    ):  # pylint: disable=dangerous-default-value
+    async def async_step_self_hosted(self, user_input):
         """Handle the step for a self-hosted instance."""
         self._errors = {}
         valid = await self._test_credentials(
@@ -123,23 +126,40 @@ class BlueprintFlowHandler(config_entries.ConfigFlow):
         self, api_key, check, self_hosted, site_root, ping_endpoint
     ):
         """Return true if credentials is valid."""
+        LOGGER.debug("Testing Credentials")
+        verify_ssl = not self_hosted or site_root.startswith("https")
+        session = async_get_clientsession(self.hass, verify_ssl)
+        timeout10 = aiohttp.ClientTimeout(total=10)
+        headers = {"X-Api-Key": api_key}
+        if self_hosted:
+            check_url = f"{site_root}/{ping_endpoint}/{check}"
+        else:
+            check_url = f"https://hc-ping.com/{check}"
+        await asyncio.sleep(1)  # needed for self-hosted instances
         try:
-            verify_ssl = not self_hosted or site_root.startswith("https")
-            session = async_get_clientsession(self.hass, verify_ssl)
-            headers = {"X-Api-Key": api_key}
-            async with async_timeout.timeout(10):
-                Logger("custom_components.healthchecksio").info("Checking API Key")
-                data = await session.get(f"{site_root}/api/v1/checks/", headers=headers)
-                self.hass.data[DOMAIN_DATA] = {"data": await data.json()}
-
-                Logger("custom_components.healthchecksio").info("Checking Check ID")
-                if self_hosted:
-                    check_url = f"{site_root}/{ping_endpoint}/{check}"
-                else:
-                    check_url = f"https://hc-ping.com/{check}"
-                await asyncio.sleep(1)  # needed for self-hosted instances
-                await session.get(check_url)
+            check_response = await session.get(check_url, timeout=timeout10)
+        except (TimeoutError, aiohttp.ClientError):
+            LOGGER.exception("Could Not Send Check")
+            return False
+        else:
+            if check_response.ok:
+                LOGGER.debug("Send Check HTTP Status Code: %s", check_response.status)
+            else:
+                LOGGER.error("Send Check HTTP Status Code: %s", check_response.status)
+                return False
+        try:
+            request = await session.get(
+                f"{site_root}/api/v1/checks/", headers=headers, timeout=timeout10
+            )
+        except (TimeoutError, aiohttp.ClientError):
+            LOGGER.exception("Could Not Update Data")
+            return False
+        except (ValueError, json.decoder.JSONDecodeError):
+            LOGGER.exception("Data JSON Decode Error")
+            return False
+        else:
+            if not request.ok:
+                LOGGER.error("Got Data HTTP Status Code: %s", request.status)
+                return False
+            LOGGER.debug("Got Data HTTP Status Code: %s", request.status)
             return True
-        except Exception as exception:  # pylint: disable=broad-except
-            Logger("custom_components.healthchecksio").error(exception)
-        return False

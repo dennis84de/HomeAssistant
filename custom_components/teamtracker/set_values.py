@@ -201,6 +201,8 @@ async def async_set_universal_values(
             default=await async_get_value(event, "status", "type", "state"),
         )
     ).upper()
+    new_values["season"] = await async_get_value(event, "season", "slug")
+
     new_values["event_name"] = await async_get_value(event, "shortName")
     new_values["event_url"] = await async_get_value(event, "links", 0, "href")
     new_values["date"] = await async_get_value(
@@ -271,6 +273,19 @@ async def async_set_universal_values(
             default=await async_get_value(competitor, "roster", "shortDisplayName")
         ),
     )
+    new_values["team_long_name"] = await async_get_value(
+        competitor,
+        "team",
+        "displayName",
+        default=await async_get_value(competitor, "athlete", "displayName",
+            default=await async_get_value(competitor, "roster", "displayName")
+        ),
+    )
+    new_values["team_conference_id"] = await async_get_value(
+        competitor,
+        "team",
+        "conferenceId"
+    )
     new_values["opponent_name"] = await async_get_value(
         opponent,
         "team",
@@ -279,13 +294,26 @@ async def async_set_universal_values(
             default=await async_get_value(opponent, "roster", "shortDisplayName"),
         ),
     )
-
+    new_values["opponent_long_name"] = await async_get_value(
+        opponent,
+        "team",
+        "displayName",
+        default=await async_get_value(opponent, "athlete", "displayName",
+            default=await async_get_value(opponent, "roster", "displayName")
+        ),
+    )
+    new_values["opponent_conference_id"] = await async_get_value(
+        opponent,
+        "team",
+        "conferenceId"
+    )
     new_values["team_record"] = await async_get_value(
         competitor, "records", 0, "summary"
     )
     new_values["opponent_record"] = await async_get_value(
         opponent, "records", 0, "summary"
     )
+
     new_values["team_logo"] = await async_get_value(
         competitor,
         "team",

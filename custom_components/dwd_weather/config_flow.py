@@ -17,6 +17,7 @@ from homeassistant.helpers.selector import (
 from simple_dwd_weatherforecast import dwdforecast
 
 from .const import (
+    CONF_ADDITIONAL_FORECAST_ATTRIBUTES,
     CONF_DATA_TYPE,
     CONF_DATA_TYPE_FORECAST,
     CONF_DATA_TYPE_MIXED,
@@ -26,9 +27,11 @@ from .const import (
     CONF_ENTITY_TYPE_STATION,
     CONF_HOURLY_UPDATE,
     CONF_INTERPOLATE,
+    CONF_SENSOR_FORECAST_STEPS,
     CONF_LOCATION_COORDINATES,
     CONF_CUSTOM_LOCATION,
     CONF_MAP_BACKGROUND_TYPE,
+    CONF_MAP_DARK_MODE,
     CONF_MAP_FOREGROUND_MAXTEMP,
     CONF_MAP_FOREGROUND_POLLENFLUG,
     CONF_MAP_FOREGROUND_PRECIPITATION,
@@ -272,6 +275,14 @@ class DWDWeatherConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                         CONF_HOURLY_UPDATE,
                         default=False,  # type: ignore
                     ): BooleanSelector({}),
+                    vol.Required(
+                        CONF_SENSOR_FORECAST_STEPS,
+                        default=250,  # type: ignore
+                    ): NumberSelector({"min": 1, "max": 250, "step": 1, "mode": "box"}),
+                    vol.Required(
+                        CONF_ADDITIONAL_FORECAST_ATTRIBUTES,
+                        default=False,  # type: ignore
+                    ): BooleanSelector({}),
                 }
             )
 
@@ -410,6 +421,10 @@ class DWDWeatherConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 ): BooleanSelector({}),
                 vol.Required(
                     CONF_MAP_HOMEMARKER,
+                    default=False,
+                ): BooleanSelector({}),
+                vol.Required(
+                    CONF_MAP_DARK_MODE,
                     default=False,
                 ): BooleanSelector({}),
             }
@@ -575,7 +590,7 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
                     {
                         vol.Required(
                             CONF_DATA_TYPE,
-                            default=self.config_entry.data["data_type"],
+                            default=self.config_entry.data[CONF_DATA_TYPE],
                         ): SelectSelector(
                             {
                                 "options": list(
@@ -592,7 +607,7 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
                         ),
                         vol.Required(
                             CONF_WIND_DIRECTION_TYPE,
-                            default=self.config_entry.data["wind_direction_type"],
+                            default=self.config_entry.data[CONF_WIND_DIRECTION_TYPE],
                         ): SelectSelector(
                             {
                                 "options": list(["degrees", "direction"]),
@@ -603,15 +618,27 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
                         ),
                         vol.Required(
                             CONF_INTERPOLATE,
-                            default=self.config_entry.data["interpolate"],
+                            default=self.config_entry.data[CONF_INTERPOLATE],
                         ): BooleanSelector({}),
                         vol.Required(
                             CONF_HOURLY_UPDATE,
-                            default=self.config_entry.data["hourly_update"],
+                            default=self.config_entry.data[CONF_HOURLY_UPDATE],
+                        ): BooleanSelector({}),
+                        vol.Required(
+                            CONF_SENSOR_FORECAST_STEPS,
+                            default=self.config_entry.data[CONF_SENSOR_FORECAST_STEPS],
+                        ): NumberSelector(
+                            {"min": 1, "max": 250, "step": 1, "mode": "box"}
+                        ),
+                        vol.Required(
+                            CONF_ADDITIONAL_FORECAST_ATTRIBUTES,
+                            default=self.config_entry.data[
+                                CONF_ADDITIONAL_FORECAST_ATTRIBUTES
+                            ],
                         ): BooleanSelector({}),
                     }
                 ),
-            )
+            )  # type: ignore
         elif self.config_entry.data[CONF_ENTITY_TYPE] == CONF_ENTITY_TYPE_MAP:
             if user_input is not None:
                 _LOGGER.debug(
@@ -711,6 +738,10 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
                     vol.Required(
                         CONF_MAP_HOMEMARKER,
                         default=self.config_entry.data[CONF_MAP_HOMEMARKER],
+                    ): BooleanSelector({}),
+                    vol.Required(
+                        CONF_MAP_DARK_MODE,
+                        default=self.config_entry.data[CONF_MAP_DARK_MODE],
                     ): BooleanSelector({}),
                 }
             )

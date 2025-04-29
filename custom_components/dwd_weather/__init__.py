@@ -1,7 +1,9 @@
 """The DWD Weather component."""
 
 import asyncio
+from datetime import timedelta
 import logging
+import random
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
@@ -30,6 +32,9 @@ from .const import (
     CONF_MAP_CENTERMARKER,
     CONF_MAP_HOMEMARKER,
     CONF_MAP_TIMESTAMP,
+    CONF_ADDITIONAL_FORECAST_ATTRIBUTES,
+    CONF_MAP_DARK_MODE,
+    CONF_SENSOR_FORECAST_STEPS,
     CONF_STATION_ID,
     CONF_STATION_NAME,
     CONF_WIND_DIRECTION_TYPE,
@@ -61,7 +66,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
     """Set up DWD Weather as config entry."""
     _LOGGER.debug("Setup with data {}".format(entry.data))
     entry.async_on_unload(entry.add_update_listener(update_listener))
-
+    random_delay = random.randint(1, 59)
     if entry.data[CONF_ENTITY_TYPE] == CONF_ENTITY_TYPE_STATION:
         dwd_weather_data = DWDWeatherData(hass, entry)
 
@@ -71,7 +76,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
             _LOGGER,
             name=f"DWD Weather Coordinator for {entry.data[CONF_STATION_ID]}",
             update_method=dwd_weather_data.async_update,
-            update_interval=DEFAULT_SCAN_INTERVAL,
+            update_interval=DEFAULT_SCAN_INTERVAL + timedelta(seconds=random_delay),
         )
 
         # Fetch initial data so we have data when entities subscribe
@@ -102,7 +107,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
             _LOGGER,
             name="DWD Map Coordinator",
             update_method=dwd_weather_data.async_update,
-            update_interval=DEFAULT_MAP_INTERVAL,
+            update_interval=DEFAULT_MAP_INTERVAL + timedelta(seconds=random_delay),
         )
         # Save the data
         dwdweather_hass_data = hass.data.setdefault(DOMAIN, {})
@@ -184,6 +189,15 @@ async def async_migrate_entry(hass: HomeAssistant, config_entry: ConfigEntry):
         new[CONF_MAP_HOMEMARKER_SIZE] = 15
         new[CONF_MAP_HOMEMARKER_COLOR] = [255, 0, 0]
         hass.config_entries.async_update_entry(config_entry, data=new, version=9)
+    elif config_entry.version == 9:
+        new = {**config_entry.data}
+        new[CONF_ADDITIONAL_FORECAST_ATTRIBUTES] = False
+        new[CONF_MAP_DARK_MODE] = False
+        hass.config_entries.async_update_entry(config_entry, data=new, version=10)
+    elif config_entry.version == 10:
+        new = {**config_entry.data}
+        new[CONF_SENSOR_FORECAST_STEPS] = 250
+        hass.config_entries.async_update_entry(config_entry, data=new, version=11)
 
     _LOGGER.info("Migration to version %s successful", config_entry.version)
     return True

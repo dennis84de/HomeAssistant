@@ -7,15 +7,15 @@ from homeassistant.const import Platform
 # Base component constants
 NAME = "DWD Weather"
 DOMAIN = "dwd_weather"
-CONF_VERSION = 9
+CONF_VERSION = 11
 ATTRIBUTION = "Data provided by Deutscher Wetterdienst (DWD)"
 # Platforms
 PLATFORMS = [
     Platform.SENSOR,
     Platform.WEATHER,
 ]
-INTEGRATION_VERSION = "2.1.26"
-MIN_REQUIRED_HA_VERSION = "2024.10"
+INTEGRATION_VERSION = "2.2.6"
+MIN_REQUIRED_HA_VERSION = "2024.10.0"
 
 ATTR_LATEST_UPDATE = "latest_update_utc"
 ATTR_REPORT_ISSUE_TIME = "report_time_utc"
@@ -31,6 +31,7 @@ ATTR_FORECAST_VISIBILITY = "visibility"
 ATTR_FORECAST_SUN_IRRADIANCE = "sun_irradiance"
 ATTR_FORECAST_FOG_PROBABILITY = "fog_probability"
 ATTR_FORECAST_EVAPORATION = "evaporation"
+ATTR_FORECAST_HUMIDITY = "humidity"
 
 DEFAULT_SCAN_INTERVAL = timedelta(minutes=1)
 DEFAULT_MAP_INTERVAL = timedelta(minutes=1)
@@ -56,11 +57,14 @@ CONF_STATION_NAME = "station_name"
 CONF_WIND_DIRECTION_TYPE = "wind_direction_type"
 CONF_INTERPOLATE = "interpolate"
 CONF_HOURLY_UPDATE = "hourly_update"
+CONF_ADDITIONAL_FORECAST_ATTRIBUTES = "additional_forecast_attributes"
+CONF_SENSOR_FORECAST_STEPS = "sensor_forecast_steps"
 
 CONF_MAP_TYPE = "map_type"
 CONF_MAP_TYPE_GERMANY = "map_germany"
 CONF_MAP_TYPE_CUSTOM = "map_custom"
 CONF_MAP_WINDOW = "map_window"
+CONF_MAP_DARK_MODE = "map_dark_mode"
 CONF_MAP_FOREGROUND_TYPE = "map_foreground_type"
 CONF_MAP_FOREGROUND_PRECIPITATION = "map_foreground_precipitation"
 CONF_MAP_FOREGROUND_MAXTEMP = "map_foreground_maxtemp"

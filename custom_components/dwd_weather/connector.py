@@ -43,6 +43,7 @@ from .const import (
     ATTR_FORECAST_CLOUD_COVERAGE,
     ATTR_FORECAST_EVAPORATION,
     ATTR_FORECAST_FOG_PROBABILITY,
+    ATTR_FORECAST_HUMIDITY,
     ATTR_FORECAST_PRECIPITATION_DURATION,
     ATTR_FORECAST_PRESSURE,
     ATTR_FORECAST_SUN_IRRADIANCE,
@@ -53,6 +54,7 @@ from .const import (
     ATTR_STATION_ID,
     ATTR_STATION_NAME,
     ATTR_FORECAST_SUN_DURATION,
+    CONF_ADDITIONAL_FORECAST_ATTRIBUTES,
     CONF_DATA_TYPE,
     CONF_DATA_TYPE_FORECAST,
     CONF_DATA_TYPE_MIXED,
@@ -73,11 +75,13 @@ from .const import (
     CONF_MAP_TYPE,
     CONF_MAP_TYPE_GERMANY,
     CONF_MAP_WINDOW,
+    CONF_SENSOR_FORECAST_STEPS,
     CONF_STATION_ID,
     CONF_STATION_NAME,
     CONF_WIND_DIRECTION_TYPE,
     CONF_HOURLY_UPDATE,
     DEFAULT_WIND_DIRECTION_TYPE,
+    CONF_MAP_DARK_MODE,
     CONF_MAP_FOREGROUND_PRECIPITATION,
     CONF_MAP_FOREGROUND_MAXTEMP,
     CONF_MAP_FOREGROUND_UVINDEX,
@@ -135,6 +139,14 @@ class DWDWeatherData:
         timestamp = datetime.now(timezone.utc)
         if timestamp.minute % 10 == 0 or self.latest_update is None:
             _LOGGER.info("Updating {}".format(self._config[CONF_STATION_NAME]))
+            current_hour_data = None
+            if self._config[CONF_HOURLY_UPDATE]:
+                if self.dwd_weather.forecast_data and self.dwd_weather.is_in_timerange(
+                    timestamp
+                ):
+                    current_hour_data = self.dwd_weather.forecast_data[  # type: ignore
+                        self.dwd_weather.strip_to_hour_str(timestamp)
+                    ]
             self.dwd_weather.update(
                 force_hourly=self._config[CONF_HOURLY_UPDATE],
                 with_forecast=True,
@@ -147,7 +159,9 @@ class DWDWeatherData:
                 with_report=True,
                 with_uv=True,
             )
-            if self._config[CONF_HOURLY_UPDATE]:
+            if self._config[
+                CONF_HOURLY_UPDATE
+            ] and not self.dwd_weather.is_in_timerange(timestamp):
                 # Hacky workaround: as the hourly data does not provide a forecast for the actual hour, we have to clone the next hour and pretend we have a forecast
                 first_date = datetime(
                     *(
@@ -160,13 +174,16 @@ class DWDWeatherData:
                     timezone.utc,
                 )
                 if self.dwd_weather.forecast_data:
+                    # If this is the first update, we have to clone the next hour data to be used as current hour data
+                    if current_hour_data is None:
+                        current_hour_data = self.dwd_weather.forecast_data[
+                            first_date.strftime("%Y-%m-%dT%H:00:00.000Z")
+                        ]
                     self.dwd_weather.forecast_data[
                         (first_date - timedelta(hours=1)).strftime(
                             "%Y-%m-%dT%H:00:00.000Z"
                         )
-                    ] = self.dwd_weather.forecast_data[
-                        first_date.strftime("%Y-%m-%dT%H:00:00.000Z")
-                    ]
+                    ] = current_hour_data
                     self.dwd_weather.forecast_data.move_to_end(
                         (first_date - timedelta(hours=1)).strftime(
                             "%Y-%m-%dT%H:00:00.000Z"
@@ -204,18 +221,15 @@ class DWDWeatherData:
         weather_interval = 1
         now = datetime.now(timezone.utc)
         forecast_data = []
-        if self.latest_update:
+        if self.latest_update and self.dwd_weather.is_in_timerange(now):
             timestep = datetime(
-                self.latest_update.year,
-                self.latest_update.month,
-                self.latest_update.day,
+                now.year,
+                now.month,
+                now.day,
+                now.hour,
                 tzinfo=timezone.utc,
             )
-            # Find the next timewindow from actual time
-            while timestep < self.latest_update:
-                timestep += timedelta(hours=weather_interval)
-                # Reduce by one to include the current timewindow
-            timestep -= timedelta(hours=weather_interval)
+
             for _ in range(0, 9):
                 for _ in range(int(24 / weather_interval)):
                     condition = self.dwd_weather.get_timeframe_condition(
@@ -272,7 +286,7 @@ class DWDWeatherData:
                         self.dwd_weather.get_uv_index(
                             timestep.day - now.day, shouldUpdate=False
                         )
-                        if timestep.day >= 0 and timestep.day < 3
+                        if timestep.day - now.day >= 0 and timestep.day - now.day < 3
                         else None
                     )
                     wind_speed = self.dwd_weather.get_timeframe_max(
@@ -303,29 +317,11 @@ class DWDWeatherData:
                             False,
                         ),
                         ATTR_FORECAST_CONDITION: condition,
-                        ATTR_FORECAST_NATIVE_DEW_POINT: int(round(dew_point - 273.1, 0))
+                        ATTR_FORECAST_NATIVE_DEW_POINT: round(dew_point - 273.1, 1)
                         if dew_point is not None
                         else None,
-                        ATTR_FORECAST_EVAPORATION: self.dwd_weather.get_timeframe_max(
-                            WeatherDataType.EVAPORATION,
-                            timestep,
-                            weather_interval,
-                            False,
-                        ),
-                        ATTR_FORECAST_FOG_PROBABILITY: self.dwd_weather.get_timeframe_max(
-                            WeatherDataType.FOG_PROBABILITY,
-                            timestep,
-                            weather_interval,
-                            False,
-                        ),
                         ATTR_FORECAST_NATIVE_PRECIPITATION: self.dwd_weather.get_timeframe_sum(
                             WeatherDataType.PRECIPITATION,
-                            timestep,
-                            weather_interval,
-                            False,
-                        ),
-                        ATTR_FORECAST_PRECIPITATION_DURATION: self.dwd_weather.get_timeframe_max(
-                            WeatherDataType.PRECIPITATION_DURATION,
                             timestep,
                             weather_interval,
                             False,
@@ -334,28 +330,10 @@ class DWDWeatherData:
                         ATTR_FORECAST_PRESSURE: round(pressure / 100, 1)
                         if pressure is not None
                         else None,
-                        ATTR_FORECAST_NATIVE_TEMP: int(round(temp_max - 273.1, 0))
+                        ATTR_FORECAST_NATIVE_TEMP: round(temp_max - 273.1, 1)
                         if temp_max is not None
                         else None,
-                        ATTR_FORECAST_SUN_DURATION: self.dwd_weather.get_timeframe_sum(
-                            WeatherDataType.SUN_DURATION,
-                            timestep,
-                            weather_interval,
-                            False,
-                        ),
-                        ATTR_FORECAST_SUN_IRRADIANCE: self.dwd_weather.get_timeframe_sum(
-                            WeatherDataType.SUN_IRRADIANCE,
-                            timestep,
-                            weather_interval,
-                            False,
-                        ),
                         ATTR_WEATHER_UV_INDEX: uv_index,
-                        ATTR_FORECAST_VISIBILITY: self.dwd_weather.get_timeframe_min(
-                            WeatherDataType.VISIBILITY,
-                            timestep,
-                            weather_interval,
-                            False,
-                        ),
                         ATTR_FORECAST_NATIVE_WIND_SPEED: (
                             round(wind_speed * 3.6, 1)
                             if wind_speed is not None
@@ -368,6 +346,54 @@ class DWDWeatherData:
                         ),
                         ATTR_FORECAST_WIND_BEARING: wind_dir,
                     }
+                    # Additional attributes raises errors when parsed in HA weather template so this has to be optional
+                    if self._config[CONF_ADDITIONAL_FORECAST_ATTRIBUTES]:
+                        data_item.update(
+                            {
+                                ATTR_FORECAST_EVAPORATION: self.dwd_weather.get_timeframe_max(
+                                    WeatherDataType.EVAPORATION,
+                                    timestep,
+                                    weather_interval,
+                                    False,
+                                ),
+                                ATTR_FORECAST_FOG_PROBABILITY: self.dwd_weather.get_timeframe_max(
+                                    WeatherDataType.FOG_PROBABILITY,
+                                    timestep,
+                                    weather_interval,
+                                    False,
+                                ),
+                                ATTR_FORECAST_SUN_IRRADIANCE: self.dwd_weather.get_timeframe_sum(
+                                    WeatherDataType.SUN_IRRADIANCE,
+                                    timestep,
+                                    weather_interval,
+                                    False,
+                                ),
+                                ATTR_FORECAST_VISIBILITY: self.dwd_weather.get_timeframe_min(
+                                    WeatherDataType.VISIBILITY,
+                                    timestep,
+                                    weather_interval,
+                                    False,
+                                ),
+                                ATTR_FORECAST_SUN_DURATION: self.dwd_weather.get_timeframe_sum(
+                                    WeatherDataType.SUN_DURATION,
+                                    timestep,
+                                    weather_interval,
+                                    False,
+                                ),
+                                ATTR_FORECAST_PRECIPITATION_DURATION: self.dwd_weather.get_timeframe_max(
+                                    WeatherDataType.PRECIPITATION_DURATION,
+                                    timestep,
+                                    weather_interval,
+                                    False,
+                                ),
+                                ATTR_FORECAST_HUMIDITY: self.dwd_weather.get_timeframe_max(
+                                    WeatherDataType.HUMIDITY,
+                                    timestep,
+                                    weather_interval,
+                                    False,
+                                ),
+                            }
+                        )
                     forecast_data.append(data_item)
                     timestep += timedelta(hours=weather_interval)
         return forecast_data
@@ -376,18 +402,14 @@ class DWDWeatherData:
         weather_interval = 24
         now = datetime.now(timezone.utc)
         forecast_data = []
-        if self.latest_update:
+        if self.latest_update and self.dwd_weather.is_in_timerange(now):
             timestep = datetime(
-                self.latest_update.year,
-                self.latest_update.month,
-                self.latest_update.day,
+                now.year,
+                now.month,
+                now.day,
                 tzinfo=timezone.utc,
             )
-            # Find the next timewindow from actual time
-            while timestep < self.latest_update:
-                timestep += timedelta(hours=weather_interval)
-                # Reduce by one to include the current timewindow
-            timestep -= timedelta(hours=weather_interval)
+
             for _ in range(0, 9):
                 _LOGGER.debug("Timestep {}".format(timestep))
                 condition = self.dwd_weather.get_daily_condition(
@@ -436,7 +458,7 @@ class DWDWeatherData:
                     self.dwd_weather.get_uv_index(
                         timestep.day - now.day, shouldUpdate=False
                     )
-                    if timestep.day >= 0 and timestep.day < 3
+                    if timestep.day - now.day >= 0 and timestep.day - now.day < 3
                     else None
                 )
                 wind_speed = self.dwd_weather.get_daily_max(
@@ -463,26 +485,11 @@ class DWDWeatherData:
                         False,
                     ),
                     ATTR_FORECAST_CONDITION: condition,
-                    ATTR_FORECAST_NATIVE_DEW_POINT: int(round(dew_point - 273.1, 0))
+                    ATTR_FORECAST_NATIVE_DEW_POINT: round(dew_point - 273.1, 1)
                     if dew_point is not None
                     else None,
-                    ATTR_FORECAST_EVAPORATION: self.dwd_weather.get_daily_max(
-                        WeatherDataType.EVAPORATION,
-                        timestep,
-                        False,
-                    ),
-                    ATTR_FORECAST_FOG_PROBABILITY: self.dwd_weather.get_daily_max(
-                        WeatherDataType.FOG_PROBABILITY,
-                        timestep,
-                        False,
-                    ),
                     ATTR_FORECAST_NATIVE_PRECIPITATION: self.dwd_weather.get_daily_sum(
                         WeatherDataType.PRECIPITATION,
-                        timestep,
-                        False,
-                    ),
-                    ATTR_FORECAST_PRECIPITATION_DURATION: self.dwd_weather.get_daily_sum(
-                        WeatherDataType.PRECIPITATION_DURATION,
                         timestep,
                         False,
                     ),
@@ -490,28 +497,13 @@ class DWDWeatherData:
                     ATTR_FORECAST_PRESSURE: round(pressure / 100, 1)
                     if pressure is not None
                     else None,
-                    ATTR_FORECAST_NATIVE_TEMP: int(round(temp_max - 273.1, 0))
+                    ATTR_FORECAST_NATIVE_TEMP: round(temp_max - 273.1, 0)
                     if temp_max is not None
                     else None,
-                    ATTR_FORECAST_NATIVE_TEMP_LOW: int(round(temp_min - 273.1, 0))
+                    ATTR_FORECAST_NATIVE_TEMP_LOW: round(temp_min - 273.1, 0)
                     if temp_min is not None
                     else None,
-                    ATTR_FORECAST_SUN_DURATION: self.dwd_weather.get_daily_sum(
-                        WeatherDataType.SUN_DURATION,
-                        timestep,
-                        False,
-                    ),
-                    ATTR_FORECAST_SUN_IRRADIANCE: self.dwd_weather.get_daily_sum(
-                        WeatherDataType.SUN_IRRADIANCE,
-                        timestep,
-                        False,
-                    ),
                     ATTR_WEATHER_UV_INDEX: uv_index,
-                    ATTR_FORECAST_VISIBILITY: self.dwd_weather.get_daily_min(
-                        WeatherDataType.VISIBILITY,
-                        timestep,
-                        False,
-                    ),
                     ATTR_FORECAST_NATIVE_WIND_SPEED: (
                         round(wind_speed * 3.6, 1) if wind_speed is not None else None
                     ),
@@ -520,6 +512,47 @@ class DWDWeatherData:
                     ),
                     ATTR_FORECAST_WIND_BEARING: wind_dir,
                 }
+                # Additional attributes raises errors when parsed in HA weather template so this has to be optional
+                if self._config[CONF_ADDITIONAL_FORECAST_ATTRIBUTES]:
+                    data_item.update(
+                        {
+                            ATTR_FORECAST_EVAPORATION: self.dwd_weather.get_daily_max(
+                                WeatherDataType.EVAPORATION,
+                                timestep,
+                                False,
+                            ),
+                            ATTR_FORECAST_FOG_PROBABILITY: self.dwd_weather.get_daily_max(
+                                WeatherDataType.FOG_PROBABILITY,
+                                timestep,
+                                False,
+                            ),
+                            ATTR_FORECAST_SUN_IRRADIANCE: self.dwd_weather.get_daily_sum(
+                                WeatherDataType.SUN_IRRADIANCE,
+                                timestep,
+                                False,
+                            ),
+                            ATTR_FORECAST_VISIBILITY: self.dwd_weather.get_daily_min(
+                                WeatherDataType.VISIBILITY,
+                                timestep,
+                                False,
+                            ),
+                            ATTR_FORECAST_SUN_DURATION: self.dwd_weather.get_daily_sum(
+                                WeatherDataType.SUN_DURATION,
+                                timestep,
+                                False,
+                            ),
+                            ATTR_FORECAST_PRECIPITATION_DURATION: self.dwd_weather.get_daily_sum(
+                                WeatherDataType.PRECIPITATION_DURATION,
+                                timestep,
+                                False,
+                            ),
+                            ATTR_FORECAST_HUMIDITY: self.dwd_weather.get_daily_max(
+                                WeatherDataType.HUMIDITY,
+                                timestep,
+                                False,
+                            ),
+                        }
+                    )
                 forecast_data.append(data_item)
                 timestep += timedelta(hours=weather_interval)
         _LOGGER.debug("Daily Forecast data {}".format(forecast_data))
@@ -659,6 +692,7 @@ class DWDWeatherData:
         return self.dwd_weather.get_uv_index(days_from_today=0, shouldUpdate=False)
 
     def get_evaporation(self):
+        # Evaporation is reported as "within the last 24 hours. Therefore we have to add a day in the request"
         return self.dwd_weather.get_daily_max(
             WeatherDataType.EVAPORATION,
             datetime.now() + timedelta(days=1),
@@ -709,7 +743,13 @@ class DWDWeatherData:
             WeatherDataType.HUMIDITY: lambda value: round(value, 1),
         }
         if forecast_data:
+            item_counter = 0
             for key in forecast_data:
+                if (
+                    self._config[CONF_SENSOR_FORECAST_STEPS]
+                    and item_counter >= self._config[CONF_SENSOR_FORECAST_STEPS]
+                ):
+                    break
                 if (
                     datetime(
                         *(time.strptime(key, "%Y-%m-%dT%H:%M:%S.%fZ")[0:6]),
@@ -719,7 +759,7 @@ class DWDWeatherData:
                     < timestamp
                 ):
                     continue
-
+                item_counter += 1
                 item = forecast_data[key]
                 value = item[data_type.value[0]]
                 if value is not None:
@@ -917,16 +957,21 @@ class DWDMapData:
                         dwdmap.germany_boundaries.miny,
                         dwdmap.germany_boundaries.maxx,
                         dwdmap.germany_boundaries.maxy,
-                        map_type=self.map_maptype(
-                            self._configdata[CONF_MAP_FOREGROUND_TYPE]
-                        ),  # type: ignore
-                        background_type=self.map_maptype(
-                            self._configdata[CONF_MAP_BACKGROUND_TYPE]
-                        ),  # type: ignore
+                        map_types=[
+                            self.map_maptype(
+                                self._configdata[CONF_MAP_FOREGROUND_TYPE]  # type: ignore
+                            )
+                        ],
+                        background_types=[
+                            self.map_maptype(
+                                self._configdata[CONF_MAP_BACKGROUND_TYPE]  # type: ignore
+                            )
+                        ],
                         steps=self._configdata[CONF_MAP_LOOP_COUNT],
                         image_width=width,
                         image_height=self._height,
                         markers=markers,
+                        dark_mode=self._configdata[CONF_MAP_DARK_MODE],
                     )
                 else:
                     _LOGGER.debug(
@@ -955,16 +1000,17 @@ class DWDMapData:
                         self._configdata[CONF_MAP_WINDOW]["latitude"] - radius,  # type: ignore
                         self._configdata[CONF_MAP_WINDOW]["longitude"] + radius,  # type: ignore
                         self._configdata[CONF_MAP_WINDOW]["latitude"] + radius,  # type: ignore
-                        map_type=self.map_maptype(
-                            self._configdata[CONF_MAP_FOREGROUND_TYPE]
-                        ),  # type: ignore
-                        background_type=self.map_maptype(
-                            self._configdata[CONF_MAP_BACKGROUND_TYPE]
-                        ),  # type: ignore
+                        map_types=[
+                            self.map_maptype(self._configdata[CONF_MAP_FOREGROUND_TYPE])  # type: ignore
+                        ],
+                        background_types=[
+                            self.map_maptype(self._configdata[CONF_MAP_BACKGROUND_TYPE])  # type: ignore
+                        ],
                         steps=self._configdata[CONF_MAP_LOOP_COUNT],
                         image_width=width,
                         image_height=self._height,
                         markers=markers,
+                        dark_mode=self._configdata[CONF_MAP_DARK_MODE],
                     )
                     _LOGGER.debug(
                         "map async_update maploop: {}".format(maploop.get_images())
@@ -1003,15 +1049,16 @@ class DWDMapData:
                     )
                 )
                 self._image = dwdmap.get_germany(
-                    map_type=self.map_maptype(
-                        self._configdata[CONF_MAP_FOREGROUND_TYPE]
-                    ),  # type: ignore
-                    background_type=self.map_maptype(
-                        self._configdata[CONF_MAP_BACKGROUND_TYPE]
-                    ),  # type: ignore
+                    map_types=[
+                        self.map_maptype(self._configdata[CONF_MAP_FOREGROUND_TYPE])  # type: ignore
+                    ],
+                    background_types=[
+                        self.map_maptype(self._configdata[CONF_MAP_BACKGROUND_TYPE])  # type: ignore
+                    ],
                     image_width=width,
                     image_height=self._height,
                     markers=markers,
+                    dark_mode=self._configdata[CONF_MAP_DARK_MODE],
                 )
             else:
                 _LOGGER.debug(
@@ -1030,12 +1077,12 @@ class DWDMapData:
                     latitude=self._configdata[CONF_MAP_WINDOW]["latitude"],
                     longitude=self._configdata[CONF_MAP_WINDOW]["longitude"],
                     radius_km=self._configdata[CONF_MAP_WINDOW]["radius"],
-                    map_type=self.map_maptype(
-                        self._configdata[CONF_MAP_FOREGROUND_TYPE]
-                    ),  # type: ignore
-                    background_type=self.map_maptype(
-                        self._configdata[CONF_MAP_BACKGROUND_TYPE]
-                    ),  # type: ignore
+                    map_types=[
+                        self.map_maptype(self._configdata[CONF_MAP_FOREGROUND_TYPE])  # type: ignore
+                    ],  # type: ignore
+                    background_types=[
+                        self.map_maptype(self._configdata[CONF_MAP_BACKGROUND_TYPE])  # type: ignore
+                    ],  # type: ignore
                     image_width=self._width,
                     image_height=self._height,
                     markers=markers,
@@ -1083,11 +1130,20 @@ class DWDMapData:
                 timestamp = self._maploop._last_update - timedelta(minutes=5) * (
                     self._configdata[CONF_MAP_LOOP_COUNT] - self._image_nr - 1
                 )
-                draw.rectangle((8, 13, 175, 32), fill=(0, 0, 0))
+                boxcolor = (0, 0, 0)
+                textcolor = (255, 255, 255)
+                if (
+                    CONF_MAP_DARK_MODE in self._configdata
+                    and self._configdata[CONF_MAP_DARK_MODE]
+                ):
+                    boxcolor = (225, 225, 225)
+                    textcolor = (0, 0, 0)
+
+                draw.rectangle((8, 13, 175, 32), fill=boxcolor)
                 draw.text(
                     (10, 10),
                     timestamp.astimezone().strftime("%d.%m.%Y %H:%M"),
-                    fill=(255, 255, 255),
+                    fill=textcolor,
                     font_size=20,
                 )
 
