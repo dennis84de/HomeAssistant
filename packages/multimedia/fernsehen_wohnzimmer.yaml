@@ -83,22 +83,7 @@ automation:
       - if: "{{ is_state('binary_sensor.home_office_aktiv', 'off') }}"
         then:
           - service: switch.turn_off
-            entity_id: switch.arbeitszimmer_radio
-            
-  - alias: "Fernseher eingeschaltet - Licht"
-    id: "fernseher_eingeschaltet_licht"
-    trigger:
-      - platform: state
-        entity_id: switch.watchtv_wohnzimmer
-        to: 'on' 
-    condition:    
-      - "{{ is_state('binary_sensor.sonne_tagsueber', 'off') }}"
-      - "{{ is_state('light.wohnzimmer_schrank', 'on') }}"
-    action:    
-      - service: light.turn_off
-        entity_id: light.wohnzimmer_schrank
-      - service: light.turn_on
-        entity_id: light.wohnzimmer_couch            
+            entity_id: switch.arbeitszimmer_radio 
            
   - alias: "Soundbar aussschalten"
     id: "soundbar_aussschalten"

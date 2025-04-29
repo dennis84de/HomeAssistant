@@ -149,13 +149,11 @@ script:
       - service: input_boolean.turn_off
         entity_id: input_boolean.home_office_aktiv, input_boolean.home_office_musik_pausiert, input_boolean.home_office_pause
       - service: switch.turn_off
-        entity_id: switch.computer_arbeit       
-      - if: "{{ is_state('input_select.computer_arbeit_ausschalten', 'Herunterfahren') }}"
-        then:          
-          - service: switch.turn_on
-            entity_id: switch.arbeitszimmer_ladegerat
-          - service: timer.start
-            entity_id: timer.headset_aufladen
+        entity_id: switch.computer_arbeit               
+      - service: switch.turn_on
+        entity_id: switch.arbeitszimmer_ladegerat
+      - service: timer.start
+        entity_id: timer.headset_aufladen
       - service: input_select.select_option
         data:
           entity_id: input_select.computer_arbeit_ausschalten  
@@ -197,12 +195,19 @@ automation:
       - platform: event
         event_type: zha_event
         event_data:
-          device_ieee: 00:15:8d:00:02:13:45:68
-          command: attribute_updated
+          device_ieee: 54:ef:44:10:00:e8:72:44
+          command: 2_single
           args:
-            attribute_id: 32768
-            attribute_name: Unknown     
-            value: 2    
+            click_type: single         
+#      - platform: event
+#        event_type: zha_event
+#        event_data:
+#          device_ieee: 00:15:8d:00:02:13:45:68
+#          command: attribute_updated
+#          args:
+#            attribute_id: 32768
+#            attribute_name: Unknown     
+#            value: 2    
     condition:
       - condition: or
         conditions:
@@ -221,12 +226,19 @@ automation:
       - platform: event
         event_type: zha_event
         event_data:
-          device_ieee: 00:15:8d:00:02:13:45:68
-          command: attribute_updated
+          device_ieee: 54:ef:44:10:00:e8:72:44
+          command: 2_single
           args:
-            attribute_id: 32768
-            attribute_name: Unknown     
-            value: 2           
+            click_type: single          
+#      - platform: event
+#        event_type: zha_event
+#        event_data:
+#          device_ieee: 00:15:8d:00:02:13:45:68
+#          command: attribute_updated
+#          args:
+#            attribute_id: 32768
+#            attribute_name: Unknown     
+#            value: 2           
     condition:
       - condition: state
         entity_id: binary_sensor.home_office_aktiv
@@ -253,12 +265,19 @@ automation:
       - platform: event
         event_type: zha_event
         event_data:
-          device_ieee: 00:15:8d:00:02:13:45:68
-          command: attribute_updated
+          device_ieee: 54:ef:44:10:00:e8:72:44
+          command: 2_single
           args:
-            attribute_id: 0
-            attribute_name: on_off     
-            value: 1       
+            click_type: single          
+#      - platform: event
+#        event_type: zha_event
+#        event_data:
+#          device_ieee: 00:15:8d:00:02:13:45:68
+#          command: attribute_updated
+#          args:
+#            attribute_id: 0
+#            attribute_name: on_off     
+#            value: 1       
     condition:
       - condition: state
         entity_id: timer.home_office_ende
@@ -410,6 +429,9 @@ automation:
       - condition: state
         entity_id: binary_sensor.home_office_aktiv
         state: 'on'        
+      - condition: state
+        entity_id: switch.wiedergabe_aktiv
+        state: 'on'           
     action:    
       - service: input_boolean.turn_on
         entity_id: input_boolean.home_office_musik_pausiert
@@ -439,12 +461,19 @@ automation:
       - platform: event
         event_type: zha_event
         event_data:
-          device_ieee: 00:15:8d:00:02:13:45:68
-          command: attribute_updated
+          device_ieee: 54:ef:44:10:00:e8:72:44
+          command: 1_single
           args:
-            attribute_id: 0
-            attribute_name: on_off     
-            value: 1            
+            click_type: single          
+#      - platform: event
+#        event_type: zha_event
+#        event_data:
+#          device_ieee: 00:15:8d:00:02:13:45:68
+#          command: attribute_updated
+#          args:
+#            attribute_id: 0
+#            attribute_name: on_off     
+#            value: 1            
     condition:       
       - condition: state
         entity_id: binary_sensor.home_office_aktiv

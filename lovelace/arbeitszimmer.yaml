@@ -15,9 +15,7 @@ cards:
         name: Radio            
       - entity: switch.arbeitszimmer_monitore
         name: Monitore         
-      - entity: switch.arbeitszimmer_heizstrahler  
-        name: Heizstrahler        
-      
+
   - type: entities
     title: Licht
     show_header_toggle: false

@@ -40,7 +40,6 @@ cards:
     show_header_toggle: false
     entities:      
       - entity: person.dennis
-        secondary_info: last-changed  
         tap_action:
           action: fire-dom-event
           browser_mod:
@@ -137,7 +136,7 @@ cards:
         condition: "{{ states('sensor.ungelesene_mails') | int(0) > 0 }}"      
       - entity: sensor.countdown_neuhaus      
       - entity: sensor.letzte_bewegung     
-      
+
   - type: conditional
     view_layout:
       column: 2
@@ -181,8 +180,40 @@ cards:
                       name: Musik vorher einschalten
                     - entity: input_number.wecker_verzoegerung
                       name: Geräte nachher einschalten   
-                    - entity: input_boolean.aufstehen_radios_einschalten   
+                    - entity: input_boolean.aufstehen_radios_einschalten    
   
+  - type: conditional
+    view_layout:
+      column: 3  
+    conditions:
+      - entity: binary_sensor.schule_info_morgens 
+        state: "on"
+    card:
+      type: entities
+      title: Schule
+      show_header_toggle: false
+      entities:     
+        - entity: sensor.schule_beginn
+          name: Schulbeginn
+        - entity: schedule.schule_franzi
+          name: Schule aktiv
+  
+  - type: conditional
+    view_layout:
+      column: 3  
+    conditions:
+      - entity: binary_sensor.schule_info_nachmittags 
+        state: "on"
+    card:
+      type: entities
+      title: Schule
+      show_header_toggle: false
+      entities:     
+        - entity: sensor.schule_ende
+          name: Schulende
+        - entity: schedule.schule_franzi
+                                      
+                                                                            
   - type: conditional
     view_layout:
       column: 3  
@@ -205,49 +236,7 @@ cards:
           type: "custom:secondaryinfo-entity-row"              
           secondary_info: "[[ if(binary_sensor.schlechtes_wetter.state == 'on', '<b style='color:red'>Schlechtes Wetter</b>', '') ]]"        
         - entity: input_datetime.arbeit_beginn
-          name: Arbeitsbeginn    
-                         
-  - type: conditional
-    view_layout:
-      column: 3  
-    conditions:
-      - entity: binary_sensor.info_schule_anzeigen 
-        state: "on"        
-      - entity: input_boolean.schule_auto 
-        state: "on"               
-    card:
-      type: entities
-      title: Schule
-      show_header_toggle: false
-      entities:
-        - type: custom:template-entity-row
-          entity : sensor.fahrzeit_schule
-          state: "{{ (states('sensor.fahrzeit_schule') | int(0)) }} Minuten"                    
-        - type: divider
-        - entity: sensor.abfahrtzeit_schule_wegbringen       
-          name: Abfahrtzeit
-        - entity: input_datetime.schule_beginn
-          name: Schulbeginn   
-        - entity: input_boolean.schule_auto         
-          
-  - type: conditional
-    view_layout:
-      column: 3  
-    conditions:
-      - entity: binary_sensor.info_schule_anzeigen 
-        state: "on"        
-      - entity: input_boolean.schule_auto 
-        state: "off"               
-    card:
-      type: entities
-      title: Schule
-      show_header_toggle: false
-      entities:
-        - entity: sensor.abfahrtzeit_schule_wegbringen       
-          name: Abfahrtzeit
-        - entity: input_datetime.schule_beginn
-          name: Schulbeginn   
-        - entity: input_boolean.schule_auto                
+          name: Arbeitsbeginn                        
           
   - type: conditional
     conditions:
@@ -364,8 +353,8 @@ cards:
       icon: false
       points: false
     entities:
-      - entity: sensor.tankstelle_real
-        name: Real
+      - entity: sensor.tankstelle_kaufland
+        name: Kaufland
       - entity: sensor.tankstelle_jet_dortmund
         name: Jet Dortmund
       - entity: sensor.tankstelle_jet_mulheim
@@ -384,8 +373,6 @@ cards:
         name: Wohnzimmer
       - entity: sensor.badezimmer_temperatur
         name: Badezimmer
-      - entity: sensor.flur_temperatur
-        name: Flur
       - entity: sensor.schlafzimmer_temperatur
         name: Schlafzimmer
       - entity: sensor.kueche_temperatur

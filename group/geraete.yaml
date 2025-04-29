@@ -37,6 +37,5 @@ steckdosen:
     - switch.arbeitszimmer_radio
     - switch.arbeitszimmer_ladegerat
     - switch.arbeitszimmer_monitore
-    - switch.arbeitszimmer_heizstrahler
     - switch.balkon_radio
     - switch.spuelmaschine

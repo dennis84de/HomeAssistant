@@ -60,17 +60,17 @@ cards:
       - entity: device_tracker.tasmotaarbeitszimmerladegeraet
         name: Arbeitszimmer Ladegerät
       - entity: device_tracker.tasmotaarbeitszimmerradio
-        name: Arbeitszimmer Radio      
-      - entity: device_tracker.tasmotaarbeitszimmerheizstrahler
-        name: Arbeitszimmer Heizstrahler            
+        name: Arbeitszimmer Radio          
       - entity: device_tracker.tasmotabalkonradio
         name: Balkon Radio       
       - entity: device_tracker.tasmotakuechenschrank
         name: Küchenschrank  
       - entity: device_tracker.tasmotaspuelmaschine
         name: Spülmaschine
-      - entity: device_tracker.tasmotadiscokugel
-        name: Discokugel        
+      - entity: device_tracker.tasmotalichterkette
+        name: Lichterkette      
+      - entity: device_tracker.tasmotawaschmaschine   
+        name: Waschmaschine
         
   - type: entities
     title: TP-Link
@@ -80,9 +80,7 @@ cards:
       - entity: device_tracker.tplinkflurradio        
       - entity: device_tracker.tplinkbadezimmerradio        
       - entity: device_tracker.tplinkkuecheradio                    
-      - entity: device_tracker.tplinkschlafzimmerfernseher        
-      - entity: device_tracker.tplinkwaschmaschine
-      - entity: device_tracker.tplinktrockner        
+      - entity: device_tracker.tplinkschlafzimmerfernseher              
       
   - type: entities
     title: Fire TV
@@ -161,5 +159,5 @@ cards:
     title: Shelly
     show_header_toggle: false
     entities:
-      - entity: device_tracker.shellylichterkette
-        name: Lichterkette             
+      - entity: device_tracker.shellytrockner
+        name: Trockner             

@@ -48,7 +48,7 @@ automation:
       - platform: numeric_state
         entity_id: sensor.waschmaschine_verbrauch
         below: 10
-        for: '00:01:00'
+        for: '00:12:00'
       - platform: state
         entity_id: switch.waschmaschine
         from: 'off'
@@ -67,7 +67,7 @@ automation:
     trigger:
       - platform: numeric_state
         entity_id: sensor.waschmaschine_verbrauch
-        above: 20
+        above: 10
         for: '00:01:00'
     condition:
       - "{{ is_state('switch.waschmaschine', 'on') }}"     

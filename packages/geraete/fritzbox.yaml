@@ -176,9 +176,8 @@ homeassistant:
       friendly_name: Küche Radio
     device_tracker.tplinkschlafzimmerfernseher:
       friendly_name: Schlafzimmer Fernseher   
-    device_tracker.tplinkwaschmaschine:
-      friendly_name: Waschmaschine
-    device_tracker.tplinktrockner:
+      
+    device_tracker.shellytrockner:
       friendly_name: Trocker      
       
     device_tracker.echoflur:
@@ -227,8 +226,8 @@ homeassistant:
     device_tracker.magichomebalkon:
       friendly_name: MagicHome Balkon
       
-    device_tracker.tasmotadiscokugel:
-      friendly_name: Tasmota Discokugel    
+    device_tracker.tasmotalichterkette:
+      friendly_name: Tasmota Lichterkette    
     device_tracker.tasmotawohnzimmerschrank:
       friendly_name: Tasmota Wohnzimmer Schrank
     device_tracker.tasmotawohnzimmerradio:
@@ -243,3 +242,5 @@ homeassistant:
       friendly_name: Tasmota Küchenschrank
     device_tracker.tasmotaspuelmaschine:
       friendly_name: Tasmota Spülmaschine     
+    device_tracker.tasmotawaschmaschine:
+      friendly_name: Waschmaschine      

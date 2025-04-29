@@ -1,8 +1,8 @@
 mqtt:
   sensor:
-    - name: "Tankstelle Real"
+    - name: "Tankstelle Kaufland"
       unit_of_measurement: '€'    
-      state_topic: "tanken/real"
+      state_topic: "tanken/kaufland"
 
     - name: "Tankstelle Jet Dortmund"
       unit_of_measurement: '€'
@@ -25,8 +25,8 @@ automation:
         data:
           title: "Aktuelle Benzinpreise"
           message: >
-            {% set realPrice = states('sensor.tankerkoenig_supermarkt_tankstelle_am_real_markt_dortmund_wulfshofstr_e10') %}
-            {% set RealText = (realPrice | float) ~ '€' if realPrice != 'unknown' else ('geschlossen' if is_state('binary_sensor.supermarkt_tankstelle_wulfshofstrasse_6_8_status', 'off') else '-') %}
+            {% set kauflandPrice = states('sensor.tankerkoenig_supermarkt_tankstelle_kaufland_dortmund_wulfshofstr_e10') %}
+            {% set kauflandText = (kauflandPrice | float) ~ '€' if kauflandPrice != 'unknown' else ('geschlossen' if is_state('binary_sensor.supermarkt_tankstelle_wulfshofstrasse_6_8_status', 'off') else '-') %}
 
             {% set jetDoPrice = states('sensor.tankerkoenig_jet_dortmund_provinzialstr_229_e10') %}
             {% set jetDoText = (jetDoPrice | float) ~ '€' if jetDoPrice != 'unknown' else ('geschlossen' if is_state('binary_sensor.jet_provinzialstr_229_status', 'off') else '-') %}
@@ -34,7 +34,7 @@ automation:
             {% set jetMhPrice = states('sensor.tankerkoenig_jet_muelheim_strassburger_allee_75_e10') %}
             {% set jetMhText = (jetMhPrice | float) ~ '€' if jetMhPrice != 'unknown' else ('geschlossen' if is_state('binary_sensor.jet_strassburger_allee_75_status', 'off') else '-') %}
 
-            {{ 'Real: ' ~ RealText }}       
+            {{ 'Kaufland: ' ~ kauflandText }}       
             
             {{ 'Jet Dortmund: ' ~ jetDoText }}    
             
@@ -45,8 +45,8 @@ automation:
     mode: parallel
     trigger:
       - platform: state
-        id: "tanken/real"
-        entity_id: sensor.tankerkoenig_supermarkt_tankstelle_am_real_markt_dortmund_wulfshofstr_e10
+        id: "tanken/kaufland"
+        entity_id: sensor.tankerkoenig_supermarkt_tankstelle_kaufland_dortmund_wulfshofstr_e10
       - platform: state
         id: "tanken/jet_do"
         entity_id: sensor.tankerkoenig_jet_dortmund_provinzialstr_229_e10
@@ -55,6 +55,7 @@ automation:
         entity_id: sensor.tankerkoenig_jet_muelheim_strassburger_allee_75_e10          
     condition:
       - "{{ trigger.to_state.state != 'unknown' }}"
+      - "{{ trigger.to_state.state != 'unavailable' }}"      
     action:
       - service: mqtt.publish
         data:
@@ -68,7 +69,7 @@ homeassistant:
       friendly_name: Tankstelle Jet Mülheim
     sensor.tankerkoenig_jet_dortmund_provinzialstr_229_e10:
       friendly_name: Tankstelle Jet Dortmund      
-    sensor.tankerkoenig_supermarkt_tankstelle_am_real_markt_dortmund_wulfshofstr_e10:
-      friendly_name: Tankstelle Real
+    sensor.tankerkoenig_supermarkt_tankstelle_kaufland_dortmund_wulfshofstr_e10:
+      friendly_name: Tankstelle Kaufland
     sensor.tankerkoenig_sb_dortmund_borussiastrasse_118_e10:
       friendly_name: Tankstelle Borussiastraße

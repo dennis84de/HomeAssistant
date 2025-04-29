@@ -22,45 +22,6 @@ input_number:
     min: 20
     max: 24
     step: 1
-    
-schedule:
-  heizung:
-    name: "Zeitplan Heizung"
-    monday:
-      - from: "07:30:00"
-        to: "09:00:00"
-      - from: "15:30:00"
-        to: "18:00:00"        
-    tuesday:
-      - from: "07:30:00"
-        to: "09:00:00"
-      - from: "15:30:00"
-        to: "18:00:00"    
-    wednesday:
-      - from: "07:30:00"
-        to: "09:00:00"
-      - from: "15:30:00"
-        to: "18:00:00"    
-    thursday:
-      - from: "07:30:00"
-        to: "09:00:00"
-      - from: "15:30:00"
-        to: "18:00:00"    
-    friday:
-      - from: "07:30:00"
-        to: "09:00:00"
-      - from: "15:30:00"
-        to: "18:00:00"    
-    saturday:
-      - from: "09:00:00"
-        to: "11:00:00"
-      - from: "17:00:00"
-        to: "18:00:00"    
-    sunday:
-      - from: "09:00:00"
-        to: "11:00:00"
-      - from: "17:00:00"
-        to: "18:00:00"
         
 template:
   - binary_sensor:

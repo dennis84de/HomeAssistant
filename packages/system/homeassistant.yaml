@@ -47,7 +47,9 @@ lovelace:
       type: module     
     - url: /hacsfiles/weather-chart-card/weather-chart-card.js
       type: module      
-    
+    - url: /hacsfiles/scheduler-card/scheduler-card.js
+      type: module
+      
   dashboards:      
     lovelace-rooms:
       mode: yaml

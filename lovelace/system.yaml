@@ -224,7 +224,7 @@ cards:
     entities:
       - entity: sensor.samba_backup_status
       - entity: sensor.samba_letztes_backup
-        
+
   - type: entities
     title: Fritzbox
     show_header_toggle: false

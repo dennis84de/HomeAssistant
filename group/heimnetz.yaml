@@ -14,7 +14,6 @@ heimnetz:
     - device_tracker.tasmotawohnzimmercouch   
     - device_tracker.tasmotaarbeitszimmerladegeraet  
     - device_tracker.tasmotaarbeitszimmerradio
-    - device_tracker.tasmotaarbeitszimmerheizstrahler
     - device_tracker.tasmotabalkonradio      
     - device_tracker.tasmotakuechenschrank  
     - device_tracker.tasmotaspuelmaschine      

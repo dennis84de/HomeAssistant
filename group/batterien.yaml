@@ -16,7 +16,6 @@ batteriestand:
     - sensor.schalter_bett_rechts_battery_level
     - sensor.schalter_arbeitszimmer_battery_level
     - sensor.schalter_badezimmer_battery_level
-    - sensor.thermometer_flur_battery_level
     - sensor.thermometer_parkplatz_battery_level
     - sensor.thermometer_schlafzimmer_battery_level
     - sensor.thermometer_kinderzimmer_battery_level

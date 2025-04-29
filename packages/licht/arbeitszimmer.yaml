@@ -30,6 +30,14 @@ automation:
   - alias: 'Licht Arbeitszimmer'
     id: "licht_arbeitszimmer"
     trigger: 
+      - id: licht_schalter
+        platform: event
+        event_type: zha_event
+        event_data:
+          device_ieee: 54:ef:44:10:00:e8:72:44
+          command: 2_single
+          args:
+            click_type: single       
       - id: licht_an
         platform: state
         entity_id: binary_sensor.bewegungsmelder_arbeitszimmer
@@ -51,9 +59,10 @@ automation:
         platform: state
         entity_id: binary_sensor.licht_arbeitszimmer
         to: 'off'            
-    condition:      
+    condition:          
       - condition: or
-        conditions:          
+        conditions:   
+            - "{{ trigger.id == 'licht_schalter' and is_state('binary_sensor.home_office_aktiv', 'off') }}"     
             - "{{ trigger.id == 'licht_aus' }}"                    
             - condition: and
               conditions:
@@ -68,6 +77,10 @@ automation:
                 - "{{ is_state('binary_sensor.home_office_aktiv', 'off') }}"
                 - "{{ is_state('light.arbeitszimmer_licht', 'off') or not is_state('timer.licht_arbeitszimmer', 'idle') }}"
     action:
+      - if: "{{ trigger.id == 'licht_schalter' }}"
+        then:
+          - service: light.toggle
+            entity_id: light.arbeitszimmer_licht      
       - if: "{{ trigger.id == 'licht_an_dunkel' }}"
         then:
           - service: light.turn_on

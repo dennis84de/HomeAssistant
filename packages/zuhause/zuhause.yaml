@@ -358,37 +358,17 @@ automation:
         platform: state
         entity_id: calendar.franzi_papa_wochenende
         from: 'on'
-        to: 'off'        
+        to: 'off'   
       - id: schule_morgens
-        platform: template
-        value_template: >-
-          {% set fahrzeitAuto = states('sensor.fahrzeit_schule') | int(0) %}
-          {% set fahrzeitBus = states('input_number.schule_fahrzeit_bus') | int(0) %}
-          
-          {% set fahrzeitMinuten = fahrzeitAuto if is_state('input_boolean.schule_auto', 'on') else fahrzeitBus %}
-          {% set beginnMinuten = (state_attr('input_datetime.schule_beginn', 'timestamp') / 60) | int(0) %}
-
-          {% set abfahrzeitMinuten = beginnMinuten - fahrzeitMinuten %}
-          {% set stundeAbfahrt = (abfahrzeitMinuten / 60) | int(0) %}
-          {% set minuteAbfahrt = (abfahrzeitMinuten - stundeAbfahrt * 60) | int(0) %}
-          {% set uhrzeitAbfahrt = "%0.02d:%0.02d" | format(stundeAbfahrt, minuteAbfahrt ) %}
-
-          {{ states("sensor.time") == uhrzeitAbfahrt }}
+        platform: state
+        entity_id: schedule.schule_franzi
+        from: 'off'
+        to: 'on'      
       - id: schule_nachmittags
-        platform: template
-        value_template: >-
-          {% set fahrzeitAuto = states('sensor.fahrzeit_schule') | int(0) %}
-          {% set fahrzeitBus = states('input_number.schule_fahrzeit_bus') | int(0) %}
-          
-          {% set fahrzeitMinuten = fahrzeitAuto if is_state('input_boolean.schule_auto', 'on') else fahrzeitBus %}
-          {% set endeMinuten = (state_attr('input_datetime.schule_ende', 'timestamp') / 60) | int(0) %}
-
-          {% set ankunftszeitMinuten = endeMinuten + fahrzeitMinuten %}
-          {% set stundeAnkunft = (ankunftszeitMinuten / 60) | int(0) %}
-          {% set minuteAnkunft = (ankunftszeitMinuten - stundeAnkunft * 60) | int(0) %}
-          {% set uhrzeitAnkunft = "%0.02d:%0.02d" | format(stundeAnkunft, minuteAnkunft ) %}
-
-          {{ states("sensor.time") == uhrzeitAnkunft }}          
+        platform: state
+        entity_id: schedule.schule_franzi
+        from: 'on'
+        to: 'off'                      
     variables:       
       aktion: >-
         {% if trigger.id == 'boolean' %}
@@ -406,7 +386,7 @@ automation:
         conditions:
           - "{{ trigger.id == 'boolean' or trigger.id == 'calendar' }}"          
           - "{{ trigger.id == 'schule_morgens' and is_state('binary_sensor.schultag', 'on') }}"
-          - "{{ trigger.id == 'schule_nachmittags' and is_state('binary_sensor.schultag', 'on') and is_state('calendar.franzi_papa_wochenende', 'off') }}"
+          - "{{ trigger.id == 'schule_nachmittags' and is_state('binary_sensor.schultag', 'on') }}"
     action:      
       - service: mqtt.publish
         data:

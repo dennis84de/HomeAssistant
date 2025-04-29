@@ -27,8 +27,6 @@ licht_schlafen:
     - light.kueche_regal
     - light.kueche_schrank
     - light.balkon_licht
-#    - light.weihnachtsstern
-    - light.discokugel
     - light.lichterkette
     
 licht_fernsehen:

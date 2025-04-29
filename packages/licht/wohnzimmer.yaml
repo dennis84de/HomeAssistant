@@ -11,10 +11,6 @@ light:
   - platform: switch
     name: Wohnzimmer Schrank
     entity_id: switch.wohnzimmer_schrank
-      
-  - platform: switch
-    name: Discokugel
-    entity_id: switch.discokugel
     
   - platform: switch
     name: Lichterkette
@@ -97,9 +93,5 @@ homeassistant:
       icon: mdi:sofa
     light.wohnzimmer_schrank:
       icon: mdi:cupboard
-    light.discokugel:
-      icon: mdi:party-popper      
-#    light.weihnachtsstern:
-#      icon: mdi:star-four-points  
     light.lichterkette:
       icon: mdi:string-lights            

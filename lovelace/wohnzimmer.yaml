@@ -9,32 +9,10 @@ cards:
     title: Licht
     show_header_toggle: false
     entities:
-      - entity: light.wohnzimmer_couch
-        name: Couch
       - entity: light.wohnzimmer_schrank
-        name: Schrank     
-      - entity: light.lichterkette
-        name: Lichterkette             
-        
-  - type: entities
-    title: Silvester
-    show_header_toggle: false
-    view_layout:
-      column: 1    
-    entities:
-      - entity: light.discokugel
-        name: Discokugel      
-        
-#  - type: entities
-#    title: Weihnachten
-#    show_header_toggle: false
-#    view_layout:
-#      column: 1    
-#    entities:
-#      - entity: light.weihnachtsstern
-#        name: Weihnachtsstern              
-#      - entity: light.lichterkette
-#        name: Lichterkette     
+        name: Schrank       
+      - entity: light.wohnzimmer_couch
+        name: Couch          
         
   - type: entities
     title: Mediaplayer

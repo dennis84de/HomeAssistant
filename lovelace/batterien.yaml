@@ -100,8 +100,6 @@ cards:
       - value: 30
         color: "yellow"        
     entities:
-      - entity: sensor.thermometer_flur_battery_level      
-        name: Flur
       - entity: sensor.thermometer_parkplatz_battery_level        
         name: Parkplatz
       - entity: sensor.thermometer_schlafzimmer_battery_level        
