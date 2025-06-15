@@ -44,6 +44,7 @@ from .const import (
     ATTR_FORECAST_EVAPORATION,
     ATTR_FORECAST_FOG_PROBABILITY,
     ATTR_FORECAST_HUMIDITY,
+    ATTR_FORECAST_HUMIDITY_ABSOLUTE,
     ATTR_FORECAST_PRECIPITATION_DURATION,
     ATTR_FORECAST_PRESSURE,
     ATTR_FORECAST_SUN_IRRADIANCE,
@@ -55,6 +56,7 @@ from .const import (
     ATTR_STATION_NAME,
     ATTR_FORECAST_SUN_DURATION,
     CONF_ADDITIONAL_FORECAST_ATTRIBUTES,
+    CONF_DAILY_TEMP_HIGH_PRECISION,
     CONF_DATA_TYPE,
     CONF_DATA_TYPE_FORECAST,
     CONF_DATA_TYPE_MIXED,
@@ -348,6 +350,22 @@ class DWDWeatherData:
                     }
                     # Additional attributes raises errors when parsed in HA weather template so this has to be optional
                     if self._config[CONF_ADDITIONAL_FORECAST_ATTRIBUTES]:
+                        temp_min = self.dwd_weather.get_timeframe_min(
+                            WeatherDataType.TEMPERATURE,
+                            timestep,
+                            weather_interval,
+                            False,
+                        )
+                        humidity = self.dwd_weather.get_timeframe_max(
+                            WeatherDataType.HUMIDITY,
+                            timestep,
+                            weather_interval,
+                            False,
+                        )
+                        if humidity is not None and temp_min is not None:
+                            humidity_absolute = self.calculate_absolute_humidity(
+                                temp_min - 273.15, humidity
+                            )
                         data_item.update(
                             {
                                 ATTR_FORECAST_EVAPORATION: self.dwd_weather.get_timeframe_max(
@@ -386,12 +404,8 @@ class DWDWeatherData:
                                     weather_interval,
                                     False,
                                 ),
-                                ATTR_FORECAST_HUMIDITY: self.dwd_weather.get_timeframe_max(
-                                    WeatherDataType.HUMIDITY,
-                                    timestep,
-                                    weather_interval,
-                                    False,
-                                ),
+                                ATTR_FORECAST_HUMIDITY: humidity,
+                                ATTR_FORECAST_HUMIDITY_ABSOLUTE: humidity_absolute,
                             }
                         )
                     forecast_data.append(data_item)
@@ -497,10 +511,16 @@ class DWDWeatherData:
                     ATTR_FORECAST_PRESSURE: round(pressure / 100, 1)
                     if pressure is not None
                     else None,
-                    ATTR_FORECAST_NATIVE_TEMP: round(temp_max - 273.1, 0)
+                    ATTR_FORECAST_NATIVE_TEMP: round(
+                        temp_max - 273.1,
+                        1 if self._config[CONF_DAILY_TEMP_HIGH_PRECISION] else 0,
+                    )
                     if temp_max is not None
                     else None,
-                    ATTR_FORECAST_NATIVE_TEMP_LOW: round(temp_min - 273.1, 0)
+                    ATTR_FORECAST_NATIVE_TEMP_LOW: round(
+                        temp_min - 273.1,
+                        1 if self._config[CONF_DAILY_TEMP_HIGH_PRECISION] else 0,
+                    )
                     if temp_min is not None
                     else None,
                     ATTR_WEATHER_UV_INDEX: uv_index,
@@ -579,10 +599,13 @@ class DWDWeatherData:
             conf_data_type == CONF_DATA_TYPE_REPORT
             or conf_data_type == CONF_DATA_TYPE_MIXED
         ):
-            value = self.dwd_weather.get_reported_weather(
-                data_type,
-                shouldUpdate=False,
-            )
+            try:
+                value = self.dwd_weather.get_reported_weather(
+                    data_type,
+                    shouldUpdate=False,
+                )
+            except Exception as e:
+                _LOGGER.debug(f"Error getting reported weather: {e}")
         if conf_data_type == CONF_DATA_TYPE_FORECAST or (
             conf_data_type == CONF_DATA_TYPE_MIXED and value is None
         ):
@@ -687,6 +710,12 @@ class DWDWeatherData:
 
     def get_humidity(self):
         return self.get_weather_value(WeatherDataType.HUMIDITY)
+
+    def get_humidity_absolute(self):
+        temperature = self.get_temperature()
+        humidity = self.get_humidity()
+        abs_hum = self.calculate_absolute_humidity(temperature, humidity)
+        return abs_hum
 
     def get_uv_index(self):
         return self.dwd_weather.get_uv_index(days_from_today=0, shouldUpdate=False)
@@ -819,6 +848,21 @@ class DWDWeatherData:
     def get_humidity_hourly(self):
         return self.get_hourly(WeatherDataType.HUMIDITY)
 
+    def get_humidity_absolute_hourly(self):
+        temperature = self.get_hourly(WeatherDataType.TEMPERATURE)
+        humidity = self.get_hourly(WeatherDataType.HUMIDITY)
+        absolute_humidity = []
+        for temp, hum in zip(temperature, humidity):
+            if temp["value"] is not None and hum["value"] is not None:
+                abs_hum = self.calculate_absolute_humidity(temp["value"], hum["value"])
+                absolute_humidity.append(
+                    {
+                        ATTR_FORECAST_TIME: temp[ATTR_FORECAST_TIME],
+                        "value": abs_hum,
+                    }
+                )
+        return absolute_humidity
+
     def get_uv_index_daily(self):
         return {
             "today": self.dwd_weather.get_uv_index(
@@ -873,6 +917,25 @@ class DWDWeatherData:
         else:
             return "N"
 
+    def calculate_absolute_humidity(self, temperature, humidity) -> float:
+        """Calculate absolute humidity from temperature and relative humidity."""
+        # Constants for the calculation
+        mw = 18.016  # molar mass of water g/mol
+        r = 0.083143  # Universal gas constant
+
+        abs_hum = round(
+            (
+                6.112
+                * math.exp((17.67 * temperature) / (temperature + 243.5))
+                * humidity
+                * mw
+            )
+            / ((273.15 + temperature) * r * 100),
+            1,
+        )
+
+        return abs_hum
+
 
 class DWDMapData:
     def __init__(self, hass, config_entry: ConfigEntry):
@@ -921,7 +984,10 @@ class DWDMapData:
             and self.last_config_change == self._configentry.modified_at
         ):
             _LOGGER.debug("Map _update: Map update with cache possible")
-            self._maploop.update()
+            try:
+                self._maploop.update()
+            except Exception as e:
+                _LOGGER.error("Map update failed: {}.".format(e))
         else:
             _LOGGER.debug(" Map _update: No direct map update possible. Reconfiguring")
             self.last_config_change = self._configentry.modified_at
@@ -952,27 +1018,30 @@ class DWDMapData:
                             len(markers),
                         )
                     )
-                    maploop = dwdmap.ImageLoop(
-                        dwdmap.germany_boundaries.minx,
-                        dwdmap.germany_boundaries.miny,
-                        dwdmap.germany_boundaries.maxx,
-                        dwdmap.germany_boundaries.maxy,
-                        map_types=[
-                            self.map_maptype(
-                                self._configdata[CONF_MAP_FOREGROUND_TYPE]  # type: ignore
-                            )
-                        ],
-                        background_types=[
-                            self.map_maptype(
-                                self._configdata[CONF_MAP_BACKGROUND_TYPE]  # type: ignore
-                            )
-                        ],
-                        steps=self._configdata[CONF_MAP_LOOP_COUNT],
-                        image_width=width,
-                        image_height=self._height,
-                        markers=markers,
-                        dark_mode=self._configdata[CONF_MAP_DARK_MODE],
-                    )
+                    try:
+                        maploop = dwdmap.ImageLoop(
+                            dwdmap.germany_boundaries.minx,
+                            dwdmap.germany_boundaries.miny,
+                            dwdmap.germany_boundaries.maxx,
+                            dwdmap.germany_boundaries.maxy,
+                            map_types=[
+                                self.map_maptype(
+                                    self._configdata[CONF_MAP_FOREGROUND_TYPE]  # type: ignore
+                                )
+                            ],
+                            background_types=[
+                                self.map_maptype(
+                                    self._configdata[CONF_MAP_BACKGROUND_TYPE]  # type: ignore
+                                )
+                            ],
+                            steps=self._configdata[CONF_MAP_LOOP_COUNT],
+                            image_width=width,
+                            image_height=self._height,
+                            markers=markers,
+                            dark_mode=self._configdata[CONF_MAP_DARK_MODE],
+                        )
+                    except Exception as e:
+                        _LOGGER.error("Map update failed: {}.".format(e))
                 else:
                     _LOGGER.debug(
                         "map async_update get_from_location lat: {}, lon:{}, radius:{}, map_type:{} background_type:{} width:{} height:{} markers:{}".format(
@@ -994,31 +1063,37 @@ class DWDMapData:
                             * math.cos(self._configdata[CONF_MAP_WINDOW]["latitude"])
                         )  # type: ignore
                     )
+                    try:
+                        maploop = dwdmap.ImageLoop(
+                            self._configdata[CONF_MAP_WINDOW]["longitude"] - radius,  # type: ignore
+                            self._configdata[CONF_MAP_WINDOW]["latitude"] - radius,  # type: ignore
+                            self._configdata[CONF_MAP_WINDOW]["longitude"] + radius,  # type: ignore
+                            self._configdata[CONF_MAP_WINDOW]["latitude"] + radius,  # type: ignore
+                            map_types=[
+                                self.map_maptype(
+                                    self._configdata[CONF_MAP_FOREGROUND_TYPE]
+                                )  # type: ignore
+                            ],
+                            background_types=[
+                                self.map_maptype(
+                                    self._configdata[CONF_MAP_BACKGROUND_TYPE]
+                                )  # type: ignore
+                            ],
+                            steps=self._configdata[CONF_MAP_LOOP_COUNT],
+                            image_width=width,
+                            image_height=self._height,
+                            markers=markers,
+                            dark_mode=self._configdata[CONF_MAP_DARK_MODE],
+                        )
+                    except Exception as e:
+                        _LOGGER.error("Map update failed: {}.".format(e))
 
-                    maploop = dwdmap.ImageLoop(
-                        self._configdata[CONF_MAP_WINDOW]["longitude"] - radius,  # type: ignore
-                        self._configdata[CONF_MAP_WINDOW]["latitude"] - radius,  # type: ignore
-                        self._configdata[CONF_MAP_WINDOW]["longitude"] + radius,  # type: ignore
-                        self._configdata[CONF_MAP_WINDOW]["latitude"] + radius,  # type: ignore
-                        map_types=[
-                            self.map_maptype(self._configdata[CONF_MAP_FOREGROUND_TYPE])  # type: ignore
-                        ],
-                        background_types=[
-                            self.map_maptype(self._configdata[CONF_MAP_BACKGROUND_TYPE])  # type: ignore
-                        ],
-                        steps=self._configdata[CONF_MAP_LOOP_COUNT],
-                        image_width=width,
-                        image_height=self._height,
-                        markers=markers,
-                        dark_mode=self._configdata[CONF_MAP_DARK_MODE],
-                    )
                     _LOGGER.debug(
                         "map async_update maploop: {}".format(maploop.get_images())
                     )
                 self._maploop = maploop
                 self._cachedheight = self._height
                 self._cachedwidth = self._width
-
             self._images = maploop.get_images()
 
     def _update_single(self):

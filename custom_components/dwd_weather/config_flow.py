@@ -18,6 +18,7 @@ from simple_dwd_weatherforecast import dwdforecast
 
 from .const import (
     CONF_ADDITIONAL_FORECAST_ATTRIBUTES,
+    CONF_DAILY_TEMP_HIGH_PRECISION,
     CONF_DATA_TYPE,
     CONF_DATA_TYPE_FORECAST,
     CONF_DATA_TYPE_MIXED,
@@ -283,6 +284,10 @@ class DWDWeatherConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                         CONF_ADDITIONAL_FORECAST_ATTRIBUTES,
                         default=False,  # type: ignore
                     ): BooleanSelector({}),
+                    vol.Required(
+                        CONF_DAILY_TEMP_HIGH_PRECISION,
+                        default=False,  # type: ignore
+                    ): BooleanSelector({}),
                 }
             )
 
@@ -546,20 +551,11 @@ class DWDWeatherConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         config_entry: config_entries.ConfigEntry,
     ) -> config_entries.OptionsFlow:
         """Create the options flow."""
-        return OptionsFlowHandler(config_entry)
+        return OptionsFlowHandler()
 
 
 class OptionsFlowHandler(config_entries.OptionsFlow):
     config_data = {}
-
-    def __init__(self, config_entry: config_entries.ConfigEntry) -> None:
-        """Initialize options flow."""
-        self.config_entry = config_entry
-        _LOGGER.debug(
-            "OptionsFlowHandler: init for {} with data {}".format(
-                self.config_entry.title, self.config_entry.data
-            )
-        )
 
     async def async_step_init(self, user_input: dict[str] | None = None) -> FlowResult:  # type: ignore
         """Manage the options."""
@@ -635,6 +631,12 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
                             default=self.config_entry.data[
                                 CONF_ADDITIONAL_FORECAST_ATTRIBUTES
                             ],
+                        ): BooleanSelector({}),
+                        vol.Required(
+                            CONF_DAILY_TEMP_HIGH_PRECISION,
+                            default=self.config_entry.data[
+                                CONF_DAILY_TEMP_HIGH_PRECISION
+                            ],  # type: ignore
                         ): BooleanSelector({}),
                     }
                 ),
