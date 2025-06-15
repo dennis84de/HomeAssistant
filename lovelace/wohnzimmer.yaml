@@ -48,13 +48,15 @@ cards:
           progress: true   
 
   - type: entities
+    view_layout:
+      column: 3
     title: Balkon
     show_header_toggle: false
     entities:
       - entity: binary_sensor.bewegungsmelder_balkon
         name: Bewegungsmelder
-      - entity: light.balkon_licht
-        name: Licht                
+      - entity: cover.markise                
+        name: Markise          
       - entity: switch.balkon_radio
         name: Radio
       - type: custom:mini-media-player
@@ -62,6 +64,19 @@ cards:
         hide:
           source: true
           progress: true    
+          
+  - type: entities
+    view_layout:
+      column: 3  
+    title: Balkon Licht
+    show_header_toggle: false
+    entities:
+      - entity: light.balkon_licht
+        name: Licht           
+      - entity: light.balkon_lampe
+        name: Lampe      
+      - entity: script.markise_licht
+        name: Markise        
           
   - type: entities
     title: Multimedia
@@ -124,10 +139,9 @@ cards:
           - entity: sensor.wohnzimmer_perception
             name: Klima   
            
-   
   - type: custom:stack-in-card
     view_layout:
-      column: 3      
+      column: 1
     cards:                        
       - type: custom:mini-graph-card
         name: Pflanze

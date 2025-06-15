@@ -81,8 +81,8 @@ cards:
         name: Flur
       - entity: sensor.schalter_balkon_battery_level        
         name: Balkon
-      - entity: sensor.schalter_arbeitszimmer_battery_level        
-        name: Arbeitszimmer  
+      - entity: sensor.schalter_zimmer_aaron_battery_level        
+        name: Zimmer Aaron  
       - entity: sensor.schalter_badezimmer_battery_level        
         name: Badezimmer
       - entity: sensor.schalter_bett_links_battery_level       
@@ -104,14 +104,14 @@ cards:
         name: Parkplatz
       - entity: sensor.thermometer_schlafzimmer_battery_level        
         name: Schlafzimmer
-      - entity: sensor.thermometer_kinderzimmer_battery_level        
-        name: Kinderzimmer
+      - entity: sensor.thermometer_zimmer_franzi_battery_level        
+        name: Zimmer Franzi
+      - entity: sensor.thermometer_zimmer_aaron_battery_level
+        name: Zimmer Aaron        
       - entity: sensor.thermometer_kueche_battery_level        
         name: Küche
       - entity: sensor.thermometer_balkon_battery_level        
         name: Balkon        
-      - entity: sensor.thermometer_arbeitszimmer_battery_level
-        name: Arbeitszimmer
         
   - type: custom:battery-state-card
     title: Bewegungsmelder
@@ -133,10 +133,10 @@ cards:
         name: Flur vorne
       - entity: sensor.bewegungsmelder_flur_hinten_battery_level        
         name: Flur hinten
-      - entity: sensor.bewegungsmelder_arbeitszimmer_battery_level        
-        name: Arbeitszimmer
-      - entity: sensor.bewegungsmelder_kinderzimmer_battery_level        
-        name: Kinderzimmer
+      - entity: sensor.bewegungsmelder_zimmer_aaron_battery_level        
+        name: Zimmer Aaron
+      - entity: sensor.bewegungsmelder_zimmer_franzi_battery_level        
+        name: Zimmer Franzi
       - entity: sensor.bewegungsmelder_kueche_battery_level        
         name: Küche
       - entity: sensor.bewegungsmelder_schlafzimmer_battery_level        
@@ -156,10 +156,10 @@ cards:
     entities:
       - entity: sensor.heizung_wohnzimmer_batterie
         name: Wohnzimmer     
-      - entity: sensor.heizung_kinderzimmer_batterie
-        name: Kinderzimmer             
-      - entity: sensor.heizung_arbeitszimmer_batterie
-        name: Arbeitszimmer        
+      - entity: sensor.heizung_zimmer_franzi_batterie
+        name: Zimmer Franzi             
+      - entity: sensor.heizung_zimmer_aaron_batterie
+        name: Zimmer Aaron        
       - entity: sensor.heizung_badezimmer_batterie 
         name: Badezimmer
       - entity: sensor.heizung_kueche_batterie
@@ -183,10 +183,10 @@ cards:
         name: Schlafzimmer
       - entity: sensor.fenster_kueche_battery_level        
         name: Küche
-      - entity: sensor.fenster_arbeitszimmer_battery_level        
-        name: Arbeitszimmer
-      - entity: sensor.fenster_kinderzimmer_battery_level        
-        name: Kinderzimmer
+      - entity: sensor.fenster_zimmer_aaron_battery_level        
+        name: Zimmer Aaron
+      - entity: sensor.fenster_zimmer_franzi_battery_level        
+        name: Zimmer Franzi
                    
   - type: custom:battery-state-card
     title: Bluetooth

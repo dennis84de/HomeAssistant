@@ -79,9 +79,9 @@ switch:
             or state_attr('media_player.echo_flur', 'is_volume_muted') == true
             or state_attr('media_player.echo_kuche', 'is_volume_muted') == true
             or state_attr('media_player.echo_wohnzimmer', 'is_volume_muted') == true
-            or state_attr('media_player.echo_arbeitszimmer', 'is_volume_muted') == true            
+            or state_attr('media_player.echo_aaron', 'is_volume_muted') == true            
             or (is_state('media_player.radio_wohnzimmer', 'playing') and (state_attr('media_player.radio_wohnzimmer', 'volume_level') | float(0)) == 0)
-            or (is_state('media_player.radio_arbeitszimmer', 'playing') and (state_attr('media_player.radio_arbeitszimmer', 'volume_level') | float(0)) == 0)
+            or (is_state('media_player.radio_zimmer_aaron', 'playing') and (state_attr('media_player.radio_zimmer_aaron', 'volume_level') | float(0)) == 0)
             or (is_state('media_player.radio_badezimmer', 'playing') and (state_attr('media_player.radio_badezimmer', 'volume_level') | float(0)) == 0)
             or (is_state('media_player.radio_kueche', 'playing') and (state_attr('media_player.radio_kueche', 'volume_level') | float(0)) == 0)
             or (is_state('media_player.radio_schlafzimmer', 'playing') and (state_attr('media_player.radio_schlafzimmer', 'volume_level') | float(0)) == 0)
@@ -96,9 +96,9 @@ switch:
             or state_attr('media_player.echo_flur', 'is_volume_muted') == true
             or state_attr('media_player.echo_kuche', 'is_volume_muted') == true
             or state_attr('media_player.echo_wohnzimmer', 'is_volume_muted') == true
-            or state_attr('media_player.echo_arbeitszimmer', 'is_volume_muted') == true            
+            or state_attr('media_player.echo_aaron', 'is_volume_muted') == true            
             or (is_state('media_player.radio_wohnzimmer', 'playing') and (state_attr('media_player.radio_wohnzimmer', 'volume_level') | float(0)) == 0)
-            or (is_state('media_player.radio_arbeitszimmer', 'playing') and (state_attr('media_player.radio_arbeitszimmer', 'volume_level') | float(0)) == 0)
+            or (is_state('media_player.radio_zimmer_aaron', 'playing') and (state_attr('media_player.radio_zimmer_aaron', 'volume_level') | float(0)) == 0)
             or (is_state('media_player.radio_badezimmer', 'playing') and (state_attr('media_player.radio_badezimmer', 'volume_level') | float(0)) == 0)
             or (is_state('media_player.radio_kueche', 'playing') and (state_attr('media_player.radio_kueche', 'volume_level') | float(0)) == 0)
             or (is_state('media_player.radio_schlafzimmer', 'playing') and (state_attr('media_player.radio_schlafzimmer', 'volume_level') | float(0)) == 0)
@@ -134,7 +134,7 @@ script:
           - service: script.alexa_radio_suedtirol_eins               
         else:      
           - service: switch.turn_on
-            entity_id: switch.badezimmer_radio, switch.wohnzimmer_radio, switch.flur_radio, switch.kueche_radio, switch.arbeitszimmer_radio
+            entity_id: switch.badezimmer_radio, switch.wohnzimmer_radio, switch.flur_radio, switch.kueche_radio, switch.zimmer_aaron_radio
           - choose:
               - conditions:
                   - "{{ radioBalkon is not defined or radioBalkon == True }}"              

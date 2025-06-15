@@ -40,8 +40,8 @@ cards:
         name: Küche
       - entity: device_tracker.radioschlafzimmer
         name: Schlafzimmer
-      - entity: device_tracker.radioarbeitszimmer
-        name: Arbeitszimmer
+      - entity: device_tracker.radiozimmeraaron
+        name: Zimmer Aaron
       - entity: device_tracker.radiobalkon
         name: Balkon
                
@@ -57,18 +57,18 @@ cards:
         name: Wohnzimmer Radio      
       - entity: device_tracker.tasmotawohnzimmerschrank
         name: Wohnzimmer Schrank       
-      - entity: device_tracker.tasmotaarbeitszimmerladegeraet
-        name: Arbeitszimmer Ladegerät
-      - entity: device_tracker.tasmotaarbeitszimmerradio
-        name: Arbeitszimmer Radio          
+      - entity: device_tracker.tasmotazimmeraaronladegeraet
+        name: Zimmer Aaron Ladegerät
+      - entity: device_tracker.tasmotazimmeraaronradio
+        name: Zimmer Aaron Radio          
       - entity: device_tracker.tasmotabalkonradio
         name: Balkon Radio       
+      - entity: device_tracker.tasmotabalkonlampe
+        name: Balkon Lampe
       - entity: device_tracker.tasmotakuechenschrank
         name: Küchenschrank  
       - entity: device_tracker.tasmotaspuelmaschine
         name: Spülmaschine
-      - entity: device_tracker.tasmotalichterkette
-        name: Lichterkette      
       - entity: device_tracker.tasmotawaschmaschine   
         name: Waschmaschine
         
@@ -105,10 +105,10 @@ cards:
         name: Badezimmer
       - entity: device_tracker.magichomeschlafzimmer
         name: Schlafzimmer
-      - entity: device_tracker.magichomekinderzimmer
-        name: Kinderzimmer
-      - entity: device_tracker.magichomearbeitszimmer
-        name: Arbeitszimmer        
+      - entity: device_tracker.magichomezimmerfranzi
+        name: Zimmer Franzi
+      - entity: device_tracker.magichomezimmeraaron
+        name: Zimmer Aaron
       - entity: device_tracker.magichomebalkon
         name: Balkon   
                 
@@ -139,8 +139,8 @@ cards:
         name: Wohnzimmer
       - entity: device_tracker.echoschlafzimmer
         name: Schlafzimmer
-      - entity: device_tracker.echoarbeitszimmer
-        name: Arbeitszimmer
+      - entity: device_tracker.echoaaron
+        name: Aaron
       - entity: device_tracker.echofranzi
         name: Franzi         
         
@@ -152,6 +152,8 @@ cards:
     entities:
       - entity: device_tracker.broadlinkschlafzimmer
         name: Schlafzimmer     
+      - entity: device_tracker.broadlinkbalkon
+        name: Balkon     
         
   - type: entities
     view_layout:

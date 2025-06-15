@@ -58,15 +58,15 @@ script:
           - service: light.turn_off
             entity_id: light.flur_vorne, light.flur_hinten
             
-      - if: "{{ is_state('input_boolean.bewegungsmelder_kinderzimmer_deaktiviert', 'off') and is_state('person.franzi', 'not_home') }}"
+      - if: "{{ is_state('input_boolean.bewegungsmelder_zimmer_franzi_deaktiviert', 'off') and is_state('person.franzi', 'not_home') }}"
         then:
           - service: light.turn_off
-            entity_id: light.kinderzimmer_licht
+            entity_id: light.zimmer_franzi_licht
             
-      - if: "{{ is_state('input_boolean.bewegungsmelder_arbeitszimmer_deaktiviert', 'off') and is_state('person.aaron', 'not_home') }}"
+      - if: "{{ is_state('input_boolean.bewegungsmelder_zimmer_aaron_deaktiviert', 'off') and is_state('person.aaron', 'not_home') }}"
         then:
           - service: light.turn_off
-            entity_id: light.arbeitszimmer_licht
+            entity_id: light.zimmer_aaron_licht
             
       - if: "{{ is_state('input_boolean.bewegungsmelder_balkon_deaktiviert', 'off') }}"
         then:

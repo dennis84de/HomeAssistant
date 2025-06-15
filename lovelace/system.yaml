@@ -51,8 +51,8 @@ cards:
                     name: Badezimmer          
                   - entity: switch.schlafzimmer_radio        
                     name: Schlafzimmer
-                  - entity: switch.arbeitszimmer_radio
-                    name: Arbeitszimmer                   
+                  - entity: switch.zimmer_aaron_radio
+                    name: Zimmer Aaron                   
       - entity: switch.wiedergabe_aktiv
         tap_action:
           action: fire-dom-event
@@ -111,8 +111,8 @@ cards:
                       controls: true  
                       info: true
                   - type: custom:mini-media-player
-                    entity: media_player.radio_arbeitszimmer
-                    name: Arbeitszimmer    
+                    entity: media_player.radio_zimmer_aaron
+                    name: Zimmer Aaron    
                     hide:
                       source: true
                       progress: true
@@ -189,8 +189,8 @@ cards:
                     controls: true  
                     info: true  
                 - type: custom:mini-media-player
-                  entity: media_player.echo_arbeitszimmer
-                  name: Arbeitszimmer    
+                  entity: media_player.echo_zimmer_aaron
+                  name: Zimmer Aaron    
                   hide:
                     source: true
                     progress: true
@@ -317,9 +317,9 @@ cards:
                     name: Badezimmer
                   - entity: input_boolean.bewegungsmelder_flur_deaktiviert
                     name: Flur
-                  - entity: input_boolean.bewegungsmelder_arbeitszimmer_deaktiviert
-                    name: Arbeitszimmer
-                  - entity: input_boolean.bewegungsmelder_kinderzimmer_deaktiviert
-                    name: Kinderzimmer  
+                  - entity: input_boolean.bewegungsmelder_zimmer_aaron_deaktiviert
+                    name: Zimmer Aaron
+                  - entity: input_boolean.bewegungsmelder_zimmer_franzi_deaktiviert
+                    name: Zimmer Franzi  
                   - entity: input_boolean.bewegungsmelder_balkon_deaktiviert
                     name: Balkon                      

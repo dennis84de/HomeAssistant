@@ -12,9 +12,10 @@ heimnetz:
     - device_tracker.tasmotawohnzimmerradio
     - device_tracker.tasmotawohnzimmerschrank
     - device_tracker.tasmotawohnzimmercouch   
-    - device_tracker.tasmotaarbeitszimmerladegeraet  
-    - device_tracker.tasmotaarbeitszimmerradio
+    - device_tracker.tasmotazimmeraaronladegeraet  
+    - device_tracker.tasmotazimmeraaronradio
     - device_tracker.tasmotabalkonradio      
+    - device_tracker.tasmotabalkonlampe
     - device_tracker.tasmotakuechenschrank  
     - device_tracker.tasmotaspuelmaschine      
     - device_tracker.echoflur
@@ -27,7 +28,8 @@ heimnetz:
     - device_tracker.magichomekueche
     - device_tracker.magichomebadezimmer
     - device_tracker.magichomeschlafzimmer
-    - device_tracker.magichomekinderzimmer
+    - device_tracker.magichomezimmerfranzi
     - device_tracker.magichomebalkon          
-    - device_tracker.magichomearbeitszimmer
+    - device_tracker.magichomezimmeraaron
     - device_tracker.broadlinkschlafzimmer 
+    - device_tracker.broadlinkbalkon

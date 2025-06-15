@@ -136,7 +136,7 @@ script:
     sequence:   
       - service: !secret tts_service
         data:
-          echo: "arbeitszimmer"
+          echo: "aaron"
           message: "Home Assistant wird neugestartet."
       - delay: '00:00:04'      
       - service: media_player.play_media
@@ -171,7 +171,7 @@ script:
           - delay: '00:00:03'
           - service: !secret tts_service
             data:
-              echo: "arbeitszimmer"
+              echo: "aaron"
               message: "Home Assistant wurde neugestartet."    
       - if: "{{ not is_state('button.computer_sensoren_aktualisieren', 'unavailable') }}"
         then:

@@ -377,10 +377,10 @@ cards:
         name: Schlafzimmer
       - entity: sensor.kueche_temperatur
         name: Küche
-      - entity: sensor.kinderzimmer_temperatur
-        name: Kinderzimmer
-      - entity: sensor.arbeitszimmer_temperatur
-        name: Arbeitszimmer
+      - entity: sensor.zimmer_franzi_temperatur
+        name: Zimmer Franzi
+      - entity: sensor.zimmer_aaron_temperatur
+        name: Zimmer Aaron
                 
   - type: conditional
     view_layout:

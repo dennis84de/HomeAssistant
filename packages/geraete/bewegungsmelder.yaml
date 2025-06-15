@@ -2,14 +2,14 @@ template:
   - trigger:
       - platform: state
         entity_id:
-          - binary_sensor.bewegungsmelder_arbeitszimmer
+          - binary_sensor.bewegungsmelder_zimmer_aaron
           - binary_sensor.bewegungsmelder_badezimmer
           - binary_sensor.bewegungsmelder_balkon
           - binary_sensor.bewegungsmelder_flur_hinten
           - binary_sensor.bewegungsmelder_flur_vorne
           - binary_sensor.bewegungsmelder_kueche
           - binary_sensor.bewegungsmelder_schlafzimmer
-          - binary_sensor.bewegungsmelder_kinderzimmer
+          - binary_sensor.bewegungsmelder_zimmer_franzi
           - binary_sensor.bewegungsmelder_wohnzimmer
           - binary_sensor.bewegungsmelder_bett
         from: 'off'
@@ -29,7 +29,7 @@ automation:
     max: 10    
     trigger:
       - platform: state
-        entity_id: binary_sensor.bewegungsmelder_arbeitszimmer
+        entity_id: binary_sensor.bewegungsmelder_zimmer_aaron
       - platform: state
         entity_id: binary_sensor.bewegungsmelder_flur_vorne
       - platform: state
@@ -37,7 +37,7 @@ automation:
       - platform: state
         entity_id: binary_sensor.bewegungsmelder_kueche
       - platform: state
-        entity_id: binary_sensor.bewegungsmelder_kinderzimmer    
+        entity_id: binary_sensor.bewegungsmelder_zimmer_franzi    
       - platform: state
         entity_id: binary_sensor.bewegungsmelder_schlafzimmer    
       - platform: state

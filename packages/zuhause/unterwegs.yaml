@@ -220,8 +220,6 @@ automation:
 
             {%- if is_state('alarm_control_panel.alarmo', 'armed_away') -%}
               {{ 'Der Alarm ist eingeschaltet.' }}
-            {%- elif not is_state('vacuum.staubsauger', 'docked') -%}
-              {{ 'Die Wohnung wird gerade gesaugt. Der Alarm wird danach wieder eingeschaltet.' }}
             {% endif %}                             
       - choose:
           - conditions:

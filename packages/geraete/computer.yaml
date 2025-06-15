@@ -53,12 +53,12 @@ automation:
         for:
           minutes: 10          
     condition:
-      - "{{ is_state('switch.arbeitszimmer_monitore', 'on') }}"
+      - "{{ is_state('switch.monitore', 'on') }}"
       - "{{ is_state('switch.computer', 'off') }}"
       - "{{ is_state('switch.computer_arbeit', 'off') }}"
     action:
       - service: switch.turn_off
-        entity_id: switch.arbeitszimmer_monitore      
+        entity_id: switch.monitore      
 
   - alias: "Computer inaktiv"
     id: "computer_inaktiv"
@@ -82,7 +82,7 @@ automation:
       - if: "{{ is_state('binary_sensor.home_office_aktiv', 'off') }}"
         then:
           - service: switch.turn_off
-            entity_id: switch.arbeitszimmer_monitore                
+            entity_id: switch.monitore                
      
   - alias: "Computer einschalten"
     id: "computer_einschalten"
@@ -108,7 +108,7 @@ automation:
       - "{{ is_state('switch.computer', 'off') }}"
     action:
       - service: switch.turn_on
-        entity_id: switch.computer, switch.arbeitszimmer_monitore 
+        entity_id: switch.computer, switch.monitore 
             
   - alias: "Unterwegs - Computer ausschalten"
     id: "unterwegs_computer_ausschalten"

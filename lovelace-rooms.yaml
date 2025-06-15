@@ -5,5 +5,5 @@ views:
   - !include lovelace/kueche.yaml
   - !include lovelace/badezimmer.yaml
   - !include lovelace/flur.yaml
-  - !include lovelace/kinderzimmer.yaml
-  - !include lovelace/arbeitszimmer.yaml   
+  - !include lovelace/zimmer_franzi.yaml
+  - !include lovelace/zimmer_aaron.yaml   

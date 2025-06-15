@@ -6,7 +6,7 @@ alle_radios:
     - switch.schlafzimmer_radio
     - switch.flur_radio
     - switch.badezimmer_radio
-    - switch.arbeitszimmer_radio
+    - switch.zimmer_aaron_radio
     - switch.kueche_radio
     
 radios_ohne_badezimmer:
@@ -16,7 +16,7 @@ radios_ohne_badezimmer:
     - switch.balkon_radio
     - switch.schlafzimmer_radio
     - switch.flur_radio
-    - switch.arbeitszimmer_radio
+    - switch.zimmer_aaron_radio
     - switch.kueche_radio
     
 radio_mediaplayer:
@@ -26,5 +26,5 @@ radio_mediaplayer:
     - media_player.radio_badezimmer
     - media_player.radio_wohnzimmer
     - media_player.radio_schlafzimmer
-    - media_player.radio_arbeitszimmer
+    - media_player.radio_zimmer_aaron
     - media_player.radio_flur

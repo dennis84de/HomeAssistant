@@ -2,8 +2,8 @@ fenster:
   name: Fenster
   entities:
     - binary_sensor.balkontuer
-    - binary_sensor.fenster_arbeitszimmer    
+    - binary_sensor.fenster_zimmer_aaron    
     - binary_sensor.fenster_kueche
     - binary_sensor.fenster_schlafzimmer
-    - binary_sensor.fenster_kinderzimmer
+    - binary_sensor.fenster_zimmer_franzi
     - binary_sensor.fenster_wohnzimmer

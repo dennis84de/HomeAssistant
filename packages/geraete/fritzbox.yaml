@@ -128,13 +128,14 @@ homeassistant:
     device_tracker.tplink*:
       icon: mdi:power-socket-eu
 
+    device_tracker.broadlink*:
+      icon: mdi:remote
+      
     device_tracker.computer:
       icon: mdi:desktop-classic
     device_tracker.computerarbeit:
       icon: mdi:desktop-classic
       friendly_name: Computer Arbeit
-    device_tracker.broadlinkschlafzimmer:
-      icon: mdi:remote
     device_tracker.diskstation:
       icon: mdi:server-network
     device_tracker.epsondrucker:
@@ -161,8 +162,8 @@ homeassistant:
       friendly_name: Radio Küche
     device_tracker.radioschlafzimmer:
       friendly_name: Radio Schlafzimmer
-    device_tracker.radioarbeitszimmer:
-      friendly_name: Radio Arbeitszimmer
+    device_tracker.radiozimmeraaron:
+      friendly_name: Radio Zimmer Aaron
     device_tracker.radiobalkon:
       friendly_name: Radio Balkon
 
@@ -190,15 +191,13 @@ homeassistant:
       friendly_name: Echo Wohnzimmer
     device_tracker.echoschlafzimmer:
       friendly_name: Echo Schlafzimmer      
-    device_tracker.echoarbeitszimmer:
-      friendly_name: Echo Arbeitszimmer          
+    device_tracker.echoaaron:
+      friendly_name: Echo Aaron          
     device_tracker.echofranzi:
       friendly_name: Echo Franzi      
       
     device_tracker.firetvschlafzimmer:
       friendly_name: FireTV Schlafzimmer
-    device_tracker.firetvarbeitszimmer:
-      friendly_name: FireTV Arbeitszimmer
       
     device_tracker.tabletbadezimmer:
       friendly_name: Tablet Badezimmer
@@ -219,23 +218,21 @@ homeassistant:
       friendly_name: MagicHome Badezimmer
     device_tracker.magichomeschlafzimmer:
       friendly_name: MagicHome Schlafzimmer
-    device_tracker.magichomekinderzimmer:
-      friendly_name: MagicHome Kinderzimmer
-    device_tracker.magichomearbeitszimmer:
-      friendly_name: MagicHome Arbeitszimmer      
+    device_tracker.magichomezimmerfranzi:
+      friendly_name: MagicHome Zimmer Franzi
+    device_tracker.magichomezimmeraaron:
+      friendly_name: MagicHome Zimnmer Aaron      
     device_tracker.magichomebalkon:
       friendly_name: MagicHome Balkon
       
-    device_tracker.tasmotalichterkette:
-      friendly_name: Tasmota Lichterkette    
     device_tracker.tasmotawohnzimmerschrank:
       friendly_name: Tasmota Wohnzimmer Schrank
     device_tracker.tasmotawohnzimmerradio:
       friendly_name: Tasmota Wohnzimmer Radio
     device_tracker.tasmotawohnzimmercouch:
       friendly_name: Tasmota Wohnzimmer Couch   
-    device_tracker.tasmotaarbeitszimmerladegeraet:
-      friendly_name: Tasmota Arbeitszimmer Ladegerät
+    device_tracker.tasmotazimmeraaronladegeraet:
+      friendly_name: Tasmota Zimmer Aaron Ladegerät
     device_tracker.tasmotabalkonradio:
       friendly_name: Tasmota Balkon Radio
     device_tracker.tasmotakuechenschrank:

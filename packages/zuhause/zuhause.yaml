@@ -78,20 +78,20 @@ script:
               - service: light.turn_on
                 entity_id: light.wohnzimmer_schrank           
       - service: script.radios_einschalten     
-      - if: "{{ is_state('person.franzi', 'home') and is_state('binary_sensor.licht_kinderzimmer', 'on') }}"
+      - if: "{{ is_state('person.franzi', 'home') and is_state('binary_sensor.licht_zimmer_franzi', 'on') }}"
         then:          
           - service: light.turn_on
-            entity_id: light.kinderzimmer_licht          
-      - if: "{{ is_state('person.aaron', 'home') and is_state('binary_sensor.licht_arbeitszimmer', 'on') }}"
+            entity_id: light.zimmer_franzi_licht          
+      - if: "{{ is_state('person.aaron', 'home') and is_state('binary_sensor.licht_zimmer_aaron', 'on') }}"
         then:          
           - service: light.turn_on
-            entity_id: light.arbeitszimmer_licht                     
+            entity_id: light.zimmer_aaron_licht                     
 
   zu_hause_home_office:
     alias: "Zu Hause - Home Office"
     sequence:      
       - service: switch.turn_on
-        entity_id: switch.arbeitszimmer_radio, switch.computer_arbeit, switch.arbeitszimmer_monitore
+        entity_id: switch.zimmer_aaron_radio, switch.computer_arbeit, switch.monitore
       - service: script.radios_einschalten   
         data:
           radioBalkon: false         
@@ -131,7 +131,7 @@ script:
       - if: "{{ is_state('person.franzi', 'home') }}"
         then:          
           - service: light.turn_on
-            entity_id: light.kinderzimmer_licht            
+            entity_id: light.zimmer_franzi_licht            
 
   zu_hause_standort:
     alias: "Zu Hause - Standort"
@@ -400,10 +400,10 @@ automation:
         else:             
           - service: input_boolean.turn_off
             entity_id: input_boolean.anwesenheit_franzi   
-      - if: "{{ trigger.id == 'calendar' and aktion == 'home' and is_state('binary_sensor.licht_kinderzimmer', 'on') }}"
+      - if: "{{ trigger.id == 'calendar' and aktion == 'home' and is_state('binary_sensor.licht_zimmer_franzi', 'on') }}"
         then:                 
           - service: light.turn_on
-            entity_id: light.kinderzimmer_licht                         
+            entity_id: light.zimmer_franzi_licht                         
            
   - alias: "Aaron - Anwesenheit"
     id: "aaron_anwesenheit"

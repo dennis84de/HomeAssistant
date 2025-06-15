@@ -1,34 +1,34 @@
 input_boolean:
-  bewegungsmelder_arbeitszimmer_deaktiviert:
+  bewegungsmelder_zimmer_aaron_deaktiviert:
     name: Bewegungsmelder deaktiviert
     icon: mdi:sync-off
 
 timer:
-  licht_arbeitszimmer:
-    name: Licht Arbeitszimmer
+  licht_zimmer_aaron:
+    name: Licht Zimmer Aaron
     icon: mdi:timer-off
     duration: 120
   
 input_number:
-  helligkeit_arbeitszimmer:
-    name: Helligkeit Arbeitszimmer
+  helligkeit_zimmer_aaron:
+    name: Helligkeit Zimmer Aaron
     min: 100
     max: 1000
     step: 50 
     
 template:
   - binary_sensor:
-      - name: "Licht Arbeitszimmer"
-        unique_id: licht_arbeitszimmer
+      - name: "Licht Zimmer Aaron"
+        unique_id: licht_zimmer_aaron
         state: >
           {% set istNachts = is_state('binary_sensor.nachts', 'on') %}
-          {% set istDunkel = states('sensor.balkon_helligkeit_mittelwert') | float(0) < states('input_number.helligkeit_arbeitszimmer') | float(500)%}
+          {% set istDunkel = states('sensor.balkon_helligkeit_mittelwert') | float(0) < states('input_number.helligkeit_zimmer_aaron') | float(500)%}
     
           {{ istNachts or istDunkel }}
             
 automation:  
-  - alias: 'Licht Arbeitszimmer'
-    id: "licht_arbeitszimmer"
+  - alias: 'Licht Zimmer Aaron'
+    id: "licht_zimmer_aaron"
     trigger: 
       - id: licht_schalter
         platform: event
@@ -40,24 +40,24 @@ automation:
             click_type: single       
       - id: licht_an
         platform: state
-        entity_id: binary_sensor.bewegungsmelder_arbeitszimmer
+        entity_id: binary_sensor.bewegungsmelder_zimmer_aaron
         to: 'on'
       - id: licht_an_dunkel
         platform: state
-        entity_id: binary_sensor.licht_arbeitszimmer
+        entity_id: binary_sensor.licht_zimmer_aaron
         to: 'on'        
       - id: licht_aus
         platform: event
         event_type: timer.finished
         event_data:
-          entity_id: timer.licht_arbeitszimmer
+          entity_id: timer.licht_zimmer_aaron
       - id: licht_aus
         platform: state
         entity_id: binary_sensor.sonne_tagsueber 
         to: 'on'        
       - id: licht_aus
         platform: state
-        entity_id: binary_sensor.licht_arbeitszimmer
+        entity_id: binary_sensor.licht_zimmer_aaron
         to: 'off'            
     condition:          
       - condition: or
@@ -73,25 +73,25 @@ automation:
                 - "{{ is_state('binary_sensor.sonne_tagsueber', 'off') }}"
                 - "{{ is_state('binary_sensor.bewegungsmelder_inaktiv_unterwegs', 'off') }}"
                 - "{{ is_state('binary_sensor.bewegungsmelder_inaktiv_staubsauger', 'off') }}"
-                - "{{ is_state('input_boolean.bewegungsmelder_arbeitszimmer_deaktiviert', 'off') }}"
+                - "{{ is_state('input_boolean.bewegungsmelder_zimmer_aaron_deaktiviert', 'off') }}"
                 - "{{ is_state('binary_sensor.home_office_aktiv', 'off') }}"
-                - "{{ is_state('light.arbeitszimmer_licht', 'off') or not is_state('timer.licht_arbeitszimmer', 'idle') }}"
+                - "{{ is_state('light.zimmer_aaron_licht', 'off') or not is_state('timer.licht_zimmer_aaron', 'idle') }}"
     action:
       - if: "{{ trigger.id == 'licht_schalter' }}"
         then:
           - service: light.toggle
-            entity_id: light.arbeitszimmer_licht      
+            entity_id: light.zimmer_aaron_licht      
       - if: "{{ trigger.id == 'licht_an_dunkel' }}"
         then:
           - service: light.turn_on
-            entity_id: light.arbeitszimmer_licht
+            entity_id: light.zimmer_aaron_licht
       - if: "{{ trigger.id == 'licht_an' }}"
         then:
           - service: light.turn_on
-            entity_id: light.arbeitszimmer_licht
+            entity_id: light.zimmer_aaron_licht
           - service: timer.start
-            entity_id: timer.licht_arbeitszimmer
+            entity_id: timer.licht_zimmer_aaron
       - if: "{{ trigger.id == 'licht_aus' }}"
         then:
           - service: light.turn_off
-            entity_id: light.arbeitszimmer_licht        
+            entity_id: light.zimmer_aaron_licht        

@@ -83,7 +83,7 @@ logbook:
       - switch.wohnzimmer_schrank
       - switch.kleiderschrank
       - switch.computer
-      - switch.arbeitszimmer_monitore
+      - switch.monitore
       - switch.computer_arbeit   
       - switch.kuechenschrank
     entity_globs:

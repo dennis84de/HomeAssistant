@@ -12,10 +12,6 @@ light:
     name: Wohnzimmer Schrank
     entity_id: switch.wohnzimmer_schrank
     
-  - platform: switch
-    name: Lichterkette
-    entity_id: switch.lichterkette
-    
 automation:
   - alias: "Wohnzimmer - Licht Abends"
     id: "wohnzimmer_licht_abends"
@@ -74,24 +70,10 @@ automation:
         entity_id: light.wohnzimmer_couch, light.wohnzimmer_schrank     
       - service: light.turn_off
         entity_id: light.wohnzimmer_schrank
-        
-#  - alias: "Weihnachtsbeleuchtung"
-#    id: "Weihnachtsbeleuchtung"
-#    trigger:
-#      - platform: state
-#        entity_id: binary_sensor.weihnachtsbeleuchtung
-#        to: 'on'
-#    condition:               
-#      - "{{ is_state('binary_sensor.adventszeit', 'on') }}"        
-#    action:
-#      - service: light.turn_on
-#        entity_id: light.weihnachtsstern, light.lichterkette
             
 homeassistant:
   customize:
     light.wohnzimmer_couch:
       icon: mdi:sofa
     light.wohnzimmer_schrank:
-      icon: mdi:cupboard
-    light.lichterkette:
-      icon: mdi:string-lights            
+      

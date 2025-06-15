@@ -1,7 +1,7 @@
 entity_controller:
   name: Entity Controller
   entities:
-    - entity_controller.bewegung_arbeitszimmer
+    - entity_controller.bewegung_zimmer_aaron
     - entity_controller.bewegung_badezimmer
     - entity_controller.bewegung_balkon
     - entity_controller.bewegung_flur_hinten
@@ -10,4 +10,4 @@ entity_controller:
     - entity_controller.bewegung_kuechenschrank
     - entity_controller.bewegung_schlafzimmer_bett
     - entity_controller.bewegung_schlafzimmer_kleiderschrank
-    - entity_controller.bewegung_kinderzimmer
+    - entity_controller.bewegung_zimmer_franzi

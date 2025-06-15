@@ -14,29 +14,29 @@ batteriestand:
     - sensor.schalter_balkon_battery_level
     - sensor.schalter_bett_links_battery_level
     - sensor.schalter_bett_rechts_battery_level
-    - sensor.schalter_arbeitszimmer_battery_level
+    - sensor.schalter_zimmer_aaron_battery_level
     - sensor.schalter_badezimmer_battery_level
     - sensor.thermometer_parkplatz_battery_level
     - sensor.thermometer_schlafzimmer_battery_level
-    - sensor.thermometer_kinderzimmer_battery_level
+    - sensor.thermometer_zimmer_franzi_battery_level
     - sensor.thermometer_kueche_battery_level
     - sensor.balkontuer_battery_level
     - sensor.fenster_wohnzimmer_battery_level
     - sensor.fenster_schlafzimmer_battery_level
     - sensor.fenster_kueche_battery_level
-    - sensor.fenster_arbeitszimmer_battery_level
-    - sensor.fenster_kinderzimmer_battery_level    
+    - sensor.fenster_zimmer_aaron_battery_level
+    - sensor.fenster_zimmer_franzi_battery_level    
     - sensor.bewegungsmelder_badezimmer_battery_level
     - sensor.bewegungsmelder_flur_vorne_battery_level
     - sensor.bewegungsmelder_flur_hinten_battery_level
-    - sensor.bewegungsmelder_arbeitszimmer_battery_level
-    - sensor.bewegungsmelder_kinderzimmer_battery_level
+    - sensor.bewegungsmelder_zimmer_aaron_battery_level
+    - sensor.bewegungsmelder_zimmer_franzi_battery_level
     - sensor.bewegungsmelder_schlafzimmer_battery_level
     - sensor.bewegungsmelder_kueche_battery_level
     - sensor.bewegungsmelder_balkon_battery_level
     - sensor.bewegungsmelder_wohnzimmer_battery_level
     - sensor.pflanze_wohnzimmer_battery_level
     - sensor.heizung_wohnzimmer_batterie
-    - sensor.heizung_kinderzimmer_batterie    
+    - sensor.heizung_zimmer_franzi_batterie    
     - sensor.kleiderschrank_links_battery_level
     - sensor.kleiderschrank_rechts_battery_level

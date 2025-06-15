@@ -1,5 +1,5 @@
-title: Kinderzimmer
-path: kinderzimmer
+title: Franzi
+path: zimmer_franzi
 type: custom:horizontal-layout
 layout:
   width: 400
@@ -9,11 +9,11 @@ cards:
     title: Licht
     show_header_toggle: false
     entities:
-      - entity: light.kinderzimmer_licht
+      - entity: light.zimmer_franzi_licht
         name: Licht
       
   - type: thermostat
-    entity: climate.heizung_kinderzimmer
+    entity: climate.heizung_zimmer_franzi
     name: Heizung    
     
   - type: custom:stack-in-card
@@ -30,7 +30,7 @@ cards:
               icon: false
               points: false
             entities:
-              - entity: sensor.kinderzimmer_temperatur
+              - entity: sensor.zimmer_franzi_temperatur
           - type: custom:mini-graph-card
             name: Luftfeuchtigkeit
             line_width: 3
@@ -41,18 +41,18 @@ cards:
               icon: false
               points: false
             entities:
-              - entity: sensor.kinderzimmer_luftfeuchtigkeit                
+              - entity: sensor.zimmer_franzi_luftfeuchtigkeit                
       - type: entities        
         show_header_toggle: false
         entities:
-          - entity: sensor.kinderzimmer_perception
+          - entity: sensor.zimmer_franzi_perception
             name: Klima   
             
   - type: glance
     title: Sensoren
     show_header_toggle: false
     entities:
-      - entity: binary_sensor.fenster_kinderzimmer
+      - entity: binary_sensor.fenster_zimmer_franzi
         name: Fenster      
-      - entity: binary_sensor.bewegungsmelder_kinderzimmer
+      - entity: binary_sensor.bewegungsmelder_zimmer_franzi
         name: Bewegungsmelder

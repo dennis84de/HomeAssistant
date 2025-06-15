@@ -4,13 +4,13 @@ alles_ausschalten:
     - group.alle_radios
     - switch.computer
     - switch.computer_arbeit
-    - switch.arbeitszimmer_monitore
+    - switch.monitore
     - switch.watchtv_wohnzimmer
     - switch.watchtv_schlafzimmer    
     - light.wohnzimmer_couch
     - light.wohnzimmer_schrank
-    - light.arbeitszimmer_licht
-    - light.kinderzimmer_licht
+    - light.zimmer_aaron_licht
+    - light.zimmer_franzi_licht
     - light.flur_vorne
     - light.flur_hinten
     - light.badezimmerschrank
@@ -34,8 +34,8 @@ steckdosen:
     - switch.wohnzimmer_couch
     - switch.wohnzimmer_radio
     - switch.wohnzimmer_schrank
-    - switch.arbeitszimmer_radio
-    - switch.arbeitszimmer_ladegerat
-    - switch.arbeitszimmer_monitore
+    - switch.zimmer_aaron_radio
+    - switch.zimmer_aaron_ladegerat
+    - switch.monitore
     - switch.balkon_radio
     - switch.spuelmaschine

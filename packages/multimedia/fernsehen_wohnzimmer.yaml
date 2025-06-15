@@ -83,7 +83,7 @@ automation:
       - if: "{{ is_state('binary_sensor.home_office_aktiv', 'off') }}"
         then:
           - service: switch.turn_off
-            entity_id: switch.arbeitszimmer_radio 
+            entity_id: switch.zimmer_aaron_radio 
            
   - alias: "Soundbar aussschalten"
     id: "soundbar_aussschalten"

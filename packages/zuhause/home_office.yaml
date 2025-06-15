@@ -118,7 +118,7 @@ script:
           - service: switch.turn_off
             entity_id: switch.watchtv_wohnzimmer          
       - service: switch.turn_on
-        entity_id: switch.computer_arbeit, switch.arbeitszimmer_monitore
+        entity_id: switch.computer_arbeit, switch.monitore
       - choose:
           - conditions:
               - condition: or
@@ -151,7 +151,7 @@ script:
       - service: switch.turn_off
         entity_id: switch.computer_arbeit               
       - service: switch.turn_on
-        entity_id: switch.arbeitszimmer_ladegerat
+        entity_id: switch.zimmer_aaron_ladegerat
       - service: timer.start
         entity_id: timer.headset_aufladen
       - service: input_select.select_option
@@ -180,12 +180,12 @@ script:
       - choose:
           - conditions:
               - condition: state
-                entity_id: climate.heizung_arbeitszimmer
+                entity_id: climate.heizung_zimmer_aaron
                 state: 'heat'
             sequence:              
               - service: climate.set_hvac_mode
                 data:
-                  entity_id: climate.heizung_arbeitszimmer
+                  entity_id: climate.heizung_zimmer_aaron
                   hvac_mode: 'off'                    
         
 automation:
@@ -249,7 +249,7 @@ automation:
     action:
       - service: !secret tts_service
         data:
-          message: "Der Computer wird Arbeitszimmer wird gleich ausgeschaltet."
+          message: "Der Computer wird gleich ausgeschaltet."
       - delay: '00:00:04'
       - service: timer.start
         entity_id: timer.home_office_ende
@@ -307,11 +307,11 @@ automation:
             sequence:
               - service: !secret tts_service
                 data:
-                  message: "Der Computer im Arbeitszimmer wird jetzt heruntergefahren."
+                  message: "Der Computer wird jetzt heruntergefahren."
         default:      
           - service: !secret tts_service
             data:
-              message: "Der Computer im Arbeitszimmer wird jetzt ausgeschaltet."
+              message: "Der Computer wird jetzt ausgeschaltet."
       - delay: '00:00:02'
       - service: script.home_office_ende
 
@@ -334,7 +334,7 @@ automation:
                 state: 'on'                
             sequence:
               - service: switch.turn_off
-                entity_id: switch.computer_arbeit, switch.arbeitszimmer_monitore
+                entity_id: switch.computer_arbeit, switch.monitore
           - conditions:
               - condition: state
                 entity_id: person.dennis
@@ -342,13 +342,13 @@ automation:
             sequence:
                   - service: notify.telegram
                     data:                      
-                      message: 'Der Computer im Arbeitszimmer wurde eingeschaltet und wird jetzt heruntergefahren.'
+                      message: 'Der Computer wurde eingeschaltet und wird jetzt heruntergefahren.'
                   - service: switch.turn_off
-                    entity_id: switch.computer_arbeit, switch.arbeitszimmer_monitore                  
+                    entity_id: switch.computer_arbeit, switch.monitore                  
         default:      
           - service: !secret tts_service
             data:          
-              message: "Der Computer im Arbeitszimmer wurde eingeschaltet."
+              message: "Der Computer wurde eingeschaltet."
      
   - alias: "Home Office - Headset ausgeschaltet"
     id: "home_office_headset_ausgeschaltet"
@@ -360,12 +360,12 @@ automation:
         for: '00:05:00'
       - id: bewegungsmelder
         platform: state
-        entity_id: binary_sensor.bewegungsmelder_arbeitszimmer
+        entity_id: binary_sensor.bewegungsmelder_zimmer_aaron
         to: 'on' 
     condition:
       - "{{ is_state('binary_sensor.computer_arbeit_ping', 'on') }}"
       - "{{ is_state('binary_sensor.home_office_aktiv', 'on') }}"
-      - "{{ is_state('sensor.letzte_bewegung', 'Arbeitszimmer') or trigger.id == 'bewegungsmelder'}}"
+      - "{{ is_state('sensor.letzte_bewegung', 'Zimmer Aaron') or trigger.id == 'bewegungsmelder'}}"
       - condition: template
         value_template: >-
           {% if is_state('sensor.computer_arbeit_bluetooth', 'unavailable') or states('sensor.computer_arbeit_bluetooth') | int(0) == 0 %}
@@ -381,20 +381,20 @@ automation:
           title: 'Headset ausgeschaltet'
           message: 'Das Headaset ist noch ausgeschaltet.'
       
-  - alias: "Telegram - Computer Arbeitszimmer ausschalten"
-    id: "telegram_computer_arbeitszimmer_ausschalten"
+  - alias: "Telegram - Computer Arbeit ausschalten"
+    id: "telegram_computer_arbeit_ausschalten"
     trigger:
       - platform: event
         event_type: telegram_command
         event_data:
-          command: '/computer_arbeitszimmer_ausschalten'
+          command: '/computer_ausschalten'
     action:
       - service: switch.turn_off
-        entity_id: switch.computer_arbeit, switch.arbeitszimmer_monitore
+        entity_id: switch.computer_arbeit, switch.monitore
       - service: telegram_bot.send_message
         data:
           target: '{{ trigger.event.data.chat_id }}'
-          message: "Der Computer im Arbeitszimmer wird ausgeschaltet."         
+          message: "Der Computer wird ausgeschaltet."         
                
   - alias: "Home Office - Status geändert"
     id: "home_office_status_geaendert"
@@ -528,12 +528,12 @@ automation:
         event_data:
           entity_id: timer.headset_aufladen    
     condition:           
-      - "{{ is_state('switch.arbeitszimmer_ladegerat', 'on') }}"      
+      - "{{ is_state('switch.zimmer_aaron_ladegerat', 'on') }}"      
     action:
       - service: switch.turn_off
-        entity_id: switch.arbeitszimmer_ladegerat
+        entity_id: switch.zimmer_aaron_ladegerat
         
 homeassistant:
   customize:
-    switch.arbeitszimmer_monitore:
+    switch.monitore:
       icon: mdi:monitor        

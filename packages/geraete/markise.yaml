@@ -1,0 +1,75 @@
+cover:
+  - platform: template
+    covers:
+      markise:
+        device_class: blind
+        friendly_name: "Markise"
+        unique_id: "markise"
+        optimistic: false
+        open_cover:
+          service: script.markise_hoch
+        close_cover:
+          service: script.markise_runter
+        stop_cover:
+          service: script.markise_stop
+          
+script:
+  markise_runter:
+    alias: "Markise runter"
+    sequence:      
+      - action: remote.send_command
+        data:
+          entity_id: remote.broadlink_balkon
+          device: markise
+          command:
+            - down     
+            
+  markise_hoch:
+    alias: "Markise hoch"
+    sequence:      
+      - action: remote.send_command
+        data:
+          entity_id: remote.broadlink_balkon
+          device: markise
+          command:
+            - up       
+            
+  markise_stop:
+    alias: "Markise stop"
+    sequence:      
+      - action: remote.send_command
+        data:
+          entity_id: remote.broadlink_balkon
+          device: markise
+          command:
+            - stop    
+            
+  markise_licht:
+    alias: "Markise Licht"
+    sequence:      
+      - action: remote.send_command
+        data:
+          entity_id: remote.broadlink_balkon
+          device: markise
+          command:
+            - light                 
+         
+automation:          
+  - alias: "Telegram - Markise hochfahren"
+    id: "telegram_markise_hochfahren"
+    trigger:
+      platform: event
+      event_type: telegram_command
+      event_data:
+        command: '/markise'
+    action:
+      - service: script.markise_hoch
+      - service: notify.telegram
+        data:
+          title: "Markise"
+          message: "Die Markise wird hochgefahren."             
+          
+homeassistant:
+  customize:      
+    script.markise_licht:
+      icon: mdi:storefront     

@@ -1,52 +1,52 @@
 input_boolean:
-  bewegungsmelder_kinderzimmer_deaktiviert:
+  bewegungsmelder_zimmer_franzi_deaktiviert:
     name: Bewegungsmelder deaktiviert    
     icon: mdi:sync-off     
     
 input_number:
-  helligkeit_kinderzimmer:
-    name: Helligkeit Kinderzimmer
+  helligkeit_zimmer_franzi:
+    name: Helligkeit Zimmer Franzi
     min: 100
     max: 1000
     step: 50 
           
 template:
   - binary_sensor:
-      - name: "Licht Kinderzimmer"
-        unique_id: licht_kinderzimmer
+      - name: "Licht Zimmer Franzi"
+        unique_id: licht_zimmer_franzi
         state: >
           {% set istNachts = is_state('binary_sensor.nachts', 'on') %}
-          {% set istDunkel = states('sensor.balkon_helligkeit_mittelwert') | float(0) < states('input_number.helligkeit_kinderzimmer') | float(500)%}
+          {% set istDunkel = states('sensor.balkon_helligkeit_mittelwert') | float(0) < states('input_number.helligkeit_zimmer_franzi') | float(500)%}
     
           {{ istNachts or istDunkel }}
                     
 automation:           
-  - alias: "Licht Kinderzimmer"
-    id: "licht_kinderzimmer"
+  - alias: "Licht Zimmer Franzi"
+    id: "licht_zimmer_franzi"
     trigger:
       - id: licht_an
         platform: state
-        entity_id: binary_sensor.licht_kinderzimmer 
+        entity_id: binary_sensor.licht_zimmer_franzi 
         to: 'on'
       - id: licht_aus
         platform: state
-        entity_id: binary_sensor.licht_kinderzimmer 
+        entity_id: binary_sensor.licht_zimmer_franzi 
         to: 'off'  
       - id: licht_aus_automatisch
         platform: state
         entity_id: person.franzi
         to: 'not_home'          
     condition:           
-      - "{{ states('light.kinderzimmer_licht') != trigger.to_state.state or trigger.id == 'licht_aus_automatisch' }}"
+      - "{{ states('light.zimmer_franzi_licht') != trigger.to_state.state or trigger.id == 'licht_aus_automatisch' }}"
       - condition: or
         conditions:
           - "{{ is_state('person.franzi', 'home') and is_state('binary_sensor.erwachsene_zu_hause', 'on') }}"
-          - "{{ states('light.kinderzimmer_licht') == 'on' and (trigger.id == 'licht_aus' or trigger.id == 'licht_aus_automatisch') }}"
+          - "{{ states('light.zimmer_franzi_licht') == 'on' and (trigger.id == 'licht_aus' or trigger.id == 'licht_aus_automatisch') }}"
     action:                
       - if: "{{ trigger.id == 'licht_an' }}"
         then:          
           - service: light.turn_on
-            entity_id: light.kinderzimmer_licht          
+            entity_id: light.zimmer_franzi_licht          
         else:        
           - service: light.turn_off
-            entity_id: light.kinderzimmer_licht
+            entity_id: light.zimmer_franzi_licht

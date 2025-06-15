@@ -3,8 +3,8 @@ licht_wohnung:
   entities:
     - light.wohnzimmer_couch
     - light.wohnzimmer_schrank
-    - light.arbeitszimmer_licht
-    - light.kinderzimmer_licht
+    - light.zimmer_aaron_licht
+    - light.zimmer_franzi_licht
     - light.flur_vorne
     - light.flur_hinten
     - light.badezimmerschrank
@@ -13,6 +13,7 @@ licht_wohnung:
     - light.kueche_regal
     - light.kueche_schrank
     - light.balkon_licht    
+    - light.balkon_lampe
     
 licht_schlafen:
   name: Licht Schlafen
@@ -27,13 +28,13 @@ licht_schlafen:
     - light.kueche_regal
     - light.kueche_schrank
     - light.balkon_licht
-    - light.lichterkette
+    - light.balkon_lampe
     
 licht_fernsehen:
   name: Licht Fernsehen
   entities:
-    - light.arbeitszimmer_licht
-    - light.kinderzimmer_licht
+    - light.zimmer_aaron_licht
+    - light.zimmer_franzi_licht
     - light.flur_vorne
     - light.flur_hinten
     - light.badezimmerschrank
@@ -48,8 +49,8 @@ licht_baden:
   entities:
     - light.wohnzimmer_couch
     - light.wohnzimmer_schrank
-    - light.arbeitszimmer_licht
-    - light.kinderzimmer_licht
+    - light.zimmer_aaron_licht
+    - light.zimmer_franzi_licht
     - light.flur_vorne
     - light.flur_hinten
     - light.bett
@@ -57,13 +58,14 @@ licht_baden:
     - light.kueche_regal
     - light.kueche_schrank
     - light.balkon_licht
+    - light.balkon_lampe
     
 licht_unterwegs:
   name: Licht unterwegs
   entities:
     - light.wohnzimmer_couch
     - light.wohnzimmer_schrank
-    - light.arbeitszimmer_licht
+    - light.zimmer_aaron_licht
     - light.kueche_regal
     - light.balkon_licht
     - light.kleiderschrank
