@@ -37,7 +37,7 @@ automation:
           device_ieee: 54:ef:44:10:00:e8:72:44
           command: 2_single
           args:
-            click_type: single       
+            press_type: single       
       - id: licht_an
         platform: state
         entity_id: binary_sensor.bewegungsmelder_zimmer_aaron

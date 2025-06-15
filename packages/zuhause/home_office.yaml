@@ -198,16 +198,7 @@ automation:
           device_ieee: 54:ef:44:10:00:e8:72:44
           command: 2_single
           args:
-            click_type: single         
-#      - platform: event
-#        event_type: zha_event
-#        event_data:
-#          device_ieee: 00:15:8d:00:02:13:45:68
-#          command: attribute_updated
-#          args:
-#            attribute_id: 32768
-#            attribute_name: Unknown     
-#            value: 2    
+            press_type: single         
     condition:
       - condition: or
         conditions:
@@ -229,16 +220,7 @@ automation:
           device_ieee: 54:ef:44:10:00:e8:72:44
           command: 2_single
           args:
-            click_type: single          
-#      - platform: event
-#        event_type: zha_event
-#        event_data:
-#          device_ieee: 00:15:8d:00:02:13:45:68
-#          command: attribute_updated
-#          args:
-#            attribute_id: 32768
-#            attribute_name: Unknown     
-#            value: 2           
+            press_type: single                
     condition:
       - condition: state
         entity_id: binary_sensor.home_office_aktiv
@@ -268,16 +250,7 @@ automation:
           device_ieee: 54:ef:44:10:00:e8:72:44
           command: 2_single
           args:
-            click_type: single          
-#      - platform: event
-#        event_type: zha_event
-#        event_data:
-#          device_ieee: 00:15:8d:00:02:13:45:68
-#          command: attribute_updated
-#          args:
-#            attribute_id: 0
-#            attribute_name: on_off     
-#            value: 1       
+            press_type: single              
     condition:
       - condition: state
         entity_id: timer.home_office_ende
@@ -464,16 +437,7 @@ automation:
           device_ieee: 54:ef:44:10:00:e8:72:44
           command: 1_single
           args:
-            click_type: single          
-#      - platform: event
-#        event_type: zha_event
-#        event_data:
-#          device_ieee: 00:15:8d:00:02:13:45:68
-#          command: attribute_updated
-#          args:
-#            attribute_id: 0
-#            attribute_name: on_off     
-#            value: 1            
+            press_type: single                   
     condition:       
       - condition: state
         entity_id: binary_sensor.home_office_aktiv
