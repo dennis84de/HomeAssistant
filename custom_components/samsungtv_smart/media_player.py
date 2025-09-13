@@ -57,6 +57,7 @@ from homeassistant.helpers.storage import STORAGE_DIR
 from homeassistant.util import Throttle, dt as dt_util
 from homeassistant.util.async_ import run_callback_threadsafe
 
+from . import get_smartthings_api_key
 from .api.samsungcast import SamsungCastTube
 from .api.samsungws import ArtModeStatus, SamsungTVAsyncRest, SamsungTVWS
 from .api.smartthings import SmartThingsTV, STStatus
@@ -73,6 +74,7 @@ from .const import (
     CONF_POWER_ON_METHOD,
     CONF_SHOW_CHANNEL_NR,
     CONF_SOURCE_LIST,
+    CONF_ST_ENTRY_UNIQUE_ID,
     CONF_SYNC_TURN_OFF,
     CONF_SYNC_TURN_ON,
     CONF_TOGGLE_ART_MODE,
@@ -150,6 +152,7 @@ SUPPORT_SAMSUNGTV_SMART = (
 )
 
 MIN_TIME_BETWEEN_ST_UPDATE = timedelta(seconds=5)
+ST_API_KEY_UPDATE_INTERVAL = timedelta(minutes=30)
 SCAN_INTERVAL = timedelta(seconds=15)
 
 _LOGGER = logging.getLogger(__name__)
@@ -167,10 +170,10 @@ async def async_setup_entry(
 
     logo_file = hass.config.path(STORAGE_DIR, f"{DOMAIN}_logo_paths")
 
-    def update_token_func(token: str) -> None:
+    def update_token_func(token: str, token_key: str) -> None:
         """Update config entry with the new token."""
         hass.config_entries.async_update_entry(
-            entry, data={**entry.data, CONF_TOKEN: token}
+            entry, data={**entry.data, token_key: token}
         )
 
     async_add_entities(
@@ -238,7 +241,7 @@ class SamsungTVDevice(SamsungTVEntity, MediaPlayerEntity):
         entry_id: str,
         entry_data: dict[str, Any] | None,
         session: ClientSession,
-        update_token_func: Callable[[str], None],
+        update_token_func: Callable[[str, str], None],
         logo_file: str,
         local_logo_path: str | None,
     ) -> None:
@@ -308,23 +311,40 @@ class SamsungTVDevice(SamsungTVEntity, MediaPlayerEntity):
 
         def new_token_callback():
             """Update config entry with the new token."""
-            run_callback_threadsafe(self.hass.loop, update_token_func, self._ws.token)
+            run_callback_threadsafe(
+                self.hass.loop, update_token_func, self._ws.token, CONF_TOKEN
+            )
 
         self._ws.register_new_token_callback(new_token_callback)
+
+        # rest api initialization
+        self._rest_api = SamsungTVAsyncRest(
+            host=self._host,
+            session=session,
+            timeout=DEFAULT_TIMEOUT,
+        )
 
         # upnp initialization
         self._upnp = SamsungUPnP(host=self._host, session=session)
 
         # smartthings initialization
+        st_entry_uniqueid: str | None = config.get(CONF_ST_ENTRY_UNIQUE_ID)
+
+        def api_key_callback() -> str | None:
+            """Get new api key and update config entry with the new token."""
+            return self._update_smartthing_token(st_entry_uniqueid, update_token_func)
+
         self._st = None
-        api_key = config.get(CONF_API_KEY)
+        self._st_api_key = config.get(CONF_API_KEY)
         device_id = config.get(CONF_DEVICE_ID)
-        if api_key and device_id:
+        if self._st_api_key and device_id:
+            use_callbck: bool = st_entry_uniqueid is not None
             self._st = SmartThingsTV(
-                api_key=api_key,
+                api_key=self._st_api_key,
                 device_id=device_id,
                 use_channel_info=True,
                 session=session,
+                api_key_callback=api_key_callback if use_callbck else None,
             )
 
         self._st_error_count = 0
@@ -345,6 +365,27 @@ class SamsungTVDevice(SamsungTVEntity, MediaPlayerEntity):
 
         # update config options for first time
         self._update_config_options(True)
+
+    @Throttle(ST_API_KEY_UPDATE_INTERVAL)
+    @callback
+    def _update_smartthing_token(
+        self, st_unique_id: str, update_token_func: Callable[[str, str], None]
+    ) -> str | None:
+        """Update the smartthing token when change on native integration."""
+        _LOGGER.debug("Trying to update smartthing access token")
+        if not (new_token := get_smartthings_api_key(self.hass, st_unique_id)):
+            _LOGGER.warning(
+                "Failed to retrieve SmartThings integration access token,"
+                " using last available"
+            )
+            return self._st_api_key
+
+        if new_token != self._st_api_key:
+            _LOGGER.info("SmartThings access token updated")
+            update_token_func(new_token, CONF_API_KEY)
+            self._st_api_key = new_token
+
+        return self._st_api_key
 
     async def async_added_to_hass(self):
         """Set config parameter when add to hass."""
@@ -480,8 +521,14 @@ class SamsungTVDevice(SamsungTVEntity, MediaPlayerEntity):
             return True
         return not self.hass.states.is_state(ext_entity, STATE_OFF)
 
-    def _check_status(self):
+    async def _check_status(self):
         """Check TV status with WS and others method to check power status."""
+
+        if self._get_device_spec("PowerState") is not None:
+            _LOGGER.debug("Checking if TV %s is on using device info", self._host)
+            # Ensure we get an updated value
+            info = await self._async_load_device_info(force=True)
+            return info is not None and info["device"]["PowerState"] == "on"
 
         result = self._ws.is_connected
         if result and self._st:
@@ -728,24 +775,22 @@ class SamsungTVDevice(SamsungTVEntity, MediaPlayerEntity):
             _LOGGER.warning("%s - Connection to SmartThings restored", self.entity_id)
         self._st_error_count = 0
 
-    async def _async_load_device_info(self) -> None:
+    async def _async_load_device_info(
+        self, force: bool = False
+    ) -> dict[str, Any] | None:
         """Try to gather infos of this TV."""
-        if self._device_info is not None:
-            return
-
-        rest_api = SamsungTVAsyncRest(
-            host=self._host,
-            session=async_get_clientsession(self.hass),
-            timeout=DEFAULT_TIMEOUT,
-        )
+        if self._device_info is not None and not force:
+            return self._device_info
 
         try:
-            device_info: dict[str, Any] = await rest_api.async_rest_device_info()
+            device_info: dict[str, Any] = await self._rest_api.async_rest_device_info()
             _LOGGER.debug("Device info on %s is: %s", self._host, device_info)
             self._device_info = device_info
         except Exception as ex:  # pylint: disable=broad-except
-            _LOGGER.warning("Error retrieving device info on %s: %s", self._host, ex)
-            self._device_info = {}
+            _LOGGER.debug("Error retrieving device info on %s: %s", self._host, ex)
+            return None
+
+        return self._device_info
 
     @Throttle(MIN_TIME_BETWEEN_ST_UPDATE)
     async def _async_st_update(self, **kwargs) -> bool | None:
@@ -774,7 +819,7 @@ class SamsungTVDevice(SamsungTVEntity, MediaPlayerEntity):
             if (st_update := await self._async_st_update()) is not None:
                 st_error = not st_update
 
-        result = self._check_status()
+        result = await self._check_status()
         if not self._started_up or not result:
             use_mute_check = False
             self._fake_on = None
