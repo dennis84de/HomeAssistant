@@ -2,7 +2,7 @@ batteriestand:
   name: Batteriestand
   entities:
     - sensor.handy_battery_level    
-    - sensor.tablet_wohnzimmer_battery_level    
+    - sensor.tablet_franzi_battery_level    
     - sensor.tablet_badezimmer_battery_level    
     - sensor.tablet_balkon_battery_level
     - sensor.tablet_schlafzimmer_battery_level    
@@ -20,6 +20,7 @@ batteriestand:
     - sensor.thermometer_schlafzimmer_battery_level
     - sensor.thermometer_zimmer_franzi_battery_level
     - sensor.thermometer_kueche_battery_level
+    - sensor.thermometer_balkon_battery_level
     - sensor.balkontuer_battery_level
     - sensor.fenster_wohnzimmer_battery_level
     - sensor.fenster_schlafzimmer_battery_level

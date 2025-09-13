@@ -131,6 +131,9 @@ homeassistant:
     device_tracker.broadlink*:
       icon: mdi:remote
       
+    device_tracker.toniebox*:
+      icon: mdi:cube-outline
+      
     device_tracker.computer:
       icon: mdi:desktop-classic
     device_tracker.computerarbeit:
@@ -201,8 +204,8 @@ homeassistant:
       
     device_tracker.tabletbadezimmer:
       friendly_name: Tablet Badezimmer
-    device_tracker.tabletwohnzimmer:
-      friendly_name: Tablet Wohnzimmer
+    device_tracker.tabletfranzi:
+      friendly_name: Tablet Franzi
     device_tracker.tabletschlafzimmer:
       friendly_name: Tablet Schafzimmer
     device_tracker.tabletbalkon:

@@ -20,12 +20,7 @@ cards:
         color: "red"
       - value: 30
         color: "yellow"      
-    entities:            
-      - entity: sensor.tablet_wohnzimmer_battery_level     
-        name: Wohnzimmer
-        charging_state:
-          entity_id: sensor.tablet_wohnzimmer_akku_status
-          state: "charging"                       
+    entities:                              
       - entity: sensor.tablet_badezimmer_battery_level
         name: Badezimmer
         charging_state:
@@ -40,6 +35,11 @@ cards:
         name: Balkon
         charging_state:
           entity_id: sensor.tablet_balkon_akku_status
+          state: "charging"     
+      - entity: sensor.tablet_franzi_battery_level     
+        name: Franzi
+        charging_state:
+          entity_id: sensor.tablet_franzi_akku_status
           state: "charging"               
           
   - type: custom:battery-state-card
@@ -137,13 +137,11 @@ cards:
         name: Zimmer Aaron
       - entity: sensor.bewegungsmelder_zimmer_franzi_battery_level        
         name: Zimmer Franzi
-      - entity: sensor.bewegungsmelder_kueche_battery_level        
+      - entity: sensor.bewegungsmelder_kueche_battery_level
         name: Küche
-      - entity: sensor.bewegungsmelder_schlafzimmer_battery_level        
+      - entity: sensor.bewegungsmelder_schlafzimmer_battery_level
         name: Schlafzimmer
-      - entity: sensor.bewegungsmelder_bett_battery_level        
-        name: Bett
-        
+
   - type: custom:battery-state-card
     title: Heizung
     tap_action: more-info

@@ -212,8 +212,19 @@ cards:
         - entity: sensor.schule_ende
           name: Schulende
         - entity: schedule.schule_franzi
-                                      
-                                                                            
+                  
+  - type: conditional
+    view_layout:
+      column: 3  
+    conditions:
+      - entity: binary_sensor.kindergartentag 
+        state: "on"
+    card:     
+      type: custom:daily-schedule-card
+      title: Aaron Kindergarten
+      entities:
+        - binary_sensor.kindergarten_aaron              
+          
   - type: conditional
     view_layout:
       column: 3  

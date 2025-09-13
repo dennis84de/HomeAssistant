@@ -1,0 +1,42 @@
+input_number:
+  kindergarten_puffer_losfahren:
+    name: Puffer losfahren
+    min: 5
+    max: 30
+    step: 5
+        
+template:
+  - binary_sensor:
+      - name: "Kindergartentag"
+        unique_id: kindergartentag
+        state: >
+          {% set arbeitstag = is_state('binary_sensor.arbeitstag', 'on') %}
+          {% set kindergarten = is_state('calendar.aaron_kein_kindergarten', 'off') %}         
+
+          {{ arbeitstag and kindergarten }}          
+                   
+automation:             
+  - alias: 'Benachrichtigung Kindergarten'
+    id: "benachrichtigung_kindergarten"
+    trigger:   
+      - id: losfahren
+        platform: template
+        value_template: >-
+          {% set jetzt = as_timestamp(states('sensor.date_time').replace(',',''), None) | int(0) %} 
+          {% set schedule = as_timestamp(state_attr('binary_sensor.kindergarten_aaron', 'next_toggle')) | int(0) %}         
+          {% set puffer = (states('input_number.kindergarten_puffer_losfahren') | int(0)) * 60 %}
+          
+          {{ schedule == jetzt + puffer }}             
+    condition:
+      - "{{ is_state('binary_sensor.kindergartentag', 'on') }}"
+    action:
+      - if: "{{is_state('binary_sensor.kindergarten_aaron', 'off') }}"
+        then:
+          - service: !secret tts_service            
+            data:
+              echo: "wohnzimmer"
+              message: "Es ist Zeit Aaron zum Kindergarten zu bringen."             
+        else:
+          - service: !secret tts_service
+            data:
+              message: "Es ist Zeit Aaron vom Kindergarten abzuholen."

@@ -1,3 +1,8 @@
+input_boolean:
+  nicht_stoeren:
+    name: Nicht stören
+    icon: mdi:cancel
+    
 notify:
   - platform: alexa_media
     name: Alexa
@@ -10,6 +15,7 @@ script:
         conditions:
           - "{{ is_state('binary_sensor.fritz_box_6660_cable_verbindung', 'on') }}"
           - "{{ is_state('person.dennis', 'home') }}"
+          - "{{ is_state('input_boolean.nicht_stoeren', 'off') }}"
           - condition: or
             conditions:            
               - "{{ override is defined and override == true }}"

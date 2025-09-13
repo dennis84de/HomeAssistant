@@ -408,8 +408,12 @@ automation:
   - alias: "Aaron - Anwesenheit"
     id: "aaron_anwesenheit"
     trigger:
-      - platform: state
+      - id: boolean
+        platform: state
         entity_id: input_boolean.anwesenheit_aaron
+      - id: kindergarten
+        platform: state
+        entity_id: binary_sensor.kindergarten_aaron        
     action:      
       - service: mqtt.publish
         data:

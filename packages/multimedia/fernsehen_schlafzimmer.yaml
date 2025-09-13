@@ -89,65 +89,7 @@ cover:
             mdi:volume-low
           {% endif %}
 
-automation:       
-  - alias: "Schlafzimmer - Wiedergabe"
-    id: "schlafzimmer_wiedergabe" 
-    trigger:
-      - id: pause
-        platform: state
-        entity_id: binary_sensor.bewegungsmelder_bett
-        to: 'on'
-      - id: play
-        platform: state        
-        entity_id: binary_sensor.im_bett
-        to: 'on'
-        for:
-          seconds: 1       
-      - id: play_pause
-        platform: event    
-        event_type: zha_event
-        event_data:
-          device_ieee: 00:15:8d:00:01:83:77:4a
-          command: click
-          args:
-            click_type: single          
-    condition:
-      - "{{ trigger.id != 'pause' or is_state('input_boolean.multimedia_schlafzimer_pausiert', 'off') }}"
-      - "{{ is_state('binary_sensor.schlafen_aktiv', 'on') }}"
-      - "{{ is_state('binary_sensor.allein_zu_hause', 'on') }}"
-      - condition: or
-        conditions:
-          - "{{ states('media_player.kodi_schlafzimmer') in ['playing', 'paused'] }}"
-          - "{{ states('media_player.fire_tv_schlafzimmer') in ['playing', 'paused'] }}"
-      - condition: template
-        value_template: >-
-          {% set now = as_timestamp(now()) | int(0) %}
-          {% set last = as_timestamp(state_attr("automation.schlafzimmer_wiedergabe", "last_triggered"), None) | int(0) %}
-
-          {{now - last > 5 }}          
-    action:
-      - choose:
-          - conditions:
-              - "{{ is_state('input_boolean.multimedia_schlafzimer_pausiert', 'on') }}"
-            sequence:   
-              - service: input_boolean.turn_off
-                entity_id: input_boolean.multimedia_schlafzimer_pausiert      
-        default:
-          - service: input_boolean.turn_on
-            entity_id: input_boolean.multimedia_schlafzimer_pausiert
-      - choose:
-          - conditions:
-              - "{{ states('media_player.kodi_schlafzimmer') in ['playing', 'paused']}}"
-            sequence: 
-              - service: media_player.media_{{ trigger.id }}
-                entity_id: media_player.kodi_schlafzimmer              
-          - conditions:
-              - "{{ states('media_player.fire_tv_schlafzimmer') in ['playing', 'paused']}}"
-              - "{{ state_attr('media_player.fire_tv_schlafzimmer', 'source') in ['Netflix', 'Disney+']}}"
-            sequence: 
-              - service: media_player.media_{{ trigger.id }}
-                entity_id: media_player.fire_tv_schlafzimmer
-
+automation:        
   - alias: "Schlafzimmer - Fernseher ausschalten"
     id: "schlafzimmer_fernseher_ausschalten"
     trigger:

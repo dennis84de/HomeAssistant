@@ -121,18 +121,7 @@ cards:
               icon: false
               points: false
             entities:
-              - entity: sensor.wohnzimmer_temperatur
-          - type: custom:mini-graph-card
-            name: Luftfeuchtigkeit
-            line_width: 3
-            animate: true
-            hour24: true
-            show:
-              fill: false
-              icon: false
-              points: false
-            entities:
-              - entity: sensor.wohnzimmer_luftfeuchtigkeit        
+              - entity: sensor.wohnzimmer_temperatur  
       - type: entities        
         show_header_toggle: false
         entities:

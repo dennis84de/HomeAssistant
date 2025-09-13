@@ -21,8 +21,8 @@ cards:
     entities:
       - entity: device_tracker.xiaomivacuum
         name: Staubsauger
-#      - entity: device_tracker.xiaomifan
-#        name: Ventilator
+      - entity: device_tracker.xiaomifan
+        name: Ventilator
       - entity: device_tracker.epsondrucker
         name: Drucker
 
@@ -92,6 +92,17 @@ cards:
         name: Schlafzimmer      
                 
   - type: entities
+    view_layout:
+      column: 3
+    title: Toniebox
+    show_header_toggle: false
+    entities:
+      - entity: device_tracker.toniebox_aaron
+        name: Aaron     
+      - entity: device_tracker.toniebox_franzi
+        name: Franzi    
+        
+  - type: entities
     title: Magic Home
     show_header_toggle: false
     entities:
@@ -118,12 +129,12 @@ cards:
     entities:
       - entity: device_tracker.tabletbadezimmer
         name: Badezimmer
-      - entity: device_tracker.tabletwohnzimmer
-        name: Wohnzimmer
       - entity: device_tracker.tabletschlafzimmer
         name: Schlafzimmer
       - entity: device_tracker.tabletbalkon
         name: Balkon
+      - entity: device_tracker.tabletfranzi
+        name: Franzi        
         
   - type: entities
     title: Echo

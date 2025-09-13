@@ -49,6 +49,8 @@ lovelace:
       type: module      
     - url: /hacsfiles/scheduler-card/scheduler-card.js
       type: module
+    - url: /hacsfiles/lovelace-daily-schedule-card/daily-schedule-card.js
+      type: module      
       
   dashboards:      
     lovelace-rooms:

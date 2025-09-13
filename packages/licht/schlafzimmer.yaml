@@ -52,11 +52,7 @@ automation:
       - id: licht_on
         platform: state
         entity_id: binary_sensor.bewegungsmelder_schlafzimmer
-        to: 'on'
-      - id: licht_on
-        platform: state
-        entity_id: binary_sensor.bewegungsmelder_bett
-        to: 'on'        
+        to: 'on'    
       - id: licht_off
         platform: event
         event_type: timer.finished

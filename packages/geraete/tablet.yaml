@@ -4,7 +4,7 @@ automation:
     trigger:
       - platform: state
         entity_id: 
-          - sensor.tablet_wohnzimmer_battery_level
+          - sensor.tablet_franzi_battery_level
           - sensor.tablet_schlafzimmer_battery_level
           - sensor.tablet_badezimmer_battery_level
           - sensor.tablet_balkon_battery_level
@@ -20,8 +20,8 @@ automation:
             {% set tablet = trigger.entity_id %}
             {% set tabletBatteriestand =  trigger.to_state.state | int(0) %}
 
-            {% if tablet == 'sensor.tablet_wohnzimmer_battery_level' %}
-              {% set tabletName = 'im Wohnzimmer' %}
+            {% if tablet == 'sensor.tablet_franzi_battery_level' %}
+              {% set tabletName = 'von Franzi' %}
             {% elif tablet == 'sensor.tablet_schlafzimmer_battery_level' %}
               {% set tabletName = 'im Schlafzimmer' %}       
             {% elif tablet == 'sensor.tablet_badezimmer_battery_level' %}
@@ -39,7 +39,7 @@ automation:
     trigger:
       - platform: state
         entity_id: 
-          - sensor.tablet_wohnzimmer_battery_level
+          - sensor.tablet_franzi_battery_level
           - sensor.tablet_schlafzimmer_battery_level
           - sensor.tablet_badezimmer_battery_level
           - sensor.tablet_balkon_battery_level
@@ -57,8 +57,8 @@ automation:
                   message: >-
                     {% set tablet = trigger.entity_id %}
 
-                    {% if tablet == 'sensor.tablet_wohnzimmer_battery_level' %}
-                      {% set tabletName = 'im Wohnzimmer' %}
+                    {% if tablet == 'sensor.tablet_franzi_battery_level' %}
+                      {% set tabletName = 'von Franzi' %}
                     {% elif tablet == 'sensor.tablet_schlafzimmer_battery_level' %}
                       {% set tabletName = 'im Schlafzimmer' %}       
                     {% elif tablet == 'sensor.tablet_badezimmer_battery_level' %}

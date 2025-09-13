@@ -7,21 +7,6 @@ input_number:
 
 template:
   - sensor:
-      - name: "Bewegungsmelder Wohnzimmer Batterie"
-        unique_id: bewegungsmelder_wohnzimmer_battery_level
-        device_class: battery
-        state: "{{ states('sensor.bewegungsmelder_wohnzimmer_battery_level_original') | int(0) }}"
-    
-      - name: "Bewegungsmelder Badezimmer Batterie"
-        unique_id: bewegungsmelder_badezimmer_battery_level
-        device_class: battery
-        state: "{{ states('sensor.bewegungsmelder_badezimmer_battery_level_original') | int(0) }}"
-        
-      - name: "Bewegungsmelder Balkon Batterie"
-        unique_id: bewegungsmelder_balkon_battery_level
-        device_class: battery
-        state: "{{ states('sensor.bewegungsmelder_balkon_battery_level_original') | int(0) }}"      
-        
       - name: "Batteriestand niedrig"
         unique_id: batteriestand_niedrig
         icon: >-

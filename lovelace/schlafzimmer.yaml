@@ -136,9 +136,7 @@ cards:
     entities:
       - entity: binary_sensor.bewegungsmelder_schlafzimmer       
         name: Schlafzimmer
-      - entity: binary_sensor.bewegungsmelder_bett
-        name: Bett        
-      
+
   - type: glance
     title: Kleiderschrank
     show_header_toggle: false

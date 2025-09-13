@@ -24,6 +24,7 @@ cards:
     show_header_toggle: false
     entities:          
       - entity: input_boolean.uhr_einschalten
+      - entity: input_boolean.nicht_stoeren
       - entity: input_boolean.wetter_warnungen_einschalten
 
   - type: entities

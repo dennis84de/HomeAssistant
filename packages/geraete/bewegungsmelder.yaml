@@ -11,7 +11,6 @@ template:
           - binary_sensor.bewegungsmelder_schlafzimmer
           - binary_sensor.bewegungsmelder_zimmer_franzi
           - binary_sensor.bewegungsmelder_wohnzimmer
-          - binary_sensor.bewegungsmelder_bett
         from: 'off'
         to: 'on'
     sensor:      
@@ -35,13 +34,9 @@ automation:
       - platform: state
         entity_id: binary_sensor.bewegungsmelder_flur_hinten
       - platform: state
-        entity_id: binary_sensor.bewegungsmelder_kueche
-      - platform: state
         entity_id: binary_sensor.bewegungsmelder_zimmer_franzi    
       - platform: state
-        entity_id: binary_sensor.bewegungsmelder_schlafzimmer    
-      - platform: state
-        entity_id: binary_sensor.bewegungsmelder_bett        
+        entity_id: binary_sensor.bewegungsmelder_schlafzimmer       
     condition:
       - condition: template
         value_template: '{{ trigger.to_state.state == "on" }}'
