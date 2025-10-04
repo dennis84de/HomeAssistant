@@ -9,6 +9,7 @@ import PIL.ImageDraw
 import PIL.ImageFont
 from markdownify import markdownify
 from homeassistant.config_entries import ConfigEntry
+from homeassistant.util import dt
 from io import BytesIO
 import warnings
 
@@ -221,6 +222,7 @@ class DWDWeatherData:
 
     def get_forecast_hourly(self) -> list[Forecast] | None:
         weather_interval = 1
+        # now = dt.now()
         now = datetime.now(timezone.utc)
         forecast_data = []
         if self.latest_update and self.dwd_weather.is_in_timerange(now):
@@ -414,14 +416,16 @@ class DWDWeatherData:
 
     def get_forecast_daily(self) -> list[Forecast] | None:
         weather_interval = 24
-        now = datetime.now(timezone.utc)
+        from datetime import datetime, timedelta
+
+        now = dt.now()
         forecast_data = []
         if self.latest_update and self.dwd_weather.is_in_timerange(now):
             timestep = datetime(
                 now.year,
                 now.month,
                 now.day,
-                tzinfo=timezone.utc,
+                tzinfo=now.tzinfo,
             )
 
             for _ in range(0, 9):
@@ -616,24 +620,40 @@ class DWDWeatherData:
             )
 
         if self._config[CONF_INTERPOLATE] and value is not None:
+            if not hasattr(self, "_interpolate_value"):
+                self._interpolate_value = {}
             now_time_actual = datetime.now(timezone.utc)
+            if data_type not in self._interpolate_value:
+                self._interpolate_value[data_type] = (value, now_time_actual)
             next_value = self.dwd_weather.get_forecast_data(
                 data_type,
                 now_time_actual + timedelta(hours=1),
                 shouldUpdate=False,
             )
             if next_value is not None:
-                now_time_hour = self.dwd_weather.strip_to_hour(now_time_actual).replace(
-                    tzinfo=timezone.utc
+                next_hour_time = self.dwd_weather.strip_to_hour(
+                    now_time_actual
+                ).replace(tzinfo=timezone.utc) + timedelta(hours=1)
+                value_diff = round(
+                    next_value - self._interpolate_value[data_type][0], 2
                 )
-                value = round(
-                    value
-                    + (
-                        (next_value - value)
-                        * ((now_time_actual - now_time_hour).seconds / 3600)
-                    ),
-                    2,
-                )
+                total_time_diff = (
+                    next_hour_time - self._interpolate_value[data_type][1]
+                ).seconds
+                elapsed_time_diff = (
+                    now_time_actual - self._interpolate_value[data_type][1]
+                ).seconds
+                if total_time_diff != 0:
+                    new_value = round(
+                        self._interpolate_value[data_type][0]
+                        + (value_diff * (elapsed_time_diff / total_time_diff)),
+                        2,
+                    )
+                else:
+                    new_value = self._interpolate_value[data_type][0]
+
+                self._interpolate_value[data_type] = (new_value, now_time_actual)
+                value = new_value
 
         data_type_mapping = {
             WeatherDataType.TEMPERATURE: lambda x: round(x - 273.1, 1),
