@@ -221,7 +221,7 @@ cards:
         state: "on"
     card:     
       type: custom:daily-schedule-card
-      title: Aaron Kindergarten
+      title: Kindergarten
       entities:
         - binary_sensor.kindergarten_aaron              
           

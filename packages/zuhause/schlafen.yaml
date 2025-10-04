@@ -171,6 +171,7 @@ automation:
       weckerZeit: "{{ as_timestamp(states('sensor.tablet_schlafzimmer_next_alarm'), None) | timestamp_custom('%H:%M:%S', True, 0) }}"      
       tagWecker: "{{ as_timestamp(states('sensor.tablet_schlafzimmer_next_alarm'), None) | timestamp_custom('%d', True, 0) | int(0) }}"
       tagHeute: "{{ as_timestamp(now()) | timestamp_custom('%d', True) | int(0) }}"
+      tagMorgen: "{{ as_timestamp(now() + timedelta(days=1)) | timestamp_custom('%d', True, 0) | int(0)  }}"
       arbeitstagHeute: "{{ is_state('binary_sensor.arbeitstag', 'on') }}"
       arbeitstagMorgen: "{{ is_state('binary_sensor.arbeitstag_morgen', 'on') }}"
       urlaubHeute: "{{ state_attr('sensor.naechster_urlaub', 'tage') | int(0) <= 0 }}"
@@ -200,7 +201,7 @@ automation:
               - choose:
                   - conditions:
                       - "{{ weckerZeit is defined }}"
-                      - "{{ tagWecker != tagHeute + 1 }}"
+                      - "{{ tagWecker != tagMorgen }}"
                     sequence:
                       - service: !secret tts_service
                         data:

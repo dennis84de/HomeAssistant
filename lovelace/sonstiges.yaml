@@ -11,7 +11,6 @@ cards:
     title: Sonstiges
     show_header_toggle: false
     entities:
-      - entity: sensor.satelliten
       - entity: sensor.katastrophenalarm
       - entity: sensor.sternzeichen
       - entity: sensor.zeitumstellung   

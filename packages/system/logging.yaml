@@ -2,7 +2,6 @@ logger:
   default: error
   logs:
     homeassistant.components.gdacs: fatal
-    custom_components.satellitetracker: fatal
     homeassistant.components.bluetooth: fatal
   filters:
     custom_components.average:
@@ -54,7 +53,6 @@ recorder:
       - device_tracker.handy*  
   exclude:
     entities:
-      - sensor.satelliten
       - sensor.time
       - sensor.date_time      
       

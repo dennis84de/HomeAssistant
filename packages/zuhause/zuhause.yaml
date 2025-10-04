@@ -413,12 +413,25 @@ automation:
         entity_id: input_boolean.anwesenheit_aaron
       - id: kindergarten
         platform: state
-        entity_id: binary_sensor.kindergarten_aaron        
+        entity_id: binary_sensor.kindergarten_aaron       
+    variables:       
+      aktion: >-
+        {% if trigger.id == 'kindergarten' %}
+          {{ 'not_home' if trigger.to_state.state == 'on' else 'home' }}  
+        {% else %}
+          {{ 'home' if trigger.to_state.state == 'on' else 'not_home' }}
+        {% endif %}        
+    condition:        
+      - "{{ aktion != states('device_tracker.aaron_mqtt') }}"
+      - condition: or
+        conditions:
+          - "{{ trigger.id == 'boolean' }}"          
+          - "{{ trigger.id == 'kindergarten' and is_state('binary_sensor.kindergartentag', 'on') }}"     
     action:      
       - service: mqtt.publish
         data:
            topic: "presence/aaron"
-           payload: "{{ 'home' if trigger.to_state.state == 'on' else 'not_home' }}"
+           payload: "{{ aktion }}"
            retain: true      
            
   - alias: "Flori - Anwesenheit"

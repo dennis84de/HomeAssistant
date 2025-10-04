@@ -143,8 +143,6 @@ homeassistant:
       friendly_name: Uhrzeit      
     sensor.next_holiday:
       friendly_name: Nächster Feiertag
-    sensor.satelliten:
-      unit_of_measurement: Satelliten
     sensor.katastrophenalarm:
       unit_of_measurement: Warnungen
     sensor.watchman_missing_entities:
