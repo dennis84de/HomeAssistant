@@ -3,10 +3,10 @@
 import logging
 from datetime import datetime, timedelta, timezone
 import math
+import re
 import time
 import PIL
 import PIL.ImageDraw
-import PIL.ImageFont
 from markdownify import markdownify
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.util import dt
@@ -115,6 +115,7 @@ class DWDWeatherData:
         self._config = config_entry.data
         self._hass = hass
         self.forecast = None
+        self._report = None
         self.latest_update = None
         self.infos = {}
         self.entities = []
@@ -127,6 +128,13 @@ class DWDWeatherData:
                 self.dwd_weather.station["lat"],
                 int(self.dwd_weather.station["elev"]),
             )
+
+        self._forecast_daily_cache = None
+        self._forecast_daily_cache_update = None
+        self._forecast_daily_cache_day = None
+        self._forecast_hourly_cache = None
+        self._forecast_hourly_cache_update = None
+        self._forecast_hourly_cache_hour = None
 
     def register_entity(self, entity):
         self.entities.append(entity)
@@ -209,6 +217,25 @@ class DWDWeatherData:
             self.infos[ATTR_ISSUE_TIME] = self.dwd_weather.issue_time
             self.infos[ATTR_STATION_ID] = self._config[CONF_STATION_ID]
             self.infos[ATTR_STATION_NAME] = self._config[CONF_STATION_NAME]
+
+            report = {}
+            report["text"] = (
+                markdownify(
+                    self.dwd_weather.get_weather_report(shouldUpdate=False),
+                    strip=["br"],
+                )
+                if self.dwd_weather.get_weather_report(shouldUpdate=False) is not None
+                else None
+            )
+            match = None
+            if report["text"] is not None:
+                match = re.search(
+                    r"\w+, \d{2}\.\d{2}\.\d{2}, \d{2}:\d{2}",
+                    report["text"],
+                )
+            report["time"] = match.group() if match is not None else None
+            self._report = report
+
             _LOGGER.debug("Forecast data {}".format(self.dwd_weather.forecast_data))
             return True
         else:
@@ -221,9 +248,24 @@ class DWDWeatherData:
             return self.get_forecast_daily()
 
     def get_forecast_hourly(self) -> list[Forecast] | None:
+        start_time = time.perf_counter()
         weather_interval = 1
         # now = dt.now()
         now = datetime.now(timezone.utc)
+        current_hour = now.replace(minute=0, second=0, microsecond=0)
+        # Check if cache is valid
+        if (
+            self._forecast_hourly_cache is not None
+            and self._forecast_hourly_cache_update == self.latest_update
+            and self._forecast_hourly_cache_hour == current_hour
+        ):
+            _LOGGER.debug("Hourly forecast cache hit")
+            end_time = time.perf_counter()
+            _LOGGER.info(
+                f"get_forecast_hourly (cached) executed in {end_time - start_time:.4f} seconds"
+            )
+            return self._forecast_hourly_cache
+
         forecast_data = []
         if self.latest_update and self.dwd_weather.is_in_timerange(now):
             timestep = datetime(
@@ -412,13 +454,36 @@ class DWDWeatherData:
                         )
                     forecast_data.append(data_item)
                     timestep += timedelta(hours=weather_interval)
+        end_time = time.perf_counter()
+        _LOGGER.info(
+            f"get_forecast_hourly executed in {end_time - start_time:.4f} seconds"
+        )
+        # Update cache
+        self._forecast_hourly_cache = forecast_data
+        self._forecast_hourly_cache_update = self.latest_update
+        self._forecast_hourly_cache_hour = current_hour
         return forecast_data
 
     def get_forecast_daily(self) -> list[Forecast] | None:
+        start_time = time.perf_counter()
         weather_interval = 24
         from datetime import datetime, timedelta
 
         now = dt.now()
+        # Check if cache is valid
+        current_day = now.date()
+        if (
+            self._forecast_daily_cache is not None
+            and self._forecast_daily_cache_update == self.latest_update
+            and self._forecast_daily_cache_day == current_day
+        ):
+            _LOGGER.debug("Daily forecast cache hit")
+            end_time = time.perf_counter()
+            _LOGGER.info(
+                f"get_forecast_daily (cached) executed in {end_time - start_time:.4f} seconds"
+            )
+            return self._forecast_daily_cache
+
         forecast_data = []
         if self.latest_update and self.dwd_weather.is_in_timerange(now):
             timestep = datetime(
@@ -580,6 +645,14 @@ class DWDWeatherData:
                 forecast_data.append(data_item)
                 timestep += timedelta(hours=weather_interval)
         _LOGGER.debug("Daily Forecast data {}".format(forecast_data))
+        end_time = time.perf_counter()
+        _LOGGER.info(
+            f"get_forecast_daily executed in {end_time - start_time:.4f} seconds"
+        )
+        # Update cache
+        self._forecast_daily_cache = forecast_data
+        self._forecast_daily_cache_update = self.latest_update
+        self._forecast_daily_cache_day = current_day
         return forecast_data
 
     def get_condition(self):
@@ -593,8 +666,7 @@ class DWDWeatherData:
         return condition
 
     def get_weather_report(self):
-        report = self.dwd_weather.get_weather_report(shouldUpdate=False)
-        return markdownify(report, strip=["br"]) if report is not None else None
+        return self._report["text"] if self._report else None
 
     def get_weather_value(self, data_type: WeatherDataType):
         value = None
@@ -1007,7 +1079,8 @@ class DWDMapData:
             try:
                 self._maploop.update()
             except Exception as e:
-                _LOGGER.error("Map update failed: {}.".format(e))
+                _LOGGER.error("Map update from cache failed: {}.".format(e))
+                self._maploop = None  # Invalidate cache so next call will reconfigure
         else:
             _LOGGER.debug(" Map _update: No direct map update possible. Reconfiguring")
             self.last_config_change = self._configentry.modified_at
@@ -1039,7 +1112,7 @@ class DWDMapData:
                         )
                     )
                     try:
-                        maploop = dwdmap.ImageLoop(
+                        self._maploop = dwdmap.ImageLoop(
                             dwdmap.germany_boundaries.minx,
                             dwdmap.germany_boundaries.miny,
                             dwdmap.germany_boundaries.maxx,
@@ -1061,7 +1134,7 @@ class DWDMapData:
                             dark_mode=self._configdata[CONF_MAP_DARK_MODE],
                         )
                     except Exception as e:
-                        _LOGGER.error("Map update failed: {}.".format(e))
+                        _LOGGER.error("Map update germany failed: {}.".format(e))
                 else:
                     _LOGGER.debug(
                         "map async_update get_from_location lat: {}, lon:{}, radius:{}, map_type:{} background_type:{} width:{} height:{} markers:{}".format(
@@ -1084,7 +1157,7 @@ class DWDMapData:
                         )  # type: ignore
                     )
                     try:
-                        maploop = dwdmap.ImageLoop(
+                        self._maploop = dwdmap.ImageLoop(
                             self._configdata[CONF_MAP_WINDOW]["longitude"] - radius,  # type: ignore
                             self._configdata[CONF_MAP_WINDOW]["latitude"] - radius,  # type: ignore
                             self._configdata[CONF_MAP_WINDOW]["longitude"] + radius,  # type: ignore
@@ -1107,14 +1180,16 @@ class DWDMapData:
                         )
                     except Exception as e:
                         _LOGGER.error("Map update failed: {}.".format(e))
-
-                    _LOGGER.debug(
-                        "map async_update maploop: {}".format(maploop.get_images())
-                    )
-                self._maploop = maploop
+                    if self._maploop:
+                        _LOGGER.debug(
+                            "map async_update maploop: {}".format(
+                                self._maploop.get_images()
+                            )
+                        )
                 self._cachedheight = self._height
                 self._cachedwidth = self._width
-            self._images = maploop.get_images()
+            if self._maploop:
+                self._images = self._maploop.get_images()
 
     def _update_single(self):
         # prevent distortion of map
@@ -1185,6 +1260,7 @@ class DWDMapData:
 
     def get_image(self):
         buf = BytesIO()
+        image = None
         if (
             self._configdata[CONF_MAP_FOREGROUND_TYPE]
             == CONF_MAP_FOREGROUND_PRECIPITATION
@@ -1200,7 +1276,8 @@ class DWDMapData:
             else:
                 self._image_nr += 1
             _LOGGER.debug(" Map get_image: _image_nr {}".format(self._image_nr))
-            image = self._images[self._image_nr]  # type: ignore
+            if self._images:
+                image = self._images[self._image_nr]  # type: ignore
         else:
             image = self._image
 
