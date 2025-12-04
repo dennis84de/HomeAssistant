@@ -224,7 +224,7 @@ cards:
       title: Kindergarten
       entities:
         - binary_sensor.kindergarten_aaron              
-          
+
   - type: conditional
     view_layout:
       column: 3  
@@ -392,25 +392,3 @@ cards:
         name: Zimmer Franzi
       - entity: sensor.zimmer_aaron_temperatur
         name: Zimmer Aaron
-                
-  - type: conditional
-    view_layout:
-      column: 2  
-    conditions:
-      - entity: binary_sensor.buero_heute 
-        state: "on"
-    card:        
-      type: custom:mini-graph-card
-      name: Fahrzeit
-      line_width: 2
-      animate: true
-      hours_to_show: 168
-      points_per_hour: 2
-      hour24: true
-      show:
-        icon: false
-        points: false
-        state: false
-      entities:
-        - entity: sensor.fahrzeit_zur_arbeit
-        - entity: sensor.fahrzeit_nach_hause 

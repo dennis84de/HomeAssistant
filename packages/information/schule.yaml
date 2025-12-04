@@ -23,7 +23,7 @@ input_datetime:
     has_date: false
     has_time: true
     icon: mdi:timer
-    
+
 template:
   - binary_sensor:
       - name: "Schultag"
@@ -76,6 +76,16 @@ template:
           {% endif %}
         icon: mdi:clock-outline
         
+  - trigger:
+      - platform: state
+        entity_id:
+          - schedule.schule_franzi
+        from: 'off'
+        to: 'on'          
+    sensor:      
+      - name: Franzi Schule
+        state: "{{ state_attr('schedule.schule_franzi', 'next_event') + timedelta(minutes=30) }}"
+          
 automation:             
   - alias: 'Benachrichtigung Schule'
     id: "benachrichtigung_schule"

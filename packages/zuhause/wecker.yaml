@@ -291,7 +291,11 @@ automation:
       - if: "{{ is_state('binary_sensor.sonne_tagsueber', 'off') }}"
         then:             
           - service: light.turn_on
-            entity_id: light.wohnzimmer_schrank             
+            entity_id: light.wohnzimmer_schrank          
+      - if: "{{ is_state('binary_sensor.sonne_tagsueber', 'off') and is_state('binary_sensor.adventszeit', 'on') }}"
+        then:             
+          - service: light.turn_on
+            entity_id: light.weihnachtsstern                 
       - if: "{{ radiosEinschalten }}"
         then:             
           - if: "{{ states('sensor.radios_eingeschaltet') | int(0) == 1 and is_state('switch.schlafzimmer_radio', 'on') }}"

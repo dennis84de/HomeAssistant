@@ -6,7 +6,6 @@ alles_ausschalten:
     - switch.computer_arbeit
     - switch.monitore
     - switch.watchtv_wohnzimmer
-    - switch.watchtv_schlafzimmer    
     - light.wohnzimmer_couch
     - light.wohnzimmer_schrank
     - light.zimmer_aaron_licht

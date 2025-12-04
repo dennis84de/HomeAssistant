@@ -80,7 +80,6 @@ script:
             %}
             
             {{ "Alle Geräte werden jetzt ausgeschaltet. " ~ text ~ "." }}
-      - delay: '00:00:02'
       - service: input_boolean.turn_on
         entity_id: input_boolean.schlafen_einschalten_aktiv
       - service: script.radios_ausschalten
@@ -90,6 +89,8 @@ script:
         entity_id: switch.watchtv_wohnzimmer, switch.computer
       - service: light.turn_off
         entity_id: light.balkon_licht, light.balkon_lampe
+      - service: light.turn_off
+        entity_id: light.weihnachtsstern, light.balkon_lichterkette        
       - choose:
           - conditions:
               - condition: or
@@ -115,14 +116,6 @@ script:
                   duration: "{{ states('input_number.timer_schlafzimmer') | int(0) * 60 }}"
               - service: input_boolean.turn_on
                 entity_id: input_boolean.timer_schlafzimmer_aktiv    
-      - wait_for_trigger:
-        - platform: state
-          entity_id: binary_sensor.bewegungsmelder_wohnzimmer
-          to: 'off'                       
-          for:
-            minutes: 10
-      - service: light.turn_off
-        entity_id: light.wohnzimmer_couch, light.wohnzimmer_schrank
 
 automation:
   - alias: "Schlafen einschalten"

@@ -14,6 +14,8 @@ licht_wohnung:
     - light.kueche_schrank
     - light.balkon_licht    
     - light.balkon_lampe
+    - light.weihnachtsstern
+    - light.balkon_lichterkette
     
 licht_schlafen:
   name: Licht Schlafen
@@ -29,6 +31,8 @@ licht_schlafen:
     - light.kueche_schrank
     - light.balkon_licht
     - light.balkon_lampe
+    - light.weihnachtsstern
+    - light.balkon_lichterkette    
     
 licht_fernsehen:
   name: Licht Fernsehen

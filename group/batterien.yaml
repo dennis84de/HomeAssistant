@@ -16,6 +16,7 @@ batteriestand:
     - sensor.schalter_bett_rechts_battery_level
     - sensor.schalter_zimmer_aaron_battery_level
     - sensor.schalter_badezimmer_battery_level
+    - sensor.schalter_markise_battery_level    
     - sensor.thermometer_parkplatz_battery_level
     - sensor.thermometer_schlafzimmer_battery_level
     - sensor.thermometer_zimmer_franzi_battery_level
@@ -38,6 +39,4 @@ batteriestand:
     - sensor.bewegungsmelder_wohnzimmer_battery_level
     - sensor.pflanze_wohnzimmer_battery_level
     - sensor.heizung_wohnzimmer_batterie
-    - sensor.heizung_zimmer_franzi_batterie    
-    - sensor.kleiderschrank_links_battery_level
-    - sensor.kleiderschrank_rechts_battery_level
+    - sensor.heizung_zimmer_franzi_batterie

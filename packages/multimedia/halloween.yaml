@@ -1,0 +1,13 @@
+input_boolean:
+  halloween_aktiv:
+    name: Halloween aktiv              
+    
+template:
+  - trigger:
+      - platform: state
+        entity_id:
+          - input_boolean.halloween_aktiv
+    binary_sensor:      
+      - name: Halloween aktiv
+        icon: mdi:halloween
+        state: "{{ trigger.to_state.state }}"       

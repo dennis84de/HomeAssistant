@@ -1,0 +1,29 @@
+input_boolean:
+  weihnachtsbeleuchtung_aktiv:
+    name: Weihnachtsbeleuchtung aktiv              
+    
+automation:
+  - alias: 'Weihnachtsbeleuchtung'
+    id: "weihnachtsbeleuchtung"
+    trigger:
+      - id: schedule
+        platform: state
+        entity_id: binary_sensor.weihnachtsbeleuchtung
+      - id: input
+        platform: state
+        entity_id: input_boolean.weihnachtsbeleuchtung_aktiv
+    condition:
+      - "{{ states('input_boolean.weihnachtsbeleuchtung_aktiv') != trigger.to_state.state or trigger.id == 'input' }}"            
+      - "{{ is_state('binary_sensor.adventszeit', 'on') }}"       
+    action:
+      - if: "{{ trigger.to_state.state == 'on' }}"
+        then:          
+          - service: light.turn_on
+            entity_id: light.weihnachtsstern, light.balkon_lichterkette
+          - service: input_boolean.turn_on
+            entity_id: input_boolean.weihnachtsbeleuchtung_aktiv      
+        else:        
+          - service: light.turn_off
+            entity_id: light.weihnachtsstern, light.balkon_lichterkette
+          - service: input_boolean.turn_off
+            entity_id: input_boolean.weihnachtsbeleuchtung_aktiv

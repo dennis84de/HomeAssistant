@@ -20,33 +20,3 @@ template:
           {% set friendlyName = trigger.to_state.attributes.friendly_name.split('Bewegungsmelder ') %}
         
           {{ friendlyName[1] if friendlyName else 'Unbekannt' }}
-
-automation:
-  - alias: "Bewegungsmelder zurücksetzen"
-    id: "bewegungsmelder_zuruecksetzen"
-    mode: parallel
-    max: 10    
-    trigger:
-      - platform: state
-        entity_id: binary_sensor.bewegungsmelder_zimmer_aaron
-      - platform: state
-        entity_id: binary_sensor.bewegungsmelder_flur_vorne
-      - platform: state
-        entity_id: binary_sensor.bewegungsmelder_flur_hinten
-      - platform: state
-        entity_id: binary_sensor.bewegungsmelder_zimmer_franzi    
-      - platform: state
-        entity_id: binary_sensor.bewegungsmelder_schlafzimmer       
-    condition:
-      - condition: template
-        value_template: '{{ trigger.to_state.state == "on" }}'
-    action:
-      - delay:
-          seconds: 5
-      - service: zha.set_zigbee_cluster_attribute
-        data:
-          ieee: '{{ device_attr(trigger.entity_id, "identifiers") | first | last }}'
-          endpoint_id: 1
-          cluster_id: 1280
-          attribute: 2
-          value: '0'

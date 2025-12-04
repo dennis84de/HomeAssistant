@@ -100,31 +100,6 @@ automation:
         state: 'home'
     action:           
       - service: script.alles_ausschalten   
-  
-  - alias: "Unterwegs - Alarm nicht eingeschaltet"
-    id: "unterwegs_alarm_nicht_eingeschaltet"
-    trigger:
-      - platform: state
-        entity_id: person.dennis
-        to: 'not_home'
-        for:
-          minutes: 15
-      - platform: state
-        entity_id: person.natalie
-        to: 'not_home'
-        for:
-          minutes: 15          
-    condition:
-      - "{{ not is_state('alarm_control_panel.alarmo', 'armed_away') }}"   
-      - "{{ is_state('binary_sensor.erwachsene_zu_hause', 'off') }}"
-    action:
-      - service: notify.telegram
-        data:
-          title: "Alarm nicht eingeschaltet"
-          message: "Es ist keiner zu Hause und der Alarm ist nicht eingeschaltet."
-          data:
-            inline_keyboard:
-              - 'Alarm einschalten:/alarm_einschalten'
               
   - alias: "Unterwegs - Geräte eingeschaltet"
     id: "unterwegs_geraete_eingeschaltet"

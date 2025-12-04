@@ -55,6 +55,44 @@ script:
             - light                 
          
 automation:          
+  - alias: "Schalter Markise"
+    id: "schalter_markise"
+    trigger:
+      - id: markise_hoch
+        platform: event
+        event_type: zha_event
+        event_data:
+          device_ieee: 00:0d:6f:00:10:9e:a5:4d
+          command: "on"
+      - id: markise_runter
+        platform: event
+        event_type: zha_event
+        event_data:
+          device_ieee: 00:0d:6f:00:10:9e:a5:4d
+          command: "off"   
+      - id: markise_stop
+        platform: event
+        event_type: zha_event
+        event_data:
+          device_ieee: 00:0d:6f:00:10:9e:a5:4d
+          command: move_to_level_with_on_off  
+    condition:
+      - "{{ is_state('binary_sensor.erwachsene_zu_hause', 'on') }}"          
+    action:
+      - choose:
+          - conditions:
+            - "{{ trigger.id == 'markise_hoch' }}"
+            sequence:
+              - service: script.markise_hoch
+          - conditions:
+            - "{{ trigger.id == 'markise_runter' }}"
+            sequence:
+              - service: script.markise_runter
+          - conditions:
+            - "{{ trigger.id == 'markise_stop' }}"
+            sequence:
+              - service: script.markise_stop                 
+                  
   - alias: "Telegram - Markise hochfahren"
     id: "telegram_markise_hochfahren"
     trigger:

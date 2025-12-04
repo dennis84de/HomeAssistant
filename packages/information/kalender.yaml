@@ -3,7 +3,18 @@ calendar:
     url: !secret nextcloud_calendar_url
     username: !secret nextcloud_username
     password: !secret nextcloud_password
-
+       
+template:
+  - binary_sensor:
+      - name: "Adventszeit"
+        unique_id: adventszeit
+        state: >
+          {% set first_advent = now().replace(day=25, month=12) - timedelta(days = 21 + now().replace(day=25, month=12).isoweekday() ) %}
+          {{ first_advent <= now() <= now().replace(day=26, month=12) }}   
+        icon: >
+          {% set first_advent = now().replace(day=25, month=12) - timedelta(days = 21 + now().replace(day=25, month=12).isoweekday() ) %}
+          {{ 'mdi:string-lights' if first_advent <= now() <= now().replace(day=26, month=12) else 'mdi:string-lights-off' }}                          
+          
 binary_sensor:
   - platform: template
     sensors:
@@ -30,16 +41,7 @@ binary_sensor:
 
             {{ nextEndTime.strftime('%j')|int - now().strftime('%j')|int >= 1 }}          
           {% endif %}          
-          
-      adventszeit:
-        friendly_name: 'Adventszeit'
-        value_template: >-
-          {% set first_advent = now().replace(day=25, month=12) - timedelta(days = 21 + now().replace(day=25, month=12).isoweekday() ) %}
-          {{ first_advent <= now() <= now().replace(day=26, month=12) }}
-        icon_template: >-
-          {% set first_advent = now().replace(day=25, month=12) - timedelta(days = 21 + now().replace(day=25, month=12).isoweekday() ) %}
-          {{ 'mdi:string-lights' if first_advent <= now() <= now().replace(day=26, month=12) else 'mdi:string-lights-off' }}          
-         
+
 sensor:
   - platform: template
     sensors:

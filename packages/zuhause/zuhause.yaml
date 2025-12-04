@@ -360,15 +360,20 @@ automation:
         from: 'on'
         to: 'off'   
       - id: schule_morgens
-        platform: state
-        entity_id: schedule.schule_franzi
-        from: 'off'
-        to: 'on'      
+        platform: template
+        value_template: >-
+          {% set morgens = is_state('schedule.schule_franzi', 'off') %}
+          {% set jetzt = as_timestamp(now()) | int(0) %}  
+          {% set schuleUnterwegs = as_timestamp(state_attr('schedule.schule_franzi', 'next_event') - timedelta(minutes=30)) | int(0) %}
+                   
+          {{ morgens and jetzt == schuleUnterwegs }}
       - id: schule_nachmittags
-        platform: state
-        entity_id: schedule.schule_franzi
-        from: 'on'
-        to: 'off'                      
+        platform: template
+        value_template: >-
+          {% set jetzt = as_timestamp(now()) | int(0) %}  
+          {% set schuleUnterwegs = as_timestamp(states('sensor.franzi_schule')) | int(0) %}
+                   
+          {{ jetzt == schuleUnterwegs }}                
     variables:       
       aktion: >-
         {% if trigger.id == 'boolean' %}

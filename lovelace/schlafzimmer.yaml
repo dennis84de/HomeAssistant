@@ -34,8 +34,10 @@ cards:
     show_header_toggle: false
     entities:
       - entity: switch.watchtv_schlafzimmer
+        name: Fernsehen
       - entity: switch.kodi_schlafzimmer
       - entity: cover.fernseher_schlafzimmer_lautstaerke
+        name: Lautstärke
       - type: custom:mini-media-player
         name: Kodi
         entity: media_player.kodi_schlafzimmer
@@ -136,17 +138,6 @@ cards:
     entities:
       - entity: binary_sensor.bewegungsmelder_schlafzimmer       
         name: Schlafzimmer
-
-  - type: glance
-    title: Kleiderschrank
-    show_header_toggle: false
-    view_layout:
-      column: 2    
-    entities:
-      - entity: binary_sensor.kleiderschrank_links       
-        name: Tür links
-      - entity: binary_sensor.kleiderschrank_rechts
-        name: Tür rechts   
         
   - type: glance
     title: Sensoren

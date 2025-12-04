@@ -60,11 +60,7 @@ cards:
         name: Cube
       - entity: sensor.helligkeit_balkon_battery_level
         name: Helligkeit
-      - entity: sensor.kleiderschrank_links_battery_level
-        name: Kleiderschrank links
-      - entity: sensor.kleiderschrank_rechts_battery_level
-        name: Kleiderschrank rechts        
-
+        
   - type: custom:battery-state-card
     title: Schalter
     tap_action: more-info
@@ -74,7 +70,7 @@ cards:
         color: "red"
       - value: 30 
         color: "yellow"    
-    entities:
+    entities:     
       - entity: sensor.schalter_wohnzimmer_battery_level        
         name: Wohnzimmer              
       - entity: sensor.schalter_flur_battery_level        
