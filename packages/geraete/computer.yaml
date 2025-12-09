@@ -12,15 +12,14 @@ sensor:
     host: !secret computer_host
     port: 8580  
 
-switch:
-  - platform: template
-    switches:
-      computer:
-        friendly_name: Computer
-        value_template: "{{ is_state('binary_sensor.computer_ping', 'on') }}"
-        icon_template: mdi:desktop-classic
+template:
+  - switch:
+      - default_entity_id: switch.computer
+        name: Computer
+        state: "{{ is_state('binary_sensor.computer_ping', 'on') }}"
+        icon: mdi:desktop-classic       
         turn_on:
-          - service: wake_on_lan.send_magic_packet
+          - action: wake_on_lan.send_magic_packet
             data:
               mac: !secret computer_mac
               broadcast_address: !secret fritzbox_broadcast

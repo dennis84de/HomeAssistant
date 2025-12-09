@@ -1,18 +1,17 @@
-cover:
-  - platform: template
-    covers:
-      markise:
-        device_class: blind
-        friendly_name: "Markise"
-        unique_id: "markise"
+template:
+  - cover:
+      - unique_id: markise
+        default_entity_id: cover.markise
+        name: Markise
+        device_class: blind       
         optimistic: false
         open_cover:
-          service: script.markise_hoch
+          - action: script.markise_hoch
         close_cover:
-          service: script.markise_runter
+          - action: script.markise_runter
         stop_cover:
-          service: script.markise_stop
-          
+          - action: script.markise_stop
+                  
 script:
   markise_runter:
     alias: "Markise runter"

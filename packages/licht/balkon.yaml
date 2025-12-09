@@ -9,41 +9,38 @@ input_boolean:
   balkon_lichterkette:
     name: Balkon Lichterkette
     
-binary_sensor:
-  - platform: template
-    sensors:
-      sonne_balkon:
-        friendly_name: "Sonne Balkon"
-        value_template: "{{ states('sensor.balkon_helligkeit_mittelwert') | float(0) > 100 }}"         
+template:
+  - binary_sensor:
+      - default_entity_id: binary_sensor.sonne_balkon
+        name: Sonne Balkon
+        state: "{{ states('sensor.balkon_helligkeit_mittelwert') | float(0) > 100 }}"
     
-light:
-  - platform: template
-    lights:
-      balkon_lichterkette:
-        friendly_name: Balkon Lichterkette
-        unique_id: balkon_lichterkette
-        value_template: "{{ is_state('input_boolean.balkon_lichterkette', 'on') }}"
-        icon_template: mdi:string-lights
+  - light:
+      - unique_id: balkon_lichterkette    
+        default_entity_id: light.balkon_lichterkette
+        name: Balkon Lichterkette
+        icon: mdi:string-lights     
+        state: "{{ is_state('input_boolean.balkon_lichterkette', 'on') }}"
         turn_on:
-          - service: remote.send_command
+          - action: remote.send_command
             target:
               entity_id: remote.broadlink_balkon
             data:             
               device: balkon_licht
               command:
                 - einschalten    
-          - service: input_boolean.turn_on
+          - action: input_boolean.turn_on
             entity_id: input_boolean.balkon_lichterkette           
         turn_off:
-          - service: remote.send_command
+          - action: remote.send_command
             target:
               entity_id: remote.broadlink_balkon
             data:                       
               device: balkon_licht
               command:
                 - ausschalten
-          - service: input_boolean.turn_off
-            entity_id: input_boolean.balkon_lichterkette            
+          - action: input_boolean.turn_off
+            entity_id: input_boolean.balkon_lichterkette           
 
 automation:
   - alias: 'Licht Balkon - Einschalten'

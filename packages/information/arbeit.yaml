@@ -20,14 +20,34 @@ input_number:
     min: 0
     max: 12
     step: 1
-        
-sensor:
-  - platform: template
-    sensors:
-      abfahrzeit:
-        friendly_name: Abfahrzeit
-        icon_template: mdi:clock-start
-        value_template: >-
+  
+template:
+  - binary_sensor:
+      - default_entity_id: binary_sensor.buero_heute
+        name: Büro heute
+        state:  >-
+          {% set NextOffice = state_attr('calendar.arbeit_buero', 'start_time') %}
+
+          {% set istBuero = false if NextOffice == None else (NextOffice | as_datetime).strftime('%j')|int - now().strftime('%j')|int == 0 %}         
+          {% set istHomeOffice = is_state('input_boolean.home_office', 'on') %}
+          {% set istArbeitstag = is_state('binary_sensor.arbeitstag', 'on') %}
+          {% set keinUrlaub = is_state('calendar.urlaub', 'off') %}
+          {% set nichtKrank = is_state('calendar.arbeit_krank', 'off') %}
+
+          {{ True if (istBuero and istArbeitstag and keinUrlaub and nichtKrank) else False }}
+          
+      - default_entity_id: binary_sensor.buero_morgen
+        name: Büro morgen
+        state: >-
+          {% set NextOffice = state_attr('calendar.arbeit_buero', 'start_time') %}
+          
+          {{ false if NextOffice == None else (NextOffice | as_datetime).strftime('%j')|int - now().strftime('%j')|int == 1 }}                          
+      
+  - sensor:
+      - default_entity_id: sensor.abfahrzeit
+        name: Abfahrzeit
+        icon: mdi:clock-start
+        state: >-
           {% set fahrzeitMinuten = states('sensor.fahrzeit_zur_arbeit') | int(0) %}
           {% set beginnMinuten = (state_attr('input_datetime.arbeit_beginn', 'timestamp') / 60) | int(0) %}
           {% set pufferMinuten = states('input_select.arbeit_puffer') | int(0) %}
@@ -40,9 +60,10 @@ sensor:
 
           {{ uhrzeitAbfahrt }}
           
-      naechstes_buero:
-        friendly_name: Nächstes Büro
-        value_template: >
+      - default_entity_id: sensor.naechstes_buero
+        name: Nächstes Büro
+        icon: mdi:briefcase  
+        state: >
           {% if state_attr('calendar.arbeit_buero', 'start_time') %}
             {% set weekday = as_timestamp(state_attr('calendar.arbeit_buero', 'start_time'), None) | timestamp_custom("%w", True) | int(0) %}
 
@@ -50,31 +71,7 @@ sensor:
           {% else %}
             -
           {% endif %}
-        icon_template: mdi:briefcase          
-        
-binary_sensor:
-  - platform: template
-    sensors:
-      buero_heute:
-        friendly_name: 'Büro heute'
-        value_template: >-
-          {% set NextOffice = state_attr('calendar.arbeit_buero', 'start_time') %}
-          
-          {% set istBuero = false if NextOffice == None else (NextOffice | as_datetime).strftime('%j')|int - now().strftime('%j')|int == 0 %}         
-          {% set istHomeOffice = is_state('input_boolean.home_office', 'on') %}
-          {% set istArbeitstag = is_state('binary_sensor.arbeitstag', 'on') %}
-          {% set keinUrlaub = is_state('calendar.urlaub', 'off') %}
-          {% set nichtKrank = is_state('calendar.arbeit_krank', 'off') %}
-
-          {{ True if (istBuero and istArbeitstag and keinUrlaub and nichtKrank) else False }}
-          
-      buero_morgen:
-        friendly_name: 'Büro morgen'
-        value_template: >-
-          {% set NextOffice = state_attr('calendar.arbeit_buero', 'start_time') %}
-          
-          {{ false if NextOffice == None else (NextOffice | as_datetime).strftime('%j')|int - now().strftime('%j')|int == 1 }}
-          
+                
 automation:            
   - alias: 'Fahrzeit aktualisieren'
     id: "fahrzeit_aktualisieren"

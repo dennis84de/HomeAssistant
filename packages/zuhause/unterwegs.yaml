@@ -1,10 +1,9 @@
-binary_sensor:
-  - platform: template
-    sensors:             
-      bewegungsmelder_inaktiv_unterwegs:
-        friendly_name: "Bewegungmelder inaktiv - Unterwegs"
+template:
+  - binary_sensor:
+      - default_entity_id: binary_sensor.bewegungsmelder_inaktiv_unterwegs
+        name: Bewegungmelder inaktiv - Unterwegs
         device_class: occupancy
-        value_template: "{{ is_state('binary_sensor.erwachsene_zu_hause', 'off') }}"
+        state: "{{ is_state('binary_sensor.erwachsene_zu_hause', 'off') }}"
           
 script:      
   alles_ausschalten:

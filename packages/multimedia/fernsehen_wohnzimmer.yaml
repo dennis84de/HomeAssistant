@@ -7,67 +7,67 @@ input_boolean:
     name: Wiedergabe pausieren
     icon: mdi:play-pause  
 
-cover:
-  - platform: template
-    covers:
-      fernseher_sender:
-        friendly_name: "Fernseher Sender"
-        position_template: 50
+template:
+  - switch:
+      - default_entity_id: switch.watchtv_wohnzimmer
+        name: Fernsehen Wohnzimmer
+        state: "{{ is_state('media_player.fernseher_wohnzimmer', 'on') }}"
+        turn_on:
+          - action: media_player.turn_on
+            entity_id: media_player.fernseher_wohnzimmer            
+          - choose:
+            - conditions:
+              - condition: state
+                entity_id: media_player.soundbar
+                state: 'off'
+                match: all
+              sequence:
+                - action: media_player.turn_on
+                  entity_id:
+                    - media_player.soundbar                
+                - wait_template: '{{is_state(''media_player.soundbar'', ''on'')}}'
+                - action: media_player.select_source
+                  entity_id: media_player.soundbar
+                  data:
+                    source: TV                
+        turn_off:
+          - action: media_player.turn_off
+            entity_id: media_player.fernseher_wohnzimmer            
+          - choose:
+            - conditions:
+                - condition: state
+                  entity_id: media_player.soundbar
+                  state: 'on'
+                  match: all
+              sequence:
+                - action: media_player.turn_off
+                  entity_id: media_player.soundbar                   
+     
+  - cover:
+      - default_entity_id: cover.fernseher_sender
+        name: Fernseher Sender
+        icon: mdi:remote-tv        
+        position: '50'     
         open_cover:
-          - service: media_player.play_media
+          - action: media_player.play_media
             data:
               entity_id: media_player.fernseher_wohnzimmer
               media_content_id: "KEY_CHUP"
               media_content_type: "send_key"
         close_cover:
-          - service: media_player.play_media
+          - action: media_player.play_media
             data:
               entity_id: media_player.fernseher_wohnzimmer
               media_content_id: "KEY_CHDOWN"
               media_content_type: "send_key"
         stop_cover:
-          - service: media_player.play_media
+          - action: media_player.play_media
             data:
               entity_id: media_player.fernseher_wohnzimmer
               media_content_id: "KEY_PRECH"
               media_content_type: "send_key"
-        icon_template: >-
-          mdi:remote-tv
 
-switch:
-  - platform: template
-    switches:
-      watchtv_wohnzimmer:
-        friendly_name: "Fernsehen Wohnzimmer"
-        value_template: "{{ is_state('media_player.fernseher_wohnzimmer', 'on') }}"
-        turn_on:
-          - service: media_player.turn_on
-            entity_id: media_player.fernseher_wohnzimmer  
-          - choose:
-              - conditions:
-                  - condition: state
-                    entity_id: media_player.soundbar
-                    state: 'off'
-                sequence:  
-                  - service: media_player.turn_on
-                    entity_id: media_player.soundbar        
-                  - wait_template: "{{is_state('media_player.soundbar', 'on')}}"
-                  - service: media_player.select_source
-                    entity_id: media_player.soundbar
-                    data:
-                      source: TV
-        turn_off:      
-          - service: media_player.turn_off
-            entity_id: media_player.fernseher_wohnzimmer           
-          - choose:
-              - conditions:
-                  - condition: state
-                    entity_id: media_player.soundbar
-                    state: 'on'
-                sequence:
-                  - service: media_player.turn_off
-                    entity_id: media_player.soundbar    
-     
+      
 automation:
   - alias: "Fernseher eingeschaltet - Radios ausschalten"
     id: "fernseher_eingeschaltet_radios_ausschalten"

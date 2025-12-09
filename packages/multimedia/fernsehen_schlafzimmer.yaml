@@ -1,93 +1,88 @@
 input_boolean:  
   multimedia_schlafzimer_pausiert:
     name:  Multimedia pausiert    
-
-switch: 
-  - platform: template
-    switches:      
-      watchtv_schlafzimmer:
-        friendly_name: "Fernsehen Schlafzimmer"
-        value_template: "{{ is_state('switch.schlafzimmer_fernseher', 'on') }}"
+    
+template:
+  - switch:
+      - default_entity_id: switch.kodi_schlafzimmer
+        name: Kodi
+        state: "{{ state_attr('media_player.fire_tv_schlafzimmer', 'source') == 'Kodi' }}"
+        icon: mdi:kodi
         turn_on:
-          - service: switch.turn_on
+          - action: media_player.select_source
+            data:
+              entity_id: media_player.fire_tv_schlafzimmer
+              source: "org.xbmc.kodi"             
+        turn_off:
+          - action: kodi.call_method
+            data:
+              entity_id: media_player.kodi_schlafzimmer
+              method: Input.Home
+          - action: media_player.select_source
+            data:
+              entity_id: media_player.fire_tv_schlafzimmer
+              source: "com.amazon.tv.launcher"
+         
+      - default_entity_id: switch.watchtv_schlafzimmer
+        name: Fernsehen Schlafzimmer
+        state: "{{ is_state('switch.schlafzimmer_fernseher', 'on') }}"
+        turn_on:
+          - action: switch.turn_on
             entity_id: switch.schlafzimmer_fernseher
           - delay: '00:00:05'
-          - service: light.turn_on
+          - action: light.turn_on
             entity_id: light.schlafzimmer_fernseher
-          - service: remote.send_command
+          - action: remote.send_command
             data:
               entity_id: remote.broadlink_schlafzimmer_remote
               device: schlafzimmer_fernseher
               command:
                 - toggle            
-          - service: media_player.turn_on
+          - action: media_player.turn_on
             entity_id: media_player.fire_tv_schlafzimmer
         turn_off:
-          - service: switch.turn_off
+          - action: switch.turn_off
             entity_id: switch.kodi_schlafzimmer
-          - service: media_player.turn_off
+          - action: media_player.turn_off
             entity_id: media_player.fire_tv_schlafzimmer
-          - service: remote.send_command
+          - action: remote.send_command
             data:
               entity_id: remote.broadlink_schlafzimmer_remote
               device: schlafzimmer_fernseher
               command:
                 - toggle                
-          - service: switch.turn_off
+          - action: switch.turn_off
             entity_id: switch.schlafzimmer_fernseher
-          - service: light.turn_off
+          - action: light.turn_off
             entity_id: light.schlafzimmer_fernseher
-          - service: input_boolean.turn_off
-            entity_id: input_boolean.timer_schlafzimmer_aktiv          
-          
-      kodi_schlafzimmer:
-        friendly_name: Kodi
-        icon_template: >-
-          mdi:kodi
-        value_template: >-
-          {{ state_attr('media_player.fire_tv_schlafzimmer', 'source') == "Kodi" }}
-        turn_on:
-          - service: media_player.select_source
-            data:
-              entity_id: media_player.fire_tv_schlafzimmer
-              source: "org.xbmc.kodi"
-        turn_off:
-          - service: kodi.call_method
-            data:
-              entity_id: media_player.kodi_schlafzimmer
-              method: Input.Home
-          - service: media_player.select_source
-            data:
-              entity_id: media_player.fire_tv_schlafzimmer
-              source: "com.amazon.tv.launcher"
+          - action: input_boolean.turn_off
+            entity_id: input_boolean.timer_schlafzimmer_aktiv                                     
               
-cover:
-  - platform: template
-    covers:
-      fernseher_schlafzimmer_lautstaerke:
-        friendly_name: Fernseher Lautstärke
-        position_template: 50
-        open_cover:
-          - service: remote.send_command
-            data:
-              entity_id: remote.broadlink_schlafzimmer_remote
-              command: "b64:JgBeAZOVEzcRORE4EhMRFBEUERMSExI4ETgSOBITERQRFBETEhMSOBE4EjgRFBEUERQRExITEhMRFBEUETgSOBE5ETgROREABgOUlBI4ETkROBEUERQRFBETEhMSOBE4EjgRFBEUERQRExITEjgROBI4ERQRFBETEhMSExEUERQRFBE4EjgROBI4ETkRAAYDlJQSOBE5ETgSExEUERQRExITEjgRORE4EhMRFBEUERMSExI4ETkROBITERQRFBETEhMSExITERQROBI4ETkROBI4EQAGA5SUEjgRORE4EhMRFBEUERQRExI4ETkROBITERQRFBEUERMSOBE5ETgSExEUERQRFBETEhMSExEUETgSOBE5ETgSOBEABgOUlBI4ETkROBITERQRFBETEhMSOBE4EjgRFBEUERQRExITEjgROBI4ERQRFBETEhMSExEUERQRFBE4EjgROBI4ETgSAA0FAAAAAAAAAAAAAA=="          
-        close_cover:
-          - service: remote.send_command
-            data:
-              entity_id: remote.broadlink_schlafzimmer_remote
-              command: "b64:JgAYAZSUEjgRORE4EhMRFBEUERQRExI4ETkROBITERQRFBETEhMSOBE4EhMSOBEUERQRExITEhMRFBE4EhMSOBE4EjgROREABgOTlRI4ETgSOBITERQRFBETEhMSOBE4EzcRFBEUERQRExITEjgROBITEjgRFBEUERMSExITERQROBITEjgSNxM3EjgRAAYDlJUROBI4ETgSExITERQRFBEUETgSOBE4ExISExEUERQRExI4ETkRExI4ERQRFBETEhMSExEUETgSExI4EjcTNxE5EQAGA5SUEjgRORE4ExIRFBEUERQRExI4ETkSNxITERQRFBEUERMSOBI4EhISOBEUERQRFBETEhMSExE5ERQROBI4ETgSOBEADQU=="
-        stop_cover:
-          - service: remote.send_command
-            data:
-              entity_id: remote.broadlink_schlafzimmer_remote
-              command: "b64:JgBGAJWUETgSOBI4ERMSExITERQRFBE4EjgRORISEhMSExEUERQROBI4ETgSOBEUERQRExITEhMRFBEUERQROBI4ETgSOBEADQUAAA=="
-        icon_template: >-
+  - cover:
+    - default_entity_id: cover.fernseher_schlafzimmer_lautstaerke
+      name: Fernseher Lautstärke
+      position: '50'       
+      icon:  >-
           {% if is_state('switch.schlafzimmer_fernseher', 'on') %}
             mdi:volume-high
           {% else %}
             mdi:volume-low
           {% endif %}
+      open_cover:
+        - action: remote.send_command
+          data:
+            entity_id: remote.broadlink_schlafzimmer_remote
+            command: b64:JgBeAZOVEzcRORE4EhMRFBEUERMSExI4ETgSOBITERQRFBETEhMSOBE4EjgRFBEUERQRExITEhMRFBEUETgSOBE5ETgROREABgOUlBI4ETkROBEUERQRFBETEhMSOBE4EjgRFBEUERQRExITEjgROBI4ERQRFBETEhMSExEUERQRFBE4EjgROBI4ETkRAAYDlJQSOBE5ETgSExEUERQRExITEjgRORE4EhMRFBEUERMSExI4ETkROBITERQRFBETEhMSExITERQROBI4ETkROBI4EQAGA5SUEjgRORE4EhMRFBEUERQRExI4ETkROBITERQRFBEUERMSOBE5ETgSExEUERQRFBETEhMSExEUETgSOBE5ETgSOBEABgOUlBI4ETkROBITERQRFBETEhMSOBE4EjgRFBEUERQRExITEjgROBI4ERQRFBETEhMSExEUERQRFBE4EjgROBI4ETgSAA0FAAAAAAAAAAAAAA==
+      close_cover:
+        - action: remote.send_command
+          data:
+            entity_id: remote.broadlink_schlafzimmer_remote
+            command: b64:JgAYAZSUEjgRORE4EhMRFBEUERQRExI4ETkROBITERQRFBETEhMSOBE4EhMSOBEUERQRExITEhMRFBE4EhMSOBE4EjgROREABgOTlRI4ETgSOBITERQRFBETEhMSOBE4EzcRFBEUERQRExITEjgROBITEjgRFBEUERMSExITERQROBITEjgSNxM3EjgRAAYDlJUROBI4ETgSExITERQRFBEUETgSOBE4ExISExEUERQRExI4ETkRExI4ERQRFBETEhMSExEUETgSExI4EjcTNxE5EQAGA5SUEjgRORE4ExIRFBEUERQRExI4ETkSNxITERQRFBEUERMSOBI4EhISOBEUERQRFBETEhMSExE5ERQROBI4ETgSOBEADQU==
+      stop_cover:
+        - action: remote.send_command
+          data:
+            entity_id: remote.broadlink_schlafzimmer_remote
+            command: b64:JgBGAJWUETgSOBI4ERMSExITERQRFBE4EjgRORISEhMSExEUERQROBI4ETgSOBEUERQRExITEhMRFBEUERQROBI4ETgSOBEADQUAAA==          
 
 automation:        
   - alias: "Schlafzimmer - Fernseher ausschalten"

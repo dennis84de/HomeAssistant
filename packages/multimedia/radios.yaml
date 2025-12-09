@@ -32,49 +32,12 @@ template:
               | list
               | length %}    
                 
-          {{ radiosEingeschaltet }}              
-
-switch:   
-  - platform: template
-    switches:
-      wiedergabe_badezimmer:
-        friendly_name: Wiedergabe Badezimmer
-        value_template: "{{ is_state('media_player.radio_badezimmer', 'playing') }}"        
-        turn_on:
-          - service: media_player.media_play
-            data:
-              entity_id: media_player.radio_badezimmer
-        turn_off:
-          - service: media_player.media_pause
-            data:
-              entity_id: media_player.radio_badezimmer
-
-      wiedergabe_aktiv:
-        friendly_name: Wiedergabe aktiv
-        value_template: >-
-          {% set radiosAktiv = expand('group.radio_mediaplayer')
-              | selectattr('state','eq','playing') 
-              | map(attribute='name')
-              | list
-              | length %}    
-                
-          {{ radiosAktiv | int(0) > 0 or is_state('media_player.uberall', 'playing') }}
-        icon_template: >-
-          {% set radiosAktiv = expand('group.radio_mediaplayer')
-              | selectattr('state','eq','playing') 
-              | map(attribute='name')
-              | list
-              | length %}    
-                
-          {{ 'mdi:play-circle-outline' if (radiosAktiv | int(0) > 0 or is_state('media_player.uberall', 'playing')) else 'mdi:pause-circle-outline' }}        
-        turn_on:
-          service: script.radios_starten
-        turn_off:
-          service: script.radios_pausieren
-              
-      radios_lautlos:
-        friendly_name: Radios lautlos
-        value_template: >-
+          {{ radiosEingeschaltet }}           
+          
+  - switch:    
+      - default_entity_id: switch.radios_lautlos
+        name: Radios lautlos
+        state: >-
           {% if state_attr('media_player.echo_badezimmer', 'is_volume_muted') == true
             or state_attr('media_player.echo_flur', 'is_volume_muted') == true
             or state_attr('media_player.echo_kuche', 'is_volume_muted') == true
@@ -90,8 +53,8 @@ switch:
             True
           {% else %}
             False
-          {% endif %}       
-        icon_template: >-
+          {% endif %}  
+        icon:  >-
           {% if state_attr('media_player.echo_badezimmer', 'is_volume_muted') == true
             or state_attr('media_player.echo_flur', 'is_volume_muted') == true
             or state_attr('media_player.echo_kuche', 'is_volume_muted') == true
@@ -107,12 +70,47 @@ switch:
             mdi:volume-off
           {% else %}
             mdi:volume-high
-          {% endif %}                
+          {% endif %}   
         turn_on:
-          service: script.radios_lautlos
+          action: script.radios_lautlos
         turn_off:
-          service: script.radios_laut
+          action: script.radios_laut        
+
+      - default_entity_id: switch.wiedergabe_aktiv
+        name: Wiedergabe aktiv
+        state: >-
+          {% set radiosAktiv = expand('group.radio_mediaplayer')
+              | selectattr('state','eq','playing') 
+              | map(attribute='name')
+              | list
+              | length %}    
+                
+          {{ radiosAktiv | int(0) > 0 or is_state('media_player.uberall', 'playing') }}
+        icon:  >-
+          {% set radiosAktiv = expand('group.radio_mediaplayer')
+              | selectattr('state','eq','playing') 
+              | map(attribute='name')
+              | list
+              | length %}    
+                
+          {{ 'mdi:play-circle-outline' if (radiosAktiv | int(0) > 0 or is_state('media_player.uberall', 'playing')) else 'mdi:pause-circle-outline' }}     
+        turn_on:
+          action: script.radios_starten
+        turn_off:
+          action: script.radios_pausieren
           
+      - default_entity_id: switch.wiedergabe_badezimmer
+        name: Wiedergabe Badezimmer
+        state: "{{ is_state('media_player.radio_badezimmer', 'playing') }}"     
+        turn_on:
+          action: media_player.media_play
+          data:
+            entity_id: media_player.radio_badezimmer
+        turn_off:
+          action: media_player.media_pause
+          data:
+            entity_id: media_player.radio_badezimmer
+
 script:
   sync_radios:
     alias: Radios synchronisieren

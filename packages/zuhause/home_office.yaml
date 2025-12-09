@@ -25,60 +25,36 @@ input_select:
       - Ruhezustand
       - Herunterfahren
       - Nichts unternehmen
-
-input_text:
-  teams_status:
-    name: Microsoft Teams Status
-    icon: mdi:microsoft-teams
-  teams_activity:
-    name: Microsoft Teams Aktivität
-    icon: mdi:phone-off
      
-sensor:
-  - platform: template
-    sensors:
-      teams_status:
-        friendly_name: "Microsoft Teams Status"
-        value_template: "{{states('input_text.teams_status')}}"
-        icon_template: "{{state_attr('input_text.teams_status','icon')}}"
-        unique_id: sensor.teams_status
-      teams_activity:
-        friendly_name: "Microsoft Teams Aktivität"
-        value_template: "{{states('input_text.teams_activity')}}"
-        unique_id: sensor.teams_activity
-            
-binary_sensor:
-  - platform: template
-    sensors:
-      home_office_heute:
-        friendly_name: 'Home Office heute'
-        icon_template: mdi:home-city
-        value_template: >-
+template:
+  - binary_sensor:
+      - default_entity_id: binary_sensor.home_office_heute
+        icon: mdi:home-city
+        name: Home Office heute
+        state: >-
           {% set istHomeOffice = is_state('input_boolean.home_office', 'on') %}
           {% set istArbeitstag = is_state('binary_sensor.arbeitstag', 'on') %}
           {% set keinUrlaub = is_state('calendar.urlaub', 'off') %}
           {% set nichtKrank = is_state('calendar.arbeit_krank', 'off') %}
 
-          {{ True if (istHomeOffice and istArbeitstag and keinUrlaub and nichtKrank) else False }}
-          
-      home_office_aktiv:
-        friendly_name: 'Home Office aktiv'
-        icon_template: mdi:home-city
-        value_template: "{{ is_state('input_boolean.home_office_aktiv', 'on') }}"
-        
-switch:
-  - platform: template
-    switches:
-      computer_arbeit:
-        friendly_name: Computer Arbeit        
-        value_template: "{{ is_state('binary_sensor.computer_arbeit_ping', 'on') }}"
-        icon_template: mdi:desktop-classic
+          {{ True if (istHomeOffice and istArbeitstag and keinUrlaub and nichtKrank) else False }}    
+
+      - default_entity_id: binary_sensor.home_office_aktiv
+        icon: mdi:home-city
+        name: Home Office aktiv
+        state: "{{ is_state('input_boolean.home_office_aktiv', 'on') }}"
+    
+  - switch:
+      - default_entity_id: switch.computer_arbeit
+        name: Computer Arbeit
+        icon: mdi:desktop-classic
+        state: "{{ is_state('binary_sensor.computer_arbeit_ping', 'on') }}"
         turn_on:
-          service: wake_on_lan.send_magic_packet
-          data:
-            mac: !secret computer_arbeit_mac
-            broadcast_address: !secret fritzbox_broadcast
-            broadcast_port: 9
+          - action: wake_on_lan.send_magic_packet
+            data:
+              mac: !secret computer_arbeit_mac
+              broadcast_address: !secret fritzbox_broadcast
+              broadcast_port: 9       
         turn_off:
           - choose:
               - conditions:
@@ -86,14 +62,14 @@ switch:
                     entity_id: input_select.computer_arbeit_ausschalten
                     state: 'Ruhezustand'
                 sequence:
-                  - service: button.press
+                  - action: button.press
                     entity_id: button.computer_arbeit_ruhezustand
               - conditions:
                   - condition: state
                     entity_id: input_select.computer_arbeit_ausschalten
                     state: 'Herunterfahren'
                 sequence:
-                  - service: button.press
+                  - action: button.press
                     entity_id: button.computer_arbeit_herunterfahren
 
 script:

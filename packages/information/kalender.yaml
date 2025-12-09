@@ -15,13 +15,9 @@ template:
           {% set first_advent = now().replace(day=25, month=12) - timedelta(days = 21 + now().replace(day=25, month=12).isoweekday() ) %}
           {{ 'mdi:string-lights' if first_advent <= now() <= now().replace(day=26, month=12) else 'mdi:string-lights-off' }}                          
           
-binary_sensor:
-  - platform: template
-    sensors:
-      urlaub_morgen:
-        friendly_name: 'Urlaub morgen'
+      - name: 'Urlaub morgen'
         device_class: opening
-        value_template: >-
+        state: >-
           {% if state_attr('calendar.urlaub', 'start_time') == None %}
             False
           {% else %}
@@ -29,25 +25,23 @@ binary_sensor:
 
             {{ nextVacationTime.strftime('%j')|int - now().strftime('%j')|int == 1 }}          
           {% endif %}
-          
-      krank_morgen:
-        friendly_name: 'Krank morgen'
+    
+      - name: 'Krank morgen'
         device_class: opening
-        value_template: >-
+        state: >-
           {% if not state_attr('calendar.arbeit_krank', 'end_time') %}
             False
           {% else %}
             {% set nextEndTime = state_attr('calendar.arbeit_krank', 'end_time') | as_datetime %}
 
             {{ nextEndTime.strftime('%j')|int - now().strftime('%j')|int >= 1 }}          
-          {% endif %}          
-
-sensor:
-  - platform: template
-    sensors:
-      edg_restmuell:
-        friendly_name: Restmüll
-        value_template: >
+          {% endif %}   
+          
+  - sensor:
+      - default_entity_id: sensor.edg_restmuell
+        name: Restmüll
+        icon: mdi:trash-can
+        state: >
           {% if state_attr('calendar.edg_restmuell', 'start_time') %}
             {% set weekday = as_timestamp(state_attr('calendar.edg_restmuell', 'start_time'), None) | timestamp_custom("%w", True) | int(0) %}
 
@@ -55,11 +49,11 @@ sensor:
           {% else %}
             -
           {% endif %}
-        icon_template: mdi:trash-can
-
-      edg_wertstoff:
-        friendly_name: Wertstoff
-        value_template: >
+        
+      - default_entity_id: sensor.edg_wertstoff
+        name: Wertstoff
+        icon: mdi:recycle
+        state: >
           {% if state_attr('calendar.edg_wertstoff', 'start_time') %}
             {% set weekday = as_timestamp(state_attr('calendar.edg_wertstoff', 'start_time'), None) | timestamp_custom("%w", True) | int(0) %}
 
@@ -67,11 +61,11 @@ sensor:
           {% else %}
             -
           {% endif %}
-        icon_template: mdi:recycle
 
-      edg_papier:
-        friendly_name: Papier
-        value_template: >
+      - default_entity_id: sensor.edg_papier
+        name: Papier
+        icon: mdi:newspaper
+        state: >
           {% if state_attr('calendar.edg_papier', 'start_time') %}
             {% set weekday = as_timestamp(state_attr('calendar.edg_papier', 'start_time'), None) | timestamp_custom("%w", True) | int(0) %}
 
@@ -79,21 +73,21 @@ sensor:
           {% else %}
             -
           {% endif %}
-        icon_template: mdi:newspaper
 
-      bvb_spiel:
-        friendly_name: Nächstes Spiel
-        value_template: >
+      - default_entity_id: sensor.bvb_spiel
+        name: Nächstes Spiel
+        icon: mdi:soccer
+        state: >
           {% if state_attr('calendar.borussia_dortmund', 'message') %}
             {{ state_attr('calendar.borussia_dortmund', 'message') }}
           {% else %}
             -
           {% endif %}
-        icon_template: mdi:soccer
 
-      bvb_datum:
-        friendly_name: Datum
-        value_template: >
+      - default_entity_id: sensor.bvb_datum
+        name: Datum
+        icon: mdi:calendar-alert
+        state: >
           {% if state_attr('calendar.borussia_dortmund', 'start_time') %}
             {% set weekday = as_timestamp(state_attr('calendar.borussia_dortmund', 'start_time'), None) | timestamp_custom("%w", True) | int(0) %}
 
@@ -101,11 +95,11 @@ sensor:
           {% else %}
             -
           {% endif %}
-        icon_template: mdi:calendar-alert
 
-      bvb_uhrzeit:
-        friendly_name: Uhrzeit
-        value_template: >
+      - default_entity_id: sensor.bvb_uhrzeit
+        name: Uhrzeit
+        icon: mdi:clock-outline
+        state: >
           {% if state_attr('calendar.borussia_dortmund', 'start_time') %}
             {% set dateSplitted = state_attr('calendar.borussia_dortmund', 'start_time').split(' ') %}
             {% set timeSplitted = dateSplitted[1].split(':') %}
@@ -113,21 +107,21 @@ sensor:
           {% else %}
             -
           {% endif %}
-        icon_template: mdi:clock-outline
 
-      bvb_ort:
-        friendly_name: Ort
-        value_template: >
+      - default_entity_id: sensor.bvb_ort
+        name: Ort
+        icon: mdi:city
+        state: >
           {% if state_attr('calendar.borussia_dortmund', 'location') %}
             {{ state_attr('calendar.borussia_dortmund', 'location') }}
           {% else %}
             -
           {% endif %}
-        icon_template: mdi:city
 
-      dfb_spiel:
-        friendly_name: Nächstes Spiel
-        value_template: >
+      - default_entity_id: sensor.dfb_spiel
+        name: Nächstes Spiel
+        icon: mdi:soccer
+        state: >
           {% if state_attr('calendar.nationalmannschaft', 'message') %}
             {% set messageSplitted = state_attr('calendar.nationalmannschaft', 'message').split(' | ') %}
 
@@ -139,11 +133,11 @@ sensor:
           {% else %}
             -
           {% endif %}
-        icon_template: mdi:soccer
 
-      dfb_datum:
-        friendly_name: Datum
-        value_template: >
+      - default_entity_id: sensor.dfb_datum
+        name: Datum
+        icon: mdi:calendar-alert
+        state: >
           {% if state_attr('calendar.nationalmannschaft', 'start_time') %}
             {% set weekday = as_timestamp(state_attr('calendar.nationalmannschaft', 'start_time'), None) | timestamp_custom("%w", True) | int(0) %}
 
@@ -151,11 +145,11 @@ sensor:
           {% else %}
             -
           {% endif %}
-        icon_template: mdi:calendar-alert
 
-      dfb_uhrzeit:
-        friendly_name: Uhrzeit
-        value_template: >
+      - default_entity_id: sensor.dfb_uhrzeit
+        name: Uhrzeit
+        icon: mdi:clock-outline
+        state: >
           {% if state_attr('calendar.nationalmannschaft', 'start_time') %}
             {% set dateSplitted = state_attr('calendar.nationalmannschaft', 'start_time').split(' ') %}
             {% set timeSplitted = dateSplitted[1].split(':') %}
@@ -163,11 +157,11 @@ sensor:
           {% else %}
             -
           {% endif %}
-        icon_template: mdi:clock-outline
 
-      dfb_ort:
-        friendly_name: Ort
-        value_template: >
+      - default_entity_id: sensor.dfb_ort
+        name: Ort
+        icon: mdi:city
+        state: >
           {% if state_attr('calendar.nationalmannschaft', 'location') %}
             {% set locationSplitted = state_attr('calendar.nationalmannschaft', 'location').split(' | ') %}
 
@@ -179,12 +173,11 @@ sensor:
           {% else %}
             -
           {% endif %}
-        icon_template: mdi:city
         
-      formel1_rennen:
-        friendly_name: Nächstes Rennen
-        icon_template: mdi:car-sports
-        value_template: >       
+      - default_entity_id: sensor.formel1_rennen
+        name: Nächstes Rennen
+        icon: mdi:car-sports
+        state: >       
           {% set rennen = as_timestamp(state_attr('calendar.formel1_rennen', 'start_time'), None) %}
           {% set sprint = as_timestamp(state_attr('calendar.formel1_sprint', 'start_time'), None) %}
           
@@ -202,10 +195,10 @@ sensor:
             -
           {% endif %}                                   
 
-      formel1_datum:
-        friendly_name: Datum
-        icon_template: mdi:calendar-alert
-        value_template: >
+      - default_entity_id: sensor.formel1_datum
+        name: Datum
+        icon: mdi:calendar-alert
+        state: >
           {% set rennen = as_timestamp(state_attr('calendar.formel1_rennen', 'start_time'), None) %}
           {% set sprint = as_timestamp(state_attr('calendar.formel1_sprint', 'start_time'), None) %}        
         
@@ -223,10 +216,10 @@ sensor:
             {{ start | timestamp_custom("%d.%m.%Y", True) | string }}, {{ start | timestamp_custom("%H:%M Uhr") | string }}       
           {% endif %}                 
 
-      formel1_qualifikation:
-        friendly_name: Qualifikation
-        icon_template: mdi:car-sports
-        value_template: >
+      - default_entity_id: sensor.formel1_qualifikation
+        name: Qualifikation
+        icon: mdi:car-sports
+        state: >
           {% set qualifikation = state_attr('calendar.formel1_qualifikation', 'start_time') %}
           {% set rennen = state_attr('calendar.formel1_rennen', 'start_time') %}
           
@@ -247,16 +240,16 @@ sensor:
             {% endif %}
           {% endif %}               
 
-      naechster_urlaub:
-        friendly_name: Nächster Urlaub
-        icon_template: mdi:sunglasses
-        value_template: >
+      - default_entity_id: sensor.naechster_urlaub
+        name: Nächster Urlaub
+        icon: mdi:sunglasses
+        state: >
           {% if state_attr('calendar.urlaub', 'message') %}
             {{ state_attr('calendar.urlaub', 'message') }}
           {% else %}
             -
           {% endif %}
-        attribute_templates:
+        attributes:
           datum: >
             {% if state_attr('calendar.urlaub', 'start_time') %}             
               {% set weekday = as_timestamp(state_attr('calendar.urlaub', 'start_time'), None) | timestamp_custom("%w", True) | int(0) %}
@@ -271,16 +264,16 @@ sensor:
             
             {{ 0 if start == 0 else ((start - heute) | int / 60 / 60 / 24) | int(0) }}   
              
-      naechste_ferien:
-        friendly_name: Nächste Ferien
-        icon_template: mdi:calendar-star
-        value_template: >
+      - default_entity_id: sensor.naechste_ferien
+        name: Nächste Ferien
+        icon: mdi:calendar-star
+        state: >
           {% if state_attr('calendar.ferien', 'message') %}
             {{ state_attr('calendar.ferien', 'message') }}
           {% else %}
             -
           {% endif %}
-        attribute_templates:
+        attributes:
           datum: >
             {% if state_attr('calendar.ferien', 'start_time') %}             
               {% set weekday = as_timestamp(state_attr('calendar.ferien', 'start_time'), None) | timestamp_custom("%w", True) | int(0) %}
@@ -293,4 +286,4 @@ sensor:
             {% set start = as_timestamp(state_attr('calendar.ferien', 'start_time'), None) | int(0) %}
             {% set heute = as_timestamp(now().replace(hour=0, minute=0, second=0)) | int(0) %}
             
-            {{ 0 if start == 0 else ((start - heute) | int / 60 / 60 / 24) | int(0) }}              
+            {{ 0 if start == 0 else ((start - heute) | int / 60 / 60 / 24) | int(0) }}         

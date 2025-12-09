@@ -81,37 +81,6 @@ zone:
     longitude: !secret work_longitude
     radius: 100
     icon: mdi:wan 
-      
-sensor:
-  - platform: template
-    sensors:
-      hass_installierte_version:
-        friendly_name: "Installierte Version"
-        icon_template: mdi:cloud-sync
-        value_template: "{{ state_attr('update.home_assistant_core_update', 'installed_version') }}"
-        
-      hass_aktuelle_version:
-        friendly_name: "Aktuelle Version"
-        icon_template: mdi:cloud-sync-outline
-        value_template: "{{ state_attr('update.home_assistant_core_update', 'latest_version') }}"
-
-      laufzeit_minuten:
-        friendly_name: "Laufzeit Minuten"
-        icon_template: mdi:clock
-        unit_of_measurement: 'Minuten'
-        value_template: >-
-          {% set up_time =  states('sensor.home_assistant_letzter_neustart') %}
-     
-          {{ '-' if up_time == 'unknown' else ((as_timestamp(now()) - as_timestamp(up_time, None)) / 60) | int(0) }}
-              
-      laufzeit_stunden:
-        friendly_name: "Laufzeit Stunden"
-        icon_template: mdi:clock
-        unit_of_measurement: 'Stunden'
-        value_template: >-
-          {% set up_time =  states('sensor.home_assistant_letzter_neustart') %}
-     
-          {{ '-' if up_time == 'unknown' else ((as_timestamp(now()) - as_timestamp(up_time, None)) / 60 / 60) | round(2, 0) }}
 
 mqtt:
   sensor:
@@ -132,6 +101,36 @@ template:
           
           {{ 0 if letzterNeustart == 0 else (as_timestamp(now()) | int(0) - letzterNeustart)  }}
     
+      - default_entity_id: sensor.laufzeit_stunden        
+        name: Laufzeit Stunden
+        icon: mdi:clock
+        unit_of_measurement: Stunden
+        state: >-
+          {% set up_time =  states('sensor.home_assistant_letzter_neustart') %}
+     
+          {{ '-' if up_time == 'unknown' else ((as_timestamp(now()) - as_timestamp(up_time, None)) / 60 / 60) | round(2, 0) }}
+      
+      - default_entity_id: sensor.laufzeit_minuten        
+        name: Laufzeit Minuten
+        icon: mdi:clock
+        unit_of_measurement: Minuten
+        state: >-
+          {% set up_time =  states('sensor.home_assistant_letzter_neustart') %}
+     
+          {{ '-' if up_time == 'unknown' else ((as_timestamp(now()) - as_timestamp(up_time, None)) / 60) | int(0) }}
+       
+      - unique_id: hass_aktuelle_version
+        default_entity_id: sensor.hass_aktuelle_version        
+        name: Aktuelle Version
+        icon: mdi:cloud-sync-outline
+        state: "{{ state_attr('update.home_assistant_core_update', 'latest_version') }}"          
+       
+      - unique_id: hass_installierte_version
+        default_entity_id: sensor.hass_installierte_version
+        name: Installierte Version
+        icon: mdi:cloud-sync
+        state: "{{ state_attr('update.home_assistant_core_update', 'installed_version') }}"
+        
 script:  
   homeassistant_neustart:
     alias: Home Assistant - Neustart

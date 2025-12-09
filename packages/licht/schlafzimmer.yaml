@@ -12,35 +12,35 @@ timer:
     icon: mdi:timer-off
     duration: 120
     
-light:
-  - platform: template
-    lights:
-      schlafzimmer_fernseher:
-        friendly_name: Schlafzimmer Fernseher
-        unique_id: schlafzimmer_fernseher_licht
-        value_template: "{{ is_state('input_boolean.schlafzimmer_fernseher_licht', 'on') }}"
-        icon_template: mdi:television-classic
-        turn_on:
-          - service: remote.send_command
-            target:
-              entity_id: remote.broadlink_schlafzimmer_remote
-            data:             
-              device: schlafzimmer_licht
-              command:
-                - turn_on    
-          - service: input_boolean.turn_on
-            entity_id: input_boolean.schlafzimmer_fernseher_licht           
-        turn_off:
-          - service: remote.send_command
-            target:
-              entity_id: remote.broadlink_schlafzimmer_remote
-            data:                       
-              device: schlafzimmer_licht
-              command:
-                - turn_off
-          - service: input_boolean.turn_off
-            entity_id: input_boolean.schlafzimmer_fernseher_licht
-            
+template:
+  - light:
+    - unique_id: schlafzimmer_fernseher_licht
+      default_entity_id: light.schlafzimmer_fernseher
+      name: Schlafzimmer Fernseher
+      icon: mdi:television-classic      
+      state: "{{ is_state('input_boolean.schlafzimmer_fernseher_licht', 'on') }}"
+      turn_on:
+        - target:
+            entity_id: remote.broadlink_schlafzimmer_remote
+          data:
+            device: schlafzimmer_licht
+            command:
+              - turn_on
+          action: remote.send_command
+        - entity_id: input_boolean.schlafzimmer_fernseher_licht
+          action: input_boolean.turn_on
+      turn_off:
+        - target:
+            entity_id: remote.broadlink_schlafzimmer_remote
+          data:
+            device: schlafzimmer_licht
+            command:
+              - turn_off
+          action: remote.send_command
+        - entity_id: input_boolean.schlafzimmer_fernseher_licht
+          action: input_boolean.turn_off
+      
+light:            
   - platform: switch
     name: Kleiderschrank
     entity_id: switch.kleiderschrank

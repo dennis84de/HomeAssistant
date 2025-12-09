@@ -10,129 +10,27 @@ input_number:
     max: 1000
     step: 50 
 
-binary_sensor:
-  - platform: template
-    sensors:
-      schlechtes_wetter:
-        friendly_name: "Schlechtes Wetter"
-        icon_template: mdi:weather-snowy-rainy
-        value_template: "{{ not is_state('sensor.wetterlage', 'Klar') }}"
-
-      sonne_tagsueber:
-        friendly_name: "Sonne tagsüber"
-        value_template: "{{ states('sensor.balkon_helligkeit_mittelwert') | float(0) > states('input_number.helligkeit_grenzwert') | float(500) }}"
-          
-      sommerzeit:
-        friendly_name: "Sommerzeit"     
-        icon_template: "mdi:weather-sunny"          
-        value_template: "{{ now().timetuple().tm_isdst > 0 }}"  
+template:
+  - binary_sensor:
+      - default_entity_id: binary_sensor.schlechtes_wetter
+        icon: mdi:weather-snowy-rainy
+        name: Schlechtes Wetter
+        state: "{{ not is_state('sensor.wetterlage', 'Klar') }}"
     
-sensor:
-  - platform: average
-    name: 'Balkon Helligkeit Mittelwert'
-    duration:
-      minutes: 30
-    entities:
-      - sensor.balkon_helligkeit
+      - default_entity_id: binary_sensor.sonne_tagsueber
+        name: Sonne tagsüber
+        state: "{{ states('sensor.balkon_helligkeit_mittelwert') | float(0) > states('input_number.helligkeit_grenzwert') | float(500) }}"
       
-  - platform: rest
-    name: regenradar
-    scan_interval: 300
-    timeout: 60
-    json_attributes:
-      - raintext
-      - rainin30min
-      - rainin60min
-      - rainin120min
-    resource: !secret regenradar_url
-    value_template: "{{ value_json.raintext if value_json is defined else '-' }}"
-    
-  - platform: template
-    sensors:
-      wetterlage:
-        friendly_name: 'Wetterlage'
-        icon_template: mdi:weather-windy-variant
-        value_template: >
-          {% if is_state('sensor.wetter_dortmund_wetterzustand', 'snow') %}
-            Schnee
-          {% elif ((states('sensor.wetter_dortmund_temperatur') | int(0) < 4) and (states('sensor.wetter_dortmund_taupunkt') | int(0) < 6)
-            and (states('sensor.wetter_dortmund_windgeschwindigkeit') | int(0) < 12) and (states('sensor.wetter_dortmund_bewolkungsgrad') | int(0) < 20)
-            and (states('sensor.wetter_dortmund_luftfeuchtigkeit') | int(0) > 50)) %}
-            Frost
-          {% else %} 
-            Klar
-          {% endif %}
-
-      tageszeit:
-        friendly_name: Tageszeit
-        value_template: >-
-          {% if (as_timestamp(state_attr('sun.sun', 'next_dusk'), None)) - (as_timestamp(state_attr('sun.sun', 'next_setting'), None)) < 0 %}
-            Abenddämmerung
-          {% elif (as_timestamp(state_attr('sun.sun', 'next_rising'), None)) - (as_timestamp(state_attr('sun.sun', 'next_dawn'), None)) < 0 %}
-            Morgendämmerung
-          {% elif (state_attr('sun.sun', 'elevation')) < - 4 %}
-            Nacht
-          {% else %}
-            Tag
-          {% endif %}
-        entity_picture_template: >-
-          {% if (as_timestamp(state_attr('sun.sun', 'next_dusk'), None)) - (as_timestamp(state_attr('sun.sun', 'next_setting'), None)) < 0 %}
-            /local/sonne/Dawn.png
-          {% elif (as_timestamp(state_attr('sun.sun', 'next_rising'), None)) - (as_timestamp(state_attr('sun.sun', 'next_dawn'), None)) < 0 %}
-            /local/sonne/Dusk.png         
-          {% elif (state_attr('sun.sun', 'elevation')) < - 4 %}
-            /local/sonne/Night.png
-          {% else %}
-            /local/sonne/Day.png
-          {% endif %}
-
-      sonnenaufgang:
-        friendly_name: 'Nächster Sonnenaufgang'
-        value_template: "{{ as_timestamp(state_attr('sun.sun', 'next_rising'), None) | timestamp_custom('%d.%m.%Y %H:%M') }}"
-        icon_template: mdi:weather-sunset-up
-
-      sonnenuntergang:
-        friendly_name: 'Nächster Sonnenuntergang'
-        value_template: "{{ as_timestamp(state_attr('sun.sun', 'next_setting'), None) | timestamp_custom('%d.%m.%Y %H:%M') }}"
-        icon_template: mdi:weather-sunset-down
-
-      mondphase:
-        friendly_name: Mondphase
-        value_template: >-
-          {% set phase = states('sensor.moon') %}
-          {% set mapper = {'new_moon':'Neumond',
-                           'waxing_crescent':'Zunehmender Sichelmond',
-                           'first_quarter':'Zunehmender Halbmond',
-                           'waxing_gibbous':'Zunehmender Dreiviertelmond',
-                           'full_moon':'Vollmond',
-                           'waning_gibbous':'Abnehmender Dreiviertelmond',
-                           'last_quarter':'Abnehmender Halbmond'} %}
-                           
-          {{mapper.get(phase,'Abnehmender Sichelmond')}}
-
-        entity_picture_template: >-
-          {% set state = states('sensor.moon') %}
-                    
-          /local/mond/{{state}}.jpg
-
-      windrichtung:
-        friendly_name: 'Windrichtung'
-        icon_template: mdi:compass
-        value_template: >-
-          {% set winbearing = (states('sensor.wetter_dortmund_windrichtung') | float(0) / 45) | int(0) | round + 1 %}
-          {% set winddir = ['Nord', 'Nordost','Ost','Südost','Süd','Südwest','West','Nordwest']%}
-          
-          {{ winddir[winbearing]}}
-        entity_picture_template: >-
-          {% set winbearing = (states('sensor.wetter_dortmund_windrichtung') | float(0) / 45) | int(0) | round + 1 %}
-          {% set winddir = ['0', '45','90','135','180','225','270','315'] %}
-          
-          {{ "/local/wind/" ~ winddir[winbearing] ~ ".png" }}
-
-      wetterwarnungen_aktiv:
-        friendly_name: "Wetterwarnungen"      
-        icon_template: mdi:weather-partly-lightning
-        value_template: >-
+      - default_entity_id: binary_sensor.sommerzeit
+        icon: mdi:weather-sunny
+        name: Sommerzeit
+        state: "{{ now().timetuple().tm_isdst > 0 }}"
+        
+  - sensor:
+      - default_entity_id: sensor.wetterwarnungen_aktiv
+        icon: mdi:weather-partly-lightning
+        name: Wetterwarnungen
+        state: >-
           {% set ns = namespace(found=0) %}          
           {% set current_count = state_attr("sensor.stadt_dortmund_aktuelle_warnstufe", "warning_count") %}
           {% set advance_count = state_attr("sensor.stadt_dortmund_vorwarnstufe", "warning_count") %}
@@ -157,8 +55,108 @@ sensor:
             {% endfor %}              
           {% endif %}                
           
-          {{ ns.found }}   
+          {{ ns.found }}     
           
+      - default_entity_id: sensor.windrichtung
+        name: 'Windrichtung'
+        icon: mdi:compass
+        state: >-
+          {% set winbearing = (states('sensor.wetter_dortmund_windrichtung') | float(0) / 45) | int(0) | round + 1 %}
+          {% set winddir = ['Nord', 'Nordost','Ost','Südost','Süd','Südwest','West','Nordwest']%}
+
+          {{ winddir[winbearing]}}
+        picture: >-
+          {% set winbearing = (states('sensor.wetter_dortmund_windrichtung') | float(0) / 45) | int(0) | round + 1 %}
+          {% set winddir = ['0', '45','90','135','180','225','270','315'] %}
+
+          {{ "/local/wind/" ~ winddir[winbearing] ~ ".png" }}      
+      
+      - default_entity_id: sensor.mondphase
+        name: Mondphase
+        state: >-
+          {% set phase = states('sensor.moon') %}
+          {% set mapper = {'new_moon':'Neumond',
+                           'waxing_crescent':'Zunehmender Sichelmond',
+                           'first_quarter':'Zunehmender Halbmond',
+                           'waxing_gibbous':'Zunehmender Dreiviertelmond',
+                           'full_moon':'Vollmond',
+                           'waning_gibbous':'Abnehmender Dreiviertelmond',
+                           'last_quarter':'Abnehmender Halbmond'} %}
+                           
+          {{mapper.get(phase,'Abnehmender Sichelmond')}}
+
+        picture: >-
+          {% set state = states('sensor.moon') %}
+                    
+          /local/mond/{{state}}.jpg
+          
+      - default_entity_id: sensor.sonnenuntergang
+        name: 'Nächster Sonnenuntergang'
+        state: "{{ as_timestamp(state_attr('sun.sun', 'next_setting'), None) | timestamp_custom('%d.%m.%Y %H:%M') }}"
+        icon: mdi:weather-sunset-down
+      
+      - default_entity_id: sensor.sonnenaufgang
+        name: 'Nächster Sonnenaufgang'
+        state: "{{ as_timestamp(state_attr('sun.sun', 'next_rising'), None) | timestamp_custom('%d.%m.%Y %H:%M') }}"
+        icon: mdi:weather-sunset-up
+        
+      - default_entity_id: sensor.tageszeit
+        name: Tageszeit
+        state: >-
+          {% if (as_timestamp(state_attr('sun.sun', 'next_dusk'), None)) - (as_timestamp(state_attr('sun.sun', 'next_setting'), None)) < 0 %}
+            Abenddämmerung
+          {% elif (as_timestamp(state_attr('sun.sun', 'next_rising'), None)) - (as_timestamp(state_attr('sun.sun', 'next_dawn'), None)) < 0 %}
+            Morgendämmerung
+          {% elif (state_attr('sun.sun', 'elevation')) < - 4 %}
+            Nacht
+          {% else %}
+            Tag
+          {% endif %}
+        picture: >-
+          {% if (as_timestamp(state_attr('sun.sun', 'next_dusk'), None)) - (as_timestamp(state_attr('sun.sun', 'next_setting'), None)) < 0 %}
+            /local/sonne/Dawn.png
+          {% elif (as_timestamp(state_attr('sun.sun', 'next_rising'), None)) - (as_timestamp(state_attr('sun.sun', 'next_dawn'), None)) < 0 %}
+            /local/sonne/Dusk.png         
+          {% elif (state_attr('sun.sun', 'elevation')) < - 4 %}
+            /local/sonne/Night.png
+          {% else %}
+            /local/sonne/Day.png
+          {% endif %}
+          
+      - default_entity_id: sensor.wetterlage
+        name: 'Wetterlage'
+        icon: mdi:weather-windy-variant
+        state: >
+          {% if is_state('sensor.wetter_dortmund_wetterzustand', 'snow') %}
+            Schnee
+          {% elif ((states('sensor.wetter_dortmund_temperatur') | int(0) < 4) and (states('sensor.wetter_dortmund_taupunkt') | int(0) < 6)
+            and (states('sensor.wetter_dortmund_windgeschwindigkeit') | int(0) < 12) and (states('sensor.wetter_dortmund_bewolkungsgrad') | int(0) < 20)
+            and (states('sensor.wetter_dortmund_luftfeuchtigkeit') | int(0) > 50)) %}
+            Frost
+          {% else %} 
+            Klar
+          {% endif %}
+    
+sensor:
+  - platform: average
+    name: 'Balkon Helligkeit Mittelwert'
+    duration:
+      minutes: 30
+    entities:
+      - sensor.balkon_helligkeit
+      
+  - platform: rest
+    name: regenradar
+    scan_interval: 300
+    timeout: 60
+    json_attributes:
+      - raintext
+      - rainin30min
+      - rainin60min
+      - rainin120min
+    resource: !secret regenradar_url
+    value_template: "{{ value_json.raintext if value_json is defined else '-' }}"
+
 automation:
   - alias: "Balkontür schließen"
     id: "balkontuer_schliessen"

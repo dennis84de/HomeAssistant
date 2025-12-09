@@ -37,29 +37,47 @@ timer:
     icon: mdi:timer-off
     duration: 4200
 
-sensor:
-  - platform: template
-    sensors:
-      ventilator_drehungswinkel:
-        friendly_name: "Drehungswinkel"
-        value_template: >-
+template:
+  - switch:
+      - default_entity_id: switch.ventilator_natuerlicher_wind
+        name: Natürlicher Wind
+        state: "{{ is_state('fan.ventilator', 'on') and state_attr('fan.ventilator', 'natural_speed') != 0 }}"
+        icon: >-
+          {% if is_state('fan.ventilator', 'on') and state_attr('fan.ventilator', 'natural_level') != 0 %}
+            mdi:weather-windy
+          {% else %}
+            mdi:weather-windy-variant
+          {% endif %}          
+        turn_on:
+          - action: xiaomi_miio_fan.fan_set_natural_mode_on
+            data:
+              entity_id: fan.ventilator
+        turn_off:
+          - action: xiaomi_miio_fan.fan_set_natural_mode_off
+            data:
+              entity_id: fan.ventilator
+              
+  - sensor:
+      - default_entity_id: sensor.ventilator_drehungswinkel
+        name: "Drehungswinkel"
+        state: >-
           {% if is_state('fan.ventilator', 'unknown') or states.fan.ventilator == None %}
             0
           {% else %}
             {{ state_attr("fan.ventilator", "angle") | int(0) }}
           {% endif %}
 
-      ventilator_batterie:
-        friendly_name: "Batterie"
-        value_template: >-
+      - default_entity_id: sensor.ventilator_batterie
+        name: "Batterie"
+        unit_of_measurement: "%"
+        device_class: battery      
+        state: >-
           {% if is_state('fan.ventilator', 'unknown') or states.fan.ventilator == None %}
             0
           {% else %}
             {{ state_attr("fan.ventilator", "battery") }}
           {% endif %}
-        unit_of_measurement: "%"
-        device_class: battery
-        icon_template: >-
+        icon: >-
           {% if state_attr("fan.ventilator", "battery_charge") == 'progress' and state_attr("fan.ventilator", "ac_power") == True %}
             mdi:battery-charging
           {% elif state_attr("fan.ventilator", "battery_charge") == 'complete' and state_attr("fan.ventilator", "ac_power") == True %}
@@ -68,10 +86,10 @@ sensor:
             mdi:power-plug-off
           {% endif %}
 
-      ventilator_timer:
-        friendly_name: Restzeit
-        icon_template: mdi:timer-off
-        value_template: >-
+      - default_entity_id: sensor.ventilator_timer
+        name: Restzeit
+        icon: mdi:timer-off
+        state: >-
           {%- if is_state('input_boolean.ventilator_timer_aktiv', 'on') %}            
             {% set now = as_timestamp(now()) %}
             {% set last = as_timestamp(state_attr('automation.ventilator_timer_gestartet', 'last_triggered'), None) %}              
@@ -86,27 +104,6 @@ sensor:
           {% else %}
               -
           {%- endif %}
-
-switch:
-  - platform: template
-    switches:
-      ventilator_natuerlicher_wind:
-        friendly_name: "Natürlicher Wind"
-        value_template: "{{ is_state('fan.ventilator', 'on') and state_attr('fan.ventilator', 'natural_speed') != 0 }}"
-        icon_template: >-
-          {% if is_state('fan.ventilator', 'on') and state_attr('fan.ventilator', 'natural_level') != 0 %}
-            mdi:weather-windy
-          {% else %}
-            mdi:weather-windy-variant
-          {% endif %}
-        turn_on:
-          service: xiaomi_miio_fan.fan_set_natural_mode_on
-          data:
-            entity_id: fan.ventilator
-        turn_off:
-          service: xiaomi_miio_fan.fan_set_natural_mode_off
-          data:
-            entity_id: fan.ventilator
 
 automation:
   - alias: "Ventilator Winkel - Slider geändert"

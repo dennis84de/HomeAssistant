@@ -39,29 +39,26 @@ timer:
     name: "Schlafen einschalten"
     duration: 8
 
-binary_sensor:
-  - platform: template
-    sensors:
-      im_bett:
-        friendly_name: "Im Bett"
-        value_template: "{{not is_state('binary_sensor.bett', 'on')}}"
+template:
+  - binary_sensor:
+      - default_entity_id: binary_sensor.im_bett
         device_class: vibration
-        delay_off: 2
-        icon_template: mdi:bed-king    
-            
-      schlafen_aktiv:
-        friendly_name: Schlafen aktiv
-        value_template: "{{ is_state('input_boolean.schlafen_aktiv', 'on') }}"
-        icon_template: mdi:sleep
-        availability_template: "{{ states('input_boolean.schlafen_aktiv') not in ['unknown', 'unavailable'] }}"
+        delay_off: 0:00:02       
+        icon: mdi:bed-king
+        name: Im Bett
+        state: "{{not is_state('binary_sensor.bett', 'on')}}"   
         
-sensor:
-  - platform: template
-    sensors:
-      schlafen_letzte_uhrzeit:
-        friendly_name: Schlafen Letzte Uhrzeit       
-        value_template: "{{ '%02d' % (state_attr('input_datetime.schlafen_uhrzeit', 'hour') | int(0)) ~ ':' ~ '%02d' % (state_attr('input_datetime.schlafen_uhrzeit', 'minute') | int(0)) }}"
-        icon_template: mdi:av-timer
+      - default_entity_id: binary_sensor.schlafen_aktiv
+        icon: mdi:sleep
+        availability: "{{ states('input_boolean.schlafen_aktiv') not in ['unknown', 'unavailable'] }}"
+        name: Schlafen aktiv
+        state: "{{ is_state('input_boolean.schlafen_aktiv', 'on') }}"   
+          
+  - sensor:
+      - default_entity_id: sensor.schlafen_letzte_uhrzeit
+        icon: mdi:av-timer
+        name: Schlafen Letzte Uhrzeit
+        state: "{{ '%02d' % (state_attr('input_datetime.schlafen_uhrzeit', 'hour') | int(0)) ~ ':' ~ '%02d' % (state_attr('input_datetime.schlafen_uhrzeit', 'minute') | int(0)) }}"
 
 script:
   schlafen_gehen:

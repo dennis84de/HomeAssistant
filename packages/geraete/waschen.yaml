@@ -15,18 +15,17 @@ input_select:
       - Trocknen
     icon: mdi:tumble-dryer
 
-sensor:
-  - platform: template
-    sensors:
-      waschmaschine_status:
-        friendly_name: Status Waschmaschine
-        value_template: "{{ states('input_select.status_waschmaschine') }}"
-        icon_template: 'mdi:washing-machine'
-
-      trockner_status:
-        friendly_name: Status Trockner
-        value_template: "{{ states('input_select.status_trockner') }}"
-        icon_template: 'mdi:tumble-dryer'
+template:
+  - sensor:
+      - default_entity_id: sensor.waschmaschine_status
+        icon: mdi:washing-machine
+        name: Status Waschmaschine
+        state: "{{ states('input_select.status_waschmaschine') }}"
+    
+      - default_entity_id: sensor.trockner_status
+        icon: mdi:tumble-dryer
+        name: Status Trockner
+        state: "{{ states('input_select.status_trockner') }}"
 
 automation:
   - alias: "Waschmaschine - Ausgeschaltet"
