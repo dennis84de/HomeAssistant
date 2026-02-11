@@ -1,9 +1,3 @@
-calendar:
-  - platform: caldav
-    url: !secret nextcloud_calendar_url
-    username: !secret nextcloud_username
-    password: !secret nextcloud_password
-       
 template:
   - binary_sensor:
       - name: "Adventszeit"

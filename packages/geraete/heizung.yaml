@@ -381,11 +381,7 @@ automation:
       - platform: numeric_state
         id: 'stop'
         entity_id: sensor.zimmer_aaron_temperatur
-        above: input_number.heizung_stop          
-      - platform: state
-        id: 'stop'
-        entity_id: binary_sensor.home_office_aktiv
-        to: 'off'            
+        above: input_number.heizung_stop                   
     condition:      
       - condition: or
         conditions:                  
@@ -396,7 +392,6 @@ automation:
               - "{{ is_state('climate.heizung_zimmer_aaron', 'off') }}"
               - "{{ is_state('schedule.heizung', 'on') }}"
               - "{{ states('sensor.zimmer_aaron_temperatur') | float(18) < states('input_number.heizung_start') | float(0) }}"
-              - "{{ is_state('binary_sensor.home_office_heute', 'on') }}"
               - "{{ is_state('binary_sensor.fenster_zimmer_aaron', 'off') }}"
           - condition: and
             conditions:    
@@ -405,8 +400,7 @@ automation:
               - condition: or
                 conditions:                   
                   - "{{ is_state('schedule.heizung', 'off') }}"
-                  - "{{ states('sensor.zimmer_aaron_temperatur') | float(21) > states('input_number.heizung_stop') | float(0) }}"
-                  - "{{ is_state('binary_sensor.home_office_aktiv', 'off') }}"
+                  - "{{ states('sensor.zimmer_aaron_temperatur') | float(21) > states('input_number.heizung_stop') | float(0) }}"                  
     action:
       - choose:
           - conditions:

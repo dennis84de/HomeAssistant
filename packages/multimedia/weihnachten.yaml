@@ -12,18 +12,37 @@ automation:
       - id: input
         platform: state
         entity_id: input_boolean.weihnachtsbeleuchtung_aktiv
+      - id: kindergarten
+        platform: state
+        entity_id: binary_sensor.kindergarten_aaron        
     condition:
-      - "{{ states('input_boolean.weihnachtsbeleuchtung_aktiv') != trigger.to_state.state or trigger.id == 'input' }}"            
-      - "{{ is_state('binary_sensor.adventszeit', 'on') }}"       
+      - "{{ is_state('binary_sensor.adventszeit', 'on') }}"               
+      - condition: or
+        conditions:
+           - "{{ trigger.id == 'kindergarten' and is_state('binary_sensor.kindergartentag', 'on') }}"
+           - "{{ trigger.id == 'input' }}"
+           - "{{ not trigger.id == 'kindergarten' and states('input_boolean.weihnachtsbeleuchtung_aktiv') != trigger.to_state.state }}"
     action:
-      - if: "{{ trigger.to_state.state == 'on' }}"
+      - if: "{{ trigger.id == 'kindergarten' and trigger.to_state.state == 'on' }}"
+        then:          
+          - service: light.turn_off
+            entity_id: light.weihnachtsstern
+            
+      - if: "{{ trigger.id == 'kindergarten' and trigger.to_state.state == 'off' }}"
+        then:          
+          - service: light.turn_on
+            entity_id: light.weihnachtsstern  
+            
+      - if: "{{ not trigger.id == 'kindergarten' and trigger.to_state.state == 'on' }}"
         then:          
           - service: light.turn_on
             entity_id: light.weihnachtsstern, light.balkon_lichterkette
           - service: input_boolean.turn_on
             entity_id: input_boolean.weihnachtsbeleuchtung_aktiv      
-        else:        
+            
+      - if: "{{ not trigger.id == 'kindergarten' and trigger.to_state.state == 'off' }}"
+        then:               
           - service: light.turn_off
             entity_id: light.weihnachtsstern, light.balkon_lichterkette
           - service: input_boolean.turn_off
-            entity_id: input_boolean.weihnachtsbeleuchtung_aktiv
+            entity_id: input_boolean.weihnachtsbeleuchtung_aktiv            

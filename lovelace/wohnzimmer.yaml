@@ -13,9 +13,7 @@ cards:
         name: Schrank       
       - entity: light.wohnzimmer_couch
         name: Couch          
-      - entity: light.weihnachtsstern
-        name: Weihnachtsstern
-        
+
   - type: entities
     title: Mediaplayer
     show_header_toggle: false
@@ -76,9 +74,7 @@ cards:
       - entity: light.balkon_licht
         name: Licht           
       - entity: light.balkon_lampe
-        name: Lampe                   
-      - entity: light.balkon_lichterkette
-        name: Lichterkette      
+        name: Lampe                    
       - entity: script.markise_licht
         name: Markise             
         

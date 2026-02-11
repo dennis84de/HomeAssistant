@@ -152,8 +152,6 @@ cards:
         entities:
           - entity: sensor.watchman_missing_entities
             name: Entitäten
-          - entity: sensor.watchman_missing_services
-            name: Dienste
           - entity: sensor.netzwerkgerate_offline
             name: Netzwerk
           - entity: sensor.steckdosen_offline
@@ -186,30 +184,6 @@ cards:
                           </td></tr></table>
                         {%- endfor %}           
                       {% endif %}    
-
-          - entity: sensor.watchman_missing_services 
-            name: Fehlende Dienste        
-            secondary_info: last-changed  
-            tap_action:
-              action: fire-dom-event
-              browser_mod:
-                service: browser_mod.popup
-                data:              
-                  content:           
-                    type: markdown
-                    content: >-   
-                      {% if (is_state('sensor.watchman_missing_services', '0')) %}
-                        **<font color=#c5e566>Alle Dienste sind verfügbar.</font>**
-                      {% else %}                     
-                        {%- for item in state_attr("sensor.watchman_missing_services", "entities") %}
-                          {% if loop.index > 1 %}<hr>{% endif %}
-                          <table><tr><td>  
-                            <ha-icon icon='mdi:cloud-alert'></ha-icon> {{ item.id }}
-                            <br><a title="{{item.occurrences}}">{{item.occurrences.split('/')[-1].split(':')[0]}}</a>
-                          </td></tr>
-                          </table>
-                        {%- endfor %}       
-                      {% endif %}   
 
           - entity: sensor.netzwerkgerate_offline
             secondary_info: last-changed  

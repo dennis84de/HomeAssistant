@@ -60,9 +60,12 @@ automation:
           entity_id: timer.licht_schlafzimmer 
       - id: licht_off
         platform: state
-        entity_id:
-          - binary_sensor.fenster_schlafzimmer
-        to: 'on'          
+        entity_id: binary_sensor.fenster_schlafzimmer
+        to: 'on'    
+      - id: licht_off
+        platform: state
+        entity_id: binary_sensor.licht_schlafzimmer
+        to: 'off'           
     condition:      
       - condition: or
         conditions:          
@@ -70,6 +73,7 @@ automation:
             - condition: and
               conditions:
                 - "{{ is_state('binary_sensor.sonne_tagsueber', 'off') }}"
+                - "{{ trigger.id == 'licht_off' or is_state('binary_sensor.licht_schlafzimmer', 'on') }}"                
                 - "{{ is_state('binary_sensor.schlafen_aktiv', 'off') }}"
                 - "{{ is_state('binary_sensor.fenster_schlafzimmer', 'off') }}"
                 - "{{ is_state('binary_sensor.bewegungsmelder_inaktiv_unterwegs', 'off') }}"
@@ -80,7 +84,9 @@ automation:
       - if: "{{ trigger.id == 'licht_off' }}"
         then:
           - service: light.turn_off
-            entity_id: light.kleiderschrank         
+            entity_id: light.kleiderschrank     
+          - service: timer.cancel
+            entity_id: timer.licht_schlafzimmer            
       - if: "{{ trigger.id == 'licht_on' }}"
         then:
           - service: light.turn_on
@@ -115,7 +121,9 @@ automation:
           - service: light.turn_on
             entity_id: light.bett
         else:
-          - service: script.licht_wohnung_ausschalten       
+          - service: script.licht_wohnung_ausschalten  
+            data:
+              override: true
 
 homeassistant:
   customize:

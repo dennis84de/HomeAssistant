@@ -224,7 +224,7 @@ cards:
       title: Kindergarten
       entities:
         - binary_sensor.kindergarten_aaron              
-
+      
   - type: conditional
     view_layout:
       column: 3  

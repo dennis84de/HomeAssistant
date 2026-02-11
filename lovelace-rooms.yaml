@@ -1,4 +1,4 @@
-title: Home Assistant
+title: Zimmer
 views:
   - !include lovelace/wohnzimmer.yaml
   - !include lovelace/schlafzimmer.yaml

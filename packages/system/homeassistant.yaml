@@ -9,7 +9,20 @@ wake_on_lan:
 system_health:
 ssdp:
 lovelace:
-  mode: yaml
+  resource_mode: yaml
+  dashboards:      
+    lovelace-home:
+      mode: yaml
+      filename: lovelace-home.yaml
+      title: Übersicht
+      icon: mdi:view-dashboard
+      show_in_sidebar: true           
+    lovelace-rooms:
+      mode: yaml
+      filename: lovelace-rooms.yaml
+      title: Zimmer
+      icon: mdi:home-analytics
+      show_in_sidebar: true  
   resources:
     - url: /hacsfiles/mini-graph-card/mini-graph-card-bundle.js
       type: module
@@ -50,15 +63,7 @@ lovelace:
     - url: /hacsfiles/scheduler-card/scheduler-card.js
       type: module
     - url: /hacsfiles/lovelace-daily-schedule-card/daily-schedule-card.js
-      type: module      
-      
-  dashboards:      
-    lovelace-rooms:
-      mode: yaml
-      filename: lovelace-rooms.yaml
-      title: Zimmer
-      icon: mdi:home-assistant
-      show_in_sidebar: true  
+      type: module        
   
 panel_custom:
   - name: panel-redirect
@@ -68,6 +73,15 @@ panel_custom:
     module_url: /local/scripts/panel-redirect.js
     config:
       target: /config/logs
+  - name: dev-tools
+    sidebar_title: Dev Tools
+    sidebar_icon: mdi:application-cog-outline
+    js_url: /api/hassio/app/entrypoint.js
+    url_path: developer-tools/yaml
+    embed_iframe: true
+    require_admin: true
+    config:
+      ingress: core_configurator
 
 zone:
   - name: Home
@@ -93,7 +107,8 @@ template:
       - platform: homeassistant
         event: start    
     sensor:      
-      - name: Neustart Dauer
+      - unique_id: neustart_dauer
+        name: Neustart Dauer        
         device_class: duration
         unit_of_measurement: s
         state: >-
@@ -101,7 +116,9 @@ template:
           
           {{ 0 if letzterNeustart == 0 else (as_timestamp(now()) | int(0) - letzterNeustart)  }}
     
-      - default_entity_id: sensor.laufzeit_stunden        
+  - sensor:
+      - unique_id: laufzeit_stunden
+        default_entity_id: sensor.laufzeit_stunden           
         name: Laufzeit Stunden
         icon: mdi:clock
         unit_of_measurement: Stunden
@@ -110,7 +127,8 @@ template:
      
           {{ '-' if up_time == 'unknown' else ((as_timestamp(now()) - as_timestamp(up_time, None)) / 60 / 60) | round(2, 0) }}
       
-      - default_entity_id: sensor.laufzeit_minuten        
+      - unique_id: laufzeit_minuten
+        default_entity_id: sensor.laufzeit_minuten           
         name: Laufzeit Minuten
         icon: mdi:clock
         unit_of_measurement: Minuten
