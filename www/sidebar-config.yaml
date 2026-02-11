@@ -1,0 +1,82 @@
+order:   
+  - new_item: true
+    bottom: true
+    item: Integrationen
+    href: "/config/integrations"
+    icon: mdi:puzzle
+    
+  - new_item: true
+    bottom: true
+    item: Entitäten
+    href: "/config/entities"
+    icon: mdi:hexagon-multiple
+    
+  - new_item: true
+    bottom: true
+    item: Automationen
+    href: "/config/automation"
+    icon: mdi:robot
+    
+  - item: hacs
+    bottom: true
+    notification: |
+      [[[
+        const outdatedHacsEntities = Object.values(entities.update).filter(
+          (entity) => entity.platform === 'hacs' && is_state(entity.entity_id, 'on')
+        );
+        return outdatedHacsEntities.length || '';
+      ]]]
+    
+  - new_item: true
+    item: Logs
+    bottom: true
+    href: "/config/logs"
+    icon: mdi:math-log
+    
+  - new_item: true
+    item: 'Neustart'
+    icon: 'mdi:restart-alert'
+    on_click:
+      action: 'javascript'
+      code: |
+        openConfirmDialog({
+            title: 'Home Assistant neustarten?',
+            text: 'Dadurch werden alle laufenden Automationen und Skripte unterbrochen!',
+            confirmText: 'Neustarten',
+            dismissText: 'Abbrechen',
+            destructive: true,
+            confirm: () => {
+              callService('homeassistant', 'restart');
+            }
+          });
+    bottom: true
+    
+  - new_item: true
+    item: 'Neuladen'
+    icon: 'mdi:reload'
+    on_click:
+      action: 'javascript'
+      code: |
+        callService('homeassistant', 'reload_all');
+    bottom: true
+    
+  - new_item: true
+    item: Updates
+    notification: >
+      {% set totalUpdates = states.update | selectattr('state', 'eq', 'on') | list | length %}
+      {{ totalUpdates if totalUpdates > 0 else '' }}
+    href: "/config/updates"
+    icon: mdi:download
+    item_background: >
+      {% set totalUpdates = states.update | selectattr('state', 'eq', 'on') | list | length %}
+      {% if totalUpdates > 0 %} green {% endif %}
+    bottom: true
+    
+  - new_item: true
+    item: Dev Tools
+    href: "/developer-tools/yaml"
+    icon: mdi:hammer-screwdriver
+    bottom: true
+    
+  - item: settings
+    bottom: true   

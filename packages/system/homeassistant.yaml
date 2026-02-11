@@ -3,6 +3,8 @@ config:
 websocket_api:
 api:
 frontend:
+  extra_module_url:
+    - /hacsfiles/custom-sidebar/custom-sidebar-yaml.js  
 mobile_app:
 scene:
 wake_on_lan:
@@ -64,24 +66,6 @@ lovelace:
       type: module
     - url: /hacsfiles/lovelace-daily-schedule-card/daily-schedule-card.js
       type: module        
-  
-panel_custom:
-  - name: panel-redirect
-    url_path: redirect-server-controls
-    sidebar_title: Logs
-    sidebar_icon: mdi:text
-    module_url: /local/scripts/panel-redirect.js
-    config:
-      target: /config/logs
-  - name: dev-tools
-    sidebar_title: Dev Tools
-    sidebar_icon: mdi:application-cog-outline
-    js_url: /api/hassio/app/entrypoint.js
-    url_path: developer-tools/yaml
-    embed_iframe: true
-    require_admin: true
-    config:
-      ingress: core_configurator
 
 zone:
   - name: Home
