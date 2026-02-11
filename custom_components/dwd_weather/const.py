@@ -14,12 +14,12 @@ PLATFORMS = [
     Platform.SENSOR,
     Platform.WEATHER,
 ]
-INTEGRATION_VERSION = "2.6.1"
+INTEGRATION_VERSION = "3.0.0"
 MIN_REQUIRED_HA_VERSION = "2024.10.0"
 
-ATTR_LATEST_UPDATE = "latest_update_utc"
-ATTR_REPORT_ISSUE_TIME = "report_time_utc"
-ATTR_ISSUE_TIME = "forecast_time_utc"
+ATTR_LATEST_UPDATE = "latest_update"
+ATTR_REPORT_ISSUE_TIME = "report_time"
+ATTR_ISSUE_TIME = "forecast_time"
 ATTR_STATION_ID = "station_id"
 ATTR_STATION_NAME = "station_name"
 

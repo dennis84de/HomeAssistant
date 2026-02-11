@@ -15,7 +15,6 @@ from homeassistant.const import (
     PERCENTAGE,
 )
 
-__version__ = "5.7.5"
 PROJECT_URL = "https://github.com/alandtse/alexa_media_player/"
 ISSUE_URL = f"{PROJECT_URL}issues"
 NOTIFY_URL = f"{PROJECT_URL}wiki/Configuration%3A-Notification-Component#use-the-notifyalexa_media-service"
@@ -115,6 +114,51 @@ ATTR_MESSAGE = "message"
 ATTR_EMAIL = "email"
 ATTR_ENTITY_ID = "entity_id"
 ATTR_NUM_ENTRIES = "entries"
+COMMON_BUCKET_COUNTS = (
+    "accounts",
+    "devices",
+    "media_players",
+    "players",
+    "notifications",
+    "entities",
+)
+COMMON_DIAGNOSTIC_BUCKETS = (
+    "account",
+    "accounts",
+    "login",
+    "logins",
+    "session",
+    "sessions",
+)
+COMMON_DIAGNOSTIC_NAMES = (
+    "name",
+    "deviceName",
+    "accountName",
+    "friendlyName",
+    "title",
+)
+DEVICE_PLAYER_BUCKETS = ("devices", "media_players", "players")
+TO_REDACT: set[str] = {
+    "email",
+    "password",
+    "access_token",
+    "refresh_token",
+    "token",
+    "csrf",
+    "cookie",
+    "cookies",
+    "session",
+    "sessionid",
+    "macDms",
+    "mac_dms",
+    "otp_secret",
+    "authorization_code",
+    "securitycode",
+    "code_verifier",
+    "adp_token",
+    "device_private_key",
+    "customerId",
+}
 STREAMING_ERROR_MESSAGE = (
     "Sorry, direct music streaming isn't supported. "
     "This limitation is set by Amazon, and not by Alexa-Media-Player, Music-Assistant, nor Home-Assistant."
@@ -122,14 +166,11 @@ STREAMING_ERROR_MESSAGE = (
 PUBLIC_URL_ERROR_MESSAGE = (
     "To send TTS, please set the public URL in integration configuration."
 )
-STARTUP = f"""
--------------------------------------------------------------------
-{DOMAIN}
-Version: {__version__}
-This is a custom component
-If you have any issues with this you need to open an issue here:
-{ISSUE_URL}
--------------------------------------------------------------------
+STARTUP_MESSAGE = """
+{name} Version Info
+{DOMAIN}: v{version}
+alexapy API: v{alexapy_version}
+If you have any issues with this custom component, you need to open an issue here: {ISSUE_URL}
 """
 
 AUTH_CALLBACK_PATH = "/auth/alexamedia/callback"

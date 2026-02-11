@@ -76,10 +76,11 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     async def async_call_api_service(call):
         """Handle the service action call."""
 
-        sport_path = call.data.get(CONF_SPORT_PATH, "football")
-        league_path = call.data.get(CONF_LEAGUE_PATH, "nfl")
-        team_id = call.data.get(CONF_TEAM_ID, "cle")
+        sport_path = str(call.data.get(CONF_SPORT_PATH, "football"))
+        league_path = str(call.data.get(CONF_LEAGUE_PATH, "nfl"))
+        team_id = str(call.data.get(CONF_TEAM_ID, "cle"))
         conference_id = call.data.get(CONF_CONFERENCE_ID, "")
+        conference_id = "" if conference_id is None else str(conference_id)
         entity_ids = call.data.get("entity_id", "none")
 
         for entity_id in entity_ids:
@@ -415,7 +416,7 @@ class TeamTrackerDataUpdateCoordinator(DataUpdateCoordinator):
 
         if sport_path not in ("tennis", "baseball"):
             d1 = (date.today() - timedelta(days=1)).strftime("%Y%m%d")
-            d2 = (date.today() + timedelta(days=5)).strftime("%Y%m%d")
+            d2 = (date.today() + timedelta(days=90)).strftime("%Y%m%d")
             url_parms = url_parms + "&dates=" + d1 + "-" + d2
 
         if self.conference_id:

@@ -19,6 +19,7 @@ if TYPE_CHECKING:
     from homeassistant.core import HomeAssistant
 
 MIDNIGHT = datetime.time()
+MINUTE = datetime.timedelta(minutes=1)
 
 
 class TimeRange:
@@ -245,13 +246,13 @@ class Schedule:
         return [time_range.to_dict() for time_range in self._schedule]
 
     def next_update(self, date: datetime.datetime) -> datetime.datetime | None:
-        """Schedule a timer for the point when the state should be changed."""
+        """Calculate the next date and time when the state is going to change."""
         if not self._schedule:
             return None
 
-        timestamps = self._to_off if self.containing(date.time()) else self._to_on
-        if not timestamps:
-            # If time ranges cover the entire day (the subtraction result is empty).
+        if not (
+            timestamps := self._to_off if self.containing(date.time()) else self._to_on
+        ):
             return None
 
         time = date.time()
@@ -261,13 +262,78 @@ class Schedule:
         # Find the smallest timestamp which is bigger than time.
         for current in timestamps:
             if prev <= time < current:
-                return datetime.datetime.combine(today, current, tzinfo=date.tzinfo)
+                result = datetime.datetime.combine(today, current, tzinfo=date.tzinfo)
+                break
             prev = current
 
         # Time is bigger than all timestamps. Use tomorrow's 1st timestamp.
-        return datetime.datetime.combine(
-            today + datetime.timedelta(days=1), timestamps[0], tzinfo=date.tzinfo
-        )
+        else:
+            result = datetime.datetime.combine(
+                today + datetime.timedelta(days=1),
+                timestamps[0],
+                tzinfo=date.tzinfo,
+            )
+
+        return self._handle_dst(date, result)
+
+    def _handle_dst(
+        self, date: datetime.datetime, result: datetime.datetime
+    ) -> datetime.datetime:
+        """Handle DST transitions."""
+        if result.tzinfo is None:
+            return result
+
+        # Handle non-existent (imaginary) time due to forward jump, e.g. 2am => 3am.
+        # We check if the time exists by converting it to UTC and back.
+        if result != result.astimezone(datetime.UTC).astimezone(result.tzinfo):
+            # Find the next valid minute (DST uses minute bounds).
+            result = result.replace(second=0, microsecond=0)
+            while result != result.astimezone(datetime.UTC).astimezone(result.tzinfo):
+                result += MINUTE
+            return result
+
+        # Handle ambiguous time (fall back) due to backward jump, e.g. 2am => 1am.
+        if (
+            (old_offset := date.utcoffset()) is not None
+            and (new_offset := result.utcoffset()) is not None
+            # If time goes back between now and next update.
+            and old_offset > new_offset
+            # Get the beginning of "fold=1" (always earlier than "result").
+            and (fold1_start := self._fold1_start(date, result)) is not None
+        ):
+            # If the beginning of "fold=1" is an update, use it.
+            if self.containing(date.time()) != self.containing(fold1_start.time()):
+                return fold1_start
+
+            # Find the 1st update from the beginning of "fold=1".
+            if (fold1_update := self.next_update(fold1_start)) is not None:
+                return fold1_update
+
+        # Preserve "fold=1" if needed.
+        # We check DST boundary is not crossed by comparing offsets with "fold=0".
+        if date.fold == 1 and date.replace(fold=0).utcoffset() == result.utcoffset():
+            return result.replace(fold=1)
+
+        return result
+
+    def _fold1_start(
+        self, date: datetime.datetime, upper_bound: datetime.datetime
+    ) -> datetime.datetime | None:
+        """Get the beginning of "fold=1" time range for the given date."""
+        # Get the transition from "fold=0" to "fold=1".
+        transition = date.replace(second=0, microsecond=0)
+        if (old_offset := date.utcoffset()) is None:
+            return None  # pragma: no cover
+
+        while (new_offset := transition.utcoffset()) == old_offset:
+            transition += MINUTE
+            if transition > upper_bound:  # For safety, should never happen.
+                return None  # pragma: no cover
+        if new_offset is None:
+            return None  # pragma: no cover
+
+        # Return the "fold=1" start.
+        return (transition + new_offset - old_offset).replace(fold=1)
 
     def next_updates(
         self, date: datetime.datetime, count: int
