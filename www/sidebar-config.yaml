@@ -46,7 +46,7 @@ order:
             dismissText: 'Abbrechen',
             destructive: true,
             confirm: () => {
-              callService('homeassistant', 'restart');
+              callService('script', 'homeassistant_neustart');
             }
           });
     bottom: true
