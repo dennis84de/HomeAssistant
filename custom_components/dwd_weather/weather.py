@@ -150,7 +150,8 @@ class DWDWeather(DWDWeatherEntity, WeatherEntity):
     @property
     def extra_state_attributes(self):
         """Return data validity infos."""
-        return self._connector.infos
+        attributes = dict(self._connector.infos)
+        return attributes
 
     async def async_added_to_hass(self) -> None:
         """Connect to dispatcher listening for entity data notifications."""

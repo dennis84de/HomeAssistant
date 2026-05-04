@@ -7,14 +7,14 @@ from homeassistant.const import Platform
 # Base component constants
 NAME = "DWD Weather"
 DOMAIN = "dwd_weather"
-CONF_VERSION = 12
+CONF_VERSION = 13
 ATTRIBUTION = "Data provided by Deutscher Wetterdienst (DWD)"
 # Platforms
 PLATFORMS = [
     Platform.SENSOR,
     Platform.WEATHER,
 ]
-INTEGRATION_VERSION = "3.0.0"
+INTEGRATION_VERSION = "3.1.3"
 MIN_REQUIRED_HA_VERSION = "2024.10.0"
 
 ATTR_LATEST_UPDATE = "latest_update"
@@ -23,6 +23,7 @@ ATTR_ISSUE_TIME = "forecast_time"
 ATTR_STATION_ID = "station_id"
 ATTR_STATION_NAME = "station_name"
 
+ATTR_FORECAST_APPARENT_TEMP = "apparent_temperature"
 ATTR_FORECAST_SUN_DURATION = "sun_duration"
 ATTR_FORECAST_PRESSURE = "pressure"
 ATTR_FORECAST_PRECIPITATION_DURATION = "precipitation_duration"
@@ -33,6 +34,10 @@ ATTR_FORECAST_FOG_PROBABILITY = "fog_probability"
 ATTR_FORECAST_EVAPORATION = "evaporation"
 ATTR_FORECAST_HUMIDITY = "humidity"
 ATTR_FORECAST_HUMIDITY_ABSOLUTE = "humidity_absolute"
+ATTR_FORECAST_AIRQUALITY_OZON = "airquality_ozon"
+ATTR_FORECAST_AIRQUALITY_PM10 = "airquality_pm10"
+ATTR_FORECAST_AIRQUALITY_PM2_5 = "airquality_pm2_5"
+ATTR_FORECAST_AIRQUALITY_STICKSTOFFDIOXID = "airquality_stickstoffdioxid"
 
 DEFAULT_SCAN_INTERVAL = timedelta(minutes=1)
 DEFAULT_MAP_INTERVAL = timedelta(minutes=1)
@@ -58,6 +63,8 @@ CONF_STATION_NAME = "station_name"
 CONF_WIND_DIRECTION_TYPE = "wind_direction_type"
 CONF_INTERPOLATE = "interpolate"
 CONF_HOURLY_UPDATE = "hourly_update"
+CONF_DOWNLOAD_APPARENT_TEMPERATURE = "download_apparent_temperature"
+CONF_DOWNLOAD_AIRQUALITY = "download_airquality"
 CONF_ADDITIONAL_FORECAST_ATTRIBUTES = "additional_forecast_attributes"
 CONF_DAILY_TEMP_HIGH_PRECISION = "daily_temp_high_precision"
 CONF_SENSOR_FORECAST_STEPS = "sensor_forecast_steps"
