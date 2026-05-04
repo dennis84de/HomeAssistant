@@ -6,7 +6,36 @@ input_boolean:
 notify:
   - platform: alexa_media
     name: Alexa
-                   
+         
+template:
+  - binary_sensor:
+      - name: "Alexa verfügbar"
+        unique_id: alexa_verfuegbar
+        icon: >-
+          {% set ns = namespace(available=true) -%}
+          {% if (states('sensor.watchman_missing_actions') | int(0)) > 0 %}
+
+            {%- for item in state_attr("sensor.watchman_missing_actions", "entities") %}             
+              {% if item.id == 'notify.alexa_media' %}
+                {% set ns.available = false %}
+              {% endif %}
+            {%- endfor %}    
+          {% endif %}   
+        
+          {{ "mdi:music-note-bluetooth" if ns.available == True else "mdi:music-note-bluetooth-off" }}        
+        state: >-
+          {% set ns = namespace(available=true) -%}
+          {% if (states('sensor.watchman_missing_actions') | int(0)) > 0 %}
+
+            {%- for item in state_attr("sensor.watchman_missing_actions", "entities") %}              
+              {% if item.id == 'notify.alexa_media' %}
+                {% set ns.available = false %}
+              {% endif %}
+            {%- endfor %}    
+          {% endif %}   
+          
+          {{ ns.available }}  
+          
 script:
   alexa_tts:
     alias: "Alexa TTS"
@@ -16,6 +45,7 @@ script:
           - "{{ is_state('binary_sensor.fritz_box_6660_cable_verbindung', 'on') }}"
           - "{{ is_state('person.dennis', 'home') }}"
           - "{{ is_state('input_boolean.nicht_stoeren', 'off') }}"
+          - "{{ is_state('binary_sensor.alexa_verfuegbar', 'on') }}"
           - condition: or
             conditions:            
               - "{{ override is defined and override == true }}"

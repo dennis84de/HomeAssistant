@@ -366,11 +366,9 @@ cards:
     entities:
       - entity: sensor.tankstelle_kaufland
         name: Kaufland
-      - entity: sensor.tankstelle_jet_dortmund
-        name: Jet Dortmund
-      - entity: sensor.tankstelle_jet_mulheim
-        name: Jet Mülheim
-          
+      - entity: sensor.tankstelle_borussiastrasse
+        name: Borussiastraße
+
   - type: custom:mini-graph-card
     name: Temperatur
     line_width: 2

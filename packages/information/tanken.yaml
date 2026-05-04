@@ -4,13 +4,9 @@ mqtt:
       unit_of_measurement: '€'    
       state_topic: "tanken/kaufland"
 
-    - name: "Tankstelle Jet Dortmund"
+    - name: "Tankstelle Borussiastraße"
       unit_of_measurement: '€'
-      state_topic: "tanken/jet_do"
-
-    - name: "Tankstelle Jet Mülheim"
-      unit_of_measurement: '€'
-      state_topic: "tanken/jet_mh"
+      state_topic: "tanken/borussiastrasse"
 
 automation:
   - alias: "Tanken Telegram"
@@ -25,20 +21,15 @@ automation:
         data:
           title: "Aktuelle Benzinpreise"
           message: >
-            {% set kauflandPrice = states('sensor.tankerkoenig_supermarkt_tankstelle_kaufland_dortmund_wulfshofstr_e10') %}
+            {% set kauflandPrice = states('sensor.sensor.supermarkt_tankstelle_kaufland_dortmund_wulfshofstr_e10') %}
             {% set kauflandText = (kauflandPrice | float) ~ '€' if kauflandPrice != 'unknown' else ('geschlossen' if is_state('binary_sensor.supermarkt_tankstelle_wulfshofstrasse_6_8_status', 'off') else '-') %}
 
-            {% set jetDoPrice = states('sensor.tankerkoenig_jet_dortmund_provinzialstr_229_e10') %}
-            {% set jetDoText = (jetDoPrice | float) ~ '€' if jetDoPrice != 'unknown' else ('geschlossen' if is_state('binary_sensor.jet_provinzialstr_229_status', 'off') else '-') %}
-
-            {% set jetMhPrice = states('sensor.tankerkoenig_jet_muelheim_strassburger_allee_75_e10') %}
-            {% set jetMhText = (jetMhPrice | float) ~ '€' if jetMhPrice != 'unknown' else ('geschlossen' if is_state('binary_sensor.jet_strassburger_allee_75_status', 'off') else '-') %}
+            {% set borussiaStrassePrice = states('sensor.sb_borussiastrasse_118_super_e10') %}
+            {% set borussiaStrasseText = (borussiaStrassePrice | float) ~ '€' if borussiaStrassePrice != 'unknown' else ('geschlossen' if is_state('binary_sensor.sb_borussiastrasse_118_status', 'off') else '-') %}
 
             {{ 'Kaufland: ' ~ kauflandText }}       
             
-            {{ 'Jet Dortmund: ' ~ jetDoText }}    
-            
-            {{ 'Jet Mülheim: ' ~ jetMhText }}    
+            {{ 'Borusiastraße: ' ~ borussiaStrasseText }}    
 
   - alias: "Tanken Preis"
     id: "tanken_preis"
@@ -46,13 +37,10 @@ automation:
     trigger:
       - platform: state
         id: "tanken/kaufland"
-        entity_id: sensor.tankerkoenig_supermarkt_tankstelle_kaufland_dortmund_wulfshofstr_e10
+        entity_id: sensor.supermarkt_tankstelle_kaufland_dortmund_wulfshofstr_e10
       - platform: state
-        id: "tanken/jet_do"
-        entity_id: sensor.tankerkoenig_jet_dortmund_provinzialstr_229_e10
-      - platform: state
-        id: "tanken/jet_mh"
-        entity_id: sensor.tankerkoenig_jet_muelheim_strassburger_allee_75_e10          
+        id: "tanken/borussiastrasse"
+        entity_id: sensor.sb_borussiastrasse_118_super_e10      
     condition:
       - "{{ trigger.to_state.state != 'unknown' }}"
       - "{{ trigger.to_state.state != 'unavailable' }}"      
@@ -65,11 +53,7 @@ automation:
 
 homeassistant:
   customize:           
-    sensor.tankerkoenig_jet_muelheim_strassburger_allee_75_e10:
-      friendly_name: Tankstelle Jet Mülheim
-    sensor.tankerkoenig_jet_dortmund_provinzialstr_229_e10:
-      friendly_name: Tankstelle Jet Dortmund      
-    sensor.tankerkoenig_supermarkt_tankstelle_kaufland_dortmund_wulfshofstr_e10:
+    sensor.sensor.supermarkt_tankstelle_kaufland_dortmund_wulfshofstr_e10:
       friendly_name: Tankstelle Kaufland
-    sensor.tankerkoenig_sb_dortmund_borussiastrasse_118_e10:
-      friendly_name: Tankstelle Borussiastraße
+    sensor.sb_borussiastrasse_118_super_e10:
+      friendly_name: Tankstelle Borussiastraße     

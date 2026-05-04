@@ -208,8 +208,6 @@ homeassistant:
       friendly_name: Tablet Franzi
     device_tracker.tabletschlafzimmer:
       friendly_name: Tablet Schafzimmer
-    device_tracker.tabletbalkon:
-      friendly_name: Tablet Balkon
       
     device_tracker.magichomeflurvorne:
       friendly_name: MagicHome Flur vorne

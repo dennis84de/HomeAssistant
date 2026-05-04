@@ -73,11 +73,20 @@ cards:
         name: Fenster        
       - entity: sensor.kueche_helligkeit
         name: Helligkeit
-
-  - type: thermostat
+   
+  - type: custom:simple-thermostat
     entity: climate.heizung_kueche
-    name: Heizung
-
+    header:
+      name: Heizung     
+    layout:
+      step: row
+      mode:
+        names: true
+        headings: false
+    control:
+      hvac: true
+    step_size: 1
+    
   - type: entities
     title: Multimedia
     show_header_toggle: false

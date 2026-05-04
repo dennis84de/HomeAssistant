@@ -4,7 +4,7 @@ websocket_api:
 api:
 frontend:
   extra_module_url:
-    - /hacsfiles/custom-sidebar/custom-sidebar-yaml.js  
+    - /hacsfiles/custom-sidebar/custom-sidebar-plugin.js  
 mobile_app:
 scene:
 wake_on_lan:
@@ -63,9 +63,9 @@ lovelace:
     - url: /hacsfiles/weather-chart-card/weather-chart-card.js
       type: module      
     - url: /hacsfiles/scheduler-card/scheduler-card.js
-      type: module
-    - url: /hacsfiles/lovelace-daily-schedule-card/daily-schedule-card.js
-      type: module        
+      type: module 
+    - url: /hacsfiles/simple-thermostat/simple-thermostat.js
+      type: module      
 
 zone:
   - name: Home

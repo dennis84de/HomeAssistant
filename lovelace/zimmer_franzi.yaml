@@ -11,10 +11,19 @@ cards:
     entities:
       - entity: light.zimmer_franzi_licht
         name: Licht
-      
-  - type: thermostat
+    
+  - type: custom:simple-thermostat
     entity: climate.heizung_zimmer_franzi
-    name: Heizung    
+    header:
+      name: Heizung     
+    layout:
+      step: row
+      mode:
+        names: true
+        headings: false
+    control:
+      hvac: true
+    step_size: 1
     
   - type: custom:stack-in-card
     cards:

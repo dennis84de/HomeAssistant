@@ -147,3 +147,5 @@ homeassistant:
       unit_of_measurement: Warnungen
     sensor.watchman_missing_entities:
       unit_of_measurement: Entität(en)
+    sensor.watchman_missing_actions:
+      unit_of_measurement: Aktion(en)      

@@ -113,9 +113,22 @@ cards:
 #        state: "{{ ((states('sensor.staubsauger_reinigung_sensor') | int(0)) / 60 / 60) | round(2) }} Stunden"                       
                
                     
-  - type: thermostat
-    entity: climate.heizung_zimmer_aaron
-    name: Heizung            
+#  - type: thermostat
+#    entity: climate.heizung_zimmer_aaron
+#    name: Heizung       
+
+  - type: custom:simple-thermostat
+    entity: climate.heizung_wohnzimmer
+    header:
+      name: Heizung 
+    layout:
+      step: row
+      mode:
+        names: true
+        headings: false
+    control:
+      hvac: true
+    step_size: 1
 
   - type: entities
     title: Multimedia

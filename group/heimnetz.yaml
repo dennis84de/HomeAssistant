@@ -9,6 +9,7 @@ heimnetz:
     - device_tracker.tplinkbadezimmerradio      
     - device_tracker.tplinkkuecheradio      
     - device_tracker.tplinkschlafzimmerfernseher     
+    - device_tracker.tplinkairbowl
     - device_tracker.tasmotawohnzimmerradio
     - device_tracker.tasmotawohnzimmerschrank
     - device_tracker.tasmotawohnzimmercouch   

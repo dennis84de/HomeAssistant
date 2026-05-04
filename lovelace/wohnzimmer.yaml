@@ -49,6 +49,18 @@ cards:
 
   - type: entities
     view_layout:
+      column: 2
+    title: Geräte
+    show_header_toggle: false
+    entities:
+      - entity: switch.airbowl      
+      - type: custom:daily-schedule-card
+        entities:
+          - entity: binary_sensor.airbowl   
+            name: Zeiten
+        
+  - type: entities
+    view_layout:
       column: 3
     title: Balkon
     show_header_toggle: false
@@ -90,10 +102,19 @@ cards:
       - entity: input_boolean.wiedergabe_pausieren      
       - entity: cover.fernseher_sender
         name: Sender                                                                      
-                
-  - type: thermostat
+    
+  - type: custom:simple-thermostat
     entity: climate.heizung_wohnzimmer
-    name: Heizung                  
+    header:
+      name: Heizung     
+    layout:
+      step: row
+      mode:
+        names: true
+        headings: false
+    control:
+      hvac: true
+    step_size: 1
                  
   - type: glance
     title: Sensoren
@@ -123,6 +144,17 @@ cards:
               points: false
             entities:
               - entity: sensor.wohnzimmer_temperatur  
+          - type: custom:mini-graph-card
+            name: Luftfeuchtigkeit
+            line_width: 3
+            animate: true
+            hour24: true
+            show:
+              fill: false
+              icon: false
+              points: false
+            entities:
+              - entity: sensor.wohnzimmer_luftfeuchtigkeit                
       - type: entities        
         show_header_toggle: false
         entities:

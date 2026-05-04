@@ -1,0 +1,52 @@
+timer:
+  airbowl:
+    name: AirBowl
+    icon: mdi:timer-off
+    duration: 7200
+          
+automation:
+  - alias: 'AirBowl einschalten'
+    id: "airbowl_einschalten"
+    trigger:   
+      - id: airbowl_schedule
+        platform: state
+        entity_id: binary_sensor.airbowl 
+        to: 'on'         
+      - id: airbowl_timer
+        platform: event
+        event_type: timer.started
+        event_data:
+          entity_id: timer.airbowl         
+    condition:
+      - "{{ (states('sensor.personen_zu_hause') | int(0) > 0) }}"
+    action:
+      - service: switch.turn_on
+        entity_id: switch.airbowl      
+              
+  - alias: 'AirBowl ausschalten'
+    id: "airbowl_ausschalten"
+    trigger: 
+      - id: airbowl_schalter
+        platform: state
+        entity_id: switch.airbowl 
+        to: 'off'            
+      - id: airbowl_schedule
+        platform: state
+        entity_id: binary_sensor.airbowl 
+        to: 'off'          
+      - id: airbowl_timer
+        platform: event
+        event_type: timer.finished
+        event_data:
+          entity_id: timer.airbowl            
+    condition:      
+      - "{{ is_state('switch.airbowl', 'on') }}"
+    action:
+      - if: "{{ trigger.id != 'airbowl_schalter' }}"
+        then:
+          - service: switch.turn_off
+            entity_id: switch.airbowl           
+      - if: "{{ trigger.id != 'airbowl_timer' }}"
+        then:
+          - service: timer.cancel
+            entity_id: timer.airbowl

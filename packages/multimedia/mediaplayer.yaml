@@ -18,6 +18,7 @@ automation:
       - "{{ is_state('calendar.borussia_dortmund', 'off') }}"
       - "{{ is_state('calendar.formel1_rennen', 'off') }}"
       - "{{ is_state('calendar.formel1_qualifikation', 'off') }}"           
+      - "{{ is_state('switch.watchtv_wohnzimmer', 'off') }}"           
     action:
       - service: media_player.play_media
         data:

@@ -234,7 +234,7 @@ automation:
           inline_keyboard: []
       - service: telegram_bot.send_message
         data:
-          target: '{{ trigger.event.data.chat_id }}'
+          chat_id: '{{ trigger.event.data.chat_id }}'
           message: >-
             {% set eingeschalteteGeraete = expand('group.alles_ausschalten')
               | selectattr('state','eq','on') 
@@ -271,7 +271,7 @@ automation:
           inline_keyboard: []
       - service: telegram_bot.send_message
         data:
-          target: '{{ trigger.event.data.chat_id }}'
+          chat_id: '{{ trigger.event.data.chat_id }}'
           message: "Alle Geräte werden ausgeschaltet."
 
   - alias: "Telegram - Alarm einschalten"
@@ -289,7 +289,7 @@ automation:
           inline_keyboard: []
       - service: telegram_bot.send_message
         data:
-          target: '{{ trigger.event.data.chat_id }}'
+          chat_id: '{{ trigger.event.data.chat_id }}'
           message: 'Der Alarm wird eingeschaltet'
       - service: alarmo.arm
         data:
@@ -331,7 +331,7 @@ automation:
         entity_id: switch.abwesenheit_urlaub
       - service: telegram_bot.send_message
         data:
-          target: '{{ trigger.event.data.chat_id }}'
+          chat_id: '{{ trigger.event.data.chat_id }}'
           message: "Die Lichtsimulation wird eingeschaltet."
                
   - alias: "Telegram - Lichtsimulation ausschalten"
@@ -346,5 +346,5 @@ automation:
         entity_id: switch.abwesenheit_urlaub
       - service: telegram_bot.send_message
         data:
-          target: '{{ trigger.event.data.chat_id }}'
+          chat_id: '{{ trigger.event.data.chat_id }}'
           message: "Die Lichtsimulation wird ausgeschaltet."         

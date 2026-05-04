@@ -21,6 +21,8 @@ cards:
     entities:
       - entity: device_tracker.xiaomivacuum
         name: Staubsauger
+      - entity: device_tracker.tplinkairbowl
+        name: AirBowl        
       - entity: device_tracker.xiaomifan
         name: Ventilator
       - entity: device_tracker.epsondrucker
@@ -131,8 +133,6 @@ cards:
         name: Badezimmer
       - entity: device_tracker.tabletschlafzimmer
         name: Schlafzimmer
-      - entity: device_tracker.tabletbalkon
-        name: Balkon
       - entity: device_tracker.tabletfranzi
         name: Franzi        
         

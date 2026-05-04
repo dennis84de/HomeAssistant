@@ -4,7 +4,8 @@ template:
         default_entity_id: cover.markise
         name: Markise
         device_class: blind       
-        optimistic: false
+        optimistic: true
+        state: "{{ 'closed' }}"
         open_cover:
           - action: script.markise_hoch
         close_cover:

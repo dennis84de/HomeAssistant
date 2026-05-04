@@ -331,7 +331,7 @@ automation:
         entity_id: switch.computer_arbeit, switch.monitore
       - service: telegram_bot.send_message
         data:
-          target: '{{ trigger.event.data.chat_id }}'
+          chat_id: '{{ trigger.event.data.chat_id }}'
           message: "Der Computer wird ausgeschaltet."         
                
   - alias: "Home Office - Status geändert"

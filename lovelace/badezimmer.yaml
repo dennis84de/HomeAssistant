@@ -22,10 +22,19 @@ cards:
         hide:
           source: true
           progress: true     
-
-  - type: thermostat
+   
+  - type: custom:simple-thermostat
     entity: climate.heizung_badezimmer
-    name: Heizung
+    header:
+      name: Heizung     
+    layout:
+      step: row
+      mode:
+        names: true
+        headings: false
+    control:
+      hvac: true
+    step_size: 1
 
   - type: entities
     title: Licht

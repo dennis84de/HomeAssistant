@@ -14,12 +14,8 @@ cards:
 
   - type: custom:battery-state-card
     title: Tablets
-    tap_action: more-info
-    color_thresholds:
-      - value: 10
-        color: "red"
-      - value: 30
-        color: "yellow"      
+    collapse: 0
+    tap_action: more-info   
     entities:                              
       - entity: sensor.tablet_badezimmer_battery_level
         name: Badezimmer
@@ -44,13 +40,8 @@ cards:
           
   - type: custom:battery-state-card
     title: Sensoren
+    collapse: 0
     tap_action: more-info
-    sort_by_level: asc
-    color_thresholds:
-      - value: 10
-        color: "red"
-      - value: 30
-        color: "yellow"      
     entities:
       - entity: sensor.wohnungstuer_battery_level
         name: Wohnungstür
@@ -63,13 +54,8 @@ cards:
         
   - type: custom:battery-state-card
     title: Schalter
+    collapse: 0
     tap_action: more-info
-    sort_by_level: asc
-    color_thresholds:
-      - value: 10
-        color: "red"
-      - value: 30 
-        color: "yellow"    
     entities:     
       - entity: sensor.schalter_wohnzimmer_battery_level        
         name: Wohnzimmer              
@@ -84,17 +70,14 @@ cards:
       - entity: sensor.schalter_bett_links_battery_level       
         name: Bett links
       - entity: sensor.schalter_bett_rechts_battery_level        
-        name: Bett rechts              
-
+        name: Bett rechts         
+#      - entity: sensor.schalter_markise_battery_level      
+#        name: Markise   
+        
   - type: custom:battery-state-card
     title: Thermometer
+    collapse: 0
     tap_action: more-info
-    sort_by_level: asc
-    color_thresholds:
-      - value: 10
-        color: "red"
-      - value: 30
-        color: "yellow"        
     entities:
       - entity: sensor.thermometer_parkplatz_battery_level        
         name: Parkplatz
@@ -111,13 +94,8 @@ cards:
         
   - type: custom:battery-state-card
     title: Bewegungsmelder
+    collapse: 0
     tap_action: more-info
-    sort_by_level: asc
-    color_thresholds:
-      - value: 10
-        color: "red"
-      - value: 30
-        color: "yellow"    
     entities:
       - entity: sensor.bewegungsmelder_wohnzimmer_battery_level        
         name: Wohnzimmer
@@ -140,13 +118,8 @@ cards:
 
   - type: custom:battery-state-card
     title: Heizung
+    collapse: 0
     tap_action: more-info
-    sort_by_level: asc
-    color_thresholds:
-      - value: 10
-        color: "red"
-      - value: 30
-        color: "yellow"    
     entities:
       - entity: sensor.heizung_wohnzimmer_batterie
         name: Wohnzimmer     
@@ -161,13 +134,8 @@ cards:
 
   - type: custom:battery-state-card
     title: Fenster
+    collapse: 0
     tap_action: more-info
-    sort_by_level: asc
-    color_thresholds:
-      - value: 10
-        color: "red"
-      - value: 30
-        color: "yellow"    
     entities:
       - entity: sensor.balkontuer_battery_level    
         name: Balkontür
@@ -184,13 +152,8 @@ cards:
                    
   - type: custom:battery-state-card
     title: Bluetooth
+    collapse: 0
     tap_action: more-info
-    sort_by_level: asc
-    color_thresholds:
-      - value: 10
-        color: "red"
-      - value: 30
-        color: "yellow"    
     entities:
       - entity: sensor.pflanze_wohnzimmer_battery_level       
         name: Pflanze Wohnzimmer

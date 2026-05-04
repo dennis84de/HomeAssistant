@@ -152,6 +152,8 @@ cards:
         entities:
           - entity: sensor.watchman_missing_entities
             name: Entitäten
+          - entity: sensor.watchman_missing_actions
+            name: Aktionen            
           - entity: sensor.netzwerkgerate_offline
             name: Netzwerk
           - entity: sensor.steckdosen_offline
@@ -185,6 +187,32 @@ cards:
                         {%- endfor %}           
                       {% endif %}    
 
+          - entity: sensor.watchman_missing_actions
+            name: Fehlende Aktionen
+            secondary_info: last-changed  
+            tap_action:
+              action: fire-dom-event
+              browser_mod:
+                service: browser_mod.popup
+                data:              
+                  content:          
+                    type: markdown
+                    content: >-        
+                      {% if (is_state('sensor.watchman_missing_actions', '0')) %}
+                        **<font color=#c5e566>Alle Aktionen sind verfügbar.</font>**
+                      {% else %}                                         
+                        {%- for item in state_attr("sensor.watchman_missing_actions", "entities") %}
+                          {% if loop.index > 1 %}<hr>{% endif %} <table><tr> <td>
+                          <ha-icon icon='mdi:
+                          {%- if item.state=="missing"-%}cloud-alert'
+                          {%- elif item.state=="unavail" -%}cloud-off-outline' {%- else-%}cloud-question'
+                          {%- endif -%} ></ha-icon>
+                          {{ item.id }} [{{item.state}}] <br><a title="{{item.occurrences}}">
+                          {{item.occurrences.split('/')[-1].split(':')[0]}}</a>
+                          </td></tr></table>
+                        {%- endfor %}           
+                      {% endif %}    
+                      
           - entity: sensor.netzwerkgerate_offline
             secondary_info: last-changed  
             tap_action:
@@ -234,9 +262,13 @@ cards:
     show_header_toggle: false
     entities:
       - entity: binary_sensor.healthchecks_home_assistant  
+        name: Home Assistant
       - entity: binary_sensor.healthchecks_diskstation        
+        name: Diskstation
       - entity: binary_sensor.uptime_robot_nextcloud        
+        name: Nextcloud
       - entity: binary_sensor.healthchecks_djaeschke_de
+        name: djaeschke.de
 
   - type: custom:stack-in-card
     cards:
