@@ -1,4 +1,4 @@
-let $4fcaa3c95ba349ea$export$a4ad2735b021c132 = "v0.14.17";
+let $4fcaa3c95ba349ea$export$a4ad2735b021c132 = "v0.17.0";
 let $4fcaa3c95ba349ea$export$6df7962ea75d9a39 = "https://a.espncdn.com/i/headshots/golf/players/full/";
 let $4fcaa3c95ba349ea$export$7e154a1de2266268 = "https://a.espncdn.com/i/headshots/mma/players/full/";
 let $4fcaa3c95ba349ea$export$c8a00e33d990d0fa = "https://a.espncdn.com/i/headshots/rpm/players/full/";
@@ -686,6 +686,11 @@ class $de5768471e29ae80$export$c622f67f045f310d extends (0, $ab210b2da7b39b9d$ex
     }
     _valueChanged(event, key) {
         if (!this._config) return;
+        // ha-selector fires detail.value; ha-switch uses target.checked; others use target.value
+        let value;
+        if (event.detail && event.detail.value !== undefined) value = event.detail.value;
+        else if (event.target.checked !== undefined) value = event.target.checked;
+        else value = event.target.value;
         let newConfig = {
             ...this._config
         };
@@ -699,11 +704,8 @@ class $de5768471e29ae80$export$c622f67f045f310d extends (0, $ab210b2da7b39b9d$ex
                 };
                 currentLevel = currentLevel[part];
             }
-            const finalKey = parts[parts.length - 1];
-            if (event.target.checked !== undefined) currentLevel[finalKey] = event.target.checked;
-            else currentLevel[finalKey] = event.target.value;
-        } else if (event.target.checked !== undefined) newConfig[key] = event.target.checked;
-        else newConfig[key] = event.target.value;
+            currentLevel[parts[parts.length - 1]] = value;
+        } else newConfig[key] = value;
         this.configChanged(newConfig);
         this.requestUpdate();
     }
@@ -765,34 +767,61 @@ class $de5768471e29ae80$export$c622f67f045f310d extends (0, $ab210b2da7b39b9d$ex
         <div>
             <h4>Teamtracker Sensor:</h4>
             <div class="textfield-container">
-                <ha-select
-                    naturalMenuWidth
-                    fixedMenuPosition
-                    label="Entity"
-                    .configValue=${'entity'}
-                    .value=${this._entity}
-                    @change=${(e)=>this._EntityChanged(e, 'entity')}
-                    @closed=${(ev)=>ev.stopPropagation()}
-                    >
-                    ${this.entities.map((entity)=>{
-            return (0, $f58f44579a4747ac$export$c0bb0b647f701bb5)`<ha-list-item .value=${entity}>${entity}</ha-list-item>`;
-        })}
-                </ha-select>
+                <ha-selector
+                    .value=${this._config.entity ?? ''}
+                    .selector=${{
+            entity: {
+                filter: {
+                    integration: 'teamtracker'
+                }
+            }
+        }}
+                    .hass=${this.hass}
+                    @value-changed=${(e)=>{
+            const newConfig = {
+                ...this._config,
+                entity: e.detail.value
+            };
+            this._entity = e.detail.value;
+            this.configChanged(newConfig);
+            this.requestUpdate();
+        }}
+                ></ha-selector>
             </div>
             <hr>
             <h4>Settings:</h4>
-            <ha-select
-                naturalMenuWidth
-                fixedMenuPosition
-                .configValue=${'home_side'}
-                .value=${this._config.home_side}
-                @change=${(e)=>this._valueChanged(e, 'home_side')}
-                @closed=${(ev)=>ev.stopPropagation()}
-                >
-                <ha-list-item .value=${''}>Team on Left</ha-list-item>
-                <ha-list-item .value=${'left'}>Home on Left</ha-list-item>
-                <ha-list-item .value=${'right'}>Home on Right</ha-list-item>
-            </ha-select>
+            <ha-selector
+                label="Home Side"
+                .value=${this._config.home_side || 'team'}
+                .selector=${{
+            select: {
+                mode: 'dropdown',
+                options: [
+                    {
+                        value: 'team',
+                        label: 'Team on Left'
+                    },
+                    {
+                        value: 'left',
+                        label: 'Home on Left'
+                    },
+                    {
+                        value: 'right',
+                        label: 'Home on Right'
+                    }
+                ]
+            }
+        }}
+                @value-changed=${(e)=>{
+            const val = e.detail.value === 'team' ? '' : e.detail.value;
+            const newConfig = {
+                ...this._config,
+                home_side: val
+            };
+            this.configChanged(newConfig);
+            this.requestUpdate();
+        }}
+            ></ha-selector>
             <div class="switch-container">
                 <ha-switch
                     @change="${(e)=>this._valueChanged(e, 'show_league')}"
@@ -891,6 +920,7 @@ class $de5768471e29ae80$export$c622f67f045f310d extends (0, $ab210b2da7b39b9d$ex
 const $044e49bbd03ccfb1$export$2fa162a495d26869 = {
     "common": {
         "api_error": "API Error",
+        "field_not_set": "Qualifying nicht abgeschlossen",
         "no_upcoming_games": "Keine anstehenden Spiele bis %s",
         "finalTerm": "%s - Endergebnis",
         "byeTerm": "BYE",
@@ -1041,6 +1071,7 @@ const $044e49bbd03ccfb1$export$2fa162a495d26869 = {
 const $e5e336768a089693$export$c3da0dad1b44eea9 = {
     "common": {
         "api_error": "\u03A3\u03C6\u03AC\u03BB\u03BC\u03B1 API",
+        "field_not_set": "\u039F\u03B9 \u03BA\u03B1\u03C4\u03B1\u03C4\u03B1\u03BA\u03C4\u03AE\u03C1\u03B9\u03B5\u03C2 \u03B4\u03BF\u03BA\u03B9\u03BC\u03AD\u03C2 \u03B4\u03B5\u03BD \u03AD\u03C7\u03BF\u03C5\u03BD \u03BF\u03BB\u03BF\u03BA\u03BB\u03B7\u03C1\u03C9\u03B8\u03B5\u03AF",
         "no_upcoming_games": "\u0394\u03B5\u03BD \u03C5\u03C0\u03AC\u03C1\u03C7\u03BF\u03C5\u03BD \u03C0\u03C1\u03BF\u03C3\u03B5\u03C7\u03B5\u03AF\u03C2 \u03B1\u03B3\u03CE\u03BD\u03B5\u03C2 \u03AD\u03C9\u03C2 %s",
         "finalTerm": "%s - \u03A4\u03B5\u03BB\u03B9\u03BA\u03CC\u03C2",
         "byeTerm": "\u0391\u039D\u0391\u03A0\u0391\u03A5\u03A3\u0397",
@@ -1191,6 +1222,7 @@ const $e5e336768a089693$export$c3da0dad1b44eea9 = {
 const $9bf8d9821f43b5a3$export$84584c2a98eb6753 = {
     "common": {
         "api_error": "API Error",
+        "field_not_set": "Qualifying not Complete",
         "no_upcoming_games": "No upcoming games through %s",
         "finalTerm": "%s - Final",
         "byeTerm": "BYE",
@@ -1341,6 +1373,7 @@ const $9bf8d9821f43b5a3$export$84584c2a98eb6753 = {
 const $738479ced03534bd$export$25dc44e90bc68e13 = {
     "common": {
         "api_error": "API Error",
+        "field_not_set": "Qualifying not Complete",
         "no_upcoming_games": "No upcoming games through %s",
         "finalTerm": "%s - Final",
         "byeTerm": "BYE",
@@ -1491,6 +1524,7 @@ const $738479ced03534bd$export$25dc44e90bc68e13 = {
 const $fa59b11c3970eda2$export$ca5e4045a55e76d2 = {
     "common": {
         "api_error": "Error de API",
+        "field_not_set": "La clasificaci\xf3n no ha finalizado",
         "no_upcoming_games": "No hay pr\xf3ximos juegos hasta el %s",
         "finalTerm": "%s - Final",
         "byeTerm": "DESCANSO",
@@ -1641,6 +1675,7 @@ const $fa59b11c3970eda2$export$ca5e4045a55e76d2 = {
 const $b35902dfc88d0d3b$export$13aa9a2e371cd2fd = {
     "common": {
         "api_error": "Error de API",
+        "field_not_set": "La clasificaci\xf3n no ha finalizado",
         "no_upcoming_games": "No hay pr\xf3ximos juegos hasta el %s",
         "finalTerm": "%s - Final",
         "byeTerm": "DESCANSO",
@@ -1791,6 +1826,7 @@ const $b35902dfc88d0d3b$export$13aa9a2e371cd2fd = {
 const $4f808b6be6c4ddc7$export$acb2a88f7d552ebf = {
     "common": {
         "api_error": "Erreur API",
+        "field_not_set": "Les qualifications ne sont pas termin\xe9es",
         "no_upcoming_games": "Aucun match pr\xe9vu pour l'instant %s",
         "finalTerm": "%s - Terminer",
         "byeTerm": "Au revoir",
@@ -1941,6 +1977,7 @@ const $4f808b6be6c4ddc7$export$acb2a88f7d552ebf = {
 const $d573fc5554189e19$export$3486a10f30cf1ee4 = {
     "common": {
         "api_error": "API Error",
+        "field_not_set": "Le qualifiche non sono concluse",
         "no_upcoming_games": "Nessun Match imminente %s",
         "finalTerm": "%s - Finale",
         "byeTerm": "Ciao",
@@ -2091,6 +2128,7 @@ const $d573fc5554189e19$export$3486a10f30cf1ee4 = {
 const $48e4764806fa7a6b$export$9c64ee4d84d79ce1 = {
     "common": {
         "api_error": "API Fout",
+        "field_not_set": "Kwalificatie niet afgerond",
         "no_upcoming_games": "Geen aanstaande wedstrijden t/m %s",
         "finalTerm": "Einduitslag - %s",
         "byeTerm": "D\xe1\xe1\xe1g!",
@@ -2241,6 +2279,7 @@ const $48e4764806fa7a6b$export$9c64ee4d84d79ce1 = {
 const $60a4d35e5022a9df$export$9dc8766c8c230075 = {
     "common": {
         "api_error": "Erro de API",
+        "field_not_set": "A classifica\xe7\xe3o n\xe3o foi conclu\xedda",
         "no_upcoming_games": "Sem pr\xf3ximos jogos %s",
         "finalTerm": "%s - Final",
         "byeTerm": "DESCANSO",
@@ -2333,6 +2372,7 @@ const $60a4d35e5022a9df$export$9dc8766c8c230075 = {
 const $06041e2b1c26c877$export$d608fa5b5bfd2021 = {
     "common": {
         "api_error": "Chyba API",
+        "field_not_set": "Kvalifik\xe1cia nie je dokon\u010Den\xe1",
         "no_upcoming_games": "\u017Diadn\xfd nadch\xe1dzaj\xfaci z\xe1pas do %s",
         "finalTerm": "%s - Koniec",
         "byeTerm": "Vo\u013Eno",
@@ -2483,6 +2523,7 @@ const $06041e2b1c26c877$export$d608fa5b5bfd2021 = {
 const $125926858f90b59c$export$b2bcf639de11a4af = {
     "common": {
         "api_error": "Chyba API",
+        "field_not_set": "Kvalifik\xe1cia nie je dokon\u010Den\xe1",
         "no_upcoming_games": "\u017Diadn\xfd nadch\xe1dzaj\xfaci z\xe1pas do %s",
         "finalTerm": "%s - Koniec",
         "byeTerm": "Vo\u013Eno",
@@ -2633,6 +2674,7 @@ const $125926858f90b59c$export$b2bcf639de11a4af = {
 const $f594c62d0c6e32a5$export$65540e5f7f6e7dce = {
     "common": {
         "api_error": "API Error",
+        "field_not_set": "Kvalificeringen \xe4r inte avslutad",
         "no_upcoming_games": "Inga kommande matcher %s",
         "finalTerm": "%s - Final",
         "byeTerm": "BYE",
@@ -3337,7 +3379,7 @@ function $84bc952fd23869d6$export$2e2366488d12e20d(t, lang, stateObj, c, o, spor
     if (stateObj.attributes.on_third) c.onThirdOp = 1;
     // Set Title data
     c.title = o.cardTitle;
-    if (o.showLeague) c.title = c.title || stateObj.attributes.league;
+    if (o.showLeague) c.title = c.title || stateObj.attributes.league_name;
     // Set Scoreboard data
     c.logo[team] = stateObj.attributes.team_logo;
     c.logoAlternate[team] = stateObj.attributes.team_logo;
@@ -3434,6 +3476,7 @@ function $84bc952fd23869d6$export$2e2366488d12e20d(t, lang, stateObj, c, o, spor
     c.notFoundTerm2 = "NOT_FOUND";
     if (stateObj.attributes.api_message) {
         c.notFoundTerm2 = t.translate("common.api_error");
+        if (stateObj.attributes.api_message.includes("qualifying not complete")) c.notFoundTerm2 = t.translate("common.field_not_set");
         var apiTail = stateObj.attributes.api_message.substring(stateObj.attributes.api_message.length - 17);
         if (apiTail.slice(-1) == "Z") {
             var lastDateForm = new Date(apiTail);
@@ -3626,7 +3669,7 @@ function $8d10daf0cda71373$export$75a82cd3fb272a60(t, stateObj, c, team, oppo) {
     c.barLength[oppo] = stateObj.attributes.team_total_shots;
     c.barLabel[team] = t.translate("racing.teamBarLabel", "%s", String(stateObj.attributes.team_total_shots));
     c.barLabel[oppo] = t.translate("racing.teamBarLabel", "%s", String(stateObj.attributes.team_total_shots));
-    //    if (stateObj.attributes.league.includes("NASCAR")) {
+    //    if (stateObj.attributes.league_name.includes("NASCAR")) {
     //        c.logo[team] = null;
     //        c.logo[oppo] = null;
     //        c.initials[team] = "";
@@ -3866,8 +3909,8 @@ class $a510245ba2c1e365$export$c12aa10d47d2f051 extends (0, $ab210b2da7b39b9d$ex
         //
         //  NCAA Specific Changes
         //
-        if (stateObj.attributes.league) {
-            if (stateObj.attributes.league.includes("NCAA")) c.notFoundLogo = 'https://a.espncdn.com/i/espn/misc_logos/500/ncaa.png';
+        if (stateObj.attributes.league_name) {
+            if (stateObj.attributes.league_name.includes("NCAA")) c.notFoundLogo = 'https://a.espncdn.com/i/espn/misc_logos/500/ncaa.png';
         }
         //
         //  Reduce score font size if needed
